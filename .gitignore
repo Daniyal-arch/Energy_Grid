@@ -1,0 +1,32 @@
+# secrets
+.env
+.env.local
+secrets/
+*.private-key.json
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+
+# node
+node_modules/
+frontend/dist/
+
+# supabase local dev
+supabase/.temp/
+supabase/.branches/
+
+# data scratch
+*.sqlite
+.open-MaStR/
+
+# editor/os
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

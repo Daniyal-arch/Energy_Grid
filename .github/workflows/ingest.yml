@@ -1,0 +1,42 @@
+# Scheduled ingestion. The cron is enabled in Phase 2; until then run manually
+# via workflow_dispatch. Swapping to Celery/cloud scheduler later replaces this
+# file + run.py wiring only.
+name: ingest
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "adapter name (brightsky | gee | mastr | ...)"
+        required: true
+        default: "brightsky"
+      since:
+        description: "YYYY-MM-DD (optional)"
+        required: false
+  # Phase 2: enable weekly cron
+  # schedule:
+  #   - cron: "0 5 * * 1"   # Mondays 05:00 UTC
+
+jobs:
+  run-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - name: Write GEE key file
+        if: inputs.source == 'gee'
+        run: echo "$GEE_KEY_JSON" > /tmp/gee-key.json
+        env:
+          GEE_KEY_JSON: ${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}
+      - name: Run adapter
+        run: >
+          uv run python -m ingestion.run
+          --source "${{ inputs.source }}"
+          ${{ inputs.since && format('--since {0}', inputs.since) || '' }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GEE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GEE_SERVICE_ACCOUNT_EMAIL }}
+          GEE_SERVICE_ACCOUNT_KEY_FILE: /tmp/gee-key.json
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
