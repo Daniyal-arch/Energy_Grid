@@ -75,8 +75,9 @@ Tasks:
 - [x] Supabase migrations (all core tables)
 - [x] Pluggable source framework (`BaseSource`, registry, CLI runner)
 - [x] Bright Sky adapter (no key needed) + smoke tests
-- [ ] **BLOCKED on user:** Supabase project + GEE service account (see setup walkthrough)
-- [ ] MaStR adapter — probe script first ([scripts/probe_mastr.py](scripts/probe_mastr.py)), then adapter (filter ground-mounted solar ≥5 MW in BW/BY, AOI via OSM `landuse=solar` match → else capacity-based buffer)
+- [x] Supabase project created, migrations pushed (4/4), `chips` bucket created, keys in `.env`
+- [x] GEE service account verified (`gee auth ok`)
+- [ ] MaStR adapter — probe running ([scripts/probe_mastr.py](scripts/probe_mastr.py)), then adapter (filter ground-mounted solar ≥5 MW in BW/BY, AOI via OSM `landuse=solar` match → else capacity-based buffer)
 - [ ] GEE adapter (S2 L2A: NDVI/BSI with SCL cloud mask; S1 GRD: VH) — written, untested until service account exists
 - [ ] State machine + detection writer
 - [ ] Evidence chip export to Supabase Storage
@@ -96,6 +97,6 @@ See [CLAUDE.md](CLAUDE.md). Highlights: type hints everywhere, Pydantic models s
 ## Status — 2026-06-12 (session 1)
 
 - Repo scaffolded: workspace (backend + ingestion), frontend Vite skeleton, migrations written, source framework + Bright Sky adapter + tests in place.
-- GEE adapter drafted but **untested** (needs service account). MaStR adapter pending probe run.
-- **Waiting on user:** Supabase project creation + `supabase db push`, GEE service account JSON, `.env` populated. Walkthrough was provided in chat and lives in [docs/SETUP.md](docs/SETUP.md).
-- Next session: run MaStR probe → implement adapter → load sites → run GEE backfill on ~50 sites.
+- Credentials live: Supabase project `kigwomhjqmocftttdrfj` (migrations pushed, private `chips` bucket created via Storage API), GEE service account verified. `.env` populated; GEE key in `secrets/` (gitignored).
+- MaStR probe download running in background (local SQLite under `~/.open-MaStR`).
+- Next: review probe output → implement MaStR adapter → load ~50 BW/BY sites → GEE backfill → state machine.
