@@ -17,40 +17,47 @@ export default function TopBar({ sites, meta, overdueCount, recent, title }: Pro
   const building = analysed.filter((s) => BUILDING.has(s.status));
 
   return (
-    <header className="flex items-center justify-between border-b border-white/10 bg-[#0a0e15] px-4 py-2">
-      <div className="flex items-center gap-3">
-        <div>
-          <div className="text-sm font-semibold leading-none text-slate-100">gridwatch</div>
-          <div className="text-[10px] text-slate-500">German energy construction monitoring</div>
+    <header className="flex h-14 shrink-0 items-stretch justify-between border-b border-line bg-ink-900">
+      <div className="flex items-center gap-3 pl-4 pr-5">
+        <div className="h-7 w-7 rounded-md bg-gradient-to-br from-sky-400 to-emerald-400" />
+        <div className="leading-tight">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold tracking-tight text-slate-100">gridwatch</span>
+            <span className="rounded border border-line px-1.5 py-px text-[10px] capitalize text-dim">
+              {title}
+            </span>
+          </div>
+          <div className="text-[10px] text-faint">German energy construction monitoring</div>
         </div>
-        <span className="ml-2 rounded-md border border-white/10 px-2 py-0.5 text-[11px] capitalize text-slate-400">
-          {title}
-        </span>
       </div>
 
-      <div className="flex items-center gap-5">
-        <Kpi label="Sites" value={num(sites.length)} sub={mw(totalMw)} />
-        <Kpi label="Under construction" value={num(building.length)} accent="#38bdf8" />
-        <Kpi label="Behind deadline" value={num(overdueCount)} accent="#f87171" />
-        <Kpi label="Recent changes" value={num(recent.length)} accent="#f4b740" />
-        <div className="border-l border-white/10 pl-4 text-right">
-          <div className="text-[10px] uppercase tracking-wider text-slate-500">Data as of</div>
-          <div className="flex items-center gap-1.5 text-xs text-slate-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+      <div className="flex items-stretch divide-x divide-line">
+        <Stat label="Sites" value={num(sites.length)} sub={mw(totalMw)} />
+        <Stat label="Analysed" value={num(analysed.length)} sub={`of ${num(sites.length)}`} />
+        <Stat label="Under construction" value={num(building.length)} accent="#38bdf8" />
+        <Stat label="Behind deadline" value={num(overdueCount)} accent="#f87171" />
+        <Stat label="Recent changes" value={num(recent.length)} accent="#f4b740" />
+        <div className="flex flex-col justify-center px-5">
+          <span className="eyebrow">Data as of</span>
+          <span className="flex items-center gap-1.5 font-mono text-[13px] tabular-nums text-slate-200">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
             {meta?.latest_observation ? fmtDate(meta.latest_observation) : "—"}
-          </div>
+          </span>
         </div>
       </div>
     </header>
   );
 }
 
-const Kpi = ({ label, value, sub, accent }: { label: string; value: string; sub?: string; accent?: string }) => (
-  <div className="text-right">
-    <div className="text-[10px] uppercase tracking-wider text-slate-500">{label}</div>
-    <div className="text-base font-semibold leading-tight tabular-nums" style={{ color: accent ?? "#e8edf4" }}>
+const Stat = ({ label, value, sub, accent }: { label: string; value: string; sub?: string; accent?: string }) => (
+  <div className="flex min-w-[88px] flex-col justify-center px-4">
+    <span className="eyebrow whitespace-nowrap">{label}</span>
+    <span
+      className="font-mono text-[17px] font-semibold leading-none tabular-nums"
+      style={{ color: accent ?? "#e6e9ef" }}
+    >
       {value}
-    </div>
-    {sub && <div className="text-[10px] text-slate-500">{sub}</div>}
+    </span>
+    {sub && <span className="mt-0.5 text-[10px] text-faint">{sub}</span>}
   </div>
 );

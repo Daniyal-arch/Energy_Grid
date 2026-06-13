@@ -87,18 +87,18 @@ export default function AssetTable({ sites, deadlines, highlight, onSelect }: Pr
   );
 
   return (
-    <div className="flex h-full flex-col bg-[#070a10]">
-      <div className="flex flex-wrap items-center gap-2 border-b border-white/10 px-4 py-2.5">
+    <div className="flex h-full flex-col bg-ink-950">
+      <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-2.5">
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search name, district, region…"
-          className="w-64 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-slate-100 placeholder-slate-500 outline-none focus:border-sky-400/40"
+          className="w-64 rounded-lg border border-line bg-ink-850 px-3 py-1.5 text-sm text-slate-100 placeholder-slate-500 outline-none focus:border-sky-400/40"
         />
         <select
           value={tech}
           onChange={(e) => setTech(e.target.value)}
-          className="rounded-lg border border-white/10 bg-[#0b0f17] px-2 py-1.5 text-sm text-slate-300"
+          className="rounded-lg border border-line bg-ink-900 px-2 py-1.5 text-sm text-slate-300"
         >
           <option value="">All technologies</option>
           {Object.entries(TECH_LABEL).map(([k, v]) => (
@@ -120,7 +120,7 @@ export default function AssetTable({ sites, deadlines, highlight, onSelect }: Pr
         <span className="text-xs text-slate-500">{rows.length.toLocaleString()} sites</span>
         <button
           onClick={exportCsv}
-          className="rounded-lg border border-white/10 px-2.5 py-1.5 text-xs text-slate-300 hover:border-white/25 hover:text-slate-100"
+          className="rounded-lg border border-line px-2.5 py-1.5 text-xs text-slate-300 hover:border-line-strong hover:text-slate-100"
         >
           Export CSV
         </button>
@@ -128,8 +128,8 @@ export default function AssetTable({ sites, deadlines, highlight, onSelect }: Pr
 
       <div className="flex-1 overflow-auto">
         <table className="w-full border-collapse text-sm">
-          <thead className="sticky top-0 bg-[#0a0e15] text-xs">
-            <tr className="border-b border-white/10">
+          <thead className="sticky top-0 bg-ink-900 text-xs">
+            <tr className="border-b border-line">
               <Th k="name" label="Site" />
               <th className="px-3 py-2 text-left font-medium text-slate-400">Tech</th>
               <Th k="capacity_mw" label="Capacity" right />
@@ -146,7 +146,7 @@ export default function AssetTable({ sites, deadlines, highlight, onSelect }: Pr
                 <tr
                   key={s.id}
                   onClick={() => onSelect(s.id)}
-                  className="cursor-pointer border-b border-white/5 hover:bg-white/[0.04]"
+                  className="cursor-pointer border-b border-line hover:bg-ink-850"
                 >
                   <td className="max-w-[220px] truncate px-3 py-1.5 text-slate-200">{s.name}</td>
                   <td className="px-3 py-1.5">

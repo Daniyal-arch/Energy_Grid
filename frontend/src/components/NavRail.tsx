@@ -32,7 +32,7 @@ export default function NavRail({ view, setView, assistantOpen, toggleAssistant 
   );
 
   return (
-    <div className="flex w-14 flex-col items-center gap-2 border-r border-white/10 bg-[#0a0e15] py-3">
+    <div className="flex w-14 flex-col items-center gap-2 border-r border-line bg-ink-900 py-3">
       <div className="mb-2 h-8 w-8 rounded-lg bg-gradient-to-br from-sky-400 to-emerald-400" title="gridwatch" />
       <Item id="map" label="Map" />
       <Item id="assets" label="Assets" />

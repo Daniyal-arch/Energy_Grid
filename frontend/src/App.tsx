@@ -94,7 +94,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#070a10] text-slate-100">
+    <div className="flex h-screen w-screen overflow-hidden bg-ink-950 text-slate-100">
       <NavRail
         view={view}
         setView={setView}
@@ -129,7 +129,7 @@ export default function App() {
               {highlight && (
                 <button
                   onClick={() => setHighlight(null)}
-                  className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-full border border-sky-400/30 bg-[#0b0f17]/90 px-3 py-1 text-xs text-sky-200 backdrop-blur"
+                  className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-full border border-sky-400/30 bg-ink-900/90 px-3 py-1 text-xs text-sky-200 backdrop-blur"
                 >
                   agent result · {mapSites.length} sites — clear
                 </button>

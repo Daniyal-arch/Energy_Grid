@@ -18,7 +18,7 @@ function Schedule({ deadlines, status }: { deadlines: Deadline[]; status: string
       {legal && (
         <div
           className={`rounded-lg border px-3 py-2 ${
-            overdue ? "border-red-500/40 bg-red-500/10" : "border-white/10 bg-white/[0.03]"
+            overdue ? "border-red-500/40 bg-red-500/10" : "border-line bg-ink-850"
           }`}
         >
           <div className="flex items-center justify-between">
@@ -32,7 +32,7 @@ function Schedule({ deadlines, status }: { deadlines: Deadline[]; status: string
         </div>
       )}
       {planned && (
-        <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2">
+        <div className="flex items-center justify-between rounded-lg border border-line bg-ink-850 px-3 py-2">
           <span className="text-xs text-slate-300">Planned commissioning</span>
           <span className="text-sm text-slate-100">{fmtDate(planned.deadline_date)}</span>
         </div>
@@ -57,7 +57,7 @@ function Timeline({ detections }: { detections: Detection[] }) {
               className="h-2.5 w-2.5 rounded-full"
               style={{ background: rgbCss(STATE_COLOR[d.to_state]) }}
             />
-            <span className="mt-0.5 w-px flex-1 bg-white/10" />
+            <span className="mt-0.5 w-px flex-1 bg-line-strong" />
           </div>
           <div className="pb-1">
             <div className="text-sm text-slate-100">{STATE_LABEL[d.to_state]}</div>
@@ -93,7 +93,7 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
   const chipAfterDate = (s.chip_after_date as string | null) ?? "";
 
   return (
-    <aside className="absolute right-0 top-0 z-20 flex h-full w-[380px] flex-col gap-4 overflow-y-auto border-l border-white/10 bg-[#0b0f17]/95 p-5 backdrop-blur-xl">
+    <aside className="absolute right-0 top-0 z-20 flex h-full w-[380px] flex-col gap-4 overflow-y-auto border-l border-line bg-ink-900/95 p-5 backdrop-blur-xl">
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">
@@ -101,9 +101,7 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
               className="h-2.5 w-2.5 rounded-full"
               style={{ background: rgbCss(STATE_COLOR[s.status]) }}
             />
-            <span className="text-xs uppercase tracking-wide text-slate-400">
-              {STATE_LABEL[s.status]}
-            </span>
+            <span className="eyebrow">{STATE_LABEL[s.status]}</span>
           </div>
           <h2 className="mt-1 text-base font-semibold leading-tight text-slate-100">{s.name}</h2>
           <p className="text-xs text-slate-500">
@@ -163,28 +161,26 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
 
 const Chip = ({ url, label }: { url: string | null; label: string }) =>
   url ? (
-    <figure className="overflow-hidden rounded-lg border border-white/10">
+    <figure className="overflow-hidden rounded-lg border border-line">
       <img src={url} alt={label} className="aspect-square w-full object-cover" loading="lazy" />
       <figcaption className="bg-black/40 px-2 py-1 text-[10px] text-slate-300">{label}</figcaption>
     </figure>
   ) : (
-    <div className="flex aspect-square items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-[10px] text-slate-600">
+    <div className="flex aspect-square items-center justify-center rounded-lg border border-line bg-ink-850 text-[10px] text-slate-600">
       no image
     </div>
   );
 
 const Fact = ({ label, value, mono }: { label: string; value: string; mono?: boolean }) => (
-  <div className="rounded-lg border border-white/5 bg-white/[0.03] px-2.5 py-1.5">
-    <div className="text-[10px] uppercase tracking-wide text-slate-500">{label}</div>
+  <div className="rounded-lg border border-line bg-ink-850 px-2.5 py-1.5">
+    <div className="eyebrow">{label}</div>
     <div className={`text-slate-200 ${mono ? "font-mono text-[11px]" : ""}`}>{value}</div>
   </div>
 );
 
 const Section = ({ title, children }: { title: string; children: ReactNode }) => (
   <div>
-    <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-      {title}
-    </h3>
+    <h3 className="eyebrow mb-2">{title}</h3>
     {children}
   </div>
 );

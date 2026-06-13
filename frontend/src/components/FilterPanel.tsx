@@ -38,12 +38,10 @@ export default function FilterPanel({ all, filter, setFilter, colorMode, setColo
   };
 
   return (
-    <div className="flex h-full w-60 flex-col gap-5 overflow-y-auto border-r border-white/10 bg-[#0b0f17]/90 p-4 backdrop-blur-xl">
+    <div className="flex h-full w-60 flex-col gap-5 overflow-y-auto border-r border-line bg-ink-900/90 p-4 backdrop-blur-xl">
       <div>
-        <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-          Colour map by
-        </div>
-        <div className="flex rounded-lg border border-white/10 p-0.5 text-xs">
+        <div className="eyebrow mb-2">Colour map by</div>
+        <div className="flex rounded-lg border border-line p-0.5 text-xs">
           {(["state", "technology"] as ColorMode[]).map((m) => (
             <button
               key={m}
@@ -101,9 +99,7 @@ export default function FilterPanel({ all, filter, setFilter, colorMode, setColo
 
 const Group = ({ title, children }: { title: string; children: ReactNode }) => (
   <div>
-    <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-      {title}
-    </div>
+    <div className="eyebrow mb-2">{title}</div>
     <div className="space-y-0.5">{children}</div>
   </div>
 );
