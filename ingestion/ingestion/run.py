@@ -64,6 +64,8 @@ def _load_sites(
             state=row["state"],
             owner=row.get("owner"),
             status=row.get("status", "unknown"),
+            commissioning_date=row.get("commissioning_date"),
+            planned_commissioning_date=row.get("planned_commissioning_date"),
             lat=row.get("lat"),
             lon=row.get("lon"),
         )

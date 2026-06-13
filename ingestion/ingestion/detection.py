@@ -58,11 +58,15 @@ class Transition:
 class Params:
     baseline_days: int = 365  # first year defines the seasonal baseline
     persistence: int = 3  # consecutive confirming observations required
-    ndvi_drop: float = 0.10  # NDVI anomaly <= -this => clearing
+    ndvi_drop: float = 0.12  # NDVI anomaly <= -this => candidate clearing
     bsi_rise: float = 0.08  # BSI anomaly >= this => earthworks
     vh_rise: float = 1.5  # VH anomaly (dB) >= this => construction
     dual_window_days: int = 90  # S2/S1 agreement window for high confidence
     complete_days: int = 180  # sustained settled signal => complete
+    # Permanence: clearing is a DURABLE regime change (construction), not a transient
+    # agricultural dip (which recovers). Require NDVI to stay depressed afterwards.
+    permanence_days: int = 270  # window over which the drop must persist
+    permanence_frac: float = 0.5  # median anomaly over that window must stay <= -ndvi_drop*this
 
 
 def _seasonal_baseline(obs: list[Obs], baseline_days: int) -> dict[int, float] | None:
@@ -104,6 +108,35 @@ def _first_sustained(
     return None
 
 
+def _first_durable_drop(
+    obs: list[Obs], baseline: dict[int, float], params: Params
+) -> tuple[date, list[Obs]] | None:
+    """First NDVI drop that is a DURABLE regime change, not a transient dip.
+
+    Requires `persistence` consecutive observations below the drop threshold AND that the
+    median NDVI over the following `permanence_days` stays depressed — so harvest/crop
+    dips (which recover within a season) are rejected and the date lands on the real
+    construction onset rather than an earlier agricultural swing.
+    """
+    floor = -params.ndvi_drop
+    keep = -params.ndvi_drop * params.permanence_frac
+    for i in range(len(obs)):
+        window = obs[i : i + params.persistence]
+        if len(window) < params.persistence:
+            break
+        if not all(o.value - baseline[o.date.month] <= floor for o in window):
+            continue
+        start = window[0].date
+        future = [
+            o.value - baseline[o.date.month]
+            for o in obs
+            if start <= o.date <= start + timedelta(days=params.permanence_days)
+        ]
+        if len(future) >= 3 and statistics.median(future) <= keep:
+            return start, list(window)
+    return None
+
+
 DEFAULT_PARAMS = Params()
 
 
@@ -125,9 +158,7 @@ def detect_transitions(
     if ndvi_base is None:
         return []
 
-    clearing = _first_sustained(
-        ndvi, ndvi_base, lambda a: a <= -params.ndvi_drop, params.persistence
-    )
+    clearing = _first_durable_drop(ndvi, ndvi_base, params)
     clearing_date = clearing[0] if clearing else None
 
     earthworks = (

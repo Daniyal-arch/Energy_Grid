@@ -13,7 +13,7 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-from datetime import date
+from datetime import date, timedelta
 
 from app.db import get_db
 
@@ -60,6 +60,10 @@ def _write(db: Client, site_id: str, transitions: list[Transition]) -> None:
     db.table("detections").delete().eq("site_id", site_id).execute()
     db.table("evidence").delete().eq("site_id", site_id).execute()
     if not transitions:
+        # analysed but no construction signal -> no_activity (distinct from unanalysed 'unknown')
+        db.table("sites").update({"status": "no_activity", "status_since": None}).eq(
+            "id", site_id
+        ).execute()
         return
 
     for t in transitions:
@@ -127,6 +131,13 @@ def main(argv: list[str] | None = None) -> int:
         if snow:
             ndvi = [o for o in ndvi if o.date not in snow]
             bsi = [o for o in bsi if o.date not in snow]
+        # Construction precedes operation: for a commissioned site, ignore observations
+        # well past commissioning so a later vegetation shift can't be mistaken for a build.
+        if site.commissioning_date:
+            bound = site.commissioning_date + timedelta(days=180)
+            ndvi = [o for o in ndvi if o.date <= bound]
+            bsi = [o for o in bsi if o.date <= bound]
+            vh = [o for o in vh if o.date <= bound]
         transitions = detect_transitions(ndvi, bsi, vh, params)
         _write(db, sid, transitions)
         if transitions:
