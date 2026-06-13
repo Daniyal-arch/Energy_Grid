@@ -2,4 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "maplibre-gl/dist/maplibre-gl.css";
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #070a10;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* slim dark scrollbars for the panels */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* hide maplibre's default UI we don't use */
+.maplibregl-ctrl-bottom-right,
+.maplibregl-ctrl-bottom-left {
+  display: none;
+}
