@@ -79,7 +79,7 @@ Tasks:
 - [x] GEE service account verified + adapter validated end-to-end (real NDVI/BSI/VH stored)
 - [x] MaStR adapter — loads **5,402 sites nationwide** (all tech ≥5 MW, ground-mounted; wind clustered into farms) from the open-mastr Zenodo snapshot. Smoke tests cover transform + clustering.
 - [x] GEE backfill — 50-site solar pilot done (61k timeseries rows). **Validated: 35/50 sites show a clear NDVI drop after commissioning (median −0.158), strongest ~−0.40 NDVI with +0.39 BSI** — construction signal confirmed. Then scale to "In Planung" set.
-- [~] State machine + detection writer (NDVI/BSI/VH breakpoints, persistence, seasonal baseline, weather mask)
+- [x] State machine + detection writer — [detection.py](ingestion/ingestion/detection.py) (pure logic, tested) + [detect.py](ingestion/ingestion/detect.py) (writer/CLI). Ran on 50 pilot sites: **164 detections, 474 evidence rows**, statuses set (construction 30, complete 18, earthworks 2). Each detection cites scene IDs + metric values. **Known tuning item:** seasonal baseline can fire clearing on early agricultural NDVI dips (dates land early vs. registry commissioning) — tighten thresholds / require larger sustained absolute drop in Phase 2.
 - [ ] Evidence chip export to Supabase Storage
 - [ ] Minimal dashboard: map with state-colored markers, site drawer with NDVI/BSI/VH charts
 
@@ -101,5 +101,6 @@ See [CLAUDE.md](CLAUDE.md). Highlights: type hints everywhere, Pydantic models s
 - **Sites loaded: 5,402** — wind 2,098 farms (5,747 turbines clustered), solar 1,644, combustion 1,046, storage 273, hydro 222, biomass 104, geothermal 15. 3,768 operating / 1,619 in planning.
 - **GEE validated** end-to-end on real Earth Engine (sane NDVI 0.5–0.9 / BSI / VH dB). **50-site solar pilot backfill running** (5-year, since 2021).
 - **Infra note:** this network is IPv4-only; Supabase direct DB host is IPv6-only → use the **session pooler** for `db push` (`aws-0-eu-west-1.pooler.supabase.com:5432`, user `postgres.<ref>`). App traffic uses the REST API (fine).
-- 13 tests pass; ruff clean.
-- Next: confirm pilot timeseries → build the state machine + detection writer → evidence chips → dashboard. Then scale backfill to the "In Planung" set.
+- **State machine built + run:** 50 pilot sites → 164 evidence-cited detections; `detections`/`evidence` tables populated, site `status` set. Known tuning item on detection-date precision (see Phase 1 tasks).
+- 21 tests pass; ruff clean. Pushed to GitHub `Daniyal-arch/Energy_Grid` (commits carry no AI attribution per user pref).
+- **Core Phase 1 loop is proven end-to-end:** MaStR sites → GEE satellite timeseries → state machine → cited detections. Remaining Phase 1: minimal dashboard (map + charts); then scale backfill to the "In Planung" set; optional evidence chips.
