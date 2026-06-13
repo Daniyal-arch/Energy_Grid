@@ -38,23 +38,24 @@ jobs:
   ingest:
     runs-on: ubuntu-latest
     timeout-minutes: 350 # just under GitHub's 6h job limit
-    env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      GEE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GEE_SERVICE_ACCOUNT_EMAIL }}
-      GEE_SERVICE_ACCOUNT_KEY_FILE: ${{ runner.temp }}/gee-key.json
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
       - run: uv sync --frozen --all-packages
 
+      # secrets/runner contexts are only available at STEP level, not job level
       - name: Write GEE service-account key
         if: ${{ inputs.source == 'gee' }}
-        run: printf '%s' "$GEE_JSON" > "$GEE_SERVICE_ACCOUNT_KEY_FILE"
+        run: printf '%s' "$GEE_JSON" > /tmp/gee-key.json
         env:
           GEE_JSON: ${{ secrets.GEE_SERVICE_ACCOUNT_JSON }}
 
       - name: Backfill
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GEE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GEE_SERVICE_ACCOUNT_EMAIL }}
+          GEE_SERVICE_ACCOUNT_KEY_FILE: /tmp/gee-key.json
         run: |
           args=(--source "${{ inputs.source }}" --since "${{ inputs.since }}" \
                 --batch-size "${{ inputs.batch_size }}")
@@ -66,6 +67,9 @@ jobs:
 
       - name: Detection
         if: ${{ inputs.run_detection }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           args=()
           if [ -n "${{ inputs.technology }}" ]; then args+=(--technology "${{ inputs.technology }}"); fi
