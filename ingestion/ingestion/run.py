@@ -15,11 +15,31 @@ from app.db import get_db
 from app.models import Site
 
 import ingestion.sources  # noqa: F401  (imports trigger adapter registration)
-from ingestion.base import RunContext
+from ingestion.base import LoadStats, RunContext
 from ingestion.registry import get_source, list_sources
 from supabase import Client
 
 log = logging.getLogger("ingestion")
+
+
+def _backfilled_ids(db: Client) -> set[str]:
+    """site_ids that already have satellite timeseries (for --skip-existing)."""
+    ids: set[str] = set()
+    page = 0
+    while True:
+        batch = (
+            db.table("backfilled_sites")
+            .select("site_id")
+            .range(page * 1000, page * 1000 + 999)
+            .execute()
+            .data
+            or []
+        )
+        ids.update(r["site_id"] for r in batch)
+        if len(batch) < 1000:
+            break
+        page += 1
+    return ids
 
 
 def _load_sites(
@@ -86,6 +106,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--limit", type=int, default=None, help="cap number of sites (backfill subset)"
     )
+    parser.add_argument(
+        "--batch-size", type=int, default=None, help="process sites in chunks (checkpointed writes)"
+    )
+    parser.add_argument(
+        "--skip-existing", action="store_true", help="skip sites that already have timeseries"
+    )
     parser.add_argument("--dry-run", action="store_true", help="fetch+transform, don't write")
     args = parser.parse_args(argv)
 
@@ -116,17 +142,47 @@ def main(argv: list[str] | None = None) -> int:
         if source.meta.site_scoped
         else []
     )
-    ctx = RunContext(db=db, since=args.since, until=args.until, sites=sites, dry_run=args.dry_run)
+
+    if args.skip_existing and sites:
+        done = _backfilled_ids(db)
+        before = len(sites)
+        sites = [s for s in sites if str(s.id) not in done]
+        log.info(
+            "skip-existing: %d already backfilled, %d remaining", before - len(sites), len(sites)
+        )
 
     log.info(
-        "running source=%s sites=%d since=%s until=%s",
+        "running source=%s sites=%d since=%s until=%s batch=%s",
         args.source,
         len(sites),
         args.since,
         args.until,
+        args.batch_size,
     )
-    stats = source.run(ctx)
-    log.info("done source=%s %s", args.source, stats)
+
+    # Batched runs checkpoint after every chunk so a long backfill survives interruption
+    # (and resumes via --skip-existing). Unbatched keeps the simple one-shot path.
+    if args.batch_size and source.meta.site_scoped and sites:
+        total = LoadStats()
+        for i in range(0, len(sites), args.batch_size):
+            chunk = sites[i : i + args.batch_size]
+            ctx = RunContext(
+                db=db, since=args.since, until=args.until, sites=chunk, dry_run=args.dry_run
+            )
+            s = source.run(ctx)
+            total.fetched += s.fetched
+            total.loaded += s.loaded
+            total.skipped += s.skipped
+            log.info(
+                "batch %d-%d/%d done: %s (cumulative %s)", i, i + len(chunk), len(sites), s, total
+            )
+        log.info("done source=%s %s", args.source, total)
+    else:
+        ctx = RunContext(
+            db=db, since=args.since, until=args.until, sites=sites, dry_run=args.dry_run
+        )
+        stats = source.run(ctx)
+        log.info("done source=%s %s", args.source, stats)
     return 0
 
 
