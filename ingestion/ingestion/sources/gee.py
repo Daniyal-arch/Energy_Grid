@@ -180,8 +180,27 @@ class GEESource(BaseSource):
                 )
 
     def load(self, records: Iterable[TimeseriesPoint], db: Client) -> LoadStats:
-        rows = [r.model_dump(mode="json") for r in records]
-        # batch to keep request bodies reasonable on multi-year backfills
+        # Several scenes can cover a site on the same day (overlapping Sentinel-2 tiles,
+        # repeat Sentinel-1 passes). The unique key is (site_id, date, sensor, metric),
+        # so collapse same-key observations by averaging before upserting — otherwise
+        # PostgREST rejects the batch ("ON CONFLICT ... cannot affect row a second time").
+        agg: dict[tuple[str, str, str, str], dict[str, Any]] = {}
+        for r in records:
+            key = (str(r.site_id), r.date.isoformat(), r.sensor.value, r.metric.value)
+            entry = agg.setdefault(key, {"sum": 0.0, "n": 0, "scene_id": r.scene_id})
+            entry["sum"] += r.value
+            entry["n"] += 1
+        rows = [
+            {
+                "site_id": sid,
+                "date": d,
+                "sensor": sensor,
+                "metric": metric,
+                "value": e["sum"] / e["n"],
+                "scene_id": e["scene_id"],
+            }
+            for (sid, d, sensor, metric), e in agg.items()
+        ]
         for i in range(0, len(rows), 1000):
             db.table("timeseries").upsert(
                 rows[i : i + 1000], on_conflict="site_id,date,sensor,metric"

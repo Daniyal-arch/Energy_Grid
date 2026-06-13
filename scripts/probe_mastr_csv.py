@@ -9,7 +9,6 @@ Run: uv run python scripts/probe_mastr_csv.py
 
 from __future__ import annotations
 
-import csv
 import io
 import zipfile
 from pathlib import Path
