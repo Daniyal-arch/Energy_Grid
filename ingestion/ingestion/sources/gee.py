@@ -43,19 +43,24 @@ def _init_ee() -> Any:
 
 
 def _site_geometries(db: Client, site_ids: list[str]) -> dict[str, dict[str, Any]]:
-    """Fetch site polygons as GeoJSON via PostGIS (rpc defined inline through select)."""
-    rows = (
-        db.table("sites")
-        .select("id, geojson:geom")  # supabase returns PostGIS geometry as GeoJSON
-        .in_("id", site_ids)
-        .execute()
-        .data
-        or []
-    )
+    """Fetch site polygons as GeoJSON. PostgREST returns the PostGIS geom as a GeoJSON
+    dict (with a `crs` member); we strip it to plain {type, coordinates} for Earth Engine.
+    """
     out: dict[str, dict[str, Any]] = {}
-    for row in rows:
-        geo = row["geojson"]
-        out[row["id"]] = json.loads(geo) if isinstance(geo, str) else geo
+    for i in range(0, len(site_ids), 200):
+        rows = (
+            db.table("sites")
+            .select("id, geojson:geom")
+            .in_("id", site_ids[i : i + 200])
+            .execute()
+            .data
+            or []
+        )
+        for row in rows:
+            geo = row["geojson"]
+            if isinstance(geo, str):
+                geo = json.loads(geo)
+            out[row["id"]] = {"type": geo["type"], "coordinates": geo["coordinates"]}
     return out
 
 

@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     gee_service_account_email: str = ""
     gee_service_account_key_file: str = ""  # path to the JSON key file
 
+    # MaStR registry snapshot (open-mastr Zenodo export). The official bulk server is
+    # throttled to ~6 KB/s; we read the downloaded Zenodo zip directly.
+    mastr_zip_path: str = "data/bnetza_open_mastr_2025-02-09.zip"
+
     # Phase 2
     entsoe_api_key: str = ""
     anthropic_api_key: str = ""

@@ -39,6 +39,16 @@ class Confidence(StrEnum):
     HIGH = "high"
 
 
+class Technology(StrEnum):
+    SOLAR = "solar"
+    WIND = "wind"
+    BIOMASS = "biomass"
+    HYDRO = "hydro"
+    GEOTHERMAL = "geothermal"
+    COMBUSTION = "combustion"
+    STORAGE = "storage"
+
+
 class Site(BaseModel):
     id: UUID | None = None
     mastr_id: str | None = None
@@ -50,6 +60,14 @@ class Site(BaseModel):
     status: SiteState = SiteState.UNKNOWN
     status_since: date | None = None
     aoi_method: str | None = None
+    # expanded MaStR attributes (all-technology, nationwide scope)
+    technology: Technology | None = None
+    mastr_status: str | None = None
+    commissioning_date: date | None = None
+    planned_commissioning_date: date | None = None
+    municipality: str | None = None
+    district: str | None = None
+    unit_count: int = 1
     # populated when reading from the sites_with_centroid view
     lat: float | None = None
     lon: float | None = None

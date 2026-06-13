@@ -17,8 +17,14 @@ def test_unknown_source_raises_with_available_list():
 
 
 def test_credential_gating(monkeypatch):
+    # Simulate creds being absent everywhere: clear the env and point the gate at a
+    # Settings instance that ignores the local .env file.
     monkeypatch.delenv("GEE_SERVICE_ACCOUNT_EMAIL", raising=False)
     monkeypatch.delenv("GEE_SERVICE_ACCOUNT_KEY_FILE", raising=False)
+    import ingestion.base as base
+    from app.config import Settings
+
+    monkeypatch.setattr(base, "get_settings", lambda: Settings(_env_file=None))
     gee = get_source("gee")
     with pytest.raises(MissingCredentialsError, match="GEE_SERVICE_ACCOUNT_EMAIL"):
         gee.check_credentials()

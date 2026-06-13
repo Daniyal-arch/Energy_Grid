@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import Any, ClassVar
 
+from app.config import get_settings
 from app.models import Site
 
 from supabase import Client
@@ -73,7 +74,15 @@ class BaseSource(ABC):
         """Upsert typed records into Supabase."""
 
     def check_credentials(self) -> None:
-        missing = [var for var in self.meta.requires_credentials if not os.environ.get(var)]
+        # Credentials live in .env, loaded by app.config.Settings (not exported to
+        # os.environ). pydantic maps env var FOO_BAR -> settings.foo_bar, so check there
+        # first and fall back to the process environment.
+        settings = get_settings()
+        missing = [
+            var
+            for var in self.meta.requires_credentials
+            if not getattr(settings, var.lower(), None) and not os.environ.get(var)
+        ]
         if missing:
             raise MissingCredentialsError(
                 f"source '{self.meta.name}' needs env vars: {', '.join(missing)} "

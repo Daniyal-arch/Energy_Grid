@@ -7,6 +7,7 @@ from app.models.domain import (
     Sensor,
     Site,
     SiteState,
+    Technology,
     TimeseriesPoint,
     WeatherDay,
 )
@@ -20,6 +21,7 @@ __all__ = [
     "Sensor",
     "Site",
     "SiteState",
+    "Technology",
     "TimeseriesPoint",
     "WeatherDay",
 ]

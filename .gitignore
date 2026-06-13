@@ -24,6 +24,7 @@ supabase/.branches/
 # data scratch
 *.sqlite
 .open-MaStR/
+data/
 
 # editor/os
 .vscode/

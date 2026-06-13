@@ -1,6 +1,6 @@
 # gridwatch — project conventions
 
-Satellite-based construction monitoring for German energy infrastructure. **Read [PLAN.md](PLAN.md) first** — it is the single source of truth for architecture, phases, and current status. Update its Status section at the end of every working session.
+Satellite-based construction monitoring for German energy infrastructure. **Scope: all utility-scale generation technologies ≥5 MW, nationwide** (ground-mounted solar, wind farms, biomass, hydro, geothermal, combustion, battery storage). **Read [PLAN.md](PLAN.md) first** — it is the single source of truth for architecture, phases, and current status. Update its Status section at the end of every working session.
 
 ## Layout
 
@@ -45,4 +45,11 @@ cd frontend && npm install && npm run dev        # frontend dev server
 
 ## Data sources
 
-Implementation order and status tracked in [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md). Phase 1: GEE (S2+S1), MaStR (`open-mastr`), Bright Sky/DWD. Phase 2: EEG auctions, ENTSO-E, SMARD, OSM. Phase 3: WorldCover/DEM, state orthophoto WMS, stubs for Netztransparenz/UVP/news.
+Implementation order and status tracked in [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md). Phase 1: GEE (S2+S1), MaStR, Bright Sky/DWD. Phase 2: EEG auctions, ENTSO-E, SMARD, OSM. Phase 3: WorldCover/DEM, state orthophoto WMS, stubs for Netztransparenz/UVP/news.
+
+### Gotchas (this environment)
+
+- **uv** is installed user-level and not on PATH. In PowerShell prepend `$env:Path = "$env:APPDATA\Python\Python313\Scripts;$env:Path"`. Use `uv sync --all-packages` (plain `uv sync` only does the root group).
+- **MaStR data:** the official `marktstammdatenregister.de` bulk server is throttled to ~6 KB/s (server-side). Use the open-mastr **Zenodo snapshot** instead ([scripts/download_mastr.py](scripts/download_mastr.py) → `data/`, gitignored). The adapter reads that zip directly; `mastr_zip_path` setting points at it. Columns are German + capacity is in **kW**; verified in `scripts/probe_mastr_*.py`.
+- **Supabase migrations:** this network is IPv4-only and the direct DB host (`db.<ref>.supabase.co`) is IPv6-only. Push via the **session pooler**: `npx supabase db push --db-url "postgresql://postgres.<ref>:<pw>@aws-0-eu-west-1.pooler.supabase.com:5432/postgres"`. App/adapters use the REST API (works fine over IPv4).
+- **PostgREST caps reads at 1000 rows** — paginate with `.range()`. A `select s.*` **view does not auto-pick-up new table columns** — recreate the view (drop + create) after adding columns.

@@ -9,6 +9,7 @@ dependencies = [
     "earthengine-api>=1.4",
     "open-mastr>=0.14",
     "shapely>=2.0",
+    "pandas>=3.0.3",
 ]
 
 [tool.uv.sources]

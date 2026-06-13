@@ -22,11 +22,38 @@ from supabase import Client
 log = logging.getLogger("ingestion")
 
 
-def _load_sites(db: Client, site_id: str | None) -> list[Site]:
-    q = db.table("sites_with_centroid").select("*")
-    if site_id:
-        q = q.eq("id", site_id)
-    rows = q.execute().data or []
+def _load_sites(
+    db: Client,
+    site_id: str | None = None,
+    technology: str | None = None,
+    mastr_status: str | None = None,
+    commissioned_after: date | None = None,
+    limit: int | None = None,
+) -> list[Site]:
+    """Load sites for site-scoped adapters, with optional subset filters.
+
+    Paginates past PostgREST's 1000-row cap so a full backfill sees every site.
+    """
+    rows: list[dict] = []
+    page = 0
+    while True:
+        q = db.table("sites_with_centroid").select("*").order("commissioning_date", desc=True)
+        if site_id:
+            q = q.eq("id", site_id)
+        if technology:
+            q = q.eq("technology", technology)
+        if mastr_status:
+            q = q.eq("mastr_status", mastr_status)
+        if commissioned_after:
+            q = q.gte("commissioning_date", commissioned_after.isoformat())
+        batch = q.range(page * 1000, page * 1000 + 999).execute().data or []
+        rows.extend(batch)
+        if limit and len(rows) >= limit:
+            rows = rows[:limit]
+            break
+        if len(batch) < 1000:
+            break
+        page += 1
     return [
         Site(
             id=row["id"],
@@ -51,6 +78,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--since", type=date.fromisoformat, default=None)
     parser.add_argument("--until", type=date.fromisoformat, default=None)
     parser.add_argument("--site-id", default=None, help="restrict to one site UUID")
+    parser.add_argument("--technology", default=None, help="subset by technology (e.g. solar)")
+    parser.add_argument("--mastr-status", default=None, help="subset by registry status")
+    parser.add_argument("--commissioned-after", type=date.fromisoformat, default=None)
+    parser.add_argument(
+        "--limit", type=int, default=None, help="cap number of sites (backfill subset)"
+    )
     parser.add_argument("--dry-run", action="store_true", help="fetch+transform, don't write")
     args = parser.parse_args(argv)
 
@@ -69,7 +102,18 @@ def main(argv: list[str] | None = None) -> int:
 
     source = get_source(args.source)
     db = get_db()
-    sites = _load_sites(db, args.site_id) if source.meta.site_scoped else []
+    sites = (
+        _load_sites(
+            db,
+            site_id=args.site_id,
+            technology=args.technology,
+            mastr_status=args.mastr_status,
+            commissioned_after=args.commissioned_after,
+            limit=args.limit,
+        )
+        if source.meta.site_scoped
+        else []
+    )
     ctx = RunContext(db=db, since=args.since, until=args.until, sites=sites, dry_run=args.dry_run)
 
     log.info(
