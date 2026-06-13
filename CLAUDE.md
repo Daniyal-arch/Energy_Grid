@@ -39,7 +39,7 @@ cd frontend && npm install && npm run dev        # frontend dev server
 - DB access via `supabase-py` (service-role key in pipelines/backend; anon key only in frontend). Geometry written as WKT through PostGIS.
 - Image chips → Supabase Storage bucket `chips`; DB stores URLs only.
 - Timeseries is a narrow table: `(site_id, date, sensor, metric, value)` with upsert on conflict.
-- Agent: Anthropic Python SDK, model **`claude-opus-4-8`**, adaptive thinking (`thinking={"type": "adaptive"}`), tool use; responses must carry a structured `sources` array. Don't use deprecated `budget_tokens` or assistant prefills.
+- Agent ([backend/app/agent.py](backend/app/agent.py)): **OpenAI-compatible chat API**, provider configurable via `LLM_PROVIDER` (`deepseek` | `groq` | `gemini`; default DeepSeek `deepseek-chat`). Manual tool-call retrieval loop; responses carry a structured `sources` array. The agent **only retrieves stored rows** (find_sites / get_site_detail / get_evidence) and never computes facts. Served at `POST /agent/query`.
 - States: `no_activity → clearing → earthworks → construction → complete` (enum `SiteState` in domain models — reuse it, never string literals).
 - Dates in DB are ISO date strings; everything UTC.
 

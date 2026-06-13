@@ -55,9 +55,34 @@ export interface RecentDetection extends Detection {
   site: Pick<Site, "id" | "name" | "technology" | "capacity_mw" | "lat" | "lon" | "state">;
 }
 
+export interface Citation {
+  type: "site" | "detection" | "evidence";
+  id: string;
+  label: string;
+}
+export interface AgentResult {
+  answer: string;
+  sources: Citation[];
+  site_ids: string[];
+  provider: string;
+}
+
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE}${path}`);
   if (!res.ok) throw new Error(`${path} → ${res.status}`);
+  return res.json();
+}
+
+async function post<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(`${BASE}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({}));
+    throw new Error((detail as { detail?: string }).detail ?? `${path} → ${res.status}`);
+  }
   return res.json();
 }
 
@@ -66,4 +91,5 @@ export const api = {
   site: (id: string) => get<SiteDetail>(`/sites/${id}`),
   timeseries: (id: string) => get<Series>(`/sites/${id}/timeseries`),
   recent: (limit = 50) => get<RecentDetection[]>(`/detections/recent?limit=${limit}`),
+  ask: (question: string) => post<AgentResult>("/agent/query", { question }),
 };

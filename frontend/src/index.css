@@ -37,3 +37,49 @@ body {
 .maplibregl-ctrl-bottom-left {
   display: none;
 }
+
+/* agent answer markdown */
+.agent-prose p {
+  margin: 0 0 0.55rem;
+}
+.agent-prose strong {
+  color: #f1f5f9;
+  font-weight: 600;
+}
+.agent-prose ul,
+.agent-prose ol {
+  list-style: disc;
+  padding-left: 1.15rem;
+  margin: 0 0 0.55rem;
+}
+.agent-prose h1,
+.agent-prose h2,
+.agent-prose h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 0.4rem 0;
+}
+.agent-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.45rem 0;
+  font-size: 11px;
+}
+.agent-prose th,
+.agent-prose td {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3px 6px;
+  text-align: left;
+}
+.agent-prose th {
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+}
+.agent-prose code {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0 3px;
+  border-radius: 3px;
+  font-size: 11px;
+  word-break: break-all;
+}

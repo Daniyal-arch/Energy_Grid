@@ -1,69 +1,54 @@
 import { useState } from "react";
 
 const EXAMPLES = [
-  "solar parks over 20 MW in Bayern",
-  "wind farms in planning",
-  "sites under construction",
+  "Which solar parks are under construction?",
+  "Show a completed solar site with its evidence",
+  "Largest sites being built in Bayern",
 ];
 
 interface Props {
-  understood: string[];
-  resultCount: number | null;
-  onSubmit: (text: string) => void;
-  onClear: () => void;
+  loading: boolean;
+  onAsk: (text: string) => void;
 }
 
-export default function CommandBar({ understood, resultCount, onSubmit, onClear }: Props) {
+export default function CommandBar({ loading, onAsk }: Props) {
   const [text, setText] = useState("");
-
   const submit = (q: string) => {
+    if (!q.trim() || loading) return;
     setText(q);
-    onSubmit(q);
+    onAsk(q);
   };
 
   return (
     <div className="w-[520px]">
-      <div className="flex items-center gap-2 rounded-xl border border-white/15 bg-[#0b0f17]/90 px-3 py-2 shadow-lg backdrop-blur-xl">
-        <span className="text-sky-400">⌕</span>
+      <div className="flex items-center gap-2 rounded-xl border border-white/15 bg-[#0b0f17]/90 px-3 py-2.5 shadow-lg backdrop-blur-xl">
+        <span className={loading ? "animate-pulse text-sky-400" : "text-sky-400"}>✦</span>
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && submit(text)}
-          placeholder="Ask anything about your portfolio…"
-          className="flex-1 bg-transparent text-sm text-slate-100 placeholder-slate-500 outline-none"
+          placeholder="Ask the agent about your portfolio…"
+          disabled={loading}
+          className="flex-1 bg-transparent text-sm text-slate-100 placeholder-slate-500 outline-none disabled:opacity-60"
         />
-        {understood.length > 0 && (
-          <button onClick={() => { setText(""); onClear(); }} className="text-xs text-slate-500 hover:text-slate-200">
-            clear
-          </button>
-        )}
+        <button
+          onClick={() => submit(text)}
+          disabled={loading || !text.trim()}
+          className="rounded-lg bg-sky-500/90 px-3 py-1 text-xs font-medium text-white transition hover:bg-sky-400 disabled:opacity-40"
+        >
+          {loading ? "…" : "Ask"}
+        </button>
       </div>
       <div className="mt-1.5 flex flex-wrap items-center gap-1.5 px-1">
-        {understood.length > 0 ? (
-          <>
-            <span className="text-[11px] text-slate-500">
-              {resultCount != null ? `${resultCount} sites ·` : ""} understood:
-            </span>
-            {understood.map((u) => (
-              <span
-                key={u}
-                className="rounded-full border border-sky-400/30 bg-sky-400/10 px-2 py-0.5 text-[11px] text-sky-200"
-              >
-                {u}
-              </span>
-            ))}
-          </>
-        ) : (
-          EXAMPLES.map((ex) => (
-            <button
-              key={ex}
-              onClick={() => submit(ex)}
-              className="rounded-full border border-white/10 px-2 py-0.5 text-[11px] text-slate-400 hover:border-white/25 hover:text-slate-200"
-            >
-              {ex}
-            </button>
-          ))
-        )}
+        {EXAMPLES.map((ex) => (
+          <button
+            key={ex}
+            onClick={() => submit(ex)}
+            className="rounded-full border border-white/10 px-2 py-0.5 text-[11px] text-slate-400 hover:border-white/25 hover:text-slate-200"
+          >
+            {ex}
+          </button>
+        ))}
       </div>
     </div>
   );

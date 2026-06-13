@@ -11,7 +11,9 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
+from app import agent
 from app.db import get_db
 
 app = FastAPI(title="gridwatch", version="0.1.0")
@@ -119,3 +121,20 @@ def recent_detections(limit: int = 50) -> list[dict[str, Any]]:
     for d in dets:
         d["site"] = sites.get(d["site_id"])
     return [d for d in dets if d["site"]]
+
+
+class AgentQuery(BaseModel):
+    question: str
+
+
+@app.post("/agent/query")
+def agent_query(body: AgentQuery) -> dict[str, Any]:
+    """Ask the cited agent. Returns {answer, sources, site_ids, provider}.
+
+    The agent only retrieves stored rows and narrates them with citations — it never
+    computes facts (see app/agent.py / CLAUDE.md rule 1).
+    """
+    try:
+        return agent.answer(body.question)
+    except RuntimeError as e:
+        raise HTTPException(503, str(e)) from e

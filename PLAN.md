@@ -60,9 +60,9 @@ A view `sites_with_centroid` exposes lat/lon (ST_Centroid) for point-based APIs 
 - **Dual-sensor confidence:** S2 + S1 agreement → high confidence; single sensor → medium.
 - Every transition writes a `detections` row linked to `evidence` rows.
 
-### Agent (Phase 2, backend `/agent` module)
+### Agent (backend `app/agent.py`, `POST /agent/query`)
 
-Anthropic API (Python SDK, model `claude-opus-4-8`, adaptive thinking) with tool use. Tools: `list_sites`, `get_site_status`, `get_timeseries`, `get_detections`, `get_evidence`, `compare_to_deadline`, `generate_report`. System prompt forbids uncited claims; API responses include a structured `sources` array.
+OpenAI-compatible chat API, provider configurable via `LLM_PROVIDER` (`deepseek` | `groq` | `gemini`; default DeepSeek `deepseek-chat`). Manual tool-call retrieval loop. Tools (retrieve-only): `find_sites`, `get_site_detail`, `get_evidence`. System prompt forbids uncited/computed claims; responses include `{answer, sources, site_ids, provider}`. The frontend command bar calls this and drives the map (flies to `site_ids`, renders the markdown answer, makes cited sites clickable). Phase 2 adds deadline/timeseries tools as those datasets land.
 
 ## Phases & acceptance criteria
 
@@ -104,4 +104,5 @@ See [CLAUDE.md](CLAUDE.md). Highlights: type hints everywhere, Pydantic models s
 - **State machine built + run:** 50 pilot sites → 164 evidence-cited detections; `detections`/`evidence` tables populated, site `status` set. Known tuning item on detection-date precision (see Phase 1 tasks).
 - 21 tests pass; ruff clean. Pushed to GitHub `Daniyal-arch/Energy_Grid` (commits carry no AI attribution per user pref).
 - **Phase 1 core loop complete + visualised:** MaStR sites → GEE satellite timeseries → state machine → cited detections → **deck.gl dashboard** (3D map, command bar, evidence drawer). Backend data API + frontend both run locally (`:8000` / `:5173`), verified end-to-end with real data.
-- Remaining before Phase 2: scale GEE backfill to the "In Planung" set; tune detection thresholds (date precision); optional evidence chip export to Storage. Then Phase 2: EEG deadlines + the cited LLM agent (replaces the command-bar parser) + ENTSO-E/SMARD + weekly cron.
+- **Cited agent built + working** ([app/agent.py](backend/app/agent.py)): OpenAI-compatible, DeepSeek default (also Groq/Gemini via `LLM_PROVIDER`). Retrieve-only tools; answers cite real detections/evidence and drive the map from the command bar. Verified live (e.g. "solar under construction in Bayern" → 7 sites, cited). Note: project switched from Anthropic to OpenAI-compatible providers (user has DeepSeek/Groq/Gemini keys, not Anthropic).
+- Remaining before deeper Phase 2: scale GEE backfill to the "In Planung" set; tune detection thresholds (date precision). Then: EEG deadlines (→ "behind schedule?" via the agent) + ENTSO-E/SMARD + weekly cron + evidence chips.
