@@ -24,6 +24,7 @@ interface Props {
   selectedId: string | null;
   onSelect: (id: string) => void;
   focusBounds: [[number, number], [number, number]] | null;
+  flyTo: { lon: number; lat: number } | null;
 }
 
 const DIM: RGB = [60, 70, 90];
@@ -47,6 +48,7 @@ export default function MapView({
   selectedId,
   onSelect,
   focusBounds,
+  flyTo,
 }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -163,11 +165,24 @@ export default function MapView({
     overlayRef.current.setProps({ layers: [columns, pulse, ...(ring ? [ring] : [])] });
   }, [columns, recent, phase, selectedId, sites]);
 
-  // fly to a query/agent result
+  // fly to a query/agent result (fit the set)
   useEffect(() => {
     if (!mapRef.current || !focusBounds) return;
     mapRef.current.fitBounds(focusBounds, { padding: 120, pitch: GERMANY_VIEW.pitch, duration: 1400 });
   }, [focusBounds]);
+
+  // 3D fly-to a single selected site — camera drops in close
+  useEffect(() => {
+    if (!mapRef.current || !flyTo) return;
+    mapRef.current.flyTo({
+      center: [flyTo.lon, flyTo.lat],
+      zoom: 14.5,
+      pitch: 62,
+      bearing: -18,
+      duration: 2200,
+      essential: true,
+    });
+  }, [flyTo]);
 
   return <div ref={container} className="absolute inset-0" />;
 }

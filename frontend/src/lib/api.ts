@@ -73,6 +73,18 @@ export interface AgentResult {
   sources: Citation[];
   site_ids: string[];
   provider: string;
+  follow_ups: string[];
+}
+
+export interface ChatTurn {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface Meta {
+  latest_observation: string | null;
+  sites: number;
+  analysed: number;
 }
 
 async function get<T>(path: string): Promise<T> {
@@ -99,5 +111,8 @@ export const api = {
   site: (id: string) => get<SiteDetail>(`/sites/${id}`),
   timeseries: (id: string) => get<Series>(`/sites/${id}/timeseries`),
   recent: (limit = 50) => get<RecentDetection[]>(`/detections/recent?limit=${limit}`),
-  ask: (question: string) => post<AgentResult>("/agent/query", { question }),
+  meta: () => get<Meta>("/meta"),
+  legalDeadlines: () => get<Record<string, string>>("/deadlines/legal"),
+  ask: (question: string, history: ChatTurn[]) =>
+    post<AgentResult>("/agent/query", { question, history }),
 };

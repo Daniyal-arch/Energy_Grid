@@ -131,18 +131,50 @@ def recent_detections(limit: int = 50) -> list[dict[str, Any]]:
     return [d for d in dets if d["site"]]
 
 
+class AgentMessage(BaseModel):
+    role: str
+    content: str
+
+
 class AgentQuery(BaseModel):
     question: str
+    history: list[AgentMessage] = []
 
 
 @app.post("/agent/query")
 def agent_query(body: AgentQuery) -> dict[str, Any]:
-    """Ask the cited agent. Returns {answer, sources, site_ids, provider}.
+    """Ask the cited agent (multi-turn). Returns {answer, sources, site_ids, provider, follow_ups}.
 
     The agent only retrieves stored rows and narrates them with citations — it never
-    computes facts (see app/agent.py / CLAUDE.md rule 1).
+    computes facts (see app/agent.py / CLAUDE.md rule 1). `history` carries prior turns
+    so follow-ups keep context.
     """
     try:
-        return agent.answer(body.question)
+        return agent.answer(body.question, [m.model_dump() for m in body.history])
     except RuntimeError as e:
         raise HTTPException(503, str(e)) from e
+
+
+@app.get("/deadlines/legal")
+def legal_deadlines() -> dict[str, str]:
+    """site_id -> earliest legal completion deadline (for the asset table overdue column)."""
+    rows = _paginate("deadlines", "site_id,deadline_date,type")
+    out: dict[str, str] = {}
+    for r in sorted(rows, key=lambda x: x["deadline_date"]):
+        if r["type"] == "legal_completion":
+            out.setdefault(r["site_id"], r["deadline_date"])
+    return out
+
+
+@app.get("/meta")
+def meta() -> dict[str, Any]:
+    """Dataset freshness + headline counts for the UI's 'as of' indicator."""
+    db = get_db()
+    latest = db.table("timeseries").select("date").order("date", desc=True).limit(1).execute().data
+    sites = _paginate("sites_with_centroid", "status")
+    analysed = sum(1 for s in sites if s["status"] != "unknown")
+    return {
+        "latest_observation": latest[0]["date"] if latest else None,
+        "sites": len(sites),
+        "analysed": analysed,
+    }

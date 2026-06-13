@@ -12,6 +12,7 @@ exactly which stored rows were retrieved → the citations.
 from __future__ import annotations
 
 import json
+import uuid
 from datetime import date
 from typing import Any
 
@@ -231,8 +232,22 @@ def _find_sites(db: Client, args: dict[str, Any], col: _Collector) -> list[dict[
     return rows
 
 
+def _resolve_site_id(db: Client, sid: str) -> str | None:
+    """Accept a UUID or a MaStR id (e.g. the model echoing a site's name) -> UUID."""
+    try:
+        uuid.UUID(str(sid))
+        return str(sid)
+    except (ValueError, TypeError):
+        pass
+    name = str(sid).split()[-1]  # tolerate "solar SEE123"
+    row = db.table("sites").select("id").eq("mastr_id", name).execute().data
+    return row[0]["id"] if row else None
+
+
 def _get_site_detail(db: Client, args: dict[str, Any], col: _Collector) -> dict[str, Any]:
-    sid = args["site_id"]
+    sid = _resolve_site_id(db, args.get("site_id", ""))
+    if not sid:
+        return {"error": f"no site matches {args.get('site_id')!r} — use the id from find_sites"}
     site = db.table("sites_with_centroid").select(_SITE_COLS).eq("id", sid).execute().data
     if not site:
         return {"error": "site not found"}
@@ -326,14 +341,48 @@ def _dispatch(name: str, args: dict[str, Any], db: Client, col: _Collector) -> A
     return {"error": f"unknown tool {name}"}
 
 
-def answer(question: str) -> dict[str, Any]:
-    """Run the retrieval loop and return {answer, sources, site_ids, provider}."""
+def _suggest_followups(client: OpenAI, model: str, question: str, answer_text: str) -> list[str]:
+    """Three short follow-up questions a user might ask next (best-effort)."""
+    try:
+        r = client.chat.completions.create(
+            model=model,
+            temperature=0.4,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You suggest follow-up questions for a German energy "
+                    "construction-monitoring analyst. Reply with ONLY a JSON array of exactly 3 "
+                    "short questions (each under 12 words), no prose, no code fences.",
+                },
+                {"role": "user", "content": f"Q: {question}\nA: {answer_text[:1500]}"},
+            ],
+        )
+        text = (r.choices[0].message.content or "").strip()
+        if text.startswith("```"):
+            text = text.strip("`")
+            text = text[4:] if text.lower().startswith("json") else text
+        arr = json.loads(text)
+        return [str(x) for x in arr][:3]
+    except Exception:  # noqa: BLE001 — suggestions are optional
+        return []
+
+
+def answer(question: str, history: list[dict[str, str]] | None = None) -> dict[str, Any]:
+    """Run the retrieval loop with optional prior turns (memory). Returns
+    {answer, sources, site_ids, provider, follow_ups}."""
     settings = get_settings()
     client, model = _client(settings)
     db = get_db()
     col = _Collector()
+    # prior user/assistant turns give multi-turn memory; keep only text turns
+    prior = [
+        {"role": m["role"], "content": m["content"]}
+        for m in (history or [])
+        if m.get("role") in ("user", "assistant") and m.get("content")
+    ][-8:]
     messages: list[dict[str, Any]] = [
         {"role": "system", "content": SYSTEM},
+        *prior,
         {"role": "user", "content": question},
     ]
 
@@ -369,7 +418,10 @@ def answer(question: str) -> dict[str, Any]:
                 args = json.loads(tc.function.arguments or "{}")
             except json.JSONDecodeError:
                 args = {}
-            out = _dispatch(tc.function.name, args, db, col)
+            try:
+                out = _dispatch(tc.function.name, args, db, col)
+            except Exception as e:  # noqa: BLE001 — surface tool errors to the model, never 500
+                out = {"error": f"{type(e).__name__}: {e}"}
             messages.append(
                 {
                     "role": "tool",
@@ -383,4 +435,5 @@ def answer(question: str) -> dict[str, Any]:
         "sources": col.as_list(),
         "site_ids": sorted(col.site_ids),
         "provider": settings.llm_provider,
+        "follow_ups": _suggest_followups(client, model, question, final) if final else [],
     }

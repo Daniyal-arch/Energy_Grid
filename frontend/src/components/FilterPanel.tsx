@@ -38,7 +38,7 @@ export default function FilterPanel({ all, filter, setFilter, colorMode, setColo
   };
 
   return (
-    <div className="flex w-60 flex-col gap-5 overflow-y-auto border-r border-white/10 bg-[#0b0f17]/90 p-4 backdrop-blur-xl">
+    <div className="flex h-full w-60 flex-col gap-5 overflow-y-auto border-r border-white/10 bg-[#0b0f17]/90 p-4 backdrop-blur-xl">
       <div>
         <div className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
           Colour map by

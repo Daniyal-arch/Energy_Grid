@@ -87,6 +87,10 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
   if (!detail) return null;
   const s = detail.site;
   const hasSeries = series && (series.ndvi.length || series.vh_db.length);
+  const chipBefore = (s.chip_before_url as string | null) ?? null;
+  const chipAfter = (s.chip_after_url as string | null) ?? null;
+  const chipBeforeDate = (s.chip_before_date as string | null) ?? "";
+  const chipAfterDate = (s.chip_after_date as string | null) ?? "";
 
   return (
     <aside className="absolute right-0 top-0 z-20 flex h-full w-[380px] flex-col gap-4 overflow-y-auto border-l border-white/10 bg-[#0b0f17]/95 p-5 backdrop-blur-xl">
@@ -120,6 +124,18 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
         <Fact label="Owner" value={s.owner ?? "—"} mono />
       </div>
 
+      {(chipBefore || chipAfter) && (
+        <Section title="Satellite — before / after">
+          <div className="grid grid-cols-2 gap-2">
+            <Chip url={chipBefore} label={`Before · ${chipBeforeDate}`} />
+            <Chip url={chipAfter} label={`After · ${chipAfterDate}`} />
+          </div>
+          <p className="mt-1 text-[10px] text-slate-500">
+            True-colour Sentinel-2, framed to the site footprint.
+          </p>
+        </Section>
+      )}
+
       {detail.deadlines.length > 0 && (
         <Section title="Schedule & deadline">
           <Schedule deadlines={detail.deadlines} status={s.status} />
@@ -144,6 +160,18 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
     </aside>
   );
 }
+
+const Chip = ({ url, label }: { url: string | null; label: string }) =>
+  url ? (
+    <figure className="overflow-hidden rounded-lg border border-white/10">
+      <img src={url} alt={label} className="aspect-square w-full object-cover" loading="lazy" />
+      <figcaption className="bg-black/40 px-2 py-1 text-[10px] text-slate-300">{label}</figcaption>
+    </figure>
+  ) : (
+    <div className="flex aspect-square items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-[10px] text-slate-600">
+      no image
+    </div>
+  );
 
 const Fact = ({ label, value, mono }: { label: string; value: string; mono?: boolean }) => (
   <div className="rounded-lg border border-white/5 bg-white/[0.03] px-2.5 py-1.5">

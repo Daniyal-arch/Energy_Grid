@@ -1,145 +1,159 @@
 import { useEffect, useMemo, useState } from "react";
 
-import AgentPanel from "./components/AgentPanel";
-import CommandBar from "./components/CommandBar";
+import AssetTable from "./components/AssetTable";
+import AssistantPanel from "./components/AssistantPanel";
 import FilterPanel from "./components/FilterPanel";
 import MapView, { type ColorMode } from "./components/MapView";
-import PulseHeader from "./components/PulseHeader";
+import NavRail, { type View } from "./components/NavRail";
 import SiteDrawer from "./components/SiteDrawer";
-import { api, type AgentResult, type RecentDetection, type Site } from "./lib/api";
+import TopBar from "./components/TopBar";
+import { api, type Meta, type RecentDetection, type Site } from "./lib/api";
 import { applyFilter, emptyFilter, type Filter } from "./lib/query";
 
 type Bounds = [[number, number], [number, number]] | null;
+const TODAY = new Date().toISOString().slice(0, 10);
+const BUILDING = new Set(["clearing", "earthworks", "construction"]);
 
 function boundsOf(sites: Site[]): Bounds {
-  if (sites.length < 1) return null;
-  let minLon = 180,
-    minLat = 90,
-    maxLon = -180,
-    maxLat = -90;
+  if (!sites.length) return null;
+  let a = 180,
+    b = 90,
+    c = -180,
+    d = -90;
   for (const s of sites) {
-    minLon = Math.min(minLon, s.lon);
-    maxLon = Math.max(maxLon, s.lon);
-    minLat = Math.min(minLat, s.lat);
-    maxLat = Math.max(maxLat, s.lat);
+    a = Math.min(a, s.lon);
+    c = Math.max(c, s.lon);
+    b = Math.min(b, s.lat);
+    d = Math.max(d, s.lat);
   }
-  // pad a touch so a single point isn't a zero-area box
   return [
-    [minLon - 0.15, minLat - 0.15],
-    [maxLon + 0.15, maxLat + 0.15],
+    [a - 0.15, b - 0.15],
+    [c + 0.15, d + 0.15],
   ];
 }
 
 export default function App() {
   const [sites, setSites] = useState<Site[]>([]);
   const [recent, setRecent] = useState<RecentDetection[]>([]);
+  const [meta, setMeta] = useState<Meta | null>(null);
+  const [deadlines, setDeadlines] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<Filter>(emptyFilter());
-  const [colorMode, setColorMode] = useState<ColorMode>("state");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [focus, setFocus] = useState<Bounds>(null);
 
-  // agent state
-  const [agent, setAgent] = useState<AgentResult | null>(null);
-  const [agentLoading, setAgentLoading] = useState(false);
-  const [agentError, setAgentError] = useState<string | null>(null);
+  const [view, setView] = useState<View>("map");
+  const [colorMode, setColorMode] = useState<ColorMode>("state");
+  const [filter, setFilter] = useState<Filter>(emptyFilter());
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [flyTo, setFlyTo] = useState<{ lon: number; lat: number } | null>(null);
+  const [focus, setFocus] = useState<Bounds>(null);
+  const [highlight, setHighlight] = useState<Set<string> | null>(null);
+  const [assistantOpen, setAssistantOpen] = useState(true);
 
   useEffect(() => {
     api.sites().then(setSites).catch((e) => setError(String(e)));
     api.recent(60).then(setRecent).catch(() => {});
+    api.meta().then(setMeta).catch(() => {});
+    api.legalDeadlines().then(setDeadlines).catch(() => {});
   }, []);
 
   const sitesById = useMemo(() => new Map(sites.map((s) => [s.id, s])), [sites]);
 
-  // the map shows the agent's result set when one is active, else the manual filter
-  const displayed = useMemo(() => {
-    if (agent) {
-      const ids = new Set(agent.site_ids);
-      return sites.filter((s) => ids.has(s.id));
-    }
+  const overdueCount = useMemo(
+    () =>
+      sites.filter(
+        (s) =>
+          deadlines[s.id] &&
+          deadlines[s.id] < TODAY &&
+          BUILDING.has(s.status) &&
+          s.status !== "unknown",
+      ).length,
+    [sites, deadlines],
+  );
+
+  const mapSites = useMemo(() => {
+    if (highlight) return sites.filter((s) => highlight.has(s.id));
     return applyFilter(sites, filter);
-  }, [sites, filter, agent]);
+  }, [sites, filter, highlight]);
 
-  const ask = async (text: string) => {
-    setAgentLoading(true);
-    setAgentError(null);
-    setAgent(null);
-    try {
-      const res = await api.ask(text);
-      setAgent(res);
-      const b = boundsOf(res.site_ids.map((id) => sitesById.get(id)!).filter(Boolean));
-      if (b) setFocus(b);
-    } catch (e) {
-      setAgentError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setAgentLoading(false);
-    }
+  // selecting a site flies the camera in and opens the detail drawer
+  const selectSite = (id: string) => {
+    setSelectedId(id);
+    const s = sitesById.get(id);
+    if (s) setFlyTo({ lon: s.lon, lat: s.lat });
+    setView("map");
   };
 
-  const closeAgent = () => {
-    setAgent(null);
-    setAgentError(null);
+  const onAgentResult = (ids: string[]) => {
+    if (!ids.length) return;
+    setHighlight(new Set(ids));
+    setFocus(boundsOf(ids.map((id) => sitesById.get(id)!).filter(Boolean)));
   };
 
-  // manual filter takes over from the agent view
   const setFilterManual = (f: Filter) => {
     setFilter(f);
-    setAgent(null);
+    setHighlight(null);
   };
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-[#070a10] text-slate-100">
-      <MapView
-        sites={displayed}
-        colorMode={colorMode}
-        recent={recent}
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-        focusBounds={focus}
+    <div className="flex h-screen w-screen overflow-hidden bg-[#070a10] text-slate-100">
+      <NavRail
+        view={view}
+        setView={setView}
+        assistantOpen={assistantOpen}
+        toggleAssistant={() => setAssistantOpen((o) => !o)}
       />
 
-      <header className="pointer-events-none absolute left-0 right-0 top-0 z-10 flex items-start justify-between p-4">
-        <div className="pointer-events-auto flex items-center gap-2">
-          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-sky-400 to-emerald-400" />
-          <div>
-            <div className="text-sm font-semibold leading-none">gridwatch</div>
-            <div className="text-[10px] text-slate-500">German energy construction · live</div>
-          </div>
-        </div>
-        <div className="pointer-events-auto">
-          <PulseHeader sites={sites} recent={recent} />
-        </div>
-      </header>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <TopBar sites={sites} meta={meta} overdueCount={overdueCount} recent={recent} title={view} />
 
-      <div className="pointer-events-none absolute left-1/2 top-20 z-10 -translate-x-1/2">
-        <div className="pointer-events-auto">
-          <CommandBar loading={agentLoading} onAsk={ask} />
-          <AgentPanel
-            loading={agentLoading}
-            result={agent}
-            error={agentError}
-            sitesById={sitesById}
-            onPick={setSelectedId}
-            onClose={closeAgent}
-          />
+        <div className="relative min-h-0 flex-1">
+          {view === "map" ? (
+            <>
+              <MapView
+                sites={mapSites}
+                colorMode={colorMode}
+                recent={recent}
+                selectedId={selectedId}
+                onSelect={selectSite}
+                focusBounds={focus}
+                flyTo={flyTo}
+              />
+              <div className="absolute bottom-0 left-0 top-0">
+                <FilterPanel
+                  all={sites}
+                  filter={filter}
+                  setFilter={setFilterManual}
+                  colorMode={colorMode}
+                  setColorMode={setColorMode}
+                />
+              </div>
+              {highlight && (
+                <button
+                  onClick={() => setHighlight(null)}
+                  className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-full border border-sky-400/30 bg-[#0b0f17]/90 px-3 py-1 text-xs text-sky-200 backdrop-blur"
+                >
+                  agent result · {mapSites.length} sites — clear
+                </button>
+              )}
+            </>
+          ) : (
+            <AssetTable sites={sites} deadlines={deadlines} highlight={highlight} onSelect={selectSite} />
+          )}
+
+          {selectedId && <SiteDrawer id={selectedId} onClose={() => setSelectedId(null)} />}
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 top-0 z-10 pt-[120px]">
-        <FilterPanel
-          all={sites}
-          filter={filter}
-          setFilter={setFilterManual}
-          colorMode={colorMode}
-          setColorMode={setColorMode}
-        />
-      </div>
-
-      {selectedId && <SiteDrawer id={selectedId} onClose={() => setSelectedId(null)} />}
+      <AssistantPanel
+        open={assistantOpen}
+        sitesById={sitesById}
+        onResult={onAgentResult}
+        onPickSite={selectSite}
+        onClose={() => setAssistantOpen(false)}
+      />
 
       {error && (
         <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2 rounded-lg border border-red-500/30 bg-red-950/80 px-4 py-2 text-xs text-red-200">
-          Couldn’t reach the API ({error}). Start it with{" "}
+          Couldn’t reach the API ({error}). Start it:{" "}
           <code className="text-red-100">uv run uvicorn app.main:app --app-dir backend</code>
         </div>
       )}
