@@ -82,7 +82,15 @@ def site_detail(site_id: str) -> dict[str, Any]:
         evidence = {r["id"]: r for r in rows}
     for d in detections:
         d["evidence"] = [evidence[i] for i in (d.get("evidence_ids") or []) if i in evidence]
-    return {"site": site[0], "detections": detections}
+    deadlines = (
+        db.table("deadlines")
+        .select("*")
+        .eq("site_id", site_id)
+        .order("deadline_date")
+        .execute()
+        .data
+    )
+    return {"site": site[0], "detections": detections, "deadlines": deadlines}
 
 
 @app.get("/sites/{site_id}/timeseries")

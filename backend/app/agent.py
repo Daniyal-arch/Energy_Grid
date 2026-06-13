@@ -12,6 +12,7 @@ exactly which stored rows were retrieved → the citations.
 from __future__ import annotations
 
 import json
+from datetime import date
 from typing import Any
 
 from openai import OpenAI
@@ -46,8 +47,16 @@ was detected, the confidence, and that it is backed by specific satellite scenes
 (which get_site_detail / get_evidence return). Prefer citing detections and evidence \
 over raw numbers.
 
+Deadlines: EEG-auction solar sites have a legal completion deadline — the plant must be \
+commissioned within 24 months of the award (§55 EEG). These are derived from the auction \
+round encoded in the award number (Zuschlagsnummer), so they are month-precision estimates; \
+say so when citing one. A site is 'behind schedule' when its legal deadline has passed and \
+satellite analysis has NOT detected it as complete. Use find_overdue_sites for \
+'behind schedule / behind deadline' questions; get_site_detail returns a site's deadlines. \
+Only analysed sites (status != unknown) can be judged behind schedule.
+
 Be concise, specific, and useful to a professional (project developer, grid operator, \
-or lender). Expand jargon. Deadline data is not loaded yet — do not invent deadlines."""
+or lender). Expand jargon."""
 
 # OpenAI-compatible tool/function schemas (retrieve-only)
 TOOLS: list[dict[str, Any]] = [
@@ -127,6 +136,37 @@ TOOLS: list[dict[str, Any]] = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "find_overdue_sites",
+            "description": "Find sites that are behind schedule: their legal EEG completion "
+            "deadline has passed and satellite analysis has NOT detected them complete. "
+            "Optionally filter by region or technology.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "region": {
+                        "type": "string",
+                        "description": "German federal state, e.g. 'Bayern'.",
+                    },
+                    "technology": {
+                        "type": "string",
+                        "enum": [
+                            "solar",
+                            "wind",
+                            "biomass",
+                            "hydro",
+                            "geothermal",
+                            "combustion",
+                            "storage",
+                        ],
+                    },
+                    "limit": {"type": "integer", "description": "Max sites (default 25)."},
+                },
+            },
+        },
+    },
 ]
 
 _SITE_COLS = (
@@ -199,11 +239,69 @@ def _get_site_detail(db: Client, args: dict[str, Any], col: _Collector) -> dict[
     detections = (
         db.table("detections").select("*").eq("site_id", sid).order("detected_at").execute().data
     )
+    deadlines = (
+        db.table("deadlines").select("*").eq("site_id", sid).order("deadline_date").execute().data
+    )
     col.add("site", site[0], site[0]["name"])
     col.site_ids.add(sid)
     for d in detections:
         col.add("detection", d, f"{d['from_state']}→{d['to_state']} {d['detected_at']}")
-    return {"site": site[0], "detections": detections}
+    for dl in deadlines:
+        col.add("deadline", dl, f"{dl['type']} {dl['deadline_date']}")
+    return {"site": site[0], "detections": detections, "deadlines": deadlines}
+
+
+def _find_overdue(db: Client, args: dict[str, Any], col: _Collector) -> dict[str, Any]:
+    today = date.today().isoformat()
+    # Start from analysed, not-yet-complete sites (a small set) — "behind schedule" is
+    # only meaningful where satellite analysis exists.
+    q = (
+        db.table("sites_with_centroid")
+        .select(_SITE_COLS)
+        .neq("status", "unknown")
+        .neq("status", "complete")
+    )
+    if r := args.get("region"):
+        q = q.eq("state", r)
+    if t := args.get("technology"):
+        q = q.eq("technology", t)
+    sites = {s["id"]: s for s in (q.execute().data or [])}
+    if not sites:
+        return {"overdue_count": 0, "sites": []}
+    # their legal deadlines that have already passed
+    past = (
+        db.table("deadlines")
+        .select("site_id,deadline_date,source")
+        .eq("type", "legal_completion")
+        .lt("deadline_date", today)
+        .in_("site_id", list(sites))
+        .order("deadline_date")
+        .execute()
+        .data
+        or []
+    )
+    earliest: dict[str, dict[str, Any]] = {}
+    for d in past:
+        earliest.setdefault(d["site_id"], d)  # ordered asc → earliest kept
+    out = []
+    for sid, dl in earliest.items():
+        s = sites[sid]
+        col.add("site", s, s["name"])
+        col.site_ids.add(sid)
+        out.append(
+            {
+                "id": sid,
+                "name": s["name"],
+                "technology": s["technology"],
+                "detected_state": s["status"],
+                "capacity_mw": s["capacity_mw"],
+                "region": s["state"],
+                "legal_deadline": dl["deadline_date"],
+                "deadline_basis": dl["source"],
+            }
+        )
+    out.sort(key=lambda x: x["legal_deadline"])
+    return {"overdue_count": len(out), "sites": out[: int(args.get("limit", 25))]}
 
 
 def _get_evidence(db: Client, args: dict[str, Any], col: _Collector) -> list[dict[str, Any]]:
@@ -223,6 +321,8 @@ def _dispatch(name: str, args: dict[str, Any], db: Client, col: _Collector) -> A
         return _get_site_detail(db, args, col)
     if name == "get_evidence":
         return _get_evidence(db, args, col)
+    if name == "find_overdue_sites":
+        return _find_overdue(db, args, col)
     return {"error": f"unknown tool {name}"}
 
 

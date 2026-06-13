@@ -85,7 +85,7 @@ Tasks:
 
 ### Phase 2 — the moat
 EEG auction deadline parsing (Bundesnetzagentur Excel/PDF) → `deadlines`; weather masking in detection; ENTSO-E + SMARD cross-check; agent with cited answers; monitoring feed; weekly cron enabled.
-**Done when:** "which sites are behind their EEG deadline?" returns a correct, evidence-cited answer.
+**Done when:** "which sites are behind their EEG deadline?" returns a correct, evidence-cited answer. ✅ **ACHIEVED** — the `eeg` adapter derives legal deadlines from MaStR `Zuschlagsnummer` (no BNetzA scrape needed; award number encodes auction round → Gebotstermin + 24mo §55 EEG), and the agent's `find_overdue_sites` tool answers it with 21 cited overdue solar sites. Remaining Phase 2: weather masking, ENTSO-E/SMARD, monitoring feed, weekly cron.
 
 ### Phase 3 — polish
 PDF report export, Supabase auth (magic link), stub adapters for Netztransparenz/UVP/netzausbau.de/news, ESA WorldCover + Copernicus DEM enrichment, state orthophoto WMS chips, deploy notes (Fly.io/Railway backend, Vercel frontend).
@@ -105,4 +105,5 @@ See [CLAUDE.md](CLAUDE.md). Highlights: type hints everywhere, Pydantic models s
 - 21 tests pass; ruff clean. Pushed to GitHub `Daniyal-arch/Energy_Grid` (commits carry no AI attribution per user pref).
 - **Phase 1 core loop complete + visualised:** MaStR sites → GEE satellite timeseries → state machine → cited detections → **deck.gl dashboard** (3D map, command bar, evidence drawer). Backend data API + frontend both run locally (`:8000` / `:5173`), verified end-to-end with real data.
 - **Cited agent built + working** ([app/agent.py](backend/app/agent.py)): OpenAI-compatible, DeepSeek default (also Groq/Gemini via `LLM_PROVIDER`). Retrieve-only tools; answers cite real detections/evidence and drive the map from the command bar. Verified live (e.g. "solar under construction in Bayern" → 7 sites, cited). Note: project switched from Anthropic to OpenAI-compatible providers (user has DeepSeek/Groq/Gemini keys, not Anthropic).
-- Remaining before deeper Phase 2: scale GEE backfill to the "In Planung" set; tune detection thresholds (date precision). Then: EEG deadlines (→ "behind schedule?" via the agent) + ENTSO-E/SMARD + weekly cron + evidence chips.
+- **EEG deadlines built (`eeg` adapter) — Phase 2 "moat" acceptance criterion met.** 1,074 deadlines (795 legal_completion from auction `Zuschlagsnummer` + 24mo §55 EEG; 279 planned_commissioning). Agent gained `find_overdue_sites` + deadline-aware `get_site_detail`; answers "which sites are behind their EEG deadline?" with 21 cited overdue sites, transparent about the derived month-precision basis. Site drawer shows the legal deadline with an overdue badge.
+- Remaining: scale GEE backfill to the "In Planung" set; tune detection date precision (sharpens overdue accuracy); ENTSO-E/SMARD cross-check; weekly cron; evidence chips; deploy notes.

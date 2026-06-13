@@ -42,9 +42,17 @@ export interface Detection {
   evidence: Evidence[];
 }
 
+export interface Deadline {
+  id: string;
+  source: string;
+  deadline_date: string;
+  type: "legal_completion" | "planned_commissioning" | string;
+}
+
 export interface SiteDetail {
   site: Site & Record<string, unknown>;
   detections: Detection[];
+  deadlines: Deadline[];
 }
 
 export type Point = { date: string; value: number };

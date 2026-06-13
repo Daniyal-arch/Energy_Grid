@@ -1,11 +1,45 @@
 import { type ReactNode, useEffect, useState } from "react";
 
-import { api, type Detection, type Series, type SiteDetail } from "../lib/api";
+import { api, type Deadline, type Detection, type Series, type SiteDetail } from "../lib/api";
 import { fmtDate, mw } from "../lib/format";
 import { STATE_COLOR, STATE_LABEL, TECH_LABEL, rgbCss } from "../lib/theme";
 import MetricChart from "./MetricChart";
 
 const confColor = { high: "#34d399", medium: "#f4b740", low: "#94a3b8" } as const;
+
+function Schedule({ deadlines, status }: { deadlines: Deadline[]; status: string }) {
+  const legal = deadlines.find((d) => d.type === "legal_completion");
+  const planned = deadlines.find((d) => d.type === "planned_commissioning");
+  if (!legal && !planned) return null;
+  const today = new Date().toISOString().slice(0, 10);
+  const overdue = legal && legal.deadline_date < today && status !== "complete";
+  return (
+    <div className="space-y-2">
+      {legal && (
+        <div
+          className={`rounded-lg border px-3 py-2 ${
+            overdue ? "border-red-500/40 bg-red-500/10" : "border-white/10 bg-white/[0.03]"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-slate-300">EEG legal completion</span>
+            <span className={`text-sm font-medium ${overdue ? "text-red-300" : "text-slate-100"}`}>
+              {fmtDate(legal.deadline_date)}
+              {overdue && " · overdue"}
+            </span>
+          </div>
+          <div className="mt-0.5 text-[10px] leading-snug text-slate-500">{legal.source}</div>
+        </div>
+      )}
+      {planned && (
+        <div className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2">
+          <span className="text-xs text-slate-300">Planned commissioning</span>
+          <span className="text-sm text-slate-100">{fmtDate(planned.deadline_date)}</span>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function Timeline({ detections }: { detections: Detection[] }) {
   if (!detections.length)
@@ -85,6 +119,12 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
         {s.unit_count > 1 && <Fact label="Units" value={`${s.unit_count} (clustered)`} />}
         <Fact label="Owner" value={s.owner ?? "—"} mono />
       </div>
+
+      {detail.deadlines.length > 0 && (
+        <Section title="Schedule & deadline">
+          <Schedule deadlines={detail.deadlines} status={s.status} />
+        </Section>
+      )}
 
       <Section title="Construction timeline">
         <Timeline detections={detail.detections} />

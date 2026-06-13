@@ -1,5 +1,6 @@
 from app.models.domain import (
     Confidence,
+    Deadline,
     Detection,
     Evidence,
     Metric,
@@ -14,6 +15,7 @@ from app.models.domain import (
 
 __all__ = [
     "Confidence",
+    "Deadline",
     "Detection",
     "Evidence",
     "Metric",
