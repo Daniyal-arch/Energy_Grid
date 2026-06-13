@@ -78,8 +78,8 @@ Tasks:
 - [x] Supabase project created, migrations pushed (6/6), `chips` bucket created, keys in `.env`
 - [x] GEE service account verified + adapter validated end-to-end (real NDVI/BSI/VH stored)
 - [x] MaStR adapter — loads **5,402 sites nationwide** (all tech ≥5 MW, ground-mounted; wind clustered into farms) from the open-mastr Zenodo snapshot. Smoke tests cover transform + clustering.
-- [~] GEE backfill — pilot running on 50 recent solar sites (5-year). Then scale to "In Planung" set.
-- [ ] State machine + detection writer (NDVI/BSI/VH breakpoints, persistence, seasonal baseline, weather mask)
+- [x] GEE backfill — 50-site solar pilot done (61k timeseries rows). **Validated: 35/50 sites show a clear NDVI drop after commissioning (median −0.158), strongest ~−0.40 NDVI with +0.39 BSI** — construction signal confirmed. Then scale to "In Planung" set.
+- [~] State machine + detection writer (NDVI/BSI/VH breakpoints, persistence, seasonal baseline, weather mask)
 - [ ] Evidence chip export to Supabase Storage
 - [ ] Minimal dashboard: map with state-colored markers, site drawer with NDVI/BSI/VH charts
 
