@@ -61,7 +61,10 @@ export default function MapView({
   const mapRef = useRef<maplibregl.Map | null>(null);
   const overlayRef = useRef<MapboxOverlay | null>(null);
   const [phase, setPhase] = useState(0);
-  const [zoom, setZoom] = useState(GERMANY_VIEW.zoom);
+  // only the regime (density field vs. individual sites) is React state, flipped
+  // once when zoom crosses SITE_ZOOM — not on every zoom tick, so panning/zooming
+  // never triggers a React re-render or layer rebuild.
+  const [aggregated, setAggregated] = useState(GERMANY_VIEW.zoom < SITE_ZOOM);
 
   // init once
   useEffect(() => {
@@ -125,7 +128,10 @@ export default function MapView({
         paint: { "line-color": ["get", "color"], "line-width": 2.2, "line-opacity": 0.95, "line-blur": 0.4 },
       });
     });
-    map.on("zoom", () => setZoom(map.getZoom()));
+    map.on("zoom", () => {
+      const agg = map.getZoom() < SITE_ZOOM;
+      setAggregated((prev) => (prev === agg ? prev : agg));
+    });
     const overlay = new MapboxOverlay({
       interleaved: true,
       layers: [],
@@ -169,14 +175,13 @@ export default function MapView({
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const aggregated = zoom < SITE_ZOOM;
-
   // national zoom: extruded capacity-density field (reads as a heat terrain)
   const hexes = useMemo(
     () =>
       new HexagonLayer<Site>({
         id: "hex",
         data: sites,
+        visible: aggregated,
         radius: 9000,
         coverage: 0.86,
         extruded: true,
@@ -191,7 +196,7 @@ export default function MapView({
         colorRange: HEX_RANGE as unknown as [number, number, number][],
         material: { ambient: 0.64, diffuse: 0.6, shininess: 28, specularColor: [40, 60, 80] },
       }),
-    [sites],
+    [sites, aggregated],
   );
 
   // site zoom: individual extruded sites, coloured by state/technology, clickable.
@@ -205,6 +210,7 @@ export default function MapView({
       new ColumnLayer<Site>({
         id: "sites",
         data: columnData,
+        visible: !aggregated,
         diskResolution: 12,
         radius: 520,
         extruded: true,
@@ -221,7 +227,7 @@ export default function MapView({
         updateTriggers: { getFillColor: colorMode },
         material: { ambient: 0.6, diffuse: 0.5, shininess: 32 },
       }),
-    [columnData, colorMode, onSelect],
+    [columnData, colorMode, onSelect, aggregated],
   );
 
   // push the open site's footprint into the terrain-draped extrusion source
@@ -235,11 +241,16 @@ export default function MapView({
         src.setData(EMPTY_FC as never);
         return;
       }
-      const c = STATE_COLOR[footprint.status] ?? DIM;
+      // colour by construction state; fall back to technology for not-yet-analysed
+      // sites so the footprint stays legible instead of dim grey
+      const c =
+        footprint.status !== "unknown"
+          ? STATE_COLOR[footprint.status] ?? DIM
+          : (footprint.technology && TECH_COLOR[footprint.technology]) || DIM;
       src.setData({
         type: "Feature",
         geometry: { type: "MultiPolygon", coordinates: footprint.geom.coordinates },
-        properties: { color: `rgb(${c[0]},${c[1]},${c[2]})`, height: 22 },
+        properties: { color: `rgb(${c[0]},${c[1]},${c[2]})`, height: 32 },
       } as never);
     };
     if (map.getSource("footprint")) apply();
@@ -261,8 +272,9 @@ export default function MapView({
       lineWidthMinPixels: 1.5,
     });
     const selected = sites.find((s) => s.id === selectedId);
+    // the footprint extrusion is the marker once it loads; until then, a ring
     const ring =
-      selected && !aggregated
+      selected && !aggregated && !footprint
         ? new ScatterplotLayer<Site>({
             id: "selected",
             data: [selected],
@@ -275,10 +287,9 @@ export default function MapView({
             lineWidthMinPixels: 2,
           })
         : null;
-    overlayRef.current.setProps({
-      layers: [aggregated ? hexes : columns, pulse, ...(ring ? [ring] : [])],
-    });
-  }, [hexes, columns, aggregated, recent, phase, selectedId, sites]);
+    // both regimes stay mounted and toggle `visible` — no mount/unmount hitch
+    overlayRef.current.setProps({ layers: [hexes, columns, pulse, ...(ring ? [ring] : [])] });
+  }, [hexes, columns, aggregated, recent, phase, selectedId, sites, footprint]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {

@@ -1,13 +1,6 @@
-import type { Meta } from "../lib/api";
-import { fmtDate } from "../lib/format";
-
-interface Props {
-  meta: Meta | null;
-}
-
-// Pure chrome: identity + the active use-case + data freshness. Portfolio numbers
-// live in the data column (FilterPanel), not here — the top bar stays quiet.
-export default function TopBar({ meta }: Props) {
+// Pure chrome: identity + the active use-case switcher. Portfolio numbers and
+// data freshness live in the data column (FilterPanel) — the top bar stays quiet.
+export default function TopBar() {
   return (
     <header className="flex h-11 shrink-0 items-center justify-between border-b border-line bg-ink-900 pl-3 pr-4">
       <div className="flex items-center gap-3">
@@ -20,14 +13,6 @@ export default function TopBar({ meta }: Props) {
             <path d="m3 4.5 3 3 3-3" />
           </svg>
         </button>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <span className="eyebrow">Data as of</span>
-        <span className="flex items-center gap-1.5 font-mono text-xs tabular-nums text-slate-200">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
-          {meta?.latest_observation ? fmtDate(meta.latest_observation) : "—"}
-        </span>
       </div>
     </header>
   );

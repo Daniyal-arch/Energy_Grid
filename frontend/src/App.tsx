@@ -48,6 +48,7 @@ export default function App() {
   const [focus, setFocus] = useState<Bounds>(null);
   const [highlight, setHighlight] = useState<Set<string> | null>(null);
   const [assistantOpen, setAssistantOpen] = useState(true);
+  const [statsOpen, setStatsOpen] = useState(true);
 
   useEffect(() => {
     api.sites().then(setSites).catch((e) => setError(String(e)));
@@ -109,7 +110,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-ink-950 text-slate-100">
+    <div className="relative flex h-screen w-screen overflow-hidden bg-ink-950 text-slate-100">
       <NavRail
         view={view}
         setView={setView}
@@ -118,7 +119,7 @@ export default function App() {
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar meta={meta} />
+        <TopBar />
 
         <div className="relative min-h-0 flex-1">
           {view === "map" ? (
@@ -133,17 +134,31 @@ export default function App() {
                 flyTo={flyTo}
                 footprint={footprint}
               />
-              <div className="absolute bottom-0 left-0 top-0">
-                <FilterPanel
-                  all={sites}
-                  filter={filter}
-                  setFilter={setFilterManual}
-                  colorMode={colorMode}
-                  setColorMode={setColorMode}
-                  overdue={overdueCount}
-                  recent={recent.length}
-                />
-              </div>
+              {statsOpen ? (
+                <div className="absolute bottom-0 left-0 top-0">
+                  <FilterPanel
+                    all={sites}
+                    filter={filter}
+                    setFilter={setFilterManual}
+                    colorMode={colorMode}
+                    setColorMode={setColorMode}
+                    overdue={overdueCount}
+                    recent={recent.length}
+                    meta={meta}
+                    onClose={() => setStatsOpen(false)}
+                  />
+                </div>
+              ) : (
+                <button
+                  onClick={() => setStatsOpen(true)}
+                  className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-lg border border-line bg-ink-900/90 px-2.5 py-1.5 text-xs text-slate-300 backdrop-blur hover:border-sky-400/40 hover:text-sky-200"
+                >
+                  <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M2 4h12M4 8h8M6 12h4" />
+                  </svg>
+                  Portfolio & filters
+                </button>
+              )}
               {highlight && (
                 <button
                   onClick={() => setHighlight(null)}
@@ -168,6 +183,19 @@ export default function App() {
         onPickSite={selectSite}
         onClose={() => setAssistantOpen(false)}
       />
+
+      {!assistantOpen && (
+        <button
+          onClick={() => setAssistantOpen(true)}
+          title="Open AI Analyst"
+          className="absolute right-0 top-1/2 z-30 flex -translate-y-1/2 flex-col items-center gap-2 rounded-l-lg border border-r-0 border-line bg-ink-900/95 px-2 py-3 text-emerald-300 backdrop-blur transition hover:bg-ink-800"
+        >
+          <span className="text-base leading-none">✦</span>
+          <span className="text-[10px] font-medium uppercase tracking-wider [writing-mode:vertical-rl]">
+            AI Analyst
+          </span>
+        </button>
+      )}
 
       {error && (
         <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2 rounded-lg border border-red-500/30 bg-red-950/80 px-4 py-2 text-xs text-red-200">

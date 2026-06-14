@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
-import type { Site } from "../lib/api";
-import { mw, num } from "../lib/format";
+import type { Meta, Site } from "../lib/api";
+import { fmtDate, mw, num } from "../lib/format";
 import type { Filter } from "../lib/query";
 import {
   STATE_COLOR,
@@ -24,9 +24,11 @@ interface Props {
   setColorMode: (m: ColorMode) => void;
   overdue: number;
   recent: number;
+  meta: Meta | null;
+  onClose: () => void;
 }
 
-export default function FilterPanel({ all, filter, setFilter, colorMode, setColorMode, overdue, recent }: Props) {
+export default function FilterPanel({ all, filter, setFilter, colorMode, setColorMode, overdue, recent, meta, onClose }: Props) {
   const totalMw = all.reduce((a, s) => a + s.capacity_mw, 0);
   const building = all.filter((s) => ["clearing", "earthworks", "construction"].includes(s.status)).length;
   const techStats = (t: Technology) => {
@@ -43,6 +45,23 @@ export default function FilterPanel({ all, filter, setFilter, colorMode, setColo
 
   return (
     <div className="flex h-full w-60 flex-col gap-5 overflow-y-auto border-r border-line bg-ink-900/90 p-4 backdrop-blur-xl">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5 text-xs text-dim">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
+          Updated{" "}
+          <span className="font-mono tabular-nums text-slate-300">
+            {meta?.latest_observation ? fmtDate(meta.latest_observation) : "—"}
+          </span>
+        </div>
+        <button
+          onClick={onClose}
+          title="Hide panel"
+          className="-mr-1 flex h-6 w-6 items-center justify-center rounded text-slate-500 hover:bg-ink-800 hover:text-slate-200"
+        >
+          ✕
+        </button>
+      </div>
+
       <div>
         <div className="eyebrow mb-2">Portfolio</div>
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line">
