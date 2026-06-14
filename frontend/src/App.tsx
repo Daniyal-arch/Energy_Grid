@@ -103,7 +103,7 @@ export default function App() {
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar sites={sites} meta={meta} overdueCount={overdueCount} recent={recent} title={view} />
+        <TopBar meta={meta} />
 
         <div className="relative min-h-0 flex-1">
           {view === "map" ? (
@@ -124,6 +124,8 @@ export default function App() {
                   setFilter={setFilterManual}
                   colorMode={colorMode}
                   setColorMode={setColorMode}
+                  overdue={overdueCount}
+                  recent={recent.length}
                 />
               </div>
               {highlight && (

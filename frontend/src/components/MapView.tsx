@@ -1,4 +1,5 @@
 import type { PickingInfo } from "@deck.gl/core";
+import { HexagonLayer } from "@deck.gl/aggregation-layers";
 import { ColumnLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
@@ -9,9 +10,12 @@ import { mw } from "../lib/format";
 import {
   BASEMAP_STYLE,
   GERMANY_VIEW,
+  HEX_RANGE,
+  SITE_ZOOM,
   STATE_COLOR,
   STATE_LABEL,
   TECH_COLOR,
+  TERRAIN_TILES,
   type RGB,
 } from "../lib/theme";
 
@@ -54,6 +58,7 @@ export default function MapView({
   const mapRef = useRef<maplibregl.Map | null>(null);
   const overlayRef = useRef<MapboxOverlay | null>(null);
   const [phase, setPhase] = useState(0);
+  const [zoom, setZoom] = useState(GERMANY_VIEW.zoom);
 
   // init once
   useEffect(() => {
@@ -65,14 +70,45 @@ export default function MapView({
       zoom: GERMANY_VIEW.zoom,
       pitch: GERMANY_VIEW.pitch,
       bearing: GERMANY_VIEW.bearing,
+      maxPitch: 80,
       attributionControl: false,
     });
+    map.on("load", () => {
+      // real terrain relief — subtle nationally, dramatic when you drop into a site
+      map.addSource("terrain", {
+        type: "raster-dem",
+        tiles: [TERRAIN_TILES],
+        encoding: "terrarium",
+        tileSize: 256,
+        maxzoom: 13,
+      });
+      map.setTerrain({ source: "terrain", exaggeration: 1.25 });
+      map.addLayer({
+        id: "hillshade",
+        type: "hillshade",
+        source: "terrain",
+        paint: {
+          "hillshade-shadow-color": "#05070b",
+          "hillshade-highlight-color": "#1b2433",
+          "hillshade-exaggeration": 0.55,
+        },
+      });
+      map.setSky({
+        "sky-color": "#0a1018",
+        "horizon-color": "#10161f",
+        "fog-color": "#06080d",
+        "sky-horizon-blend": 0.6,
+        "horizon-fog-blend": 0.6,
+        "fog-ground-blend": 0.4,
+      });
+    });
+    map.on("zoom", () => setZoom(map.getZoom()));
     const overlay = new MapboxOverlay({
       interleaved: true,
       layers: [],
       getTooltip: (info: PickingInfo) => {
         const o = info.object as Site | undefined;
-        if (!o) return null;
+        if (!o?.name) return null;
         return {
           html: `<b>${o.name}</b><br/>${mw(o.capacity_mw)} · ${o.technology ?? "—"}<br/>${
             STATE_LABEL[o.status]
@@ -101,7 +137,7 @@ export default function MapView({
   // gentle pulse animation for recently-changed sites
   useEffect(() => {
     let raf: number;
-    let t0 = performance.now();
+    const t0 = performance.now();
     const loop = (t: number) => {
       setPhase(((t - t0) % 2200) / 2200);
       raf = requestAnimationFrame(loop);
@@ -110,13 +146,39 @@ export default function MapView({
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  const aggregated = zoom < SITE_ZOOM;
+
+  // national zoom: extruded capacity-density field (reads as a heat terrain)
+  const hexes = useMemo(
+    () =>
+      new HexagonLayer<Site>({
+        id: "hex",
+        data: sites,
+        radius: 9000,
+        coverage: 0.86,
+        extruded: true,
+        pickable: false,
+        elevationScale: 26,
+        elevationRange: [0, 1600],
+        getPosition: (s) => [s.lon, s.lat],
+        getElevationWeight: (s) => s.capacity_mw,
+        elevationAggregation: "SUM",
+        getColorWeight: (s) => s.capacity_mw,
+        colorAggregation: "SUM",
+        colorRange: HEX_RANGE as unknown as [number, number, number][],
+        material: { ambient: 0.64, diffuse: 0.6, shininess: 28, specularColor: [40, 60, 80] },
+      }),
+    [sites],
+  );
+
+  // site zoom: individual extruded sites, coloured by state/technology, clickable
   const columns = useMemo(
     () =>
       new ColumnLayer<Site>({
         id: "sites",
         data: sites,
-        diskResolution: 6,
-        radius: 1300,
+        diskResolution: 12,
+        radius: 520,
         extruded: true,
         pickable: true,
         elevationScale: 1,
@@ -149,21 +211,24 @@ export default function MapView({
       lineWidthMinPixels: 1.5,
     });
     const selected = sites.find((s) => s.id === selectedId);
-    const ring = selected
-      ? new ScatterplotLayer<Site>({
-          id: "selected",
-          data: [selected],
-          getPosition: (s) => [s.lon, s.lat],
-          getRadius: 2600,
-          radiusUnits: "meters",
-          stroked: true,
-          filled: false,
-          getLineColor: [255, 255, 255, 230],
-          lineWidthMinPixels: 2,
-        })
-      : null;
-    overlayRef.current.setProps({ layers: [columns, pulse, ...(ring ? [ring] : [])] });
-  }, [columns, recent, phase, selectedId, sites]);
+    const ring =
+      selected && !aggregated
+        ? new ScatterplotLayer<Site>({
+            id: "selected",
+            data: [selected],
+            getPosition: (s) => [s.lon, s.lat],
+            getRadius: 1200,
+            radiusUnits: "meters",
+            stroked: true,
+            filled: false,
+            getLineColor: [255, 255, 255, 230],
+            lineWidthMinPixels: 2,
+          })
+        : null;
+    overlayRef.current.setProps({
+      layers: [aggregated ? hexes : columns, pulse, ...(ring ? [ring] : [])],
+    });
+  }, [hexes, columns, aggregated, recent, phase, selectedId, sites]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {
@@ -171,13 +236,13 @@ export default function MapView({
     mapRef.current.fitBounds(focusBounds, { padding: 120, pitch: GERMANY_VIEW.pitch, duration: 1400 });
   }, [focusBounds]);
 
-  // 3D fly-to a single selected site — camera drops in close
+  // 3D fly-to a single selected site — camera drops in close, terrain comes alive
   useEffect(() => {
     if (!mapRef.current || !flyTo) return;
     mapRef.current.flyTo({
       center: [flyTo.lon, flyTo.lat],
       zoom: 14.5,
-      pitch: 62,
+      pitch: 66,
       bearing: -18,
       duration: 2200,
       essential: true,

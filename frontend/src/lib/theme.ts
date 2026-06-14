@@ -69,6 +69,10 @@ export const rgbCss = (c: RGB, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 export const BASEMAP_STYLE =
   "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
 
+// free global terrain (Terrarium-encoded DEM, AWS open data) — gives real relief
+export const TERRAIN_TILES =
+  "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
+
 export const GERMANY_VIEW = {
   longitude: 10.2,
   latitude: 51.1,
@@ -76,3 +80,16 @@ export const GERMANY_VIEW = {
   pitch: 48,
   bearing: -12,
 };
+
+// below this zoom the map shows an extruded density field; above it, individual sites
+export const SITE_ZOOM = 7.6;
+
+// sequential ramp for the national capacity-density hexbins (dim blue → hot cyan)
+export const HEX_RANGE: RGB[] = [
+  [22, 42, 71],
+  [29, 78, 137],
+  [37, 122, 196],
+  [56, 170, 233],
+  [120, 214, 245],
+  [196, 240, 252],
+];
