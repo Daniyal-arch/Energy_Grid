@@ -1,5 +1,5 @@
 import type { Layer, PickingInfo } from "@deck.gl/core";
-import { ScatterplotLayer } from "@deck.gl/layers";
+import { ColumnLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { SimpleMeshLayer } from "@deck.gl/mesh-layers";
 import maplibregl from "maplibre-gl";
@@ -297,7 +297,10 @@ export default function MapView({
   // bars) so it stays clearly visible at any altitude — not in real metres, which
   // would vanish when zoomed out. spin rotors only when close (bounded instances).
   const spinPhase = closeUp ? phase : 0;
+  // far ⇆ near crossfade: spikes fade out and 3D objects fade in across this band
+  const objOpacity = Math.max(0, Math.min(1, (viewZoom - 8.6) / 0.8));
   const objectLayers = useMemo<Layer[]>(() => {
+    if (objOpacity <= 0) return [];
     const click = (info: PickingInfo) => {
       const o = info.object as Site | undefined;
       if (o) onSelect(o.id);
@@ -322,6 +325,7 @@ export default function MapView({
               return [r, r, B * 1.3];
             },
             getColor: (s) => colorOf(s, colorMode),
+            opacity: objOpacity,
             pickable: true,
             onClick: click,
             updateTriggers: { getColor: colorMode, getScale: viewZoom },
@@ -339,6 +343,7 @@ export default function MapView({
               return [r, r, r];
             },
             getColor: (s) => colorOf(s, colorMode),
+            opacity: objOpacity,
             getOrientation: closeUp
               ? (s: Site) => [spinPhase * 720 + ((s.lat * 9973) % 360), 0, 0]
               : [0, 0, 0],
@@ -365,6 +370,7 @@ export default function MapView({
               return [B, B, B];
             },
             getColor: (s) => colorOf(s, colorMode),
+            opacity: objOpacity,
             pickable: true,
             onClick: click,
             updateTriggers: { getColor: colorMode, getScale: viewZoom },
@@ -374,7 +380,45 @@ export default function MapView({
       }
     }
     return layers;
-  }, [byTech, colorMode, closeUp, spinPhase, onSelect, groundTick, viewZoom]);
+  }, [byTech, colorMode, closeUp, spinPhase, onSelect, groundTick, viewZoom, objOpacity]);
+
+  // far/overview tier: every plant as a thin, tech-coloured capacity spike (height
+  // scaled to the screen so the field reads cleanly at any altitude, rebase-style)
+  const spikeOpacity = Math.max(0, Math.min(1, (9.4 - viewZoom) / 0.8));
+  const spikes = useMemo<Layer | null>(() => {
+    if (spikeOpacity <= 0) return null;
+    const [w, s0, e, n] = bounds;
+    const mLon = (e - w) * 0.06;
+    const mLat = (n - s0) * 0.06;
+    const inView = sites.filter(
+      (s) =>
+        s.id !== selectedId &&
+        s.lon >= w - mLon &&
+        s.lon <= e + mLon &&
+        s.lat >= s0 - mLat &&
+        s.lat <= n + mLat,
+    );
+    const mpp = (156543.03 * Math.cos((GERMANY_VIEW.latitude * Math.PI) / 180)) / 2 ** viewZoom;
+    return new ColumnLayer<Site>({
+      id: "spikes",
+      data: inView,
+      diskResolution: 6,
+      radius: mpp * 0.5, // ~1px needle — thin so thousands stay clean
+      radiusUnits: "meters",
+      extruded: true,
+      pickable: true,
+      opacity: spikeOpacity,
+      getPosition: (s) => [s.lon, s.lat],
+      getElevation: (s) => mpp * (8 + Math.min(46, Math.sqrt(Math.max(s.capacity_mw, 1)) * 6.5)),
+      getFillColor: (s) => colorOf(s, colorMode),
+      onClick: (info: PickingInfo) => {
+        const o = info.object as Site | undefined;
+        if (o) onSelect(o.id);
+      },
+      updateTriggers: { getFillColor: colorMode, getElevation: viewZoom, getRadius: viewZoom },
+      material: false, // unlit → pure, bright tech colour like the reference
+    });
+  }, [sites, bounds, selectedId, viewZoom, colorMode, spikeOpacity, onSelect]);
 
   useEffect(() => {
     if (!overlayRef.current) return;
@@ -446,13 +490,14 @@ export default function MapView({
 
     overlayRef.current.setProps({
       layers: [
+        ...(spikes ? [spikes] : []),
         ...objectLayers,
         ...(towers ? [towers, rotors!] : []),
         pulse,
         ...(ring ? [ring] : []),
       ],
     });
-  }, [objectLayers, aggregated, recent, phase, selectedId, sites, footprint, turbines, groundTick]);
+  }, [spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, turbines, groundTick]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {
