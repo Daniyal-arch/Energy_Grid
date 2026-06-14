@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Footprint, RecentDetection, Site, Turbine } from "../lib/api";
 import { OBJECT_MESH } from "../lib/energyObjects";
+import { glint, plume, pulse as pulseFx, type Particle } from "../lib/effects";
 import { mw } from "../lib/format";
 import { ROTOR_MESH, TOWER_MESH } from "../lib/turbineMesh";
 import {
@@ -522,16 +523,49 @@ export default function MapView({
         })
       : null;
 
+    // "living power system": per-tech animations, only when close (bounded count)
+    const fx: Layer[] = [];
+    if (closeUp) {
+      const mpp = (156543.03 * Math.cos((GERMANY_VIEW.latitude * Math.PI) / 180)) / 2 ** viewZoom;
+      const size = (cap: number) => (9 + Math.min(15, Math.sqrt(Math.max(cap, 1))) * 1.9) * mpp;
+      const gz = (s: Site) => groundZ.current.get(s.id) ?? 0;
+      const at = (t: Technology) => byTech.get(t) ?? [];
+      const puffs: Particle[] = [
+        ...plume(at("combustion"), phase, size, gz, { baseFactor: 0.62, height: 1.4, spread: 0.18, color: [120, 120, 128], count: 11 }),
+        ...plume(at("biomass"), phase, size, gz, { baseFactor: 0.46, height: 1.0, spread: 0.15, color: [160, 162, 168], count: 8 }),
+        ...plume(at("geothermal"), phase, size, gz, { baseFactor: 0.42, height: 1.1, spread: 0.22, color: [226, 233, 240], count: 10 }),
+        ...plume(at("hydro"), phase, size, gz, { baseFactor: 0.05, height: 0.35, spread: 0.45, color: [220, 230, 238], count: 9 }),
+      ];
+      const glints = glint(at("solar"), phase, size, gz);
+      const pulses = pulseFx(at("storage"), phase, size, gz, [167, 139, 250]);
+      const billboard = (id: string, data: Particle[], flat = false) =>
+        new ScatterplotLayer<Particle>({
+          id,
+          data,
+          billboard: !flat,
+          stroked: false,
+          radiusUnits: "meters",
+          getPosition: (p) => p.position,
+          getRadius: (p) => p.radius,
+          getFillColor: (p) => p.color,
+          updateTriggers: { getPosition: phase, getRadius: phase, getFillColor: phase },
+        });
+      if (pulses.length) fx.push(billboard("fx-pulse", pulses, true));
+      if (puffs.length) fx.push(billboard("fx-plumes", puffs));
+      if (glints.length) fx.push(billboard("fx-glint", glints));
+    }
+
     overlayRef.current.setProps({
       layers: [
         ...(spikes ? [spikes] : []),
         ...objectLayers,
         ...(towers ? [towers, rotors!] : []),
+        ...fx,
         pulse,
         ...(ring ? [ring] : []),
       ],
     });
-  }, [spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, turbines, groundTick]);
+  }, [spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, turbines, groundTick, closeUp, byTech, viewZoom]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {
