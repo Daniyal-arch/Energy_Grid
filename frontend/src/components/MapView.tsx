@@ -7,7 +7,7 @@ import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Footprint, RecentDetection, Site, Turbine } from "../lib/api";
-import { OBJECT_MESH, OBJECT_SCALE, objectSize } from "../lib/energyObjects";
+import { OBJECT_MESH, objectSize } from "../lib/energyObjects";
 import { mw } from "../lib/format";
 import { ROTOR_MESH, TOWER_MESH } from "../lib/turbineMesh";
 import {
@@ -23,7 +23,7 @@ import {
   type Technology,
 } from "../lib/theme";
 
-const CLOSE_ZOOM = 10.5; // above this, animate (spin rotors) — bounded instance count
+const CLOSE_ZOOM = 11; // above this, animate (spin rotors) — bounded instance count
 
 export type ColorMode = "state" | "technology";
 
@@ -278,6 +278,27 @@ export default function MapView({
     };
   }, [turbines]);
 
+  // terrain-seat the per-site objects: look up ground elevation for the sites in
+  // view (so they sit on slopes, not at sea level). only while objects are shown.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || aggregated) return;
+    const compute = () => {
+      const b = map.getBounds();
+      const [w, e, s, n] = [b.getWest(), b.getEast(), b.getSouth(), b.getNorth()];
+      for (const site of sites) {
+        if (site.lon < w || site.lon > e || site.lat < s || site.lat > n) continue;
+        groundZ.current.set(site.id, map.queryTerrainElevation([site.lon, site.lat]) ?? 0);
+      }
+      setGroundTick((x) => x + 1);
+    };
+    compute();
+    map.on("moveend", compute);
+    return () => {
+      map.off("moveend", compute);
+    };
+  }, [sites, aggregated]);
+
   // one instanced 3D-object layer per technology, over every visible site
   const objectLayers = useMemo<Layer[]>(() => {
     if (aggregated) return [];
@@ -285,19 +306,21 @@ export default function MapView({
       const o = info.object as Site | undefined;
       if (o) onSelect(o.id);
     };
+    const gz = (s: Site) => groundZ.current.get(s.id) ?? 0;
     const layers: Layer[] = [];
     for (const [tech, rows] of byTech) {
       if (tech === "wind") {
-        const f = OBJECT_SCALE.wind;
+        // tower height = 0.55·size; rotor sits at the top
         layers.push(
           new SimpleMeshLayer<Site>({
             id: "obj-wind-tower",
             data: rows,
             mesh: TOWER_MESH as never,
-            getPosition: (s) => [s.lon, s.lat, 0],
+            getPosition: (s) => [s.lon, s.lat, gz(s)],
             getScale: (s) => {
               const B = objectSize(s.capacity_mw);
-              return [Math.max(9, B * f[0]), Math.max(9, B * f[1]), B];
+              const r = Math.max(20, B * 0.04);
+              return [r, r, B * 0.55];
             },
             getColor: (s) => colorOf(s, colorMode),
             pickable: true,
@@ -311,9 +334,9 @@ export default function MapView({
             id: "obj-wind-rotor",
             data: rows,
             mesh: ROTOR_MESH as never,
-            getPosition: (s) => [s.lon, s.lat, objectSize(s.capacity_mw)],
+            getPosition: (s) => [s.lon, s.lat, gz(s) + objectSize(s.capacity_mw) * 0.55],
             getScale: (s) => {
-              const r = objectSize(s.capacity_mw) * 0.42;
+              const r = objectSize(s.capacity_mw) * 0.3;
               return [r, r, r];
             },
             getColor: (s) => colorOf(s, colorMode),
@@ -327,16 +350,16 @@ export default function MapView({
           }),
         );
       } else {
-        const f = OBJECT_SCALE[tech];
+        // proportions are baked into the mesh; scale uniformly by size
         layers.push(
           new SimpleMeshLayer<Site>({
             id: `obj-${tech}`,
             data: rows,
             mesh: OBJECT_MESH[tech] as never,
-            getPosition: (s) => [s.lon, s.lat, 0],
+            getPosition: (s) => [s.lon, s.lat, gz(s)],
             getScale: (s) => {
               const B = objectSize(s.capacity_mw);
-              return [B * f[0], B * f[1], B * f[2]];
+              return [B, B, B];
             },
             getColor: (s) => colorOf(s, colorMode),
             pickable: true,
@@ -348,7 +371,7 @@ export default function MapView({
       }
     }
     return layers;
-  }, [byTech, aggregated, colorMode, closeUp, phase, onSelect]);
+  }, [byTech, aggregated, colorMode, closeUp, phase, onSelect, groundTick]);
 
   useEffect(() => {
     if (!overlayRef.current) return;

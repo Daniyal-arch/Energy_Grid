@@ -81,8 +81,9 @@ export const GERMANY_VIEW = {
   bearing: -12,
 };
 
-// below this zoom the map shows an extruded density field; above it, individual sites
-export const SITE_ZOOM = 7.6;
+// below this zoom the map shows the extruded density field; above it, the
+// per-technology 3D objects (which are only legible once you're this close in)
+export const SITE_ZOOM = 9.4;
 
 // sequential ramp for the national capacity-density hexbins (dim blue → hot cyan)
 export const HEX_RANGE: RGB[] = [

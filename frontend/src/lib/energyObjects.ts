@@ -82,56 +82,60 @@ class MeshBuilder {
 }
 
 // ── per-technology canonical meshes ─────────────────────────────────────────────
+// Built within x,y ∈ [-0.5, 0.5] with modest heights, so a single uniform scale
+// (objectSize) preserves each object's built-in proportions.
 function solar(): Mesh {
   // parallel raised panel rows reading as a ground-mounted array
   const m = new MeshBuilder();
-  for (let r = 0; r < 5; r++) {
-    const y = -0.4 + r * 0.2;
-    m.box(0, y, 0.02, 0.12, 0.46, 0.05);
+  for (let r = 0; r < 7; r++) {
+    const y = -0.42 + r * 0.14;
+    m.box(0, y, 0.01, 0.1, 0.47, 0.04);
   }
   return m.mesh();
 }
 
 function storage(): Mesh {
-  // grid of battery containers
+  // rows of battery containers (long, low boxes)
   const m = new MeshBuilder();
-  for (let gx = 0; gx < 3; gx++)
-    for (let gy = 0; gy < 2; gy++) {
-      m.box(-0.3 + gx * 0.3, -0.22 + gy * 0.44, 0, 0.16, 0.12, 0.16);
-    }
+  for (let r = 0; r < 4; r++) {
+    m.box(0, -0.33 + r * 0.22, 0, 0.13, 0.46, 0.07);
+  }
   return m.mesh();
 }
 
 function biomass(): Mesh {
-  // hall + two silos
+  // hall + two silos of different heights
   const m = new MeshBuilder();
-  m.box(-0.18, 0, 0, 0.28, 0.26, 0.34);
-  m.cyl(0.28, -0.15, 0, 0.62, 0.13, 0.13);
-  m.cyl(0.28, 0.18, 0, 0.52, 0.11, 0.11);
+  m.box(-0.2, 0, 0, 0.26, 0.28, 0.34);
+  m.cyl(0.26, -0.16, 0, 0.46, 0.14, 0.14);
+  m.cyl(0.26, 0.2, 0, 0.36, 0.11, 0.11);
   return m.mesh();
 }
 
 function combustion(): Mesh {
-  // turbine hall + tall chimney
+  // turbine hall + tall chimney with a cap
   const m = new MeshBuilder();
-  m.box(-0.1, 0, 0, 0.34, 0.34, 0.34);
-  m.cyl(0.32, 0, 0, 1.0, 0.06, 0.045);
+  m.box(-0.12, 0, 0, 0.3, 0.34, 0.3);
+  m.cyl(0.3, 0, 0, 0.58, 0.055, 0.04);
+  m.cyl(0.3, 0, 0.58, 0.62, 0.07, 0.07); // cap
   return m.mesh();
 }
 
 function geothermal(): Mesh {
-  // plant block + hyperbolic-ish cooling tower
+  // plant block + tapered (hyperbolic-ish) cooling tower
   const m = new MeshBuilder();
-  m.box(-0.22, 0, 0, 0.26, 0.26, 0.3);
-  m.cyl(0.22, 0, 0, 0.62, 0.24, 0.18);
+  m.box(-0.24, 0, 0, 0.24, 0.26, 0.28);
+  m.cyl(0.22, 0, 0, 0.34, 0.24, 0.13);
+  m.cyl(0.22, 0, 0.34, 0.42, 0.13, 0.16); // flared rim
   return m.mesh();
 }
 
 function hydro(): Mesh {
-  // wide low powerhouse
+  // dam wall across the valley + powerhouse + spillway lip
   const m = new MeshBuilder();
-  m.box(0, 0, 0, 0.26, 0.46, 0.22);
-  m.box(0, -0.34, 0, 0.34, 0.46, 0.06); // forebay lip
+  m.box(0, 0.14, 0, 0.34, 0.5, 0.05); // dam wall (wide, tall, thin)
+  m.box(0, -0.06, 0, 0.06, 0.5, 0.05); // spillway face
+  m.box(0, -0.28, 0, 0.16, 0.26, 0.13); // powerhouse
   return m.mesh();
 }
 
@@ -145,18 +149,8 @@ export const OBJECT_MESH: Record<Exclude<Technology, "wind">, Mesh> = {
   storage: storage(),
 };
 
-// per-instance scale [x, y, z] = base × these factors; base derives from capacity
-export const OBJECT_SCALE: Record<Technology, [number, number, number]> = {
-  solar: [1.0, 1.0, 0.22],
-  wind: [0.06, 0.06, 1.0], // tower; rotor handled separately
-  biomass: [0.5, 0.5, 0.7],
-  hydro: [1.0, 0.7, 0.4],
-  geothermal: [0.55, 0.55, 0.8],
-  combustion: [0.5, 0.5, 1.0],
-  storage: [0.8, 0.8, 0.35],
-};
-
-// object base size in metres — compressed capacity range so it reads at site zoom
+// object base size in metres — large enough to read at regional zoom, compressed
+// so a 5 MW plant and a 1 GW plant differ but neither dwarfs the map
 export function objectSize(capacityMw: number): number {
-  return Math.min(30, Math.max(2.2, Math.sqrt(Math.max(capacityMw, 1)))) * 70;
+  return Math.min(18, Math.max(5, Math.sqrt(Math.max(capacityMw, 1)))) * 155;
 }

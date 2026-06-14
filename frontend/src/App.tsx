@@ -58,6 +58,14 @@ export default function App() {
     api.legalDeadlines().then(setDeadlines).catch(() => {});
   }, []);
 
+  // the API banner is for a genuine outage; clear it automatically so a transient
+  // reload blip doesn't leave it stuck on screen
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => setError(null), 5000);
+    return () => clearTimeout(t);
+  }, [error]);
+
   const sitesById = useMemo(() => new Map(sites.map((s) => [s.id, s])), [sites]);
 
   // lazily pull the open site's footprint (terrain-draped extrusion) and, for wind
