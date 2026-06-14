@@ -2,11 +2,13 @@ import type { PickingInfo } from "@deck.gl/core";
 import { HexagonLayer } from "@deck.gl/aggregation-layers";
 import { ColumnLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
+import { SimpleMeshLayer } from "@deck.gl/mesh-layers";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import type { Footprint, RecentDetection, Site } from "../lib/api";
+import type { Footprint, RecentDetection, Site, Turbine } from "../lib/api";
 import { mw } from "../lib/format";
+import { ROTOR_MESH, TOWER_MESH } from "../lib/turbineMesh";
 import {
   BASEMAP_STYLE,
   GERMANY_VIEW,
@@ -30,7 +32,10 @@ interface Props {
   focusBounds: [[number, number], [number, number]] | null;
   flyTo: { lon: number; lat: number } | null;
   footprint: Footprint | null;
+  turbines: Turbine[];
 }
+
+const TURBINE_COLOR: [number, number, number] = [226, 232, 240]; // light grey, like real towers
 
 const DIM: RGB = [60, 70, 90];
 const EMPTY_FC = { type: "FeatureCollection", features: [] };
@@ -56,11 +61,14 @@ export default function MapView({
   focusBounds,
   flyTo,
   footprint,
+  turbines,
 }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const overlayRef = useRef<MapboxOverlay | null>(null);
+  const groundZ = useRef<Map<string, number>>(new Map());
   const [phase, setPhase] = useState(0);
+  const [groundTick, setGroundTick] = useState(0);
   // only the regime (density field vs. individual sites) is React state, flipped
   // once when zoom crosses SITE_ZOOM — not on every zoom tick, so panning/zooming
   // never triggers a React re-render or layer rebuild.
@@ -257,6 +265,29 @@ export default function MapView({
     else map.once("load", apply);
   }, [footprint]);
 
+  // deck.gl meshes don't drape on the DEM, so look up the ground elevation under
+  // each turbine and lift it explicitly; recompute once the fly-in camera settles
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || turbines.length === 0) {
+      groundZ.current = new Map();
+      return;
+    }
+    const compute = () => {
+      const next = new Map<string, number>();
+      for (const t of turbines) next.set(t.id, map.queryTerrainElevation([t.lon, t.lat]) ?? 0);
+      groundZ.current = next;
+      setGroundTick((x) => x + 1);
+    };
+    compute();
+    map.on("moveend", compute);
+    map.on("idle", compute);
+    return () => {
+      map.off("moveend", compute);
+      map.off("idle", compute);
+    };
+  }, [turbines]);
+
   useEffect(() => {
     if (!overlayRef.current) return;
     const pulseR = 1500 + phase * 9000;
@@ -287,9 +318,50 @@ export default function MapView({
             lineWidthMinPixels: 2,
           })
         : null;
+    // real per-turbine 3D models for the open wind farm (tower + rotor, scaled to
+    // each turbine's hub height and rotor diameter, lifted onto the terrain)
+    const showTurbines = !aggregated && turbines.length > 0;
+    const towers = showTurbines
+      ? new SimpleMeshLayer<Turbine>({
+          id: "turbine-towers",
+          data: turbines,
+          mesh: TOWER_MESH as never,
+          getPosition: (t) => [t.lon, t.lat, groundZ.current.get(t.id) ?? 0],
+          getScale: (t) => {
+            const h = t.hub_height_m ?? 100;
+            const r = Math.max(1.3, h * 0.013);
+            return [r, r, h];
+          },
+          getColor: TURBINE_COLOR,
+          material: { ambient: 0.55, diffuse: 0.6, shininess: 40 },
+        })
+      : null;
+    const rotors = showTurbines
+      ? new SimpleMeshLayer<Turbine>({
+          id: "turbine-rotors",
+          data: turbines,
+          mesh: ROTOR_MESH as never,
+          getPosition: (t) => [t.lon, t.lat, (groundZ.current.get(t.id) ?? 0) + (t.hub_height_m ?? 100)],
+          getScale: (t) => {
+            const r = (t.rotor_diameter_m ?? 90) / 2;
+            return [r, r, r];
+          },
+          getColor: TURBINE_COLOR,
+          material: { ambient: 0.55, diffuse: 0.6, shininess: 40 },
+        })
+      : null;
+
     // both regimes stay mounted and toggle `visible` — no mount/unmount hitch
-    overlayRef.current.setProps({ layers: [hexes, columns, pulse, ...(ring ? [ring] : [])] });
-  }, [hexes, columns, aggregated, recent, phase, selectedId, sites, footprint]);
+    overlayRef.current.setProps({
+      layers: [
+        hexes,
+        columns,
+        ...(towers ? [towers, rotors!] : []),
+        pulse,
+        ...(ring ? [ring] : []),
+      ],
+    });
+  }, [hexes, columns, aggregated, recent, phase, selectedId, sites, footprint, turbines, groundTick]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {

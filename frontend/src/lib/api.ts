@@ -104,6 +104,16 @@ export interface Footprint {
   lon: number;
 }
 
+export interface Turbine {
+  id: string;
+  lat: number;
+  lon: number;
+  hub_height_m: number | null;
+  rotor_diameter_m: number | null;
+  capacity_kw: number | null;
+  status: string | null;
+}
+
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE}${path}`);
   if (!res.ok) throw new Error(`${path} → ${res.status}`);
@@ -127,6 +137,7 @@ export const api = {
   sites: () => get<Site[]>("/sites"),
   site: (id: string) => get<SiteDetail>(`/sites/${id}`),
   footprint: (id: string) => get<Footprint>(`/sites/${id}/footprint`),
+  turbines: (id: string) => get<Turbine[]>(`/sites/${id}/turbines`),
   timeseries: (id: string) => get<Series>(`/sites/${id}/timeseries`),
   recent: (limit = 50) => get<RecentDetection[]>(`/detections/recent?limit=${limit}`),
   meta: () => get<Meta>("/meta"),

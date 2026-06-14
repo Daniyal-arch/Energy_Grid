@@ -112,6 +112,21 @@ def site_footprint(site_id: str) -> dict[str, Any]:
     return rows[0]
 
 
+@app.get("/sites/{site_id}/turbines")
+def site_turbines(site_id: str) -> list[dict[str, Any]]:
+    """Individual turbines for a wind farm, with hub height + rotor diameter for
+    real 3D models. Empty list for non-wind sites."""
+    db = get_db()
+    return (
+        db.table("turbines")
+        .select("id,lat,lon,hub_height_m,rotor_diameter_m,capacity_kw,status")
+        .eq("site_id", site_id)
+        .execute()
+        .data
+        or []
+    )
+
+
 @app.get("/sites/{site_id}/timeseries")
 def site_timeseries(site_id: str) -> dict[str, list[dict[str, Any]]]:
     """NDVI/BSI/VH series grouped by metric, ascending by date."""
