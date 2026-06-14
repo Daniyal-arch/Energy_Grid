@@ -157,7 +157,7 @@ export default function App() {
                     key={b}
                     onClick={() => setBasemap(b)}
                     className={`px-2.5 py-1.5 capitalize transition ${
-                      basemap === b ? "bg-sky-500/20 text-sky-200" : "text-slate-400 hover:text-slate-200"
+                      basemap === b ? "bg-accent/15 text-accent-300" : "text-slate-400 hover:text-slate-200"
                     }`}
                   >
                     {b}
@@ -181,7 +181,7 @@ export default function App() {
               ) : (
                 <button
                   onClick={() => setStatsOpen(true)}
-                  className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-lg border border-line bg-ink-900/90 px-2.5 py-1.5 text-xs text-slate-300 backdrop-blur hover:border-sky-400/40 hover:text-sky-200"
+                  className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded border border-line bg-ink-900/90 px-2.5 py-1.5 text-xs text-slate-300 backdrop-blur hover:border-accent/50 hover:text-accent-300"
                 >
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M2 4h12M4 8h8M6 12h4" />
@@ -192,7 +192,7 @@ export default function App() {
               {highlight && (
                 <button
                   onClick={() => setHighlight(null)}
-                  className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-full border border-sky-400/30 bg-ink-900/90 px-3 py-1 text-xs text-sky-200 backdrop-blur"
+                  className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-full border border-accent/40 bg-ink-900/90 px-3 py-1 text-xs text-accent-300 backdrop-blur"
                 >
                   agent result · {mapSites.length} sites — clear
                 </button>
@@ -218,7 +218,7 @@ export default function App() {
         <button
           onClick={() => setAssistantOpen(true)}
           title="Open AI Analyst"
-          className="absolute right-0 top-1/2 z-30 flex -translate-y-1/2 flex-col items-center gap-2 rounded-l-lg border border-r-0 border-line bg-ink-900/95 px-2 py-3 text-emerald-300 backdrop-blur transition hover:bg-ink-800"
+          className="absolute right-0 top-1/2 z-30 flex -translate-y-1/2 flex-col items-center gap-2 rounded-l-lg border border-r-0 border-line bg-ink-900/95 px-2 py-3 text-accent-300 backdrop-blur transition hover:bg-ink-800"
         >
           <span className="text-base leading-none">✦</span>
           <span className="text-[10px] font-medium uppercase tracking-wider [writing-mode:vertical-rl]">

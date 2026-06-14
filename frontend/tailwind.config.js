@@ -4,23 +4,42 @@ export default {
   theme: {
     extend: {
       colors: {
+        // cool graphite surfaces — deliberate, desaturated, no pure black
         ink: {
-          950: "#06080d",
-          900: "#0a0d13",
-          850: "#0e121a",
-          800: "#161b24",
-          700: "#1d2430",
+          950: "#070910",
+          900: "#0b0e15",
+          850: "#10141c",
+          800: "#171d27",
+          700: "#212834",
         },
         line: {
-          DEFAULT: "rgba(148,163,184,0.10)",
-          strong: "rgba(148,163,184,0.16)",
+          DEFAULT: "rgba(150,162,182,0.10)",
+          strong: "rgba(150,162,182,0.18)",
         },
-        dim: "#8b94a5",
-        faint: "#586273",
-        accent: "#4aa8ff",
+        dim: "#8d94a1",
+        faint: "#59616f",
+        // single restrained accent (steel-electric blue) with shades
+        accent: {
+          DEFAULT: "#4f8fca",
+          300: "#8ab7e2",
+          400: "#67a2d7",
+          500: "#4f8fca",
+          600: "#3d72a6",
+          dim: "#35628d",
+        },
+        positive: "#57b389", // live / complete
+        warn: "#d2a24a", // attention
+        alert: "#d2685c", // overdue / error
       },
       fontFamily: {
         mono: ["ui-monospace", "SF Mono", "JetBrains Mono", "Cascadia Code", "Menlo", "monospace"],
+      },
+      borderRadius: {
+        // sharper, more instrument-like corners
+        md: "0.25rem",
+        lg: "0.3125rem",
+        xl: "0.4375rem",
+        "2xl": "0.625rem",
       },
     },
   },

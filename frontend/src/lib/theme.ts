@@ -15,12 +15,12 @@ export const STATE_ORDER = [
 export type ConstructionState = (typeof STATE_ORDER)[number];
 
 export const STATE_COLOR: Record<ConstructionState, RGB> = {
-  unknown: [74, 85, 104], // dim slate — not yet analysed
-  no_activity: [113, 128, 150], // grey
-  clearing: [244, 183, 64], // amber
-  earthworks: [239, 125, 58], // orange
-  construction: [56, 189, 248], // cyan
-  complete: [52, 211, 153], // green
+  unknown: [78, 86, 100], // cool grey — not yet analysed
+  no_activity: [120, 130, 148], // grey
+  clearing: [216, 170, 86], // muted amber
+  earthworks: [212, 120, 72], // muted orange
+  construction: [86, 158, 210], // steel blue
+  complete: [88, 182, 140], // muted green
 };
 
 export const STATE_LABEL: Record<ConstructionState, string> = {
@@ -44,13 +44,13 @@ export const TECH_ORDER = [
 export type Technology = (typeof TECH_ORDER)[number];
 
 export const TECH_COLOR: Record<Technology, RGB> = {
-  solar: [251, 191, 36],
-  wind: [96, 165, 250],
-  biomass: [132, 204, 22],
-  hydro: [34, 211, 238],
-  geothermal: [244, 114, 182],
-  combustion: [248, 113, 113],
-  storage: [167, 139, 250],
+  solar: [224, 176, 72], // gold
+  wind: [108, 158, 216], // steel
+  biomass: [142, 186, 86], // olive
+  hydro: [78, 182, 196], // teal
+  geothermal: [206, 124, 168], // mauve
+  combustion: [214, 116, 104], // terracotta
+  storage: [156, 138, 208], // muted violet
 };
 
 export const TECH_LABEL: Record<Technology, string> = {

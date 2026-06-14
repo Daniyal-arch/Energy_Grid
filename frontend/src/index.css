@@ -4,15 +4,15 @@
 
 /* ── Design tokens: earth-observation operations console ──────────────────── */
 :root {
-  --bg: #06080d; /* near-black, faint blue */
-  --panel: #0a0d13; /* flush panel */
-  --panel-2: #0e121a; /* raised surface */
-  --line: rgba(148, 163, 184, 0.1); /* hairline divider */
-  --line-2: rgba(148, 163, 184, 0.16);
-  --text: #e6e9ef;
-  --text-dim: #8b94a5;
-  --text-faint: #586273;
-  --accent: #4aa8ff;
+  --bg: #070910; /* cool graphite */
+  --panel: #0b0e15; /* flush panel */
+  --panel-2: #10141c; /* raised surface */
+  --line: rgba(150, 162, 182, 0.1); /* hairline divider */
+  --line-2: rgba(150, 162, 182, 0.18);
+  --text: #dce1e9;
+  --text-dim: #8d94a1;
+  --text-faint: #59616f;
+  --accent: #4f8fca;
   --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, monospace;
 }
 
@@ -54,8 +54,8 @@ body {
   height: 8px;
 }
 *::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.18);
-  border-radius: 8px;
+  background: rgba(150, 162, 182, 0.16);
+  border-radius: 2px;
 }
 *::-webkit-scrollbar-track {
   background: transparent;

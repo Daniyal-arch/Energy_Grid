@@ -60,7 +60,7 @@ export default function AssistantPanel({ open, sitesById, onResult, onPickSite, 
     <aside className="flex w-[380px] min-w-0 flex-col border-l border-line bg-ink-900">
       <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
         <div className="flex items-center gap-2">
-          <span className="text-emerald-400">✦</span>
+          <span className="text-accent-400">✦</span>
           <span className="text-sm font-semibold tracking-tight text-slate-100">AI Analyst</span>
         </div>
         <div className="flex items-center gap-2">
@@ -87,7 +87,7 @@ export default function AssistantPanel({ open, sitesById, onResult, onPickSite, 
                 <button
                   key={s}
                   onClick={() => ask(s)}
-                  className="block w-full rounded-lg border border-line px-2.5 py-1.5 text-left text-slate-300 hover:border-sky-400/40 hover:text-sky-200"
+                  className="block w-full rounded-lg border border-line px-2.5 py-1.5 text-left text-slate-300 hover:border-accent/50 hover:text-accent-300"
                 >
                   {s}
                 </button>
@@ -99,12 +99,12 @@ export default function AssistantPanel({ open, sitesById, onResult, onPickSite, 
         {msgs.map((m, i) =>
           m.role === "user" ? (
             <div className="flex justify-end" key={i}>
-              <div className="max-w-[88%] break-words rounded-lg border border-sky-400/20 bg-sky-500/10 px-3 py-1.5 text-sm text-slate-100">
+              <div className="max-w-[88%] break-words rounded-lg border border-accent/25 bg-accent/10 px-3 py-1.5 text-sm text-slate-100">
                 {m.content}
               </div>
             </div>
           ) : (
-            <div key={i} className="min-w-0 rounded-r-lg border-l-2 border-sky-500/40 bg-ink-850 py-2.5 pl-3 pr-3">
+            <div key={i} className="min-w-0 rounded-r-lg border-l-2 border-accent/50 bg-ink-850 py-2.5 pl-3 pr-3">
               <div className="agent-prose min-w-0 text-sm leading-relaxed text-slate-200">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
               </div>
@@ -123,7 +123,7 @@ export default function AssistantPanel({ open, sitesById, onResult, onPickSite, 
                           <button
                             key={s.id}
                             onClick={() => onPickSite(s.id)}
-                            className="rounded-md border border-line px-1.5 py-0.5 text-[10px] text-slate-300 hover:border-sky-400/40 hover:text-sky-200"
+                            className="rounded-md border border-line px-1.5 py-0.5 text-[10px] text-slate-300 hover:border-accent/50 hover:text-accent-300"
                           >
                             {s.name}
                           </button>
@@ -138,7 +138,7 @@ export default function AssistantPanel({ open, sitesById, onResult, onPickSite, 
 
         {loading && (
           <div className="flex items-center gap-2 text-sm text-slate-400">
-            <span className="h-2 w-2 animate-ping rounded-full bg-emerald-400" />
+            <span className="h-2 w-2 animate-ping rounded-full bg-accent-400" />
             Retrieving stored detections & deadlines…
           </div>
         )}
@@ -151,7 +151,7 @@ export default function AssistantPanel({ open, sitesById, onResult, onPickSite, 
             <button
               key={f}
               onClick={() => ask(f)}
-              className="rounded-full border border-line px-2 py-0.5 text-[11px] text-slate-400 hover:border-emerald-400/40 hover:text-emerald-200"
+              className="rounded-full border border-line px-2 py-0.5 text-[11px] text-slate-400 hover:border-accent/50 hover:text-accent-300"
             >
               {f}
             </button>
@@ -160,7 +160,7 @@ export default function AssistantPanel({ open, sitesById, onResult, onPickSite, 
       )}
 
       <div className="border-t border-line p-2.5">
-        <div className="flex items-center gap-2 rounded-xl border border-line-strong bg-ink-850 px-3 py-2 focus-within:border-sky-400/40">
+        <div className="flex items-center gap-2 rounded-lg border border-line-strong bg-ink-850 px-3 py-2 focus-within:border-accent/50">
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -172,7 +172,7 @@ export default function AssistantPanel({ open, sitesById, onResult, onPickSite, 
           <button
             onClick={() => ask(text)}
             disabled={loading || !text.trim()}
-            className="rounded-lg bg-emerald-500/90 px-3 py-1 text-xs font-medium text-white transition hover:bg-emerald-400 disabled:opacity-40"
+            className="rounded bg-accent px-3 py-1 text-xs font-medium text-white transition hover:bg-accent-400 disabled:opacity-40"
           >
             Ask
           </button>

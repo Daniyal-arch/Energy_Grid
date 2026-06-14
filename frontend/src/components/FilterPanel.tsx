@@ -47,7 +47,7 @@ export default function FilterPanel({ all, filter, setFilter, colorMode, setColo
     <div className="flex h-full w-60 flex-col gap-5 overflow-y-auto border-r border-line bg-ink-900/90 p-4 backdrop-blur-xl">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5 text-xs text-dim">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]" />
+          <span className="h-1.5 w-1.5 rounded-full bg-positive" />
           Updated{" "}
           <span className="font-mono tabular-nums text-slate-300">
             {meta?.latest_observation ? fmtDate(meta.latest_observation) : "—"}

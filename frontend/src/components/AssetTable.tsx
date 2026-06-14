@@ -82,7 +82,7 @@ export default function AssetTable({ sites, deadlines, highlight, onSelect }: Pr
       }`}
     >
       {label}
-      {sort === k && <span className="ml-1 text-sky-400">{dir === 1 ? "▲" : "▼"}</span>}
+      {sort === k && <span className="ml-1 text-accent-400">{dir === 1 ? "▲" : "▼"}</span>}
     </th>
   );
 
@@ -93,7 +93,7 @@ export default function AssetTable({ sites, deadlines, highlight, onSelect }: Pr
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search name, district, region…"
-          className="w-64 rounded-lg border border-line bg-ink-850 px-3 py-1.5 text-sm text-slate-100 placeholder-slate-500 outline-none focus:border-sky-400/40"
+          className="w-64 rounded border border-line bg-ink-850 px-3 py-1.5 text-sm text-slate-100 placeholder-slate-500 outline-none focus:border-accent/50"
         />
         <select
           value={tech}
@@ -112,7 +112,7 @@ export default function AssetTable({ sites, deadlines, highlight, onSelect }: Pr
           Behind deadline only
         </label>
         {highlight && (
-          <span className="rounded-full border border-sky-400/30 bg-sky-400/10 px-2 py-0.5 text-[11px] text-sky-200">
+          <span className="rounded-full border border-accent/40 bg-accent/10 px-2 py-0.5 text-[11px] text-accent-300">
             agent result · {rows.length}
           </span>
         )}
