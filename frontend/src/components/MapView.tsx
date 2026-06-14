@@ -255,10 +255,13 @@ export default function MapView({
         footprint.status !== "unknown"
           ? STATE_COLOR[footprint.status] ?? DIM
           : (footprint.technology && TECH_COLOR[footprint.technology]) || DIM;
+      // wind: the turbines are the model, so the footprint is just a thin ground
+      // pad marking the farm extent. everything else: the footprint IS the volume.
+      const height = footprint.technology === "wind" ? 4 : 32;
       src.setData({
         type: "Feature",
         geometry: { type: "MultiPolygon", coordinates: footprint.geom.coordinates },
-        properties: { color: `rgb(${c[0]},${c[1]},${c[2]})`, height: 32 },
+        properties: { color: `rgb(${c[0]},${c[1]},${c[2]})`, height },
       } as never);
     };
     if (map.getSource("footprint")) apply();
@@ -369,18 +372,55 @@ export default function MapView({
     mapRef.current.fitBounds(focusBounds, { padding: 120, pitch: GERMANY_VIEW.pitch, duration: 1400 });
   }, [focusBounds]);
 
-  // 3D fly-to a single selected site — camera drops in close, terrain comes alive
+  // 3D fly-to a selected site — a gentle approach; the footprint effect below
+  // then frames the site's true extent (so a big wind farm isn't flown into the
+  // base of one turbine)
   useEffect(() => {
     if (!mapRef.current || !flyTo) return;
     mapRef.current.flyTo({
       center: [flyTo.lon, flyTo.lat],
-      zoom: 14.5,
-      pitch: 66,
+      zoom: 12.5,
+      pitch: 58,
       bearing: -18,
-      duration: 2200,
+      duration: 1600,
       essential: true,
     });
   }, [flyTo]);
+
+  // frame the open site to its footprint extent — adaptive, so small solar sites
+  // fill the view and large wind farms show every turbine
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !footprint) return;
+    let minX = 180;
+    let minY = 90;
+    let maxX = -180;
+    let maxY = -90;
+    for (const poly of footprint.geom.coordinates)
+      for (const ring of poly)
+        for (const [x, y] of ring) {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
+    const cam = map.cameraForBounds(
+      [
+        [minX, minY],
+        [maxX, maxY],
+      ],
+      { padding: 90, maxZoom: 16 },
+    );
+    if (!cam?.center) return;
+    map.flyTo({
+      center: cam.center,
+      zoom: Math.min((cam.zoom ?? 14) - 0.3, 15.5),
+      pitch: 62,
+      bearing: -17,
+      duration: 1500,
+      essential: true,
+    });
+  }, [footprint]);
 
   return <div ref={container} className="absolute inset-0" />;
 }
