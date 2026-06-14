@@ -153,7 +153,7 @@ export default function MapView({
           "fill-extrusion-color": ["get", "color"],
           "fill-extrusion-height": ["get", "height"],
           "fill-extrusion-base": 0,
-          "fill-extrusion-opacity": 0.5,
+          "fill-extrusion-opacity": 0.22,
         },
       });
       map.addLayer({
@@ -232,7 +232,10 @@ export default function MapView({
       viewZoom >= 10.5 ? 0 : viewZoom >= 9 ? 7 : viewZoom >= 7.75 ? 14 : viewZoom >= 6.5 ? 30 : 65;
     const m = new Map<Technology, Site[]>();
     for (const s of sites) {
-      if (!s.technology || s.id === selectedId) continue;
+      if (!s.technology) continue;
+      // the open site keeps its 3D object + animation; only wind is swapped out
+      // (it gets real per-turbine models instead)
+      if (s.id === selectedId && s.technology === "wind") continue;
       if (s.capacity_mw < minCap) continue;
       if (s.lon < w - mLon || s.lon > e + mLon || s.lat < s0 - mLat || s.lat > n + mLat) continue;
       const arr = m.get(s.technology);
@@ -271,13 +274,12 @@ export default function MapView({
         footprint.status !== "unknown"
           ? STATE_COLOR[footprint.status] ?? DIM
           : (footprint.technology && TECH_COLOR[footprint.technology]) || DIM;
-      // wind: the turbines are the model, so the footprint is just a thin ground
-      // pad marking the farm extent. everything else: the footprint IS the volume.
-      const height = footprint.technology === "wind" ? 4 : 32;
+      // the 3D object is the model now; the footprint is just a thin pad + bright
+      // outline marking the real site extent (reads well over satellite too)
       src.setData({
         type: "Feature",
         geometry: { type: "MultiPolygon", coordinates: footprint.geom.coordinates },
-        properties: { color: `rgb(${c[0]},${c[1]},${c[2]})`, height },
+        properties: { color: `rgb(${c[0]},${c[1]},${c[2]})`, height: 5 },
       } as never);
     };
     if (map.getSource("footprint")) apply();
@@ -534,7 +536,7 @@ export default function MapView({
         ...plume(at("combustion"), phase, size, gz, { baseFactor: 0.62, height: 1.4, spread: 0.18, color: [120, 120, 128], count: 11 }),
         ...plume(at("biomass"), phase, size, gz, { baseFactor: 0.46, height: 1.0, spread: 0.15, color: [160, 162, 168], count: 8 }),
         ...plume(at("geothermal"), phase, size, gz, { baseFactor: 0.42, height: 1.1, spread: 0.22, color: [226, 233, 240], count: 10 }),
-        ...plume(at("hydro"), phase, size, gz, { baseFactor: 0.05, height: 0.35, spread: 0.45, color: [220, 230, 238], count: 9 }),
+        ...plume(at("hydro"), phase, size, gz, { baseFactor: 0.1, height: 0.7, spread: 0.5, color: [228, 238, 245], count: 16 }),
       ];
       const glints = glint(at("solar"), phase, size, gz);
       const pulses = pulseFx(at("storage"), phase, size, gz, [167, 139, 250]);
