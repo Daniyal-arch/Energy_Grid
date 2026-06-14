@@ -72,6 +72,9 @@ export default function MapView({
   // objects are sized to the screen (like the old bars), so they stay visible at
   // every altitude. quantise zoom to 0.25 so they resize in steps, not per-tick.
   const [viewZoom, setViewZoom] = useState(Math.round(GERMANY_VIEW.zoom * 4) / 4);
+  // current viewport [w, s, e, n] — objects are culled to it so we never draw all
+  // 5,402 at once (that's the spike-forest at national zoom)
+  const [bounds, setBounds] = useState<[number, number, number, number]>([-4, 44, 22, 58]);
   // only used to gate terrain-seating (expensive) to closer zooms
   const [aggregated, setAggregated] = useState(GERMANY_VIEW.zoom < SITE_ZOOM);
 
@@ -146,6 +149,12 @@ export default function MapView({
       const vz = Math.round(z * 4) / 4;
       setViewZoom((prev) => (prev === vz ? prev : vz));
     });
+    const onMove = () => {
+      const b = map.getBounds();
+      setBounds([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
+    };
+    map.on("moveend", onMove);
+    map.once("load", onMove);
     const overlay = new MapboxOverlay({
       interleaved: true,
       layers: [],
@@ -190,17 +199,25 @@ export default function MapView({
   }, []);
 
   // every site is its own 3D object by technology. group by tech and drop the
-  // open site (it gets detailed geometry — footprint + real turbines).
+  // open site (it gets detailed geometry). LOD: cull to the viewport and, when
+  // zoomed far out, show only the largest plants so the wide view stays clean.
   const byTech = useMemo(() => {
+    const [w, s0, e, n] = bounds;
+    const mLon = (e - w) * 0.06;
+    const mLat = (n - s0) * 0.06;
+    const minCap =
+      viewZoom >= 10.5 ? 0 : viewZoom >= 9 ? 7 : viewZoom >= 7.75 ? 14 : viewZoom >= 6.5 ? 30 : 65;
     const m = new Map<Technology, Site[]>();
     for (const s of sites) {
       if (!s.technology || s.id === selectedId) continue;
+      if (s.capacity_mw < minCap) continue;
+      if (s.lon < w - mLon || s.lon > e + mLon || s.lat < s0 - mLat || s.lat > n + mLat) continue;
       const arr = m.get(s.technology);
       if (arr) arr.push(s);
       else m.set(s.technology, [s]);
     }
     return m;
-  }, [sites, selectedId]);
+  }, [sites, selectedId, bounds, viewZoom]);
 
   // push the open site's footprint into the terrain-draped extrusion source
   useEffect(() => {
@@ -288,7 +305,7 @@ export default function MapView({
     const gz = (s: Site) => groundZ.current.get(s.id) ?? 0;
     // metres-per-pixel at this zoom → size objects to a target on-screen pixel size
     const mpp = (156543.03 * Math.cos((GERMANY_VIEW.latitude * Math.PI) / 180)) / 2 ** viewZoom;
-    const sizeFor = (cap: number) => (12 + Math.min(18, Math.sqrt(Math.max(cap, 1))) * 2.6) * mpp;
+    const sizeFor = (cap: number) => (9 + Math.min(15, Math.sqrt(Math.max(cap, 1))) * 1.9) * mpp;
     const layers: Layer[] = [];
     for (const [tech, rows] of byTech) {
       if (tech === "wind") {
@@ -301,8 +318,8 @@ export default function MapView({
             getPosition: (s) => [s.lon, s.lat, gz(s)],
             getScale: (s) => {
               const B = sizeFor(s.capacity_mw);
-              const r = Math.max(B * 0.045, 8);
-              return [r, r, B * 1.7];
+              const r = Math.max(B * 0.05, 8);
+              return [r, r, B * 1.3];
             },
             getColor: (s) => colorOf(s, colorMode),
             pickable: true,
@@ -316,9 +333,9 @@ export default function MapView({
             id: "obj-wind-rotor",
             data: rows,
             mesh: ROTOR_MESH as never,
-            getPosition: (s) => [s.lon, s.lat, gz(s) + sizeFor(s.capacity_mw) * 1.7],
+            getPosition: (s) => [s.lon, s.lat, gz(s) + sizeFor(s.capacity_mw) * 1.3],
             getScale: (s) => {
-              const r = sizeFor(s.capacity_mw) * 0.8;
+              const r = sizeFor(s.capacity_mw) * 0.7;
               return [r, r, r];
             },
             getColor: (s) => colorOf(s, colorMode),
