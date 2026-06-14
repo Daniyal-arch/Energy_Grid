@@ -73,12 +73,13 @@ function makeRotor(): Mesh {
   quad(nx, ny0, -nz, nx, ny0, nz, nx, ny1, nz, nx, ny1, -nz, 1, 0, 0);
   quad(-nx, ny0, -nz, -nx, ny0, nz, -nx, ny1, nz, -nx, ny1, -nz, -1, 0, 0);
 
-  // three blades in the X–Z plane, slightly forward of the nacelle (+Y)
+  // three blades in the X–Z plane, slightly forward of the nacelle (+Y).
+  // widths are exaggerated so blades read clearly at farm-overview zoom.
   const y = 0.11;
   const r0 = 0.05;
   const r1 = 1.0;
-  const hw0 = 0.055; // root half-width
-  const hw1 = 0.015; // tip half-width
+  const hw0 = 0.14; // root half-width
+  const hw1 = 0.045; // tip half-width
   for (let b = 0; b < 3; b++) {
     const a = Math.PI / 2 + (b * 2 * Math.PI) / 3; // one blade points up
     const ux = Math.cos(a);

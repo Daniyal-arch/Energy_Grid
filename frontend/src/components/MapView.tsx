@@ -331,9 +331,10 @@ export default function MapView({
           mesh: TOWER_MESH as never,
           getPosition: (t) => [t.lon, t.lat, groundZ.current.get(t.id) ?? 0],
           getScale: (t) => {
+            // tower height ~real hub height; radius exaggerated so it's visible
+            // when the whole farm is in frame (a real 1.3m tower is sub-pixel)
             const h = t.hub_height_m ?? 100;
-            const r = Math.max(1.3, h * 0.013);
-            return [r, r, h];
+            return [Math.max(7, h * 0.07), Math.max(7, h * 0.07), h];
           },
           getColor: TURBINE_COLOR,
           material: { ambient: 0.55, diffuse: 0.6, shininess: 40 },
@@ -349,8 +350,12 @@ export default function MapView({
             const r = (t.rotor_diameter_m ?? 90) / 2;
             return [r, r, r];
           },
+          // spin the blades about the hub axis; per-turbine phase offset so a farm
+          // doesn't rotate in lockstep. updateTriggers keeps the animation live.
+          getOrientation: (t) => [phase * 720 + ((t.lat * 9973) % 360), 0, 0],
           getColor: TURBINE_COLOR,
           material: { ambient: 0.55, diffuse: 0.6, shininess: 40 },
+          updateTriggers: { getOrientation: phase },
         })
       : null;
 
