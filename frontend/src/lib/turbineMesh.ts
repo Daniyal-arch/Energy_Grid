@@ -5,19 +5,26 @@
 //   rotor — nacelle + 3 blades in the X–Z plane, scaled by rotorDiameter/2 and
 //           lifted to hub height via the instance position's z.
 
+// deck.gl 9.x SimpleMeshLayer expects attributes in {value, size} form, with
+// indices alongside — raw typed arrays make normalizeGeometryAttributes throw.
 export interface Mesh {
-  positions: Float32Array;
-  normals: Float32Array;
-  texCoords: Float32Array;
-  indices: Uint16Array;
+  attributes: {
+    positions: { value: Float32Array; size: number };
+    normals: { value: Float32Array; size: number };
+    texCoords: { value: Float32Array; size: number };
+  };
+  indices: { value: Uint16Array; size: number };
 }
 
 function build(verts: number[], norms: number[], idx: number[]): Mesh {
+  const n = verts.length / 3;
   return {
-    positions: new Float32Array(verts),
-    normals: new Float32Array(norms),
-    texCoords: new Float32Array((verts.length / 3) * 2),
-    indices: new Uint16Array(idx),
+    attributes: {
+      positions: { value: new Float32Array(verts), size: 3 },
+      normals: { value: new Float32Array(norms), size: 3 },
+      texCoords: { value: new Float32Array(n * 2), size: 2 },
+    },
+    indices: { value: new Uint16Array(idx), size: 1 },
   };
 }
 
