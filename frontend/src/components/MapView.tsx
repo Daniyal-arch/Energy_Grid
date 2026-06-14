@@ -6,7 +6,7 @@ import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Footprint, RecentDetection, Site, Turbine } from "../lib/api";
-import { OBJECT_MESH } from "../lib/energyObjects";
+import { OBJECT_MESH, REAL_COLOR, REAL_HZ, STACK_H } from "../lib/energyObjects";
 import { glint, plume, pulse as pulseFx, type Particle } from "../lib/effects";
 import { mw } from "../lib/format";
 import { ROTOR_MESH, TOWER_MESH } from "../lib/turbineMesh";
@@ -233,9 +233,9 @@ export default function MapView({
     const m = new Map<Technology, Site[]>();
     for (const s of sites) {
       if (!s.technology) continue;
-      // the open site keeps its 3D object + animation; only wind is swapped out
-      // (it gets real per-turbine models instead)
-      if (s.id === selectedId && s.technology === "wind") continue;
+      // the open site is drawn separately as a real-scale object fitted to its
+      // footprint (or real turbines for wind), so drop it from the field here
+      if (s.id === selectedId) continue;
       if (s.capacity_mw < minCap) continue;
       if (s.lon < w - mLon || s.lon > e + mLon || s.lat < s0 - mLat || s.lat > n + mLat) continue;
       const arr = m.get(s.technology);
@@ -284,6 +284,34 @@ export default function MapView({
     };
     if (map.getSource("footprint")) apply();
     else map.once("load", apply);
+  }, [footprint]);
+
+  // centre + extent (metres) of the open site's footprint, to fit a real-scale
+  // object onto the actual parcel
+  const footMeta = useMemo(() => {
+    if (!footprint?.technology || footprint.technology === "wind") return null;
+    let minX = 180;
+    let minY = 90;
+    let maxX = -180;
+    let maxY = -90;
+    for (const poly of footprint.geom.coordinates)
+      for (const ring of poly)
+        for (const [x, y] of ring) {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
+    const cx = (minX + maxX) / 2;
+    const cy = (minY + maxY) / 2;
+    const wM = (maxX - minX) * 111320 * Math.cos((cy * Math.PI) / 180);
+    const hM = (maxY - minY) * 111320;
+    return {
+      center: [cx, cy] as [number, number],
+      span: Math.max(wM, hM, 60),
+      tech: footprint.technology as Exclude<Technology, "wind">,
+      status: footprint.status,
+    };
   }, [footprint]);
 
   // deck.gl meshes don't drape on the DEM, so look up the ground elevation under
@@ -525,7 +553,58 @@ export default function MapView({
         })
       : null;
 
-    // "living power system": per-tech animations, only when close (bounded count)
+    const billboard = (id: string, data: Particle[], flat = false) =>
+      new ScatterplotLayer<Particle>({
+        id,
+        data,
+        billboard: !flat,
+        stroked: false,
+        radiusUnits: "meters",
+        getPosition: (p) => p.position,
+        getRadius: (p) => p.radius,
+        getFillColor: (p) => p.color,
+        updateTriggers: { getPosition: phase, getRadius: phase, getFillColor: phase },
+      });
+
+    // open site → a real-scale object fitted to its footprint, realistic material.
+    // being in real metres, it grows as you zoom in (no vanishing) and sits on the
+    // actual parcel. its animation is generated at real scale too.
+    let selObject: Layer | null = null;
+    const selFx: Layer[] = [];
+    if (footMeta) {
+      const gzc = groundZ.current.get(selectedId ?? "") ?? 0;
+      const S = footMeta.span * 0.7;
+      selObject = new SimpleMeshLayer<number>({
+        id: "sel-object",
+        data: [0],
+        mesh: OBJECT_MESH[footMeta.tech] as never,
+        getPosition: () => [footMeta.center[0], footMeta.center[1], gzc],
+        getScale: () => [S, S, REAL_HZ[footMeta.tech]],
+        getColor: REAL_COLOR[footMeta.tech],
+        material: { ambient: 0.5, diffuse: 0.65, shininess: 26 },
+        updateTriggers: { getPosition: [footMeta.center[0], footMeta.center[1], gzc], getScale: S },
+      });
+      const sel = sites.find((s) => s.id === selectedId);
+      if (closeUp && sel) {
+        const c = { ...sel, lon: footMeta.center[0], lat: footMeta.center[1] };
+        const gzf = () => gzc;
+        const t = footMeta.tech;
+        if (t === "solar") selFx.push(billboard("sel-glint", glint([c], phase, () => footMeta.span, gzf)));
+        else if (t === "storage")
+          selFx.push(billboard("sel-pulse", pulseFx([c], phase, () => footMeta.span, gzf, [167, 139, 250]), true));
+        else if (STACK_H[t]) {
+          const P = {
+            combustion: { baseFactor: 1, height: 1.2, spread: 0.28, color: [120, 120, 128] as [number, number, number], count: 16 },
+            biomass: { baseFactor: 1, height: 1.1, spread: 0.25, color: [160, 162, 168] as [number, number, number], count: 12 },
+            geothermal: { baseFactor: 1, height: 1.2, spread: 0.3, color: [226, 233, 240] as [number, number, number], count: 14 },
+            hydro: { baseFactor: 0.3, height: 0.9, spread: 0.7, color: [228, 238, 245] as [number, number, number], count: 18 },
+          }[t]!;
+          selFx.push(billboard("sel-plume", plume([c], phase, () => STACK_H[t]!, gzf, P)));
+        }
+      }
+    }
+
+    // field animations for the other near sites (screen-sized objects)
     const fx: Layer[] = [];
     if (closeUp) {
       const mpp = (156543.03 * Math.cos((GERMANY_VIEW.latitude * Math.PI) / 180)) / 2 ** viewZoom;
@@ -540,18 +619,6 @@ export default function MapView({
       ];
       const glints = glint(at("solar"), phase, size, gz);
       const pulses = pulseFx(at("storage"), phase, size, gz, [167, 139, 250]);
-      const billboard = (id: string, data: Particle[], flat = false) =>
-        new ScatterplotLayer<Particle>({
-          id,
-          data,
-          billboard: !flat,
-          stroked: false,
-          radiusUnits: "meters",
-          getPosition: (p) => p.position,
-          getRadius: (p) => p.radius,
-          getFillColor: (p) => p.color,
-          updateTriggers: { getPosition: phase, getRadius: phase, getFillColor: phase },
-        });
       if (pulses.length) fx.push(billboard("fx-pulse", pulses, true));
       if (puffs.length) fx.push(billboard("fx-plumes", puffs));
       if (glints.length) fx.push(billboard("fx-glint", glints));
@@ -561,13 +628,15 @@ export default function MapView({
       layers: [
         ...(spikes ? [spikes] : []),
         ...objectLayers,
+        ...(selObject ? [selObject] : []),
         ...(towers ? [towers, rotors!] : []),
+        ...selFx,
         ...fx,
         pulse,
         ...(ring ? [ring] : []),
       ],
     });
-  }, [spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, turbines, groundTick, closeUp, byTech, viewZoom]);
+  }, [spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {

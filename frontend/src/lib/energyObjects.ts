@@ -154,3 +154,34 @@ export const OBJECT_MESH: Record<Exclude<Technology, "wind">, Mesh> = {
 export function objectSize(capacityMw: number): number {
   return Math.min(18, Math.max(5, Math.sqrt(Math.max(capacityMw, 1)))) * 155;
 }
+
+// realistic material colours for the real-scale, fitted-to-footprint object that
+// the open site shows (photoreal-leaning; build-state lives on the footprint edge)
+export const REAL_COLOR: Record<Technology, [number, number, number]> = {
+  solar: [38, 52, 88], // dark blue panels
+  wind: [228, 233, 240], // white towers
+  biomass: [122, 116, 104], // beige plant
+  hydro: [150, 156, 165], // concrete grey
+  geothermal: [176, 180, 188], // light grey
+  combustion: [126, 130, 138], // industrial grey
+  storage: [104, 116, 134], // metallic blue-grey
+};
+
+// absolute z-scale (metres per canonical unit) so the fitted object keeps a real
+// height regardless of footprint width (panels stay flat, chimneys stay tall)
+export const REAL_HZ: Record<Exclude<Technology, "wind">, number> = {
+  solar: 42,
+  storage: 26,
+  biomass: 58,
+  combustion: 140,
+  geothermal: 145,
+  hydro: 46,
+};
+
+// height at which each plant emits its plume/spray (metres above ground)
+export const STACK_H: Partial<Record<Technology, number>> = {
+  combustion: 82,
+  biomass: 30,
+  geothermal: 58,
+  hydro: 9,
+};
