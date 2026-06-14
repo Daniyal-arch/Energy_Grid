@@ -1,12 +1,13 @@
-import type { PickingInfo } from "@deck.gl/core";
+import type { Layer, PickingInfo } from "@deck.gl/core";
 import { HexagonLayer } from "@deck.gl/aggregation-layers";
-import { ColumnLayer, ScatterplotLayer } from "@deck.gl/layers";
+import { ScatterplotLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { SimpleMeshLayer } from "@deck.gl/mesh-layers";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { Footprint, RecentDetection, Site, Turbine } from "../lib/api";
+import { OBJECT_MESH, OBJECT_SCALE, objectSize } from "../lib/energyObjects";
 import { mw } from "../lib/format";
 import { ROTOR_MESH, TOWER_MESH } from "../lib/turbineMesh";
 import {
@@ -19,7 +20,10 @@ import {
   TECH_COLOR,
   TERRAIN_TILES,
   type RGB,
+  type Technology,
 } from "../lib/theme";
+
+const CLOSE_ZOOM = 10.5; // above this, animate (spin rotors) — bounded instance count
 
 export type ColorMode = "state" | "technology";
 
@@ -49,9 +53,6 @@ function colorOf(s: Site, mode: ColorMode): [number, number, number, number] {
   return [c[0], c[1], c[2], alpha];
 }
 
-// height compresses a 5–1060 MW range so large plants read big but don't dwarf the rest
-const elevation = (s: Site) => Math.sqrt(s.capacity_mw) * 1100;
-
 export default function MapView({
   sites,
   colorMode,
@@ -69,6 +70,7 @@ export default function MapView({
   const groundZ = useRef<Map<string, number>>(new Map());
   const [phase, setPhase] = useState(0);
   const [groundTick, setGroundTick] = useState(0);
+  const [closeUp, setCloseUp] = useState(GERMANY_VIEW.zoom >= CLOSE_ZOOM);
   // only the regime (density field vs. individual sites) is React state, flipped
   // once when zoom crosses SITE_ZOOM — not on every zoom tick, so panning/zooming
   // never triggers a React re-render or layer rebuild.
@@ -137,8 +139,11 @@ export default function MapView({
       });
     });
     map.on("zoom", () => {
-      const agg = map.getZoom() < SITE_ZOOM;
+      const z = map.getZoom();
+      const agg = z < SITE_ZOOM;
       setAggregated((prev) => (prev === agg ? prev : agg));
+      const close = z >= CLOSE_ZOOM;
+      setCloseUp((prev) => (prev === close ? prev : close));
     });
     const overlay = new MapboxOverlay({
       interleaved: true,
@@ -207,36 +212,18 @@ export default function MapView({
     [sites, aggregated],
   );
 
-  // site zoom: individual extruded sites, coloured by state/technology, clickable.
-  // hide the open site's column so its footprint extrusion is the hero on fly-in.
-  const columnData = useMemo(
-    () => (footprint ? sites.filter((s) => s.id !== selectedId) : sites),
-    [sites, footprint, selectedId],
-  );
-  const columns = useMemo(
-    () =>
-      new ColumnLayer<Site>({
-        id: "sites",
-        data: columnData,
-        visible: !aggregated,
-        diskResolution: 12,
-        radius: 520,
-        extruded: true,
-        pickable: true,
-        elevationScale: 1,
-        radiusUnits: "meters",
-        getPosition: (s) => [s.lon, s.lat],
-        getElevation: elevation,
-        getFillColor: (s) => colorOf(s, colorMode),
-        onClick: (info: PickingInfo) => {
-          const o = info.object as Site | undefined;
-          if (o) onSelect(o.id);
-        },
-        updateTriggers: { getFillColor: colorMode },
-        material: { ambient: 0.6, diffuse: 0.5, shininess: 32 },
-      }),
-    [columnData, colorMode, onSelect, aggregated],
-  );
+  // site zoom: every site is its own 3D object by technology. group by tech and
+  // drop the open site (it gets detailed geometry — footprint + real turbines).
+  const byTech = useMemo(() => {
+    const m = new Map<Technology, Site[]>();
+    for (const s of sites) {
+      if (!s.technology || s.id === selectedId) continue;
+      const arr = m.get(s.technology);
+      if (arr) arr.push(s);
+      else m.set(s.technology, [s]);
+    }
+    return m;
+  }, [sites, selectedId]);
 
   // push the open site's footprint into the terrain-draped extrusion source
   useEffect(() => {
@@ -290,6 +277,78 @@ export default function MapView({
       map.off("idle", compute);
     };
   }, [turbines]);
+
+  // one instanced 3D-object layer per technology, over every visible site
+  const objectLayers = useMemo<Layer[]>(() => {
+    if (aggregated) return [];
+    const click = (info: PickingInfo) => {
+      const o = info.object as Site | undefined;
+      if (o) onSelect(o.id);
+    };
+    const layers: Layer[] = [];
+    for (const [tech, rows] of byTech) {
+      if (tech === "wind") {
+        const f = OBJECT_SCALE.wind;
+        layers.push(
+          new SimpleMeshLayer<Site>({
+            id: "obj-wind-tower",
+            data: rows,
+            mesh: TOWER_MESH as never,
+            getPosition: (s) => [s.lon, s.lat, 0],
+            getScale: (s) => {
+              const B = objectSize(s.capacity_mw);
+              return [Math.max(9, B * f[0]), Math.max(9, B * f[1]), B];
+            },
+            getColor: (s) => colorOf(s, colorMode),
+            pickable: true,
+            onClick: click,
+            updateTriggers: { getColor: colorMode },
+            material: { ambient: 0.55, diffuse: 0.6, shininess: 36 },
+          }),
+        );
+        layers.push(
+          new SimpleMeshLayer<Site>({
+            id: "obj-wind-rotor",
+            data: rows,
+            mesh: ROTOR_MESH as never,
+            getPosition: (s) => [s.lon, s.lat, objectSize(s.capacity_mw)],
+            getScale: (s) => {
+              const r = objectSize(s.capacity_mw) * 0.42;
+              return [r, r, r];
+            },
+            getColor: (s) => colorOf(s, colorMode),
+            getOrientation: closeUp
+              ? (s: Site) => [phase * 720 + ((s.lat * 9973) % 360), 0, 0]
+              : [0, 0, 0],
+            pickable: true,
+            onClick: click,
+            updateTriggers: { getColor: colorMode, getOrientation: closeUp ? phase : 0 },
+            material: { ambient: 0.55, diffuse: 0.6, shininess: 36 },
+          }),
+        );
+      } else {
+        const f = OBJECT_SCALE[tech];
+        layers.push(
+          new SimpleMeshLayer<Site>({
+            id: `obj-${tech}`,
+            data: rows,
+            mesh: OBJECT_MESH[tech] as never,
+            getPosition: (s) => [s.lon, s.lat, 0],
+            getScale: (s) => {
+              const B = objectSize(s.capacity_mw);
+              return [B * f[0], B * f[1], B * f[2]];
+            },
+            getColor: (s) => colorOf(s, colorMode),
+            pickable: true,
+            onClick: click,
+            updateTriggers: { getColor: colorMode },
+            material: { ambient: 0.55, diffuse: 0.55, shininess: 28 },
+          }),
+        );
+      }
+    }
+    return layers;
+  }, [byTech, aggregated, colorMode, closeUp, phase, onSelect]);
 
   useEffect(() => {
     if (!overlayRef.current) return;
@@ -359,17 +418,16 @@ export default function MapView({
         })
       : null;
 
-    // both regimes stay mounted and toggle `visible` — no mount/unmount hitch
     overlayRef.current.setProps({
       layers: [
         hexes,
-        columns,
+        ...objectLayers,
         ...(towers ? [towers, rotors!] : []),
         pulse,
         ...(ring ? [ring] : []),
       ],
     });
-  }, [hexes, columns, aggregated, recent, phase, selectedId, sites, footprint, turbines, groundTick]);
+  }, [hexes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, turbines, groundTick]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {
