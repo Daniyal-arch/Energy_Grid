@@ -87,6 +87,23 @@ export interface Meta {
   analysed: number;
 }
 
+// GeoJSON MultiPolygon as PostgREST serializes PostGIS geometry
+export interface GeoMultiPolygon {
+  type: "MultiPolygon";
+  coordinates: number[][][][];
+}
+export interface Footprint {
+  id: string;
+  geom: GeoMultiPolygon;
+  status: ConstructionState;
+  technology: Technology | null;
+  unit_count: number;
+  capacity_mw: number;
+  aoi_method: string | null;
+  lat: number;
+  lon: number;
+}
+
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE}${path}`);
   if (!res.ok) throw new Error(`${path} → ${res.status}`);
@@ -109,6 +126,7 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 export const api = {
   sites: () => get<Site[]>("/sites"),
   site: (id: string) => get<SiteDetail>(`/sites/${id}`),
+  footprint: (id: string) => get<Footprint>(`/sites/${id}/footprint`),
   timeseries: (id: string) => get<Series>(`/sites/${id}/timeseries`),
   recent: (limit = 50) => get<RecentDetection[]>(`/detections/recent?limit=${limit}`),
   meta: () => get<Meta>("/meta"),

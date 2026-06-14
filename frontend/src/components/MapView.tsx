@@ -5,7 +5,7 @@ import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import type { RecentDetection, Site } from "../lib/api";
+import type { Footprint, RecentDetection, Site } from "../lib/api";
 import { mw } from "../lib/format";
 import {
   BASEMAP_STYLE,
@@ -29,9 +29,11 @@ interface Props {
   onSelect: (id: string) => void;
   focusBounds: [[number, number], [number, number]] | null;
   flyTo: { lon: number; lat: number } | null;
+  footprint: Footprint | null;
 }
 
 const DIM: RGB = [60, 70, 90];
+const EMPTY_FC = { type: "FeatureCollection", features: [] };
 
 function colorOf(s: Site, mode: ColorMode): [number, number, number, number] {
   const c =
@@ -53,6 +55,7 @@ export default function MapView({
   onSelect,
   focusBounds,
   flyTo,
+  footprint,
 }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -100,6 +103,26 @@ export default function MapView({
         "sky-horizon-blend": 0.6,
         "horizon-fog-blend": 0.6,
         "fog-ground-blend": 0.4,
+      });
+      // real site footprint — extruded and draped on terrain (fill-extrusion
+      // follows the DEM, so a hillside array sits on the slope, not at sea level)
+      map.addSource("footprint", { type: "geojson", data: EMPTY_FC as never });
+      map.addLayer({
+        id: "footprint-fill",
+        type: "fill-extrusion",
+        source: "footprint",
+        paint: {
+          "fill-extrusion-color": ["get", "color"],
+          "fill-extrusion-height": ["get", "height"],
+          "fill-extrusion-base": 0,
+          "fill-extrusion-opacity": 0.5,
+        },
+      });
+      map.addLayer({
+        id: "footprint-edge",
+        type: "line",
+        source: "footprint",
+        paint: { "line-color": ["get", "color"], "line-width": 2.2, "line-opacity": 0.95, "line-blur": 0.4 },
       });
     });
     map.on("zoom", () => setZoom(map.getZoom()));
@@ -171,12 +194,17 @@ export default function MapView({
     [sites],
   );
 
-  // site zoom: individual extruded sites, coloured by state/technology, clickable
+  // site zoom: individual extruded sites, coloured by state/technology, clickable.
+  // hide the open site's column so its footprint extrusion is the hero on fly-in.
+  const columnData = useMemo(
+    () => (footprint ? sites.filter((s) => s.id !== selectedId) : sites),
+    [sites, footprint, selectedId],
+  );
   const columns = useMemo(
     () =>
       new ColumnLayer<Site>({
         id: "sites",
-        data: sites,
+        data: columnData,
         diskResolution: 12,
         radius: 520,
         extruded: true,
@@ -193,8 +221,30 @@ export default function MapView({
         updateTriggers: { getFillColor: colorMode },
         material: { ambient: 0.6, diffuse: 0.5, shininess: 32 },
       }),
-    [sites, colorMode, onSelect],
+    [columnData, colorMode, onSelect],
   );
+
+  // push the open site's footprint into the terrain-draped extrusion source
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const apply = () => {
+      const src = map.getSource("footprint") as maplibregl.GeoJSONSource | undefined;
+      if (!src) return;
+      if (!footprint) {
+        src.setData(EMPTY_FC as never);
+        return;
+      }
+      const c = STATE_COLOR[footprint.status] ?? DIM;
+      src.setData({
+        type: "Feature",
+        geometry: { type: "MultiPolygon", coordinates: footprint.geom.coordinates },
+        properties: { color: `rgb(${c[0]},${c[1]},${c[2]})`, height: 22 },
+      } as never);
+    };
+    if (map.getSource("footprint")) apply();
+    else map.once("load", apply);
+  }, [footprint]);
 
   useEffect(() => {
     if (!overlayRef.current) return;

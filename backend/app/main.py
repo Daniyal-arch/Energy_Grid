@@ -93,6 +93,25 @@ def site_detail(site_id: str) -> dict[str, Any]:
     return {"site": site[0], "detections": detections, "deadlines": deadlines}
 
 
+@app.get("/sites/{site_id}/footprint")
+def site_footprint(site_id: str) -> dict[str, Any]:
+    """Real site footprint as GeoJSON (PostGIS geom), for terrain-draped 3D extrusion.
+
+    Lazy — fetched only when a site is opened, so the /sites list stays light.
+    """
+    db = get_db()
+    rows = (
+        db.table("sites_with_centroid")
+        .select("id,geom,status,technology,unit_count,capacity_mw,aoi_method,lat,lon")
+        .eq("id", site_id)
+        .execute()
+        .data
+    )
+    if not rows:
+        raise HTTPException(404, "site not found")
+    return rows[0]
+
+
 @app.get("/sites/{site_id}/timeseries")
 def site_timeseries(site_id: str) -> dict[str, list[dict[str, Any]]]:
     """NDVI/BSI/VH series grouped by metric, ascending by date."""

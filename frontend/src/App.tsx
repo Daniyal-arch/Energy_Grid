@@ -7,7 +7,7 @@ import MapView, { type ColorMode } from "./components/MapView";
 import NavRail, { type View } from "./components/NavRail";
 import SiteDrawer from "./components/SiteDrawer";
 import TopBar from "./components/TopBar";
-import { api, type Meta, type RecentDetection, type Site } from "./lib/api";
+import { api, type Footprint, type Meta, type RecentDetection, type Site } from "./lib/api";
 import { applyFilter, emptyFilter, type Filter } from "./lib/query";
 
 type Bounds = [[number, number], [number, number]] | null;
@@ -44,6 +44,7 @@ export default function App() {
   const [filter, setFilter] = useState<Filter>(emptyFilter());
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [flyTo, setFlyTo] = useState<{ lon: number; lat: number } | null>(null);
+  const [footprint, setFootprint] = useState<Footprint | null>(null);
   const [focus, setFocus] = useState<Bounds>(null);
   const [highlight, setHighlight] = useState<Set<string> | null>(null);
   const [assistantOpen, setAssistantOpen] = useState(true);
@@ -56,6 +57,20 @@ export default function App() {
   }, []);
 
   const sitesById = useMemo(() => new Map(sites.map((s) => [s.id, s])), [sites]);
+
+  // lazily pull the real footprint for the open site → terrain-draped 3D extrusion
+  useEffect(() => {
+    if (!selectedId) {
+      setFootprint(null);
+      return;
+    }
+    let live = true;
+    setFootprint(null);
+    api.footprint(selectedId).then((f) => live && setFootprint(f)).catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [selectedId]);
 
   const overdueCount = useMemo(
     () =>
@@ -116,6 +131,7 @@ export default function App() {
                 onSelect={selectSite}
                 focusBounds={focus}
                 flyTo={flyTo}
+                footprint={footprint}
               />
               <div className="absolute bottom-0 left-0 top-0">
                 <FilterPanel
