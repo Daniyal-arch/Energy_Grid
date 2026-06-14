@@ -50,6 +50,7 @@ export default function App() {
   const [highlight, setHighlight] = useState<Set<string> | null>(null);
   const [assistantOpen, setAssistantOpen] = useState(true);
   const [statsOpen, setStatsOpen] = useState(true);
+  const [basemap, setBasemap] = useState<"dark" | "satellite">("dark");
 
   useEffect(() => {
     api.sites().then(setSites).catch((e) => setError(String(e)));
@@ -147,7 +148,22 @@ export default function App() {
                 flyTo={flyTo}
                 footprint={footprint}
                 turbines={turbines}
+                basemap={basemap}
               />
+
+              <div className="absolute right-3 top-3 z-10 flex overflow-hidden rounded-lg border border-line bg-ink-900/90 text-xs backdrop-blur">
+                {(["dark", "satellite"] as const).map((b) => (
+                  <button
+                    key={b}
+                    onClick={() => setBasemap(b)}
+                    className={`px-2.5 py-1.5 capitalize transition ${
+                      basemap === b ? "bg-sky-500/20 text-sky-200" : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    {b}
+                  </button>
+                ))}
+              </div>
               {statsOpen ? (
                 <div className="absolute bottom-0 left-0 top-0">
                   <FilterPanel

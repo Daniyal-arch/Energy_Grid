@@ -35,6 +35,7 @@ interface Props {
   flyTo: { lon: number; lat: number } | null;
   footprint: Footprint | null;
   turbines: Turbine[];
+  basemap: "dark" | "satellite";
 }
 
 const TURBINE_COLOR: [number, number, number] = [226, 232, 240]; // light grey, like real towers
@@ -61,6 +62,7 @@ export default function MapView({
   flyTo,
   footprint,
   turbines,
+  basemap,
 }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -119,6 +121,26 @@ export default function MapView({
         "horizon-fog-blend": 0.6,
         "fog-ground-blend": 0.4,
       });
+      // satellite imagery basemap (Esri World Imagery, free) — drapes on the same
+      // terrain. inserted under the first label layer so place names stay on top.
+      const firstSymbol = map.getStyle().layers?.find((l) => l.type === "symbol")?.id;
+      map.addSource("satellite", {
+        type: "raster",
+        tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],
+        tileSize: 256,
+        maxzoom: 19,
+        attribution: "Esri",
+      });
+      map.addLayer(
+        {
+          id: "satellite",
+          type: "raster",
+          source: "satellite",
+          layout: { visibility: "none" },
+          paint: { "raster-opacity": 1 },
+        },
+        firstSymbol,
+      );
       // real site footprint — extruded and draped on terrain (fill-extrusion
       // follows the DEM, so a hillside array sits on the slope, not at sea level)
       map.addSource("footprint", { type: "geojson", data: EMPTY_FC as never });
@@ -218,6 +240,18 @@ export default function MapView({
     }
     return m;
   }, [sites, selectedId, bounds, viewZoom]);
+
+  // toggle the satellite basemap
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const apply = () => {
+      if (!map.getLayer("satellite")) return;
+      map.setLayoutProperty("satellite", "visibility", basemap === "satellite" ? "visible" : "none");
+    };
+    if (map.getLayer("satellite")) apply();
+    else map.once("load", apply);
+  }, [basemap]);
 
   // push the open site's footprint into the terrain-draped extrusion source
   useEffect(() => {
