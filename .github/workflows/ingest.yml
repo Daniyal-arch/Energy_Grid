@@ -11,8 +11,8 @@ on:
         description: "adapter (gee | brightsky | …)"
         default: "gee"
       technology:
-        description: "subset by technology (e.g. solar; blank = all)"
-        default: "solar"
+        description: "subset by technology (e.g. solar; blank = ALL technologies)"
+        default: ""
       mastr_status:
         description: 'registry status (e.g. "In Planung"; blank = all)'
         default: "In Planung"
