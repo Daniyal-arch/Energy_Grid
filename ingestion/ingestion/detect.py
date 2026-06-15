@@ -121,34 +121,40 @@ def main(argv: list[str] | None = None) -> int:
     )
     params = Params()
     n_sites = n_detected = n_transitions = 0
+    n_errors = 0
     for site in sites:
         sid = str(site.id)
-        ndvi, bsi, vh = (_obs(db, sid, m) for m in ("ndvi", "bsi", "vh_db"))
-        if not ndvi:
-            continue
-        n_sites += 1
-        snow = _snow_days(db, sid)
-        if snow:
-            ndvi = [o for o in ndvi if o.date not in snow]
-            bsi = [o for o in bsi if o.date not in snow]
-        # Construction precedes operation: for a commissioned site, ignore observations
-        # well past commissioning so a later vegetation shift can't be mistaken for a build.
-        if site.commissioning_date:
-            bound = site.commissioning_date + timedelta(days=180)
-            ndvi = [o for o in ndvi if o.date <= bound]
-            bsi = [o for o in bsi if o.date <= bound]
-            vh = [o for o in vh if o.date <= bound]
-        transitions = detect_transitions(ndvi, bsi, vh, params)
-        _write(db, sid, transitions)
-        if transitions:
-            n_detected += 1
-            n_transitions += len(transitions)
-            log.info("%s: %s", site.name, " -> ".join(t.to_state.value for t in transitions))
+        try:
+            ndvi, bsi, vh = (_obs(db, sid, m) for m in ("ndvi", "bsi", "vh_db"))
+            if not ndvi:
+                continue
+            n_sites += 1
+            snow = _snow_days(db, sid)
+            if snow:
+                ndvi = [o for o in ndvi if o.date not in snow]
+                bsi = [o for o in bsi if o.date not in snow]
+            # Construction precedes operation: for a commissioned site, ignore observations
+            # well past commissioning so a later vegetation shift can't be mistaken for a build.
+            if site.commissioning_date:
+                bound = site.commissioning_date + timedelta(days=180)
+                ndvi = [o for o in ndvi if o.date <= bound]
+                bsi = [o for o in bsi if o.date <= bound]
+                vh = [o for o in vh if o.date <= bound]
+            transitions = detect_transitions(ndvi, bsi, vh, params)
+            _write(db, sid, transitions)
+            if transitions:
+                n_detected += 1
+                n_transitions += len(transitions)
+                log.info("%s: %s", site.name, " -> ".join(t.to_state.value for t in transitions))
+        except Exception as exc:  # never let one site abort the whole detection run
+            n_errors += 1
+            log.warning("site %s (%s) failed: %s", site.name, sid, exc)
     log.info(
-        "done: %d sites analysed, %d with detections, %d transitions",
+        "done: %d sites analysed, %d with detections, %d transitions, %d errors",
         n_sites,
         n_detected,
         n_transitions,
+        n_errors,
     )
     return 0
 
