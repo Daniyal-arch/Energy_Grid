@@ -8,6 +8,7 @@ import NavRail, { type View } from "./components/NavRail";
 import SiteDrawer from "./components/SiteDrawer";
 import TopBar from "./components/TopBar";
 import { api, type Footprint, type Meta, type RecentDetection, type Site, type Turbine } from "./lib/api";
+import { num } from "./lib/format";
 import { applyFilter, emptyFilter, type Filter } from "./lib/query";
 
 type Bounds = [[number, number], [number, number]] | null;
@@ -99,6 +100,9 @@ export default function App() {
     [sites, deadlines],
   );
 
+  const building = useMemo(() => sites.filter((s) => BUILDING.has(s.status)).length, [sites]);
+  const totalGw = useMemo(() => sites.reduce((a, s) => a + s.capacity_mw, 0) / 1000, [sites]);
+
   const mapSites = useMemo(() => {
     if (highlight) return sites.filter((s) => highlight.has(s.id));
     return applyFilter(sites, filter);
@@ -133,7 +137,7 @@ export default function App() {
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar />
+        <TopBar basemap={basemap} setBasemap={setBasemap} />
 
         <div className="relative min-h-0 flex-1">
           {view === "map" ? (
@@ -151,19 +155,23 @@ export default function App() {
                 basemap={basemap}
               />
 
-              <div className="absolute right-3 top-3 z-10 flex overflow-hidden rounded-lg border border-line bg-ink-900/90 text-xs backdrop-blur">
-                {(["dark", "satellite"] as const).map((b) => (
-                  <button
-                    key={b}
-                    onClick={() => setBasemap(b)}
-                    className={`px-2.5 py-1.5 capitalize transition ${
-                      basemap === b ? "bg-accent/15 text-accent-300" : "text-slate-400 hover:text-slate-200"
-                    }`}
-                  >
-                    {b}
-                  </button>
-                ))}
-              </div>
+              {!selectedId && (
+                <div className="absolute bottom-3 right-3 z-10 flex divide-x divide-line overflow-hidden rounded-md border border-line bg-ink-900/85 backdrop-blur">
+                  <div className="px-3 py-1.5">
+                    <div className="eyebrow">Sites</div>
+                    <div className="font-mono text-sm font-semibold tabular-nums text-slate-100">{num(sites.length)}</div>
+                    <div className="text-[10px] text-faint">{(totalGw).toFixed(1)} GW</div>
+                  </div>
+                  <div className="px-3 py-1.5">
+                    <div className="eyebrow">Building</div>
+                    <div className="font-mono text-sm font-semibold tabular-nums text-accent-400">{num(building)}</div>
+                  </div>
+                  <div className="px-3 py-1.5">
+                    <div className="eyebrow">Behind</div>
+                    <div className="font-mono text-sm font-semibold tabular-nums text-alert">{num(overdueCount)}</div>
+                  </div>
+                </div>
+              )}
               {statsOpen ? (
                 <div className="absolute bottom-0 left-0 top-0">
                   <FilterPanel
@@ -172,8 +180,6 @@ export default function App() {
                     setFilter={setFilterManual}
                     colorMode={colorMode}
                     setColorMode={setColorMode}
-                    overdue={overdueCount}
-                    recent={recent.length}
                     meta={meta}
                     onClose={() => setStatsOpen(false)}
                   />

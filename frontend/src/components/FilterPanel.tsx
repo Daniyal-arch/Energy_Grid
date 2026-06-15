@@ -22,15 +22,11 @@ interface Props {
   setFilter: (f: Filter) => void;
   colorMode: ColorMode;
   setColorMode: (m: ColorMode) => void;
-  overdue: number;
-  recent: number;
   meta: Meta | null;
   onClose: () => void;
 }
 
-export default function FilterPanel({ all, filter, setFilter, colorMode, setColorMode, overdue, recent, meta, onClose }: Props) {
-  const totalMw = all.reduce((a, s) => a + s.capacity_mw, 0);
-  const building = all.filter((s) => ["clearing", "earthworks", "construction"].includes(s.status)).length;
+export default function FilterPanel({ all, filter, setFilter, colorMode, setColorMode, meta, onClose }: Props) {
   const techStats = (t: Technology) => {
     const rows = all.filter((s) => s.technology === t);
     return { n: rows.length, mw: rows.reduce((a, s) => a + s.capacity_mw, 0) };
@@ -60,16 +56,6 @@ export default function FilterPanel({ all, filter, setFilter, colorMode, setColo
         >
           ✕
         </button>
-      </div>
-
-      <div>
-        <div className="eyebrow mb-2">Portfolio</div>
-        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line">
-          <Kpi label="Sites" value={num(all.length)} sub={mw(totalMw)} />
-          <Kpi label="Building" value={num(building)} accent="#38bdf8" />
-          <Kpi label="Behind deadline" value={num(overdue)} accent="#f87171" />
-          <Kpi label="Recent changes" value={num(recent)} accent="#f4b740" />
-        </div>
       </div>
 
       <div>
@@ -135,15 +121,6 @@ export default function FilterPanel({ all, filter, setFilter, colorMode, setColo
   );
 }
 
-const Kpi = ({ label, value, sub, accent }: { label: string; value: string; sub?: string; accent?: string }) => (
-  <div className="bg-ink-900 px-2.5 py-2">
-    <div className="eyebrow whitespace-nowrap">{label}</div>
-    <div className="font-mono text-[15px] font-semibold leading-tight tabular-nums" style={{ color: accent ?? "#e6e9ef" }}>
-      {value}
-    </div>
-    {sub && <div className="text-[10px] text-faint">{sub}</div>}
-  </div>
-);
 
 const Group = ({ title, children }: { title: string; children: ReactNode }) => (
   <div>
