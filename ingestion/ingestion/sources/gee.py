@@ -205,4 +205,11 @@ class GEESource(BaseSource):
             db.table("timeseries").upsert(
                 rows[i : i + 1000], on_conflict="site_id,date,sensor,metric"
             ).execute()
+        # mark these sites done so --skip-existing is a fast table read, not a
+        # DISTINCT over the whole (millions-of-rows) timeseries table
+        site_ids = {r["site_id"] for r in rows}
+        if site_ids:
+            db.table("backfilled_sites").upsert(
+                [{"site_id": s} for s in site_ids], on_conflict="site_id"
+            ).execute()
         return LoadStats(loaded=len(rows))
