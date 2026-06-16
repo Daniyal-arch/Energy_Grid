@@ -12,25 +12,48 @@ export const STATE_ORDER = [
   "construction",
   "complete",
 ] as const;
-export type ConstructionState = (typeof STATE_ORDER)[number];
+export type ConstructionState = (typeof STATE_ORDER)[number]; // satellite-detected (DB enum)
 
-export const STATE_COLOR: Record<ConstructionState, RGB> = {
-  unknown: [78, 86, 100], // cool grey — not yet analysed
+// "operational" is a derived display state: the registry says the plant is in
+// service, so there is no construction to monitor — distinct from genuinely
+// unanalysed sites.
+export type DisplayState = ConstructionState | "operational";
+
+// legend order: active build states first, terminal states last
+export const DISPLAY_ORDER: DisplayState[] = [
+  "construction",
+  "earthworks",
+  "clearing",
+  "no_activity",
+  "complete",
+  "operational",
+  "unknown",
+];
+
+export const STATE_COLOR: Record<DisplayState, RGB> = {
+  unknown: [78, 86, 100], // cool grey — pending analysis
   no_activity: [120, 130, 148], // grey
   clearing: [216, 170, 86], // muted amber
   earthworks: [212, 120, 72], // muted orange
   construction: [86, 158, 210], // steel blue
   complete: [88, 182, 140], // muted green
+  operational: [92, 138, 150], // muted teal — in service (registry-confirmed)
 };
 
-export const STATE_LABEL: Record<ConstructionState, string> = {
-  unknown: "Not yet analysed",
+export const STATE_LABEL: Record<DisplayState, string> = {
+  unknown: "Pending analysis",
   no_activity: "No activity",
   clearing: "Clearing",
   earthworks: "Earthworks",
   construction: "Construction",
   complete: "Complete",
+  operational: "Operational",
 };
+
+// registry-operating + not satellite-analysed → show as operational, not pending
+export function displayState(status: ConstructionState, mastrStatus: string | null): DisplayState {
+  return status === "unknown" && mastrStatus === "In Betrieb" ? "operational" : status;
+}
 
 export const TECH_ORDER = [
   "solar",

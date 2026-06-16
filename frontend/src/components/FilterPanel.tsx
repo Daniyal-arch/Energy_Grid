@@ -4,14 +4,15 @@ import type { Meta, Site } from "../lib/api";
 import { fmtDate, mw, num } from "../lib/format";
 import type { Filter } from "../lib/query";
 import {
+  DISPLAY_ORDER,
   STATE_COLOR,
   STATE_LABEL,
-  STATE_ORDER,
   TECH_COLOR,
   TECH_LABEL,
   TECH_ORDER,
+  displayState,
   rgbCss,
-  type ConstructionState,
+  type DisplayState,
   type Technology,
 } from "../lib/theme";
 import type { ColorMode } from "./MapView";
@@ -31,7 +32,8 @@ export default function FilterPanel({ all, filter, setFilter, colorMode, setColo
     const rows = all.filter((s) => s.technology === t);
     return { n: rows.length, mw: rows.reduce((a, s) => a + s.capacity_mw, 0) };
   };
-  const stateCount = (st: ConstructionState) => all.filter((s) => s.status === st).length;
+  const stateCount = (st: DisplayState) =>
+    all.filter((s) => displayState(s.status, s.mastr_status) === st).length;
 
   const toggle = <T,>(set: Set<T>, v: T): Set<T> => {
     const next = new Set(set);
@@ -97,7 +99,7 @@ export default function FilterPanel({ all, filter, setFilter, colorMode, setColo
       </Group>
 
       <Group title="Construction state">
-        {STATE_ORDER.map((st) => {
+        {DISPLAY_ORDER.map((st) => {
           const on = filter.states.has(st);
           return (
             <Row

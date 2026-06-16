@@ -18,6 +18,7 @@ import {
   STATE_LABEL,
   TECH_COLOR,
   TERRAIN_TILES,
+  displayState,
   type RGB,
   type Technology,
 } from "../lib/theme";
@@ -45,11 +46,10 @@ const DIM: RGB = [60, 70, 90];
 const EMPTY_FC = { type: "FeatureCollection", features: [] };
 
 function colorOf(s: Site, mode: ColorMode): [number, number, number, number] {
+  const ds = displayState(s.status, s.mastr_status);
   const c =
-    mode === "state"
-      ? STATE_COLOR[s.status] ?? DIM
-      : (s.technology && TECH_COLOR[s.technology]) || DIM;
-  const alpha = mode === "state" && s.status === "unknown" ? 150 : 230;
+    mode === "state" ? STATE_COLOR[ds] ?? DIM : (s.technology && TECH_COLOR[s.technology]) || DIM;
+  const alpha = mode === "state" && ds === "unknown" ? 150 : 230;
   return [c[0], c[1], c[2], alpha];
 }
 
@@ -186,7 +186,7 @@ export default function MapView({
         if (!o?.name) return null;
         return {
           html: `<b>${o.name}</b><br/>${mw(o.capacity_mw)} · ${o.technology ?? "—"}<br/>${
-            STATE_LABEL[o.status]
+            STATE_LABEL[displayState(o.status, o.mastr_status)]
           }`,
           style: {
             background: "rgba(12,16,24,0.95)",

@@ -3,11 +3,11 @@
 // output drives the map, so the UI contract doesn't change).
 
 import type { Site } from "./api";
-import { STATE_LABEL, TECH_LABEL, type ConstructionState, type Technology } from "./theme";
+import { STATE_LABEL, TECH_LABEL, displayState, type DisplayState, type Technology } from "./theme";
 
 export interface Filter {
   technologies: Set<Technology>;
-  states: Set<ConstructionState>; // construction state
+  states: Set<DisplayState>; // construction (or derived) state
   minCapacityMw: number | null;
   region: string | null; // German federal state
   planningOnly: boolean;
@@ -51,7 +51,7 @@ export function parseQuery(q: string): Parsed {
       understood.push(TECH_LABEL[tech]);
     }
   }
-  for (const st of Object.keys(STATE_LABEL) as ConstructionState[]) {
+  for (const st of Object.keys(STATE_LABEL) as DisplayState[]) {
     if (st !== "unknown" && text.includes(st.replace("_", " "))) {
       filter.states.add(st);
       understood.push(STATE_LABEL[st]);
@@ -78,7 +78,7 @@ export function parseQuery(q: string): Parsed {
 export function applyFilter(sites: Site[], f: Filter): Site[] {
   return sites.filter((s) => {
     if (f.technologies.size && (!s.technology || !f.technologies.has(s.technology))) return false;
-    if (f.states.size && !f.states.has(s.status)) return false;
+    if (f.states.size && !f.states.has(displayState(s.status, s.mastr_status))) return false;
     if (f.region && s.state !== f.region) return false;
     if (f.minCapacityMw != null && s.capacity_mw < f.minCapacityMw) return false;
     if (f.planningOnly && s.mastr_status !== "In Planung") return false;

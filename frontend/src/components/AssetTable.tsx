@@ -7,8 +7,8 @@ import {
   STATE_LABEL,
   TECH_COLOR,
   TECH_LABEL,
+  displayState,
   rgbCss,
-  type ConstructionState,
   type Technology,
 } from "../lib/theme";
 
@@ -163,9 +163,9 @@ export default function AssetTable({ sites, deadlines, highlight, onSelect }: Pr
                     <span className="inline-flex items-center gap-1.5 text-slate-300">
                       <span
                         className="h-2 w-2 rounded-full"
-                        style={{ background: rgbCss(STATE_COLOR[s.status as ConstructionState]) }}
+                        style={{ background: rgbCss(STATE_COLOR[displayState(s.status, s.mastr_status)]) }}
                       />
-                      {STATE_LABEL[s.status as ConstructionState]}
+                      {STATE_LABEL[displayState(s.status, s.mastr_status)]}
                     </span>
                   </td>
                   <td className="px-3 py-1.5 text-slate-400">{s.mastr_status ?? "—"}</td>

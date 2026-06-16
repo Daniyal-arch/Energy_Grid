@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useState } from "react";
 
 import { api, type Deadline, type Detection, type Series, type SiteDetail } from "../lib/api";
 import { fmtDate, mw } from "../lib/format";
-import { STATE_COLOR, STATE_LABEL, TECH_LABEL, rgbCss } from "../lib/theme";
+import { STATE_COLOR, STATE_LABEL, TECH_LABEL, displayState, rgbCss } from "../lib/theme";
 import MetricChart from "./MetricChart";
 
 const confColor = { high: "#34d399", medium: "#f4b740", low: "#94a3b8" } as const;
@@ -99,9 +99,9 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
           <div className="flex items-center gap-2">
             <span
               className="h-2.5 w-2.5 rounded-full"
-              style={{ background: rgbCss(STATE_COLOR[s.status]) }}
+              style={{ background: rgbCss(STATE_COLOR[displayState(s.status, s.mastr_status)]) }}
             />
-            <span className="eyebrow">{STATE_LABEL[s.status]}</span>
+            <span className="eyebrow">{STATE_LABEL[displayState(s.status, s.mastr_status)]}</span>
           </div>
           <h2 className="mt-1 text-base font-semibold leading-tight text-slate-100">{s.name}</h2>
           <p className="text-xs text-slate-500">
