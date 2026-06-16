@@ -49,10 +49,18 @@ export interface Deadline {
   type: "legal_completion" | "planned_commissioning" | string;
 }
 
+export interface GridUnit {
+  eic: string;
+  name: string;
+  capacity_mw: number | null;
+  psr_type: string | null;
+}
+
 export interface SiteDetail {
   site: Site & Record<string, unknown>;
   detections: Detection[];
   deadlines: Deadline[];
+  grid_unit: GridUnit | null;
 }
 
 export type Point = { date: string; value: number };

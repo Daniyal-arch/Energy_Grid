@@ -12,10 +12,12 @@ mix; the per-unit registry is unique.
 
 from __future__ import annotations
 
+import logging
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from collections.abc import Iterable
 from datetime import UTC, date, datetime, timedelta
+from typing import Any
 
 import httpx
 from app.config import get_settings
@@ -35,6 +37,15 @@ PSR = {
     "B17": "waste", "B18": "wind-offshore", "B19": "wind-onshore", "B20": "other",
 }
 _RES_HOURS = {"PT15M": 0.25, "PT30M": 0.5, "PT60M": 1.0, "P1D": 24.0, "P7D": 168.0}
+
+# ENTSO production type -> our site technology (for matching units to sites)
+_PSR_TECH = {
+    "lignite": "combustion", "hard-coal": "combustion", "gas": "combustion", "oil": "combustion",
+    "coal-gas": "combustion", "waste": "combustion", "biomass": "biomass",
+    "run-of-river-hydro": "hydro", "reservoir-hydro": "hydro", "pumped-hydro": "hydro",
+}
+
+log = logging.getLogger("entsoe")
 
 
 def _fmt(dt: datetime) -> str:
@@ -103,21 +114,24 @@ class EntsoeSource(BaseSource):
                          periodStart=f"{yr}01010000", periodEnd=f"{yr}12312300")
         if root is not None:
             for ts in (e for e in root if _strip(e.tag) == "TimeSeries"):
-                name = cap = psr = eic = None
-                for e in ts.iter():
+                # the unit's EIC is the PowerSystemResources mRID — NOT the
+                # TimeSeries-level mRID (which is a per-record id → dup units)
+                res = _find(ts, "PowerSystemResources")
+                if res is None:
+                    continue
+                eic = name = None
+                for e in res.iter():
                     t = _strip(e.tag)
-                    if t == "name" and name is None:
-                        name = e.text
-                    elif t == "nominalP":
-                        cap = e.text
-                    elif t == "psrType":
-                        psr = e.text
-                    elif t == "mRID" and eic is None:
+                    if t == "mRID" and eic is None:
                         eic = e.text
+                    elif t == "name" and name is None:
+                        name = e.text
+                psr_el = _find(ts, "psrType")
+                np_el = _find(ts, "nominalP")
+                cap = float(np_el.text) if np_el is not None and np_el.text else None
                 if eic and name:
-                    yield {"kind": "unit", "eic": eic, "name": name,
-                           "capacity_mw": float(cap) if cap else None,
-                           "psr_type": PSR.get(psr or "", psr)}
+                    yield {"kind": "unit", "eic": eic, "name": name, "capacity_mw": cap,
+                           "psr_type": PSR.get(psr_el.text if psr_el is not None else "")}
 
     def transform(self, raw: Iterable[RawRecord]) -> Iterable[RawRecord]:
         # collapse the per-type generation points into one daily MWh row per (type, day)
@@ -158,4 +172,46 @@ class EntsoeSource(BaseSource):
             ).execute()
         for i in range(0, len(units), 500):
             db.table("grid_units").upsert(units[i : i + 500], on_conflict="eic").execute()
+        matched = self._match_units(db)
+        log.info("matched %d/%d units to sites", matched, len(units))
         return LoadStats(loaded=len(gen) + len(units))
+
+    def _match_units(self, db: Client) -> int:
+        """Link each grid unit to a site by technology + tight capacity match.
+        MaStR names are mostly id placeholders, so capacity is the usable signal;
+        the large plants have fairly distinct capacities (e.g. 1052 MW = Datteln 4)."""
+        units = db.table("grid_units").select("eic,name,capacity_mw,psr_type").execute().data or []
+        by_tech: dict[str, list[dict[str, Any]]] = {}
+        for tech in set(_PSR_TECH.values()):
+            rows: list[dict[str, Any]] = []
+            page = 0
+            while True:
+                batch = (
+                    db.table("sites").select("id,name,capacity_mw")
+                    .eq("technology", tech).range(page * 1000, page * 1000 + 999).execute().data
+                    or []
+                )
+                rows.extend(batch)
+                if len(batch) < 1000:
+                    break
+                page += 1
+            by_tech[tech] = rows
+
+        matched = 0
+        for u in units:
+            tech = _PSR_TECH.get(u.get("psr_type") or "")
+            raw_cap = u.get("capacity_mw")
+            if not tech or not raw_cap:
+                continue
+            cap = float(raw_cap)
+            tol = max(2.0, 0.015 * cap)  # tight: big plants have distinct capacities
+            cands = [
+                s for s in by_tech[tech]
+                if s.get("capacity_mw") and abs(float(s["capacity_mw"]) - cap) <= tol
+            ]
+            if not cands:
+                continue
+            best = min(cands, key=lambda s: abs(float(s["capacity_mw"]) - cap))
+            db.table("grid_units").update({"site_id": best["id"]}).eq("eic", u["eic"]).execute()
+            matched += 1
+        return matched

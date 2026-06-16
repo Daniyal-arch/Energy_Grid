@@ -86,6 +86,10 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
 
   if (!detail) return null;
   const s = detail.site;
+  const grid = detail.grid_unit;
+  const ds = displayState(s.status, s.mastr_status);
+  // confidence of the satellite "complete" detection (clarity on completion claims)
+  const completeConf = detail.detections.find((d) => d.to_state === "complete")?.confidence;
   const hasSeries = series && (series.ndvi.length || series.vh_db.length);
   const chipBefore = (s.chip_before_url as string | null) ?? null;
   const chipAfter = (s.chip_after_url as string | null) ?? null;
@@ -96,12 +100,24 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
     <aside className="absolute right-0 top-0 z-20 flex h-full w-[380px] flex-col gap-4 overflow-y-auto border-l border-line bg-ink-900/95 p-5 backdrop-blur-xl">
       <div className="flex items-start justify-between">
         <div>
-          <div className="flex items-center gap-2">
-            <span
-              className="h-2.5 w-2.5 rounded-full"
-              style={{ background: rgbCss(STATE_COLOR[displayState(s.status, s.mastr_status)]) }}
-            />
-            <span className="eyebrow">{STATE_LABEL[displayState(s.status, s.mastr_status)]}</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full" style={{ background: rgbCss(STATE_COLOR[ds]) }} />
+            <span className="eyebrow">{STATE_LABEL[ds]}</span>
+            {grid ? (
+              <span className="rounded-sm bg-positive/15 px-1.5 py-px text-[10px] font-medium text-positive">
+                ✓ grid-confirmed
+              </span>
+            ) : (
+              ds === "complete" &&
+              completeConf && (
+                <span
+                  className="rounded-sm bg-white/[0.06] px-1.5 py-px text-[10px] font-medium"
+                  style={{ color: confColor[completeConf] }}
+                >
+                  {completeConf} confidence
+                </span>
+              )
+            )}
           </div>
           <h2 className="mt-1 text-base font-semibold leading-tight text-slate-100">{s.name}</h2>
           <p className="text-xs text-slate-500">
@@ -121,6 +137,20 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
         {s.unit_count > 1 && <Fact label="Units" value={`${s.unit_count} (clustered)`} />}
         <Fact label="Owner" value={s.owner ?? "—"} mono />
       </div>
+
+      {grid && (
+        <div className="flex items-start gap-2.5 rounded-md border border-positive/30 bg-positive/[0.08] px-3 py-2.5">
+          <span className="mt-0.5 text-positive">⚡</span>
+          <div className="text-xs leading-snug">
+            <div className="font-medium text-positive">Grid-confirmed operational</div>
+            <div className="mt-0.5 text-slate-400">
+              ENTSO-E unit <span className="text-slate-200">{grid.name}</span>
+              {grid.capacity_mw ? ` · ${Math.round(grid.capacity_mw)} MW` : ""}
+              {grid.psr_type ? ` · ${grid.psr_type.replace(/-/g, " ")}` : ""}
+            </div>
+          </div>
+        </div>
+      )}
 
       {(chipBefore || chipAfter) && (
         <Section title="Satellite — before / after">

@@ -90,7 +90,21 @@ def site_detail(site_id: str) -> dict[str, Any]:
         .execute()
         .data
     )
-    return {"site": site[0], "detections": detections, "deadlines": deadlines}
+    # ENTSO-E grid unit matched to this site (independent operational confirmation)
+    grid = (
+        db.table("grid_units")
+        .select("eic,name,capacity_mw,psr_type")
+        .eq("site_id", site_id)
+        .limit(1)
+        .execute()
+        .data
+    )
+    return {
+        "site": site[0],
+        "detections": detections,
+        "deadlines": deadlines,
+        "grid_unit": grid[0] if grid else None,
+    }
 
 
 @app.get("/sites/{site_id}/footprint")
