@@ -2,6 +2,7 @@
 
 import time
 from functools import lru_cache
+from typing import Any
 
 import httpx
 
@@ -44,7 +45,7 @@ def _harden_session(client: Client) -> None:
         return
     original = session.request
 
-    def request_with_retry(*args, **kwargs):  # type: ignore[no-untyped-def]
+    def request_with_retry(*args: Any, **kwargs: Any) -> httpx.Response:
         for attempt in range(5):
             try:
                 return original(*args, **kwargs)
