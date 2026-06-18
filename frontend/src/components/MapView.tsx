@@ -1,5 +1,6 @@
 import type { Layer, PickingInfo } from "@deck.gl/core";
-import { ColumnLayer, ScatterplotLayer } from "@deck.gl/layers";
+import { TripsLayer } from "@deck.gl/geo-layers";
+import { ColumnLayer, PathLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { SimpleMeshLayer } from "@deck.gl/mesh-layers";
 import maplibregl from "maplibre-gl";
@@ -8,6 +9,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Footprint, RecentDetection, Site, Turbine } from "../lib/api";
 import { OBJECT_MESH, REAL_COLOR, REAL_HZ, STACK_H } from "../lib/energyObjects";
 import { glint, plume, pulse as pulseFx, type Particle } from "../lib/effects";
+import { loadGrid, voltColor, type GridData } from "../lib/grid";
 import { mw } from "../lib/format";
 import { ROTOR_MESH, TOWER_MESH } from "../lib/turbineMesh";
 import {
@@ -38,6 +40,7 @@ interface Props {
   footprint: Footprint | null;
   turbines: Turbine[];
   basemap: "dark" | "satellite";
+  showGrid: boolean;
 }
 
 const TURBINE_COLOR: [number, number, number] = [226, 232, 240]; // light grey, like real towers
@@ -64,10 +67,12 @@ export default function MapView({
   footprint,
   turbines,
   basemap,
+  showGrid,
 }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const overlayRef = useRef<MapboxOverlay | null>(null);
+  const [grid, setGrid] = useState<GridData | null>(null);
   const groundZ = useRef<Map<string, number>>(new Map());
   const [phase, setPhase] = useState(0);
   const [groundTick, setGroundTick] = useState(0);
@@ -244,6 +249,11 @@ export default function MapView({
     }
     return m;
   }, [sites, selectedId, bounds, viewZoom]);
+
+  // lazy-load the transmission grid GeoJSON once it's first switched on
+  useEffect(() => {
+    if (showGrid && !grid) loadGrid("/grid_transmission.geojson").then(setGrid).catch(() => {});
+  }, [showGrid, grid]);
 
   // toggle the satellite basemap
   useEffect(() => {
@@ -553,6 +563,59 @@ export default function MapView({
         })
       : null;
 
+    // transmission grid: dim backbone + flowing energy trails + glowing substations
+    const gridLayers: Layer[] = [];
+    if (showGrid && grid) {
+      const t = (performance.now() * 0.16) % (grid.maxTime + 40000);
+      gridLayers.push(
+        new PathLayer<(typeof grid.lines)[number]>({
+          id: "grid-base",
+          data: grid.lines,
+          getPath: (d) => d.path,
+          getColor: (d) => {
+            const c = voltColor(d.voltage);
+            return [c[0], c[1], c[2], 60];
+          },
+          getWidth: (d) => (d.voltage >= 380000 ? 2.4 : 1.4),
+          widthUnits: "pixels",
+          widthMinPixels: 1,
+          capRounded: true,
+          jointRounded: true,
+        }),
+        new TripsLayer<(typeof grid.lines)[number]>({
+          id: "grid-flow",
+          data: grid.lines,
+          getPath: (d) => d.path,
+          getTimestamps: (d) => d.timestamps,
+          getColor: (d) => voltColor(d.voltage),
+          currentTime: t,
+          trailLength: 16000,
+          fadeTrail: true,
+          widthUnits: "pixels",
+          getWidth: (d) => (d.voltage >= 380000 ? 3 : 2),
+          widthMinPixels: 1.5,
+          capRounded: true,
+          jointRounded: true,
+          updateTriggers: { currentTime: t },
+        }),
+        new ScatterplotLayer<(typeof grid.subs)[number]>({
+          id: "grid-subs",
+          data: grid.subs,
+          getPosition: (d) => d.position,
+          getRadius: (d) => (d.voltage >= 380000 ? 3.2 : 2.2),
+          radiusUnits: "pixels",
+          radiusMinPixels: 1.5,
+          radiusMaxPixels: 6,
+          getFillColor: (d) => {
+            const c = voltColor(d.voltage);
+            return [c[0], c[1], c[2], Math.round(120 + 90 * (0.5 + 0.5 * Math.sin(phase * 6.28)))];
+          },
+          stroked: false,
+          updateTriggers: { getFillColor: phase },
+        }),
+      );
+    }
+
     const billboard = (id: string, data: Particle[], flat = false) =>
       new ScatterplotLayer<Particle>({
         id,
@@ -626,6 +689,7 @@ export default function MapView({
 
     overlayRef.current.setProps({
       layers: [
+        ...gridLayers,
         ...(spikes ? [spikes] : []),
         ...objectLayers,
         ...(selObject ? [selObject] : []),
@@ -636,7 +700,7 @@ export default function MapView({
         ...(ring ? [ring] : []),
       ],
     });
-  }, [spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom]);
+  }, [spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom, showGrid, grid]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {

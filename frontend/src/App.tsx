@@ -52,6 +52,7 @@ export default function App() {
   const [assistantOpen, setAssistantOpen] = useState(true);
   const [statsOpen, setStatsOpen] = useState(true);
   const [basemap, setBasemap] = useState<"dark" | "satellite">("dark");
+  const [showGrid, setShowGrid] = useState(false);
 
   useEffect(() => {
     api.sites().then(setSites).catch((e) => setError(String(e)));
@@ -137,7 +138,12 @@ export default function App() {
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar basemap={basemap} setBasemap={setBasemap} />
+        <TopBar
+          basemap={basemap}
+          setBasemap={setBasemap}
+          showGrid={showGrid}
+          toggleGrid={() => setShowGrid((g) => !g)}
+        />
 
         <div className="relative min-h-0 flex-1">
           {view === "map" ? (
@@ -153,6 +159,7 @@ export default function App() {
                 footprint={footprint}
                 turbines={turbines}
                 basemap={basemap}
+                showGrid={showGrid}
               />
 
               {!selectedId && (
