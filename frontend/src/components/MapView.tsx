@@ -1,6 +1,6 @@
 import type { Layer, PickingInfo } from "@deck.gl/core";
 import { TripsLayer } from "@deck.gl/geo-layers";
-import { ColumnLayer, PathLayer, ScatterplotLayer } from "@deck.gl/layers";
+import { ArcLayer, ColumnLayer, PathLayer, ScatterplotLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { SimpleMeshLayer } from "@deck.gl/mesh-layers";
 import maplibregl from "maplibre-gl";
@@ -9,7 +9,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Footprint, RecentDetection, Site, Turbine } from "../lib/api";
 import { OBJECT_MESH, REAL_COLOR, REAL_HZ, STACK_H } from "../lib/energyObjects";
 import { glint, plume, pulse as pulseFx, type Particle } from "../lib/effects";
-import { loadGrid, voltColor, type GridData } from "../lib/grid";
+import {
+  PHASE_COLOR,
+  loadGrid,
+  loadPlanned,
+  voltColor,
+  type GridData,
+  type PlannedSeg,
+} from "../lib/grid";
 import { mw } from "../lib/format";
 import { ROTOR_MESH, TOWER_MESH } from "../lib/turbineMesh";
 import {
@@ -73,6 +80,7 @@ export default function MapView({
   const mapRef = useRef<maplibregl.Map | null>(null);
   const overlayRef = useRef<MapboxOverlay | null>(null);
   const [grid, setGrid] = useState<GridData | null>(null);
+  const [planned, setPlanned] = useState<{ segs: PlannedSeg[]; maxTime: number } | null>(null);
   const groundZ = useRef<Map<string, number>>(new Map());
   const [phase, setPhase] = useState(0);
   const [groundTick, setGroundTick] = useState(0);
@@ -253,7 +261,25 @@ export default function MapView({
   // lazy-load the transmission grid GeoJSON once it's first switched on
   useEffect(() => {
     if (showGrid && !grid) loadGrid("/grid_transmission.geojson").then(setGrid).catch(() => {});
-  }, [showGrid, grid]);
+    if (showGrid && !planned) loadPlanned("/grid_planned.geojson").then(setPlanned).catch(() => {});
+  }, [showGrid, grid, planned]);
+
+  // nearest substation to the open site → a 3D arc connecting plant to the grid
+  const plantArc = useMemo(() => {
+    if (!grid || !selectedId) return null;
+    const s = sites.find((x) => x.id === selectedId);
+    if (!s) return null;
+    let best: GridData["subs"][number] | null = null;
+    let bestD = Infinity;
+    for (const sub of grid.subs) {
+      const d = (sub.position[0] - s.lon) ** 2 + (sub.position[1] - s.lat) ** 2;
+      if (d < bestD) {
+        bestD = d;
+        best = sub;
+      }
+    }
+    return best ? { from: [s.lon, s.lat] as [number, number], to: best.position } : null;
+  }, [grid, selectedId, sites]);
 
   // toggle the satellite basemap
   useEffect(() => {
@@ -620,6 +646,68 @@ export default function MapView({
       );
     }
 
+    // planned corridors (netzausbau): coloured by construction phase, with energy
+    // flowing along the sections that are actually under construction
+    if (showGrid && planned) {
+      const tp = (performance.now() * 0.14) % (planned.maxTime + 40000);
+      const building = planned.segs.filter((s) => s.phase === "construction");
+      gridLayers.push(
+        new PathLayer<PlannedSeg>({
+          id: "planned-base",
+          data: planned.segs,
+          getPath: (d) => d.path,
+          getColor: (d) => {
+            const c = PHASE_COLOR[d.phase];
+            return [c[0], c[1], c[2], d.phase === "planned" ? 130 : 210];
+          },
+          getWidth: (d) => (d.phase === "construction" || d.phase === "operational" ? 4 : 3),
+          widthUnits: "pixels",
+          widthMinPixels: 2,
+          capRounded: true,
+          jointRounded: true,
+          parameters: { depthCompare: "always" },
+          updateTriggers: { getColor: 0 },
+        }),
+        new TripsLayer<PlannedSeg>({
+          id: "planned-flow",
+          data: building,
+          getPath: (d) => d.path,
+          getTimestamps: (d) => d.timestamps,
+          getColor: [255, 200, 120],
+          currentTime: tp,
+          trailLength: 22000,
+          fadeTrail: true,
+          widthUnits: "pixels",
+          getWidth: 5,
+          widthMinPixels: 2.5,
+          capRounded: true,
+          jointRounded: true,
+          parameters: { depthCompare: "always" },
+          updateTriggers: { currentTime: tp },
+        }),
+      );
+    }
+
+    // 3D arc from the open plant to its nearest substation (its grid connection)
+    if (showGrid && plantArc) {
+      gridLayers.push(
+        new ArcLayer<typeof plantArc>({
+          id: "plant-grid-arc",
+          data: [plantArc],
+          getSourcePosition: (d) => d.from,
+          getTargetPosition: (d) => d.to,
+          getSourceColor: [150, 230, 255, 230],
+          getTargetColor: [150, 230, 255, 40],
+          getHeight: 0.5,
+          getWidth: 3 + 1.5 * (0.5 + 0.5 * Math.sin(phase * 6.28)),
+          widthUnits: "pixels",
+          greatCircle: false,
+          parameters: { depthCompare: "always" },
+          updateTriggers: { getWidth: phase },
+        }),
+      );
+    }
+
     const billboard = (id: string, data: Particle[], flat = false) =>
       new ScatterplotLayer<Particle>({
         id,
@@ -704,7 +792,7 @@ export default function MapView({
         ...(ring ? [ring] : []),
       ],
     });
-  }, [spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom, showGrid, grid]);
+  }, [spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom, showGrid, grid, planned, plantArc]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {
