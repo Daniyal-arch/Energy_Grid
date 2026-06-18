@@ -14,10 +14,11 @@ export const STATE_ORDER = [
 ] as const;
 export type ConstructionState = (typeof STATE_ORDER)[number]; // satellite-detected (DB enum)
 
-// "operational" is a derived display state: the registry says the plant is in
-// service, so there is no construction to monitor — distinct from genuinely
-// unanalysed sites.
-export type DisplayState = ConstructionState | "operational";
+// Derived display states from the registry, for sites without a satellite signal:
+//   operational = registry says in service · planned = registry says in development.
+// Satellite construction stages apply to solar only; compact techs are milestone-
+// monitored (registry/permit/grid), so they read as planned → operational.
+export type DisplayState = ConstructionState | "operational" | "planned";
 
 // legend order: active build states first, terminal states last
 export const DISPLAY_ORDER: DisplayState[] = [
@@ -26,33 +27,40 @@ export const DISPLAY_ORDER: DisplayState[] = [
   "clearing",
   "no_activity",
   "complete",
+  "planned",
   "operational",
   "unknown",
 ];
 
 export const STATE_COLOR: Record<DisplayState, RGB> = {
-  unknown: [78, 86, 100], // cool grey — pending analysis
+  unknown: [78, 86, 100], // cool grey — pending
   no_activity: [120, 130, 148], // grey
   clearing: [216, 170, 86], // muted amber
   earthworks: [212, 120, 72], // muted orange
   construction: [86, 158, 210], // steel blue
   complete: [88, 182, 140], // muted green
-  operational: [92, 138, 150], // muted teal — in service (registry-confirmed)
+  planned: [110, 118, 142], // muted slate-indigo — in development (registry)
+  operational: [92, 138, 150], // muted teal — in service (registry/grid)
 };
 
 export const STATE_LABEL: Record<DisplayState, string> = {
-  unknown: "Pending analysis",
+  unknown: "Pending",
   no_activity: "No activity",
   clearing: "Clearing",
   earthworks: "Earthworks",
   construction: "Construction",
   complete: "Complete",
+  planned: "Planned",
   operational: "Operational",
 };
 
-// registry-operating + not satellite-analysed → show as operational, not pending
+// no satellite state → derive from the registry (operating vs in development)
 export function displayState(status: ConstructionState, mastrStatus: string | null): DisplayState {
-  return status === "unknown" && mastrStatus === "In Betrieb" ? "operational" : status;
+  if (status === "unknown") {
+    if (mastrStatus === "In Betrieb") return "operational";
+    if (mastrStatus === "In Planung") return "planned";
+  }
+  return status;
 }
 
 export const TECH_ORDER = [

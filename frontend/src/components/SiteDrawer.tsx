@@ -170,9 +170,19 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
         </Section>
       )}
 
-      <Section title="Construction timeline">
-        <Timeline detections={detail.detections} />
-      </Section>
+      {s.technology === "solar" || detail.detections.length > 0 ? (
+        <Section title="Construction timeline">
+          <Timeline detections={detail.detections} />
+        </Section>
+      ) : (
+        <Section title="Monitoring">
+          <p className="text-xs leading-relaxed text-slate-500">
+            Monitored via registry, permitting &amp; grid milestones. Satellite construction
+            detection is solar-only — a compact {s.technology ?? "industrial"} site isn&apos;t
+            resolvable at Sentinel&apos;s 10&nbsp;m.
+          </p>
+        </Section>
+      )}
 
       {hasSeries && series && (
         <Section title="Satellite signal">
