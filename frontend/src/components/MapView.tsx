@@ -574,13 +574,15 @@ export default function MapView({
           getPath: (d) => d.path,
           getColor: (d) => {
             const c = voltColor(d.voltage);
-            return [c[0], c[1], c[2], 60];
+            return [c[0], c[1], c[2], 150];
           },
-          getWidth: (d) => (d.voltage >= 380000 ? 2.4 : 1.4),
+          getWidth: (d) => (d.voltage >= 380000 ? 2.6 : 1.6),
           widthUnits: "pixels",
-          widthMinPixels: 1,
+          widthMinPixels: 1.2,
           capRounded: true,
           jointRounded: true,
+          // draw on top of the 3D terrain (deck meshes at z=0 are otherwise hidden)
+          parameters: { depthCompare: "always" },
         }),
         new TripsLayer<(typeof grid.lines)[number]>({
           id: "grid-flow",
@@ -596,6 +598,7 @@ export default function MapView({
           widthMinPixels: 1.5,
           capRounded: true,
           jointRounded: true,
+          parameters: { depthCompare: "always" },
           updateTriggers: { currentTime: t },
         }),
         new ScatterplotLayer<(typeof grid.subs)[number]>({
@@ -611,6 +614,7 @@ export default function MapView({
             return [c[0], c[1], c[2], Math.round(120 + 90 * (0.5 + 0.5 * Math.sin(phase * 6.28)))];
           },
           stroked: false,
+          parameters: { depthCompare: "always" },
           updateTriggers: { getFillColor: phase },
         }),
       );
