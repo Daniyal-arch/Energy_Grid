@@ -15,6 +15,7 @@ import {
   loadPlanned,
   voltColor,
   type GridData,
+  type GridPick,
   type PlannedSeg,
 } from "../lib/grid";
 import { mw } from "../lib/format";
@@ -48,6 +49,7 @@ interface Props {
   turbines: Turbine[];
   basemap: "dark" | "satellite";
   showGrid: boolean;
+  onGridSelect: (p: GridPick) => void;
 }
 
 const TURBINE_COLOR: [number, number, number] = [226, 232, 240]; // light grey, like real towers
@@ -75,6 +77,7 @@ export default function MapView({
   turbines,
   basemap,
   showGrid,
+  onGridSelect,
 }: Props) {
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -607,6 +610,8 @@ export default function MapView({
           widthMinPixels: 1.2,
           capRounded: true,
           jointRounded: true,
+          pickable: true,
+          onClick: (info) => info.object && onGridSelect({ kind: "line", line: info.object }),
           // draw on top of the 3D terrain (deck meshes at z=0 are otherwise hidden)
           parameters: { depthCompare: "always" },
         }),
@@ -640,6 +645,9 @@ export default function MapView({
             return [c[0], c[1], c[2], Math.round(120 + 90 * (0.5 + 0.5 * Math.sin(phase * 6.28)))];
           },
           stroked: false,
+          pickable: true,
+          radiusScale: 2.5, // larger hit area than the dot
+          onClick: (info) => info.object && onGridSelect({ kind: "substation", sub: info.object }),
           parameters: { depthCompare: "always" },
           updateTriggers: { getFillColor: phase },
         }),
@@ -665,6 +673,8 @@ export default function MapView({
           widthMinPixels: 2,
           capRounded: true,
           jointRounded: true,
+          pickable: true,
+          onClick: (info) => info.object && onGridSelect({ kind: "corridor", seg: info.object }),
           parameters: { depthCompare: "always" },
           updateTriggers: { getColor: 0 },
         }),

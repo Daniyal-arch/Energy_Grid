@@ -3,12 +3,15 @@ import { useEffect, useMemo, useState } from "react";
 import AssetTable from "./components/AssetTable";
 import AssistantPanel from "./components/AssistantPanel";
 import FilterPanel from "./components/FilterPanel";
+import GridInfoPanel from "./components/GridInfoPanel";
 import MapView, { type ColorMode } from "./components/MapView";
 import NavRail, { type View } from "./components/NavRail";
 import SiteDrawer from "./components/SiteDrawer";
 import TopBar from "./components/TopBar";
 import { api, type Footprint, type Meta, type RecentDetection, type Site, type Turbine } from "./lib/api";
 import { num } from "./lib/format";
+import { PHASE_COLOR, voltColor, type GridPick, type Phase } from "./lib/grid";
+import { rgbCss } from "./lib/theme";
 import { applyFilter, emptyFilter, type Filter } from "./lib/query";
 
 type Bounds = [[number, number], [number, number]] | null;
@@ -52,6 +55,7 @@ export default function App() {
   const [assistantOpen, setAssistantOpen] = useState(true);
   const [statsOpen, setStatsOpen] = useState(true);
   const [basemap, setBasemap] = useState<"dark" | "satellite">("dark");
+  const [gridSel, setGridSel] = useState<GridPick | null>(null);
   const [showGrid, setShowGrid] = useState(false);
 
   useEffect(() => {
@@ -111,6 +115,7 @@ export default function App() {
 
   // selecting a site flies the camera in and opens the detail drawer
   const selectSite = (id: string) => {
+    setGridSel(null);
     setSelectedId(id);
     const s = sitesById.get(id);
     if (s) setFlyTo({ lon: s.lon, lat: s.lat });
@@ -160,7 +165,13 @@ export default function App() {
                 turbines={turbines}
                 basemap={basemap}
                 showGrid={showGrid}
+                onGridSelect={(p) => {
+                  setSelectedId(null);
+                  setGridSel(p);
+                }}
               />
+
+              {showGrid && <GridLegend />}
 
               {!selectedId && (
                 <div className="absolute bottom-3 right-3 z-10 flex divide-x divide-line overflow-hidden rounded-md border border-line bg-ink-900/85 backdrop-blur">
@@ -216,6 +227,7 @@ export default function App() {
           )}
 
           {selectedId && <SiteDrawer id={selectedId} onClose={() => setSelectedId(null)} />}
+          {gridSel && <GridInfoPanel pick={gridSel} onClose={() => setGridSel(null)} />}
         </div>
       </div>
 
@@ -246,6 +258,48 @@ export default function App() {
           <code className="text-red-100">uv run uvicorn app.main:app --app-dir backend</code>
         </div>
       )}
+    </div>
+  );
+}
+
+const PHASE_LABEL: Record<Phase, string> = {
+  construction: "Under construction",
+  operational: "Operational",
+  approval: "In approval",
+  planned: "Planned",
+};
+
+// distinguishes the operational backbone from the planned corridors + the arc estimate
+function GridLegend() {
+  const Row = ({ color, label, dash }: { color: string; label: string; dash?: boolean }) => (
+    <div className="flex items-center gap-2">
+      <span
+        className="h-0.5 w-4 rounded"
+        style={{ background: dash ? `repeating-linear-gradient(90deg, ${color} 0 3px, transparent 3px 6px)` : color }}
+      />
+      <span className="text-[11px] text-slate-300">{label}</span>
+    </div>
+  );
+  return (
+    <div className="absolute bottom-3 left-3 z-10 space-y-2 rounded-md border border-line bg-ink-900/90 px-3 py-2.5 backdrop-blur">
+      <div>
+        <div className="eyebrow mb-1.5">Operational backbone</div>
+        <div className="space-y-1">
+          <Row color={rgbCss(voltColor(380000))} label="380 kV" />
+          <Row color={rgbCss(voltColor(220000))} label="220 kV" />
+        </div>
+      </div>
+      <div className="border-t border-line pt-2">
+        <div className="eyebrow mb-1.5">Planned corridors</div>
+        <div className="space-y-1">
+          {(["construction", "operational", "approval", "planned"] as Phase[]).map((p) => (
+            <Row key={p} color={rgbCss(PHASE_COLOR[p])} label={PHASE_LABEL[p]} />
+          ))}
+        </div>
+      </div>
+      <div className="border-t border-line pt-2 text-[10px] leading-snug text-faint">
+        Arc on a selected plant = nearest substation (estimated connection).
+      </div>
     </div>
   );
 }

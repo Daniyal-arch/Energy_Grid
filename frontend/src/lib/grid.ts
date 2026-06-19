@@ -15,6 +15,7 @@ export interface GridLine {
 export interface GridSub {
   position: [number, number];
   voltage: number;
+  name: string | null;
 }
 export interface GridData {
   lines: GridLine[];
@@ -29,7 +30,7 @@ export async function loadGrid(url: string): Promise<GridData> {
   let maxTime = 0;
   for (const f of fc.features as Array<{
     geometry: { coordinates: unknown };
-    properties: { kind: string; voltage?: number };
+    properties: { kind: string; voltage?: number; name?: string | null };
   }>) {
     const p = f.properties;
     if (p.kind === "line") {
@@ -48,7 +49,11 @@ export async function loadGrid(url: string): Promise<GridData> {
       if (d > maxTime) maxTime = d;
       lines.push({ path, timestamps: ts, voltage: p.voltage || 0 });
     } else if (p.kind === "substation") {
-      subs.push({ position: f.geometry.coordinates as [number, number], voltage: p.voltage || 0 });
+      subs.push({
+        position: f.geometry.coordinates as [number, number],
+        voltage: p.voltage || 0,
+        name: p.name ?? null,
+      });
     }
   }
   return { lines, subs, maxTime };
@@ -58,6 +63,12 @@ export async function loadGrid(url: string): Promise<GridData> {
 export const voltColor = (v: number): [number, number, number] =>
   v >= 380000 ? [130, 226, 255] : [86, 150, 216];
 
+// a clicked grid element (for the info panel)
+export type GridPick =
+  | { kind: "corridor"; seg: PlannedSeg }
+  | { kind: "substation"; sub: GridSub }
+  | { kind: "line"; line: GridLine };
+
 // ── Planned transmission corridors (netzausbau BBPlG) with construction phase ──
 export type Phase = "construction" | "operational" | "approval" | "planned";
 
@@ -65,6 +76,10 @@ export interface PlannedSeg {
   path: [number, number][];
   phase: Phase;
   status: string;
+  name: string;
+  number: string;
+  technik: string;
+  spannung: string;
   timestamps: number[];
 }
 
@@ -88,10 +103,22 @@ export async function loadPlanned(url: string): Promise<{ segs: PlannedSeg[]; ma
   const fc = await fetch(url).then((r) => r.json());
   const segs: PlannedSeg[] = [];
   let maxTime = 0;
-  for (const f of fc.features as Array<{ geometry: { type: string; coordinates: unknown }; properties: { Vorhabenst?: string } }>) {
+  for (const f of fc.features as Array<{
+    geometry: { type: string; coordinates: unknown };
+    properties: { Vorhabenst?: string; Vorhaben?: string; Vorhabennu?: string; Technik?: string; Spannung?: string };
+  }>) {
     if (!f.geometry) continue;
-    const status = f.properties.Vorhabenst || "";
+    const pr = f.properties;
+    const status = pr.Vorhabenst || "";
     const phase = phaseOf(status);
+    const meta = {
+      status,
+      phase,
+      name: pr.Vorhaben || "",
+      number: pr.Vorhabennu || "",
+      technik: pr.Technik || "",
+      spannung: pr.Spannung || "",
+    };
     const g = f.geometry;
     const lines = (g.type === "MultiLineString" ? g.coordinates : [g.coordinates]) as [number, number][][];
     for (const path of lines) {
@@ -107,7 +134,7 @@ export async function loadPlanned(url: string): Promise<{ segs: PlannedSeg[]; ma
         ts.push(d);
       }
       if (d > maxTime) maxTime = d;
-      segs.push({ path, phase, status, timestamps: ts });
+      segs.push({ path, timestamps: ts, ...meta });
     }
   }
   return { segs, maxTime };
