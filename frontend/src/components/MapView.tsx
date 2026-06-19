@@ -48,7 +48,9 @@ interface Props {
   footprint: Footprint | null;
   turbines: Turbine[];
   basemap: "dark" | "satellite";
-  showGrid: boolean;
+  gridBackbone: boolean;
+  gridPlanned: boolean;
+  gridConstructionOnly: boolean;
   onGridSelect: (p: GridPick) => void;
 }
 
@@ -76,9 +78,12 @@ export default function MapView({
   footprint,
   turbines,
   basemap,
-  showGrid,
+  gridBackbone,
+  gridPlanned,
+  gridConstructionOnly,
   onGridSelect,
 }: Props) {
+  const showGrid = gridBackbone || gridPlanned;
   const container = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const overlayRef = useRef<MapboxOverlay | null>(null);
@@ -283,6 +288,76 @@ export default function MapView({
     }
     return best ? { from: [s.lon, s.lat] as [number, number], to: best.position } : null;
   }, [grid, selectedId, sites]);
+
+  // STATIC grid layers (built once per data/toggle change — NOT every animation
+  // frame, which was starving the fly-in and the 3D objects)
+  const gridStatic = useMemo<Layer[]>(() => {
+    const layers: Layer[] = [];
+    if (gridBackbone && grid) {
+      layers.push(
+        new PathLayer<GridData["lines"][number]>({
+          id: "grid-base",
+          data: grid.lines,
+          getPath: (d) => d.path,
+          getColor: (d) => {
+            const c = voltColor(d.voltage);
+            return [c[0], c[1], c[2], 150];
+          },
+          getWidth: (d) => (d.voltage >= 380000 ? 2.6 : 1.6),
+          widthUnits: "pixels",
+          widthMinPixels: 2.4, // wider hit area so thin lines are clickable
+          capRounded: true,
+          jointRounded: true,
+          pickable: true,
+          onClick: (info) => info.object && onGridSelect({ kind: "line", line: info.object }),
+          parameters: { depthCompare: "always" },
+        }),
+        new ScatterplotLayer<GridData["subs"][number]>({
+          id: "grid-subs",
+          data: grid.subs,
+          getPosition: (d) => d.position,
+          getRadius: (d) => (d.voltage >= 380000 ? 3.4 : 2.4),
+          radiusUnits: "pixels",
+          radiusMinPixels: 1.6,
+          radiusMaxPixels: 7,
+          getFillColor: (d) => {
+            const c = voltColor(d.voltage);
+            return [c[0], c[1], c[2], 215];
+          },
+          stroked: false,
+          pickable: true,
+          radiusScale: 2.5,
+          onClick: (info) => info.object && onGridSelect({ kind: "substation", sub: info.object }),
+          parameters: { depthCompare: "always" },
+        }),
+      );
+    }
+    if (gridPlanned && planned) {
+      const segs = gridConstructionOnly
+        ? planned.segs.filter((s) => s.phase === "construction")
+        : planned.segs;
+      layers.push(
+        new PathLayer<PlannedSeg>({
+          id: "planned-base",
+          data: segs,
+          getPath: (d) => d.path,
+          getColor: (d) => {
+            const c = PHASE_COLOR[d.phase];
+            return [c[0], c[1], c[2], d.phase === "planned" ? 130 : 215];
+          },
+          getWidth: (d) => (d.phase === "construction" || d.phase === "operational" ? 4 : 3),
+          widthUnits: "pixels",
+          widthMinPixels: 3,
+          capRounded: true,
+          jointRounded: true,
+          pickable: true,
+          onClick: (info) => info.object && onGridSelect({ kind: "corridor", seg: info.object }),
+          parameters: { depthCompare: "always" },
+        }),
+      );
+    }
+    return layers;
+  }, [grid, planned, gridBackbone, gridPlanned, gridConstructionOnly, onGridSelect]);
 
   // toggle the satellite basemap
   useEffect(() => {
@@ -592,29 +667,13 @@ export default function MapView({
         })
       : null;
 
-    // transmission grid: dim backbone + flowing energy trails + glowing substations
+    // ANIMATED grid layers only (flowing trails + the plant arc). The static base
+    // lines/substations/corridors live in the gridStatic memo so they aren't
+    // rebuilt every frame.
     const gridLayers: Layer[] = [];
-    if (showGrid && grid) {
+    if (gridBackbone && grid) {
       const t = (performance.now() * 0.16) % (grid.maxTime + 40000);
       gridLayers.push(
-        new PathLayer<(typeof grid.lines)[number]>({
-          id: "grid-base",
-          data: grid.lines,
-          getPath: (d) => d.path,
-          getColor: (d) => {
-            const c = voltColor(d.voltage);
-            return [c[0], c[1], c[2], 150];
-          },
-          getWidth: (d) => (d.voltage >= 380000 ? 2.6 : 1.6),
-          widthUnits: "pixels",
-          widthMinPixels: 1.2,
-          capRounded: true,
-          jointRounded: true,
-          pickable: true,
-          onClick: (info) => info.object && onGridSelect({ kind: "line", line: info.object }),
-          // draw on top of the 3D terrain (deck meshes at z=0 are otherwise hidden)
-          parameters: { depthCompare: "always" },
-        }),
         new TripsLayer<(typeof grid.lines)[number]>({
           id: "grid-flow",
           data: grid.lines,
@@ -632,70 +691,31 @@ export default function MapView({
           parameters: { depthCompare: "always" },
           updateTriggers: { currentTime: t },
         }),
-        new ScatterplotLayer<(typeof grid.subs)[number]>({
-          id: "grid-subs",
-          data: grid.subs,
-          getPosition: (d) => d.position,
-          getRadius: (d) => (d.voltage >= 380000 ? 3.2 : 2.2),
-          radiusUnits: "pixels",
-          radiusMinPixels: 1.5,
-          radiusMaxPixels: 6,
-          getFillColor: (d) => {
-            const c = voltColor(d.voltage);
-            return [c[0], c[1], c[2], Math.round(120 + 90 * (0.5 + 0.5 * Math.sin(phase * 6.28)))];
-          },
-          stroked: false,
-          pickable: true,
-          radiusScale: 2.5, // larger hit area than the dot
-          onClick: (info) => info.object && onGridSelect({ kind: "substation", sub: info.object }),
-          parameters: { depthCompare: "always" },
-          updateTriggers: { getFillColor: phase },
-        }),
       );
     }
-
-    // planned corridors (netzausbau): coloured by construction phase, with energy
-    // flowing along the sections that are actually under construction
-    if (showGrid && planned) {
+    if (gridPlanned && planned) {
       const tp = (performance.now() * 0.14) % (planned.maxTime + 40000);
       const building = planned.segs.filter((s) => s.phase === "construction");
-      gridLayers.push(
-        new PathLayer<PlannedSeg>({
-          id: "planned-base",
-          data: planned.segs,
-          getPath: (d) => d.path,
-          getColor: (d) => {
-            const c = PHASE_COLOR[d.phase];
-            return [c[0], c[1], c[2], d.phase === "planned" ? 130 : 210];
-          },
-          getWidth: (d) => (d.phase === "construction" || d.phase === "operational" ? 4 : 3),
-          widthUnits: "pixels",
-          widthMinPixels: 2,
-          capRounded: true,
-          jointRounded: true,
-          pickable: true,
-          onClick: (info) => info.object && onGridSelect({ kind: "corridor", seg: info.object }),
-          parameters: { depthCompare: "always" },
-          updateTriggers: { getColor: 0 },
-        }),
-        new TripsLayer<PlannedSeg>({
-          id: "planned-flow",
-          data: building,
-          getPath: (d) => d.path,
-          getTimestamps: (d) => d.timestamps,
-          getColor: [255, 200, 120],
-          currentTime: tp,
-          trailLength: 22000,
-          fadeTrail: true,
-          widthUnits: "pixels",
-          getWidth: 5,
-          widthMinPixels: 2.5,
-          capRounded: true,
-          jointRounded: true,
-          parameters: { depthCompare: "always" },
-          updateTriggers: { currentTime: tp },
-        }),
-      );
+      if (building.length)
+        gridLayers.push(
+          new TripsLayer<PlannedSeg>({
+            id: "planned-flow",
+            data: building,
+            getPath: (d) => d.path,
+            getTimestamps: (d) => d.timestamps,
+            getColor: [255, 200, 120],
+            currentTime: tp,
+            trailLength: 22000,
+            fadeTrail: true,
+            widthUnits: "pixels",
+            getWidth: 5,
+            widthMinPixels: 2.5,
+            capRounded: true,
+            jointRounded: true,
+            parameters: { depthCompare: "always" },
+            updateTriggers: { currentTime: tp },
+          }),
+        );
     }
 
     // 3D arc from the open plant to its nearest substation (its grid connection)
@@ -791,6 +811,7 @@ export default function MapView({
 
     overlayRef.current.setProps({
       layers: [
+        ...gridStatic,
         ...gridLayers,
         ...(spikes ? [spikes] : []),
         ...objectLayers,
@@ -802,7 +823,7 @@ export default function MapView({
         ...(ring ? [ring] : []),
       ],
     });
-  }, [spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom, showGrid, grid, planned, plantArc]);
+  }, [gridStatic, spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom, gridBackbone, gridPlanned, grid, planned, plantArc]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {
