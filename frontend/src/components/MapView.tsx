@@ -289,6 +289,10 @@ export default function MapView({
     return best ? { from: [s.lon, s.lat] as [number, number], to: best.position } : null;
   }, [grid, selectedId, sites]);
 
+  // only the 380 kV backbone gets the animated flow (far fewer vertices than
+  // animating the whole network every frame)
+  const grid380 = useMemo(() => grid?.lines.filter((l) => l.voltage >= 380000) ?? [], [grid]);
+
   // STATIC grid layers (built once per data/toggle change — NOT every animation
   // frame, which was starving the fly-in and the 3D objects)
   const gridStatic = useMemo<Layer[]>(() => {
@@ -676,7 +680,7 @@ export default function MapView({
       gridLayers.push(
         new TripsLayer<(typeof grid.lines)[number]>({
           id: "grid-flow",
-          data: grid.lines,
+          data: grid380,
           getPath: (d) => d.path,
           getTimestamps: (d) => d.timestamps,
           getColor: (d) => voltColor(d.voltage),
@@ -823,7 +827,7 @@ export default function MapView({
         ...(ring ? [ring] : []),
       ],
     });
-  }, [gridStatic, spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom, gridBackbone, gridPlanned, grid, planned, plantArc]);
+  }, [gridStatic, spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom, gridBackbone, gridPlanned, grid, grid380, planned, plantArc]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {
