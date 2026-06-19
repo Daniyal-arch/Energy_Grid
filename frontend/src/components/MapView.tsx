@@ -310,7 +310,7 @@ export default function MapView({
           jointRounded: true,
           pickable: true,
           onClick: (info) => info.object && onGridSelect({ kind: "line", line: info.object }),
-          parameters: { depthCompare: "always" },
+          parameters: { depthCompare: "always", depthWriteEnabled: false },
         }),
         new ScatterplotLayer<GridData["subs"][number]>({
           id: "grid-subs",
@@ -328,7 +328,7 @@ export default function MapView({
           pickable: true,
           radiusScale: 2.5,
           onClick: (info) => info.object && onGridSelect({ kind: "substation", sub: info.object }),
-          parameters: { depthCompare: "always" },
+          parameters: { depthCompare: "always", depthWriteEnabled: false },
         }),
       );
     }
@@ -352,7 +352,7 @@ export default function MapView({
           jointRounded: true,
           pickable: true,
           onClick: (info) => info.object && onGridSelect({ kind: "corridor", seg: info.object }),
-          parameters: { depthCompare: "always" },
+          parameters: { depthCompare: "always", depthWriteEnabled: false },
         }),
       );
     }
@@ -688,7 +688,7 @@ export default function MapView({
           widthMinPixels: 1.5,
           capRounded: true,
           jointRounded: true,
-          parameters: { depthCompare: "always" },
+          parameters: { depthCompare: "always", depthWriteEnabled: false },
           updateTriggers: { currentTime: t },
         }),
       );
@@ -712,7 +712,7 @@ export default function MapView({
             widthMinPixels: 2.5,
             capRounded: true,
             jointRounded: true,
-            parameters: { depthCompare: "always" },
+            parameters: { depthCompare: "always", depthWriteEnabled: false },
             updateTriggers: { currentTime: tp },
           }),
         );
@@ -732,7 +732,7 @@ export default function MapView({
           getWidth: 3 + 1.5 * (0.5 + 0.5 * Math.sin(phase * 6.28)),
           widthUnits: "pixels",
           greatCircle: false,
-          parameters: { depthCompare: "always" },
+          parameters: { depthCompare: "always", depthWriteEnabled: false },
           updateTriggers: { getWidth: phase },
         }),
       );
