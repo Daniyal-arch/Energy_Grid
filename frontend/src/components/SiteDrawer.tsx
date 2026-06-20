@@ -1,8 +1,9 @@
 import { type ReactNode, useEffect, useState } from "react";
 
-import { api, type Deadline, type Detection, type Series, type SiteDetail } from "../lib/api";
+import { api, type Deadline, type Detection, type GenPoint, type Series, type SiteDetail } from "../lib/api";
 import { fmtDate, mw } from "../lib/format";
-import { STATE_COLOR, STATE_LABEL, TECH_LABEL, displayState, rgbCss } from "../lib/theme";
+import { STATE_COLOR, STATE_LABEL, TECH_COLOR, TECH_LABEL, displayState, rgbCss } from "../lib/theme";
+import GenerationChart from "./GenerationChart";
 import MetricChart from "./MetricChart";
 
 const confColor = { high: "#34d399", medium: "#f4b740", low: "#94a3b8" } as const;
@@ -76,13 +77,26 @@ function Timeline({ detections }: { detections: Detection[] }) {
 export default function SiteDrawer({ id, onClose }: { id: string; onClose: () => void }) {
   const [detail, setDetail] = useState<SiteDetail | null>(null);
   const [series, setSeries] = useState<Series | null>(null);
+  const [gen, setGen] = useState<GenPoint[] | null>(null);
 
   useEffect(() => {
     setDetail(null);
     setSeries(null);
+    setGen(null);
     api.site(id).then(setDetail);
     api.timeseries(id).then(setSeries);
   }, [id]);
+
+  // national generation context — only meaningful for techs satellite can't monitor
+  useEffect(() => {
+    const tech = detail?.site.technology;
+    if (!tech || tech === "solar" || tech === "storage") return;
+    let live = true;
+    api.powerOutput(tech).then((p) => live && setGen(p));
+    return () => {
+      live = false;
+    };
+  }, [detail?.site.technology]);
 
   if (!detail) return null;
   const s = detail.site;
@@ -180,6 +194,18 @@ export default function SiteDrawer({ id, onClose }: { id: string; onClose: () =>
             Monitored via registry, permitting &amp; grid milestones. Satellite construction
             detection is solar-only — a compact {s.technology ?? "industrial"} site isn&apos;t
             resolvable at Sentinel&apos;s 10&nbsp;m.
+            {s.technology === "storage" &&
+              " Batteries shift load rather than generate continuously, so no national output series applies here."}
+          </p>
+        </Section>
+      )}
+
+      {gen && gen.length > 0 && s.technology && (
+        <Section title={`National ${TECH_LABEL[s.technology].toLowerCase()} generation`}>
+          <GenerationChart points={gen} color={rgbCss(TECH_COLOR[s.technology])} />
+          <p className="mt-1 text-[10px] leading-relaxed text-slate-500">
+            Germany-wide daily output (ENTSO-E / SMARD) — context for this site&apos;s
+            technology, not a per-plant reading.
           </p>
         </Section>
       )}

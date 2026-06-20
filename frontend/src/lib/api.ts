@@ -65,6 +65,7 @@ export interface SiteDetail {
 
 export type Point = { date: string; value: number };
 export type Series = { ndvi: Point[]; bsi: Point[]; vh_db: Point[] };
+export type GenPoint = { date: string; mwh: number };
 
 export interface RecentDetection extends Detection {
   site_id: string;
@@ -147,6 +148,7 @@ export const api = {
   footprint: (id: string) => get<Footprint>(`/sites/${id}/footprint`),
   turbines: (id: string) => get<Turbine[]>(`/sites/${id}/turbines`),
   timeseries: (id: string) => get<Series>(`/sites/${id}/timeseries`),
+  powerOutput: (technology: string) => get<GenPoint[]>(`/power-output/${technology}`),
   recent: (limit = 50) => get<RecentDetection[]>(`/detections/recent?limit=${limit}`),
   meta: () => get<Meta>("/meta"),
   legalDeadlines: () => get<Record<string, string>>("/deadlines/legal"),

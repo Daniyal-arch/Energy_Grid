@@ -151,6 +151,36 @@ def site_timeseries(site_id: str) -> dict[str, list[dict[str, Any]]]:
     return series
 
 
+# technology -> national power_output plant_ids that cover it, without double-counting
+# across sources (SMARD has the longest/most reliable history; ENTSO-E fills in the
+# conventional types SMARD doesn't report, plus geothermal)
+_GEN_PLANT_IDS: dict[str, list[str]] = {
+    "solar": ["DE-solar"],
+    "wind": ["DE-wind_onshore", "DE-wind_offshore"],
+    "biomass": ["DE-biomass"],
+    "hydro": ["DE-hydro"],
+    "combustion": ["DE-lignite", "DE-hard-coal", "DE-gas", "DE-oil", "DE-coal-gas", "DE-waste"],
+    "geothermal": ["DE-geothermal"],
+}
+
+
+@app.get("/power-output/{technology}")
+def power_output(technology: str) -> list[dict[str, Any]]:
+    """National daily generation (MWh) for a technology, summed across the plant_ids
+    that cover it. Context for technologies satellite can't monitor — battery storage
+    has no generation series (it shifts load, not produces it), so returns []."""
+    plant_ids = _GEN_PLANT_IDS.get(technology)
+    if not plant_ids:
+        return []
+    db = get_db()
+    q = db.table("power_output").select("date,mwh").in_("plant_id", plant_ids)
+    rows = q.execute().data or []
+    by_date: dict[str, float] = {}
+    for r in rows:
+        by_date[r["date"]] = by_date.get(r["date"], 0.0) + r["mwh"]
+    return [{"date": d, "mwh": round(v, 1)} for d, v in sorted(by_date.items())]
+
+
 @app.get("/detections/recent")
 def recent_detections(limit: int = 50) -> list[dict[str, Any]]:
     """Latest state transitions across the portfolio — the monitoring feed."""
