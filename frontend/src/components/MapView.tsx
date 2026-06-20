@@ -292,34 +292,17 @@ export default function MapView({
   // only the 380 kV backbone gets the animated flow (far fewer vertices than
   // animating the whole network every frame)
 
-  // STATIC grid layers (built once per data/toggle change — NOT every animation
-  // frame, which was starving the fly-in and the 3D objects)
+  // STATIC grid layers (built ONCE per data/toggle change, never on pan/zoom —
+  // a per-moveend viewport filter over 10k paths was re-triangulating the whole
+  // backbone on every interaction, which was the actual stutter. 10k thin lines
+  // + 600 points is trivial for the GPU; let it clip naturally instead.)
   const gridStatic = useMemo<Layer[]>(() => {
-    // viewport-cull: only build geometry that's on screen (huge win zoomed in,
-    // where flying into a plant otherwise rendered the whole national network)
-    const [w, s0, e, n] = bounds;
-    const mLon = (e - w) * 0.2;
-    const mLat = (n - s0) * 0.2;
-    const [W, E, S, N] = [w - mLon, e + mLon, s0 - mLat, n + mLat];
-    const inView = (path: [number, number][]) => {
-      let minX = Infinity;
-      let minY = Infinity;
-      let maxX = -Infinity;
-      let maxY = -Infinity;
-      for (const [x, y] of path) {
-        if (x < minX) minX = x;
-        if (x > maxX) maxX = x;
-        if (y < minY) minY = y;
-        if (y > maxY) maxY = y;
-      }
-      return maxX >= W && minX <= E && maxY >= S && minY <= N;
-    };
     const layers: Layer[] = [];
     if (gridBackbone && grid) {
       layers.push(
         new PathLayer<GridData["lines"][number]>({
           id: "grid-base",
-          data: grid.lines.filter((l) => inView(l.path)),
+          data: grid.lines,
           getPath: (d) => d.path,
           getColor: (d) => {
             const c = voltColor(d.voltage);
@@ -338,9 +321,7 @@ export default function MapView({
         }),
         new ScatterplotLayer<GridData["subs"][number]>({
           id: "grid-subs",
-          data: grid.subs.filter(
-            (d) => d.position[0] >= W && d.position[0] <= E && d.position[1] >= S && d.position[1] <= N,
-          ),
+          data: grid.subs,
           getPosition: (d) => d.position,
           getRadius: (d) => (d.voltage >= 380000 ? 3.4 : 2.4),
           radiusUnits: "pixels",
@@ -359,10 +340,9 @@ export default function MapView({
       );
     }
     if (gridPlanned && planned) {
-      const segs = (gridConstructionOnly
+      const segs = gridConstructionOnly
         ? planned.segs.filter((s) => s.phase === "construction")
-        : planned.segs
-      ).filter((s) => inView(s.path));
+        : planned.segs;
       layers.push(
         new PathLayer<PlannedSeg>({
           id: "planned-base",
@@ -384,7 +364,7 @@ export default function MapView({
       );
     }
     return layers;
-  }, [grid, planned, gridBackbone, gridPlanned, gridConstructionOnly, bounds, onGridSelect]);
+  }, [grid, planned, gridBackbone, gridPlanned, gridConstructionOnly, onGridSelect]);
 
   // toggle the satellite basemap
   useEffect(() => {
