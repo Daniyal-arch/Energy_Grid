@@ -366,6 +366,16 @@ export default function MapView({
     return layers;
   }, [grid, planned, gridBackbone, gridPlanned, gridConstructionOnly, onGridSelect]);
 
+  // construction-phase planned segments for the flow trail — memoized so its
+  // array identity is stable across animation frames. Re-filtering this every
+  // frame (60/sec) made the TripsLayer think `data` changed each frame and
+  // rebuild its GPU buffers from scratch, which piled up GC pressure until the
+  // tab stalled after a few seconds.
+  const buildingSegs = useMemo(
+    () => (gridPlanned && planned ? planned.segs.filter((s) => s.phase === "construction") : []),
+    [gridPlanned, planned],
+  );
+
   // toggle the satellite basemap
   useEffect(() => {
     const map = mapRef.current;
@@ -682,12 +692,11 @@ export default function MapView({
     const gridLayers: Layer[] = [];
     if (gridPlanned && planned) {
       const tp = (performance.now() * 0.14) % (planned.maxTime + 40000);
-      const building = planned.segs.filter((s) => s.phase === "construction");
-      if (building.length)
+      if (buildingSegs.length)
         gridLayers.push(
           new TripsLayer<PlannedSeg>({
             id: "planned-flow",
-            data: building,
+            data: buildingSegs,
             getPath: (d) => d.path,
             getTimestamps: (d) => d.timestamps,
             getColor: [255, 200, 120],
