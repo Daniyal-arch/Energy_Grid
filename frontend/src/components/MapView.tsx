@@ -327,11 +327,13 @@ export default function MapView({
           },
           getWidth: (d) => (d.voltage >= 380000 ? 2.6 : 1.6),
           widthUnits: "pixels",
-          widthMinPixels: 2.4, // wider hit area so thin lines are clickable
+          widthMinPixels: 1.6,
           capRounded: true,
           jointRounded: true,
-          pickable: true,
-          onClick: (info) => info.object && onGridSelect({ kind: "line", line: info.object }),
+          // NOT pickable: 10k pickable line-vertices made every hover-pick render
+          // the whole network + readPixels-stall the main thread (froze the app).
+          // Substations + corridors carry the click targets instead.
+          pickable: false,
           parameters: { depthCompare: "always", depthWriteEnabled: false },
         }),
         new ScatterplotLayer<GridData["subs"][number]>({
