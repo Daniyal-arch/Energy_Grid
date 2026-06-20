@@ -291,17 +291,35 @@ export default function MapView({
 
   // only the 380 kV backbone gets the animated flow (far fewer vertices than
   // animating the whole network every frame)
-  const grid380 = useMemo(() => grid?.lines.filter((l) => l.voltage >= 380000) ?? [], [grid]);
 
   // STATIC grid layers (built once per data/toggle change — NOT every animation
   // frame, which was starving the fly-in and the 3D objects)
   const gridStatic = useMemo<Layer[]>(() => {
+    // viewport-cull: only build geometry that's on screen (huge win zoomed in,
+    // where flying into a plant otherwise rendered the whole national network)
+    const [w, s0, e, n] = bounds;
+    const mLon = (e - w) * 0.2;
+    const mLat = (n - s0) * 0.2;
+    const [W, E, S, N] = [w - mLon, e + mLon, s0 - mLat, n + mLat];
+    const inView = (path: [number, number][]) => {
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+      for (const [x, y] of path) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+      return maxX >= W && minX <= E && maxY >= S && minY <= N;
+    };
     const layers: Layer[] = [];
     if (gridBackbone && grid) {
       layers.push(
         new PathLayer<GridData["lines"][number]>({
           id: "grid-base",
-          data: grid.lines,
+          data: grid.lines.filter((l) => inView(l.path)),
           getPath: (d) => d.path,
           getColor: (d) => {
             const c = voltColor(d.voltage);
@@ -318,7 +336,9 @@ export default function MapView({
         }),
         new ScatterplotLayer<GridData["subs"][number]>({
           id: "grid-subs",
-          data: grid.subs,
+          data: grid.subs.filter(
+            (d) => d.position[0] >= W && d.position[0] <= E && d.position[1] >= S && d.position[1] <= N,
+          ),
           getPosition: (d) => d.position,
           getRadius: (d) => (d.voltage >= 380000 ? 3.4 : 2.4),
           radiusUnits: "pixels",
@@ -337,9 +357,10 @@ export default function MapView({
       );
     }
     if (gridPlanned && planned) {
-      const segs = gridConstructionOnly
+      const segs = (gridConstructionOnly
         ? planned.segs.filter((s) => s.phase === "construction")
-        : planned.segs;
+        : planned.segs
+      ).filter((s) => inView(s.path));
       layers.push(
         new PathLayer<PlannedSeg>({
           id: "planned-base",
@@ -361,7 +382,7 @@ export default function MapView({
       );
     }
     return layers;
-  }, [grid, planned, gridBackbone, gridPlanned, gridConstructionOnly, onGridSelect]);
+  }, [grid, planned, gridBackbone, gridPlanned, gridConstructionOnly, bounds, onGridSelect]);
 
   // toggle the satellite basemap
   useEffect(() => {
@@ -674,29 +695,9 @@ export default function MapView({
     // ANIMATED grid layers only (flowing trails + the plant arc). The static base
     // lines/substations/corridors live in the gridStatic memo so they aren't
     // rebuilt every frame.
+    // Only the under-construction corridors get an animated trail (a small set).
+    // The backbone is static — animating ~27k vertices every frame was the cost.
     const gridLayers: Layer[] = [];
-    if (gridBackbone && grid) {
-      const t = (performance.now() * 0.16) % (grid.maxTime + 40000);
-      gridLayers.push(
-        new TripsLayer<(typeof grid.lines)[number]>({
-          id: "grid-flow",
-          data: grid380,
-          getPath: (d) => d.path,
-          getTimestamps: (d) => d.timestamps,
-          getColor: (d) => voltColor(d.voltage),
-          currentTime: t,
-          trailLength: 16000,
-          fadeTrail: true,
-          widthUnits: "pixels",
-          getWidth: (d) => (d.voltage >= 380000 ? 3 : 2),
-          widthMinPixels: 1.5,
-          capRounded: true,
-          jointRounded: true,
-          parameters: { depthCompare: "always", depthWriteEnabled: false },
-          updateTriggers: { currentTime: t },
-        }),
-      );
-    }
     if (gridPlanned && planned) {
       const tp = (performance.now() * 0.14) % (planned.maxTime + 40000);
       const building = planned.segs.filter((s) => s.phase === "construction");
@@ -827,7 +828,7 @@ export default function MapView({
         ...(ring ? [ring] : []),
       ],
     });
-  }, [gridStatic, spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom, gridBackbone, gridPlanned, grid, grid380, planned, plantArc]);
+  }, [gridStatic, spikes, objectLayers, aggregated, recent, phase, selectedId, sites, footprint, footMeta, turbines, groundTick, closeUp, byTech, viewZoom, gridBackbone, gridPlanned, grid, planned, plantArc]);
 
   // fly to a query/agent result (fit the set)
   useEffect(() => {
