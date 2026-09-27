@@ -1,6 +1,11 @@
-# gridwatch — project conventions
+# Germany InfraAtlas - project conventions
 
-Satellite-based construction monitoring for German energy infrastructure. **Scope: all utility-scale generation technologies ≥5 MW, nationwide** (ground-mounted solar, wind farms, biomass, hydro, geothermal, combustion, battery storage). **Read [PLAN.md](PLAN.md) first** — it is the single source of truth for architecture, phases, and current status. Update its Status section at the end of every working session.
+Source-backed intelligence for German infrastructure, energy security, external
+dependencies, economic resilience, transition delivery, and geopolitical exposure.
+The existing energy asset and remote-sensing code is a lifecycle signal layer within
+that broader system. **Read [PLAN.md](PLAN.md) first**; it defines scope and migration
+order. Package names and database tables may retain legacy names until compatibility
+migrations are ready.
 
 ## Layout
 
@@ -9,7 +14,7 @@ Satellite-based construction monitoring for German energy infrastructure. **Scop
 - `frontend/` — React + Vite + TS + MapLibre GL + Tailwind.
 - `supabase/migrations/` — plain SQL, applied with `supabase db push` (or `supabase migration up`).
 - `scripts/` — probe scripts for uncertain external APIs.
-- `docs/` — DATA_SOURCES.md (adapter status tracker), SETUP.md (credentials walkthrough), ADRs.
+- `docs/` — DATA_SOURCES.md (adapter status tracker), SETUP.md (credentials walkthrough), VIDEO.md (power-grid video recording + rules for text in published videos), ADRs.
 
 ## Commands
 
@@ -20,11 +25,12 @@ uv run ruff check . && uv run ruff format .      # lint + format
 uv run python -m ingestion.run --source brightsky --since 2026-06-01   # run one adapter
 uv run uvicorn app.main:app --reload --app-dir backend                 # backend dev server
 cd frontend && npm install && npm run dev        # frontend dev server
+cd frontend && npm run record:video -- --format 4x5   # power-view MP4 (dev server + API running) -> recordings/; see docs/VIDEO.md
 ```
 
 ## Hard rules
 
-1. **The agent never computes facts.** It only retrieves stored rows (detections, evidence, timeseries, deadlines) and narrates them with citations. Anything analytical happens in pipelines and is stored with provenance first.
+1. **The agent never computes facts.** It retrieves stored observations or curated source-catalog entries and narrates them with citations. Catalog coverage is not a current observation. Derived indicators are computed in pipelines, versioned, and stored with provenance first.
 2. **New data source = one new adapter class + registry decorator.** If adding a source requires touching `ingestion/base.py`, `ingestion/registry.py`, or `ingestion/run.py`, the design is wrong — fix the framework, don't special-case.
 3. **Probe before implementing.** For uncertain external behavior (API quirks, rate limits, file formats), write a small script in `scripts/`, show the user the output, then implement the adapter.
 4. **Stop and ask for credentials.** When a step needs an account, key, or manual download, stop and tell the user exactly what to do (where to register, which key, which env var). Keep `.env.example` documenting every variable.
@@ -39,13 +45,16 @@ cd frontend && npm install && npm run dev        # frontend dev server
 - DB access via `supabase-py` (service-role key in pipelines/backend; anon key only in frontend). Geometry written as WKT through PostGIS.
 - Image chips → Supabase Storage bucket `chips`; DB stores URLs only.
 - Timeseries is a narrow table: `(site_id, date, sensor, metric, value)` with upsert on conflict.
-- Agent ([backend/app/agent.py](backend/app/agent.py)): **OpenAI-compatible chat API**, provider configurable via `LLM_PROVIDER` (`deepseek` | `groq` | `gemini`; default DeepSeek `deepseek-chat`). Manual tool-call retrieval loop; responses carry a structured `sources` array. The agent **only retrieves stored rows** (find_sites / get_site_detail / get_evidence) and never computes facts. Served at `POST /agent/query`.
-- States: `no_activity → clearing → earthworks → construction → complete` (enum `SiteState` in domain models — reuse it, never string literals).
+- Agent ([backend/app/agent.py](backend/app/agent.py)): **OpenAI-compatible chat API**, provider configurable via `LLM_PROVIDER` (`deepseek` | `groq` | `gemini`; default DeepSeek `deepseek-chat`). Manual retrieval loop; responses carry a structured `sources` array. `get_strategic_context` covers researched sources while the existing tools cover stored asset and grid observations. Served at `POST /agent/query`.
+- Asset lifecycle states remain `no_activity -> clearing -> earthworks -> construction -> complete` (enum `SiteState` in domain models). They are one signal type, not the platform taxonomy.
 - Dates in DB are ISO date strings; everything UTC.
 
 ## Data sources
 
-Implementation order and status tracked in [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md). Phase 1: GEE (S2+S1), MaStR, Bright Sky/DWD. Phase 2: EEG auctions, ENTSO-E, SMARD, OSM. Phase 3: WorldCover/DEM, state orthophoto WMS, stubs for Netztransparenz/UVP/news.
+Implementation order and status are tracked in [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
+The machine-readable catalog is `backend/app/strategic_context.py`; keep the two in
+sync. Priority expansion sources are BNetzA gas, the hydrogen core network, Destatis
+trade, DB InfraGO, Eurostat material/industry tables, UBA, and DERA.
 
 ### Gotchas (this environment)
 
