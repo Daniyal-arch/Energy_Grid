@@ -1,6 +1,5 @@
-// gridwatch visual identity. Construction state is our signature dimension — a
-// sequential ramp from dormant (dim) to complete (bright green). Technology is a
-// categorical palette for the density overview. RGB tuples feed deck.gl directly.
+// Germany InfraAtlas map palette. Lifecycle is sequential; asset type is categorical.
+// RGB tuples feed deck.gl directly.
 
 export type RGB = [number, number, number];
 
@@ -12,12 +11,12 @@ export const STATE_ORDER = [
   "construction",
   "complete",
 ] as const;
-export type ConstructionState = (typeof STATE_ORDER)[number]; // satellite-detected (DB enum)
+export type ConstructionState = (typeof STATE_ORDER)[number]; // lifecycle signal (DB enum)
 
 // Derived display states from the registry, for sites without a satellite signal:
 //   operational = registry says in service · planned = registry says in development.
-// Satellite construction stages apply to solar only; compact techs are milestone-
-// monitored (registry/permit/grid), so they read as planned → operational.
+// Remote-sensing stages apply to solar only; compact assets use registry/permit/grid
+// milestones, so they read as planned -> operational.
 export type DisplayState = ConstructionState | "operational" | "planned";
 
 // legend order: active build states first, terminal states last

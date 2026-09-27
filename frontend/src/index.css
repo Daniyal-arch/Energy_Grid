@@ -29,7 +29,7 @@ body {
   text-rendering: optimizeLegibility;
   background: var(--bg);
   color: var(--text);
-  letter-spacing: -0.006em;
+  letter-spacing: 0;
 }
 
 /* tabular figures everywhere data appears; mono for identifiers */
@@ -64,6 +64,59 @@ body {
 .maplibregl-ctrl-bottom-right,
 .maplibregl-ctrl-bottom-left {
   display: none;
+}
+
+/* ── Power view map labels (MapLibre markers: crisp DOM text above the glow) ── */
+.power-label {
+  pointer-events: none;
+  white-space: nowrap;
+  line-height: 1.2;
+  text-shadow:
+    0 0 3px #05070b,
+    0 0 6px #05070b;
+}
+.power-label-city {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #c4cedb;
+}
+.power-label-city::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  border: 1.2px solid #c4cedb;
+  background: #07090e;
+}
+.power-label-code {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+.power-label-value {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+/* video stage: the whole frame is ~half the desktop map, so labels shrink too */
+.capture-stage .power-label-city {
+  font-size: 9.5px;
+  gap: 4px;
+}
+.capture-stage .power-label-city::before {
+  width: 4px;
+  height: 4px;
+  border-width: 1px;
+}
+.capture-stage .power-label-code {
+  font-size: 9.5px;
+}
+.capture-stage .power-label-value {
+  font-size: 8px;
 }
 
 /* ── Agent answer markdown — constrained so nothing overflows the panel ───── */

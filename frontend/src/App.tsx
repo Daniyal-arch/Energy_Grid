@@ -1,82 +1,145 @@
 import { useEffect, useMemo, useState } from "react";
 
-import AssetTable from "./components/AssetTable";
-import AssistantPanel from "./components/AssistantPanel";
-import FilterPanel from "./components/FilterPanel";
+import AtlasHud from "./components/AtlasHud";
+import CaptureOverlay from "./components/CaptureOverlay";
+import { DEFAULT_GRID_LAYERS, type GridLayers } from "./components/GridControl";
 import GridInfoPanel from "./components/GridInfoPanel";
+import MapControls from "./components/MapControls";
 import MapView, { type ColorMode } from "./components/MapView";
-import NavRail, { type View } from "./components/NavRail";
+import PowerLegend from "./components/PowerLegend";
 import SiteDrawer from "./components/SiteDrawer";
-import TopBar from "./components/TopBar";
-import { api, type Footprint, type Meta, type RecentDetection, type Site, type Turbine } from "./lib/api";
-import { num } from "./lib/format";
-import { type GridPick } from "./lib/grid";
-import { type GridLayers } from "./components/GridControl";
+import {
+  api,
+  type Footprint,
+  type GridExchangeRow,
+  type GridHistoryPoint,
+  type GridSnapshotLatest,
+  type RailTimetableBoard,
+  type Site,
+  type Turbine,
+} from "./lib/api";
+import { readCapture } from "./lib/capture";
+import { loadEnergySites } from "./lib/energySites";
+import type { MapFeaturePick } from "./lib/infrastructure";
 import { applyFilter, emptyFilter, type Filter } from "./lib/query";
-
-type Bounds = [[number, number], [number, number]] | null;
-const TODAY = new Date().toISOString().slice(0, 10);
-const BUILDING = new Set(["clearing", "earthworks", "construction"]);
-
-function boundsOf(sites: Site[]): Bounds {
-  if (!sites.length) return null;
-  let a = 180,
-    b = 90,
-    c = -180,
-    d = -90;
-  for (const s of sites) {
-    a = Math.min(a, s.lon);
-    c = Math.max(c, s.lon);
-    b = Math.min(b, s.lat);
-    d = Math.max(d, s.lat);
-  }
-  return [
-    [a - 0.15, b - 0.15],
-    [c + 0.15, d + 0.15],
-  ];
-}
 
 export default function App() {
   const [sites, setSites] = useState<Site[]>([]);
-  const [recent, setRecent] = useState<RecentDetection[]>([]);
-  const [meta, setMeta] = useState<Meta | null>(null);
-  const [deadlines, setDeadlines] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
 
-  const [view, setView] = useState<View>("map");
-  const [colorMode, setColorMode] = useState<ColorMode>("state");
-  const [filter, setFilter] = useState<Filter>(emptyFilter());
+  const [filter] = useState<Filter>(emptyFilter());
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [flyTo, setFlyTo] = useState<{ lon: number; lat: number } | null>(null);
   const [footprint, setFootprint] = useState<Footprint | null>(null);
   const [turbines, setTurbines] = useState<Turbine[]>([]);
-  const [focus, setFocus] = useState<Bounds>(null);
-  const [highlight, setHighlight] = useState<Set<string> | null>(null);
-  const [assistantOpen, setAssistantOpen] = useState(true);
-  const [statsOpen, setStatsOpen] = useState(true);
   const [basemap, setBasemap] = useState<"dark" | "satellite">("dark");
-  const [gridSel, setGridSel] = useState<GridPick | null>(null);
-  const [grid, setGrid] = useState<GridLayers>({ backbone: false, planned: false, constructionOnly: false });
+  const [gridMenuOpen, setGridMenuOpen] = useState(false);
+  const [gridSel, setGridSel] = useState<MapFeaturePick | null>(null);
+  const [grid, setGrid] = useState<GridLayers>(DEFAULT_GRID_LAYERS);
+  const [exchange, setExchange] = useState<GridExchangeRow[]>([]);
+  const [gridLatest, setGridLatest] = useState<GridSnapshotLatest>({});
+  const [railSceneRequest, setRailSceneRequest] = useState(0);
+  const [powerSceneRequest, setPowerSceneRequest] = useState(0);
+  const [activeScene, setActiveScene] = useState<"atlas" | "rail" | "power">("atlas");
+  const [railBoard, setRailBoard] = useState<RailTimetableBoard | null>(null);
+
+  const colorMode: ColorMode = "technology";
+
+  // video capture mode (?capture=4x5 | 9x16), see lib/capture.ts
+  const capture = useMemo(() => readCapture(), []);
+  const [windHistory, setWindHistory] = useState<GridHistoryPoint[]>([]);
+  const [solarHistory, setSolarHistory] = useState<GridHistoryPoint[]>([]);
 
   useEffect(() => {
-    api.sites().then(setSites).catch((e) => setError(String(e)));
-    api.recent(60).then(setRecent).catch(() => {});
-    api.meta().then(setMeta).catch(() => {});
-    api.legalDeadlines().then(setDeadlines).catch(() => {});
+    loadEnergySites()
+      .then(setSites)
+      .catch((e) => setError(String(e)));
   }, []);
 
-  // the API banner is for a genuine outage; clear it automatically so a transient
-  // reload blip doesn't leave it stuck on screen
+  useEffect(() => {
+    if (!grid.backbone && !grid.exchangeFlows) {
+      setGridLatest({});
+      return;
+    }
+    // keep the last good snapshot: the API can answer with a partial/empty
+    // fallback while its DB is unreachable, which would blank the readouts
+    const load = () =>
+      api
+        .gridLatest()
+        .then((d) => {
+          if (d.gen_wind) setGridLatest(d);
+        })
+        .catch(() => {});
+    load();
+    const t = setInterval(load, 5 * 60 * 1000);
+    return () => clearInterval(t);
+  }, [grid.backbone, grid.exchangeFlows]);
+
+  useEffect(() => {
+    if (!grid.exchangeFlows) {
+      setExchange([]);
+      return;
+    }
+    const load = () => {
+      api.gridExchange().then(setExchange).catch(() => {});
+    };
+    load();
+    const t = setInterval(load, 5 * 60 * 1000);
+    return () => clearInterval(t);
+  }, [grid.exchangeFlows]);
+
   useEffect(() => {
     if (!error) return;
     const t = setTimeout(() => setError(null), 5000);
     return () => clearTimeout(t);
   }, [error]);
 
+  useEffect(() => {
+    if (railSceneRequest <= 0) return;
+    const load = () => api.railTimetable("8000105").then(setRailBoard).catch(() => {});
+    load();
+    const t = setInterval(load, 20 * 1000);
+    return () => clearInterval(t);
+  }, [railSceneRequest]);
+
   const sitesById = useMemo(() => new Map(sites.map((s) => [s.id, s])), [sites]);
 
-  // lazily pull the open site's footprint (terrain-draped extrusion) and, for wind
-  // farms, its individual turbines (real 3D models)
+  // capture: open the power view once, and fetch the 48 h chart series
+  useEffect(() => {
+    if (!capture) return;
+    openPowerScene();
+    // the chart is part of the layout, so retry a transient empty/failed answer
+    let live = true;
+    (async () => {
+      for (let attempt = 0; attempt < 20 && live; attempt++) {
+        try {
+          const [wind, solar] = await Promise.all([api.gridHistory("gen_wind"), api.gridHistory("gen_solar")]);
+          if (wind.length > 1 && solar.length > 1) {
+            setWindHistory(wind);
+            setSolarHistory(solar);
+            break;
+          }
+        } catch {
+          // retried below
+        }
+        await new Promise((r) => setTimeout(r, 4000));
+      }
+    })();
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [capture]);
+
+  // the recorder waits for this before its first frame (data + chart series in)
+  const captureReady =
+    // strict: no chart series = no ready signal, so the recorder fails loudly
+    // instead of rendering a video without it
+    !!capture && sites.length > 0 && !!gridLatest.gen_wind && exchange.length > 0 && windHistory.length > 1;
+  useEffect(() => {
+    if (captureReady) window.__captureReady = true;
+  }, [captureReady]);
+
   useEffect(() => {
     if (!selectedId) {
       setFootprint(null);
@@ -93,172 +156,180 @@ export default function App() {
     };
   }, [selectedId]);
 
-  const overdueCount = useMemo(
-    () =>
-      sites.filter(
-        (s) =>
-          deadlines[s.id] &&
-          deadlines[s.id] < TODAY &&
-          BUILDING.has(s.status) &&
-          s.status !== "unknown",
-      ).length,
-    [sites, deadlines],
-  );
+  const filteredSites = useMemo(() => applyFilter(sites, filter), [sites, filter]);
+  const mapSites = grid.energyAssets ? filteredSites : [];
 
-  const building = useMemo(() => sites.filter((s) => BUILDING.has(s.status)).length, [sites]);
-  const totalGw = useMemo(() => sites.reduce((a, s) => a + s.capacity_mw, 0) / 1000, [sites]);
-
-  const mapSites = useMemo(() => {
-    if (highlight) return sites.filter((s) => highlight.has(s.id));
-    return applyFilter(sites, filter);
-  }, [sites, filter, highlight]);
-
-  // selecting a site flies the camera in and opens the detail drawer
   const selectSite = (id: string) => {
     setGridSel(null);
     setSelectedId(id);
     const s = sitesById.get(id);
     if (s) setFlyTo({ lon: s.lon, lat: s.lat });
-    setView("map");
   };
 
-  const onAgentResult = (ids: string[]) => {
-    if (!ids.length) return;
-    setHighlight(new Set(ids));
-    setFocus(boundsOf(ids.map((id) => sitesById.get(id)!).filter(Boolean)));
+  const openRailScene = () => {
+    setSelectedId(null);
+    setGridSel(null);
+    setActiveScene("rail");
+    setBasemap("satellite");
+    setGrid({
+      ...grid,
+      stateBoundaries: true,
+      energyAssets: false,
+      backbone: false,
+      planned: false,
+      exchangeFlows: false,
+      constructionOnly: false,
+      rail: true,
+      railStations: true,
+      railStructures: true,
+      gas: false,
+      gasNodes: false,
+      gasFacilities: false,
+      ports: false,
+      airports: false,
+      industry: false,
+    });
+    setRailSceneRequest((n) => n + 1);
   };
 
-  const setFilterManual = (f: Filter) => {
-    setFilter(f);
-    setHighlight(null);
+  const openPowerScene = () => {
+    setSelectedId(null);
+    setGridSel(null);
+    setActiveScene("power");
+    setBasemap("dark");
+    setGrid({
+      ...grid,
+      stateBoundaries: true,
+      energyAssets: true,
+      backbone: true,
+      planned: false,
+      exchangeFlows: true,
+      constructionOnly: false,
+      rail: false,
+      railStations: false,
+      railStructures: false,
+      gas: false,
+      gasNodes: false,
+      gasFacilities: false,
+      ports: false,
+      airports: false,
+      industry: false,
+      voltages: { v380: true, v220: true, v110: false },
+    });
+    setPowerSceneRequest((n) => n + 1);
   };
 
-  return (
-    <div className="relative flex h-screen w-screen overflow-hidden bg-ink-950 text-slate-100">
-      <NavRail
-        view={view}
-        setView={setView}
-        assistantOpen={assistantOpen}
-        toggleAssistant={() => setAssistantOpen((o) => !o)}
-      />
+  const mapView = (
+    <MapView
+      sites={mapSites}
+      colorMode={colorMode}
+      selectedId={selectedId}
+      onSelect={selectSite}
+      flyTo={flyTo}
+      footprint={footprint}
+      turbines={turbines}
+      basemap={basemap}
+      gridBackbone={grid.backbone}
+      gridPlanned={grid.planned}
+      gridExchangeFlows={grid.exchangeFlows}
+      gridConstructionOnly={grid.constructionOnly}
+      gridVoltages={grid.voltages}
+      infraStateBoundaries={grid.stateBoundaries}
+      infraRail={grid.rail}
+      infraRailStations={grid.railStations}
+      infraRailStructures={grid.railStructures}
+      infraGas={grid.gas}
+      infraPorts={grid.ports}
+      infraAirports={grid.airports}
+      infraGasNodes={grid.gasNodes}
+      infraGasFacilities={grid.gasFacilities}
+      infraIndustry={grid.industry}
+      railSceneRequest={railSceneRequest}
+      powerSceneRequest={powerSceneRequest}
+      sceneMode={activeScene}
+      gridLatest={gridLatest}
+      exchange={exchange}
+      capture={capture}
+      onGridSelect={(p) => {
+        setSelectedId(null);
+        setGridSel(p);
+      }}
+    />
+  );
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <TopBar
-          basemap={basemap}
-          setBasemap={setBasemap}
-          grid={grid}
-          setGrid={setGrid}
-        />
-
-        <div className="relative min-h-0 flex-1">
-          {view === "map" ? (
-            <>
-              <MapView
-                sites={mapSites}
-                colorMode={colorMode}
-                recent={recent}
-                selectedId={selectedId}
-                onSelect={selectSite}
-                focusBounds={focus}
-                flyTo={flyTo}
-                footprint={footprint}
-                turbines={turbines}
-                basemap={basemap}
-                gridBackbone={grid.backbone}
-                gridPlanned={grid.planned}
-                gridConstructionOnly={grid.constructionOnly}
-                onGridSelect={(p) => {
-                  setSelectedId(null);
-                  setGridSel(p);
-                }}
-              />
-
-              {!selectedId && (
-                <div className="absolute bottom-3 right-3 z-10 flex divide-x divide-line overflow-hidden rounded-md border border-line bg-ink-900/85 backdrop-blur">
-                  <div className="px-3 py-1.5">
-                    <div className="eyebrow">Sites</div>
-                    <div className="font-mono text-sm font-semibold tabular-nums text-slate-100">{num(sites.length)}</div>
-                    <div className="text-[10px] text-faint">{(totalGw).toFixed(1)} GW</div>
-                  </div>
-                  <div className="px-3 py-1.5">
-                    <div className="eyebrow">Building</div>
-                    <div className="font-mono text-sm font-semibold tabular-nums text-accent-400">{num(building)}</div>
-                  </div>
-                  <div className="px-3 py-1.5">
-                    <div className="eyebrow">Behind</div>
-                    <div className="font-mono text-sm font-semibold tabular-nums text-alert">{num(overdueCount)}</div>
-                  </div>
-                </div>
-              )}
-              {statsOpen ? (
-                <div className="absolute bottom-0 left-0 top-0">
-                  <FilterPanel
-                    all={sites}
-                    filter={filter}
-                    setFilter={setFilterManual}
-                    colorMode={colorMode}
-                    setColorMode={setColorMode}
-                    meta={meta}
-                    onClose={() => setStatsOpen(false)}
-                  />
-                </div>
-              ) : (
-                <button
-                  onClick={() => setStatsOpen(true)}
-                  className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded border border-line bg-ink-900/90 px-2.5 py-1.5 text-xs text-slate-300 backdrop-blur hover:border-accent/50 hover:text-accent-300"
-                >
-                  <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5">
-                    <path d="M2 4h12M4 8h8M6 12h4" />
-                  </svg>
-                  Portfolio & filters
-                </button>
-              )}
-              {highlight && (
-                <button
-                  onClick={() => setHighlight(null)}
-                  className="absolute left-1/2 top-3 z-10 -translate-x-1/2 rounded-full border border-accent/40 bg-ink-900/90 px-3 py-1 text-xs text-accent-300 backdrop-blur"
-                >
-                  agent result · {mapSites.length} sites — clear
-                </button>
-              )}
-            </>
-          ) : (
-            <AssetTable sites={sites} deadlines={deadlines} highlight={highlight} onSelect={selectSite} />
-          )}
-
-          {selectedId && <SiteDrawer id={selectedId} onClose={() => setSelectedId(null)} />}
-          {gridSel && <GridInfoPanel pick={gridSel} onClose={() => setGridSel(null)} />}
+  if (capture) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center overflow-hidden bg-[#020305] text-slate-100">
+        <div
+          className="capture-stage relative overflow-hidden bg-[#07090e]"
+          style={{ width: capture.width, height: capture.height }}
+        >
+          {mapView}
+          <CaptureOverlay
+            capture={capture}
+            latest={gridLatest}
+            windHistory={windHistory}
+            solarHistory={solarHistory}
+          />
         </div>
       </div>
+    );
+  }
 
-      <AssistantPanel
-        open={assistantOpen}
-        sitesById={sitesById}
-        onResult={onAgentResult}
-        onPickSite={selectSite}
-        onClose={() => setAssistantOpen(false)}
-      />
-
-      {!assistantOpen && (
-        <button
-          onClick={() => setAssistantOpen(true)}
-          title="Open AI Analyst"
-          className="absolute right-0 top-1/2 z-30 flex -translate-y-1/2 flex-col items-center gap-2 rounded-l-lg border border-r-0 border-line bg-ink-900/95 px-2 py-3 text-accent-300 backdrop-blur transition hover:bg-ink-800"
-        >
-          <span className="text-base leading-none">✦</span>
-          <span className="text-[10px] font-medium uppercase tracking-wider [writing-mode:vertical-rl]">
-            AI Analyst
-          </span>
-        </button>
+  return (
+    <div className="relative h-screen w-screen overflow-hidden bg-ink-950 text-slate-100">
+      {mapView}
+      {!selectedId && !gridSel && (
+        <>
+          <div className="absolute left-4 top-4 z-30">
+            <AtlasHud
+              layers={grid}
+              setLayers={setGrid}
+              sites={sites}
+              onRailScene={openRailScene}
+              onPowerScene={openPowerScene}
+              onAtlasScene={() => setActiveScene("atlas")}
+            />
+          </div>
+          <div className="absolute right-4 top-4 z-30">
+            <MapControls
+              basemap={basemap}
+              setBasemap={setBasemap}
+              grid={grid}
+              setGrid={setGrid}
+              onGridMenuOpenChange={setGridMenuOpen}
+            />
+          </div>
+          {!gridMenuOpen && activeScene === "power" && grid.backbone && (
+            <div className="absolute bottom-4 right-4 z-20">
+              <PowerLegend latest={gridLatest} />
+            </div>
+          )}
+          {!gridMenuOpen && activeScene !== "power" && (
+            <div className="pointer-events-none absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-3 rounded-md border border-line bg-ink-950/75 px-4 py-2 text-[11px] text-slate-300 backdrop-blur">
+              <span className="font-mono uppercase tracking-[0.18em] text-accent-300">Animated infrastructure map</span>
+              <span className="h-1 w-1 rounded-full bg-slate-600" />
+              <span>
+                {activeScene === "rail"
+                  ? railBoard
+                    ? `DB Timetables ${railBoard.station}: ${railBoard.planned.length} planned, ${railBoard.recent_changes.length} recent changes`
+                    : "rail scene: waiting for DB Timetables"
+                  : "rail, gas, electricity, ports, airports, industry"}
+              </span>
+            </div>
+          )}
+        </>
       )}
+
+      {selectedId && <SiteDrawer id={selectedId} site={sitesById.get(selectedId) ?? null} onClose={() => setSelectedId(null)} />}
+      {gridSel && <GridInfoPanel pick={gridSel} onClose={() => setGridSel(null)} />}
 
       {error && (
         <div className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2 rounded-lg border border-red-500/30 bg-red-950/80 px-4 py-2 text-xs text-red-200">
-          Couldn’t reach the API ({error}). Start it:{" "}
+          API unavailable ({error}). Start it with{" "}
           <code className="text-red-100">uv run uvicorn app.main:app --app-dir backend</code>
         </div>
       )}
     </div>
   );
 }
-

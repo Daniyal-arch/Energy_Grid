@@ -1,252 +1,85 @@
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { api, type Deadline, type Detection, type GenPoint, type Series, type SiteDetail } from "../lib/api";
+import { api, type Site, type SiteDetail } from "../lib/api";
 import { fmtDate, mw } from "../lib/format";
-import { STATE_COLOR, STATE_LABEL, TECH_COLOR, TECH_LABEL, displayState, rgbCss } from "../lib/theme";
-import GenerationChart from "./GenerationChart";
-import MetricChart from "./MetricChart";
+import { TECH_COLOR, TECH_LABEL, rgbCss } from "../lib/theme";
 
-const confColor = { high: "#34d399", medium: "#f4b740", low: "#94a3b8" } as const;
-
-function Schedule({ deadlines, status }: { deadlines: Deadline[]; status: string }) {
-  const legal = deadlines.find((d) => d.type === "legal_completion");
-  const planned = deadlines.find((d) => d.type === "planned_commissioning");
-  if (!legal && !planned) return null;
-  const today = new Date().toISOString().slice(0, 10);
-  const overdue = legal && legal.deadline_date < today && status !== "complete";
+function Fact({ label, value }: { label: string; value: string }) {
   return (
-    <div className="space-y-2">
-      {legal && (
-        <div
-          className={`rounded-lg border px-3 py-2 ${
-            overdue ? "border-red-500/40 bg-red-500/10" : "border-line bg-ink-850"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-300">EEG legal completion</span>
-            <span className={`text-sm font-medium ${overdue ? "text-red-300" : "text-slate-100"}`}>
-              {fmtDate(legal.deadline_date)}
-              {overdue && " · overdue"}
-            </span>
-          </div>
-          <div className="mt-0.5 text-[10px] leading-snug text-slate-500">{legal.source}</div>
-        </div>
-      )}
-      {planned && (
-        <div className="flex items-center justify-between rounded-lg border border-line bg-ink-850 px-3 py-2">
-          <span className="text-xs text-slate-300">Planned commissioning</span>
-          <span className="text-sm text-slate-100">{fmtDate(planned.deadline_date)}</span>
-        </div>
-      )}
+    <div className="rounded-md border border-line bg-ink-850 px-2.5 py-2">
+      <div className="eyebrow">{label}</div>
+      <div className="mt-0.5 break-words text-sm text-slate-200">{value}</div>
     </div>
   );
 }
 
-function Timeline({ detections }: { detections: Detection[] }) {
-  if (!detections.length)
-    return (
-      <p className="text-xs text-slate-500">
-        Not yet analysed — no satellite history processed for this site.
-      </p>
-    );
-  return (
-    <div className="space-y-2.5">
-      {detections.map((d) => (
-        <div key={d.id} className="flex gap-3">
-          <div className="mt-1 flex flex-col items-center">
-            <span
-              className="h-2.5 w-2.5 rounded-full"
-              style={{ background: rgbCss(STATE_COLOR[d.to_state]) }}
-            />
-            <span className="mt-0.5 w-px flex-1 bg-line-strong" />
-          </div>
-          <div className="pb-1">
-            <div className="text-sm text-slate-100">{STATE_LABEL[d.to_state]}</div>
-            <div className="text-[11px] text-slate-400">
-              {fmtDate(d.detected_at)} ·{" "}
-              <span style={{ color: confColor[d.confidence] }}>{d.confidence} confidence</span>
-              {d.evidence.length > 0 && ` · ${d.evidence.length} scenes cited`}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export default function SiteDrawer({ id, onClose }: { id: string; onClose: () => void }) {
+export default function SiteDrawer({ id, site, onClose }: { id: string; site: Site | null; onClose: () => void }) {
   const [detail, setDetail] = useState<SiteDetail | null>(null);
-  const [series, setSeries] = useState<Series | null>(null);
-  const [gen, setGen] = useState<GenPoint[] | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     setDetail(null);
-    setSeries(null);
-    setGen(null);
-    api.site(id).then(setDetail);
-    api.timeseries(id).then(setSeries);
+    setLoaded(false);
+    api.site(id).then(setDetail).catch(() => {}).finally(() => setLoaded(true));
   }, [id]);
 
-  // national generation context — only meaningful for techs satellite can't monitor
-  useEffect(() => {
-    const tech = detail?.site.technology;
-    if (!tech || tech === "solar" || tech === "storage") return;
-    let live = true;
-    api.powerOutput(tech).then((p) => live && setGen(p));
-    return () => {
-      live = false;
-    };
-  }, [detail?.site.technology]);
-
-  if (!detail) return null;
-  const s = detail.site;
-  const grid = detail.grid_unit;
-  const ds = displayState(s.status, s.mastr_status);
-  // confidence of the satellite "complete" detection (clarity on completion claims)
-  const completeConf = detail.detections.find((d) => d.to_state === "complete")?.confidence;
-  const hasSeries = series && (series.ndvi.length || series.vh_db.length);
-  const chipBefore = (s.chip_before_url as string | null) ?? null;
-  const chipAfter = (s.chip_after_url as string | null) ?? null;
-  const chipBeforeDate = (s.chip_before_date as string | null) ?? "";
-  const chipAfterDate = (s.chip_after_date as string | null) ?? "";
+  const s = detail?.site ?? site;
+  if (!s || (!loaded && !site)) return null;
+  const techColor = s.technology ? TECH_COLOR[s.technology] : ([120, 130, 148] as [number, number, number]);
 
   return (
-    <aside className="absolute right-0 top-0 z-20 flex h-full w-[380px] flex-col gap-4 overflow-y-auto border-l border-line bg-ink-900/95 p-5 backdrop-blur-xl">
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full" style={{ background: rgbCss(STATE_COLOR[ds]) }} />
-            <span className="eyebrow">{STATE_LABEL[ds]}</span>
-            {grid ? (
-              <span className="rounded-sm bg-positive/15 px-1.5 py-px text-[10px] font-medium text-positive">
-                ✓ grid-confirmed
-              </span>
-            ) : (
-              ds === "complete" &&
-              completeConf && (
-                <span
-                  className="rounded-sm bg-white/[0.06] px-1.5 py-px text-[10px] font-medium"
-                  style={{ color: confColor[completeConf] }}
-                >
-                  {completeConf} confidence
-                </span>
-              )
-            )}
+    <aside className="absolute right-0 top-0 z-20 flex h-full w-[360px] flex-col gap-4 overflow-y-auto border-l border-line bg-ink-900/95 p-5 backdrop-blur-xl">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="h-2.5 w-2.5 rounded-full" style={{ background: rgbCss(techColor) }} />
+            <span className="eyebrow text-accent-300">Energy infrastructure</span>
           </div>
-          <h2 className="mt-1 text-base font-semibold leading-tight text-slate-100">{s.name}</h2>
+          <h2 className="mt-1 break-words text-base font-semibold leading-tight text-slate-100">{s.name}</h2>
           <p className="text-xs text-slate-500">
-            {s.technology ? TECH_LABEL[s.technology] : "—"} · {s.district ?? s.state}
+            {s.technology ? TECH_LABEL[s.technology] : "Energy asset"} - {s.district ?? s.state ?? "Germany"}
           </p>
         </div>
-        <button onClick={onClose} className="text-slate-500 hover:text-slate-200">
-          ✕
+        <button onClick={onClose} title="Close" className="text-slate-500 hover:text-slate-200">
+          x
         </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 text-xs">
-        <Fact label="Capacity" value={mw(s.capacity_mw)} />
-        <Fact label="Registry status" value={s.mastr_status ?? "—"} />
-        <Fact label="Commissioned" value={fmtDate(s.commissioning_date)} />
-        <Fact label="Planned" value={fmtDate(s.planned_commissioning_date)} />
-        {s.unit_count > 1 && <Fact label="Units" value={`${s.unit_count} (clustered)`} />}
-        <Fact label="Owner" value={s.owner ?? "—"} mono />
+      <div
+        className="rounded-md px-3.5 py-3"
+        style={{ background: rgbCss(techColor, 0.14), border: `1px solid ${rgbCss(techColor, 0.35)}` }}
+      >
+        <div className="text-2xl font-semibold tabular-nums text-slate-50">{mw(s.capacity_mw)}</div>
+        <div className="eyebrow mt-0.5">Installed capacity</div>
       </div>
 
-      {grid && (
-        <div className="flex items-start gap-2.5 rounded-md border border-positive/30 bg-positive/[0.08] px-3 py-2.5">
-          <span className="mt-0.5 text-positive">⚡</span>
-          <div className="text-xs leading-snug">
-            <div className="font-medium text-positive">Grid-confirmed operational</div>
-            <div className="mt-0.5 text-slate-400">
-              ENTSO-E unit <span className="text-slate-200">{grid.name}</span>
-              {grid.capacity_mw ? ` · ${Math.round(grid.capacity_mw)} MW` : ""}
-              {grid.psr_type ? ` · ${grid.psr_type.replace(/-/g, " ")}` : ""}
-            </div>
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <Fact label="Technology" value={s.technology ? TECH_LABEL[s.technology] : "-"} />
+        <Fact label="Registry status" value={s.mastr_status ?? "-"} />
+        <Fact label="Commissioned" value={fmtDate(s.commissioning_date)} />
+        <Fact label="Planned" value={fmtDate(s.planned_commissioning_date)} />
+        {s.unit_count > 1 && <Fact label="Units" value={`${s.unit_count}`} />}
+        <Fact label="Operator" value={s.owner ?? "-"} />
+      </div>
+
+      {detail?.grid_unit && (
+        <div className="rounded-md border border-accent/25 bg-accent/10 px-3 py-2.5 text-xs leading-snug text-slate-300">
+          <div className="font-medium text-accent-200">Grid-linked generation unit</div>
+          <div className="mt-1 text-slate-400">
+            {detail.grid_unit.name}
+            {detail.grid_unit.capacity_mw ? ` - ${Math.round(detail.grid_unit.capacity_mw)} MW` : ""}
+            {detail.grid_unit.psr_type ? ` - ${detail.grid_unit.psr_type.replace(/-/g, " ")}` : ""}
           </div>
         </div>
       )}
 
-      {(chipBefore || chipAfter) && (
-        <Section title="Satellite — before / after">
-          <div className="grid grid-cols-2 gap-2">
-            <Chip url={chipBefore} label={`Before · ${chipBeforeDate}`} />
-            <Chip url={chipAfter} label={`After · ${chipAfterDate}`} />
-          </div>
-          <p className="mt-1 text-[10px] text-slate-500">
-            True-colour Sentinel-2, framed to the site footprint.
-          </p>
-        </Section>
-      )}
-
-      {detail.deadlines.length > 0 && (
-        <Section title="Schedule & deadline">
-          <Schedule deadlines={detail.deadlines} status={s.status} />
-        </Section>
-      )}
-
-      {s.technology === "solar" || detail.detections.length > 0 ? (
-        <Section title="Construction timeline">
-          <Timeline detections={detail.detections} />
-        </Section>
-      ) : (
-        <Section title="Monitoring">
-          <p className="text-xs leading-relaxed text-slate-500">
-            Monitored via registry, permitting &amp; grid milestones. Satellite construction
-            detection is solar-only — a compact {s.technology ?? "industrial"} site isn&apos;t
-            resolvable at Sentinel&apos;s 10&nbsp;m.
-            {s.technology === "storage" &&
-              " Batteries shift load rather than generate continuously, so no national output series applies here."}
-          </p>
-        </Section>
-      )}
-
-      {gen && gen.length > 0 && s.technology && (
-        <Section title={`National ${TECH_LABEL[s.technology].toLowerCase()} generation`}>
-          <GenerationChart points={gen} color={rgbCss(TECH_COLOR[s.technology])} />
-          <p className="mt-1 text-[10px] leading-relaxed text-slate-500">
-            Germany-wide daily output (ENTSO-E / SMARD) — context for this site&apos;s
-            technology, not a per-plant reading.
-          </p>
-        </Section>
-      )}
-
-      {hasSeries && series && (
-        <Section title="Satellite signal">
-          <MetricChart metric="ndvi" points={series.ndvi} detections={detail.detections} />
-          <MetricChart metric="bsi" points={series.bsi} detections={detail.detections} />
-          <MetricChart metric="vh_db" points={series.vh_db} detections={detail.detections} />
-          <p className="text-[10px] leading-relaxed text-slate-500">
-            Dashed lines mark detected state changes. Each is backed by the satellite scenes
-            cited above — the agent narrates only what is stored here.
-          </p>
-        </Section>
-      )}
+      <div className="border-t border-line pt-3 text-[11px] leading-relaxed text-slate-400">
+        <div className="mb-1 font-medium text-slate-200">Source context</div>
+        <div>
+          Energy sites come from the project registry and power-system context. The atlas treats them as infrastructure
+          geography, alongside rail, gas, logistics, industry, and transmission layers.
+        </div>
+      </div>
     </aside>
   );
 }
-
-const Chip = ({ url, label }: { url: string | null; label: string }) =>
-  url ? (
-    <figure className="overflow-hidden rounded-lg border border-line">
-      <img src={url} alt={label} className="aspect-square w-full object-cover" loading="lazy" />
-      <figcaption className="bg-black/40 px-2 py-1 text-[10px] text-slate-300">{label}</figcaption>
-    </figure>
-  ) : (
-    <div className="flex aspect-square items-center justify-center rounded-lg border border-line bg-ink-850 text-[10px] text-slate-600">
-      no image
-    </div>
-  );
-
-const Fact = ({ label, value, mono }: { label: string; value: string; mono?: boolean }) => (
-  <div className="rounded-lg border border-line bg-ink-850 px-2.5 py-1.5">
-    <div className="eyebrow">{label}</div>
-    <div className={`text-slate-200 ${mono ? "font-mono text-[11px]" : ""}`}>{value}</div>
-  </div>
-);
-
-const Section = ({ title, children }: { title: string; children: ReactNode }) => (
-  <div>
-    <h3 className="eyebrow mb-2">{title}</h3>
-    {children}
-  </div>
-);

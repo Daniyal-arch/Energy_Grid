@@ -1,12 +1,12 @@
-export const mw = (v: number): string =>
-  v >= 1000 ? `${(v / 1000).toFixed(1)} GW` : `${v.toFixed(v < 10 ? 1 : 0)} MW`;
+export const mw = (v: number | null | undefined): string =>
+  v == null ? "—" : v >= 1000 ? `${(v / 1000).toFixed(1)} GW` : `${v.toFixed(v < 10 ? 1 : 0)} MW`;
 
 export const num = (v: number): string => v.toLocaleString("en-US");
 
 export const fmtDate = (iso: string | null): string =>
   iso ? new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "—";
 
-// plain-language gloss for the satellite metrics, so a non-specialist trusts them
+// Plain-language labels for remote-sensing metrics.
 export const METRIC_META: Record<string, { label: string; help: string; color: string }> = {
   ndvi: {
     label: "Vegetation (NDVI)",

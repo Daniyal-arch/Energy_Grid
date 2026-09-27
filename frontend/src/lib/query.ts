@@ -1,13 +1,11 @@
-// Command-bar query understanding. Phase 1 is a deterministic keyword parser so the
-// bar does real work today; Phase 2 swaps this for the cited LLM agent (same Filter
-// output drives the map, so the UI contract doesn't change).
+// Deterministic asset/lifecycle filters shared by map and table views.
 
 import type { Site } from "./api";
 import { STATE_LABEL, TECH_LABEL, displayState, type DisplayState, type Technology } from "./theme";
 
 export interface Filter {
   technologies: Set<Technology>;
-  states: Set<DisplayState>; // construction (or derived) state
+  states: Set<DisplayState>; // observed or registry-derived lifecycle state
   minCapacityMw: number | null;
   region: string | null; // German federal state
   planningOnly: boolean;
