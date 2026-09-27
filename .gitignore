@@ -25,9 +25,20 @@ supabase/.branches/
 *.sqlite
 .open-MaStR/
 data/
+!frontend/public/data/
+!frontend/public/data/*.geojson
+!frontend/public/data/*.json
 
 # editor/os
 .vscode/
 .idea/
 Thumbs.db
 .DS_Store
+
+# rendered videos from frontend/scripts/record-video.mjs
+recordings/
+
+# local tooling output: browser profiles/screenshots, run logs, licensed probe imagery
+.codex-screenshots/
+*.log
+scripts/planet_chips/
