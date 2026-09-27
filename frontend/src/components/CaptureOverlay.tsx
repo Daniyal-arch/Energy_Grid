@@ -102,7 +102,6 @@ export default function CaptureOverlay({
     const row = latest[metric];
     return row && row.ts === genTs ? Number(row.value) : undefined;
   };
-  const share = value("renewable_share_of_generation");
   const rows = FUELS.map((f) => ({ ...f, mw: value(f.metric) }));
   const maxMw = Math.max(1, ...rows.map((r) => r.mw ?? 0));
   const tall = capture.format === "9x16";
@@ -134,23 +133,11 @@ export default function CaptureOverlay({
         style={{ height: tall ? 190 : 118, background: "linear-gradient(to top, rgba(7,9,14,0.95) 50%, rgba(7,9,14,0))" }}
       />
 
-      {/* title card; the renewable share is the headline figure */}
+      {/* title card: says what the frame shows, no headline number (a single
+          snapshot figure reads like a national statistic) */}
       <div className="absolute left-5 top-4">
         <div className="font-serif text-[30px] uppercase leading-none tracking-[0.2em]">Germany</div>
-        <div className="mt-1.5 text-[7.5px] uppercase tracking-[0.26em] text-[#8d94a1]">The power grid</div>
-        {share != null && (
-          <div className="mt-2.5 flex items-end gap-2">
-            <div className="text-[32px] font-light leading-none tabular-nums tracking-wide">
-              {share.toFixed(1)}
-              <span className="ml-0.5 text-[18px]">%</span>
-            </div>
-            <div className="mb-[3px] text-[7px] uppercase leading-[1.35] tracking-[0.2em] text-[#8d94a1]">
-              of generation
-              <br />
-              renewable
-            </div>
-          </div>
-        )}
+        <div className="mt-2 text-[9px] uppercase tracking-[0.32em] text-[#aab3c0]">Power grid &amp; plants</div>
       </div>
 
       {/* 48 h wind + solar generation, with the map keys underneath */}

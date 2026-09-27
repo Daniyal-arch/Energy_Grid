@@ -294,7 +294,16 @@ const cleanup = () => {
     ws.close();
   } catch {}
   chrome.kill();
-  setTimeout(() => fs.rmSync(profile, { recursive: true, force: true }), 1500);
+  // Chrome can hold files in its temp profile for a moment after exit (EBUSY on
+  // Windows): retry a few times, and never fail the run over a temp folder
+  const removeProfile = (attempt) => {
+    try {
+      fs.rmSync(profile, { recursive: true, force: true });
+    } catch {
+      if (attempt < 5) setTimeout(() => removeProfile(attempt + 1), 1000);
+    }
+  };
+  setTimeout(() => removeProfile(0), 1500);
 };
 
 try {

@@ -63,7 +63,7 @@ table:
 
 | Element in the video | Source |
 |---|---|
-| `89.1 % of generation renewable` | Energy-Charts' published "Renewable share of generation" (`renewable_share_of_generation`), same interval as the generation figures |
+| Title `GERMANY` · `POWER GRID & PLANTS` | describes what the frame shows; no headline number |
 | Generation strip (Wind, Solar, Lignite, Hard coal, Gas, Biomass, Hydro, GW) | Energy-Charts `public_power` categories, one interval; Wind = onshore + offshore, Gas = fossil gas + coal-derived gas, Hydro = run-of-river + reservoir + pumped storage |
 | Wind + solar chart, last 48 h | Energy-Charts `public_power` series via `/grid/history` |
 | Cross-border labels (`NL export 3.9 GW` …) | Energy-Charts `cbpf` (physical flows), newest complete interval; positive = import into Germany. Idle links (under 20 MW) keep their line but get no label |
@@ -75,6 +75,9 @@ Rules that are easy to break:
 
 - A metric is shown only if its timestamp equals the generation interval's; mixed
   intervals are dropped rather than shown side by side.
+- No headline percentage (e.g. the renewable share). It is a real Energy-Charts
+  value, but a single 15-minute figure without a time reads like a national
+  statistic and misleads.
 - Values the project computes itself are **not** used in the video. That includes
   the backend's `renewable_share` (own definition), `carbon_intensity` (uses assumed
   emission factors) and plant-to-substation links (nearest substation, not the real
