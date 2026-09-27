@@ -5,7 +5,7 @@ These mirror the Supabase schema (supabase/migrations/). Keep them in sync.
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 from enum import StrEnum
 from typing import Any
 from uuid import UUID
@@ -128,4 +128,27 @@ class PowerOutput(BaseModel):
     site_id: UUID | None = None
     date: date
     mwh: float
+    source: str
+
+
+class GridSnapshot(BaseModel):
+    """Zone-level hourly metric: generation mix per fuel, day-ahead price, and a
+    carbon intensity figure WE compute (source='energy-charts:computed') from the
+    mix x static emission factors — never derived live by the agent or frontend."""
+
+    zone: str
+    ts: datetime
+    metric: str
+    value: float
+    source: str
+
+
+class GridExchange(BaseModel):
+    """Zone-level hourly cross-border physical flow. value_mw is signed:
+    positive = import to `zone`, negative = export from `zone`."""
+
+    zone: str
+    neighbor_zone: str
+    ts: datetime
+    value_mw: float
     source: str

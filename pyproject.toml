@@ -1,7 +1,7 @@
 [project]
 name = "gridwatch"
 version = "0.1.0"
-description = "Satellite-based construction monitoring for German energy infrastructure (workspace root)"
+description = "Germany infrastructure, dependency, energy, and geoeconomic intelligence workspace"
 requires-python = ">=3.11"
 dependencies = []
 
@@ -10,6 +10,7 @@ members = ["backend", "ingestion"]
 
 [dependency-groups]
 dev = [
+    "pyshp>=2.3",
     "pytest>=8.0",
     "respx>=0.21",
     "ruff>=0.8",

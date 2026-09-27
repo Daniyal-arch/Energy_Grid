@@ -1,8 +1,8 @@
-"""The gridwatch agent — answers questions by RETRIEVING stored rows and narrating
-them with citations. It never computes or guesses facts (CLAUDE.md rule 1): every
-claim about a site's status, dates, or measurements comes from a tool result, and the
-response carries a structured `sources` array referencing the evidence/detections/sites
-that grounded it.
+"""Germany InfraAtlas analyst: retrieve stored signals and curated source context.
+
+The model never computes or guesses operational facts. Claims about assets, dates,
+measurements, or dependency indicators must come from a tool result, and every answer
+returns structured citations for the records or source-catalog entries it used.
 
 Provider-agnostic: uses the OpenAI-compatible chat API, so DeepSeek, Groq (Llama), or
 Gemini all work via the LLM_PROVIDER env var. Manual tool-call loop so we can collect
@@ -20,44 +20,43 @@ from openai import OpenAI
 
 from app.config import Settings, get_settings
 from app.db import get_db
+from app.strategic_context import get_context
 from supabase import Client
 
 MAX_ITERATIONS = 8
 
-SYSTEM = """You are the analyst for gridwatch, a satellite construction-monitoring \
-platform for German energy infrastructure (utility-scale generation ≥5 MW, nationwide).
+SYSTEM = """You are the strategic analyst for Germany InfraAtlas. The product connects \
+German infrastructure, energy security, external dependencies, economic resilience, \
+transition execution, and geopolitical exposure.
 
-You answer questions about energy projects' construction progress. The construction \
-state machine is: no_activity → clearing → earthworks → construction → complete, \
-detected from Sentinel-2 (NDVI vegetation, BSI bare-soil) and Sentinel-1 (VH radar) \
-satellite signals compared against seasonal baselines.
+ABSOLUTE RULE: never compute, estimate, infer, or guess operational facts. State only \
+facts returned by tools. Every claim about an asset, date, capacity, measurement, flow, \
+price, transition, or dependency indicator must come from a tool result. If tools do not \
+return the data, explain the coverage gap plainly. Do not turn a candidate dataset into a \
+current fact and do not derive new figures from returned values.
 
-ABSOLUTE RULE — you never compute, estimate, infer, or guess facts. You state ONLY \
-facts returned by your tools. Every claim about a site's status, a date, a capacity, a \
-measurement, or a detected transition MUST come from a tool result you actually \
-received. If the tools don't return the data, say plainly that it isn't available — \
-never fabricate. Do not do arithmetic on values to produce new facts.
+Use get_strategic_context for questions about the product's analytical lenses, available \
+datasets, source coverage, and ingestion priorities. Its entries describe official or \
+authoritative sources and implementation status; they do not contain the source's latest \
+observations. Say when a source is only planned or a candidate.
 
-Always call a tool before making factual claims. Most sites in the registry are not \
-yet analysed (status 'unknown' = no satellite history processed); only a subset has \
-detected construction states. When relevant, say how many matched sites are actually \
-analysed versus not yet processed.
+The current database is strongest on the energy asset and power-system layer. find_sites, \
+get_site_detail, get_evidence, and find_overdue_sites retrieve registry, deadline, and \
+remote-sensing lifecycle signals. The lifecycle is no_activity -> clearing -> earthworks \
+-> construction -> complete. Most registered sites are not yet analysed; status 'unknown' \
+means no remote-sensing history has been processed.
 
-When you describe a site's progress, ground it: give the detected state, the date it \
-was detected, the confidence, and that it is backed by specific satellite scenes \
-(which get_site_detail / get_evidence return). Prefer citing detections and evidence \
-over raw numbers.
+EEG-auction solar deadlines are month-precision estimates derived from the auction round \
+encoded in the award number. Only analysed sites can be described as behind schedule. \
+Use find_overdue_sites for schedule-risk questions.
 
-Deadlines: EEG-auction solar sites have a legal completion deadline — the plant must be \
-commissioned within 24 months of the award (§55 EEG). These are derived from the auction \
-round encoded in the award number (Zuschlagsnummer), so they are month-precision estimates; \
-say so when citing one. A site is 'behind schedule' when its legal deadline has passed and \
-satellite analysis has NOT detected it as complete. Use find_overdue_sites for \
-'behind schedule / behind deadline' questions; get_site_detail returns a site's deadlines. \
-Only analysed sites (status != unknown) can be judged behind schedule.
+get_grid_status returns Germany's stored Energy-Charts snapshot: generation by fuel, \
+day-ahead price, and pipeline-computed intensity/share metrics. get_grid_exchange returns \
+the latest stored physical cross-border flow by neighbouring country; positive is import \
+into Germany and negative is export. Never calculate additional metrics from these rows.
 
-Be concise, specific, and useful to a professional (project developer, grid operator, \
-or lender). Expand jargon."""
+Separate confirmed observations from source coverage and analytical interpretation. Be \
+concise and useful to infrastructure investors, policy analysts, operators, and researchers."""
 
 # OpenAI-compatible tool/function schemas (retrieve-only)
 TOOLS: list[dict[str, Any]] = [
@@ -168,6 +167,56 @@ TOOLS: list[dict[str, Any]] = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_grid_status",
+            "description": "Germany's live national grid snapshot: generation mix per fuel, "
+            "day-ahead price, carbon intensity, renewable share, carbon-free share. "
+            "Source: Energy-Charts.info (Fraunhofer ISE).",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "zone": {"type": "string", "description": "Zone code (default 'DE')."},
+                },
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_grid_exchange",
+            "description": "Latest physical cross-border electricity flow between Germany and "
+            "each neighbouring country. Source: Energy-Charts.info (Fraunhofer ISE).",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "zone": {"type": "string", "description": "Zone code (default 'DE')."},
+                },
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_strategic_context",
+            "description": "Return Germany InfraAtlas analytical aspects and a curated catalog "
+            "of official datasets, including access method and implementation status. Use for "
+            "dependency, economy, gas, hydrogen, transport, raw-material, or source questions.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "aspect": {
+                        "type": "string",
+                        "description": "Optional aspect id, such as energy_security, dependencies, "
+                        "infrastructure_topology, economic_resilience, transition_execution, or "
+                        "geopolitical_events.",
+                    },
+                    "limit": {"type": "integer", "description": "Max datasets (default 40)."},
+                },
+            },
+        },
+    },
 ]
 
 _SITE_COLS = (
@@ -204,8 +253,21 @@ class _Collector:
         self.sources: dict[tuple[str, str], dict[str, Any]] = {}
         self.site_ids: set[str] = set()
 
-    def add(self, kind: str, row: dict[str, Any], label: str) -> None:
-        self.sources[(kind, row["id"])] = {"type": kind, "id": row["id"], "label": label}
+    def add(
+        self,
+        kind: str,
+        row: dict[str, Any],
+        label: str,
+        row_id: str | None = None,
+        url: str | None = None,
+    ) -> None:
+        # grid_snapshot/grid_exchange have no `id` column (composite PK only) — callers
+        # pass a synthetic id for those instead of relying on row["id"].
+        rid = row_id if row_id is not None else row["id"]
+        source = {"type": kind, "id": rid, "label": label}
+        if url:
+            source["url"] = url
+        self.sources[(kind, rid)] = source
 
     def as_list(self) -> list[dict[str, Any]]:
         return list(self.sources.values())
@@ -329,6 +391,61 @@ def _get_evidence(db: Client, args: dict[str, Any], col: _Collector) -> list[dic
     return rows
 
 
+def _get_grid_status(db: Client, args: dict[str, Any], col: _Collector) -> dict[str, Any]:
+    zone = args.get("zone", "DE")
+    rows = (
+        db.table("grid_snapshot")
+        .select("metric,value,ts,source")
+        .eq("zone", zone)
+        .order("ts", desc=True)
+        .limit(200)
+        .execute()
+        .data
+        or []
+    )
+    latest: dict[str, dict[str, Any]] = {}
+    for r in rows:
+        latest.setdefault(r["metric"], r)
+    for metric, r in latest.items():
+        rid = f"{zone}:{metric}:{r['ts']}"
+        col.add("grid_snapshot", r, f"{zone} {metric} {r['ts']}", row_id=rid)
+    return {"zone": zone, "metrics": latest}
+
+
+def _get_grid_exchange(db: Client, args: dict[str, Any], col: _Collector) -> dict[str, Any]:
+    zone = args.get("zone", "DE")
+    rows = (
+        db.table("grid_exchange")
+        .select("neighbor_zone,ts,value_mw,source")
+        .eq("zone", zone)
+        .order("ts", desc=True)
+        .limit(100)
+        .execute()
+        .data
+        or []
+    )
+    latest: dict[str, dict[str, Any]] = {}
+    for r in rows:
+        latest.setdefault(r["neighbor_zone"], r)
+    for neighbor, r in latest.items():
+        rid = f"{zone}:{neighbor}:{r['ts']}"
+        col.add("grid_exchange", r, f"{zone}->{neighbor} {r['ts']}", row_id=rid)
+    return {"zone": zone, "flows": list(latest.values())}
+
+
+def _get_strategic_context(args: dict[str, Any], col: _Collector) -> dict[str, Any]:
+    context = get_context(aspect=args.get("aspect"), limit=int(args.get("limit", 40)))
+    for dataset in context["datasets"]:
+        col.add(
+            "context_source",
+            dataset,
+            dataset["name"],
+            row_id=dataset["id"],
+            url=dataset["url"],
+        )
+    return context
+
+
 def _dispatch(name: str, args: dict[str, Any], db: Client, col: _Collector) -> Any:
     if name == "find_sites":
         return _find_sites(db, args, col)
@@ -338,6 +455,12 @@ def _dispatch(name: str, args: dict[str, Any], db: Client, col: _Collector) -> A
         return _get_evidence(db, args, col)
     if name == "find_overdue_sites":
         return _find_overdue(db, args, col)
+    if name == "get_grid_status":
+        return _get_grid_status(db, args, col)
+    if name == "get_grid_exchange":
+        return _get_grid_exchange(db, args, col)
+    if name == "get_strategic_context":
+        return _get_strategic_context(args, col)
     return {"error": f"unknown tool {name}"}
 
 
@@ -350,8 +473,8 @@ def _suggest_followups(client: OpenAI, model: str, question: str, answer_text: s
             messages=[
                 {
                     "role": "system",
-                    "content": "You suggest follow-up questions for a German energy "
-                    "construction-monitoring analyst. Reply with ONLY a JSON array of exactly 3 "
+                    "content": "You suggest follow-up questions for a German infrastructure and "
+                    "geoeconomic analyst. Reply with ONLY a JSON array of exactly 3 "
                     "short questions (each under 12 words), no prose, no code fences.",
                 },
                 {"role": "user", "content": f"Q: {question}\nA: {answer_text[:1500]}"},

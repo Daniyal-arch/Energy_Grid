@@ -1,4 +1,4 @@
-"""gridwatch API — data layer for the dashboard (and, in Phase 2, the agent).
+"""Germany InfraAtlas API for assets, system signals, and strategic context.
 
 The frontend never touches Supabase directly: it calls this API, which holds the
 service-role key. That keeps data access server-side (future auth / rate limiting /
@@ -7,16 +7,17 @@ the agent all attach here) and lets us paginate past PostgREST's 1000-row cap.
 
 from __future__ import annotations
 
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from app import agent
+from app import agent, power_live, rail_timetables, strategic_context
 from app.db import get_db
 
-app = FastAPI(title="gridwatch", version="0.1.0")
+app = FastAPI(title="Germany InfraAtlas", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -181,9 +182,114 @@ def power_output(technology: str) -> list[dict[str, Any]]:
     return [{"date": d, "mwh": round(v, 1)} for d, v in sorted(by_date.items())]
 
 
+STALE_AFTER = timedelta(hours=3)
+
+
+def _stale(ts: str) -> bool:
+    """True when a stored grid row is too old to show as the current state."""
+    return datetime.now(UTC) - datetime.fromisoformat(ts) > STALE_AFTER
+
+
+@app.get("/grid/latest")
+def grid_latest(zone: str = "DE") -> dict[str, dict[str, Any]]:
+    """Most recent value per metric (generation mix, computed carbon intensity,
+    day-ahead price) — drives the Live Grid card."""
+    try:
+        db = get_db()
+        rows = (
+            db.table("grid_snapshot")
+            .select("metric,value,ts,source")
+            .eq("zone", zone)
+            .order("ts", desc=True)
+            .limit(200)
+            .execute()
+            .data
+            or []
+        )
+    except Exception:
+        return power_live.latest_snapshot()
+    if not rows or _stale(rows[0]["ts"]):
+        # ingestion isn't running (or DB empty): serve the live source instead of
+        # presenting hours-old rows as the current state
+        return power_live.latest_snapshot() or {}
+    latest: dict[str, dict[str, Any]] = {}
+    for r in rows:
+        latest.setdefault(r["metric"], {"value": r["value"], "ts": r["ts"], "source": r["source"]})
+    return latest
+
+
+@app.get("/grid/history")
+def grid_history(metric: str, zone: str = "DE", hours: int = 48) -> list[dict[str, Any]]:
+    """Recent series for one metric (e.g. carbon_intensity, price_eur_mwh) — sparklines.
+
+    Falls back to live Energy-Charts generation series (gen_* metrics) when the
+    DB is unreachable or has nothing for the window, like /grid/latest does.
+    """
+    try:
+        db = get_db()
+        since = (datetime.now(UTC) - timedelta(hours=hours)).isoformat()
+        rows = (
+            db.table("grid_snapshot")
+            .select("ts,value")
+            .eq("zone", zone)
+            .eq("metric", metric)
+            .gte("ts", since)
+            .order("ts")
+            .execute()
+            .data
+            or []
+        )
+    except Exception:
+        rows = []
+    if rows or zone != "DE":
+        return rows
+    return power_live.history(metric, hours)
+
+
+@app.get("/grid/exchange")
+def grid_exchange(zone: str = "DE") -> list[dict[str, Any]]:
+    """Latest cross-border physical flow per neighbor — map arcs."""
+    try:
+        db = get_db()
+        rows = (
+            db.table("grid_exchange")
+            .select("neighbor_zone,ts,value_mw")
+            .eq("zone", zone)
+            .order("ts", desc=True)
+            .limit(100)
+            .execute()
+            .data
+            or []
+        )
+    except Exception:
+        return power_live.exchange()
+    # one consistent snapshot: the newest interval every neighbour has fully
+    # reported (the newest stored interval can still be partial, see power_live)
+    stamps = sorted({r["ts"] for r in rows})
+    by_zone: dict[str, dict[str, float]] = {}
+    for r in rows:
+        by_zone.setdefault(r["neighbor_zone"], {})[r["ts"]] = r["value_mw"]
+    zones = sorted(by_zone)
+    i = power_live.newest_complete_index([[by_zone[z].get(ts) for ts in stamps] for z in zones])
+    if i is None or _stale(stamps[i]):
+        return power_live.exchange()
+    return [{"neighbor_zone": z, "ts": stamps[i], "value_mw": by_zone[z][stamps[i]]} for z in zones]
+
+
+@app.get("/rail/timetables/{eva}")
+def rail_timetable(eva: str = "8000105", hour: str | None = None) -> dict[str, Any]:
+    """DB Timetables station board as JSON.
+
+    This is the first real rail realtime feed. It gives planned station events
+    plus full/recent changes, not GPS train positions.
+    """
+    return rail_timetables.station_board(eva=eva, hour=hour)
+
+
+@app.get("/signals/recent")
 @app.get("/detections/recent")
 def recent_detections(limit: int = 50) -> list[dict[str, Any]]:
-    """Latest state transitions across the portfolio — the monitoring feed."""
+    """Latest observed lifecycle signals across the asset portfolio."""
     db = get_db()
     dets = (
         db.table("detections")
@@ -217,6 +323,12 @@ class AgentMessage(BaseModel):
 class AgentQuery(BaseModel):
     question: str
     history: list[AgentMessage] = []
+
+
+@app.get("/strategy/context")
+def strategy_context(aspect: str | None = None, limit: int = 40) -> dict[str, Any]:
+    """Analytical lenses and researched datasets for the broader platform."""
+    return strategic_context.get_context(aspect=aspect, limit=limit)
 
 
 @app.post("/agent/query")

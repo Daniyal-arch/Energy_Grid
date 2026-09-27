@@ -1,7 +1,7 @@
 [project]
 name = "gridwatch-backend"
 version = "0.1.0"
-description = "gridwatch FastAPI backend + shared domain models"
+description = "Germany InfraAtlas FastAPI backend and shared domain models"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115",

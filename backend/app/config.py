@@ -21,6 +21,8 @@ class Settings(BaseSettings):
 
     # Phase 2
     entsoe_api_key: str = ""
+    db_client_id: str = ""
+    db_api_key: str = ""
 
     # Agent LLM — OpenAI-compatible providers (deepseek | groq | gemini).
     llm_provider: str = "deepseek"
