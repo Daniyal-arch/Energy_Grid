@@ -1,0 +1,65 @@
+name: Record rail real-time
+
+# Every 15 min: download the gtfs.de GTFS-Realtime feed, keep rail trips only,
+# and merge them into rail-rt/<service date>.json.gz on the `rail-data` branch.
+# See scripts/record_rail_realtime.py. The branch is force-pushed as a single
+# commit each run, so its history does not grow. GitHub may start scheduled runs
+# late or skip some under load; each snapshot carries running and upcoming trips,
+# so the next run fills most of a gap.
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rail-realtime
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install httpx gtfs-realtime-bindings
+
+      # the rail timetables (~12 MB) only change daily; reuse them between runs
+      - name: Get date
+        id: day
+        run: echo "day=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: data/gtfs
+          key: gtfs-static-${{ steps.day.outputs.day }}
+
+      - name: Fetch recorded days
+        run: |
+          mkdir -p store
+          if git ls-remote --exit-code origin rail-data >/dev/null; then
+            git fetch --depth 1 origin rail-data
+            git --work-tree=store checkout FETCH_HEAD -- .
+          fi
+
+      - name: Record snapshot
+        run: python scripts/record_rail_realtime.py --out store/rail-rt
+
+      - name: Push rail-data branch
+        run: |
+          cd store
+          git init -q -b rail-data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "rail real-time snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" rail-data
