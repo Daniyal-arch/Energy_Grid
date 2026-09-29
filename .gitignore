@@ -42,3 +42,6 @@ recordings/
 .codex-screenshots/
 *.log
 scripts/planet_chips/
+
+# rail-day animation builds (scripts/build_rail_day.py), regenerated per day
+frontend/public/data/rail_day/
