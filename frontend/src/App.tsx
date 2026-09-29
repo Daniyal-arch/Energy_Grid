@@ -166,30 +166,9 @@ export default function App() {
     if (s) setFlyTo({ lon: s.lon, lat: s.lat });
   };
 
+  // the rail scene is the real-data time-lapse of the latest recorded day
   const openRailScene = () => {
-    setSelectedId(null);
-    setGridSel(null);
-    setActiveScene("rail");
-    setBasemap("satellite");
-    setGrid({
-      ...grid,
-      stateBoundaries: true,
-      energyAssets: false,
-      backbone: false,
-      planned: false,
-      exchangeFlows: false,
-      constructionOnly: false,
-      rail: true,
-      railStations: true,
-      railStructures: true,
-      gas: false,
-      gasNodes: false,
-      gasFacilities: false,
-      ports: false,
-      airports: false,
-      industry: false,
-    });
-    setRailSceneRequest((n) => n + 1);
+    window.location.search = "?railday=latest";
   };
 
   const openPowerScene = () => {

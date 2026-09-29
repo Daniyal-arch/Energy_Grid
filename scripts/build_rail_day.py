@@ -47,7 +47,7 @@ RT_RAW = "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/rail-data/r
 BERLIN = ZoneInfo("Europe/Berlin")
 
 SNAP_M = 1200  # a stop further than this from any track is left unsnapped (straight hops)
-SIMPLIFY_M = 25  # output geometry tolerance
+SIMPLIFY_M = 100  # output geometry tolerance; 1 px is ~700 m at country zoom
 M_PER_DEG_LAT = 111_320.0
 
 
@@ -372,6 +372,9 @@ def main() -> None:
         ),
         encoding="utf-8",
     )
+    # index of built days; the frontend opens the newest (?railday=latest)
+    dates = sorted(f.stem for f in OUT_DIR.glob("2*.json"))
+    (OUT_DIR / "index.json").write_text(json.dumps({"dates": dates}), encoding="utf-8")
     size = out.stat().st_size / 1e6
     print(
         f"wrote {out} ({size:.1f} MB) · {len(segments):,} segments · straight hops "
