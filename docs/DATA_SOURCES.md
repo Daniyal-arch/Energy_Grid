@@ -77,6 +77,26 @@ Rebuild with:
 .venv\Scripts\python.exe scripts\build_infrastructure_layers.py --fetch-industry
 ```
 
+### Europe view (`?europe`)
+
+Static files in `frontend/public/data/eu/`, rendered by `EuropeView.tsx`:
+
+| File | Records | Source |
+|---|---:|---|
+| `grid.json` | 9,162 lines >= 220 kV, 39 HVDC links | PyPSA-Eur prebuilt network from OpenStreetMap ([Zenodo 18619025](https://zenodo.org/records/18619025)), ODbL |
+| `plants.json` | 7,838 operating units >= 20 MW | powerplantmatching (PyPSA); one threshold for all countries, because the German input is unit-level MaStR |
+| `countries.json` | land, coast, borders | Eurostat GISCO countries 1:20M |
+| `flows.json` | 79 borders | Energy-Charts `/cbpf` per country (ENTSO-E physical flows), latest complete 15-min value per border; a snapshot, not live |
+
+```sh
+uv run python scripts/fetch_eu_energy.py   # ~45 MB into data/eu/ (gitignored)
+uv run python scripts/build_eu_grid.py     # grid, plants, countries
+uv run python scripts/fetch_eu_flows.py    # flow snapshot; sequential, Energy-Charts answers 429 to bursts
+```
+
+ENTSO-E Transparency (A11, `ENTSOE_API_KEY`) returns the same flows but took more than
+10 minutes for all 164 border directions (`scripts/probe_entsoe_borders.py`).
+
 ## Recommended ingestion order
 
 1. Gas supply status and hydrogen core network, because they extend the existing
