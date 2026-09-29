@@ -266,13 +266,19 @@ export default function AtlasHud({
           <div className="eyebrow">Source-backed layers</div>
           <div className="text-[10px] text-faint">{manifest ? manifest.generated_at : "loading"}</div>
         </div>
-        <div className="grid grid-cols-4 gap-1">
+        <div className="grid grid-cols-5 gap-1">
           <button onClick={onPowerScene} className="rounded border border-sky-400/35 bg-sky-400/10 px-2 py-1 text-xs text-sky-200 hover:bg-sky-400/20">
             Power
           </button>
           <button onClick={onRailScene} className="rounded border border-accent/35 bg-accent/10 px-2 py-1 text-xs text-accent-200 hover:bg-accent/20">
             Rail
           </button>
+          <a
+            href="/?europe"
+            className="rounded border border-orange-300/35 bg-orange-300/10 px-2 py-1 text-center text-xs text-orange-200 hover:bg-orange-300/20"
+          >
+            Europe
+          </a>
           <button onClick={showCore} className="rounded border border-line px-2 py-1 text-xs text-slate-300 hover:bg-ink-800">
             Core
           </button>
