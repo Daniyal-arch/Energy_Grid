@@ -1,31 +1,32 @@
-// Comets gliding along paths: a bright head with a tapering, fading tail, drawn
-// entirely in the fragment shader from one `phase` uniform (same approach as
-// FlowPathLayer in flowLayers.ts, different mark). Used for the Europe view's
-// cross-border flow arcs. Per-vertex distances come from `flowDistances`, so heads
-// move toward increasing values at a constant on-screen speed (FlowClock).
+// Flat chevrons (›››) marching along paths: a solid guide line with arrowheads that
+// move toward the flow direction, drawn entirely in the fragment shader from one
+// `phase` uniform (same approach as FlowPathLayer in flowLayers.ts, different mark).
+// Used for the Europe view's cross-border flow arcs. Per-vertex distances come from
+// `flowDistances`, so arrows move toward increasing values at a constant on-screen
+// speed (FlowClock).
 
 import type { Accessor, AccessorFunction, DefaultProps } from "@deck.gl/core";
 import { PathLayer, type PathLayerProps } from "@deck.gl/layers";
 
-const cometUniformBlock = /* glsl */ `\
-layout(std140) uniform cometUniforms {
+const arrowUniformBlock = /* glsl */ `\
+layout(std140) uniform arrowUniforms {
   float phase;
   float spacing;
-  float tailPx;
+  float strokePx;
   float lineAlpha;
-} comet;
+} arrow;
 `;
 
-const cometUniforms = {
-  name: "comet",
-  vs: cometUniformBlock,
-  fs: cometUniformBlock,
-  uniformTypes: { phase: "f32", spacing: "f32", tailPx: "f32", lineAlpha: "f32" },
+const arrowUniforms = {
+  name: "arrow",
+  vs: arrowUniformBlock,
+  fs: arrowUniformBlock,
+  uniformTypes: { phase: "f32", spacing: "f32", strokePx: "f32", lineAlpha: "f32" },
 } as const;
 
-const cometFs = /* glsl */ `\
+const arrowFs = /* glsl */ `\
 #version 300 es
-#define SHADER_NAME comet-path-layer-fragment-shader
+#define SHADER_NAME flow-arrow-layer-fragment-shader
 
 precision highp float;
 
@@ -38,7 +39,7 @@ in float vJointType;
 in float vFlowDist;
 in float vPxPerUnit;
 in float vHalfWidthPx;
-in vec3 vCometStyle;
+in vec3 vArrowStyle;
 
 out vec4 fragColor;
 
@@ -56,28 +57,27 @@ void main(void) {
   }
   float across = (beyond ? length(vCornerOffset) : abs(vPathPosition.x)) * vHalfWidthPx;
 
-  // faint guide line under the comets
-  float coreHalf = max(vCometStyle.x * 0.5, 0.3);
-  float lineA = (1.0 - smoothstep(coreHalf - 0.5, coreHalf + 0.5, across)) * comet.lineAlpha;
+  // guide line under the arrows
+  float coreHalf = max(vArrowStyle.x * 0.5, 0.3);
+  float lineA = (1.0 - smoothstep(coreHalf - 0.5, coreHalf + 0.5, across)) * arrow.lineAlpha;
 
-  float headA = 0.0;
-  float tailA = 0.0;
-  if (comet.spacing > 0.0) {
-    float rel = (vFlowDist - comet.phase) / comet.spacing;
-    // px behind the next head ahead, and px past the previous head
-    float behind = (ceil(rel) - rel) * comet.spacing * vPxPerUnit;
-    float ahead = (rel - floor(rel)) * comet.spacing * vPxPerUnit;
-    float radius = vCometStyle.y;
-    float r = length(vec2(min(behind, ahead), across));
-    headA = 1.0 - smoothstep(radius - 0.6, radius + 0.6, r);
-    float k = clamp(behind / comet.tailPx, 0.0, 1.0);
-    float width = radius * (1.0 - 0.75 * k);
-    tailA = exp(-1.6 * k) * (1.0 - k) * exp(-across * across / (2.0 * width * width));
+  // chevrons: apex ahead, arms trailing back at 45 degrees; arm is the half span
+  float arrowA = 0.0;
+  if (arrow.spacing > 0.0) {
+    float cellPx = arrow.spacing * vPxPerUnit;
+    float pos = fract((vFlowDist - arrow.phase) / arrow.spacing) * cellPx;
+    float arm = vArrowStyle.y;
+    float apex = cellPx * 0.5 + arm * 0.5;
+    float d = pos - (apex - across);
+    float stroke = arrow.strokePx * 0.5;
+    float inArm = 1.0 - smoothstep(arm - 0.5, arm + 0.5, across);
+    arrowA = (1.0 - smoothstep(stroke - 0.6, stroke + 0.6, abs(d))) * inArm;
   }
 
-  float cometA = max(headA, tailA * 0.85) * vCometStyle.z;
-  vec3 color = mix(vColor.rgb, vec3(1.0), 0.75 * headA);
-  float alpha = clamp(max(lineA, cometA), 0.0, 1.0) * vColor.a;
+  float markA = arrowA * vArrowStyle.z;
+  vec3 color = mix(vColor.rgb, vec3(1.0), 0.55 * arrowA);
+  float lineOnly = lineA * (1.0 - markA);
+  float alpha = clamp(max(lineOnly, markA), 0.0, 1.0) * vColor.a;
   if (alpha < 0.003) {
     discard;
   }
@@ -87,57 +87,58 @@ void main(void) {
 }
 `;
 
-type _CometPathLayerProps<DataT> = {
-  /** Per-vertex distances from `flowDistances` (heads move toward larger values). */
+type _FlowArrowLayerProps<DataT> = {
+  /** Per-vertex distances from `flowDistances` (arrows move toward larger values). */
   getTimestamps?: AccessorFunction<DataT, number[]>;
-  /** [guide line px, head radius px, comet opacity 0..1]; total footprint comes from getWidth. */
-  getCometStyle?: Accessor<DataT, [number, number, number]>;
+  /** [guide line px, arrow half span px, arrow opacity 0..1]; total footprint comes from getWidth. */
+  getArrowStyle?: Accessor<DataT, [number, number, number]>;
   phase?: number;
   spacing?: number;
-  tailPx?: number;
+  /** chevron stroke width, px */
+  strokePx?: number;
   lineAlpha?: number;
 };
 
-export type CometPathLayerProps<DataT = unknown> = _CometPathLayerProps<DataT> & PathLayerProps<DataT>;
+export type FlowArrowLayerProps<DataT = unknown> = _FlowArrowLayerProps<DataT> & PathLayerProps<DataT>;
 
-const defaultProps: DefaultProps<CometPathLayerProps> = {
+const defaultProps: DefaultProps<FlowArrowLayerProps> = {
   getTimestamps: { type: "accessor", value: (d: any) => d.timestamps },
-  getCometStyle: { type: "accessor", value: [0.8, 2, 1] },
+  getArrowStyle: { type: "accessor", value: [0.8, 2, 1] },
   phase: { type: "number", value: 0 },
   spacing: { type: "number", value: 0 },
-  tailPx: { type: "number", value: 60 },
+  strokePx: { type: "number", value: 2 },
   lineAlpha: { type: "number", value: 0.2 },
 };
 
-export class CometPathLayer<DataT = any, ExtraProps extends {} = {}> extends PathLayer<
+export class FlowArrowLayer<DataT = any, ExtraProps extends {} = {}> extends PathLayer<
   DataT,
-  Required<_CometPathLayerProps<DataT>> & ExtraProps
+  Required<_FlowArrowLayerProps<DataT>> & ExtraProps
 > {
-  static layerName = "CometPathLayer";
+  static layerName = "FlowArrowLayer";
   static defaultProps = defaultProps;
 
   getShaders() {
     const shaders = super.getShaders();
     return {
       ...shaders,
-      fs: cometFs,
-      modules: [...shaders.modules, cometUniforms],
+      fs: arrowFs,
+      modules: [...shaders.modules, arrowUniforms],
       inject: {
         "vs:#decl": /* glsl */ `\
 in float instanceTimestamps;
 in float instanceNextTimestamps;
-in vec3 instanceCometStyles;
+in vec3 instanceArrowStyles;
 out float vFlowDist;
 out float vPxPerUnit;
 out float vHalfWidthPx;
-out vec3 vCometStyle;
+out vec3 vArrowStyle;
 `,
         "vs:#main-end": /* glsl */ `\
 float flowSegment = instanceNextTimestamps - instanceTimestamps;
 vFlowDist = instanceTimestamps + flowSegment * vPathPosition.y / max(vPathLength, 1e-6);
 vHalfWidthPx = widthPixels.x;
 vPxPerUnit = vPathLength * widthPixels.x / max(abs(flowSegment), 1e-6);
-vCometStyle = instanceCometStyles;
+vArrowStyle = instanceArrowStyles;
 `,
       },
     };
@@ -154,17 +155,17 @@ vCometStyle = instanceCometStyles;
           instanceNextTimestamps: { vertexOffset: 1 },
         },
       },
-      instanceCometStyles: {
+      instanceArrowStyles: {
         size: 3,
-        accessor: "getCometStyle",
+        accessor: "getArrowStyle",
         defaultValue: [0.8, 2, 1],
       },
     });
   }
 
   draw(params: any) {
-    const { phase, spacing, tailPx, lineAlpha } = this.props;
-    this.state.model!.shaderInputs.setProps({ comet: { phase, spacing, tailPx, lineAlpha } });
+    const { phase, spacing, strokePx, lineAlpha } = this.props;
+    this.state.model!.shaderInputs.setProps({ arrow: { phase, spacing, strokePx, lineAlpha } });
     super.draw(params);
   }
 }

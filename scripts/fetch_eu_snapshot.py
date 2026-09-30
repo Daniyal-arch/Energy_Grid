@@ -1,20 +1,28 @@
-"""Snapshot of physical cross-border electricity flows across Europe.
+"""Snapshot of European power-system figures for the Europe view (?europe).
 
-Asks Energy-Charts (/cbpf, ENTSO-E physical flows as published by Fraunhofer ISE)
-once per country, one request at a time because the API answers 429 to bursts.
-Each border is reported by both sides; the value is taken from the first country
-that has it for the newest complete interval (sign flipped as needed). Values
-are passthrough: no netting, no modelling.
+Asks Energy-Charts (Fraunhofer ISE; ENTSO-E data) one request at a time, because the
+API answers 429 to bursts:
+  /cbpf?country=xx          physical cross-border flows per neighbour
+  /public_power?country=xx  load, generation by source, published renewable share
+  /public_power?country=eu  the same for the EU aggregate
 
-Writes frontend/public/data/eu/flows.json:
-  {"source", "fetched", "borders": [{"a", "b", "mw", "ts", "reported_by"}]}
-  mw > 0 means power flows from a to b.
+Values are passthrough from the newest interval every series has reported (the
+newest one is often partial). Each border is reported by both sides; the value is
+taken from the first country that has it (sign flipped as needed). Generation is
+grouped by fuel (e.g. wind onshore + offshore) but not otherwise modified.
 
-    uv run python scripts/fetch_eu_flows.py
+Writes frontend/public/data/eu/:
+  flows.json  {"source", "fetched", "borders": [{"a", "b", "mw", "ts", "reported_by"}]}
+              mw > 0 means power flows from a to b
+  stats.json  {"source", "fetched", "eu": Power, "countries": {ISO: Power}}
+              Power = {"ts", "load_mw", "renewable_share_of_generation", "generation_mw"}
+
+    uv run python scripts/fetch_eu_snapshot.py [--out DIR]
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 import time
@@ -26,8 +34,33 @@ import httpx
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 from app.power_live import newest_complete_index  # noqa: E402
 
-OUT = Path(__file__).resolve().parents[1] / "frontend" / "public" / "data" / "eu" / "flows.json"
-BASE = "https://api.energy-charts.info/cbpf"
+OUT = Path(__file__).resolve().parents[1] / "frontend" / "public" / "data" / "eu"
+BASE = "https://api.energy-charts.info"
+SOURCE = "Energy-Charts (Fraunhofer ISE), based on ENTSO-E Transparency data"
+
+# Energy-Charts production type -> group shown in the view
+FUEL_GROUP = {
+    "Solar": "solar",
+    "Wind onshore": "wind",
+    "Wind offshore": "wind",
+    "Nuclear": "nuclear",
+    "Fossil gas": "gas",
+    "Fossil coal-derived gas": "gas",
+    "Fossil brown coal / lignite": "coal",
+    "Fossil hard coal": "coal",
+    "Fossil peat": "coal",
+    "Fossil oil shale": "coal",
+    "Fossil oil": "oil",
+    "Hydro Run-of-River": "hydro",
+    "Hydro water reservoir": "hydro",
+    "Hydro pumped storage": "hydro",
+    "Biomass": "bio",
+    "Waste": "bio",
+    "Geothermal": "other",
+    "Other renewables": "other",
+    "Others": "other",
+    "Battery": "other",
+}
 
 # Energy-Charts country codes asked, in this order (earlier ones win a border)
 CODES = [
@@ -109,10 +142,10 @@ NAME_TO_ISO = {
 }
 
 
-def get(client: httpx.Client, code: str) -> dict | None:
+def get(client: httpx.Client, path: str, code: str) -> dict | None:
     for attempt in range(5):
         try:
-            r = client.get(BASE, params={"country": code})
+            r = client.get(BASE + path, params={"country": code})
         except httpx.TransportError as err:
             print(f"  {code}: {err.__class__.__name__}, retry", flush=True)
             time.sleep(10 * (attempt + 1))
@@ -127,13 +160,51 @@ def get(client: httpx.Client, code: str) -> dict | None:
     return None
 
 
+def power(data: dict) -> dict | None:
+    """Load, published renewable share and grouped generation at the newest complete interval."""
+    series = {s["name"]: s.get("data", []) for s in data.get("production_types", [])}
+    # a fuel a country does not report at all is left out, or no interval is ever complete
+    gen = {
+        name: col
+        for name, col in series.items()
+        if name in FUEL_GROUP and any(v is not None for v in col)
+    }
+    if not gen or "Load" not in series:
+        return None
+    i = newest_complete_index(list(gen.values()) + [series["Load"]])
+    if i is None:
+        return None
+    grouped: dict[str, float] = {}
+    for name, col in gen.items():
+        grouped[FUEL_GROUP[name]] = grouped.get(FUEL_GROUP[name], 0.0) + float(col[i])
+    share = series.get("Renewable share of generation", [])
+    return {
+        "ts": datetime.fromtimestamp(int(data["unix_seconds"][i]), tz=UTC).isoformat(),
+        "load_mw": round(float(series["Load"][i]), 1),
+        "renewable_share_of_generation": (
+            round(float(share[i]), 1) if i < len(share) and share[i] is not None else None
+        ),
+        "generation_mw": {k: round(v, 1) for k, v in sorted(grouped.items())},
+    }
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out", type=Path, default=OUT, help="output directory")
+    out: Path = parser.parse_args().out
     borders: dict[frozenset[str], dict] = {}
+    stats: dict[str, dict] = {}
     unknown: set[str] = set()
     with httpx.Client(timeout=90, headers={"User-Agent": "Germany-InfraAtlas/0.1"}) as client:
+        eu = power(get(client, "/public_power", "eu") or {})
+        time.sleep(3)
         for code in CODES:
             home = code.upper()
-            data = get(client, code)
+            pp = get(client, "/public_power", code)
+            time.sleep(3)
+            if pp and (row := power(pp)):
+                stats[home] = row
+            data = get(client, "/cbpf", code)
             time.sleep(3)
             if not data:
                 print(f"{home}: no data")
@@ -167,19 +238,17 @@ def main() -> None:
                 f"{home}: {len(series)} neighbours, {added} new borders, interval {ts}", flush=True
             )
     rows = sorted(borders.values(), key=lambda r: -abs(r["mw"]))
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(
-        json.dumps(
-            {
-                "source": "Energy-Charts (Fraunhofer ISE), cross-border physical flows (ENTSO-E)",
-                "fetched": datetime.now(UTC).isoformat(timespec="seconds"),
-                "borders": rows,
-            },
-            indent=1,
-        ),
-        encoding="utf-8",
-    )
-    print(f"{len(rows)} borders -> {OUT}")
+    fetched = datetime.now(UTC).isoformat(timespec="seconds")
+    out.mkdir(parents=True, exist_ok=True)
+    flows = {
+        "source": SOURCE + ", cross-border physical flows",
+        "fetched": fetched,
+        "borders": rows,
+    }
+    (out / "flows.json").write_text(json.dumps(flows, indent=1), encoding="utf-8")
+    summary = {"source": SOURCE, "fetched": fetched, "eu": eu, "countries": stats}
+    (out / "stats.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
+    print(f"{len(rows)} borders, {len(stats)} countries with power data, EU aggregate: {bool(eu)}")
     if unknown:
         print("neighbours outside the map (skipped):", ", ".join(sorted(unknown)))
 

@@ -84,15 +84,20 @@ Static files in `frontend/public/data/eu/`, rendered by `EuropeView.tsx`:
 | File | Records | Source |
 |---|---:|---|
 | `grid.json` | 9,162 lines >= 220 kV, 39 HVDC links | PyPSA-Eur prebuilt network from OpenStreetMap ([Zenodo 18619025](https://zenodo.org/records/18619025)), ODbL |
-| `plants.json` | 7,838 operating units >= 20 MW | powerplantmatching (PyPSA); one threshold for all countries, because the German input is unit-level MaStR |
+| `plants.json` | 7,838 operating units >= 20 MW | powerplantmatching (PyPSA); one threshold for all countries, because the German input is unit-level MaStR. German wind is listed per turbine, so it falls under the cut (no German wind farms on the map) |
 | `countries.json` | land, coast, borders | Eurostat GISCO countries 1:20M |
-| `flows.json` | 79 borders | Energy-Charts `/cbpf` per country (ENTSO-E physical flows), latest complete 15-min value per border; a snapshot, not live |
+| `flows.json` | 79 borders | Energy-Charts `/cbpf` per country (ENTSO-E physical flows), latest complete 15-min value per border |
+| `stats.json` | EU + per country | Energy-Charts `/public_power` (country=eu and per country): load, generation by source group, published renewable share of generation; shades the countries |
 
 ```sh
 uv run python scripts/fetch_eu_energy.py   # ~45 MB into data/eu/ (gitignored)
 uv run python scripts/build_eu_grid.py     # grid, plants, countries
-uv run python scripts/fetch_eu_flows.py    # flow snapshot; sequential, Energy-Charts answers 429 to bursts
+uv run python scripts/fetch_eu_snapshot.py # flows + stats; sequential, Energy-Charts answers 429 to bursts
 ```
+
+`flows.json` and `stats.json` are refreshed every 30 min by
+`.github/workflows/eu-snapshot.yml` onto the `eu-data` branch; the view reads that copy
+from raw.githubusercontent.com and falls back to the bundled one (newer wins).
 
 ENTSO-E Transparency (A11, `ENTSOE_API_KEY`) returns the same flows but took more than
 10 minutes for all 164 border directions (`scripts/probe_entsoe_borders.py`).

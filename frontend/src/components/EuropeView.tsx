@@ -1,18 +1,21 @@
+import type { PickingInfo } from "@deck.gl/core";
 import { PathStyleExtension, type PathStyleExtensionProps } from "@deck.gl/extensions";
-import { PathLayer, ScatterplotLayer, SolidPolygonLayer } from "@deck.gl/layers";
+import { ColumnLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { CometPathLayer } from "../lib/cometLayer";
+import { FlowArrowLayer } from "../lib/flowArrowLayer";
 import { FlowClock, curvedPath, flowDistances } from "../lib/flowLayers";
 import { rgbCss, type RGB } from "../lib/theme";
 
 // Europe's transmission grid, power plants and measured cross-border flows (?europe).
 // Static layers: frontend/public/data/eu/{grid,plants,countries}.json from
-// scripts/build_eu_grid.py; flows.json from scripts/fetch_eu_flows.py (a snapshot).
-// Only cross-border arcs move: they carry measured physical flows. Lines inside a
-// country stay still because no public per-line flow data exists.
+// scripts/build_eu_grid.py; flows.json + stats.json from scripts/fetch_eu_snapshot.py.
+// Countries are shaded by the renewable share of generation that Energy-Charts
+// publishes. Click a country to focus it: its stats, outline and own flows. Only
+// cross-border arcs move: they carry measured physical flows. Lines inside a country
+// stay still because no public per-line flow data exists.
 
 interface GridFile {
   lines: [number, number[]][];
@@ -20,10 +23,18 @@ interface GridFile {
 }
 interface PlantsFile {
   groups: string[];
-  plants: [number, number, number, number][];
+  plants: Plant[];
+  /** per country and group: [units, MW] of the plants drawn (>= 20 MW, operating) */
+  by_country: Record<string, Record<string, [number, number]>>;
+}
+interface Country {
+  iso: string;
+  name: string;
+  label: [number, number];
+  polygons: number[][][];
 }
 interface CountriesFile {
-  land: number[][][];
+  countries: Country[];
   borders: number[][];
   coast: number[][];
 }
@@ -34,48 +45,107 @@ interface FlowRow {
   ts: string;
 }
 interface FlowsFile {
-  source: string;
   fetched: string;
   borders: FlowRow[];
+}
+interface Power {
+  ts: string;
+  load_mw: number;
+  renewable_share_of_generation: number | null;
+  generation_mw: Record<string, number>;
+}
+interface StatsFile {
+  fetched: string;
+  eu: Power | null;
+  countries: Record<string, Power>;
 }
 interface Arc {
   from: string;
   to: string;
   mw: number;
+  ts: string;
   path: [number, number][];
   timestamps: number[];
 }
+interface Shape {
+  iso: string;
+  name: string;
+  polygon: [number, number][][];
+}
+/** [group index, MW, lon, lat, ISO, name, year in operation] */
+type Plant = [number, number, number, number, string, string, number | null];
 
-const SEA = "#06070a";
-const LAND: RGB = [19, 18, 18];
-const COAST: [number, number, number, number] = [84, 76, 68, 150];
-const BORDER: [number, number, number, number] = [120, 106, 92, 85];
+const SEA = "#05070b";
+const NO_DATA: RGB = [30, 31, 36];
+const BORDER: [number, number, number, number] = [214, 206, 196, 70];
+const COAST: [number, number, number, number] = [150, 160, 176, 90];
 const HVDC: RGB = [178, 146, 255];
-const FLOW: RGB = [120, 214, 255];
+const FLOW: RGB = [120, 222, 255];
 
-// copper by voltage: the highest level is brightest
+// renewable share of generation, 0 -> 100 %: ember -> slate -> deep teal
+const SHARE_STOPS: Array<[number, RGB]> = [
+  [0, [70, 38, 40]],
+  [35, [58, 48, 58]],
+  [65, [36, 58, 70]],
+  [100, [22, 84, 86]],
+];
+const dim = (c: RGB, k: number): RGB => [c[0] * k, c[1] * k, c[2] * k].map(Math.round) as RGB;
+const lift = (c: RGB, k: number): RGB => c.map((v) => Math.round(v + (255 - v) * k)) as RGB;
+
+function bbox(c: Country): [[number, number], [number, number]] {
+  let [x0, y0, x1, y1] = [180, 90, -180, -90];
+  for (const rings of c.polygons)
+    for (let k = 0; k < rings[0].length; k += 2) {
+      x0 = Math.min(x0, rings[0][k]);
+      x1 = Math.max(x1, rings[0][k]);
+      y0 = Math.min(y0, rings[0][k + 1]);
+      y1 = Math.max(y1, rings[0][k + 1]);
+    }
+  return [
+    [x0, y0],
+    [x1, y1],
+  ];
+}
+
+function shareColor(share: number | null | undefined): RGB {
+  if (share == null) return NO_DATA;
+  for (let i = 1; i < SHARE_STOPS.length; i++) {
+    const [s1, c1] = SHARE_STOPS[i];
+    const [s0, c0] = SHARE_STOPS[i - 1];
+    if (share <= s1) {
+      const t = (share - s0) / (s1 - s0);
+      return [0, 1, 2].map((k) => Math.round(c0[k] + (c1[k] - c0[k]) * t)) as RGB;
+    }
+  }
+  return SHARE_STOPS[SHARE_STOPS.length - 1][1];
+}
+
+// copper by voltage, kept dim so countries, plants and flows read first
 const VOLTAGE_BANDS: Array<{ min: number; label: string; color: RGB; width: number; alpha: number }> = [
-  { min: 380, label: "380–750 kV", color: [236, 178, 120], width: 0.9, alpha: 170 },
-  { min: 275, label: "275–330 kV", color: [196, 122, 76], width: 0.75, alpha: 130 },
-  { min: 0, label: "220–254 kV", color: [140, 84, 58], width: 0.6, alpha: 110 },
+  { min: 380, label: "380–750 kV", color: [236, 178, 120], width: 0.8, alpha: 125 },
+  { min: 275, label: "275–330 kV", color: [206, 132, 84], width: 0.7, alpha: 95 },
+  { min: 0, label: "220–254 kV", color: [160, 100, 70], width: 0.6, alpha: 75 },
 ];
 const band = (kv: number) => VOLTAGE_BANDS.find((b) => kv >= b.min)!;
 
-const PLANT_COLOR: Record<string, RGB> = {
+const FUEL_ORDER = ["solar", "wind", "nuclear", "gas", "coal", "hydro", "bio", "oil", "other"];
+const FUEL_COLOR: Record<string, RGB> = {
   nuclear: [255, 96, 150],
-  coal: [150, 138, 126],
+  coal: [160, 146, 132],
   gas: [255, 128, 72],
+  oil: [214, 96, 64],
   hydro: [84, 156, 255],
   wind: [72, 222, 184],
   solar: [255, 214, 72],
   bio: [150, 196, 92],
-  storage: [190, 190, 210],
+  storage: [196, 196, 214],
   other: [168, 146, 210],
 };
-const PLANT_LABEL: Record<string, string> = {
+const FUEL_LABEL: Record<string, string> = {
   nuclear: "Nuclear",
   coal: "Coal & lignite",
-  gas: "Gas & oil",
+  gas: "Gas",
+  oil: "Oil",
   hydro: "Hydro",
   wind: "Wind",
   solar: "Solar",
@@ -83,6 +153,7 @@ const PLANT_LABEL: Record<string, string> = {
   storage: "Storage",
   other: "Other",
 };
+const PLANT_LABEL: Record<string, string> = { ...FUEL_LABEL, gas: "Gas & oil" };
 
 // where each country's flow arcs start and end (inland points, not capitals)
 const ANCHOR: Record<string, [number, number]> = {
@@ -123,6 +194,8 @@ const ANCHOR: Record<string, [number, number]> = {
   UA: [31.0, 49.0],
   XK: [20.9, 42.6],
 };
+// too small for a name at continent zoom
+const SMALL = new Set(["LU", "ME", "MK", "XK", "AL", "BA", "SI", "MD", "BE", "NL", "DK", "EE", "LV", "LT", "CH"]);
 
 const EUROPE: [[number, number], [number, number]] = [
   [-11, 35.5],
@@ -134,6 +207,9 @@ const BLANK_STYLE: maplibregl.StyleSpecification = {
   layers: [{ id: "background", type: "background", paint: { "background-color": SEA } }],
 };
 const IDLE_MW = 20;
+const LABEL_MW = 1000; // arcs from this size carry a GW label
+const DETAIL_ZOOM = 5; // below: plants >= 50 MW only
+const COLUMN_M_PER_MW = 55; // focused-country columns: 1,000 MW stands 55 km tall
 
 const pairs = (flat: number[]): [number, number][] => {
   const p: [number, number][] = [];
@@ -141,11 +217,90 @@ const pairs = (flat: number[]): [number, number][] => {
   return p;
 };
 const gw = (mw: number) => `${(Math.abs(mw) / 1000).toFixed(1)} GW`;
+const utc = (iso: string) => `${iso.slice(11, 16)} UTC`;
 
 async function getJson<T>(url: string): Promise<T> {
   const r = await fetch(url);
   if (!r.ok) throw new Error(`${url} -> ${r.status}`);
   return (await r.json()) as T;
+}
+
+// refreshed every 30 min by .github/workflows/eu-snapshot.yml
+const SNAPSHOT_REMOTE = "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-data/eu";
+
+/**
+ * Hands over the copy bundled with the app at once, then the cloud snapshot if it
+ * is newer (the remote fetch can be slow or missing, so it never blocks the map).
+ */
+function loadSnapshot<T extends { fetched: string }>(name: string, use: (v: T) => void): void {
+  let bundled: T | null = null;
+  getJson<T>(`/data/eu/${name}`)
+    .then((v) => {
+      bundled = v;
+      use(v);
+    })
+    .catch(() => {});
+  fetch(`${SNAPSHOT_REMOTE}/${name}?t=${Date.now()}`, { signal: AbortSignal.timeout(8000) })
+    .then((r) => (r.ok ? (r.json() as Promise<T>) : Promise.reject()))
+    .then((v) => {
+      if (!bundled || v.fetched > bundled.fetched) use(v);
+    })
+    .catch(() => {});
+}
+
+function powerHtml(title: string, p: Power | undefined): string {
+  if (!p) return `<b>${title}</b><br/><span style="color:#8d94a1">no Energy-Charts data</span>`;
+  const rows = Object.entries(p.generation_mw)
+    .filter(([, mw]) => mw > 0)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([f, mw]) => `<div style="display:flex;justify-content:space-between;gap:16px"><span>${FUEL_LABEL[f] ?? f}</span><span>${gw(mw)}</span></div>`)
+    .join("");
+  const share = p.renewable_share_of_generation;
+  return `<b style="letter-spacing:.08em">${title}</b>
+    <div style="color:#8d94a1;margin:2px 0 6px">interval ${utc(p.ts)}</div>
+    ${share != null ? `<div>Renewable share of generation <b>${share.toFixed(1)} %</b></div>` : ""}
+    <div>Load <b>${gw(p.load_mw)}</b></div>
+    <div style="margin-top:6px">${rows}</div>`;
+}
+
+const power = (mw: number) => (Math.abs(mw) >= 1000 ? gw(mw) : `${Math.round(Math.abs(mw))} MW`);
+
+/** Load, published renewable share and generation mix of one interval. */
+function PowerBlock({ power: p }: { power: Power }) {
+  const sources = FUEL_ORDER.filter((f) => (p.generation_mw[f] ?? 0) > 0).sort((a, b) => p.generation_mw[b] - p.generation_mw[a]);
+  const max = Math.max(1, ...Object.values(p.generation_mw));
+  return (
+    <>
+      <div className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-[#8f877e]">interval {utc(p.ts)}</div>
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        <div>
+          <div className="text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Load</div>
+          <div className="text-[20px] font-light tabular-nums">{power(p.load_mw)}</div>
+        </div>
+        {p.renewable_share_of_generation != null && (
+          <div>
+            <div className="text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Renewable gen.</div>
+            <div className="text-[20px] font-light tabular-nums">{p.renewable_share_of_generation.toFixed(1)} %</div>
+          </div>
+        )}
+      </div>
+      <div className="mt-3 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Generation by source</div>
+      <div className="mt-1.5 space-y-1">
+        {sources.map((f) => (
+          <div key={f}>
+            <div className="flex justify-between text-[11px] tabular-nums text-slate-200">
+              <span>{FUEL_LABEL[f]}</span>
+              <span>{power(p.generation_mw[f])}</span>
+            </div>
+            <div className="mt-0.5 h-[3px] rounded-full bg-white/[0.06]">
+              <div className="h-full rounded-full" style={{ width: `${(p.generation_mw[f] / max) * 100}%`, background: rgbCss(FUEL_COLOR[f]) }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
 }
 
 export default function EuropeView() {
@@ -156,8 +311,14 @@ export default function EuropeView() {
   const [plants, setPlants] = useState<PlantsFile | null>(null);
   const [countries, setCountries] = useState<CountriesFile | null>(null);
   const [flows, setFlows] = useState<FlowsFile | null>(null);
+  const [stats, setStats] = useState<StatsFile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [frame, setFrame] = useState(0);
+  const [zoom, setZoom] = useState(4);
+  // ?europe&country=FR opens with a country focused
+  const [selected, setSelected] = useState<string | null>(
+    () => new URLSearchParams(window.location.search).get("country")?.toUpperCase() ?? null,
+  );
   const clock = useRef(new FlowClock());
 
   useEffect(() => {
@@ -166,8 +327,17 @@ export default function EuropeView() {
       getJson<PlantsFile>("/data/eu/plants.json").then(setPlants),
       getJson<CountriesFile>("/data/eu/countries.json").then(setCountries),
     ]).catch((e) => setError(String(e)));
-    // flows are optional: without a snapshot the grid still renders, just still
-    getJson<FlowsFile>("/data/eu/flows.json").then(setFlows).catch(() => {});
+  }, []);
+
+  // the snapshot is optional: without it the map still renders, unshaded and still
+  useEffect(() => {
+    const load = () => {
+      loadSnapshot<FlowsFile>("flows.json", setFlows);
+      loadSnapshot<StatsFile>("stats.json", setStats);
+    };
+    load();
+    const t = setInterval(load, 10 * 60 * 1000);
+    return () => clearInterval(t);
   }, []);
 
   useEffect(() => {
@@ -180,12 +350,61 @@ export default function EuropeView() {
       attributionControl: false,
       renderWorldCopies: false,
     });
-    const o = new MapboxOverlay({ interleaved: false, layers: [] });
+    map.on("zoomend", () => setZoom(map.getZoom()));
+    const o = new MapboxOverlay({
+      interleaved: false,
+      layers: [],
+      // click a country to focus it; click it again or the sea to go back to Europe
+      onClick: ({ object, layer }: PickingInfo) => {
+        if (layer?.id === "eu-countries" && object) {
+          const iso = (object as Shape).iso;
+          setSelected((cur) => (cur === iso ? null : iso));
+        } else if (!object) {
+          setSelected(null);
+        }
+      },
+      getTooltip: ({ object, layer }: PickingInfo) => {
+        if (!object || !layer) return null;
+        const style = {
+          background: "rgba(8,10,14,0.92)",
+          color: "#e2e8f0",
+          fontSize: "11px",
+          lineHeight: "1.5",
+          padding: "8px 10px",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: "6px",
+        };
+        if (layer.id === "eu-countries") {
+          const s = object as Shape;
+          return { html: powerHtml(s.name, statsRef.current?.countries[s.iso]), style };
+        }
+        if (layer.id === "eu-flows") {
+          const a = object as Arc;
+          return { html: `<b>${a.from} → ${a.to}</b> ${gw(a.mw)}<div style="color:#8d94a1">physical flow, interval ${utc(a.ts)}</div>`, style };
+        }
+        if (layer.id === "eu-plants" || layer.id === "eu-plant-columns") {
+          const p = object as Plant;
+          const fuel = PLANT_LABEL[plantsRef.current?.groups[p[0]] ?? "other"];
+          const year = p[6] ? ` · since ${p[6]}` : "";
+          return {
+            html: `<b>${p[5]}</b><div>${fuel} · ${p[1].toLocaleString("en-US")} MW installed${year}</div>`,
+            style,
+          };
+        }
+        return null;
+      },
+    });
     map.addControl(o);
     overlay.current = o;
     mapRef.current = map;
     return () => map.remove();
   }, []);
+
+  // the tooltip callback is created once; it reads the latest data through refs
+  const statsRef = useRef<StatsFile | null>(null);
+  const plantsRef = useRef<PlantsFile | null>(null);
+  statsRef.current = stats;
+  plantsRef.current = plants;
 
   const lineBands = useMemo(() => {
     if (!grid) return [];
@@ -195,7 +414,25 @@ export default function EuropeView() {
     })).reverse(); // low voltage first, 380+ on top
   }, [grid]);
   const links = useMemo(() => (grid ? grid.links.map(([mw, flat]) => ({ mw, path: pairs(flat) })) : []), [grid]);
-  const land = useMemo(() => (countries ? countries.land.map((rings) => rings.map(pairs)) : []), [countries]);
+  const shapes = useMemo<Shape[]>(
+    () =>
+      countries
+        ? countries.countries.flatMap((c) => c.polygons.map((rings) => ({ iso: c.iso, name: c.name, polygon: rings.map(pairs) })))
+        : [],
+    [countries],
+  );
+  // flat dots everywhere except the focused country, which gets 3D columns (all >= 20 MW)
+  const visiblePlants = useMemo(
+    () =>
+      plants
+        ? plants.plants.filter((p) => p[4] !== selected && (zoom >= DETAIL_ZOOM || p[1] >= 50))
+        : [],
+    [plants, zoom, selected],
+  );
+  const focusPlantRows = useMemo(
+    () => (plants && selected ? plants.plants.filter((p) => p[4] === selected) : []),
+    [plants, selected],
+  );
 
   const arcs = useMemo<Arc[]>(() => {
     if (!flows) return [];
@@ -205,17 +442,38 @@ export default function EuropeView() {
       const [from, to] = f.mw > 0 ? [f.a, f.b] : [f.b, f.a];
       if (!ANCHOR[from] || !ANCHOR[to]) continue;
       const path = curvedPath(ANCHOR[from], ANCHOR[to], 0.16, 40);
-      out.push({ from, to, mw: Math.abs(f.mw), path, timestamps: flowDistances(path, false, out.length * 91_000) });
+      out.push({ from, to, mw: Math.abs(f.mw), ts: f.ts, path, timestamps: flowDistances(path, false, out.length * 91_000) });
     }
     return out.sort((x, y) => x.mw - y.mw);
   }, [flows]);
   const topFlows = useMemo(() => [...arcs].sort((x, y) => y.mw - x.mw).slice(0, 6), [arcs]);
+  const countryLabels = useMemo(
+    () => (countries ? countries.countries.filter((c) => zoom >= DETAIL_ZOOM || !SMALL.has(c.iso)) : []),
+    [countries, zoom],
+  );
 
-  // one clock for the comets; only the uniforms change per frame
+  const focus = useMemo(() => countries?.countries.find((c) => c.iso === selected) ?? null, [countries, selected]);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (focus) {
+      // tilt into the country so the plant columns stand up
+      const cam = map.cameraForBounds(bbox(focus), { padding: { left: 280, right: 320, top: 90, bottom: 60 } });
+      if (!cam?.center) return;
+      map.flyTo({ center: cam.center, zoom: Math.min(6.2, (cam.zoom ?? 5) - 0.1), pitch: 52, bearing: -12, duration: 1400 });
+    } else {
+      const cam = map.cameraForBounds(EUROPE, { padding: 24 });
+      map.flyTo({ center: cam?.center ?? [10, 52], zoom: cam?.zoom ?? 3.5, pitch: 0, bearing: 0, duration: 1200 });
+    }
+  }, [focus]);
+  const focusRings = useMemo(() => (focus ? focus.polygons.map((rings) => pairs(rings[0])) : []), [focus]);
+  const touches = (a: Arc) => a.from === selected || a.to === selected;
+
+  // one clock for the arrows; only the uniforms change per frame
   useEffect(() => {
     let raf = 0;
     const loop = (now: number) => {
-      clock.current.tick(now, mapRef.current?.getZoom() ?? 4, 34);
+      clock.current.tick(now, mapRef.current?.getZoom() ?? 4, 40);
       setFrame((n) => n + 1);
       raf = requestAnimationFrame(loop);
     };
@@ -224,16 +482,23 @@ export default function EuropeView() {
   }, []);
 
   useEffect(() => {
-    const zoom = mapRef.current?.getZoom() ?? 4;
-    const flow = clock.current.uniforms(zoom, 110);
+    const flow = clock.current.uniforms(mapRef.current?.getZoom() ?? 4, 72);
     const noDepth = { depthCompare: "always", depthWriteEnabled: false } as const;
+    const shares = stats?.countries;
     overlay.current?.setProps({
       layers: [
-        new SolidPolygonLayer<[number, number][][]>({
-          id: "eu-land",
-          data: land,
-          getPolygon: (d) => d,
-          getFillColor: [...LAND, 255],
+        new SolidPolygonLayer<Shape>({
+          id: "eu-countries",
+          data: shapes,
+          getPolygon: (d) => d.polygon,
+          getFillColor: (d) => {
+            const c = shareColor(shares?.[d.iso]?.renewable_share_of_generation);
+            return [...(!selected ? c : d.iso === selected ? lift(c, 0.05) : dim(c, 0.45)), 255];
+          },
+          updateTriggers: { getFillColor: [shares, selected] },
+          pickable: true,
+          autoHighlight: true,
+          highlightColor: [255, 255, 255, 22],
           parameters: noDepth,
         }),
         new PathLayer<number[]>({
@@ -241,57 +506,56 @@ export default function EuropeView() {
           data: countries?.coast ?? [],
           getPath: (d) => pairs(d),
           getColor: COAST,
-          getWidth: 0.6,
+          getWidth: 0.7,
           widthUnits: "pixels",
           parameters: noDepth,
         }),
-        new PathLayer<number[], PathStyleExtensionProps<number[]>>({
+        new PathLayer<number[]>({
           id: "eu-borders",
           data: countries?.borders ?? [],
           getPath: (d) => pairs(d),
           getColor: BORDER,
-          getWidth: 0.6,
+          getWidth: 0.9,
           widthUnits: "pixels",
-          getDashArray: [3, 3],
-          dashJustified: true,
-          extensions: [new PathStyleExtension({ dash: true })],
           parameters: noDepth,
         }),
-        new ScatterplotLayer<[number, number, number, number]>({
-          id: "eu-plants",
-          data: plants?.plants ?? [],
-          getPosition: (p) => [p[2], p[3]],
-          getRadius: (p) => Math.min(4, 0.7 + Math.sqrt(p[1]) * 0.065),
-          radiusUnits: "pixels",
-          getFillColor: (p) => [...PLANT_COLOR[plants!.groups[p[0]]], 115],
-          stroked: false,
+        new PathLayer<[number, number][]>({
+          id: "eu-focus-glow",
+          data: focusRings,
+          getPath: (d) => d,
+          getColor: [255, 246, 230, 45],
+          getWidth: 7,
+          widthUnits: "pixels",
+          jointRounded: true,
           parameters: noDepth,
         }),
-        ...lineBands.flatMap((b) => [
-          new PathLayer<[number, number][]>({
-            id: `eu-grid-glow-${b.min}`,
-            data: b.paths,
-            getPath: (d) => d,
-            getColor: [...b.color, 14],
-            getWidth: b.width * 4,
-            widthUnits: "pixels",
-            parameters: noDepth,
-          }),
-          new PathLayer<[number, number][]>({
-            id: `eu-grid-${b.min}`,
-            data: b.paths,
-            getPath: (d) => d,
-            getColor: [...b.color, b.alpha],
-            getWidth: b.width,
-            widthUnits: "pixels",
-            parameters: noDepth,
-          }),
-        ]),
+        new PathLayer<[number, number][]>({
+          id: "eu-focus-outline",
+          data: focusRings,
+          getPath: (d) => d,
+          getColor: [255, 246, 230, 235],
+          getWidth: 1.8,
+          widthUnits: "pixels",
+          jointRounded: true,
+          parameters: noDepth,
+        }),
+        ...lineBands.map(
+          (b) =>
+            new PathLayer<[number, number][]>({
+              id: `eu-grid-${b.min}`,
+              data: b.paths,
+              getPath: (d) => d,
+              getColor: [...b.color, b.alpha],
+              getWidth: b.width,
+              widthUnits: "pixels",
+              parameters: noDepth,
+            }),
+        ),
         new PathLayer<{ mw: number; path: [number, number][] }, PathStyleExtensionProps>({
           id: "eu-hvdc",
           data: links,
           getPath: (d) => d.path,
-          getColor: [...HVDC, 210],
+          getColor: [...HVDC, 190],
           getWidth: 1,
           widthUnits: "pixels",
           getDashArray: [4, 3],
@@ -299,43 +563,120 @@ export default function EuropeView() {
           extensions: [new PathStyleExtension({ dash: true })],
           parameters: noDepth,
         }),
-        new CometPathLayer<Arc>({
+        new ScatterplotLayer<Plant>({
+          id: "eu-plants",
+          data: visiblePlants,
+          getPosition: (p) => [p[2], p[3]],
+          getRadius: (p) => Math.min(zoom < DETAIL_ZOOM ? 4.2 : 6.5, 1 + Math.sqrt(p[1]) * (zoom < DETAIL_ZOOM ? 0.06 : 0.085)),
+          radiusUnits: "pixels",
+          getFillColor: (p) => [...FUEL_COLOR[plants!.groups[p[0]]], zoom < DETAIL_ZOOM ? 200 : 235],
+          stroked: true,
+          getLineColor: [6, 7, 10, 220],
+          lineWidthUnits: "pixels",
+          getLineWidth: 0.7,
+          updateTriggers: { getRadius: [zoom < DETAIL_ZOOM], getFillColor: [zoom < DETAIL_ZOOM] },
+          pickable: true,
+          parameters: noDepth,
+        }),
+        // focused country: one column per plant, height = installed capacity
+        new ColumnLayer<Plant>({
+          id: "eu-plant-columns",
+          data: focusPlantRows,
+          getPosition: (p) => [p[2], p[3]],
+          getElevation: (p) => p[1] * COLUMN_M_PER_MW,
+          getFillColor: (p) => [...FUEL_COLOR[plants!.groups[p[0]]], 235],
+          radius: 3800,
+          diskResolution: 12,
+          extruded: true,
+          pickable: true,
+          material: { ambient: 0.55, diffuse: 0.6, shininess: 24, specularColor: [60, 60, 60] },
+        }),
+        new TextLayer<Country>({
+          id: "eu-country-names",
+          data: countryLabels,
+          getPosition: (c) => c.label,
+          getText: (c) => c.name.toUpperCase(),
+          getSize: 10.5,
+          getColor: [236, 232, 224, 170],
+          fontFamily: "Inter, system-ui, sans-serif",
+          fontWeight: 600,
+          parameters: noDepth,
+        }),
+        // dark casing so the flow lines read over countries, plants and grid
+        new PathLayer<Arc>({
+          id: "eu-flow-casing",
+          data: arcs,
+          getPath: (d) => d.path,
+          getColor: (d) => [4, 6, 10, !selected || touches(d) ? 190 : 60],
+          getWidth: (d) => 5 + Math.min(4, d.mw / 700),
+          updateTriggers: { getColor: [selected] },
+          widthUnits: "pixels",
+          capRounded: true,
+          jointRounded: true,
+          parameters: noDepth,
+        }),
+        new FlowArrowLayer<Arc>({
           id: "eu-flows",
           data: arcs,
           getPath: (d) => d.path,
           getTimestamps: (d) => d.timestamps,
-          getColor: [...FLOW, 255],
-          getWidth: (d) => 14 + Math.min(10, d.mw / 300),
-          getCometStyle: (d) => [1.1, 2.2 + Math.min(2.6, d.mw / 1000), Math.min(1, 0.55 + d.mw / 2500)],
+          // with a country focused, its own flows stay bright and the rest fade
+          getColor: (d) => [...FLOW, !selected || touches(d) ? 255 : 45],
+          getWidth: (d) => 20 + Math.min(12, d.mw / 250),
+          getArrowStyle: (d) => [1.4 + Math.min(1.8, d.mw / 1500), 4.5 + Math.min(5, d.mw / 500), 1],
+          updateTriggers: { getColor: [selected] },
           widthUnits: "pixels",
           capRounded: true,
           jointRounded: true,
+          pickable: true,
           phase: flow.phase,
           spacing: flow.spacing,
-          tailPx: 110,
-          lineAlpha: 0.3,
+          strokePx: 2.4,
+          lineAlpha: 0.85,
           parameters: {
             depthCompare: "always",
             depthWriteEnabled: false,
             blend: true,
-            // additive: comets glow over the grid instead of covering it
             blendColorSrcFactor: "one",
-            blendColorDstFactor: "one",
+            blendColorDstFactor: "one-minus-src-alpha",
             blendAlphaSrcFactor: "one",
             blendAlphaDstFactor: "one-minus-src-alpha",
           },
         }),
+        new TextLayer<Arc>({
+          id: "eu-flow-labels",
+          data: selected ? arcs.filter(touches) : arcs.filter((a) => a.mw >= LABEL_MW),
+          getPosition: (a) => a.path[20],
+          getText: (a) => power(a.mw),
+          getSize: 11,
+          getColor: [214, 244, 255, 255],
+          fontFamily: "Inter, system-ui, sans-serif",
+          fontWeight: 700,
+          background: true,
+          getBackgroundColor: [6, 9, 14, 215],
+          backgroundPadding: [5, 2],
+          getBorderColor: [...FLOW, 110],
+          getBorderWidth: 1,
+          getPixelOffset: [0, -12],
+          parameters: noDepth,
+        }),
       ],
     });
-  }, [frame, land, countries, plants, lineBands, links, arcs]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [frame, shapes, countries, visiblePlants, focusPlantRows, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings]);
 
+  const eu = stats?.eu ?? null;
+  const focusPower = selected ? stats?.countries[selected] : undefined;
+  const focusFlows = selected ? arcs.filter(touches).sort((x, y) => y.mw - x.mw) : [];
+  const focusPlants = selected && plants ? Object.entries(plants.by_country[selected] ?? {}).sort((x, y) => y[1][1] - x[1][1]) : [];
   const plantGroups = plants ? plants.groups.filter((g) => g !== "other") : [];
+  const gradient = `linear-gradient(90deg, ${SHARE_STOPS.map(([s, c]) => `${rgbCss(c)} ${s}%`).join(", ")})`;
 
   return (
     <div className="relative h-screen w-screen overflow-hidden text-slate-100" style={{ background: SEA }}>
       <div ref={container} className="absolute inset-0" />
 
-      <div className="pointer-events-none absolute left-6 top-5 z-10">
+      <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-md bg-[#05070b]/70 px-3 py-2 backdrop-blur-sm">
         <div className="font-serif text-[34px] uppercase leading-none tracking-[0.2em]">Europe</div>
         <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">Grid, plants & cross-border flows</div>
         {topFlows.length > 0 && (
@@ -355,36 +696,110 @@ export default function EuropeView() {
         )}
       </div>
 
-      <div className="pointer-events-none absolute bottom-6 left-6 z-10 space-y-3 text-[11px] text-slate-300">
-        <div className="space-y-1">
-          {VOLTAGE_BANDS.map((b) => (
-            <div key={b.label} className="flex items-center gap-2">
-              <span className="h-[2px] w-5 rounded" style={{ background: rgbCss(b.color) }} />
-              {b.label}
+      {focus ? (
+        <div className="absolute right-5 top-16 z-10 max-h-[calc(100vh-110px)] w-[250px] overflow-y-auto rounded-md border border-white/[0.09] bg-black/60 px-4 py-3 backdrop-blur">
+          <div className="flex items-start justify-between">
+            <div className="font-serif text-[20px] uppercase leading-tight tracking-[0.12em]">{focus.name}</div>
+            <button onClick={() => setSelected(null)} className="text-[11px] text-slate-400 hover:text-slate-100" title="Back to Europe">
+              ✕
+            </button>
+          </div>
+          {focusPower ? (
+            <PowerBlock power={focusPower} />
+          ) : (
+            <div className="mt-2 text-[11px] text-[#8d94a1]">No load or generation data from Energy-Charts for this country.</div>
+          )}
+          {focusFlows.length > 0 && (
+            <>
+              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Cross-border physical flows</div>
+              <div className="mt-1.5 space-y-0.5">
+                {focusFlows.map((f) => {
+                  const out = f.from === selected;
+                  return (
+                    <div key={`${f.from}${f.to}`} className="flex justify-between text-[11px] tabular-nums">
+                      <span className="text-slate-200">
+                        <span style={{ color: out ? rgbCss(FLOW) : "#f0b37e" }}>{out ? "export →" : "import ←"}</span>{" "}
+                        {out ? f.to : f.from}
+                      </span>
+                      <span>{power(f.mw)}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+          {focusPlants.length > 0 && (
+            <>
+              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Plants on the map (≥ 20 MW)</div>
+              <div className="mt-0.5 text-[10px] text-[#8d94a1]">Column height = installed capacity, not current output</div>
+              <div className="mt-1.5 space-y-0.5">
+                {focusPlants.map(([g, [n, mw]]) => (
+                  <div key={g} className="flex justify-between text-[11px] tabular-nums text-slate-200">
+                    <span className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(FUEL_COLOR[g]) }} />
+                      {PLANT_LABEL[g]}
+                    </span>
+                    <span>
+                      {power(mw)} <span className="text-[#8d94a1]">· {n}</span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      ) : (
+        eu && (
+          <div className="pointer-events-none absolute right-5 top-16 z-10 w-[230px] rounded-md border border-white/[0.07] bg-black/45 px-4 py-3 backdrop-blur">
+            <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">European Union</div>
+            <PowerBlock power={eu} />
+            <div className="mt-3 text-[10px] text-[#8d94a1]">Click a country for its figures and flows.</div>
+          </div>
+        )
+      )}
+
+      <div className="pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm">
+        {stats && (
+          <div>
+            <div className="text-[9px] uppercase tracking-[0.18em] text-[#8d94a1]">Country shade: renewable share of generation</div>
+            <div className="mt-1.5 h-2 rounded-sm" style={{ background: gradient }} />
+            <div className="mt-0.5 flex justify-between text-[9px] text-[#8d94a1]">
+              <span>0 %</span>
+              <span>50 %</span>
+              <span>100 %</span>
+            </div>
+          </div>
+        )}
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+          {plantGroups.map((g) => (
+            <div key={g} className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(FUEL_COLOR[g]) }} />
+              {PLANT_LABEL[g]}
             </div>
           ))}
-          <div className="flex items-center gap-2">
-            <span className="w-5 border-t border-dashed" style={{ borderColor: rgbCss(HVDC) }} />
-            HVDC link
-          </div>
+        </div>
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
             <span className="h-[3px] w-5 rounded" style={{ background: `linear-gradient(90deg, transparent, ${rgbCss(FLOW)})` }} />
             Cross-border flow
           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-          {plantGroups.map((g) => (
-            <div key={g} className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(PLANT_COLOR[g]) }} />
-              {PLANT_LABEL[g]}
-            </div>
-          ))}
+          <div className="flex items-center gap-2">
+            <span className="h-[2px] w-5 rounded" style={{ background: rgbCss(VOLTAGE_BANDS[0].color) }} />
+            Transmission line ≥ 220 kV
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-5 border-t border-dashed" style={{ borderColor: rgbCss(HVDC) }} />
+            HVDC link
+          </div>
         </div>
       </div>
 
       <div className="pointer-events-none absolute bottom-4 right-5 z-10 text-right text-[9px] leading-relaxed text-[#77706a]">
         <div>Grid: PyPSA-Eur network from © OpenStreetMap contributors (ODbL) · Plants ≥ 20 MW: powerplantmatching</div>
-        <div>Flows: Energy-Charts (Fraunhofer ISE), ENTSO-E physical flows, latest complete 15-min value per border · Borders: © EuroGeographics</div>
+        <div>
+          Flows, load, generation, renewable share: Energy-Charts (Fraunhofer ISE) from ENTSO-E data, latest complete interval per
+          country · Borders: © EuroGeographics
+        </div>
       </div>
       <a
         href="/"

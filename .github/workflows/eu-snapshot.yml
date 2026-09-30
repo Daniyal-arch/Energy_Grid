@@ -1,0 +1,61 @@
+name: Europe power snapshot
+
+# Refreshes the Europe view's figures (cross-border flows, load, generation by
+# source, published renewable share; scripts/fetch_eu_snapshot.py) every 30 min
+# into eu/flows.json + eu/stats.json on the `eu-data` branch. The frontend reads
+# them from raw.githubusercontent.com and falls back to its bundled copy.
+#
+# Same pattern as rail-realtime.yml: scheduled runs start late or not at all, so
+# each run stays up for ~5 h 45 min and loops itself; the hourly schedule only
+# has to fire once in that window.
+
+on:
+  schedule:
+    - cron: "37 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eu-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install httpx
+
+      - name: Snapshot every 30 min for ~5 h 45 min
+        env:
+          REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+        run: |
+          end=$((SECONDS + 20700))
+          while [ "$SECONDS" -lt "$end" ]; do
+            started=$SECONDS
+            rm -rf store && mkdir -p store/eu
+            if python scripts/fetch_eu_snapshot.py --out store/eu; then
+              (
+                cd store
+                git init -q -b eu-data
+                git config user.name "github-actions[bot]"
+                git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                git add -A
+                git commit -q -m "Europe power snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
+                git push -q -f "$REMOTE" eu-data
+              ) || echo "push failed; next snapshot retries"
+            else
+              echo "snapshot failed; retrying next round"
+            fi
+            wait=$((1800 - (SECONDS - started)))
+            if [ "$wait" -gt 0 ] && [ $((SECONDS + wait)) -lt "$end" ]; then sleep "$wait"; else break; fi
+          done
