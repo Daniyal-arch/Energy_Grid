@@ -3,8 +3,9 @@
 - PyPSA-Eur prebuilt OSM network (Zenodo 18619025): lines, buses, HVDC links
 - powerplantmatching plant list (PyPSA, GitHub)
 - Eurostat GISCO country outlines 1:20M
+- SciGRID_gas IGGIELGN gas network (Zenodo 4767098)
 
-About 27 MB in total; files already present are skipped.
+About 50 MB in total; files already present are skipped.
 
     uv run python scripts/fetch_eu_energy.py
 """
@@ -23,6 +24,8 @@ FILES = {
     "buses.csv": f"{ZENODO}/buses.csv?download=1",
     "links.csv": f"{ZENODO}/links.csv?download=1",
     "powerplants.csv": "https://raw.githubusercontent.com/PyPSA/powerplantmatching/master/powerplants.csv",
+    # SciGRID_gas IGGIELGN (2021): pipelines, LNG terminals, storages; CC BY 4.0
+    "IGGIELGN.zip": "https://zenodo.org/records/4767098/files/IGGIELGN.zip?download=1",
     "countries.geojson": "https://gisco-services.ec.europa.eu/distribution/v2/countries/geojson/CNTR_RG_20M_2024_4326.geojson",
 }
 

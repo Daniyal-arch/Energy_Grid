@@ -1,14 +1,18 @@
 """Build the static layers of the Europe grid view from data/eu/ (fetch_eu_energy.py).
 
 Writes frontend/public/data/eu/:
-  grid.json       transmission lines >= 220 kV [voltage kV, flat lon/lat path] and
-                  HVDC links [capacity MW, flat path], simplified for continent zoom
+  grid.json       transmission lines >= 220 kV [voltage kV, flat lon/lat path], HVDC links
+                  [capacity MW, flat path], simplified for continent zoom, and
+                  substations [kV, lon, lat, ISO]
   plants.json     operating plants >= 20 MW [group, MW, lon, lat, ISO, name, year in],
-                  plus capacity per country and group
+                  plus units and capacity per country and group (units >= 1 MW)
+  plants/<ISO>.json  every operating unit >= 1 MW of one country, loaded on focus
+  gas.json        gas pipelines, LNG terminals, storages (SciGRID_gas IGGIELGN, 2021)
   countries.json  country polygons (ISO code, name, label point), borders, coast
 
 Sources: PyPSA-Eur prebuilt OSM network (Zenodo 18619025, ODbL),
-powerplantmatching (PyPSA, MIT), Eurostat GISCO countries 1:20M.
+powerplantmatching (PyPSA, MIT), Eurostat GISCO countries 1:20M,
+SciGRID_gas IGGIELGN (Zenodo 4767098, CC BY 4.0).
 
     uv run python scripts/build_eu_grid.py
 """
@@ -18,6 +22,7 @@ from __future__ import annotations
 import csv
 import json
 import sys
+import zipfile
 from datetime import date
 from pathlib import Path
 
@@ -32,6 +37,7 @@ OUT = ROOT / "frontend" / "public" / "data" / "eu"
 LINE_TOL = 0.002  # degrees, ~150-200 m; 1 px is ~3 km at continent zoom
 LAND_TOL = 0.01
 MIN_PLANT_MW = 20.0
+MIN_UNIT_MW = 1.0  # per-country files shown on focus
 YEAR = date.today().year
 
 # covered area: the PyPSA-Eur network countries (ISO 3166 alpha-2, GISCO uses EL/UK)
@@ -178,15 +184,93 @@ def build_grid() -> dict:
     }
 
 
-def build_plants() -> dict:
+def build_substations() -> list[list]:
+    """[kV, lon, lat, ISO] per substation of the PyPSA-Eur network (>= 220 kV)."""
+    out = []
+    for row in read_csv("buses.csv"):
+        if row["under_construction"] == "t" or not row["x"]:
+            continue
+        kv = int(float(row["voltage"] or 0))
+        out.append([kv, round(float(row["x"]), 4), round(float(row["y"]), 4), row["country"]])
+    return out
+
+
+def _certain(item: dict, key: str, ndigits: int = 0) -> float | None:
+    """A SciGRID_gas parameter, only when the dataset marks it as not estimated."""
+    value = item["param"].get(key)
+    if value is None or item["uncertainty"].get(key) not in (0, 0.0):
+        return None
+    return round(float(value), ndigits)
+
+
+def build_gas() -> dict:
+    """Pipelines, LNG terminals and storages from SciGRID_gas IGGIELGN (2021)."""
+    z = zipfile.ZipFile(SRC / "IGGIELGN.zip")
+
+    def features(name: str) -> list[dict]:
+        return json.load(z.open(f"data/IGGIELGN_{name}.geojson"))["features"]
+
+    covered = set(COUNTRIES)
+
+    def iso(code: str) -> str:
+        return "GR" if code == "EL" else code
+
+    pipes = []
+    for f in features("PipeSegments"):
+        # inside the mapped countries only; XX marks offshore segments
+        codes = {iso(c) for c in f["properties"]["country_code"]}
+        if not (codes - {"XX"}) or not codes <= covered | {"XX"}:
+            continue
+        line = shape(f["geometry"]).simplify(LINE_TOL)
+        diameter = f["properties"]["param"].get("diameter_mm") or 0
+        for part in lines_of(line):
+            if len(part.coords) >= 2:
+                pipes.append([round(diameter), flat(part)])
+
+    def sites(name: str, capacity_key: str) -> list[list]:
+        out = []
+        for f in features(name):
+            props = f["properties"]
+            if iso(props["country_code"]) not in covered:
+                continue
+            x, y = f["geometry"]["coordinates"][:2]
+            out.append(
+                [
+                    props["name"],
+                    iso(props["country_code"]),
+                    round(x, 4),
+                    round(y, 4),
+                    props["param"].get("start_year"),
+                    _certain(props, capacity_key),
+                ]
+            )
+        return out
+
+    return {
+        "source": "SciGRID_gas IGGIELGN (2021, Zenodo 4767098), CC BY 4.0; "
+        "capacities only where the dataset marks them as not estimated",
+        "pipes": pipes,
+        # [name, ISO, lon, lat, start year, capacity or null]
+        "lng": sites("LNGs", "max_cap_store2pipe_M_m3_per_d"),  # send-out, M m3/day
+        "storages": sites("Storages", "max_workingGas_M_m3"),  # working gas, M m3
+    }
+
+
+def build_plants() -> tuple[dict, dict[str, dict]]:
+    """Plants for the Europe map (>= 20 MW) and per-country files with every unit >= 1 MW.
+
+    The per-country files are loaded when a country is focused; the German input is
+    unit-level (MaStR), so the 1 MW floor keeps it to ~39k rows.
+    """
     with (SRC / "powerplants.csv").open(encoding="utf-8", newline="") as f:
         rows = list(csv.DictReader(f))
     plants = []
-    # per country and group: [units, MW] of the same filtered set that is drawn
+    per_country: dict[str, list[list]] = {}
+    # per country and group: [units, MW] of the units >= 1 MW shown on focus
     by_country: dict[str, dict[str, list[float]]] = {}
     for r in rows:
         mw = float(r["Capacity"] or 0)
-        if mw < MIN_PLANT_MW or not r["lat"] or not r["lon"]:
+        if mw < MIN_UNIT_MW or not r["lat"] or not r["lon"]:
             continue
         if r["DateOut"] and float(r["DateOut"]) < YEAR:
             continue
@@ -194,24 +278,19 @@ def build_plants() -> dict:
             continue
         group = PLANT_GROUP.get(r["Fueltype"], "other")
         iso = PPM_ISO.get(r["Country"])
+        year = int(float(r["DateIn"])) if r["DateIn"] else None
+        lon, lat = round(float(r["lon"]), 4), round(float(r["lat"]), 4)
         if iso:
             cell = by_country.setdefault(iso, {}).setdefault(group, [0, 0.0])
             cell[0] += 1
             cell[1] += mw
-        year = int(float(r["DateIn"])) if r["DateIn"] else None
-        plants.append(
-            [
-                GROUPS.index(group),
-                round(mw),
-                round(float(r["lon"]), 4),
-                round(float(r["lat"]), 4),
-                iso,
-                r["Name"],
-                year,
-            ]
-        )
+            per_country.setdefault(iso, []).append(
+                [GROUPS.index(group), round(mw, 1), lon, lat, r["Name"], year]
+            )
+        if mw >= MIN_PLANT_MW:
+            plants.append([GROUPS.index(group), round(mw), lon, lat, iso, r["Name"], year])
     plants.sort(key=lambda p: -p[1])  # big first, so small ones draw on top
-    return {
+    main = {
         "source": "powerplantmatching (PyPSA), operating units >= 20 MW",
         "groups": GROUPS,
         "plants": plants,
@@ -220,6 +299,15 @@ def build_plants() -> dict:
             for iso, groups in sorted(by_country.items())
         },
     }
+    files = {
+        iso: {
+            "source": "powerplantmatching (PyPSA), operating units >= 1 MW",
+            # [group index, MW, lon, lat, name, year in operation]
+            "plants": sorted(units, key=lambda p: -p[1]),
+        }
+        for iso, units in per_country.items()
+    }
+    return main, files
 
 
 def build_countries() -> dict:
@@ -277,11 +365,27 @@ def write(name: str, payload: dict) -> None:
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     grid = build_grid()
+    grid["substations"] = build_substations()
     write("grid.json", grid)
-    print(f"  {len(grid['lines']):,} lines, {len(grid['links'])} HVDC links")
-    plants = build_plants()
+    print(
+        f"  {len(grid['lines']):,} lines, {len(grid['links'])} HVDC links, "
+        f"{len(grid['substations']):,} substations"
+    )
+    plants, per_country = build_plants()
     write("plants.json", plants)
-    print(f"  {len(plants['plants']):,} plants")
+    print(f"  {len(plants['plants']):,} plants >= 20 MW")
+    (OUT / "plants").mkdir(exist_ok=True)
+    for iso_code, payload in per_country.items():
+        (OUT / "plants" / f"{iso_code}.json").write_text(
+            json.dumps(payload, separators=(",", ":")), encoding="utf-8"
+        )
+    units = sum(len(v["plants"]) for v in per_country.values())
+    print(f"  plants/<ISO>.json: {units:,} units >= 1 MW in {len(per_country)} countries")
+    gas = build_gas()
+    write("gas.json", gas)
+    print(
+        f"  {len(gas['pipes']):,} pipe segments, {len(gas['lng'])} LNG, {len(gas['storages'])} storages"
+    )
     countries = build_countries()
     write("countries.json", countries)
     print(f"  {len(countries['countries'])} countries, {len(countries['borders'])} border lines")

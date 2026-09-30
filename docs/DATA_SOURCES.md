@@ -83,16 +83,20 @@ Static files in `frontend/public/data/eu/`, rendered by `EuropeView.tsx`:
 
 | File | Records | Source |
 |---|---:|---|
-| `grid.json` | 9,162 lines >= 220 kV, 39 HVDC links | PyPSA-Eur prebuilt network from OpenStreetMap ([Zenodo 18619025](https://zenodo.org/records/18619025)), ODbL |
-| `plants.json` | 7,838 operating units >= 20 MW | powerplantmatching (PyPSA); one threshold for all countries, because the German input is unit-level MaStR. German wind is listed per turbine, so it falls under the cut (no German wind farms on the map) |
+| `grid.json` | 9,162 lines >= 220 kV, 39 HVDC links, 6,863 substations | PyPSA-Eur prebuilt network from OpenStreetMap ([Zenodo 18619025](https://zenodo.org/records/18619025)), ODbL |
+| `plants.json` | 7,838 operating units >= 20 MW | powerplantmatching (PyPSA); one threshold for all countries, because the German input is unit-level MaStR. German wind is listed per turbine, so it falls under the cut at continent scale; the focused-country files include it |
 | `countries.json` | land, coast, borders | Eurostat GISCO countries 1:20M |
-| `flows.json` | 79 borders | Energy-Charts `/cbpf` per country (ENTSO-E physical flows), latest complete 15-min value per border |
-| `stats.json` | EU + per country | Energy-Charts `/public_power` (country=eu and per country): load, generation by source group, published renewable share of generation; shades the countries |
+| `plants/<ISO>.json` | 61,872 units >= 1 MW | powerplantmatching, loaded when a country is focused (columns from 10 MW, flat dots below) |
+| `gas.json` | 4,840 pipe segments, 29 LNG, 216 storages | SciGRID_gas IGGIELGN (2021, [Zenodo 4767098](https://zenodo.org/records/4767098)), CC BY 4.0; clipped to the mapped countries; capacities only where the dataset marks them as not estimated. Predates the 2022+ German LNG terminals |
+| `reference.json` | per country | Energy-Charts `/installed_power` (newest year with values) and ENTSO-E A72 hydro reservoir energy (newest week, same week a year earlier); `scripts/fetch_eu_reference.py` |
+| `flows.json` | 79 borders | Energy-Charts `/cbpf` per country (ENTSO-E physical flows), latest complete 15-min value per border, plus 24 h of 15-min values for the replay |
+| `stats.json` | EU + per country | Energy-Charts `/public_power` (country=eu and per country): load, generation by source group, published renewable share of generation; `/price` day-ahead price for 41 bidding zones; shades the countries |
 
 ```sh
 uv run python scripts/fetch_eu_energy.py   # ~45 MB into data/eu/ (gitignored)
 uv run python scripts/build_eu_grid.py     # grid, plants, countries
-uv run python scripts/fetch_eu_snapshot.py # flows + stats; sequential, Energy-Charts answers 429 to bursts
+uv run python scripts/fetch_eu_snapshot.py # flows + stats + prices; sequential, Energy-Charts answers 429 to bursts
+uv run python scripts/fetch_eu_reference.py # installed capacity + reservoirs (ENTSOE_API_KEY)
 ```
 
 `flows.json` and `stats.json` are refreshed every 30 min by

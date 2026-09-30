@@ -20,6 +20,28 @@ import { rgbCss, type RGB } from "../lib/theme";
 interface GridFile {
   lines: [number, number[]][];
   links: [number, number[]][];
+  /** [kV, lon, lat, ISO] */
+  substations: Substation[];
+}
+type Substation = [number, number, number, string];
+/** [name, ISO, lon, lat, start year, capacity or null when the dataset only estimates it] */
+type GasSite = [string, string, number, number, number | null, number | null];
+/** focused-country unit: [group index, MW, lon, lat, name, year in operation] */
+type Unit = [number, number, number, number, string, number | null];
+interface GasFile {
+  pipes: [number, number[]][];
+  lng: GasSite[];
+  storages: GasSite[];
+}
+interface ReferenceFile {
+  fetched: string;
+  capacity: Record<string, { year: string; gw: Record<string, number> }>;
+  reservoirs: Record<string, { week: string; twh: number; year_ago_week: string | null; year_ago_twh: number | null }>;
+}
+interface PriceRow {
+  country: string;
+  ts: string;
+  eur_mwh: number;
 }
 interface PlantsFile {
   groups: string[];
@@ -43,9 +65,13 @@ interface FlowRow {
   b: string;
   mw: number;
   ts: string;
+  /** 24 h of 15-min values (a -> b positive), for the replay */
+  series?: (number | null)[];
 }
 interface FlowsFile {
   fetched: string;
+  series_start?: string;
+  series_step_s?: number;
   borders: FlowRow[];
 }
 interface Power {
@@ -58,6 +84,7 @@ interface StatsFile {
   fetched: string;
   eu: Power | null;
   countries: Record<string, Power>;
+  day_ahead_prices?: Record<string, PriceRow>;
 }
 interface Arc {
   from: string;
@@ -119,6 +146,34 @@ function shareColor(share: number | null | undefined): RGB {
   }
   return SHARE_STOPS[SHARE_STOPS.length - 1][1];
 }
+
+// day-ahead price, EUR/MWh: cheap teal -> slate -> expensive ember
+const PRICE_STOPS: Array<[number, RGB]> = [
+  [0, [22, 84, 86]],
+  [80, [40, 62, 76]],
+  [150, [86, 50, 58]],
+  [250, [140, 54, 40]],
+];
+const PRICE_MAX = 250;
+const MULTI_ZONE: RGB = [48, 46, 58];
+function priceColor(eur: number | null | undefined): RGB {
+  if (eur == null) return NO_DATA;
+  const v = Math.max(0, Math.min(PRICE_MAX, eur));
+  for (let i = 1; i < PRICE_STOPS.length; i++) {
+    const [s1, c1] = PRICE_STOPS[i];
+    const [s0, c0] = PRICE_STOPS[i - 1];
+    if (v <= s1) {
+      const t = (v - s0) / (s1 - s0);
+      return [0, 1, 2].map((k) => Math.round(c0[k] + (c1[k] - c0[k]) * t)) as RGB;
+    }
+  }
+  return PRICE_STOPS[PRICE_STOPS.length - 1][1];
+}
+const GAS: RGB = [255, 150, 92]; // LNG terminals and storages (gas = orange, as gas plants)
+const GAS_PIPE: RGB = [226, 206, 160]; // pale sand, dashed, so pipelines never read as power lines
+const GAS_DETAIL_ZOOM = 5.5; // pipelines and storages from here, or for the focused country
+const COLUMN_MIN_MW = 10; // focused units from here stand as columns, smaller ones lie flat
+const SUBSTATION: RGB = [226, 232, 240];
 
 // copper by voltage, kept dim so countries, plants and flows read first
 const VOLTAGE_BANDS: Array<{ min: number; label: string; color: RGB; width: number; alpha: number }> = [
@@ -209,7 +264,9 @@ const BLANK_STYLE: maplibregl.StyleSpecification = {
 const IDLE_MW = 20;
 const LABEL_MW = 1000; // arcs from this size carry a GW label
 const DETAIL_ZOOM = 5; // below: plants >= 50 MW only
-const COLUMN_M_PER_MW = 55; // focused-country columns: 1,000 MW stands 55 km tall
+// focused-country columns: height grows with the square root of capacity, so a 20 MW
+// wind farm still reads as a bar next to a 5 GW plant (100 MW: 31 km, 1 GW: 98 km)
+const COLUMN_M_PER_SQRT_MW = 3100;
 
 const pairs = (flat: number[]): [number, number][] => {
   const p: [number, number][] = [];
@@ -312,8 +369,16 @@ export default function EuropeView() {
   const [countries, setCountries] = useState<CountriesFile | null>(null);
   const [flows, setFlows] = useState<FlowsFile | null>(null);
   const [stats, setStats] = useState<StatsFile | null>(null);
+  const [gas, setGas] = useState<GasFile | null>(null);
+  const [reference, setReference] = useState<ReferenceFile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [frame, setFrame] = useState(0);
+  const [shade, setShade] = useState<"renewable" | "price">("renewable");
+  const [show, setShow] = useState({ plants: true, flows: true, substations: true, gas: true });
+  // 24 h replay: index into the flow series, null = latest complete interval
+  const [replay, setReplay] = useState<number | null>(null);
+  const [units, setUnits] = useState<{ iso: string; rows: Unit[] } | null>(null);
+  const [playing, setPlaying] = useState(false);
   const [zoom, setZoom] = useState(4);
   // ?europe&country=FR opens with a country focused
   const [selected, setSelected] = useState<string | null>(
@@ -327,6 +392,7 @@ export default function EuropeView() {
       getJson<PlantsFile>("/data/eu/plants.json").then(setPlants),
       getJson<CountriesFile>("/data/eu/countries.json").then(setCountries),
     ]).catch((e) => setError(String(e)));
+    getJson<GasFile>("/data/eu/gas.json").then(setGas).catch(() => {});
   }, []);
 
   // the snapshot is optional: without it the map still renders, unshaded and still
@@ -334,6 +400,7 @@ export default function EuropeView() {
     const load = () => {
       loadSnapshot<FlowsFile>("flows.json", setFlows);
       loadSnapshot<StatsFile>("stats.json", setStats);
+      loadSnapshot<ReferenceFile>("reference.json", setReference);
     };
     load();
     const t = setInterval(load, 10 * 60 * 1000);
@@ -382,7 +449,28 @@ export default function EuropeView() {
           const a = object as Arc;
           return { html: `<b>${a.from} → ${a.to}</b> ${gw(a.mw)}<div style="color:#8d94a1">physical flow, interval ${utc(a.ts)}</div>`, style };
         }
-        if (layer.id === "eu-plants" || layer.id === "eu-plant-columns") {
+        if (layer.id === "eu-lng" || layer.id === "eu-gas-storage") {
+          const g = object as GasSite;
+          const lng = layer.id === "eu-lng";
+          const cap =
+            g[5] != null ? (lng ? ` · send-out ${g[5]} M m³/day` : ` · working gas ${g[5].toLocaleString("en-US")} M m³`) : "";
+          const since = g[4] ? ` · since ${g[4]}` : "";
+          return {
+            html: `<b>${g[0]}</b><div>${lng ? "LNG terminal" : "Gas storage"}${cap}${since}</div><div style="color:#8d94a1">SciGRID_gas 2021</div>`,
+            style,
+          };
+        }
+        if (layer.id === "eu-substations") {
+          const b = object as Substation;
+          return { html: `Substation · ${b[0]} kV`, style };
+        }
+        if (layer.id === "eu-plant-columns" || layer.id === "eu-focus-small") {
+          const u = object as Unit;
+          const fuel = PLANT_LABEL[plantsRef.current?.groups[u[0]] ?? "other"];
+          const year = u[5] ? ` · since ${u[5]}` : "";
+          return { html: `<b>${u[4]}</b><div>${fuel} · ${u[1].toLocaleString("en-US")} MW installed${year}</div>`, style };
+        }
+        if (layer.id === "eu-plants") {
           const p = object as Plant;
           const fuel = PLANT_LABEL[plantsRef.current?.groups[p[0]] ?? "other"];
           const year = p[6] ? ` · since ${p[6]}` : "";
@@ -429,23 +517,69 @@ export default function EuropeView() {
         : [],
     [plants, zoom, selected],
   );
-  const focusPlantRows = useMemo(
-    () => (plants && selected ? plants.plants.filter((p) => p[4] === selected) : []),
-    [plants, selected],
-  );
+  // focused country: every unit >= 1 MW from plants/<ISO>.json (loaded on click);
+  // until it arrives, the >= 20 MW plants of the main file stand in
+  useEffect(() => {
+    if (!selected) return;
+    let live = true;
+    getJson<{ plants: Unit[] }>(`/data/eu/plants/${selected}.json`)
+      .then((d) => live && setUnits({ iso: selected, rows: d.plants }))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [selected]);
+  const focusUnits = useMemo<Unit[]>(() => {
+    if (!selected) return [];
+    if (units?.iso === selected) return units.rows;
+    return plants ? plants.plants.filter((p) => p[4] === selected).map((p) => [p[0], p[1], p[2], p[3], p[5], p[6]]) : [];
+  }, [selected, units, plants]);
+  const focusColumns = useMemo(() => focusUnits.filter((u) => u[1] >= COLUMN_MIN_MW), [focusUnits]);
+  const focusSmall = useMemo(() => focusUnits.filter((u) => u[1] < COLUMN_MIN_MW), [focusUnits]);
 
+  const seriesLength = flows?.borders.reduce((n, f) => Math.max(n, f.series?.length ?? 0), 0) ?? 0;
+  const replayTs = (k: number) =>
+    flows?.series_start ? new Date(Date.parse(flows.series_start) + k * (flows.series_step_s ?? 900) * 1000).toISOString() : "";
   const arcs = useMemo<Arc[]>(() => {
     if (!flows) return [];
     const out: Arc[] = [];
-    for (const f of flows.borders) {
-      if (Math.abs(f.mw) < IDLE_MW) continue;
-      const [from, to] = f.mw > 0 ? [f.a, f.b] : [f.b, f.a];
-      if (!ANCHOR[from] || !ANCHOR[to]) continue;
+    flows.borders.forEach((f, n) => {
+      const mw = replay == null ? f.mw : f.series?.[replay];
+      const ts = replay == null ? f.ts : replayTs(replay);
+      if (mw == null || Math.abs(mw) < IDLE_MW) return;
+      const [from, to] = mw > 0 ? [f.a, f.b] : [f.b, f.a];
+      if (!ANCHOR[from] || !ANCHOR[to]) return;
       const path = curvedPath(ANCHOR[from], ANCHOR[to], 0.16, 40);
-      out.push({ from, to, mw: Math.abs(f.mw), ts: f.ts, path, timestamps: flowDistances(path, false, out.length * 91_000) });
-    }
+      out.push({ from, to, mw: Math.abs(mw), ts, path, timestamps: flowDistances(path, false, n * 91_000) });
+    });
     return out.sort((x, y) => x.mw - y.mw);
-  }, [flows]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flows, replay]);
+
+  // replay: one 15-min step every 350 ms, back to the latest interval at the end
+  useEffect(() => {
+    if (!playing || !seriesLength) return;
+    const t = setInterval(() => {
+      setReplay((k) => {
+        const next = (k ?? -1) + 1;
+        if (next >= seriesLength) {
+          setPlaying(false);
+          return null;
+        }
+        return next;
+      });
+    }, 350);
+    return () => clearInterval(t);
+  }, [playing, seriesLength]);
+
+  const prices = stats?.day_ahead_prices ?? {};
+  const zonesOf = (iso: string) => Object.entries(prices).filter(([, p]) => p.country === iso);
+  const countryFill = (iso: string): RGB => {
+    if (shade === "renewable") return shareColor(stats?.countries[iso]?.renewable_share_of_generation);
+    const zones = zonesOf(iso);
+    return zones.length === 1 ? priceColor(zones[0][1].eur_mwh) : zones.length > 1 ? MULTI_ZONE : NO_DATA;
+  };
+  const substations = useMemo(() => (grid && (zoom >= 4.8 || selected) ? grid.substations : []), [grid, zoom, selected]);
   const topFlows = useMemo(() => [...arcs].sort((x, y) => y.mw - x.mw).slice(0, 6), [arcs]);
   const countryLabels = useMemo(
     () => (countries ? countries.countries.filter((c) => zoom >= DETAIL_ZOOM || !SMALL.has(c.iso)) : []),
@@ -466,6 +600,13 @@ export default function EuropeView() {
       map.flyTo({ center: cam?.center ?? [10, 52], zoom: cam?.zoom ?? 3.5, pitch: 0, bearing: 0, duration: 1200 });
     }
   }, [focus]);
+  const gasDetail = !!selected || zoom >= GAS_DETAIL_ZOOM;
+  const gasPipes = useMemo(() => {
+    if (!show.gas || !gas || !gasDetail) return [];
+    if (!focus || zoom >= GAS_DETAIL_ZOOM + 0.5) return gas.pipes;
+    const [[x0, y0], [x1, y1]] = bbox(focus);
+    return gas.pipes.filter(([, f]) => f.some((v, k) => (k % 2 ? v >= y0 && v <= y1 : v >= x0 && v <= x1 && f[k + 1] >= y0 && f[k + 1] <= y1)));
+  }, [show.gas, gas, gasDetail, focus, zoom]);
   const focusRings = useMemo(() => (focus ? focus.polygons.map((rings) => pairs(rings[0])) : []), [focus]);
   const touches = (a: Arc) => a.from === selected || a.to === selected;
 
@@ -492,10 +633,10 @@ export default function EuropeView() {
           data: shapes,
           getPolygon: (d) => d.polygon,
           getFillColor: (d) => {
-            const c = shareColor(shares?.[d.iso]?.renewable_share_of_generation);
+            const c = countryFill(d.iso);
             return [...(!selected ? c : d.iso === selected ? lift(c, 0.05) : dim(c, 0.45)), 255];
           },
-          updateTriggers: { getFillColor: [shares, selected] },
+          updateTriggers: { getFillColor: [shares, selected, shade, prices] },
           pickable: true,
           autoHighlight: true,
           highlightColor: [255, 255, 255, 22],
@@ -551,6 +692,28 @@ export default function EuropeView() {
               parameters: noDepth,
             }),
         ),
+        new PathLayer<[number, number[]], PathStyleExtensionProps<[number, number[]]>>({
+          id: "eu-gas-pipes",
+          data: gasPipes,
+          getPath: (d) => pairs(d[1]),
+          getColor: [...GAS_PIPE, 150],
+          getWidth: (d) => 0.6 + Math.min(1, d[0] / 1200),
+          widthUnits: "pixels",
+          getDashArray: [3, 2],
+          dashJustified: true,
+          extensions: [new PathStyleExtension({ dash: true })],
+          parameters: noDepth,
+        }),
+        new ScatterplotLayer<Substation>({
+          id: "eu-substations",
+          data: show.substations ? substations : [],
+          getPosition: (b) => [b[1], b[2]],
+          getRadius: (b) => (b[0] >= 380 ? 1.9 : 1.3),
+          radiusUnits: "pixels",
+          getFillColor: [...SUBSTATION, 150],
+          pickable: true,
+          parameters: noDepth,
+        }),
         new PathLayer<{ mw: number; path: [number, number][] }, PathStyleExtensionProps>({
           id: "eu-hvdc",
           data: links,
@@ -565,7 +728,7 @@ export default function EuropeView() {
         }),
         new ScatterplotLayer<Plant>({
           id: "eu-plants",
-          data: visiblePlants,
+          data: show.plants ? visiblePlants : [],
           getPosition: (p) => [p[2], p[3]],
           getRadius: (p) => Math.min(zoom < DETAIL_ZOOM ? 4.2 : 6.5, 1 + Math.sqrt(p[1]) * (zoom < DETAIL_ZOOM ? 0.06 : 0.085)),
           radiusUnits: "pixels",
@@ -579,17 +742,56 @@ export default function EuropeView() {
           parameters: noDepth,
         }),
         // focused country: one column per plant, height = installed capacity
-        new ColumnLayer<Plant>({
+        new ScatterplotLayer<Unit>({
+          id: "eu-focus-small",
+          data: show.plants ? focusSmall : [],
+          getPosition: (u) => [u[2], u[3]],
+          getRadius: 1.8,
+          radiusUnits: "pixels",
+          getFillColor: (u) => [...FUEL_COLOR[plants?.groups[u[0]] ?? "other"], 200],
+          pickable: true,
+          parameters: noDepth,
+        }),
+        new ColumnLayer<Unit>({
           id: "eu-plant-columns",
-          data: focusPlantRows,
+          data: show.plants ? focusColumns : [],
           getPosition: (p) => [p[2], p[3]],
-          getElevation: (p) => p[1] * COLUMN_M_PER_MW,
+          getElevation: (p) => Math.sqrt(p[1]) * COLUMN_M_PER_SQRT_MW,
           getFillColor: (p) => [...FUEL_COLOR[plants!.groups[p[0]]], 235],
           radius: 3800,
           diskResolution: 12,
           extruded: true,
           pickable: true,
           material: { ambient: 0.55, diffuse: 0.6, shininess: 24, specularColor: [60, 60, 60] },
+        }),
+        new ScatterplotLayer<GasSite>({
+          id: "eu-gas-storage",
+          data: show.gas && gas && gasDetail ? gas.storages.filter((g) => !selected || g[1] === selected || zoom >= GAS_DETAIL_ZOOM) : [],
+          getPosition: (g) => [g[2], g[3]],
+          getRadius: 3.2,
+          radiusUnits: "pixels",
+          filled: false,
+          stroked: true,
+          getLineColor: [...GAS, 210],
+          lineWidthUnits: "pixels",
+          getLineWidth: 1.2,
+          pickable: true,
+          parameters: noDepth,
+        }),
+        new ScatterplotLayer<GasSite>({
+          id: "eu-lng",
+          data: show.gas && gas ? gas.lng : [],
+          getPosition: (g) => [g[2], g[3]],
+          getRadius: gasDetail ? 5 : 2.6,
+          radiusUnits: "pixels",
+          getFillColor: [...GAS, 235],
+          stroked: true,
+          getLineColor: [255, 255, 255, 230],
+          lineWidthUnits: "pixels",
+          getLineWidth: gasDetail ? 1.5 : 0.8,
+          updateTriggers: { getRadius: [gasDetail], getLineWidth: [gasDetail] },
+          pickable: true,
+          parameters: noDepth,
         }),
         new TextLayer<Country>({
           id: "eu-country-names",
@@ -605,7 +807,7 @@ export default function EuropeView() {
         // dark casing so the flow lines read over countries, plants and grid
         new PathLayer<Arc>({
           id: "eu-flow-casing",
-          data: arcs,
+          data: show.flows ? arcs : [],
           getPath: (d) => d.path,
           getColor: (d) => [4, 6, 10, !selected || touches(d) ? 190 : 60],
           getWidth: (d) => 5 + Math.min(4, d.mw / 700),
@@ -617,7 +819,7 @@ export default function EuropeView() {
         }),
         new FlowArrowLayer<Arc>({
           id: "eu-flows",
-          data: arcs,
+          data: show.flows ? arcs : [],
           getPath: (d) => d.path,
           getTimestamps: (d) => d.timestamps,
           // with a country focused, its own flows stay bright and the rest fade
@@ -645,7 +847,7 @@ export default function EuropeView() {
         }),
         new TextLayer<Arc>({
           id: "eu-flow-labels",
-          data: selected ? arcs.filter(touches) : arcs.filter((a) => a.mw >= LABEL_MW),
+          data: !show.flows ? [] : selected ? arcs.filter(touches) : arcs.filter((a) => a.mw >= LABEL_MW),
           getPosition: (a) => a.path[20],
           getText: (a) => power(a.mw),
           getSize: 11,
@@ -663,22 +865,42 @@ export default function EuropeView() {
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, shapes, countries, visiblePlants, focusPlantRows, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings]);
+  }, [frame, shapes, countries, visiblePlants, focusColumns, focusSmall, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
   const eu = stats?.eu ?? null;
   const focusPower = selected ? stats?.countries[selected] : undefined;
   const focusFlows = selected ? arcs.filter(touches).sort((x, y) => y.mw - x.mw) : [];
   const focusPlants = selected && plants ? Object.entries(plants.by_country[selected] ?? {}).sort((x, y) => y[1][1] - x[1][1]) : [];
   const plantGroups = plants ? plants.groups.filter((g) => g !== "other") : [];
-  const gradient = `linear-gradient(90deg, ${SHARE_STOPS.map(([s, c]) => `${rgbCss(c)} ${s}%`).join(", ")})`;
+  const stops = shade === "renewable" ? SHARE_STOPS : PRICE_STOPS;
+  const top = shade === "renewable" ? 100 : PRICE_MAX;
+  const gradient = `linear-gradient(90deg, ${stops.map(([s, c]) => `${rgbCss(c)} ${(s / top) * 100}%`).join(", ")})`;
+  const focusZones = selected ? zonesOf(selected) : [];
+  const focusCapacity = selected ? reference?.capacity[selected] : undefined;
+  const focusReservoir = selected ? reference?.reservoirs[selected] : undefined;
+  const focusLng = selected && gas ? gas.lng.filter((g) => g[1] === selected) : [];
+  const focusStorages = selected && gas ? gas.storages.filter((g) => g[1] === selected) : [];
 
   return (
     <div className="relative h-screen w-screen overflow-hidden text-slate-100" style={{ background: SEA }}>
       <div ref={container} className="absolute inset-0" />
 
-      <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-md bg-[#05070b]/70 px-3 py-2 backdrop-blur-sm">
+      <div className="absolute left-4 top-4 z-10 rounded-md bg-[#05070b]/70 px-3 py-2 backdrop-blur-sm">
         <div className="font-serif text-[34px] uppercase leading-none tracking-[0.2em]">Europe</div>
         <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">Grid, plants & cross-border flows</div>
+        <div className="mt-3 flex flex-wrap gap-1">
+          {(Object.keys(show) as Array<keyof typeof show>).map((k) => (
+            <button
+              key={k}
+              onClick={() => setShow({ ...show, [k]: !show[k] })}
+              className={`rounded border px-2 py-0.5 text-[10px] capitalize ${
+                show[k] ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
+              }`}
+            >
+              {k}
+            </button>
+          ))}
+        </div>
         {topFlows.length > 0 && (
           <div className="mt-5 w-[210px]">
             <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">Largest cross-border flows</div>
@@ -709,6 +931,24 @@ export default function EuropeView() {
           ) : (
             <div className="mt-2 text-[11px] text-[#8d94a1]">No load or generation data from Energy-Charts for this country.</div>
           )}
+          {focusZones.length > 0 && (
+            <>
+              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">
+                Day-ahead price · {utc(focusZones[0][1].ts)}
+              </div>
+              <div className="mt-1.5 space-y-0.5">
+                {focusZones.map(([zone, pr]) => (
+                  <div key={zone} className="flex justify-between text-[11px] tabular-nums text-slate-200">
+                    <span className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-sm" style={{ background: rgbCss(priceColor(pr.eur_mwh)) }} />
+                      {zone}
+                    </span>
+                    <span>{pr.eur_mwh.toFixed(1)} €/MWh</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
           {focusFlows.length > 0 && (
             <>
               <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Cross-border physical flows</div>
@@ -728,10 +968,61 @@ export default function EuropeView() {
               </div>
             </>
           )}
+          {focusCapacity && (
+            <>
+              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">
+                Installed capacity · {focusCapacity.year}
+              </div>
+              <div className="mt-1.5 space-y-1">
+                {Object.entries(focusCapacity.gw)
+                  .filter(([, v]) => v > 0)
+                  .sort((x, y) => y[1] - x[1])
+                  .map(([g, v], _, all) => (
+                    <div key={g}>
+                      <div className="flex justify-between text-[11px] tabular-nums text-slate-200">
+                        <span>{FUEL_LABEL[g] ?? g}</span>
+                        <span>{v.toFixed(1)} GW</span>
+                      </div>
+                      <div className="mt-0.5 h-[3px] rounded-full bg-white/[0.06]">
+                        <div
+                          className="h-full rounded-full"
+                          style={{ width: `${(v / all[0][1]) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </>
+          )}
+          {focusReservoir && (
+            <>
+              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Hydro reservoirs</div>
+              <div className="mt-1 text-[11px] text-slate-200">
+                <span className="text-[16px] font-light tabular-nums">{focusReservoir.twh.toFixed(1)} TWh</span> stored, week of{" "}
+                {focusReservoir.week}
+              </div>
+              {focusReservoir.year_ago_twh != null && (
+                <div className="text-[10px] text-[#8d94a1]">same week last year: {focusReservoir.year_ago_twh.toFixed(1)} TWh</div>
+              )}
+            </>
+          )}
+          {(focusLng.length > 0 || focusStorages.length > 0) && (
+            <>
+              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Gas infrastructure (2021 dataset)</div>
+              {focusLng.length > 0 && (
+                <div className="mt-1 text-[11px] text-slate-200">
+                  LNG terminals: <span className="text-[#8d94a1]">{focusLng.map((g) => g[0]).join(", ")}</span>
+                </div>
+              )}
+              {focusStorages.length > 0 && (
+                <div className="mt-0.5 text-[11px] text-slate-200">Gas storage sites: {focusStorages.length}</div>
+              )}
+            </>
+          )}
           {focusPlants.length > 0 && (
             <>
-              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Plants on the map (≥ 20 MW)</div>
-              <div className="mt-0.5 text-[10px] text-[#8d94a1]">Column height = installed capacity, not current output</div>
+              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Plants on the map (units ≥ 1 MW)</div>
+              <div className="mt-0.5 text-[10px] text-[#8d94a1]">Columns: units ≥ 10 MW, height ∝ √ installed capacity (not current output)</div>
               <div className="mt-1.5 space-y-0.5">
                 {focusPlants.map(([g, [n, mw]]) => (
                   <div key={g} className="flex justify-between text-[11px] tabular-nums text-slate-200">
@@ -761,13 +1052,41 @@ export default function EuropeView() {
       <div className="pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm">
         {stats && (
           <div>
-            <div className="text-[9px] uppercase tracking-[0.18em] text-[#8d94a1]">Country shade: renewable share of generation</div>
+            <div className="pointer-events-auto flex gap-1">
+              {(["renewable", "price"] as const).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setShade(m)}
+                  className={`rounded border px-2 py-0.5 text-[10px] ${
+                    shade === m ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
+                  }`}
+                >
+                  {m === "renewable" ? "Renewable share" : "Day-ahead price"}
+                </button>
+              ))}
+            </div>
             <div className="mt-1.5 h-2 rounded-sm" style={{ background: gradient }} />
             <div className="mt-0.5 flex justify-between text-[9px] text-[#8d94a1]">
-              <span>0 %</span>
-              <span>50 %</span>
-              <span>100 %</span>
+              {shade === "renewable" ? (
+                <>
+                  <span>0 %</span>
+                  <span>50 %</span>
+                  <span>100 % of generation</span>
+                </>
+              ) : (
+                <>
+                  <span>0</span>
+                  <span>125</span>
+                  <span>≥ 250 €/MWh</span>
+                </>
+              )}
             </div>
+            {shade === "price" && (
+              <div className="mt-1 flex items-center gap-2 text-[9px] text-[#8d94a1]">
+                <span className="h-2 w-3 rounded-sm" style={{ background: rgbCss(MULTI_ZONE) }} />
+                several price zones (DK, IT, NO, SE): click for each zone
+              </div>
+            )}
           </div>
         )}
         <div className="grid grid-cols-2 gap-x-4 gap-y-1">
@@ -791,14 +1110,59 @@ export default function EuropeView() {
             <span className="w-5 border-t border-dashed" style={{ borderColor: rgbCss(HVDC) }} />
             HVDC link
           </div>
+          <div className="flex items-center gap-2">
+            <span className="w-5 border-t border-dashed" style={{ borderColor: rgbCss(GAS_PIPE) }} />
+            Gas pipeline (zoomed in)
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="flex w-5 justify-center">
+              <span className="h-2 w-2 rounded-full border border-white" style={{ background: rgbCss(GAS) }} />
+            </span>
+            LNG terminal
+            <span className="ml-2 h-2 w-2 rounded-full border" style={{ borderColor: rgbCss(GAS) }} />
+            gas storage
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: rgbCss(SUBSTATION) }} />
+            Substation ≥ 220 kV (zoomed in)
+          </div>
         </div>
       </div>
+
+      {seriesLength > 1 && (
+        <div className="absolute bottom-12 left-1/2 z-10 flex w-[440px] -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
+          <button
+            onClick={() => {
+              if (!playing && replay == null) setReplay(0);
+              setPlaying(!playing);
+            }}
+            className="w-14 rounded border border-white/20 px-2 py-0.5 text-[10px] hover:bg-white/10"
+          >
+            {playing ? "Pause" : "▶ 24 h"}
+          </button>
+          <input
+            type="range"
+            min={0}
+            max={seriesLength - 1}
+            value={replay ?? seriesLength - 1}
+            onChange={(e) => {
+              setPlaying(false);
+              const k = Number(e.target.value);
+              setReplay(k >= seriesLength - 1 ? null : k);
+            }}
+            className="flex-1 accent-sky-300"
+          />
+          <span className="w-[112px] text-right tabular-nums text-[#aab3c0]">
+            {replay == null ? "latest interval" : `flows ${utc(replayTs(replay))}`}
+          </span>
+        </div>
+      )}
 
       <div className="pointer-events-none absolute bottom-4 right-5 z-10 text-right text-[9px] leading-relaxed text-[#77706a]">
         <div>Grid: PyPSA-Eur network from © OpenStreetMap contributors (ODbL) · Plants ≥ 20 MW: powerplantmatching</div>
         <div>
-          Flows, load, generation, renewable share: Energy-Charts (Fraunhofer ISE) from ENTSO-E data, latest complete interval per
-          country · Borders: © EuroGeographics
+          Flows, load, generation, renewable share, prices, installed capacity: Energy-Charts (Fraunhofer ISE) from ENTSO-E data ·
+          Reservoirs: ENTSO-E · Gas: SciGRID_gas (2021) · Borders: © EuroGeographics
         </div>
       </div>
       <a

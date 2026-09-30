@@ -2,7 +2,8 @@ name: Europe power snapshot
 
 # Refreshes the Europe view's figures (cross-border flows, load, generation by
 # source, published renewable share; scripts/fetch_eu_snapshot.py) every 30 min
-# into eu/flows.json + eu/stats.json on the `eu-data` branch. The frontend reads
+# into eu/flows.json + eu/stats.json on the `eu-data` branch, plus eu/reference.json
+# (installed capacity, reservoirs; scripts/fetch_eu_reference.py) once per run. The frontend reads
 # them from raw.githubusercontent.com and falls back to its bundled copy.
 #
 # Same pattern as rail-realtime.yml: scheduled runs start late or not at all, so
@@ -35,6 +36,15 @@ jobs:
       - name: Install dependencies
         run: pip install httpx
 
+      - name: Reference figures (installed capacity, reservoirs), once per run
+        env:
+          # optional repo secret; without it reservoirs are skipped
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+        run: |
+          mkdir -p ref
+          pip install python-dotenv
+          python scripts/fetch_eu_reference.py --out ref || echo "reference fetch failed"
+
       - name: Snapshot every 30 min for ~5 h 45 min
         env:
           REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
@@ -43,6 +53,7 @@ jobs:
           while [ "$SECONDS" -lt "$end" ]; do
             started=$SECONDS
             rm -rf store && mkdir -p store/eu
+            cp ref/reference.json store/eu/ 2>/dev/null || true
             if python scripts/fetch_eu_snapshot.py --out store/eu; then
               (
                 cd store
