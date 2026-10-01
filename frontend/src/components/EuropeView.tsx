@@ -326,10 +326,10 @@ const DETAIL_ZOOM = 5; // below: plants >= 50 MW only
 const COLUMN_M_PER_SQRT_MW = 3100;
 
 // ?europe&capture=16x9: video stage for scripts/record-video.mjs (virtual clock). A drawn
-// cursor tours Europe -> France -> Italy -> Poland in the beams & fields style; times and
-// interactive controls are left out of the frame (docs/VIDEO.md).
+// cursor tours Europe -> France -> Italy -> Poland -> Germany in the beams & fields style.
+// The page is recorded exactly as it looks in the browser; only the cursor is added.
 const CAPTURE = new URLSearchParams(window.location.search).get("capture") === "16x9";
-const TOUR_COUNTRIES = ["FR", "IT", "PL"];
+const TOUR_COUNTRIES = ["FR", "IT", "PL", "DE"];
 type TourTarget = string; // ISO code, or "close" for the panel's close button
 type TourStep = { kind: "wait"; ms: number } | { kind: "move"; to: TourTarget; ms: number } | { kind: "click"; on: TourTarget };
 const TOUR: TourStep[] = [
@@ -342,6 +342,9 @@ const TOUR: TourStep[] = [
   { kind: "wait", ms: 6000 },
   { kind: "move", to: "PL", ms: 1500 },
   { kind: "click", on: "PL" },
+  { kind: "wait", ms: 6000 },
+  { kind: "move", to: "DE", ms: 1400 },
+  { kind: "click", on: "DE" },
   { kind: "wait", ms: 60000 },
 ];
 const RIPPLE_MS = 550;
@@ -416,7 +419,7 @@ function PowerBlock({ power: p }: { power: Power }) {
   const max = Math.max(1, ...Object.values(p.generation_mw));
   return (
     <>
-      {!CAPTURE && <div className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-[#8f877e]">interval {utc(p.ts)}</div>}
+      <div className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-[#8f877e]">interval {utc(p.ts)}</div>
       <div className="mt-2 grid grid-cols-2 gap-2">
         <div>
           <div className="text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Load</div>
@@ -1201,7 +1204,7 @@ export default function EuropeView() {
       <div className="absolute left-4 top-4 z-10 rounded-md bg-[#05070b]/70 px-3 py-2 backdrop-blur-sm">
         <div className="font-serif text-[34px] uppercase leading-none tracking-[0.2em]">Europe</div>
         <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">Grid, plants & cross-border flows</div>
-        <div className={`mt-3 flex flex-wrap gap-1 ${CAPTURE ? "hidden" : ""}`}>
+        <div className="mt-3 flex flex-wrap gap-1">
           {(Object.keys(show) as Array<keyof typeof show>).map((k) => (
             <button
               key={k}
@@ -1247,7 +1250,7 @@ export default function EuropeView() {
           {focusZones.length > 0 && (
             <>
               <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">
-                Day-ahead price{CAPTURE ? "" : ` · ${utc(focusZones[0][1].ts)}`}
+                Day-ahead price · {utc(focusZones[0][1].ts)}
               </div>
               <div className="mt-1.5 space-y-0.5">
                 {focusZones.map(([zone, pr]) => (
@@ -1361,7 +1364,7 @@ export default function EuropeView() {
           <div className="pointer-events-none absolute right-5 top-16 z-10 w-[230px] rounded-md border border-white/[0.07] bg-black/45 px-4 py-3 backdrop-blur">
             <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">European Union</div>
             <PowerBlock power={eu} />
-            {!CAPTURE && <div className="mt-3 text-[10px] text-[#8d94a1]">Click a country for its figures and flows.</div>}
+            <div className="mt-3 text-[10px] text-[#8d94a1]">Click a country for its figures and flows.</div>
           </div>
         )
       )}
@@ -1369,7 +1372,7 @@ export default function EuropeView() {
       <div className="pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm">
         {stats && (
           <div>
-            <div className={`pointer-events-auto flex gap-1 ${CAPTURE ? "hidden" : ""}`}>
+            <div className="pointer-events-auto flex gap-1">
               {(["renewable", "price"] as const).map((m) => (
                 <button
                   key={m}
@@ -1446,7 +1449,7 @@ export default function EuropeView() {
         </div>
       </div>
 
-      {focus && show.plants && !CAPTURE && (
+      {focus && show.plants && (
         <div className="absolute left-1/2 top-4 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border border-white/[0.1] bg-[#05070b]/80 px-3 py-1.5 text-[11px] text-slate-300 backdrop-blur">
           <span className="text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">3D style</span>
           {(["bars", "beams"] as const).map((m) => (
@@ -1463,7 +1466,7 @@ export default function EuropeView() {
         </div>
       )}
 
-      {seriesLength > 1 && !CAPTURE && (
+      {seriesLength > 1 && (
         <div className="absolute bottom-12 left-1/2 z-10 flex w-[440px] -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
           <button
             onClick={() => {
@@ -1502,7 +1505,7 @@ export default function EuropeView() {
       {CAPTURE && tour.current.started != null && <TourCursor tour={tour.current} />}
       <a
         href="/"
-        className={`absolute right-5 top-4 z-10 ${CAPTURE ? "hidden" : ""} rounded border border-white/10 bg-black/40 px-3 py-1.5 text-xs text-slate-300 hover:bg-white/10`}
+        className={`absolute right-5 top-4 z-10 rounded border border-white/10 bg-black/40 px-3 py-1.5 text-xs text-slate-300 hover:bg-white/10`}
       >
         ← Atlas
       </a>

@@ -5,7 +5,8 @@
 //   npm run record:video -- --format 9x16 --seconds 15
 //   npm run record:video -- --poster-only          # just the still, for a quick check
 //   npm run record:video -- --format 16x9 --scale 1.25 --seconds 30 --name europe-tour \
-//       --url "http://localhost:5173/?europe"      # Europe tour: France, Italy, Poland
+//       --url "http://localhost:5173/?europe"      # Europe tour: France, Italy, Poland, Germany
+//   ... --viewport 1525x740 --scale 1.25           # page exactly as in a browser window, letterboxed
 //
 // Needs the dev server (npm run dev) and the API running. Headless Chrome (or
 // Edge; override with CHROME_PATH) renders the page on a VIRTUAL clock: every
@@ -36,8 +37,13 @@ const posterAt = Number(arg("poster-at", "2"));
 const posterOnly = argv.includes("--poster-only");
 const baseUrl = arg("url", "http://localhost:5173/");
 const [videoW, videoH] = FORMATS[format];
-const cssW = Math.round(videoW / scale);
-const cssH = Math.round(videoH / scale);
+// --viewport WxH: lay the page out at exactly this size (CSS px), e.g. the inner size
+// of a browser window, and letterbox it into the video frame with --bg bars
+const viewport = arg("viewport", "");
+const [cssW, cssH] = viewport
+  ? viewport.split("x").map(Number)
+  : [Math.round(videoW / scale), Math.round(videoH / scale)];
+const background = arg("bg", "#05070b");
 const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-");
 const name = arg("name", "power-grid");
 const out = path.resolve(arg("out", path.join("..", "recordings", `${name}-${format}-${stamp}.mp4`)));
@@ -174,7 +180,8 @@ const ENCODER = `(() => {
     avcC: null,
     error: null,
     frames: 0,
-    async init({ width, height, fps, bitrate }) {
+    async init({ width, height, fps, bitrate, background }) {
+      this.background = background;
       const base = { width, height, bitrate, framerate: fps, avc: { format: "avc" }, latencyMode: "quality" };
       const tries = [
         { ...base, codec: "avc1.640032", hardwareAcceleration: "prefer-software" },
@@ -209,7 +216,20 @@ const ENCODER = `(() => {
       const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
       const bitmap = await createImageBitmap(new Blob([bytes], { type: "image/jpeg" }));
       const us = 1e6 / this.fps;
-      const frame = new VideoFrame(bitmap, { timestamp: Math.round(this.frames * us), duration: Math.round(us) });
+      let source = bitmap;
+      if (bitmap.width !== this.width || bitmap.height !== this.height) {
+        // letterbox: the page at its own size, centred, never stretched
+        this.canvas ??= new OffscreenCanvas(this.width, this.height);
+        const ctx = this.canvas.getContext("2d");
+        ctx.fillStyle = this.background;
+        ctx.fillRect(0, 0, this.width, this.height);
+        const k = Math.min(this.width / bitmap.width, this.height / bitmap.height, 1);
+        const w = Math.round(bitmap.width * k);
+        const h = Math.round(bitmap.height * k);
+        ctx.drawImage(bitmap, Math.round((this.width - w) / 2), Math.round((this.height - h) / 2), w, h);
+        source = this.canvas;
+      }
+      const frame = new VideoFrame(source, { timestamp: Math.round(this.frames * us), duration: Math.round(us) });
       this.encoder.encode(frame, { keyFrame: this.frames % (this.fps * 2) === 0 });
       frame.close();
       bitmap.close();
@@ -347,7 +367,7 @@ try {
 }
 
 async function recordVideo(posterPath) {
-  const codec = await evaluate(`${ENCODER}; window.__enc.init(${JSON.stringify({ width: videoW, height: videoH, fps, bitrate: 14_000_000 })})`);
+  const codec = await evaluate(`${ENCODER}; window.__enc.init(${JSON.stringify({ width: videoW, height: videoH, fps, bitrate: 14_000_000, background })})`);
   console.log(`encoder: ${codec}`);
 
   // take over the clock: from here every frame advances time by exactly 1/fps
