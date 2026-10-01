@@ -539,7 +539,8 @@ export default function EuropeView() {
           };
         }
         if (layer.id === "eu-plant-columns" || layer.id === "eu-focus-small" || layer.id.startsWith("eu-beam")) {
-          const u = (layer.id.startsWith("eu-beam") ? (object as { unit: Unit }).unit : object) as Unit;
+          // beam segments wrap their unit; the glow, bars and dots are units themselves
+          const u = (Array.isArray(object) ? object : (object as { unit: Unit }).unit) as Unit;
           const fuel = PLANT_LABEL[plantsRef.current?.groups[u[0]] ?? "other"];
           const year = u[5] ? ` · since ${u[5]}` : "";
           return { html: `<b>${u[4]}</b><div>${fuel} · ${u[1].toLocaleString("en-US")} MW installed${year}</div>`, style };
