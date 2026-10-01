@@ -1,6 +1,6 @@
 import type { PickingInfo } from "@deck.gl/core";
 import { PathStyleExtension, type PathStyleExtensionProps } from "@deck.gl/extensions";
-import { ColumnLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
+import { ColumnLayer, LineLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -173,6 +173,63 @@ const GAS: RGB = [255, 150, 92]; // LNG terminals and storages (gas = orange, as
 const GAS_PIPE: RGB = [226, 206, 160]; // pale sand, dashed, so pipelines never read as power lines
 const GAS_DETAIL_ZOOM = 5.5; // pipelines and storages from here, or for the focused country
 const COLUMN_MIN_MW = 10; // focused units from here stand as columns, smaller ones lie flat
+// "beams & fields" style: big plants as light beams, the rest summed into hexagons
+const BEAM_MIN_MW = 200;
+const HEX_KM = 12; // hexagon circumradius
+const HEX_M_PER_SQRT_MW = 450; // fields stay low next to the beams
+const BEAM_BANDS = [
+  [0, 0.4, 255],
+  [0.4, 0.72, 175],
+  [0.72, 1, 80],
+] as const; // [from, to, alpha] of the beam height: bright base, fading top
+
+interface Hex {
+  position: [number, number];
+  mw: number;
+  units: number;
+  /** MW per fuel group index */
+  mix: Map<number, number>;
+  dominant: number;
+}
+
+/** Sum units into flat-top hexagons (circumradius HEX_KM) in a local km grid. */
+function hexBins(units: Unit[]): Hex[] {
+  if (!units.length) return [];
+  const lat0 = units.reduce((a, u) => a + u[3], 0) / units.length;
+  const kx = 111.32 * Math.cos((lat0 * Math.PI) / 180);
+  const ky = 110.57;
+  const bins = new Map<string, Hex & { q: number; r: number }>();
+  for (const u of units) {
+    const x = u[2] * kx;
+    const y = u[3] * ky;
+    // axial coordinates of a flat-top hex grid, then cube rounding
+    const qf = ((2 / 3) * x) / HEX_KM;
+    const rf = ((-1 / 3) * x + (Math.sqrt(3) / 3) * y) / HEX_KM;
+    const sf = -qf - rf;
+    let q = Math.round(qf);
+    let rr = Math.round(rf);
+    const sr = Math.round(sf);
+    const dq = Math.abs(q - qf);
+    const dr = Math.abs(rr - rf);
+    const ds = Math.abs(sr - sf);
+    if (dq > dr && dq > ds) q = -rr - sr;
+    else if (dr > ds) rr = -q - sr;
+    const key = `${q},${rr}`;
+    let bin = bins.get(key);
+    if (!bin) {
+      const cx = HEX_KM * 1.5 * q;
+      const cy = HEX_KM * Math.sqrt(3) * (rr + q / 2);
+      bin = { q, r: rr, position: [cx / kx, cy / ky], mw: 0, units: 0, mix: new Map(), dominant: 0 };
+      bins.set(key, bin);
+    }
+    bin.mw += u[1];
+    bin.units += 1;
+    bin.mix.set(u[0], (bin.mix.get(u[0]) ?? 0) + u[1]);
+  }
+  const out = [...bins.values()];
+  for (const b of out) b.dominant = [...b.mix.entries()].sort((a, c) => c[1] - a[1])[0][0];
+  return out;
+}
 const SUBSTATION: RGB = [226, 232, 240];
 
 // copper by voltage, kept dim so countries, plants and flows read first
@@ -378,6 +435,10 @@ export default function EuropeView() {
   // 24 h replay: index into the flow series, null = latest complete interval
   const [replay, setReplay] = useState<number | null>(null);
   const [units, setUnits] = useState<{ iso: string; rows: Unit[] } | null>(null);
+  // ?europe&country=PL&style=beams opens the focused country in the beams & fields style
+  const [plantStyle, setPlantStyle] = useState<"bars" | "beams">(() =>
+    new URLSearchParams(window.location.search).get("style") === "beams" ? "beams" : "bars",
+  );
   const [playing, setPlaying] = useState(false);
   const [zoom, setZoom] = useState(4);
   // ?europe&country=FR opens with a country focused
@@ -464,8 +525,21 @@ export default function EuropeView() {
           const b = object as Substation;
           return { html: `Substation · ${b[0]} kV`, style };
         }
-        if (layer.id === "eu-plant-columns" || layer.id === "eu-focus-small") {
-          const u = object as Unit;
+        if (layer.id.startsWith("eu-hex")) {
+          const h = object as Hex;
+          const groups = plantsRef.current?.groups ?? [];
+          const mix = [...h.mix.entries()]
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([g, mw]) => `${PLANT_LABEL[groups[g] ?? "other"]} ${power(mw)}`)
+            .join(" · ");
+          return {
+            html: `<b>${power(h.mw)}</b> in ${h.units.toLocaleString("en-US")} units under ${BEAM_MIN_MW} MW<div>${mix}</div><div style="color:#8d94a1">sum over a ${HEX_KM * 2} km hexagon</div>`,
+            style,
+          };
+        }
+        if (layer.id === "eu-plant-columns" || layer.id === "eu-focus-small" || layer.id.startsWith("eu-beam")) {
+          const u = (layer.id.startsWith("eu-beam") ? (object as { unit: Unit }).unit : object) as Unit;
           const fuel = PLANT_LABEL[plantsRef.current?.groups[u[0]] ?? "other"];
           const year = u[5] ? ` · since ${u[5]}` : "";
           return { html: `<b>${u[4]}</b><div>${fuel} · ${u[1].toLocaleString("en-US")} MW installed${year}</div>`, style };
@@ -536,6 +610,20 @@ export default function EuropeView() {
   }, [selected, units, plants]);
   const focusColumns = useMemo(() => focusUnits.filter((u) => u[1] >= COLUMN_MIN_MW), [focusUnits]);
   const focusSmall = useMemo(() => focusUnits.filter((u) => u[1] < COLUMN_MIN_MW), [focusUnits]);
+  const focusBeams = useMemo(() => focusUnits.filter((u) => u[1] >= BEAM_MIN_MW), [focusUnits]);
+  const focusHexes = useMemo(() => hexBins(focusUnits.filter((u) => u[1] < BEAM_MIN_MW)), [focusUnits]);
+  const hexPeak = useMemo(() => Math.max(1, ...focusHexes.map((h) => h.mw)), [focusHexes]);
+  const beamSegments = useMemo(
+    () =>
+      BEAM_BANDS.map(([a, b, alpha]) => ({
+        alpha,
+        rows: focusBeams.map((u) => {
+          const h = Math.sqrt(u[1]) * COLUMN_M_PER_SQRT_MW * 1.15;
+          return { unit: u, from: [u[2], u[3], h * a] as [number, number, number], to: [u[2], u[3], h * b] as [number, number, number] };
+        }),
+      })),
+    [focusBeams],
+  );
 
   const seriesLength = flows?.borders.reduce((n, f) => Math.max(n, f.series?.length ?? 0), 0) ?? 0;
   const replayTs = (k: number) =>
@@ -744,7 +832,7 @@ export default function EuropeView() {
         // focused country: one column per plant, height = installed capacity
         new ScatterplotLayer<Unit>({
           id: "eu-focus-small",
-          data: show.plants ? focusSmall : [],
+          data: show.plants && plantStyle === "bars" ? focusSmall : [],
           getPosition: (u) => [u[2], u[3]],
           getRadius: 1.8,
           radiusUnits: "pixels",
@@ -754,7 +842,7 @@ export default function EuropeView() {
         }),
         new ColumnLayer<Unit>({
           id: "eu-plant-columns",
-          data: show.plants ? focusColumns : [],
+          data: show.plants && plantStyle === "bars" ? focusColumns : [],
           getPosition: (p) => [p[2], p[3]],
           getElevation: (p) => Math.sqrt(p[1]) * COLUMN_M_PER_SQRT_MW,
           getFillColor: (p) => [...FUEL_COLOR[plants!.groups[p[0]]], 235],
@@ -764,6 +852,52 @@ export default function EuropeView() {
           pickable: true,
           material: { ambient: 0.55, diffuse: 0.6, shininess: 24, specularColor: [60, 60, 60] },
         }),
+        // beams & fields: low glowing hexagons for units under BEAM_MIN_MW ...
+        new ColumnLayer<Hex>({
+          id: "eu-hex-fields",
+          data: show.plants && plantStyle === "beams" ? focusHexes : [],
+          getPosition: (h) => h.position,
+          getElevation: (h) => Math.sqrt(h.mw) * HEX_M_PER_SQRT_MW,
+          // brightness follows capacity, so sparse hexagons fade into the ground
+          getFillColor: (h) => [
+            ...FUEL_COLOR[plants?.groups[h.dominant] ?? "other"],
+            Math.round(40 + 170 * Math.min(1, Math.sqrt(h.mw / hexPeak))),
+          ],
+          updateTriggers: { getFillColor: [hexPeak] },
+          radius: HEX_KM * 1000,
+          coverage: 0.84,
+          diskResolution: 6,
+          extruded: true,
+          pickable: true,
+          material: { ambient: 0.8, diffuse: 0.35, shininess: 8, specularColor: [30, 30, 30] },
+        }),
+        // ... a soft glow at each beam's foot ...
+        new ScatterplotLayer<Unit>({
+          id: "eu-beam-glow",
+          data: show.plants && plantStyle === "beams" ? focusBeams : [],
+          getPosition: (u) => [u[2], u[3]],
+          getRadius: (u) => 5 + Math.sqrt(u[1]) * 0.18,
+          radiusUnits: "pixels",
+          getFillColor: (u) => [...FUEL_COLOR[plants?.groups[u[0]] ?? "other"], 70],
+          pickable: true,
+          parameters: noDepth,
+        }),
+        // ... and a vertical light beam per big plant, fading towards the top
+        ...beamSegments.map(
+          (band, i) =>
+            new LineLayer<{ unit: Unit; from: [number, number, number]; to: [number, number, number] }>({
+              id: `eu-beam-${i}`,
+              data: show.plants && plantStyle === "beams" ? band.rows : [],
+              getSourcePosition: (d) => d.from,
+              getTargetPosition: (d) => d.to,
+              getColor: (d) => [...FUEL_COLOR[plants?.groups[d.unit[0]] ?? "other"], band.alpha],
+              getWidth: (d) => 3.5 + Math.min(4.5, d.unit[1] / 800),
+              widthUnits: "pixels",
+              pickable: true,
+              // always on top of the fields
+              parameters: noDepth,
+            }),
+        ),
         new ScatterplotLayer<GasSite>({
           id: "eu-gas-storage",
           data: show.gas && gas && gasDetail ? gas.storages.filter((g) => !selected || g[1] === selected || zoom >= GAS_DETAIL_ZOOM) : [],
@@ -865,7 +999,7 @@ export default function EuropeView() {
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, shapes, countries, visiblePlants, focusColumns, focusSmall, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
+  }, [frame, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
   const eu = stats?.eu ?? null;
   const focusPower = selected ? stats?.countries[selected] : undefined;
@@ -1022,7 +1156,24 @@ export default function EuropeView() {
           {focusPlants.length > 0 && (
             <>
               <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Plants on the map (units ≥ 1 MW)</div>
-              <div className="mt-0.5 text-[10px] text-[#8d94a1]">Columns: units ≥ 10 MW, height ∝ √ installed capacity (not current output)</div>
+              <div className="mt-1.5 flex gap-1">
+                {(["bars", "beams"] as const).map((m) => (
+                  <button
+                    key={m}
+                    onClick={() => setPlantStyle(m)}
+                    className={`rounded border px-2 py-0.5 text-[10px] ${
+                      plantStyle === m ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
+                    }`}
+                  >
+                    {m === "bars" ? "Bars" : "Beams & fields"}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-1 text-[10px] text-[#8d94a1]">
+                {plantStyle === "bars"
+                  ? "Columns: units ≥ 10 MW, height ∝ √ installed capacity (not current output)"
+                  : `Beams: plants ≥ ${BEAM_MIN_MW} MW, height ∝ √ installed capacity. Fields: smaller units summed per ${HEX_KM * 2} km hexagon, coloured by the largest fuel.`}
+              </div>
               <div className="mt-1.5 space-y-0.5">
                 {focusPlants.map(([g, [n, mw]]) => (
                   <div key={g} className="flex justify-between text-[11px] tabular-nums text-slate-200">
