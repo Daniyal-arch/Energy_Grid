@@ -1156,19 +1156,6 @@ export default function EuropeView() {
           {focusPlants.length > 0 && (
             <>
               <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Plants on the map (units ≥ 1 MW)</div>
-              <div className="mt-1.5 flex gap-1">
-                {(["bars", "beams"] as const).map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => setPlantStyle(m)}
-                    className={`rounded border px-2 py-0.5 text-[10px] ${
-                      plantStyle === m ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
-                    }`}
-                  >
-                    {m === "bars" ? "Bars" : "Beams & fields"}
-                  </button>
-                ))}
-              </div>
               <div className="mt-1 text-[10px] text-[#8d94a1]">
                 {plantStyle === "bars"
                   ? "Columns: units ≥ 10 MW, height ∝ √ installed capacity (not current output)"
@@ -1279,6 +1266,23 @@ export default function EuropeView() {
           </div>
         </div>
       </div>
+
+      {focus && show.plants && (
+        <div className="absolute left-1/2 top-4 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border border-white/[0.1] bg-[#05070b]/80 px-3 py-1.5 text-[11px] text-slate-300 backdrop-blur">
+          <span className="text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">3D style</span>
+          {(["bars", "beams"] as const).map((m) => (
+            <button
+              key={m}
+              onClick={() => setPlantStyle(m)}
+              className={`rounded border px-2.5 py-0.5 text-[11px] ${
+                plantStyle === m ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              {m === "bars" ? "Bars" : "Beams & fields"}
+            </button>
+          ))}
+        </div>
+      )}
 
       {seriesLength > 1 && (
         <div className="absolute bottom-12 left-1/2 z-10 flex w-[440px] -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
