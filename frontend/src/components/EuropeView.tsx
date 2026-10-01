@@ -325,6 +325,36 @@ const DETAIL_ZOOM = 5; // below: plants >= 50 MW only
 // wind farm still reads as a bar next to a 5 GW plant (100 MW: 31 km, 1 GW: 98 km)
 const COLUMN_M_PER_SQRT_MW = 3100;
 
+// ?europe&capture=16x9: video stage for scripts/record-video.mjs (virtual clock). A drawn
+// cursor tours Europe -> France -> Italy -> Poland in the beams & fields style; times and
+// interactive controls are left out of the frame (docs/VIDEO.md).
+const CAPTURE = new URLSearchParams(window.location.search).get("capture") === "16x9";
+const TOUR_COUNTRIES = ["FR", "IT", "PL"];
+type TourTarget = string; // ISO code, or "close" for the panel's close button
+type TourStep = { kind: "wait"; ms: number } | { kind: "move"; to: TourTarget; ms: number } | { kind: "click"; on: TourTarget };
+const TOUR: TourStep[] = [
+  { kind: "wait", ms: 2200 },
+  { kind: "move", to: "FR", ms: 1500 },
+  { kind: "click", on: "FR" },
+  { kind: "wait", ms: 6000 },
+  { kind: "move", to: "IT", ms: 1400 },
+  { kind: "click", on: "IT" },
+  { kind: "wait", ms: 6000 },
+  { kind: "move", to: "PL", ms: 1500 },
+  { kind: "click", on: "PL" },
+  { kind: "wait", ms: 60000 },
+];
+const RIPPLE_MS = 550;
+const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+declare global {
+  interface Window {
+    __captureReady?: boolean;
+    /** called by the recorder on its first frame: starts the tour */
+    __captureGo?: () => void;
+  }
+}
+
 const pairs = (flat: number[]): [number, number][] => {
   const p: [number, number][] = [];
   for (let k = 0; k < flat.length; k += 2) p.push([flat[k], flat[k + 1]]);
@@ -386,7 +416,7 @@ function PowerBlock({ power: p }: { power: Power }) {
   const max = Math.max(1, ...Object.values(p.generation_mw));
   return (
     <>
-      <div className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-[#8f877e]">interval {utc(p.ts)}</div>
+      {!CAPTURE && <div className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-[#8f877e]">interval {utc(p.ts)}</div>}
       <div className="mt-2 grid grid-cols-2 gap-2">
         <div>
           <div className="text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Load</div>
@@ -417,6 +447,37 @@ function PowerBlock({ power: p }: { power: Power }) {
   );
 }
 
+/** Drawn mouse pointer with a click ripple; headless capture has no OS cursor. */
+function TourCursor({ tour }: { tour: { cursor: [number, number]; ripple: { at: number; x: number; y: number } | null } }) {
+  const [x, y] = tour.cursor;
+  const k = tour.ripple ? (performance.now() - tour.ripple.at) / RIPPLE_MS : 1;
+  return (
+    <>
+      {tour.ripple && k < 1 && (
+        <div
+          className="pointer-events-none absolute z-30 rounded-full border-2 border-white"
+          style={{
+            left: tour.ripple.x - (8 + 30 * k),
+            top: tour.ripple.y - (8 + 30 * k),
+            width: 2 * (8 + 30 * k),
+            height: 2 * (8 + 30 * k),
+            opacity: 1 - k,
+          }}
+        />
+      )}
+      <svg
+        className="pointer-events-none absolute z-30"
+        style={{ left: x - 2, top: y - 1, filter: "drop-shadow(0 2px 3px rgba(0,0,0,0.6))" }}
+        width="24"
+        height="30"
+        viewBox="0 0 24 30"
+      >
+        <path d="M2 1 L2 23 L8 17.5 L12 27 L15.5 25.5 L11.5 16.5 L19.5 16.5 Z" fill="#ffffff" stroke="#111" strokeWidth="1.4" strokeLinejoin="round" />
+      </svg>
+    </>
+  );
+}
+
 export default function EuropeView() {
   const container = useRef<HTMLDivElement>(null);
   const overlay = useRef<MapboxOverlay | null>(null);
@@ -437,7 +498,7 @@ export default function EuropeView() {
   const [units, setUnits] = useState<{ iso: string; rows: Unit[] } | null>(null);
   // ?europe&country=PL&style=beams opens the focused country in the beams & fields style
   const [plantStyle, setPlantStyle] = useState<"bars" | "beams">(() =>
-    new URLSearchParams(window.location.search).get("style") === "beams" ? "beams" : "bars",
+    CAPTURE || new URLSearchParams(window.location.search).get("style") === "beams" ? "beams" : "bars",
   );
   const [playing, setPlaying] = useState(false);
   const [zoom, setZoom] = useState(4);
@@ -594,16 +655,37 @@ export default function EuropeView() {
   );
   // focused country: every unit >= 1 MW from plants/<ISO>.json (loaded on click);
   // until it arrives, the >= 20 MW plants of the main file stand in
+  const unitCache = useRef(new Map<string, Unit[]>());
+  const [tourUnitsReady, setTourUnitsReady] = useState(!CAPTURE);
   useEffect(() => {
     if (!selected) return;
+    const cached = unitCache.current.get(selected);
+    if (cached) {
+      setUnits({ iso: selected, rows: cached });
+      return;
+    }
     let live = true;
     getJson<{ plants: Unit[] }>(`/data/eu/plants/${selected}.json`)
-      .then((d) => live && setUnits({ iso: selected, rows: d.plants }))
+      .then((d) => {
+        unitCache.current.set(selected, d.plants);
+        if (live) setUnits({ iso: selected, rows: d.plants });
+      })
       .catch(() => {});
     return () => {
       live = false;
     };
   }, [selected]);
+  // the video tour must not wait for a plant file mid-recording: load them up front
+  useEffect(() => {
+    if (!CAPTURE) return;
+    Promise.all(
+      TOUR_COUNTRIES.map((iso) =>
+        getJson<{ plants: Unit[] }>(`/data/eu/plants/${iso}.json`).then((d) => unitCache.current.set(iso, d.plants)),
+      ),
+    )
+      .then(() => setTourUnitsReady(true))
+      .catch((e) => setError(String(e)));
+  }, []);
   const focusUnits = useMemo<Unit[]>(() => {
     if (!selected) return [];
     if (units?.iso === selected) return units.rows;
@@ -699,11 +781,107 @@ export default function EuropeView() {
   const focusRings = useMemo(() => (focus ? focus.polygons.map((rings) => pairs(rings[0])) : []), [focus]);
   const touches = (a: Arc) => a.from === selected || a.to === selected;
 
+  // ---- video tour: a drawn cursor glides to each country and clicks it ----
+  const countriesRef = useRef<CountriesFile | null>(null);
+  countriesRef.current = countries;
+  const tour = useRef({
+    started: null as number | null,
+    queue: [...TOUR],
+    stepStart: 0,
+    from: [1560, 860] as [number, number],
+    to: [1560, 860] as [number, number],
+    cursor: [1560, 860] as [number, number],
+    ripple: null as { at: number; x: number; y: number } | null,
+    /** the current move step has picked its target */
+    aimed: false,
+  });
+  const [mapLoaded, setMapLoaded] = useState(false);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (map.loaded()) setMapLoaded(true);
+    else map.once("load", () => setMapLoaded(true));
+  }, []);
+  useEffect(() => {
+    if (!CAPTURE) return;
+    window.__captureGo = () => {
+      tour.current.started = performance.now();
+      tour.current.stepStart = performance.now();
+    };
+    if (mapLoaded && grid && plants && countries && stats && flows && gas && reference && tourUnitsReady) {
+      window.__captureReady = true;
+    }
+  }, [mapLoaded, grid, plants, countries, stats, flows, gas, reference, tourUnitsReady]);
+
+  /** Screen point to click for a target, or null when it is off-screen or under a panel. */
+  const tourPoint = (target: TourTarget): [number, number] | null => {
+    if (target === "close") {
+      const b = document.querySelector('[title="Back to Europe"]')?.getBoundingClientRect();
+      return b ? [b.left + b.width / 2, b.top + b.height / 2] : null;
+    }
+    const map = mapRef.current;
+    const c = countriesRef.current?.countries.find((k) => k.iso === target);
+    if (!map || !c) return null;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const ok = ([x, y]: [number, number]) => x > 320 && x < w - 340 && y > 100 && y < h - 140;
+    const label = map.project(c.label);
+    if (ok([label.x, label.y])) return [label.x, label.y];
+    // otherwise a point between the label and the outline that is in view
+    const ring = c.polygons.reduce((a, b) => (b[0].length > a[0].length ? b : a))[0];
+    for (let k = 0; k < ring.length; k += 2) {
+      const lon = c.label[0] + (ring[k] - c.label[0]) * 0.55;
+      const lat = c.label[1] + (ring[k + 1] - c.label[1]) * 0.55;
+      const q = map.project([lon, lat]);
+      if (ok([q.x, q.y])) return [q.x, q.y];
+    }
+    return null;
+  };
+
+  const tourTick = (now: number) => {
+    const t = tour.current;
+    if (t.started == null) return;
+    const step = t.queue[0];
+    if (!step) return;
+    const elapsed = now - t.stepStart;
+    if (step.kind === "move") {
+      if (!t.aimed) {
+        const target = tourPoint(step.to);
+        if (!target) {
+          // not reachable from this camera: close the panel first (back to Europe)
+          t.queue.unshift({ kind: "move", to: "close", ms: 1000 }, { kind: "click", on: "close" }, { kind: "wait", ms: 1700 });
+          t.stepStart = now;
+          return;
+        }
+        t.from = [...t.cursor] as [number, number];
+        t.to = target;
+        t.aimed = true;
+      }
+      const k = Math.min(1, elapsed / step.ms);
+      const e = ease(k);
+      t.cursor = [t.from[0] + (t.to[0] - t.from[0]) * e, t.from[1] + (t.to[1] - t.from[1]) * e];
+      if (k >= 1) {
+        t.queue.shift();
+        t.aimed = false;
+        t.stepStart = now;
+      }
+    } else if (step.kind === "click") {
+      t.ripple = { at: now, x: t.cursor[0], y: t.cursor[1] };
+      setSelected(step.on === "close" ? null : step.on);
+      t.queue.shift();
+      t.stepStart = now;
+    } else if (elapsed >= step.ms) {
+      t.queue.shift();
+      t.stepStart = now;
+    }
+  };
+
   // one clock for the arrows; only the uniforms change per frame
   useEffect(() => {
     let raf = 0;
     const loop = (now: number) => {
       clock.current.tick(now, mapRef.current?.getZoom() ?? 4, 40);
+      if (CAPTURE) tourTick(now);
       setFrame((n) => n + 1);
       raf = requestAnimationFrame(loop);
     };
@@ -1023,7 +1201,7 @@ export default function EuropeView() {
       <div className="absolute left-4 top-4 z-10 rounded-md bg-[#05070b]/70 px-3 py-2 backdrop-blur-sm">
         <div className="font-serif text-[34px] uppercase leading-none tracking-[0.2em]">Europe</div>
         <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">Grid, plants & cross-border flows</div>
-        <div className="mt-3 flex flex-wrap gap-1">
+        <div className={`mt-3 flex flex-wrap gap-1 ${CAPTURE ? "hidden" : ""}`}>
           {(Object.keys(show) as Array<keyof typeof show>).map((k) => (
             <button
               key={k}
@@ -1069,7 +1247,7 @@ export default function EuropeView() {
           {focusZones.length > 0 && (
             <>
               <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">
-                Day-ahead price · {utc(focusZones[0][1].ts)}
+                Day-ahead price{CAPTURE ? "" : ` · ${utc(focusZones[0][1].ts)}`}
               </div>
               <div className="mt-1.5 space-y-0.5">
                 {focusZones.map(([zone, pr]) => (
@@ -1183,7 +1361,7 @@ export default function EuropeView() {
           <div className="pointer-events-none absolute right-5 top-16 z-10 w-[230px] rounded-md border border-white/[0.07] bg-black/45 px-4 py-3 backdrop-blur">
             <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">European Union</div>
             <PowerBlock power={eu} />
-            <div className="mt-3 text-[10px] text-[#8d94a1]">Click a country for its figures and flows.</div>
+            {!CAPTURE && <div className="mt-3 text-[10px] text-[#8d94a1]">Click a country for its figures and flows.</div>}
           </div>
         )
       )}
@@ -1191,7 +1369,7 @@ export default function EuropeView() {
       <div className="pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm">
         {stats && (
           <div>
-            <div className="pointer-events-auto flex gap-1">
+            <div className={`pointer-events-auto flex gap-1 ${CAPTURE ? "hidden" : ""}`}>
               {(["renewable", "price"] as const).map((m) => (
                 <button
                   key={m}
@@ -1268,7 +1446,7 @@ export default function EuropeView() {
         </div>
       </div>
 
-      {focus && show.plants && (
+      {focus && show.plants && !CAPTURE && (
         <div className="absolute left-1/2 top-4 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border border-white/[0.1] bg-[#05070b]/80 px-3 py-1.5 text-[11px] text-slate-300 backdrop-blur">
           <span className="text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">3D style</span>
           {(["bars", "beams"] as const).map((m) => (
@@ -1285,7 +1463,7 @@ export default function EuropeView() {
         </div>
       )}
 
-      {seriesLength > 1 && (
+      {seriesLength > 1 && !CAPTURE && (
         <div className="absolute bottom-12 left-1/2 z-10 flex w-[440px] -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
           <button
             onClick={() => {
@@ -1321,9 +1499,10 @@ export default function EuropeView() {
           Reservoirs: ENTSO-E · Gas: SciGRID_gas (2021) · Borders: © EuroGeographics
         </div>
       </div>
+      {CAPTURE && tour.current.started != null && <TourCursor tour={tour.current} />}
       <a
         href="/"
-        className="absolute right-5 top-4 z-10 rounded border border-white/10 bg-black/40 px-3 py-1.5 text-xs text-slate-300 hover:bg-white/10"
+        className={`absolute right-5 top-4 z-10 ${CAPTURE ? "hidden" : ""} rounded border border-white/10 bg-black/40 px-3 py-1.5 text-xs text-slate-300 hover:bg-white/10`}
       >
         ← Atlas
       </a>

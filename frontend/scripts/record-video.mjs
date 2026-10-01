@@ -4,6 +4,8 @@
 //   npm run record:video                         # 4:5, 20 s, 30 fps
 //   npm run record:video -- --format 9x16 --seconds 15
 //   npm run record:video -- --poster-only          # just the still, for a quick check
+//   npm run record:video -- --format 16x9 --scale 1.25 --seconds 30 --name europe-tour \
+//       --url "http://localhost:5173/?europe"      # Europe tour: France, Italy, Poland
 //
 // Needs the dev server (npm run dev) and the API running. Headless Chrome (or
 // Edge; override with CHROME_PATH) renders the page on a VIRTUAL clock: every
@@ -24,7 +26,7 @@ const arg = (name, fallback) => {
   return i >= 0 && argv[i + 1] && !argv[i + 1].startsWith("--") ? argv[i + 1] : fallback;
 };
 
-const FORMATS = { "4x5": [1080, 1350], "9x16": [1080, 1920] };
+const FORMATS = { "4x5": [1080, 1350], "9x16": [1080, 1920], "16x9": [1920, 1080] };
 const format = arg("format", "4x5");
 if (!FORMATS[format]) throw new Error(`--format must be one of ${Object.keys(FORMATS).join(", ")}`);
 const scale = Number(arg("scale", "2"));
@@ -37,7 +39,8 @@ const [videoW, videoH] = FORMATS[format];
 const cssW = Math.round(videoW / scale);
 const cssH = Math.round(videoH / scale);
 const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-");
-const out = path.resolve(arg("out", path.join("..", "recordings", `power-grid-${format}-${stamp}.mp4`)));
+const name = arg("name", "power-grid");
+const out = path.resolve(arg("out", path.join("..", "recordings", `${name}-${format}-${stamp}.mp4`)));
 const frames = Math.round(seconds * fps);
 
 const CHROME_CANDIDATES = [
@@ -348,7 +351,8 @@ async function recordVideo(posterPath) {
   console.log(`encoder: ${codec}`);
 
   // take over the clock: from here every frame advances time by exactly 1/fps
-  await evaluate("window.__vclock.manual(); window.__vclock.flush(); true");
+  // pages with a scripted sequence (the Europe tour) start it on the first recorded frame
+  await evaluate("window.__vclock.manual(); window.__captureGo && window.__captureGo(); window.__vclock.flush(); true");
   const dt = 1000 / fps;
   const posterFrame = Math.min(frames - 1, Math.round(posterAt * fps));
   const started = Date.now();

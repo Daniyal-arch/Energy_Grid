@@ -50,6 +50,31 @@ as the video will look.
 PNG; the automatic thumbnail may be a less representative frame. Use 4:5 for the
 feed. LinkedIn autoplays muted, and the video starts on the finished scene.
 
+## Europe tour (16:9)
+
+A landscape video of the Europe view (`?europe`): the whole map first, then a
+drawn mouse cursor clicks France, Italy and Poland in turn; each country opens in
+the "Beams & fields" plant style. No API is needed, only the frontend.
+
+```sh
+cd frontend
+npm run record:video -- --format 16x9 --scale 1.25 --seconds 30 --poster-at 12 \
+  --name europe-tour --url "http://localhost:5173/?europe"
+```
+
+`--scale` is the number of video pixels per page pixel. 1.25 lays the page out at
+1536×864, like a 1920×1080 laptop screen at 125 % Windows scaling, so panels and
+text keep the proportions seen in the browser; `--scale 1` lays it out at
+1920×1080 and the panels look smaller.
+
+The tour script is `TOUR` in `frontend/src/components/EuropeView.tsx` (capture
+mode `?capture=16x9`). Headless Chrome has no OS cursor, so the page draws one,
+with a ripple on each click. When the next country is out of view, the cursor
+first clicks the panel's close button so the camera returns to Europe. In the
+video, interval times, the replay bar and the layer/style switches are hidden;
+the panels keep only sourced figures. 30 s at 30 fps takes about 10 minutes on a
+laptop GPU.
+
 ## Content rules: everything written in the video must be real
 
 The video is published, so its text follows one rule: **every number is a value
