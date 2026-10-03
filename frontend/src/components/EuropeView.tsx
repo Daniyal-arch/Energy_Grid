@@ -329,6 +329,108 @@ const COLUMN_M_PER_SQRT_MW = 3100;
 // cursor tours Europe -> France -> Italy -> Poland -> Germany in the beams & fields style.
 // The page is recorded exactly as it looks in the browser; only the cursor is added.
 const CAPTURE = new URLSearchParams(window.location.search).get("capture") === "16x9";
+
+// ?europe&day=YYYY-MM-DD (or day=latest): 24 h time-lapse of one real day, every 15 min,
+// from frontend/public/data/eu/day/<date>.json (scripts/build_eu_day.py). The clock shows
+// the market's own time (Europe/Berlin, CET/CEST) of the slot whose values are on screen.
+const DAY_PARAM = new URLSearchParams(window.location.search).get("day");
+const DAY_SECONDS = Number(new URLSearchParams(window.location.search).get("daySeconds")) || 36;
+type Series = (number | null)[];
+interface DaySeries {
+  load: Series;
+  renewable_share: Series;
+  generation: Record<string, Series>;
+}
+interface DayFile {
+  date: string;
+  start: string;
+  step_s: number;
+  slots: number;
+  prices: Record<string, { country: string; values: Series }>;
+  countries: Record<string, DaySeries>;
+  eu: DaySeries | null;
+  borders: { a: string; b: string; values: Series }[];
+}
+const MARKET_CLOCK = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Europe/Berlin",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZoneName: "short",
+});
+const marketTime = (iso: string) => MARKET_CLOCK.format(new Date(iso));
+
+/** One slot of a day series in the shape of the snapshot's Power. */
+function dayPower(series: DaySeries | null | undefined, k: number, ts: string): Power | undefined {
+  const load = series?.load[k];
+  if (!series || load == null) return undefined;
+  const generation_mw: Record<string, number> = {};
+  for (const [g, col] of Object.entries(series.generation)) if (col[k] != null) generation_mw[g] = col[k] as number;
+  return { ts, load_mw: load, renewable_share_of_generation: series.renewable_share[k] ?? null, generation_mw };
+}
+
+/** Small area chart of a day with a cursor at slot k; `band` draws [low, high] per slot. */
+function DayChart({
+  title,
+  layers,
+  band,
+  k,
+  slots,
+  unit,
+}: {
+  title: string;
+  layers?: { values: Series; color: RGB }[];
+  band?: { low: Series; high: Series; color: RGB };
+  k: number;
+  slots: number;
+  unit: string;
+}) {
+  const W = 220;
+  const H = 40;
+  const x = (i: number) => (i / Math.max(1, slots - 1)) * W;
+  let max = 1;
+  let min = 0;
+  if (layers) {
+    for (let i = 0; i < slots; i++) max = Math.max(max, layers.reduce((a, l) => a + (l.values[i] ?? 0), 0));
+  }
+  if (band) {
+    max = Math.max(...band.high.map((v) => v ?? -Infinity));
+    min = Math.min(0, ...band.low.map((v) => v ?? Infinity));
+  }
+  const y = (v: number) => H - ((v - min) / (max - min || 1)) * H;
+  const paths: { d: string; color: RGB }[] = [];
+  if (layers) {
+    const base = new Array<number>(slots).fill(0);
+    for (const l of layers) {
+      const top = base.map((b, i) => b + (l.values[i] ?? 0));
+      let d = `M${x(0)},${y(top[0])}`;
+      for (let i = 1; i < slots; i++) d += `L${x(i).toFixed(1)},${y(top[i]).toFixed(1)}`;
+      for (let i = slots - 1; i >= 0; i--) d += `L${x(i).toFixed(1)},${y(base[i]).toFixed(1)}`;
+      paths.push({ d: `${d}Z`, color: l.color });
+      for (let i = 0; i < slots; i++) base[i] = top[i];
+    }
+  }
+  if (band) {
+    let d = "";
+    for (let i = 0; i < slots; i++) if (band.high[i] != null) d += `${d ? "L" : "M"}${x(i).toFixed(1)},${y(band.high[i] as number).toFixed(1)}`;
+    for (let i = slots - 1; i >= 0; i--) if (band.low[i] != null) d += `L${x(i).toFixed(1)},${y(band.low[i] as number).toFixed(1)}`;
+    paths.push({ d: `${d}Z`, color: band.color });
+  }
+  return (
+    <div className="mt-3">
+      <div className="flex justify-between text-[9px] uppercase tracking-[0.2em] text-[#8f877e]">
+        <span>{title}</span>
+        <span>{unit}</span>
+      </div>
+      <svg width={W} height={H + 2} className="mt-1 block">
+        {min < 0 && <line x1={0} x2={W} y1={y(0)} y2={y(0)} stroke="rgba(255,255,255,0.25)" strokeDasharray="2 2" />}
+        {paths.map((pt, i) => (
+          <path key={i} d={pt.d} fill={rgbCss(pt.color, 0.55)} />
+        ))}
+        <line x1={x(k)} x2={x(k)} y1={0} y2={H} stroke="#f1f5f9" strokeWidth={1.2} />
+      </svg>
+    </div>
+  );
+}
 const TOUR_COUNTRIES = ["FR", "IT", "PL", "DE"];
 type TourTarget = string; // ISO code, or "close" for the panel's close button
 type TourStep = { kind: "wait"; ms: number } | { kind: "move"; to: TourTarget; ms: number } | { kind: "click"; on: TourTarget };
@@ -414,12 +516,12 @@ function powerHtml(title: string, p: Power | undefined): string {
 const power = (mw: number) => (Math.abs(mw) >= 1000 ? gw(mw) : `${Math.round(Math.abs(mw))} MW`);
 
 /** Load, published renewable share and generation mix of one interval. */
-function PowerBlock({ power: p }: { power: Power }) {
+function PowerBlock({ power: p, time = utc }: { power: Power; time?: (iso: string) => string }) {
   const sources = FUEL_ORDER.filter((f) => (p.generation_mw[f] ?? 0) > 0).sort((a, b) => p.generation_mw[b] - p.generation_mw[a]);
   const max = Math.max(1, ...Object.values(p.generation_mw));
   return (
     <>
-      <div className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-[#8f877e]">interval {utc(p.ts)}</div>
+      <div className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-[#8f877e]">interval {time(p.ts)}</div>
       <div className="mt-2 grid grid-cols-2 gap-2">
         <div>
           <div className="text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Load</div>
@@ -498,6 +600,11 @@ export default function EuropeView() {
   const [show, setShow] = useState({ plants: true, flows: true, substations: true, gas: true });
   // 24 h replay: index into the flow series, null = latest complete interval
   const [replay, setReplay] = useState<number | null>(null);
+  // day time-lapse: slot position (fractional) and play state live in refs; frame re-renders
+  const [day, setDay] = useState<DayFile | null>(null);
+  const daySlot = useRef(0);
+  const dayPlaying = useRef(!CAPTURE);
+  const lastFrame = useRef<number | null>(null);
   const [units, setUnits] = useState<{ iso: string; rows: Unit[] } | null>(null);
   // ?europe&country=PL&style=beams opens the focused country in the beams & fields style
   const [plantStyle, setPlantStyle] = useState<"bars" | "beams">(() =>
@@ -518,6 +625,18 @@ export default function EuropeView() {
       getJson<CountriesFile>("/data/eu/countries.json").then(setCountries),
     ]).catch((e) => setError(String(e)));
     getJson<GasFile>("/data/eu/gas.json").then(setGas).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!DAY_PARAM) return;
+    const pick =
+      DAY_PARAM === "latest"
+        ? getJson<{ days: string[] }>("/data/eu/day/index.json").then((i) => i.days[i.days.length - 1])
+        : Promise.resolve(DAY_PARAM);
+    pick
+      .then((d) => getJson<DayFile>(`/data/eu/day/${d}.json`))
+      .then(setDay)
+      .catch((e) => setError(String(e)));
   }, []);
 
   // the snapshot is optional: without it the map still renders, unshaded and still
@@ -714,7 +833,21 @@ export default function EuropeView() {
   const seriesLength = flows?.borders.reduce((n, f) => Math.max(n, f.series?.length ?? 0), 0) ?? 0;
   const replayTs = (k: number) =>
     flows?.series_start ? new Date(Date.parse(flows.series_start) + k * (flows.series_step_s ?? 900) * 1000).toISOString() : "";
+  const dayK = day ? Math.min(day.slots - 1, Math.floor(daySlot.current)) : 0;
+  const slotTs = (k: number) => (day ? new Date(Date.parse(day.start) + k * day.step_s * 1000).toISOString() : "");
   const arcs = useMemo<Arc[]>(() => {
+    if (day) {
+      const out: Arc[] = [];
+      day.borders.forEach((f, n) => {
+        const mw = f.values[dayK];
+        if (mw == null || Math.abs(mw) < IDLE_MW) return;
+        const [from, to] = mw > 0 ? [f.a, f.b] : [f.b, f.a];
+        if (!ANCHOR[from] || !ANCHOR[to]) return;
+        const path = curvedPath(ANCHOR[from], ANCHOR[to], 0.16, 40);
+        out.push({ from, to, mw: Math.abs(mw), ts: slotTs(dayK), path, timestamps: flowDistances(path, false, n * 91_000) });
+      });
+      return out.sort((x, y) => x.mw - y.mw);
+    }
     if (!flows) return [];
     const out: Arc[] = [];
     flows.borders.forEach((f, n) => {
@@ -728,7 +861,7 @@ export default function EuropeView() {
     });
     return out.sort((x, y) => x.mw - y.mw);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [flows, replay]);
+  }, [flows, replay, day, dayK]);
 
   // replay: one 15-min step every 350 ms, back to the latest interval at the end
   useEffect(() => {
@@ -746,15 +879,24 @@ export default function EuropeView() {
     return () => clearInterval(t);
   }, [playing, seriesLength]);
 
-  const prices = stats?.day_ahead_prices ?? {};
+  const prices: Record<string, PriceRow> = day
+    ? Object.fromEntries(
+        Object.entries(day.prices)
+          .filter(([, z]) => z.values[dayK] != null)
+          .map(([zone, z]) => [zone, { country: z.country, ts: slotTs(dayK), eur_mwh: z.values[dayK] as number }]),
+      )
+    : (stats?.day_ahead_prices ?? {});
+  const shareOf = (iso: string) =>
+    day ? day.countries[iso]?.renewable_share[dayK] : stats?.countries[iso]?.renewable_share_of_generation;
+  const timeOf = day ? marketTime : utc;
   const zonesOf = (iso: string) => Object.entries(prices).filter(([, p]) => p.country === iso);
   const countryFill = (iso: string): RGB => {
-    if (shade === "renewable") return shareColor(stats?.countries[iso]?.renewable_share_of_generation);
+    if (shade === "renewable") return shareColor(shareOf(iso));
     const zones = zonesOf(iso);
     return zones.length === 1 ? priceColor(zones[0][1].eur_mwh) : zones.length > 1 ? MULTI_ZONE : NO_DATA;
   };
   const substations = useMemo(() => (grid && (zoom >= 4.8 || selected) ? grid.substations : []), [grid, zoom, selected]);
-  const topFlows = useMemo(() => [...arcs].sort((x, y) => y.mw - x.mw).slice(0, 6), [arcs]);
+  const topFlows = useMemo(() => [...arcs].sort((x, y) => y.mw - x.mw).slice(0, day ? 3 : 6), [arcs, day]);
   const countryLabels = useMemo(
     () => (countries ? countries.countries.filter((c) => zoom >= DETAIL_ZOOM || !SMALL.has(c.iso)) : []),
     [countries, zoom],
@@ -808,13 +950,19 @@ export default function EuropeView() {
   useEffect(() => {
     if (!CAPTURE) return;
     window.__captureGo = () => {
+      if (DAY_PARAM) {
+        daySlot.current = 0;
+        dayPlaying.current = true;
+        return;
+      }
       tour.current.started = performance.now();
       tour.current.stepStart = performance.now();
     };
-    if (mapLoaded && grid && plants && countries && stats && flows && gas && reference && tourUnitsReady) {
+    const data = DAY_PARAM ? day : stats && flows && tourUnitsReady;
+    if (mapLoaded && grid && plants && countries && gas && reference && data) {
       window.__captureReady = true;
     }
-  }, [mapLoaded, grid, plants, countries, stats, flows, gas, reference, tourUnitsReady]);
+  }, [mapLoaded, grid, plants, countries, stats, flows, gas, reference, tourUnitsReady, day]);
 
   /** Screen point to click for a target, or null when it is off-screen or under a panel. */
   const tourPoint = (target: TourTarget): [number, number] | null => {
@@ -879,12 +1027,35 @@ export default function EuropeView() {
     }
   };
 
+  // day time-lapse: the whole day in DAY_SECONDS, then it holds on the last slot
+  const dayRef = useRef<DayFile | null>(null);
+  dayRef.current = day;
+  const selectedRef = useRef<string | null>(null);
+  selectedRef.current = selected;
+  const dayTick = (now: number) => {
+    const d = dayRef.current;
+    const dt = lastFrame.current == null ? 0 : Math.min(100, now - lastFrame.current);
+    lastFrame.current = now;
+    if (!d) return;
+    if (dayPlaying.current) {
+      daySlot.current = Math.min(d.slots - 0.001, daySlot.current + (dt / 1000) * (d.slots / DAY_SECONDS));
+      if (daySlot.current >= d.slots - 0.001) dayPlaying.current = false;
+    }
+    // slow orbit over Europe while no country is focused
+    const map = mapRef.current;
+    if (map && !selectedRef.current && map.loaded()) {
+      const f = daySlot.current / d.slots;
+      map.jumpTo({ bearing: -12 + 24 * f, pitch: 32 });
+    }
+  };
+
   // one clock for the arrows; only the uniforms change per frame
   useEffect(() => {
     let raf = 0;
     const loop = (now: number) => {
       clock.current.tick(now, mapRef.current?.getZoom() ?? 4, 40);
-      if (CAPTURE) tourTick(now);
+      if (CAPTURE && !DAY_PARAM) tourTick(now);
+      dayTick(now);
       setFrame((n) => n + 1);
       raf = requestAnimationFrame(loop);
     };
@@ -906,7 +1077,7 @@ export default function EuropeView() {
             const c = countryFill(d.iso);
             return [...(!selected ? c : d.iso === selected ? lift(c, 0.05) : dim(c, 0.45)), 255];
           },
-          updateTriggers: { getFillColor: [shares, selected, shade, prices] },
+          updateTriggers: { getFillColor: [shares, selected, shade, day, dayK] },
           pickable: true,
           autoHighlight: true,
           highlightColor: [255, 255, 255, 22],
@@ -1183,8 +1354,28 @@ export default function EuropeView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frame, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
-  const eu = stats?.eu ?? null;
-  const focusPower = selected ? stats?.countries[selected] : undefined;
+  // the EU aggregate is hourly: label it with the start of its hour
+  const euHour = day ? Math.floor((dayK * day.step_s) / 3600) * (3600 / day.step_s) : 0;
+  const eu = day ? (dayPower(day.eu, dayK, slotTs(euHour)) ?? null) : (stats?.eu ?? null);
+  const focusPower = selected
+    ? day
+      ? dayPower(day.countries[selected], dayK, slotTs(dayK))
+      : stats?.countries[selected]
+    : undefined;
+  const dayCharts = useMemo(() => {
+    if (!day) return null;
+    const low: Series = [];
+    const high: Series = [];
+    for (let i = 0; i < day.slots; i++) {
+      const v = Object.values(day.prices)
+        .map((z) => z.values[i])
+        .filter((x): x is number => x != null);
+      low.push(v.length ? Math.min(...v) : null);
+      high.push(v.length ? Math.max(...v) : null);
+    }
+    const gen = day.eu?.generation ?? {};
+    return { low, high, solar: gen.solar ?? [], wind: gen.wind ?? [] };
+  }, [day]);
   const focusFlows = selected ? arcs.filter(touches).sort((x, y) => y.mw - x.mw) : [];
   const focusPlants = selected && plants ? Object.entries(plants.by_country[selected] ?? {}).sort((x, y) => y[1][1] - x[1][1]) : [];
   const plantGroups = plants ? plants.groups.filter((g) => g !== "other") : [];
@@ -1203,7 +1394,35 @@ export default function EuropeView() {
 
       <div className="absolute left-4 top-4 z-10 rounded-md bg-[#05070b]/70 px-3 py-2 backdrop-blur-sm">
         <div className="font-serif text-[34px] uppercase leading-none tracking-[0.2em]">Europe</div>
-        <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">Grid, plants & cross-border flows</div>
+        <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">
+          {day ? "24 hours of electricity" : "Grid, plants & cross-border flows"}
+        </div>
+        {day && dayCharts && (
+          <div className="mt-3 w-[220px]">
+            <div className="text-[40px] font-light leading-none tabular-nums tracking-wide">{marketTime(slotTs(dayK))}</div>
+            <DayChart
+              title="EU solar + wind"
+              unit={eu ? `${gw((eu.generation_mw.solar ?? 0) + (eu.generation_mw.wind ?? 0))}` : "GW"}
+              layers={[
+                { values: dayCharts.wind, color: FUEL_COLOR.wind },
+                { values: dayCharts.solar, color: FUEL_COLOR.solar },
+              ]}
+              k={dayK}
+              slots={day.slots}
+            />
+            <DayChart
+              title="Price range, all zones"
+              unit={
+                dayCharts.low[dayK] != null
+                  ? `${Math.round(dayCharts.low[dayK] as number)}–${Math.round(dayCharts.high[dayK] as number)} €/MWh`
+                  : "€/MWh"
+              }
+              band={{ low: dayCharts.low, high: dayCharts.high, color: [214, 140, 96] }}
+              k={dayK}
+              slots={day.slots}
+            />
+          </div>
+        )}
         <div className="mt-3 flex flex-wrap gap-1">
           {(Object.keys(show) as Array<keyof typeof show>).map((k) => (
             <button
@@ -1243,14 +1462,14 @@ export default function EuropeView() {
             </button>
           </div>
           {focusPower ? (
-            <PowerBlock power={focusPower} />
+            <PowerBlock power={focusPower} time={timeOf} />
           ) : (
             <div className="mt-2 text-[11px] text-[#8d94a1]">No load or generation data from Energy-Charts for this country.</div>
           )}
           {focusZones.length > 0 && (
             <>
               <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">
-                Day-ahead price · {utc(focusZones[0][1].ts)}
+                Day-ahead price · {timeOf(focusZones[0][1].ts)}
               </div>
               <div className="mt-1.5 space-y-0.5">
                 {focusZones.map(([zone, pr]) => (
@@ -1363,7 +1582,7 @@ export default function EuropeView() {
         eu && (
           <div className="pointer-events-none absolute right-5 top-16 z-10 w-[230px] rounded-md border border-white/[0.07] bg-black/45 px-4 py-3 backdrop-blur">
             <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">European Union</div>
-            <PowerBlock power={eu} />
+            <PowerBlock power={eu} time={timeOf} />
             <div className="mt-3 text-[10px] text-[#8d94a1]">Click a country for its figures and flows.</div>
           </div>
         )
@@ -1466,7 +1685,33 @@ export default function EuropeView() {
         </div>
       )}
 
-      {seriesLength > 1 && (
+      {day && (
+        <div className="absolute bottom-12 left-1/2 z-10 flex w-[440px] -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
+          <button
+            onClick={() => {
+              if (!dayPlaying.current && daySlot.current >= day.slots - 1) daySlot.current = 0;
+              dayPlaying.current = !dayPlaying.current;
+            }}
+            className="w-14 rounded border border-white/20 px-2 py-0.5 text-[10px] hover:bg-white/10"
+          >
+            {dayPlaying.current ? "Pause" : "▶ Play"}
+          </button>
+          <input
+            type="range"
+            min={0}
+            max={day.slots - 1}
+            value={dayK}
+            onChange={(e) => {
+              dayPlaying.current = false;
+              daySlot.current = Number(e.target.value);
+            }}
+            className="flex-1 accent-sky-300"
+          />
+          <span className="w-[112px] text-right tabular-nums text-[#aab3c0]">{marketTime(slotTs(dayK))}</span>
+        </div>
+      )}
+
+      {seriesLength > 1 && !day && (
         <div className="absolute bottom-12 left-1/2 z-10 flex w-[440px] -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
           <button
             onClick={() => {
