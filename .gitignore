@@ -17,17 +17,9 @@ dist/
 node_modules/
 frontend/dist/
 
-# supabase local dev
-supabase/.temp/
-supabase/.branches/
-
-# data scratch
-*.sqlite
-.open-MaStR/
+# raw downloads for scripts/ (data/eu/ etc.); the app's files live in frontend/public/data/
 data/
 !frontend/public/data/
-!frontend/public/data/*.geojson
-!frontend/public/data/*.json
 
 # editor/os
 .vscode/
@@ -38,10 +30,9 @@ Thumbs.db
 # rendered videos from frontend/scripts/record-video.mjs
 recordings/
 
-# local tooling output: browser profiles/screenshots, run logs, licensed probe imagery
+# local tooling output: browser profiles/screenshots, run logs
 .codex-screenshots/
 *.log
-scripts/planet_chips/
 
-# rail-day animation builds (scripts/build_rail_day.py), regenerated per day
-frontend/public/data/rail_day/
+# Planet probe imagery (licensed, never commit)
+scripts/planet_chips/

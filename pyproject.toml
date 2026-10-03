@@ -1,20 +1,25 @@
 [project]
-name = "gridwatch"
-version = "0.1.0"
-description = "Germany infrastructure, dependency, energy, and geoeconomic intelligence workspace"
+name = "europe-infraatlas"
+version = "0.2.0"
+description = "Europe's power system as an interactive map: grid, plants, cross-border flows, prices"
 requires-python = ">=3.11"
-dependencies = []
-
-[tool.uv.workspace]
-members = ["backend", "ingestion"]
+# the data scripts in scripts/ (fetch + build the files the frontend reads)
+dependencies = [
+    "httpx>=0.27",
+    "python-dotenv>=1.0",
+    "shapely>=2.0",
+    "tzdata>=2024.1",  # time zones on Windows (build_eu_day.py)
+]
 
 [dependency-groups]
 dev = [
-    "pyshp>=2.3",
     "pytest>=8.0",
     "respx>=0.21",
     "ruff>=0.8",
 ]
+
+[tool.uv]
+package = false
 
 [tool.ruff]
 line-length = 100
@@ -30,4 +35,4 @@ ignore = ["ANN401"]
 "scripts/**" = ["ANN", "E501", "B023"]
 
 [tool.pytest.ini_options]
-testpaths = ["backend/tests", "ingestion/tests"]
+testpaths = ["tests"]

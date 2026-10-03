@@ -1,5 +1,5 @@
 {
-  "name": "gridwatch-frontend",
+  "name": "europe-infraatlas",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -7,33 +7,25 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "tile:grid": "node scripts/tile-grid.mjs",
     "record:video": "node scripts/record-video.mjs"
   },
   "dependencies": {
-    "@deck.gl/aggregation-layers": "^9.3.4",
     "@deck.gl/core": "^9.0.33",
-    "@deck.gl/geo-layers": "^9.3.4",
+    "@deck.gl/extensions": "^9.3.4",
     "@deck.gl/layers": "^9.0.33",
     "@deck.gl/mapbox": "^9.0.33",
-    "@deck.gl/mesh-layers": "^9.3.4",
     "maplibre-gl": "^4.7.0",
     "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "react-markdown": "^9.0.1",
-    "recharts": "^2.13.0",
-    "remark-gfm": "^4.0.0"
+    "react-dom": "^18.3.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.0",
     "autoprefixer": "^10.4.0",
-    "geojson-vt": "^4.0.3",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.6.0",
-    "vite": "^5.4.0",
-    "vt-pbf": "^3.1.3"
+    "vite": "^5.4.0"
   }
 }

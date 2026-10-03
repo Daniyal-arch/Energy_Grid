@@ -27,15 +27,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 import time
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import httpx
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
-from app.power_live import newest_complete_index  # noqa: E402
 
 OUT = Path(__file__).resolve().parents[1] / "frontend" / "public" / "data" / "eu"
 BASE = "https://api.energy-charts.info"
@@ -157,6 +153,28 @@ PRICE_ZONES = {
     "SE3": "SE", "SE4": "SE", "SI": "SI", "SK": "SK",
 }  # fmt: skip
 STEP = 900  # 15-min flow series for the 24 h replay
+
+
+def newest_complete_index(columns: list[list[float | None]]) -> int | None:
+    """Index of the newest interval that every series has fully reported.
+
+    Energy-Charts publishes its newest 15-minute interval before every TSO has
+    reported; a missing value shows up as None or as an exact 0 that replaces a
+    non-zero value, and is filled in later. Such intervals are skipped. A zero that
+    follows a zero (an idle link) is a real reading and is kept.
+    """
+    length = max((len(col) for col in columns), default=0)
+    for i in range(length - 1, -1, -1):
+        complete = True
+        for col in columns:
+            value = col[i] if i < len(col) else None
+            previous = col[i - 1] if 0 < i <= len(col) else None
+            if value is None or (value == 0 and previous not in (None, 0)):
+                complete = False
+                break
+        if complete:
+            return i
+    return None
 
 
 def get(client: httpx.Client, path: str, code: str = "", **params: str) -> dict | None:

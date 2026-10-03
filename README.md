@@ -1,52 +1,49 @@
-# Germany InfraAtlas
+# Europe InfraAtlas
 
-Germany InfraAtlas is a source-backed intelligence workspace for understanding how
-energy, infrastructure, trade dependencies, industrial exposure, and geopolitical
-events interact across Germany.
+Europe's power system as one interactive map: the high-voltage grid, power plants,
+gas infrastructure, measured cross-border electricity flows, day-ahead prices and
+the generation mix of each country.
 
-The current frontend is a map-first animated atlas. It layers energy assets,
-transmission infrastructure, planned corridors, substations, gas pipelines,
-gas facilities, ports, airports, DB rail routes, rail operating points, bridges,
-tunnels, federal-state boundaries, strategic industry, and cross-border power flows.
+- **Whole Europe:** 9,162 transmission lines (220 kV and above), 39 HVDC links,
+  6,863 substations, plants of 20 MW and more, cross-border flows on 79 borders,
+  countries shaded by renewable share or day-ahead price.
+- **Country focus:** click a country to tilt into it. Every plant of 1 MW and more
+  appears as a 3D column ("Bars") or as light beams over hexagon fields ("Beams &
+  fields"), next to load, generation, prices, flows, installed capacity, hydro
+  reservoirs and gas infrastructure.
+- **24 hours:** `?day=2026-09-24` plays one real day every 15 minutes: market clock,
+  flows, prices and renewable share changing through the day.
 
-The backend still contains older asset and strategy endpoints, but the active
-frontend direction is infrastructure geography and animated system representation,
-not construction monitoring.
+All figures come from public sources (Energy-Charts / ENTSO-E, powerplantmatching,
+OpenStreetMap via PyPSA-Eur, SciGRID_gas, Eurostat GISCO); see
+[docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
+
+## Run it
+
+```sh
+cd frontend && npm install && npm run dev      # http://localhost:5173
+```
+
+The app is a static site: it reads JSON files from `frontend/public/data/eu/` and
+needs no server. A GitHub Action refreshes the live figures every 30 minutes.
+
+## Rebuild the data
+
+```sh
+uv sync
+uv run python scripts/fetch_eu_energy.py       # raw inputs into data/eu/ (~50 MB, gitignored)
+uv run python scripts/build_eu_grid.py         # grid, plants, gas, countries
+uv run python scripts/fetch_eu_snapshot.py     # current flows, prices, generation
+uv run python scripts/fetch_eu_reference.py    # installed capacity, reservoirs
+uv run python scripts/build_eu_day.py 2026-09-24   # one day for the time-lapse
+```
 
 ## Documentation
 
-- [Product and migration plan](PLAN.md)
+- [Plan](PLAN.md)
 - [Engineering conventions](CLAUDE.md)
-- [Dataset catalog](docs/DATA_SOURCES.md)
-- [Credentials setup](docs/SETUP.md)
+- [Data sources](docs/DATA_SOURCES.md)
+- [Videos](docs/VIDEO.md)
 
-## Quick start
-
-```sh
-cp .env.example .env
-uv sync --all-packages
-supabase db push
-uv run pytest
-```
-
-Run the API and frontend in separate terminals:
-
-```sh
-uv run uvicorn app.main:app --app-dir backend --port 8000
-```
-
-```sh
-cd frontend
-npm install
-npm run dev
-```
-
-Open `http://localhost:5173`. The API is served at `http://localhost:8000`, with
-OpenAPI documentation at `http://localhost:8000/docs`.
-
-## Current boundary
-
-Live/stored observations are currently strongest for electricity and energy assets.
-The strategy catalog exposes researched sources for the broader scope, but candidate
-sources are not treated as ingested facts. New adapters should promote those sources
-into normalized observations with provenance before the analyst uses their values.
+The earlier Germany atlas (backend, ingestion, AI analyst, Germany power and rail
+views) is preserved in the git tag `germany-atlas-final`.

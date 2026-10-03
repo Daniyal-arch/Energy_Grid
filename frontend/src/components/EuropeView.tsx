@@ -9,7 +9,7 @@ import { FlowArrowLayer } from "../lib/flowArrowLayer";
 import { FlowClock, curvedPath, flowDistances } from "../lib/flowLayers";
 import { rgbCss, type RGB } from "../lib/theme";
 
-// Europe's transmission grid, power plants and measured cross-border flows (?europe).
+// Europe's transmission grid, power plants and measured cross-border flows (the app's only view).
 // Static layers: frontend/public/data/eu/{grid,plants,countries}.json from
 // scripts/build_eu_grid.py; flows.json + stats.json from scripts/fetch_eu_snapshot.py.
 // Countries are shaded by the renewable share of generation that Energy-Charts
@@ -325,12 +325,12 @@ const DETAIL_ZOOM = 5; // below: plants >= 50 MW only
 // wind farm still reads as a bar next to a 5 GW plant (100 MW: 31 km, 1 GW: 98 km)
 const COLUMN_M_PER_SQRT_MW = 3100;
 
-// ?europe&capture=16x9: video stage for scripts/record-video.mjs (virtual clock). A drawn
+// ?capture=16x9: video stage for scripts/record-video.mjs (virtual clock). A drawn
 // cursor tours Europe -> France -> Italy -> Poland -> Germany in the beams & fields style.
 // The page is recorded exactly as it looks in the browser; only the cursor is added.
 const CAPTURE = new URLSearchParams(window.location.search).get("capture") === "16x9";
 
-// ?europe&day=YYYY-MM-DD (or day=latest): 24 h time-lapse of one real day, every 15 min,
+// ?day=YYYY-MM-DD (or day=latest): 24 h time-lapse of one real day, every 15 min,
 // from frontend/public/data/eu/day/<date>.json (scripts/build_eu_day.py). The clock shows
 // the market's own time (Europe/Berlin, CET/CEST) of the slot whose values are on screen.
 const DAY_PARAM = new URLSearchParams(window.location.search).get("day");
@@ -606,13 +606,13 @@ export default function EuropeView() {
   const dayPlaying = useRef(!CAPTURE);
   const lastFrame = useRef<number | null>(null);
   const [units, setUnits] = useState<{ iso: string; rows: Unit[] } | null>(null);
-  // ?europe&country=PL&style=beams opens the focused country in the beams & fields style
+  // ?country=PL&style=beams opens the focused country in the beams & fields style
   const [plantStyle, setPlantStyle] = useState<"bars" | "beams">(() =>
     CAPTURE || new URLSearchParams(window.location.search).get("style") === "beams" ? "beams" : "bars",
   );
   const [playing, setPlaying] = useState(false);
   const [zoom, setZoom] = useState(4);
-  // ?europe&country=FR opens with a country focused
+  // ?country=FR opens with a country focused
   const [selected, setSelected] = useState<string | null>(
     () => new URLSearchParams(window.location.search).get("country")?.toUpperCase() ?? null,
   );
@@ -1748,12 +1748,6 @@ export default function EuropeView() {
         </div>
       </div>
       {CAPTURE && tour.current.started != null && <TourCursor tour={tour.current} />}
-      <a
-        href="/"
-        className={`absolute right-5 top-4 z-10 rounded border border-white/10 bg-black/40 px-3 py-1.5 text-xs text-slate-300 hover:bg-white/10`}
-      >
-        ← Atlas
-      </a>
       {(error || !grid) && (
         <div className="absolute inset-0 z-20 flex items-center justify-center text-sm text-slate-400">
           {error ?? "loading European grid…"}

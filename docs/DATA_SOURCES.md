@@ -1,146 +1,49 @@
-# Germany InfraAtlas data sources
+# Data sources
 
-This catalog separates **connected observations** from **researched coverage**.
-`implemented` means code or local map assets already exist in this repository;
-`partial` means only part of the source is represented; `planned` is committed next
-work; `candidate` is a validated source that still needs an adapter.
+Every file the app reads lives in `frontend/public/data/eu/` and is built by a script
+in `scripts/`. Values are passthrough from the source unless a row says otherwise.
 
-The machine-readable version lives in
-[`backend/app/strategic_context.py`](../backend/app/strategic_context.py) and is exposed
-by `GET /strategy/context`.
-
-## Energy and system security
-
-| Status | Source | Access and cadence | Intended use |
-|---|---|---|---|
-| implemented | [MaStR public data download](https://www.marktstammdatenregister.de/MaStR/Datendownload) | Daily XML bulk files | Official electricity/gas assets, units, actors, and registry status. |
-| implemented | [Energy-Charts API](https://www.energy-charts.info/api.html) | Free API; hourly/quarter-hourly | Generation, prices, installed capacity, and cross-border electricity flows. |
-| planned | [ENTSO-E Transparency Platform](https://www.entsoe.eu/data/transparency-platform/) | Token API; hourly/daily | Load, generation, outages, balancing, and transmission confirmation. |
-| partial | [Bundesnetzagentur Netzausbau](https://www.netzausbau.de/) | Project pages, GIS/downloads; event-driven | Transmission corridors, project phase, voltage, and operator. |
-| implemented | [SciGRID gas IGGIELGNC-3](https://github.com/Netizine/SciGRID_gas-IGGIELGNC-3) | GitHub release/archive | Open gas pipelines, storage, LNG terminals, and border points for map context. |
-| candidate | [Bundesnetzagentur gas supply status](https://www.bundesnetzagentur.de/DE/Gasversorgung/aktuelle_gasversorgung/start.html) | Charts and CSV; daily/monthly | Gas flows, storage, consumption, prices, and domestic production. |
-| candidate | [ENTSOG maps and transparency data](https://www.entsog.eu/maps) | Maps, Excel, dashboards | European pipelines, cross-border capacity, storage, and LNG context. |
-| partial | [German hydrogen core network](https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/Wasserstoff/Kernnetz/start.html) | Official annexes and map files | Approved length, conversion share, target year, cost, and caveat text. Exact route geometry is not drawn yet. |
-| planned | [Bundesnetzagentur EV charging register](https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/start.html) | Register downloads/API | Charging build-out and regional grid-demand pressure. |
-
-Existing specialist layers remain useful producers: Google Earth Engine/Sentinel for
-asset lifecycle signals, Bright Sky/DWD for weather masking, SMARD for generation
-history, and EEG-derived deadlines for schedule risk.
-
-## Transport and topology
-
-| Status | Source | Access and cadence | Intended use |
-|---|---|---|---|
-| implemented | [DB InfraGO infrastructure data](https://data.gov.de/suche/daten/infrastrukturdaten-der-db-infrago) | CSV archive; periodic | Rail routes, operating points, level crossings, bridges, and tunnels. |
-| implemented | [Eurostat GISCO transport networks](https://ec.europa.eu/eurostat/en/web/gisco/geodata/transport-networks) | GDB/SHP/GeoPackage | German ports and airports for logistics and dependency mapping. |
-| implemented | [Eurostat GISCO NUTS 2024](https://gisco-services.ec.europa.eu/distribution/v2/nuts/nuts-2024-files.html) | GeoJSON | German federal-state boundaries for atlas framing. |
-| implemented | [OpenStreetMap](https://www.openstreetmap.org/) | Overpass/extracts; continuous | Power, substations, solar footprints, ports, and fallback geometry. |
-
-Future transport work should also evaluate Mobilithek road/freight feeds and official
-waterway/port sources once the rail and port baseline is connected.
-
-## Trade, economy, and dependencies
-
-| Status | Source | Access and cadence | Intended use |
-|---|---|---|---|
-| candidate | [Destatis foreign trade](https://www.destatis.de/DE/Themen/Wirtschaft/Aussenhandel/_inhalt.html) | GENESIS tables; monthly/annual | Imports/exports by partner, commodity, fuel, and goods group. |
-| candidate | [GENESIS-Online](https://genesis.destatis.de/datenbank/online/statistics) | API and downloads | Sea, road, inland-waterway, pipeline, port, and industrial statistics. |
-| candidate | [Eurostat energy dependency](https://www.destatis.de/Europa/DE/Thema/Umwelt-Energie/Energieabhaengigkeit.html) | Eurostat database; annual | Net import dependency by country and energy product. |
-| candidate | [Eurostat material-flow accounts](https://ec.europa.eu/eurostat/en/web/environment/information-data/material-flows-resource-productivity) | Database/bulk; annual | Extraction, imports, exports, and material consumption. |
-| candidate | [Eurostat FIGARO](https://ec.europa.eu/eurostat/en/web/esa-supply-use-input-tables/database) | CSV/Excel; annual | Imported value added and cross-country industry exposure. |
-| candidate | [UBA raw-material footprint](https://www.umweltbundesamt.de/en/indicator-raw-material-footprint) | Excel/PDF; annual | Raw-material equivalents embedded in consumption and investment. |
-| candidate | [DERA raw-material list](https://www.bgr.bund.de/DE/Gemeinsames/Nachrichten/Aktuelles/2023/2023-07-26_dera_veroeffentlicht_rohstoffliste_2023.html) | Report/tables; biennial | Supply concentration and country risk for critical materials. |
-| implemented | [European Industrial Emissions Portal](https://industry.eea.europa.eu/industrial-emissions/dataset) | EEA download/API; annual | Large German energy, metals, minerals, chemicals, paper, and wood sites. |
-
-## Browser infrastructure layers
-
-The first broader-scope frontend dataset build is generated by
-[`scripts/build_infrastructure_layers.py`](../scripts/build_infrastructure_layers.py).
-Raw archives remain in gitignored `data/source_downloads`; normalized frontend assets
-are written to `frontend/public/data`.
-
-Current generated layers:
-
-| File | Records | Frontend use |
-|---|---:|---|
-| `rail_network.geojson` | 1,765 routes | DB rail routes as a logistics/dependency layer. |
-| `rail_structures.geojson` | 1,810 structures | DB rail bridges and tunnels as a detail overlay. |
-| `gas_network.geojson` | 1,876 segments | Gas pipeline model with animated flow trails. |
-| `state_boundaries.geojson` | 16 boundaries | German federal-state atlas frame. |
-| `infrastructure_nodes.geojson` | 33,014 points | Rail nodes/crossings, ports, airports, gas facilities, and strategic industrial sites. |
-| `energy_sites.json` | 51,368 sites | Capacity-filtered, coordinate-backed MaStR electricity units for offline energy map rendering. |
-| `infrastructure_manifest.json` | source metadata | Source names, dates, caveats, counts, and hydrogen network context. |
-
-Rebuild with:
-
-```sh
-.venv\Scripts\python.exe scripts\build_infrastructure_layers.py --fetch-industry
-```
-
-### Europe view (`?europe`)
-
-Static files in `frontend/public/data/eu/`, rendered by `EuropeView.tsx`:
+## Static layers (`scripts/fetch_eu_energy.py` → `scripts/build_eu_grid.py`)
 
 | File | Records | Source |
 |---|---:|---|
 | `grid.json` | 9,162 lines >= 220 kV, 39 HVDC links, 6,863 substations | PyPSA-Eur prebuilt network from OpenStreetMap ([Zenodo 18619025](https://zenodo.org/records/18619025)), ODbL |
-| `plants.json` | 7,838 operating units >= 20 MW | powerplantmatching (PyPSA); one threshold for all countries, because the German input is unit-level MaStR. German wind is listed per turbine, so it falls under the cut at continent scale; the focused-country files include it |
-| `countries.json` | land, coast, borders | Eurostat GISCO countries 1:20M |
-| `plants/<ISO>.json` | 61,872 units >= 1 MW | powerplantmatching, loaded when a country is focused (columns from 10 MW, flat dots below) |
+| `plants.json` | 7,838 operating units >= 20 MW | powerplantmatching (PyPSA). One threshold for all countries, because the German input is unit-level (MaStR); German wind is listed per turbine, so it falls under the cut at continent scale |
+| `plants/<ISO>.json` | 61,872 units >= 1 MW | powerplantmatching, loaded when a country is focused (columns from 10 MW, flat dots below; "Beams & fields" sums units under 200 MW per 24 km hexagon in the browser and labels it so) |
 | `gas.json` | 4,840 pipe segments, 29 LNG, 216 storages | SciGRID_gas IGGIELGN (2021, [Zenodo 4767098](https://zenodo.org/records/4767098)), CC BY 4.0; clipped to the mapped countries; capacities only where the dataset marks them as not estimated. Predates the 2022+ German LNG terminals |
-| `reference.json` | per country | Energy-Charts `/installed_power` (newest year with values) and ENTSO-E A72 hydro reservoir energy (newest week, same week a year earlier); `scripts/fetch_eu_reference.py` |
-| `flows.json` | 79 borders | Energy-Charts `/cbpf` per country (ENTSO-E physical flows), latest complete 15-min value per border, plus 24 h of 15-min values for the replay |
-| `stats.json` | EU + per country | Energy-Charts `/public_power` (country=eu and per country): load, generation by source group, published renewable share of generation; `/price` day-ahead price for 41 bidding zones; shades the countries |
+| `countries.json` | 35 countries: land, coast, borders | Eurostat GISCO countries 1:20M (2024); overseas territories dropped |
 
 ```sh
-uv run python scripts/fetch_eu_energy.py   # ~45 MB into data/eu/ (gitignored)
-uv run python scripts/build_eu_grid.py     # grid, plants, countries
-uv run python scripts/fetch_eu_snapshot.py # flows + stats + prices; sequential, Energy-Charts answers 429 to bursts
-uv run python scripts/fetch_eu_reference.py # installed capacity + reservoirs (ENTSOE_API_KEY)
+uv run python scripts/fetch_eu_energy.py   # ~50 MB into data/eu/ (gitignored)
+uv run python scripts/build_eu_grid.py
 ```
 
-`flows.json` and `stats.json` are refreshed every 30 min by
-`.github/workflows/eu-snapshot.yml` onto the `eu-data` branch; the view reads that copy
-from raw.githubusercontent.com and falls back to the bundled one (newer wins).
+## Live figures (`scripts/fetch_eu_snapshot.py`, `scripts/fetch_eu_reference.py`)
 
-ENTSO-E Transparency (A11, `ENTSOE_API_KEY`) returns the same flows but took more than
-10 minutes for all 164 border directions (`scripts/probe_entsoe_borders.py`).
+| File | Records | Source |
+|---|---:|---|
+| `flows.json` | 79 borders | Energy-Charts `/cbpf` per country (ENTSO-E physical flows): latest complete 15-min value per border, plus 24 h of 15-min values for the replay |
+| `stats.json` | EU + per country | Energy-Charts `/public_power` (country=eu and per country): load, generation by source group, published renewable share of generation; `/price` day-ahead price for 41 bidding zones |
+| `reference.json` | per country | Energy-Charts `/installed_power` (newest year with values) and ENTSO-E A72 hydro reservoir energy (newest week, same week a year earlier) |
 
-## Recommended ingestion order
+`.github/workflows/eu-snapshot.yml` refreshes these every 30 min onto the `eu-data`
+branch; the app reads that copy from raw.githubusercontent.com and falls back to the
+bundled one (newer wins). Reservoirs need the repo secret `ENTSOE_API_KEY`.
 
-1. Gas supply status and hydrogen core network, because they extend the existing
-   energy model with Germany's most important non-electric dependencies.
-2. Destatis foreign trade and DERA risk data, producing country-commodity exposure
-   records rather than isolated charts.
-3. DB InfraGO and GISCO ports, joining dependency records to physical corridors.
-4. ENTSO-E outages and load, enriching the live electricity layer.
-5. FIGARO input-output tables, connecting imported inputs to exposed industries.
+## One day for the time-lapse (`scripts/build_eu_day.py`)
 
-## Adapter contract
+| File | Records | Source |
+|---|---:|---|
+| `day/<YYYY-MM-DD>.json` | 96 slots (15 min) of a local day (Europe/Berlin) | Energy-Charts with start/end: `/price` per zone, `/public_power` per country (and EU, hourly), `/cbpf` per country |
+| `day/index.json` | list of built days | — (`?day=latest` opens the newest) |
 
-Every ingestible source belongs in `ingestion/ingestion/sources/`, implements
-`BaseSource`, and registers with `@register`. Raw payloads should be retained or
-fingerprinted, transformed values must carry source/version timestamps, and derived
-metrics must be stored before the analyst narrates them.
+The time-lapse clock shows the market's own time (CET/CEST) of the slot on screen.
+The "price range, all zones" chart is the lowest and highest zone price per slot.
 
-```python
-@register
-class MySource(BaseSource):
-    meta = SourceMeta(
-        name="mysource",
-        description="...",
-        cadence="daily",
-        requires_credentials=(),
-        phase=2,
-    )
+## Notes
 
-    def fetch(self, ctx: RunContext) -> Iterable[RawRecord]: ...
-    def transform(self, raw: Iterable[RawRecord]) -> Iterable[Loadable]: ...
-    def load(self, records: Iterable[Loadable], db: Client) -> LoadStats: ...
-```
-
-Run adapters with:
-
-```sh
-uv run python -m ingestion.run --source <name> --since YYYY-MM-DD --dry-run
-```
+- Energy-Charts answers 429 to bursts; all scripts ask one request at a time.
+- ENTSO-E Transparency (A11) returns the same flows but took more than 10 minutes for
+  all 164 border directions (`scripts/probe_entsoe_borders.py`).
+- Energy-Charts has no load/generation data for GB, UA and XK, and no prices for IE,
+  MK, BA, AL, XK, UA, MD.

@@ -1,20 +1,16 @@
-// Records the power-view video stage (?capture=4x5 | 9x16) as an H.264 MP4 for
-// LinkedIn and similar feeds.
+// Records the Europe view as an H.264 MP4 for LinkedIn and similar feeds, exactly as
+// it looks in the browser (see docs/VIDEO.md).
 //
-//   npm run record:video                         # 4:5, 20 s, 30 fps
-//   npm run record:video -- --format 9x16 --seconds 15
-//   npm run record:video -- --poster-only          # just the still, for a quick check
-//   npm run record:video -- --format 16x9 --scale 1.25 --seconds 30 --name europe-tour \
-//       --url "http://localhost:5173/?europe"      # Europe tour: France, Italy, Poland, Germany
-//   ... --viewport 1525x740 --scale 1.25           # page exactly as in a browser window, letterboxed
+//   npm run record:video -- --format 16x9 --viewport 1525x740 --scale 1.25 //       --seconds 38 --name europe-tour             # country tour (?capture=16x9)
+//   npm run record:video -- --format 16x9 --viewport 1525x740 --scale 1.25 //       --seconds 40 --name europe-day --url "http://localhost:5173/?day=2026-09-24"
+//   npm run record:video -- --poster-only           # just the still, for a quick check
 //
-// Needs the dev server (npm run dev) and the API running. Headless Chrome (or
-// Edge; override with CHROME_PATH) renders the page on a VIRTUAL clock: every
-// frame advances time by exactly 1/fps and is screenshotted, so the video is
-// perfectly smooth no matter how slowly the GPU renders. Frames are encoded
-// inside the browser with WebCodecs and written with a small built-in MP4 muxer,
-// so no ffmpeg install is needed. A poster PNG (for the LinkedIn thumbnail) is
-// saved next to the video.
+// Needs the dev server (npm run dev). Headless Chrome (or Edge; override with
+// CHROME_PATH) renders the page on a VIRTUAL clock: every frame advances time by
+// exactly 1/fps and is screenshotted, so the video is perfectly smooth no matter how
+// slowly the GPU renders. Frames are encoded inside the browser with WebCodecs and
+// written with a small built-in MP4 muxer, so no ffmpeg install is needed. A poster
+// PNG is saved next to the video.
 
 import { spawn } from "node:child_process";
 import fs from "node:fs";

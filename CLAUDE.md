@@ -1,64 +1,56 @@
-# Germany InfraAtlas - project conventions
+# Europe InfraAtlas - project conventions
 
-Source-backed intelligence for German infrastructure, energy security, external
-dependencies, economic resilience, transition delivery, and geopolitical exposure.
-The existing energy asset and remote-sensing code is a lifecycle signal layer within
-that broader system. **Read [PLAN.md](PLAN.md) first**; it defines scope and migration
-order. Package names and database tables may retain legacy names until compatibility
-migrations are ready.
+An interactive, source-backed map of Europe's power system (grid, plants, gas,
+cross-border flows, prices, generation mix). **Read [PLAN.md](PLAN.md) first.**
+The earlier Germany atlas (backend, ingestion, agent) is archived in the git tag
+`germany-atlas-final`; do not reintroduce it.
 
 ## Layout
 
-- `backend/` — FastAPI app. Domain models in `backend/app/models/domain.py` are the **shared** Pydantic models.
-- `ingestion/` — data-source adapters + CLI runner. Depends on `backend` via uv workspace; may import `app.models`, `app.config`, `app.db` only (never `app.routers`).
-- `frontend/` — React + Vite + TS + MapLibre GL + Tailwind.
-- `supabase/migrations/` — plain SQL, applied with `supabase db push` (or `supabase migration up`).
-- `scripts/` — probe scripts for uncertain external APIs.
-- `docs/` — DATA_SOURCES.md (adapter status tracker), SETUP.md (credentials walkthrough), VIDEO.md (power-grid video recording + rules for text in published videos), ADRs.
+- `frontend/` — React + Vite + TS + MapLibre GL + deck.gl + Tailwind. One view:
+  `src/components/EuropeView.tsx`. Custom GPU layers in `src/lib/` (`flowArrowLayer.ts`
+  chevron flows, `flowLayers.ts` path geometry and the flow clock).
+- `frontend/public/data/eu/` — static JSON the app reads (built by `scripts/`).
+- `scripts/` — data fetch/build scripts and probes (Python).
+- `frontend/scripts/record-video.mjs` — video recorder (virtual clock, see docs/VIDEO.md).
+- `.github/workflows/eu-snapshot.yml` — refreshes live figures onto the `eu-data` branch.
+- `docs/` — DATA_SOURCES.md (every file and its source), VIDEO.md (recording + rules).
 
 ## Commands
 
 ```sh
-uv sync                                          # install everything (workspace root)
-uv run pytest                                    # all tests
+uv sync                                          # Python deps for scripts/
 uv run ruff check . && uv run ruff format .      # lint + format
-uv run python -m ingestion.run --source brightsky --since 2026-06-01   # run one adapter
-uv run uvicorn app.main:app --reload --app-dir backend                 # backend dev server
-cd frontend && npm install && npm run dev        # frontend dev server
-cd frontend && npm run record:video -- --format 4x5   # power-view MP4 (dev server + API running) -> recordings/; see docs/VIDEO.md
+uv run pytest                                    # tests/
+cd frontend && npm install && npm run dev        # app on http://localhost:5173
+cd frontend && npm run build                     # typecheck + production build
+uv run python scripts/fetch_eu_snapshot.py       # refresh flows/prices/generation locally
+uv run python scripts/build_eu_day.py 2026-09-24 # one day for the time-lapse (?day=)
 ```
 
 ## Hard rules
 
-1. **The agent never computes facts.** It retrieves stored observations or curated source-catalog entries and narrates them with citations. Catalog coverage is not a current observation. Derived indicators are computed in pipelines, versioned, and stored with provenance first.
-2. **New data source = one new adapter class + registry decorator.** If adding a source requires touching `ingestion/base.py`, `ingestion/registry.py`, or `ingestion/run.py`, the design is wrong — fix the framework, don't special-case.
-3. **Probe before implementing.** For uncertain external behavior (API quirks, rate limits, file formats), write a small script in `scripts/`, show the user the output, then implement the adapter.
-4. **Stop and ask for credentials.** When a step needs an account, key, or manual download, stop and tell the user exactly what to do (where to register, which key, which env var). Keep `.env.example` documenting every variable.
-5. **Type hints everywhere.** Pydantic models for all data crossing a boundary. `ruff` clean before committing.
-6. **Tests:** at minimum one smoke test per adapter with external calls mocked (use `respx` for httpx).
-7. **Small commits per feature.**
-8. **No over-engineering:** no multi-tenancy, billing, k8s, microservices. One deployable backend, one frontend, one ingestion package.
+1. **Every number shown is sourced.** Values are passthrough from the source or computed
+   in a build script, documented in docs/DATA_SOURCES.md, and labelled in the UI (e.g.
+   "sum over a 24 km hexagon"). Never invent, smooth into new values, or estimate.
+2. **Probe before implementing.** For uncertain external behaviour (API quirks, rate
+   limits, formats), write a small `scripts/probe_*.py`, show the output, then build.
+3. **Stop and ask for credentials.** When a step needs an account or key, tell the user
+   where to register and which env var to set; keep `.env.example` documenting each.
+4. **Explain large downloads first** and show progress.
+5. **Type hints everywhere;** `ruff` clean and `npm run build` passing before committing.
+6. **Small commits per feature;** never commit videos or images (`recordings/` is ignored).
+7. **No over-engineering:** static site, scripts, one workflow. No backend unless a
+   feature truly needs one.
 
-## Stack notes
+## Data notes (this environment)
 
-- Python 3.11+, **uv workspace** (root `pyproject.toml` lists members `backend`, `ingestion`).
-- DB access via `supabase-py` (service-role key in pipelines/backend; anon key only in frontend). Geometry written as WKT through PostGIS.
-- Image chips → Supabase Storage bucket `chips`; DB stores URLs only.
-- Timeseries is a narrow table: `(site_id, date, sensor, metric, value)` with upsert on conflict.
-- Agent ([backend/app/agent.py](backend/app/agent.py)): **OpenAI-compatible chat API**, provider configurable via `LLM_PROVIDER` (`deepseek` | `groq` | `gemini`; default DeepSeek `deepseek-chat`). Manual retrieval loop; responses carry a structured `sources` array. `get_strategic_context` covers researched sources while the existing tools cover stored asset and grid observations. Served at `POST /agent/query`.
-- Asset lifecycle states remain `no_activity -> clearing -> earthworks -> construction -> complete` (enum `SiteState` in domain models). They are one signal type, not the platform taxonomy.
-- Dates in DB are ISO date strings; everything UTC.
-
-## Data sources
-
-Implementation order and status are tracked in [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
-The machine-readable catalog is `backend/app/strategic_context.py`; keep the two in
-sync. Priority expansion sources are BNetzA gas, the hydrogen core network, Destatis
-trade, DB InfraGO, Eurostat material/industry tables, UBA, and DERA.
-
-### Gotchas (this environment)
-
-- **uv** is installed user-level and not on PATH. In PowerShell prepend `$env:Path = "$env:APPDATA\Python\Python313\Scripts;$env:Path"`. Use `uv sync --all-packages` (plain `uv sync` only does the root group).
-- **MaStR data:** the official `marktstammdatenregister.de` bulk server is throttled to ~6 KB/s (server-side). Use the open-mastr **Zenodo snapshot** instead ([scripts/download_mastr.py](scripts/download_mastr.py) → `data/`, gitignored). The adapter reads that zip directly; `mastr_zip_path` setting points at it. Columns are German + capacity is in **kW**; verified in `scripts/probe_mastr_*.py`.
-- **Supabase migrations:** this network is IPv4-only and the direct DB host (`db.<ref>.supabase.co`) is IPv6-only. Push via the **session pooler**: `npx supabase db push --db-url "postgresql://postgres.<ref>:<pw>@aws-0-eu-west-1.pooler.supabase.com:5432/postgres"`. App/adapters use the REST API (works fine over IPv4).
-- **PostgREST caps reads at 1000 rows** — paginate with `.range()`. A `select s.*` **view does not auto-pick-up new table columns** — recreate the view (drop + create) after adding columns.
+- **uv** is installed user-level and not on PATH. In PowerShell prepend
+  `$env:Path = "$env:APPDATA\Python\Python313\Scripts;$env:Path"`.
+- **Energy-Charts** answers HTTP 429 to bursts: one request at a time, ~3 s apart,
+  honour Retry-After. Its newest 15-min interval is often partial; use the newest
+  complete one (`newest_complete_index` in `scripts/fetch_eu_snapshot.py`).
+- **ENTSO-E** (`ENTSOE_API_KEY`) is slow for many requests; used only for reservoirs.
+- **powerplantmatching** lists German units individually (MaStR): German wind is per
+  turbine and sums ~12 % above the official capacity; the panel shows both.
+- **Windows** needs the `tzdata` package for `zoneinfo` (already a dependency).
