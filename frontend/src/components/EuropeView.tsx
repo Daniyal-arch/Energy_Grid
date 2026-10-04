@@ -342,16 +342,30 @@ const angularDistance = (a: [number, number], b: [number, number]) => {
 };
 /** Globe for the overview; flat (mercator) for tilted 3D views (towers, plant columns),
  *  which deck.gl's globe mode cannot draw. */
-function setMapProjection(map: maplibregl.Map, flat: boolean): void {
-  const want = flat ? "mercator" : "globe";
+function setMapProjection(map: maplibregl.Map, wantFlat: () => boolean): void {
   const apply = () => {
+    // decided when applied, not when asked: a deferred switch must not undo a newer one
+    const flat = wantFlat();
     try {
-      if (map.getProjection()?.type !== want) map.setProjection({ type: want });
-      map.fire("deckviewsync");
-      return true;
+      if (map.getProjection()?.type !== (flat ? "mercator" : "globe")) map.setProjection({ type: flat ? "mercator" : "globe" });
     } catch {
       return false; // style not ready yet
     }
+    // deck.gl's globe draws neither tilt nor rotation: lock both on the globe
+    if (flat) {
+      map.setMaxPitch(70);
+      map.dragRotate.enable();
+      map.touchZoomRotate.enableRotation();
+      map.keyboard.enableRotation();
+    } else {
+      map.setMaxPitch(0);
+      map.setBearing(0);
+      map.dragRotate.disable();
+      map.touchZoomRotate.disableRotation();
+      map.keyboard.disableRotation();
+    }
+    map.fire("deckviewsync");
+    return true;
   };
   // the style may still be loading: retry once the map has settled
   if (!apply()) map.once("idle", () => apply());
@@ -840,7 +854,7 @@ export default function EuropeView() {
     const map = mapRef.current;
     if (!day || !map) return;
     const frame = () => {
-      setMapProjection(map, true);
+      setMapProjection(map, wantFlat);
       dayFrame(map);
     };
     if (map.loaded()) frame();
@@ -1264,7 +1278,7 @@ export default function EuropeView() {
     const map = mapRef.current;
     if (!map) return;
     if (focus) {
-      setMapProjection(map, true);
+      setMapProjection(map, wantFlat);
       // tilt into the country so the plant columns stand up
       const pad = isNarrow()
         ? { left: 12, right: 12, top: 60, bottom: 150 }
@@ -1275,7 +1289,7 @@ export default function EuropeView() {
     } else if (dayRef.current) {
       dayFrame(map, 1200);
     } else {
-      setMapProjection(map, false);
+      setMapProjection(map, wantFlat);
       map.flyTo({ center: isNarrow() ? [12, 46] : [12, 49], zoom: isNarrow() ? 1.7 : 2.55, pitch: 0, bearing: 0, duration: 1200 });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1396,6 +1410,8 @@ export default function EuropeView() {
   dayRef.current = day;
   const selectedRef = useRef<string | null>(null);
   selectedRef.current = selected;
+  // flat map for the tilted 3D views (24 h towers, a country's plants), globe otherwise
+  const wantFlat = () => !!dayRef.current || !!selectedRef.current;
   const dayTick = (now: number) => {
     const d = dayRef.current;
     const dt = lastFrame.current == null ? 0 : Math.min(100, now - lastFrame.current);
