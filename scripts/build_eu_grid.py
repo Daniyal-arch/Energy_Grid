@@ -8,6 +8,7 @@ Writes frontend/public/data/eu/:
                   plus units and capacity per country and group (units >= 1 MW)
   plants/<ISO>.json  every operating unit >= 1 MW of one country, loaded on focus
   gas.json        gas pipelines, LNG terminals, storages (SciGRID_gas IGGIELGN, 2021)
+  world.json      land of all other countries (GeoJSON, coarse), the globe's base
   countries.json  country polygons (ISO code, name, label point), borders, coast
 
 Sources: PyPSA-Eur prebuilt OSM network (Zenodo 18619025, ODbL),
@@ -36,6 +37,7 @@ OUT = ROOT / "frontend" / "public" / "data" / "eu"
 
 LINE_TOL = 0.002  # degrees, ~150-200 m; 1 px is ~3 km at continent zoom
 LAND_TOL = 0.01
+WORLD_TOL = 0.12  # rest of the world: outline only, seen from far away
 MIN_PLANT_MW = 20.0
 MIN_UNIT_MW = 1.0  # per-country files shown on focus
 YEAR = date.today().year
@@ -362,6 +364,33 @@ def write(name: str, payload: dict) -> None:
     print(f"{name}: {path.stat().st_size / 1e6:.1f} MB")
 
 
+def build_world() -> dict:
+    """Land of every other country, coarse, as the globe's base (no data on it)."""
+    with (SRC / "countries.geojson").open(encoding="utf-8") as f:
+        fc = json.load(f)
+    covered = {GISCO_ID.get(c, c) for c in COUNTRIES}
+    features = []
+    for feat in fc["features"]:
+        if feat["properties"]["CNTR_ID"] in covered:
+            continue
+        geom = shape(feat["geometry"]).simplify(WORLD_TOL)
+        polys = list(geom.geoms) if geom.geom_type == "MultiPolygon" else [geom]
+        rings = [
+            [[[round(x, 2), round(y, 2)] for x, y in p.exterior.coords]]
+            for p in polys
+            if p.area >= 0.3 and len(p.exterior.coords) >= 4
+        ]
+        if rings:
+            features.append(
+                {
+                    "type": "Feature",
+                    "properties": {"name": feat["properties"]["NAME_ENGL"]},
+                    "geometry": {"type": "MultiPolygon", "coordinates": rings},
+                }
+            )
+    return {"type": "FeatureCollection", "features": features}
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     grid = build_grid()
@@ -388,6 +417,8 @@ def main() -> None:
     )
     countries = build_countries()
     write("countries.json", countries)
+    world = build_world()
+    write("world.json", world)
     print(f"  {len(countries['countries'])} countries, {len(countries['borders'])} border lines")
 
 

@@ -1,4 +1,4 @@
-import { AmbientLight, LightingEffect, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
+import { AmbientLight, COORDINATE_SYSTEM, LightingEffect, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
 import { PathStyleExtension, type PathStyleExtensionProps } from "@deck.gl/extensions";
 import { BitmapLayer, ColumnLayer, LineLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
@@ -313,11 +313,64 @@ const EUROPE: [[number, number], [number, number]] = [
   [-11, 35.5],
   [32, 70],
 ];
-const BLANK_STYLE: maplibregl.StyleSpecification = {
+const OCEAN = "#0a111c";
+const GLOBE_STYLE: maplibregl.StyleSpecification = {
   version: 8,
-  sources: {},
-  layers: [{ id: "background", type: "background", paint: { "background-color": SEA } }],
+  projection: { type: "globe" },
+  sky: {
+    "sky-color": "#08101d",
+    "horizon-color": "#163052",
+    "fog-color": "#05070b",
+    "sky-horizon-blend": 0.6,
+    "horizon-fog-blend": 0.6,
+    "fog-ground-blend": 0.5,
+    "atmosphere-blend": ["interpolate", ["linear"], ["zoom"], 0, 0.7, 4, 0.45, 7, 0],
+  },
+  sources: {
+    world: { type: "geojson", data: "/data/eu/world.json" },
+  },
+  layers: [
+    { id: "background", type: "background", paint: { "background-color": OCEAN } },
+    { id: "world-land", type: "fill", source: "world", paint: { "fill-color": "#161a22" } },
+    { id: "world-coast", type: "line", source: "world", paint: { "line-color": "rgba(150,162,182,0.22)", "line-width": 0.6 } },
+  ],
 };
+// Europe faces the camera from here; beyond this angle its layers are on the far side
+const EUROPE_CENTRE: [number, number] = [12, 50];
+const FAR_SIDE_DEG = 78;
+const angularDistance = (a: [number, number], b: [number, number]) => {
+  const r = Math.PI / 180;
+  const c =
+    Math.sin(a[1] * r) * Math.sin(b[1] * r) + Math.cos(a[1] * r) * Math.cos(b[1] * r) * Math.cos((a[0] - b[0]) * r);
+  return Math.acos(Math.max(-1, Math.min(1, c))) / r;
+};
+/** Globe for the overview; flat (mercator) for tilted 3D views (towers, plant columns),
+ *  which deck.gl's globe mode cannot draw. */
+function setMapProjection(map: maplibregl.Map, flat: boolean): void {
+  const want = flat ? "mercator" : "globe";
+  const apply = () => {
+    try {
+      if (map.getProjection()?.type !== want) map.setProjection({ type: want });
+      return true;
+    } catch {
+      return false; // style not ready yet
+    }
+  };
+  // the style may still be loading: retry once the map has settled
+  if (!apply()) map.once("idle", () => apply());
+}
+const dayFrame = (map: maplibregl.Map, duration = 0) =>
+  map.fitBounds(
+    [
+      isNarrow() ? [-10, 41] : [-9, 36],
+      isNarrow() ? [27, 60] : [27, 63],
+    ],
+    {
+      padding: isNarrow() ? { left: 4, right: 4, top: 90, bottom: 140 } : { left: 300, right: 300, top: 40, bottom: 110 },
+      pitch: isNarrow() ? 52 : 55,
+      duration,
+    },
+  );
 const IDLE_MW = 20;
 const LABEL_MW = 1000; // arcs from this size carry a GW label
 const DETAIL_ZOOM = 5; // below: plants >= 50 MW only
@@ -417,7 +470,7 @@ function captionText(h: Highlight, name: (iso?: string) => string): { title: str
       return { title: h.kind, text: "", color: [200, 200, 200] };
   }
 }
-const NIGHT_BOUNDS: [number, number, number, number] = [-35, 27, 65, 75];
+const NIGHT_BOUNDS: [number, number, number, number] = [-180, -85, 180, 85]; // whole world (globe)
 
 /**
  * Sun altitude (degrees) at a place and moment: NOAA's solar position approximation
@@ -450,23 +503,19 @@ const centralSun = (when: Date) => {
   return sunAltitude(10, 50, when, decl, eqMin);
 };
 
-/** Night shadow over Europe at a moment, drawn per pixel in Web Mercator rows. */
+/** Night shadow over the world at a moment, one pixel per lng/lat cell (equirectangular). */
 function nightImage(when: Date): HTMLCanvasElement {
   const { decl, eqMin } = sunState(when);
-  const W = 128;
-  const H = 96;
+  const W = 240;
+  const H = 114;
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext("2d")!;
   const img = ctx.createImageData(W, H);
   const [west, south, east, north] = NIGHT_BOUNDS;
-  const merc = (lat: number) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
-  const y0 = merc(north);
-  const y1 = merc(south);
   for (let row = 0; row < H; row++) {
-    const yy = y0 + ((y1 - y0) * (row + 0.5)) / H;
-    const lat = ((2 * Math.atan(Math.exp(yy)) - Math.PI / 2) * 180) / Math.PI;
+    const lat = north + ((south - north) * (row + 0.5)) / H;
     for (let col = 0; col < W; col++) {
       const lon = west + ((east - west) * (col + 0.5)) / W;
       const alt = sunAltitude(lon, lat, when, decl, eqMin);
@@ -826,20 +875,10 @@ export default function EuropeView() {
   useEffect(() => {
     const map = mapRef.current;
     if (!day || !map) return;
-    const frame = () =>
-      map.fitBounds(
-        [
-          isNarrow() ? [-10, 41] : [-9, 36],
-          isNarrow() ? [27, 60] : [27, 63],
-        ],
-        {
-          padding: isNarrow()
-            ? { left: 4, right: 4, top: 90, bottom: 140 }
-            : { left: 300, right: 300, top: 40, bottom: 110 },
-          pitch: isNarrow() ? 52 : 55,
-          duration: 0,
-        },
-      );
+    const frame = () => {
+      setMapProjection(map, true);
+      dayFrame(map);
+    };
     if (map.loaded()) frame();
     else map.once("load", frame);
   }, [day]);
@@ -878,17 +917,18 @@ export default function EuropeView() {
     if (!container.current) return;
     const map = new maplibregl.Map({
       container: container.current,
-      style: BLANK_STYLE,
-      bounds: EUROPE,
-      fitBoundsOptions: { padding: isNarrow() ? { top: 52, bottom: 130, left: 6, right: 6 } : 24 },
+      style: GLOBE_STYLE,
+      // the globe, turned to Europe
+      center: isNarrow() ? [12, 46] : [12, 49],
+      zoom: isNarrow() ? 1.7 : 2.55,
       attributionControl: false,
       renderWorldCopies: false,
       pixelRatio: Math.min(window.devicePixelRatio, isNarrow() ? 1.5 : 2),
     });
     map.on("zoomend", () => setZoom(map.getZoom()));
     const o = new MapboxOverlay({
-      interleaved: false,
-      useDevicePixels: isNarrow() ? 1.5 : true,
+      // drawn inside the map's own WebGL context: needed for the globe
+      interleaved: true,
       layers: [],
       // click a country to focus it; click it again or the sea to go back to Europe
       onClick: ({ object, layer }: PickingInfo) => {
@@ -1221,6 +1261,7 @@ export default function EuropeView() {
     const map = mapRef.current;
     if (!map) return;
     if (focus) {
+      setMapProjection(map, true);
       // tilt into the country so the plant columns stand up
       const pad = isNarrow()
         ? { left: 12, right: 12, top: 60, bottom: 150 }
@@ -1228,10 +1269,13 @@ export default function EuropeView() {
       const cam = map.cameraForBounds(bbox(focus), { padding: pad });
       if (!cam?.center) return;
       map.flyTo({ center: cam.center, zoom: Math.min(6.2, (cam.zoom ?? 5) - 0.1), pitch: 52, bearing: -12, duration: 1400 });
+    } else if (dayRef.current) {
+      dayFrame(map, 1200);
     } else {
-      const cam = map.cameraForBounds(EUROPE, { padding: 24 });
-      map.flyTo({ center: cam?.center ?? [10, 52], zoom: cam?.zoom ?? 3.5, pitch: 0, bearing: 0, duration: 1200 });
+      setMapProjection(map, false);
+      map.flyTo({ center: isNarrow() ? [12, 46] : [12, 49], zoom: isNarrow() ? 1.7 : 2.55, pitch: 0, bearing: 0, duration: 1200 });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focus]);
   const gasDetail = !!selected || zoom >= GAS_DETAIL_ZOOM;
   const gasPipes = useMemo(() => {
@@ -1399,6 +1443,12 @@ export default function EuropeView() {
     // day view: flat lines are hidden where a tower stands in front of them
     const flowDepth = { depthCompare: "less-equal", depthWriteEnabled: false } as const;
     const shares = stats?.countries;
+    const centre = mapRef.current?.getCenter();
+    const facing = !centre || angularDistance([centre.lng, centre.lat], EUROPE_CENTRE) < FAR_SIDE_DEG;
+    if (!facing) {
+      overlay.current?.setProps({ layers: [] });
+      return;
+    }
     overlay.current?.setProps({
       effects: lighting ? [lighting] : [],
       layers: [
@@ -1423,6 +1473,7 @@ export default function EuropeView() {
                 id: "eu-night",
                 image: night,
                 bounds: NIGHT_BOUNDS,
+                _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
                 parameters: noDepth,
               }),
             ]
@@ -2253,7 +2304,10 @@ export default function EuropeView() {
       : "Loading figures…";
 
   return (
-    <div className="relative h-[100dvh] w-screen overflow-hidden text-slate-100" style={{ background: SEA }}>
+    <div
+      className="relative h-[100dvh] w-screen overflow-hidden text-slate-100"
+      style={{ background: "radial-gradient(ellipse at 50% 40%, #0b1220 0%, #05070b 70%)" }}
+    >
       <div ref={container} className="absolute inset-0" />
 
       {!isMobile ? (
