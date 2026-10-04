@@ -762,7 +762,7 @@ export default function EuropeView() {
   const [dayList, setDayList] = useState<string[]>([]);
   // phones: panels live in a bottom sheet, one at a time
   const [isMobile, setIsMobile] = useState(isNarrow);
-  const [sheet, setSheet] = useState<"none" | "info" | "legend" | "sources">("none");
+  const [sheet, setSheet] = useState<"none" | "stats" | "menu">("none");
   useEffect(() => {
     const mq = window.matchMedia(MOBILE_QUERY);
     const onChange = () => setIsMobile(mq.matches);
@@ -834,7 +834,7 @@ export default function EuropeView() {
         ],
         {
           padding: isNarrow()
-            ? { left: 4, right: 4, top: 120, bottom: 60 }
+            ? { left: 4, right: 4, top: 90, bottom: 140 }
             : { left: 300, right: 300, top: 40, bottom: 110 },
           pitch: isNarrow() ? 52 : 55,
           duration: 0,
@@ -880,7 +880,7 @@ export default function EuropeView() {
       container: container.current,
       style: BLANK_STYLE,
       bounds: EUROPE,
-      fitBoundsOptions: { padding: isNarrow() ? { top: 150, bottom: 110, left: 6, right: 6 } : 24 },
+      fitBoundsOptions: { padding: isNarrow() ? { top: 52, bottom: 130, left: 6, right: 6 } : 24 },
       attributionControl: false,
       renderWorldCopies: false,
       pixelRatio: Math.min(window.devicePixelRatio, isNarrow() ? 1.5 : 2),
@@ -892,6 +892,8 @@ export default function EuropeView() {
       layers: [],
       // click a country to focus it; click it again or the sea to go back to Europe
       onClick: ({ object, layer }: PickingInfo) => {
+        // phones: a tap on the map closes any open sheet
+        setSheet("none");
         if (layer?.id === "eu-countries" && object) {
           const iso = (object as Shape).iso;
           setSelected((cur) => (cur === iso ? null : iso));
@@ -1214,7 +1216,6 @@ export default function EuropeView() {
     const qs = params.toString();
     window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname);
     document.title = focus ? `${focus.name} · Europe InfraAtlas` : "Europe InfraAtlas";
-    if (focus) setSheet("info");
   }, [selected, focus]);
   useEffect(() => {
     const map = mapRef.current;
@@ -1222,7 +1223,7 @@ export default function EuropeView() {
     if (focus) {
       // tilt into the country so the plant columns stand up
       const pad = isNarrow()
-        ? { left: 10, right: 10, top: 150, bottom: Math.round(window.innerHeight * 0.48) }
+        ? { left: 12, right: 12, top: 60, bottom: 150 }
         : { left: 280, right: 320, top: 90, bottom: 60 };
       const cam = map.cameraForBounds(bbox(focus), { padding: pad });
       if (!cam?.center) return;
@@ -1785,657 +1786,726 @@ export default function EuropeView() {
   const focusReservoir = selected ? reference?.reservoirs[selected] : undefined;
   const focusLng = selected && gas ? gas.lng.filter((g) => g[1] === selected) : [];
   const focusStorages = selected && gas ? gas.storages.filter((g) => g[1] === selected) : [];
-  // phones: one sheet above the bottom bar (and above the timeline when there is one)
-  const sheetClass = "absolute inset-x-2 z-20 max-h-[46vh] overflow-y-auto rounded-md border border-white/[0.09] bg-[#05070b]/95 px-4 py-3 backdrop-blur";
-  const sheetBottom = day || seriesLength > 1 ? 104 : 52;
-
-  return (
-    <div className="relative h-screen w-screen overflow-hidden text-slate-100" style={{ background: SEA }}>
-      <div ref={container} className="absolute inset-0" />
-
-      <div
-        className={`absolute z-10 rounded-md bg-[#05070b]/75 px-3 py-2 backdrop-blur-sm ${
-          isMobile ? "left-2 right-2 top-2 flex flex-wrap items-center gap-x-2 gap-y-1.5" : "left-4 top-4"
-        }`}
-      >
-        <div className={`font-serif uppercase leading-none tracking-[0.2em] ${isMobile ? "mr-1 text-[20px]" : "text-[34px]"}`}>
-          Europe
-        </div>
-        {!isMobile && (
-          <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">
-            {day ? "24 hours of electricity" : "Grid, plants & cross-border flows"}
-          </div>
-        )}
-        {/* the two views: the live map, and one real day as a time-lapse */}
-        <div className={isMobile ? "contents" : "mt-3 flex flex-wrap items-center gap-2"}>
-          <nav className="inline-flex rounded border border-white/15 p-0.5 text-[11px]">
-            {TABS.map((t) => {
-              const active = t.id === (DAY_PARAM ? "day" : "live");
-              return (
-                <a
-                  key={t.id}
-                  href={t.href}
-                  className={`rounded px-2.5 py-1 ${active ? "bg-white/15 text-slate-100" : "text-slate-400 hover:text-slate-100"}`}
-                >
-                  {t.label}
-                </a>
-              );
-            })}
-          </nav>
-          {countries && (
-            <select
-              value={selected ?? ""}
-              onChange={(e) => setSelected(e.target.value || null)}
-              className="rounded border border-white/15 bg-[#0b0e15] px-1.5 py-1 text-[11px] text-slate-200"
-              aria-label="Country"
-            >
-              <option value="">All of Europe</option>
-              {[...countries.countries]
-                .sort((a, b) => a.name.localeCompare(b.name))
-                .map((c) => (
-                  <option key={c.iso} value={c.iso}>
-                    {c.name}
-                  </option>
-                ))}
-            </select>
-          )}
-        </div>
-        {day && dayList.length > 0 && (
-          <div className={`flex items-center gap-1 text-[11px] ${isMobile ? "" : "mt-2"}`}>
-            {(() => {
-              const i = dayList.indexOf(day.date);
-              const go = (d?: string) => {
-                if (!d) return;
-                const params = new URLSearchParams(window.location.search);
-                params.set("day", d);
-                params.delete("at");
-                window.location.search = params.toString();
-              };
-              return (
-                <>
-                  <button
-                    onClick={() => go(dayList[i - 1])}
-                    disabled={i <= 0}
-                    className="rounded border border-white/15 px-1.5 py-0.5 text-slate-300 disabled:opacity-30"
-                    aria-label="Previous day"
-                  >
-                    ‹
-                  </button>
-                  <select
-                    value={day.date}
-                    onChange={(e) => go(e.target.value)}
-                    className="rounded border border-white/15 bg-[#0b0e15] px-1.5 py-0.5 text-slate-200"
-                    aria-label="Day"
-                  >
-                    {[...dayList].reverse().map((d) => (
-                      <option key={d} value={d}>
-                        {dayLabel(d)}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={() => go(dayList[i + 1])}
-                    disabled={i < 0 || i >= dayList.length - 1}
-                    className="rounded border border-white/15 px-1.5 py-0.5 text-slate-300 disabled:opacity-30"
-                    aria-label="Next day"
-                  >
-                    ›
-                  </button>
-                </>
-              );
-            })()}
-          </div>
-        )}
-        {day && dayCharts && (
-          <div className={isMobile ? "w-full" : "mt-3 w-[240px]"}>
-            <div className="flex items-end justify-between">
-              <div
-                className={`whitespace-nowrap font-light leading-none tabular-nums tracking-wide ${isMobile ? "text-[24px]" : "text-[34px]"}`}
-              >
-                {marketTime(slotTs(dayK))}
-              </div>
-              <svg width={64} height={30} className="mb-1" aria-label="sun height over Central Europe">
-                <line x1={0} x2={64} y1={20} y2={20} stroke="rgba(255,255,255,0.25)" />
-                <path
-                  d={sunArc.map((a, i) => `${i ? "L" : "M"}${((i / (sunArc.length - 1)) * 64).toFixed(1)},${(20 - Math.max(-10, a) * 0.42).toFixed(1)}`).join("")}
-                  fill="none"
-                  stroke="rgba(255,214,72,0.45)"
-                />
-                <circle
-                  cx={(dayK / Math.max(1, sunArc.length - 1)) * 64}
-                  cy={20 - Math.max(-10, sunAlt) * 0.42}
-                  r={3.5}
-                  fill={sunAlt > 0 ? "#ffd648" : "#9aa7bd"}
-                />
-              </svg>
-            </div>
-            {!isMobile && (
-              <>
-            <DayChart
-              title="EU solar + wind"
-              unit={eu ? `${gw((eu.generation_mw.solar ?? 0) + (eu.generation_mw.wind ?? 0))}` : "GW"}
-              layers={[
-                { values: dayCharts.wind, color: FUEL_COLOR.wind },
-                { values: dayCharts.solar, color: FUEL_COLOR.solar },
-              ]}
-              k={dayK}
-              slots={day.slots}
-            />
-            <DayChart
-              title="Price range, all zones"
-              unit={
-                dayCharts.low[dayK] != null
-                  ? `${Math.round(dayCharts.low[dayK] as number)}–${Math.round(dayCharts.high[dayK] as number)} €/MWh`
-                  : "€/MWh"
-              }
-              band={{ low: dayCharts.low, high: dayCharts.high, color: [214, 140, 96] }}
-              k={dayK}
-              slots={day.slots}
-            />
-              </>
-            )}
-          </div>
-        )}
-        <div className={`mt-3 flex flex-wrap gap-1 ${isMobile ? "hidden" : ""}`}>
-          {(Object.keys(show) as Array<keyof typeof show>).map((k) => (
-            <button
-              key={k}
-              onClick={() => setShow({ ...show, [k]: !show[k] })}
-              className={`rounded border px-2 py-0.5 text-[10px] capitalize ${
-                show[k] ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
-              }`}
-            >
-              {k}
-            </button>
-          ))}
-        </div>
-        {topFlows.length > 0 && !isMobile && (
-          <div className="mt-5 w-[210px]">
-            <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">Largest cross-border flows</div>
-            <div className="mt-2 space-y-1">
-              {topFlows.map((f) => (
-                <div key={`${f.from}${f.to}`} className="flex items-center justify-between text-[12px] tabular-nums">
-                  <span className="tracking-[0.08em] text-slate-200">
-                    {f.from} <span className="text-[#8f877e]">→</span> {f.to}
-                  </span>
-                  <span style={{ color: rgbCss(FLOW) }}>{gw(f.mw)}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {isMobile && sheet !== "info" ? null : focus ? (
-        <div
-          className={
-            isMobile
-              ? `${sheetClass}`
-              : "absolute right-5 top-16 z-10 max-h-[calc(100vh-110px)] w-[250px] overflow-y-auto rounded-md border border-white/[0.09] bg-black/60 px-4 py-3 backdrop-blur"
-          }
-          style={isMobile ? { bottom: sheetBottom } : undefined}
-        >
-          <div className="flex items-start justify-between">
-            <div className="font-serif text-[20px] uppercase leading-tight tracking-[0.12em]">{focus.name}</div>
-            <button onClick={() => setSelected(null)} className="text-[11px] text-slate-400 hover:text-slate-100" title="Back to Europe">
-              ✕
-            </button>
-          </div>
-          {isMobile && show.plants && (
-            <div className="mt-2 flex gap-1 text-[11px]">
-              {(["bars", "beams"] as const).map((m) => (
-                <button
-                  key={m}
-                  onClick={() => setPlantStyle(m)}
-                  className={`rounded border px-2 py-0.5 ${
-                    plantStyle === m ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-400"
-                  }`}
-                >
-                  {m === "bars" ? "Bars" : "Beams & fields"}
-                </button>
-              ))}
-            </div>
-          )}
-          {focusPower ? (
-            <PowerBlock power={focusPower} time={timeOf} />
-          ) : (
-            <div className="mt-2 text-[11px] text-[#8d94a1]">No load or generation data from Energy-Charts for this country.</div>
-          )}
-          {focusZones.length > 0 && (
-            <>
-              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">
-                Day-ahead price · {timeOf(focusZones[0][1].ts)}
-              </div>
-              <div className="mt-1.5 space-y-0.5">
-                {focusZones.map(([zone, pr]) => (
-                  <div key={zone} className="flex justify-between text-[11px] tabular-nums text-slate-200">
-                    <span className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-sm" style={{ background: rgbCss(priceColor(pr.eur_mwh)) }} />
-                      {zone}
-                    </span>
-                    <span>{pr.eur_mwh.toFixed(1)} €/MWh</span>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-          {focusFlows.length > 0 && (
-            <>
-              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Cross-border physical flows</div>
-              <div className="mt-1.5 space-y-0.5">
-                {focusFlows.map((f) => {
-                  const out = f.from === selected;
-                  return (
-                    <div key={`${f.from}${f.to}`} className="flex justify-between text-[11px] tabular-nums">
-                      <span className="text-slate-200">
-                        <span style={{ color: out ? rgbCss(FLOW) : "#f0b37e" }}>{out ? "export →" : "import ←"}</span>{" "}
-                        {out ? f.to : f.from}
-                      </span>
-                      <span>{power(f.mw)}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
-          {focusCapacity && (
-            <>
-              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">
-                Installed capacity · {focusCapacity.year}
-              </div>
-              <div className="mt-1.5 space-y-1">
-                {Object.entries(focusCapacity.gw)
-                  .filter(([, v]) => v > 0)
-                  .sort((x, y) => y[1] - x[1])
-                  .map(([g, v], _, all) => (
-                    <div key={g}>
-                      <div className="flex justify-between text-[11px] tabular-nums text-slate-200">
-                        <span>{FUEL_LABEL[g] ?? g}</span>
-                        <span>{v.toFixed(1)} GW</span>
-                      </div>
-                      <div className="mt-0.5 h-[3px] rounded-full bg-white/[0.06]">
-                        <div
-                          className="h-full rounded-full"
-                          style={{ width: `${(v / all[0][1]) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </>
-          )}
-          {focusReservoir && (
-            <>
-              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Hydro reservoirs</div>
-              <div className="mt-1 text-[11px] text-slate-200">
-                <span className="text-[16px] font-light tabular-nums">{focusReservoir.twh.toFixed(1)} TWh</span> stored, week of{" "}
-                {focusReservoir.week}
-              </div>
-              {focusReservoir.year_ago_twh != null && (
-                <div className="text-[10px] text-[#8d94a1]">same week last year: {focusReservoir.year_ago_twh.toFixed(1)} TWh</div>
-              )}
-            </>
-          )}
-          {(focusLng.length > 0 || focusStorages.length > 0) && (
-            <>
-              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Gas infrastructure (2021 dataset)</div>
-              {focusLng.length > 0 && (
-                <div className="mt-1 text-[11px] text-slate-200">
-                  LNG terminals: <span className="text-[#8d94a1]">{focusLng.map((g) => g[0]).join(", ")}</span>
-                </div>
-              )}
-              {focusStorages.length > 0 && (
-                <div className="mt-0.5 text-[11px] text-slate-200">Gas storage sites: {focusStorages.length}</div>
-              )}
-            </>
-          )}
-          {focusPlants.length > 0 && (
-            <>
-              <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Plants on the map (units ≥ 1 MW)</div>
-              <div className="mt-1 text-[10px] text-[#8d94a1]">
-                {plantStyle === "bars"
-                  ? "Columns: units ≥ 10 MW, height ∝ √ installed capacity (not current output)"
-                  : `Beams: plants ≥ ${BEAM_MIN_MW} MW, height ∝ √ installed capacity. Fields: smaller units summed per ${HEX_KM * 2} km hexagon, coloured by the largest fuel.`}
-              </div>
-              <div className="mt-1.5 space-y-0.5">
-                {focusPlants.map(([g, [n, mw]]) => (
-                  <div key={g} className="flex justify-between text-[11px] tabular-nums text-slate-200">
-                    <span className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(FUEL_COLOR[g]) }} />
-                      {PLANT_LABEL[g]}
-                    </span>
-                    <span>
-                      {power(mw)} <span className="text-[#8d94a1]">· {n}</span>
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      ) : (
-        eu && (
-          <div
-            className={
-              isMobile
-                ? sheetClass
-                : "pointer-events-none absolute right-5 top-16 z-10 w-[230px] rounded-md border border-white/[0.07] bg-black/45 px-4 py-3 backdrop-blur"
-            }
-            style={isMobile ? { bottom: sheetBottom } : undefined}
+  // ---------------------------------------------------------------- shared pieces
+  const tabsNav = (
+    <nav className="inline-flex shrink-0 rounded border border-white/15 p-0.5 text-[11px]">
+      {TABS.map((t) => {
+        const active = t.id === (DAY_PARAM ? "day" : "live");
+        return (
+          <a
+            key={t.id}
+            href={t.href}
+            className={`rounded px-2.5 py-1 ${active ? "bg-white/15 text-slate-100" : "text-slate-400 hover:text-slate-100"}`}
           >
-            <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">European Union</div>
-            <PowerBlock power={eu} time={timeOf} />
-            {day && ranking.length > 0 && (
-              <>
-                <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Largest producers now</div>
-                <div className="mt-1.5 space-y-1">
-                  {ranking.map((c) => (
-                    <div key={c.iso} className="flex items-center gap-2 text-[11px] tabular-nums">
-                      <span className="w-6 text-slate-300">{c.iso}</span>
-                      <div className="flex h-[7px] flex-1 overflow-hidden rounded-sm bg-white/[0.05]">
-                        {c.parts.map(([g, v]) => (
-                          <div
-                            key={g}
-                            style={{ width: `${(v / ranking[0].total) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }}
-                          />
-                        ))}
-                      </div>
-                      <span className="w-12 text-right text-slate-200">{gw(c.total)}</span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-            <div className="mt-3 text-[10px] text-[#8d94a1]">Click a country for its figures and flows.</div>
-          </div>
-        )
-      )}
-
-      <div
-        className={
-          isMobile
-            ? `${sheetClass} space-y-3 text-[11px] text-slate-300 ${sheet === "legend" ? "" : "hidden"}`
-            : "pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm"
-        }
-        style={isMobile ? { bottom: sheetBottom } : undefined}
+            {isMobile && t.id === "day" ? "24 h" : isMobile && t.id === "live" ? "Live" : t.label}
+          </a>
+        );
+      })}
+    </nav>
+  );
+  const selectClass = "rounded border border-white/15 bg-[#0b0e15] px-1.5 py-1 text-[11px] text-slate-200";
+  const countrySelect = countries && (
+    <select value={selected ?? ""} onChange={(e) => setSelected(e.target.value || null)} className={selectClass} aria-label="Country">
+      <option value="">All of Europe</option>
+      {[...countries.countries]
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((c) => (
+          <option key={c.iso} value={c.iso}>
+            {c.name}
+          </option>
+        ))}
+    </select>
+  );
+  const dayIndex = day ? dayList.indexOf(day.date) : -1;
+  const goDay = (d?: string) => {
+    if (!d) return;
+    const params = new URLSearchParams(window.location.search);
+    params.set("day", d);
+    params.delete("at");
+    window.location.search = params.toString();
+  };
+  const dayPicker = day && dayList.length > 0 && (
+    <div className="flex items-center gap-1 text-[11px]">
+      <button
+        onClick={() => goDay(dayList[dayIndex - 1])}
+        disabled={dayIndex <= 0}
+        className="rounded border border-white/15 px-2 py-1 text-slate-300 disabled:opacity-30"
+        aria-label="Previous day"
       >
-        {isMobile && (
-          <div>
-            <div className="text-[9px] uppercase tracking-[0.18em] text-[#8d94a1]">Layers</div>
-            <div className="mt-1.5 flex flex-wrap gap-1">
-              {(Object.keys(show) as Array<keyof typeof show>).map((k) => (
-                <button
-                  key={k}
-                  onClick={() => setShow({ ...show, [k]: !show[k] })}
-                  className={`rounded border px-2.5 py-1 text-[11px] capitalize ${
-                    show[k] ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
-                  }`}
-                >
-                  {k}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-        {(stats || day) && (
-          <div>
-            <div className="pointer-events-auto flex gap-1">
-              {(["none", "renewable", "price"] as const).filter((m) => m !== "none" || day).map((m) => (
-                <button
-                  key={m}
-                  onClick={() => setShade(m)}
-                  className={`rounded border px-2 py-0.5 text-[10px] ${
-                    shade === m ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
-                  }`}
-                >
-                  {m === "none" ? "None" : m === "renewable" ? "Renewable share" : "Price"}
-                </button>
-              ))}
-            </div>
-            {shade !== "none" && <div className="mt-1.5 h-2 rounded-sm" style={{ background: gradient }} />}
-            <div className={`mt-0.5 flex justify-between text-[9px] text-[#8d94a1] ${shade === "none" ? "hidden" : ""}`}>
-              {shade === "renewable" ? (
-                <>
-                  <span>0 %</span>
-                  <span>50 %</span>
-                  <span>100 % of generation</span>
-                </>
-              ) : (
-                <>
-                  <span>0</span>
-                  <span>125</span>
-                  <span>≥ 250 €/MWh</span>
-                </>
-              )}
-            </div>
-            {shade === "price" && (
-              <div className="mt-1 flex items-center gap-2 text-[9px] text-[#8d94a1]">
-                <span className="h-2 w-3 rounded-sm" style={{ background: rgbCss(MULTI_ZONE) }} />
-                several price zones (DK, IT, NO, SE): click for each zone
-              </div>
-            )}
-          </div>
-        )}
-        {day && (
-          <div>
-            <div className="mb-1.5 text-[11px] leading-snug text-slate-300">
-              Each tower is one country's power generation at the time on the clock, stacked by source.
-            </div>
-            <div className="text-[9px] uppercase tracking-[0.18em] text-[#8d94a1]">Sources (1 GW = 14 km of height)</div>
-            <div className="mt-1.5 grid grid-cols-3 gap-x-3 gap-y-1">
-              {[...TOWER_ORDER].reverse().map((g) => (
-                <div key={g} className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-sm" style={{ background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }} />
-                  {FUEL_LABEL[g] === "Bioenergy & waste" ? "Bio & waste" : FUEL_LABEL[g] === "Coal & lignite" ? "Coal" : FUEL_LABEL[g]}
-                </div>
-              ))}
-            </div>
-            <div className="mt-2 flex items-center gap-2">
-              <span className="h-2 w-5 rounded-sm" style={{ background: "linear-gradient(90deg, rgba(2,5,18,0.75), transparent)" }} />
-              Night (sun below the horizon)
-            </div>
-          </div>
-        )}
-        <div className={`grid grid-cols-2 gap-x-4 gap-y-1 ${day && !show.plants ? "hidden" : ""}`}>
-          {plantGroups.map((g) => (
-            <div key={g} className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(FUEL_COLOR[g]) }} />
-              {PLANT_LABEL[g]}
-            </div>
-          ))}
-        </div>
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="h-[3px] w-5 rounded" style={{ background: `linear-gradient(90deg, transparent, ${rgbCss(FLOW)})` }} />
-            Cross-border flow
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-[2px] w-5 rounded" style={{ background: rgbCss(VOLTAGE_BANDS[0].color) }} />
-            Transmission line ≥ 220 kV
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-5 border-t border-dashed" style={{ borderColor: rgbCss(HVDC) }} />
-            HVDC link
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-5 border-t border-dashed" style={{ borderColor: rgbCss(GAS_PIPE) }} />
-            Gas pipeline (zoomed in)
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="flex w-5 justify-center">
-              <span className="h-2 w-2 rounded-full border border-white" style={{ background: rgbCss(GAS) }} />
-            </span>
-            LNG terminal
-            <span className="ml-2 h-2 w-2 rounded-full border" style={{ borderColor: rgbCss(GAS) }} />
-            gas storage
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: rgbCss(SUBSTATION) }} />
-            Substation ≥ 220 kV (zoomed in)
-          </div>
-        </div>
-      </div>
-
-      {focus && show.plants && !isMobile && (
-        <div className="absolute left-1/2 top-4 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border border-white/[0.1] bg-[#05070b]/80 px-3 py-1.5 text-[11px] text-slate-300 backdrop-blur">
-          <span className="text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">3D style</span>
-          {(["bars", "beams"] as const).map((m) => (
+        ‹
+      </button>
+      <select value={day.date} onChange={(e) => goDay(e.target.value)} className={selectClass} aria-label="Day">
+        {[...dayList].reverse().map((d) => (
+          <option key={d} value={d}>
+            {dayLabel(d)}
+          </option>
+        ))}
+      </select>
+      <button
+        onClick={() => goDay(dayList[dayIndex + 1])}
+        disabled={dayIndex < 0 || dayIndex >= dayList.length - 1}
+        className="rounded border border-white/15 px-2 py-1 text-slate-300 disabled:opacity-30"
+        aria-label="Next day"
+      >
+        ›
+      </button>
+    </div>
+  );
+  const sunArcSvg = (w: number, h: number) => (
+    <svg width={w} height={h} aria-label="sun height over Central Europe">
+      <line x1={0} x2={w} y1={h * 0.66} y2={h * 0.66} stroke="rgba(255,255,255,0.25)" />
+      <path
+        d={sunArc
+          .map((a, i) => `${i ? "L" : "M"}${((i / (sunArc.length - 1)) * w).toFixed(1)},${(h * 0.66 - Math.max(-10, a) * (h / 72)).toFixed(1)}`)
+          .join("")}
+        fill="none"
+        stroke="rgba(255,214,72,0.45)"
+      />
+      <circle
+        cx={(dayK / Math.max(1, sunArc.length - 1)) * w}
+        cy={h * 0.66 - Math.max(-10, sunAlt) * (h / 72)}
+        r={3.5}
+        fill={sunAlt > 0 ? "#ffd648" : "#9aa7bd"}
+      />
+    </svg>
+  );
+  const layerChips = (
+    <div className="flex flex-wrap gap-1">
+      {(Object.keys(show) as Array<keyof typeof show>).map((k) => (
+        <button
+          key={k}
+          onClick={() => setShow({ ...show, [k]: !show[k] })}
+          className={`rounded border capitalize ${isMobile ? "px-3 py-1.5 text-[12px]" : "px-2 py-0.5 text-[10px]"} ${
+            show[k] ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
+          }`}
+        >
+          {k}
+        </button>
+      ))}
+    </div>
+  );
+  const styleSwitch = show.plants && (
+    <div className="flex items-center gap-1 text-[11px]">
+      {(["bars", "beams"] as const).map((m) => (
+        <button
+          key={m}
+          onClick={() => setPlantStyle(m)}
+          className={`rounded border px-2.5 py-0.5 ${
+            plantStyle === m ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-400 hover:text-slate-200"
+          }`}
+        >
+          {m === "bars" ? "Bars" : "Beams & fields"}
+        </button>
+      ))}
+    </div>
+  );
+  const shadeBlock = (stats || day) && (
+    <div>
+      <div className="pointer-events-auto flex gap-1">
+        {(["none", "renewable", "price"] as const)
+          .filter((m) => m !== "none" || day)
+          .map((m) => (
             <button
               key={m}
-              onClick={() => setPlantStyle(m)}
-              className={`rounded border px-2.5 py-0.5 text-[11px] ${
-                plantStyle === m ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-400 hover:text-slate-200"
+              onClick={() => setShade(m)}
+              className={`rounded border ${isMobile ? "px-3 py-1.5 text-[12px]" : "px-2 py-0.5 text-[10px]"} ${
+                shade === m ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
               }`}
             >
-              {m === "bars" ? "Bars" : "Beams & fields"}
+              {m === "none" ? "None" : m === "renewable" ? "Renewable share" : "Price"}
             </button>
           ))}
-        </div>
-      )}
-
-      {day && captions.length > 0 && !selected && (
-        <div
-          className={`pointer-events-none absolute z-10 flex flex-col items-center gap-2 ${
-            isMobile ? "inset-x-2 bottom-[104px]" : "left-1/2 top-6 -translate-x-1/2"
-          }`}
-        >
-          {captions.map((h) => {
-            const c = captionText(h, countryName);
-            const age = daySlot.current - h.slot;
-            const alpha = Math.min(1, age / 0.6, (CAPTION_SLOTS - age) / 2);
-            return (
-              <div
-                key={h.kind}
-                className={`rounded-lg border border-white/[0.1] bg-[#05070b]/80 text-center backdrop-blur ${
-                  isMobile ? "w-full px-3 py-2" : "min-w-[340px] px-5 py-3"
-                }`}
-                style={{ opacity: alpha, transform: `translateY(${(1 - Math.min(1, age / 0.6)) * -8}px)` }}
-              >
-                <div className="text-[10px] uppercase tracking-[0.28em]" style={{ color: rgbCss(c.color) }}>
-                  {marketTime(slotTs(h.slot))} · {c.title}
-                </div>
-                <div className={`mt-1 font-light text-slate-100 ${isMobile ? "text-[14px]" : "text-[17px]"}`}>{c.text}</div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {day && (
-        <div
-          className={`absolute z-10 flex items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur ${
-            isMobile ? "inset-x-2 bottom-12" : "bottom-12 left-1/2 w-[560px] -translate-x-1/2"
-          }`}
-        >
-          <button
-            onClick={() => {
-              if (!dayPlaying.current && daySlot.current >= day.slots - 1) daySlot.current = 0;
-              dayPlaying.current = !dayPlaying.current;
-            }}
-            className="w-14 rounded border border-white/20 px-2 py-0.5 text-[10px] hover:bg-white/10"
-          >
-            {dayPlaying.current ? "Pause" : "▶ Play"}
-          </button>
-          <div className="relative flex-1">
-            {(day.highlights ?? []).map((h) => (
-              <span
-                key={h.kind}
-                title={captionText(h, countryName).title}
-                className="pointer-events-none absolute -top-2 h-1.5 w-1.5 -translate-x-1/2 rounded-full"
-                style={{ left: `${(h.slot / (day.slots - 1)) * 100}%`, background: rgbCss(captionText(h, countryName).color) }}
-              />
-            ))}
-          <input
-            type="range"
-            min={0}
-            max={day.slots - 1}
-            value={dayK}
-            onChange={(e) => {
-              dayPlaying.current = false;
-              daySlot.current = Number(e.target.value);
-            }}
-            className="w-full accent-sky-300"
-          />
+      </div>
+      {shade !== "none" && (
+        <>
+          <div className="mt-1.5 h-2 rounded-sm" style={{ background: gradient }} />
+          <div className="mt-0.5 flex justify-between text-[9px] text-[#8d94a1]">
+            {shade === "renewable" ? (
+              <>
+                <span>0 %</span>
+                <span>50 %</span>
+                <span>100 % of generation</span>
+              </>
+            ) : (
+              <>
+                <span>0</span>
+                <span>125</span>
+                <span>≥ 250 €/MWh</span>
+              </>
+            )}
           </div>
-          <span className={`text-right tabular-nums text-[#aab3c0] ${isMobile ? "w-[72px]" : "w-[112px]"}`}>
-            {marketTime(slotTs(dayK))}
-          </span>
+        </>
+      )}
+      {shade === "price" && (
+        <div className="mt-1 flex items-center gap-2 text-[9px] text-[#8d94a1]">
+          <span className="h-2 w-3 rounded-sm" style={{ background: rgbCss(MULTI_ZONE) }} />
+          several price zones (DK, IT, NO, SE): open the country for each zone
         </div>
       )}
-
-      {seriesLength > 1 && !day && (
-        <div
-          className={`absolute z-10 flex items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur ${
-            isMobile ? "inset-x-2 bottom-12" : "bottom-12 left-1/2 w-[440px] -translate-x-1/2"
-          }`}
-        >
-          <button
-            onClick={() => {
-              if (!playing && replay == null) setReplay(0);
-              setPlaying(!playing);
-            }}
-            className="w-14 rounded border border-white/20 px-2 py-0.5 text-[10px] hover:bg-white/10"
-          >
-            {playing ? "Pause" : "▶ 24 h"}
-          </button>
-          <input
-            type="range"
-            min={0}
-            max={seriesLength - 1}
-            value={replay ?? seriesLength - 1}
-            onChange={(e) => {
-              setPlaying(false);
-              const k = Number(e.target.value);
-              setReplay(k >= seriesLength - 1 ? null : k);
-            }}
-            className="flex-1 accent-sky-300"
-          />
-          <span className="w-[112px] text-right tabular-nums text-[#aab3c0]">
-            {replay == null ? "latest interval" : `flows ${utc(replayTs(replay))}`}
-          </span>
-        </div>
-      )}
-
-      <div
-        className={
-          isMobile
-            ? `${sheetClass} text-[10px] leading-relaxed text-[#9a938c] ${sheet === "sources" ? "" : "hidden"}`
-            : "pointer-events-none absolute bottom-4 right-5 z-10 text-right text-[9px] leading-relaxed text-[#77706a]"
-        }
-        style={isMobile ? { bottom: sheetBottom } : undefined}
-      >
-        <div>Grid: PyPSA-Eur network from © OpenStreetMap contributors (ODbL) · Plants ≥ 20 MW: powerplantmatching</div>
+    </div>
+  );
+  const keysBlock = (
+    <>
+      {day && (
         <div>
-          Flows, load, generation, renewable share, prices, installed capacity: Energy-Charts (Fraunhofer ISE) from ENTSO-E data ·
-          Reservoirs: ENTSO-E · Gas: SciGRID_gas (2021) · Borders: © EuroGeographics
+          <div className="mb-1.5 text-[11px] leading-snug text-slate-300">
+            Each tower is one country's power generation at the time on the clock, stacked by source.
+          </div>
+          <div className="text-[9px] uppercase tracking-[0.18em] text-[#8d94a1]">Sources (1 GW = 14 km of height)</div>
+          <div className="mt-1.5 grid grid-cols-3 gap-x-3 gap-y-1">
+            {[...TOWER_ORDER].reverse().map((g) => (
+              <div key={g} className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-sm" style={{ background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }} />
+                {FUEL_LABEL[g] === "Bioenergy & waste" ? "Bio & waste" : FUEL_LABEL[g] === "Coal & lignite" ? "Coal" : FUEL_LABEL[g]}
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="h-2 w-5 rounded-sm" style={{ background: "linear-gradient(90deg, rgba(2,5,18,0.75), transparent)" }} />
+            Night (sun below the horizon)
+          </div>
+        </div>
+      )}
+      <div className={`grid grid-cols-2 gap-x-4 gap-y-1 ${day && !show.plants ? "hidden" : ""}`}>
+        {plantGroups.map((g) => (
+          <div key={g} className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(FUEL_COLOR[g]) }} />
+            {PLANT_LABEL[g]}
+          </div>
+        ))}
+      </div>
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
+          <span className="h-[3px] w-5 rounded" style={{ background: `linear-gradient(90deg, transparent, ${rgbCss(FLOW)})` }} />
+          Cross-border flow
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-[2px] w-5 rounded" style={{ background: rgbCss(VOLTAGE_BANDS[0].color) }} />
+          Transmission line ≥ 220 kV
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-5 border-t border-dashed" style={{ borderColor: rgbCss(HVDC) }} />
+          HVDC link
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-5 border-t border-dashed" style={{ borderColor: rgbCss(GAS_PIPE) }} />
+          Gas pipeline (zoomed in)
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="flex w-5 justify-center">
+            <span className="h-2 w-2 rounded-full border border-white" style={{ background: rgbCss(GAS) }} />
+          </span>
+          LNG terminal
+          <span className="ml-2 h-2 w-2 rounded-full border" style={{ borderColor: rgbCss(GAS) }} />
+          gas storage
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full" style={{ background: rgbCss(SUBSTATION) }} />
+          Substation ≥ 220 kV (zoomed in)
         </div>
       </div>
-      {isMobile && (
-        <div className="absolute inset-x-2 bottom-2 z-20 flex gap-1 text-[11px]">
-          {(
-            [
-              ["info", focus ? focus.name : "Europe now"],
-              ["legend", "Legend"],
-              ["sources", "Sources"],
-            ] as const
-          ).map(([id, label]) => (
-            <button
-              key={id}
-              onClick={() => setSheet(sheet === id ? "none" : id)}
-              className={`flex-1 truncate rounded-md border px-2 py-2 backdrop-blur ${
-                sheet === id ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 bg-[#05070b]/80 text-slate-300"
+    </>
+  );
+  const credits = (
+    <>
+      <div>Grid: PyPSA-Eur network from © OpenStreetMap contributors (ODbL) · Plants ≥ 20 MW: powerplantmatching</div>
+      <div>
+        Flows, load, generation, renewable share, prices, installed capacity: Energy-Charts (Fraunhofer ISE) from ENTSO-E data ·
+        Reservoirs: ENTSO-E · Gas: SciGRID_gas (2021) · Borders: © EuroGeographics
+      </div>
+    </>
+  );
+  const euBody = eu && (
+    <>
+      <PowerBlock power={eu} time={timeOf} />
+      {day && ranking.length > 0 && (
+        <>
+          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Largest producers now</div>
+          <div className="mt-1.5 space-y-1">
+            {ranking.map((c) => (
+              <div key={c.iso} className="flex items-center gap-2 text-[11px] tabular-nums">
+                <span className="w-6 text-slate-300">{c.iso}</span>
+                <div className="flex h-[7px] flex-1 overflow-hidden rounded-sm bg-white/[0.05]">
+                  {c.parts.map(([g, v]) => (
+                    <div
+                      key={g}
+                      style={{ width: `${(v / ranking[0].total) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }}
+                    />
+                  ))}
+                </div>
+                <span className="w-12 text-right text-slate-200">{gw(c.total)}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </>
+  );
+  const countryBody = focus && (
+    <>
+      {focusPower ? (
+        <PowerBlock power={focusPower} time={timeOf} />
+      ) : (
+        <div className="mt-2 text-[11px] text-[#8d94a1]">No load or generation data from Energy-Charts for this country.</div>
+      )}
+      {focusZones.length > 0 && (
+        <>
+          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Day-ahead price · {timeOf(focusZones[0][1].ts)}</div>
+          <div className="mt-1.5 space-y-0.5">
+            {focusZones.map(([zone, pr]) => (
+              <div key={zone} className="flex justify-between text-[11px] tabular-nums text-slate-200">
+                <span className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-sm" style={{ background: rgbCss(priceColor(pr.eur_mwh)) }} />
+                  {zone}
+                </span>
+                <span>{pr.eur_mwh.toFixed(1)} €/MWh</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      {focusFlows.length > 0 && (
+        <>
+          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Cross-border physical flows</div>
+          <div className="mt-1.5 space-y-0.5">
+            {focusFlows.map((f) => {
+              const out = f.from === selected;
+              return (
+                <div key={`${f.from}${f.to}`} className="flex justify-between text-[11px] tabular-nums">
+                  <span className="text-slate-200">
+                    <span style={{ color: out ? rgbCss(FLOW) : "#f0b37e" }}>{out ? "export →" : "import ←"}</span> {out ? f.to : f.from}
+                  </span>
+                  <span>{power(f.mw)}</span>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+      {focusCapacity && (
+        <>
+          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Installed capacity · {focusCapacity.year}</div>
+          <div className="mt-1.5 space-y-1">
+            {Object.entries(focusCapacity.gw)
+              .filter(([, v]) => v > 0)
+              .sort((x, y) => y[1] - x[1])
+              .map(([g, v], _, all) => (
+                <div key={g}>
+                  <div className="flex justify-between text-[11px] tabular-nums text-slate-200">
+                    <span>{FUEL_LABEL[g] ?? g}</span>
+                    <span>{v.toFixed(1)} GW</span>
+                  </div>
+                  <div className="mt-0.5 h-[3px] rounded-full bg-white/[0.06]">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${(v / all[0][1]) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }}
+                    />
+                  </div>
+                </div>
+              ))}
+          </div>
+        </>
+      )}
+      {focusReservoir && (
+        <>
+          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Hydro reservoirs</div>
+          <div className="mt-1 text-[11px] text-slate-200">
+            <span className="text-[16px] font-light tabular-nums">{focusReservoir.twh.toFixed(1)} TWh</span> stored, week of{" "}
+            {focusReservoir.week}
+          </div>
+          {focusReservoir.year_ago_twh != null && (
+            <div className="text-[10px] text-[#8d94a1]">same week last year: {focusReservoir.year_ago_twh.toFixed(1)} TWh</div>
+          )}
+        </>
+      )}
+      {(focusLng.length > 0 || focusStorages.length > 0) && (
+        <>
+          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Gas infrastructure (2021 dataset)</div>
+          {focusLng.length > 0 && (
+            <div className="mt-1 text-[11px] text-slate-200">
+              LNG terminals: <span className="text-[#8d94a1]">{focusLng.map((g) => g[0]).join(", ")}</span>
+            </div>
+          )}
+          {focusStorages.length > 0 && <div className="mt-0.5 text-[11px] text-slate-200">Gas storage sites: {focusStorages.length}</div>}
+        </>
+      )}
+      {focusPlants.length > 0 && (
+        <>
+          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Plants on the map (units ≥ 1 MW)</div>
+          <div className="mt-1 text-[10px] text-[#8d94a1]">
+            {plantStyle === "bars"
+              ? "Columns: units ≥ 10 MW, height ∝ √ installed capacity (not current output)"
+              : `Beams: plants ≥ ${BEAM_MIN_MW} MW, height ∝ √ installed capacity. Fields: smaller units summed per ${HEX_KM * 2} km hexagon, coloured by the largest fuel.`}
+          </div>
+          <div className="mt-1.5 space-y-0.5">
+            {focusPlants.map(([g, [n, mw]]) => (
+              <div key={g} className="flex justify-between text-[11px] tabular-nums text-slate-200">
+                <span className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(FUEL_COLOR[g]) }} />
+                  {PLANT_LABEL[g]}
+                </span>
+                <span>
+                  {power(mw)} <span className="text-[#8d94a1]">· {n}</span>
+                </span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </>
+  );
+  const dayTimeline = day && (
+    <>
+      <button
+        onClick={() => {
+          if (!dayPlaying.current && daySlot.current >= day.slots - 1) daySlot.current = 0;
+          dayPlaying.current = !dayPlaying.current;
+        }}
+        className="w-16 shrink-0 rounded border border-white/20 px-2 py-1 text-[11px] hover:bg-white/10"
+      >
+        {dayPlaying.current ? "Pause" : "▶ Play"}
+      </button>
+      <div className="relative flex-1">
+        {(day.highlights ?? []).map((h) => (
+          <span
+            key={h.kind}
+            title={captionText(h, countryName).title}
+            className="pointer-events-none absolute -top-2 h-1.5 w-1.5 -translate-x-1/2 rounded-full"
+            style={{ left: `${(h.slot / (day.slots - 1)) * 100}%`, background: rgbCss(captionText(h, countryName).color) }}
+          />
+        ))}
+        <input
+          type="range"
+          min={0}
+          max={day.slots - 1}
+          value={dayK}
+          onChange={(e) => {
+            dayPlaying.current = false;
+            daySlot.current = Number(e.target.value);
+          }}
+          className="w-full accent-sky-300"
+          aria-label="Time of day"
+        />
+      </div>
+    </>
+  );
+  const replayTimeline = seriesLength > 1 && !day && (
+    <>
+      <button
+        onClick={() => {
+          if (!playing && replay == null) setReplay(0);
+          setPlaying(!playing);
+        }}
+        className="w-16 shrink-0 rounded border border-white/20 px-2 py-1 text-[11px] hover:bg-white/10"
+      >
+        {playing ? "Pause" : "▶ 24 h"}
+      </button>
+      <input
+        type="range"
+        min={0}
+        max={seriesLength - 1}
+        value={replay ?? seriesLength - 1}
+        onChange={(e) => {
+          setPlaying(false);
+          const k = Number(e.target.value);
+          setReplay(k >= seriesLength - 1 ? null : k);
+        }}
+        className="flex-1 accent-sky-300"
+        aria-label="Flows over the last 24 hours"
+      />
+    </>
+  );
+  const captionCards =
+    day &&
+    !selected &&
+    captions.map((h) => {
+      const c = captionText(h, countryName);
+      const age = daySlot.current - h.slot;
+      const alpha = Math.min(1, age / 0.6, (CAPTION_SLOTS - age) / 2);
+      return (
+        <div
+          key={h.kind}
+          className={`rounded-lg border border-white/[0.1] bg-[#05070b]/85 text-center backdrop-blur ${
+            isMobile ? "w-full px-3 py-2" : "min-w-[340px] px-5 py-3"
+          }`}
+          style={{ opacity: alpha, transform: `translateY(${(1 - Math.min(1, age / 0.6)) * -8}px)` }}
+        >
+          <div className="text-[10px] uppercase tracking-[0.28em]" style={{ color: rgbCss(c.color) }}>
+            {marketTime(slotTs(h.slot))} · {c.title}
+          </div>
+          <div className={`mt-1 font-light text-slate-100 ${isMobile ? "text-[14px]" : "text-[17px]"}`}>{c.text}</div>
+        </div>
+      );
+    });
+  const sectionTitle = (t: string) => <div className="text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">{t}</div>;
+
+  // ---------------------------------------------------------------- phone headline (bottom card, collapsed)
+  const headPower = focus ? focusPower : eu;
+  const headline = headPower
+    ? [
+        `Load ${power(headPower.load_mw)}`,
+        headPower.renewable_share_of_generation != null ? `Renewable ${headPower.renewable_share_of_generation.toFixed(0)} %` : null,
+      ]
+        .filter(Boolean)
+        .join(" · ")
+    : focus
+      ? "No load data for this country"
+      : "Loading figures…";
+
+  return (
+    <div className="relative h-[100dvh] w-screen overflow-hidden text-slate-100" style={{ background: SEA }}>
+      <div ref={container} className="absolute inset-0" />
+
+      {!isMobile ? (
+        <>
+          {/* ------------------------------------------------ desktop */}
+          <div className="absolute left-4 top-4 z-10 rounded-md bg-[#05070b]/75 px-3 py-2 backdrop-blur-sm">
+            <div className="font-serif text-[34px] uppercase leading-none tracking-[0.2em]">Europe</div>
+            <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">
+              {day ? "24 hours of electricity" : "Grid, plants & cross-border flows"}
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              {tabsNav}
+              {countrySelect}
+            </div>
+            {dayPicker && <div className="mt-2">{dayPicker}</div>}
+            {day && dayCharts && (
+              <div className="mt-3 w-[240px]">
+                <div className="flex items-end justify-between">
+                  <div className="whitespace-nowrap text-[34px] font-light leading-none tabular-nums tracking-wide">
+                    {marketTime(slotTs(dayK))}
+                  </div>
+                  <div className="mb-1">{sunArcSvg(64, 30)}</div>
+                </div>
+                <DayChart
+                  title="EU solar + wind"
+                  unit={eu ? `${gw((eu.generation_mw.solar ?? 0) + (eu.generation_mw.wind ?? 0))}` : "GW"}
+                  layers={[
+                    { values: dayCharts.wind, color: FUEL_COLOR.wind },
+                    { values: dayCharts.solar, color: FUEL_COLOR.solar },
+                  ]}
+                  k={dayK}
+                  slots={day.slots}
+                />
+                <DayChart
+                  title="Price range, all zones"
+                  unit={
+                    dayCharts.low[dayK] != null
+                      ? `${Math.round(dayCharts.low[dayK] as number)}–${Math.round(dayCharts.high[dayK] as number)} €/MWh`
+                      : "€/MWh"
+                  }
+                  band={{ low: dayCharts.low, high: dayCharts.high, color: [214, 140, 96] }}
+                  k={dayK}
+                  slots={day.slots}
+                />
+              </div>
+            )}
+            <div className="mt-3">{layerChips}</div>
+            {topFlows.length > 0 && (
+              <div className="mt-5 w-[210px]">
+                <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">Largest cross-border flows</div>
+                <div className="mt-2 space-y-1">
+                  {topFlows.map((f) => (
+                    <div key={`${f.from}${f.to}`} className="flex items-center justify-between text-[12px] tabular-nums">
+                      <span className="tracking-[0.08em] text-slate-200">
+                        {f.from} <span className="text-[#8f877e]">→</span> {f.to}
+                      </span>
+                      <span style={{ color: rgbCss(FLOW) }}>{gw(f.mw)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {focus ? (
+            <div className="absolute right-5 top-16 z-10 max-h-[calc(100vh-110px)] w-[250px] overflow-y-auto rounded-md border border-white/[0.09] bg-black/60 px-4 py-3 backdrop-blur">
+              <div className="flex items-start justify-between">
+                <div className="font-serif text-[20px] uppercase leading-tight tracking-[0.12em]">{focus.name}</div>
+                <button onClick={() => setSelected(null)} className="text-[11px] text-slate-400 hover:text-slate-100" title="Back to Europe">
+                  ✕
+                </button>
+              </div>
+              {countryBody}
+            </div>
+          ) : (
+            eu && (
+              <div className="pointer-events-none absolute right-5 top-16 z-10 w-[230px] rounded-md border border-white/[0.07] bg-black/45 px-4 py-3 backdrop-blur">
+                <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">European Union</div>
+                {euBody}
+                <div className="mt-3 text-[10px] text-[#8d94a1]">Click a country for its figures and flows.</div>
+              </div>
+            )
+          )}
+
+          <div className="pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm">
+            {shadeBlock}
+            {keysBlock}
+          </div>
+
+          {focus && styleSwitch && (
+            <div className="absolute left-1/2 top-4 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border border-white/[0.1] bg-[#05070b]/80 px-3 py-1.5 text-[11px] text-slate-300 backdrop-blur">
+              <span className="text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">3D style</span>
+              {styleSwitch}
+            </div>
+          )}
+
+          {captionCards && captionCards.length > 0 && (
+            <div className="pointer-events-none absolute left-1/2 top-6 z-10 flex -translate-x-1/2 flex-col items-center gap-2">{captionCards}</div>
+          )}
+
+          {(dayTimeline || replayTimeline) && (
+            <div
+              className={`absolute bottom-12 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur ${
+                day ? "w-[560px]" : "w-[440px]"
               }`}
             >
-              {label} {sheet === id ? "▾" : "▴"}
+              {dayTimeline || replayTimeline}
+              <span className="w-[112px] text-right tabular-nums text-[#aab3c0]">
+                {day ? marketTime(slotTs(dayK)) : replay == null ? "latest interval" : `flows ${utc(replayTs(replay))}`}
+              </span>
+            </div>
+          )}
+
+          <div className="pointer-events-none absolute bottom-4 right-5 z-10 text-right text-[9px] leading-relaxed text-[#77706a]">{credits}</div>
+        </>
+      ) : (
+        <>
+          {/* ------------------------------------------------ phone: map first */}
+          <div className="absolute inset-x-0 top-0 z-20 flex items-center gap-2 bg-[#05070b]/85 px-3 py-2 backdrop-blur">
+            <div className="font-serif text-[17px] uppercase leading-none tracking-[0.18em]">Europe</div>
+            <div className="flex-1" />
+            {tabsNav}
+            <button
+              onClick={() => setSheet(sheet === "menu" ? "none" : "menu")}
+              className={`rounded border px-2.5 py-1 text-[14px] leading-none ${
+                sheet === "menu" ? "border-white/30 bg-white/15" : "border-white/15"
+              }`}
+              aria-label="Menu"
+            >
+              ☰
             </button>
-          ))}
-        </div>
+          </div>
+
+          {day && (
+            <div className="pointer-events-none absolute left-3 top-[52px] z-10 flex items-center gap-2 rounded-md bg-[#05070b]/70 px-2.5 py-1 backdrop-blur-sm">
+              <span className="text-[20px] font-light tabular-nums">{marketTime(slotTs(dayK))}</span>
+              {sunArcSvg(44, 22)}
+            </div>
+          )}
+
+          {captionCards && captionCards.length > 0 && sheet === "none" && (
+            <div className="pointer-events-none absolute inset-x-3 z-10 flex flex-col gap-2" style={{ bottom: dayTimeline || replayTimeline ? 132 : 84 }}>
+              {captionCards}
+            </div>
+          )}
+
+          {(dayTimeline || replayTimeline) && sheet === "none" && (
+            <div className="absolute inset-x-2 bottom-[76px] z-10 flex items-center gap-3 rounded-lg border border-white/[0.08] bg-[#05070b]/85 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
+              {dayTimeline || replayTimeline}
+              {!day && <span className="text-[10px] text-[#aab3c0]">{replay == null ? "latest" : utc(replayTs(replay))}</span>}
+            </div>
+          )}
+
+          {/* bottom card: one line of headline figures; tap to open the full figures */}
+          {sheet !== "stats" && (
+            <button
+              onClick={() => setSheet(sheet === "menu" ? "none" : "stats")}
+              className="absolute inset-x-2 bottom-2 z-20 flex items-center gap-3 rounded-lg border border-white/[0.12] bg-[#05070b]/90 px-4 py-2.5 text-left backdrop-blur"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-[10px] uppercase tracking-[0.2em] text-[#8f877e]">
+                  {focus ? focus.name : "European Union"}
+                  {headPower ? ` · ${timeOf(headPower.ts)}` : ""}
+                </div>
+                <div className="truncate text-[15px] tabular-nums text-slate-100">{headline}</div>
+              </div>
+              <span className="shrink-0 rounded border border-white/15 px-2 py-1 text-[11px] text-slate-300">Details ▴</span>
+            </button>
+          )}
+
+          {sheet === "stats" && (
+            <div className="absolute inset-x-0 bottom-0 z-30 flex max-h-[72dvh] flex-col rounded-t-2xl border-t border-white/[0.12] bg-[#070a10]/97 backdrop-blur">
+              <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-3">
+                <div className="min-w-0 flex-1">
+                  <div className="truncate font-serif text-[18px] uppercase tracking-[0.12em]">{focus ? focus.name : "European Union"}</div>
+                </div>
+                {focus && (
+                  <button onClick={() => setSelected(null)} className="rounded border border-white/15 px-2 py-1 text-[11px] text-slate-300">
+                    All Europe
+                  </button>
+                )}
+                <button
+                  onClick={() => setSheet("none")}
+                  className="rounded border border-white/15 px-2.5 py-1 text-[13px] text-slate-200"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="overflow-y-auto px-4 pb-6 pt-1 text-slate-200">
+                {focus && styleSwitch && <div className="mt-2">{styleSwitch}</div>}
+                {focus ? countryBody : euBody}
+                {!focus && <div className="mt-4 text-[11px] text-[#8d94a1]">Tap a country on the map for its figures, or pick one in ☰.</div>}
+              </div>
+            </div>
+          )}
+
+          {sheet === "menu" && (
+            <div className="absolute inset-x-0 bottom-0 top-[44px] z-30 flex flex-col bg-[#070a10]/97 backdrop-blur">
+              <div className="flex items-center border-b border-white/[0.06] px-4 py-3">
+                <div className="flex-1 text-[12px] uppercase tracking-[0.2em] text-slate-300">Map options</div>
+                <button
+                  onClick={() => setSheet("none")}
+                  className="rounded border border-white/15 px-2.5 py-1 text-[13px] text-slate-200"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="space-y-5 overflow-y-auto px-4 py-4 text-[12px] text-slate-300">
+                <div className="space-y-1.5">
+                  {sectionTitle("Country")}
+                  <div
+                    onChange={() => setSheet("none")}
+                    className="[&_select]:w-full [&_select]:py-2 [&_select]:text-[13px]"
+                  >
+                    {countrySelect}
+                  </div>
+                </div>
+                {dayPicker && (
+                  <div className="space-y-1.5">
+                    {sectionTitle("Day")}
+                    <div className="[&_select]:flex-1 [&_select]:py-2 [&_select]:text-[13px]">{dayPicker}</div>
+                  </div>
+                )}
+                <div className="space-y-1.5">
+                  {sectionTitle("Layers")}
+                  {layerChips}
+                </div>
+                {shadeBlock && (
+                  <div className="space-y-1.5">
+                    {sectionTitle("Colour countries by")}
+                    {shadeBlock}
+                  </div>
+                )}
+                <div className="space-y-3">
+                  {sectionTitle("Legend")}
+                  {keysBlock}
+                </div>
+                <div className="space-y-1.5 text-[10px] leading-relaxed text-[#9a938c]">
+                  {sectionTitle("Sources")}
+                  {credits}
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
+
       {CAPTURE && tour.current.started != null && <TourCursor tour={tour.current} />}
       {(error || !grid) && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center text-sm text-slate-400">
-          {error ?? "loading European grid…"}
-        </div>
+        <div className="absolute inset-0 z-40 flex items-center justify-center text-sm text-slate-400">{error ?? "loading European grid…"}</div>
       )}
     </div>
   );
