@@ -1,6 +1,11 @@
-import type { PickingInfo } from "@deck.gl/core";
-import { PathStyleExtension, type PathStyleExtensionProps } from "@deck.gl/extensions";
-import { ColumnLayer, LineLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
+import { AmbientLight, LightingEffect, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
+import {
+  CollisionFilterExtension,
+  PathStyleExtension,
+  type CollisionFilterExtensionProps,
+  type PathStyleExtensionProps,
+} from "@deck.gl/extensions";
+import { BitmapLayer, ColumnLayer, LineLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -335,6 +340,8 @@ const CAPTURE = new URLSearchParams(window.location.search).get("capture") === "
 // the market's own time (Europe/Berlin, CET/CEST) of the slot whose values are on screen.
 const DAY_PARAM = new URLSearchParams(window.location.search).get("day");
 const DAY_SECONDS = Number(new URLSearchParams(window.location.search).get("daySeconds")) || 36;
+// ?day=...&at=21:30 opens the day at that local time, paused
+const DAY_AT = new URLSearchParams(window.location.search).get("at");
 type Series = (number | null)[];
 interface DaySeries {
   load: Series;
@@ -350,6 +357,8 @@ interface DayFile {
   countries: Record<string, DaySeries>;
   eu: DaySeries | null;
   borders: { a: string; b: string; values: Series }[];
+  /** key moments, computed by scripts/day_highlights.py */
+  highlights?: Highlight[];
 }
 const MARKET_CLOCK = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Europe/Berlin",
@@ -358,6 +367,140 @@ const MARKET_CLOCK = new Intl.DateTimeFormat("en-GB", {
   timeZoneName: "short",
 });
 const marketTime = (iso: string) => MARKET_CLOCK.format(new Date(iso));
+
+// day view: one tower of generation per country, stacked steady sources first and the
+// weather-driven ones on top, so solar visibly swells at noon and vanishes at night
+const TOWER_ORDER = ["nuclear", "coal", "gas", "oil", "hydro", "bio", "other", "wind", "solar"];
+const TOWER_M_PER_MW = 14; // 1 GW of generation stands 14 km tall
+const TOWER_RADIUS_M = 58_000;
+const TOWER_LABEL_MW = 8000; // towers from this total carry a "DE 61 GW" label
+const PLAIN_LAND: RGB = [34, 37, 46];
+const CAPTION_SLOTS = 10; // a caption stays for 2.5 h of the day (~4 s at 36 s per day)
+
+interface Highlight {
+  slot: number;
+  kind: string;
+  gw?: number;
+  pct?: number;
+  eur?: number;
+  zone?: string;
+  country?: string;
+  from?: string;
+  to?: string;
+}
+
+/** Title and sentence for a key moment; every number is the script's. */
+function captionText(h: Highlight, name: (iso?: string) => string): { title: string; text: string; color: RGB } {
+  switch (h.kind) {
+    case "load_min":
+      return { title: "Night low", text: `Europe uses the least power of the day: ${h.gw} GW.`, color: [154, 167, 189] };
+    case "wind_peak":
+      return { title: "Wind peak", text: `EU wind turbines deliver ${h.gw} GW.`, color: [72, 222, 184] };
+    case "flow_max":
+      return { title: "Biggest flow", text: `${name(h.from)} sends ${h.gw} GW to ${name(h.to)}.`, color: [120, 222, 255] };
+    case "price_low":
+      return {
+        title: (h.eur ?? 0) < 0 ? "Negative price" : "Cheapest power",
+        text: `${h.zone === h.country ? name(h.country) : h.zone} pays ${h.eur} €/MWh.`,
+        color: [22, 170, 160],
+      };
+    case "solar_peak":
+      return { title: "Solar peak", text: `EU solar reaches ${h.gw} GW, ${h.pct} % of all generation.`, color: [255, 214, 72] };
+    case "greenest":
+      return { title: "Greenest grid", text: `${name(h.country)}: ${h.pct} % of its power is renewable.`, color: [72, 222, 184] };
+    case "price_high":
+      return {
+        title: "Most expensive",
+        text: `${h.zone === h.country ? name(h.country) : h.zone} pays ${h.eur} €/MWh.`,
+        color: [240, 110, 80],
+      };
+    case "load_max":
+      return { title: "Demand peak", text: `Europe needs ${h.gw} GW.`, color: [236, 240, 246] };
+    case "gas_peak":
+      return { title: "Gas peak", text: `EU gas plants deliver ${h.gw} GW.`, color: [255, 128, 72] };
+    default:
+      return { title: h.kind, text: "", color: [200, 200, 200] };
+  }
+}
+const NIGHT_BOUNDS: [number, number, number, number] = [-35, 27, 65, 75];
+
+/**
+ * Sun altitude (degrees) at a place and moment: NOAA's solar position approximation
+ * (declination and equation of time from the fractional year).
+ */
+function sunAltitude(lon: number, lat: number, when: Date, decl: number, eqMin: number): number {
+  const minutes = when.getUTCHours() * 60 + when.getUTCMinutes() + when.getUTCSeconds() / 60;
+  const hourAngle = ((minutes + eqMin + 4 * lon) / 4 - 180) * (Math.PI / 180);
+  const phi = (lat * Math.PI) / 180;
+  const sinAlt = Math.sin(phi) * Math.sin(decl) + Math.cos(phi) * Math.cos(decl) * Math.cos(hourAngle);
+  return (Math.asin(Math.max(-1, Math.min(1, sinAlt))) * 180) / Math.PI;
+}
+
+/** Solar declination (rad) and equation of time (min) for a moment (NOAA). */
+function sunState(when: Date): { decl: number; eqMin: number } {
+  const start = Date.UTC(when.getUTCFullYear(), 0, 1);
+  const doy = Math.floor((when.getTime() - start) / 86_400_000);
+  const g = ((2 * Math.PI) / 365) * (doy + (when.getUTCHours() - 12) / 24);
+  const decl =
+    0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) +
+    0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+  const eqMin =
+    229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+  return { decl, eqMin };
+}
+
+/** Sun altitude over Central Europe (10 E, 50 N), the reference for lighting and the sun arc. */
+const centralSun = (when: Date) => {
+  const { decl, eqMin } = sunState(when);
+  return sunAltitude(10, 50, when, decl, eqMin);
+};
+
+/** Night shadow over Europe at a moment, drawn per pixel in Web Mercator rows. */
+function nightImage(when: Date): HTMLCanvasElement {
+  const { decl, eqMin } = sunState(when);
+  const W = 256;
+  const H = 192;
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d")!;
+  const img = ctx.createImageData(W, H);
+  const [west, south, east, north] = NIGHT_BOUNDS;
+  const merc = (lat: number) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
+  const y0 = merc(north);
+  const y1 = merc(south);
+  for (let row = 0; row < H; row++) {
+    const yy = y0 + ((y1 - y0) * (row + 0.5)) / H;
+    const lat = ((2 * Math.atan(Math.exp(yy)) - Math.PI / 2) * 180) / Math.PI;
+    for (let col = 0; col < W; col++) {
+      const lon = west + ((east - west) * (col + 0.5)) / W;
+      const alt = sunAltitude(lon, lat, when, decl, eqMin);
+      // full night below -12 deg (nautical dusk), soft edge through twilight
+      const k = Math.max(0, Math.min(1, (2 - alt) / 14));
+      const i = (row * W + col) * 4;
+      img.data[i] = 2;
+      img.data[i + 1] = 5;
+      img.data[i + 2] = 18;
+      img.data[i + 3] = Math.round(175 * k * k * (3 - 2 * k));
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  return canvas;
+}
+
+interface TowerPiece {
+  iso: string;
+  name: string;
+  group: string;
+  /** stacked height of the pieces below, MW as drawn */
+  base: number;
+  /** real value of this source in the slot on the clock */
+  mw: number;
+  /** value as drawn this frame (glides to the next slot) */
+  drawn: number;
+  /** real total of the country in the slot on the clock */
+  total: number;
+}
 
 /** One slot of a day series in the shape of the snapshot's Power. */
 function dayPower(series: DaySeries | null | undefined, k: number, ts: string): Power | undefined {
@@ -596,13 +739,19 @@ export default function EuropeView() {
   const [reference, setReference] = useState<ReferenceFile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [frame, setFrame] = useState(0);
-  const [shade, setShade] = useState<"renewable" | "price">("renewable");
-  const [show, setShow] = useState({ plants: true, flows: true, substations: true, gas: true });
+  // the day view is its own picture: price on the ground, generation towers, night shadow
+  const [shade, setShade] = useState<"none" | "renewable" | "price">(DAY_PARAM ? "none" : "renewable");
+  const [show, setShow] = useState(
+    DAY_PARAM
+      ? { plants: false, flows: true, substations: false, gas: false }
+      : { plants: true, flows: true, substations: true, gas: true },
+  );
   // 24 h replay: index into the flow series, null = latest complete interval
   const [replay, setReplay] = useState<number | null>(null);
   // day time-lapse: slot position (fractional) and play state live in refs; frame re-renders
   const [day, setDay] = useState<DayFile | null>(null);
   const daySlot = useRef(0);
+  const [nightFrames, setNightFrames] = useState<ImageBitmap[] | null>(null);
   const dayPlaying = useRef(!CAPTURE);
   const lastFrame = useRef<number | null>(null);
   const [units, setUnits] = useState<{ iso: string; rows: Unit[] } | null>(null);
@@ -635,9 +784,45 @@ export default function EuropeView() {
         : Promise.resolve(DAY_PARAM);
     pick
       .then((d) => getJson<DayFile>(`/data/eu/day/${d}.json`))
-      .then(setDay)
+      .then((d) => {
+        if (DAY_AT) {
+          const [h, m] = DAY_AT.split(":").map(Number);
+          daySlot.current = Math.max(0, Math.min(d.slots - 1, Math.floor(((h || 0) * 60 + (m || 0)) / 15)));
+          dayPlaying.current = false;
+        }
+        setDay(d);
+      })
       .catch((e) => setError(String(e)));
   }, []);
+
+  // day view: frame continental Europe tighter so the towers fill the screen
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!day || !map) return;
+    const frame = () =>
+      map.fitBounds(
+        [
+          [-9, 36],
+          [27, 63],
+        ],
+        { padding: { left: 300, right: 300, top: 40, bottom: 110 }, pitch: 55, duration: 0 },
+      );
+    if (map.loaded()) frame();
+    else map.once("load", frame);
+  }, [day]);
+
+  useEffect(() => {
+    if (!day) return;
+    let live = true;
+    Promise.all(
+      Array.from({ length: day.slots }, (_, k) =>
+        createImageBitmap(nightImage(new Date(Date.parse(day.start) + k * day.step_s * 1000))),
+      ),
+    ).then((frames) => live && setNightFrames(frames));
+    return () => {
+      live = false;
+    };
+  }, [day]);
 
   // the snapshot is optional: without it the map still renders, unshaded and still
   useEffect(() => {
@@ -701,6 +886,13 @@ export default function EuropeView() {
           const since = g[4] ? ` · since ${g[4]}` : "";
           return {
             html: `<b>${g[0]}</b><div>${lng ? "LNG terminal" : "Gas storage"}${cap}${since}</div><div style="color:#8d94a1">SciGRID_gas 2021</div>`,
+            style,
+          };
+        }
+        if (layer.id === "eu-towers") {
+          const t = object as TowerPiece;
+          return {
+            html: `<b>${t.name}</b><div>${FUEL_LABEL[t.group] ?? t.group} ${power(t.mw)} of ${power(t.total)} generated</div>`,
             style,
           };
         }
@@ -879,6 +1071,72 @@ export default function EuropeView() {
     return () => clearInterval(t);
   }, [playing, seriesLength]);
 
+  // tower heights glide between the 15-min values (drawing only); tooltips and labels
+  // show the real value of the slot on the clock
+  const dayFrac = day ? Math.max(0, Math.min(1, daySlot.current - dayK)) : 0;
+  const towerNames = useMemo(() => new Map(countries?.countries.map((c) => [c.iso, c.name]) ?? []), [countries]);
+  const towers: TowerPiece[] = [];
+  if (day && countries) {
+    const next = Math.min(day.slots - 1, dayK + 1);
+    for (const [iso, series] of Object.entries(day.countries)) {
+      if (!ANCHOR[iso] || (selected && selected !== iso)) continue;
+      let base = 0;
+      let slotTotal = 0;
+      const pieces: TowerPiece[] = [];
+      for (const g of TOWER_ORDER) {
+        const now = series.generation[g]?.[dayK];
+        const then = series.generation[g]?.[next] ?? now;
+        if (now != null && now > 0) slotTotal += now;
+        if (now == null || then == null) continue;
+        const drawn = now + (then - now) * dayFrac;
+        if (drawn <= 0) continue;
+        pieces.push({ iso, name: towerNames.get(iso) ?? iso, group: g, base, mw: now, drawn, total: 0 });
+        base += drawn;
+      }
+      for (const piece of pieces) piece.total = slotTotal;
+      towers.push(...pieces);
+    }
+  }
+  // a soft light under each tower in the colour of its largest source right now
+  const towerPools = useMemo(() => {
+    const best = new Map<string, TowerPiece>();
+    for (const t of towers) if (!best.has(t.iso) || t.mw > best.get(t.iso)!.mw) best.set(t.iso, t);
+    return [...best.values()].map((t) => ({ iso: t.iso, total: t.total, group: t.group }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [day, dayK, selected, countries]);
+  // the top piece of each tower, where its label sits
+  const ranking = useMemo(() => {
+    if (!day) return [];
+    return Object.entries(day.countries)
+      .map(([iso, c]) => {
+        const parts = TOWER_ORDER.map((g) => [g, c.generation[g]?.[dayK] ?? 0] as [string, number]).filter(([, v]) => v > 0);
+        return { iso, total: parts.reduce((a, [, v]) => a + v, 0), parts };
+      })
+      .filter((x) => x.total > 0)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 8);
+  }, [day, dayK]);
+  const captions = day?.highlights?.filter((h) => daySlot.current >= h.slot && daySlot.current < h.slot + CAPTION_SLOTS) ?? [];
+  const countryName = (iso?: string) => countries?.countries.find((c) => c.iso === iso)?.name ?? iso ?? "";
+  const towerTop = useMemo(() => new Map(towers.map((t) => [t.iso, t.group])), [towers]);
+  const night = nightFrames?.[dayK] ?? null;
+  // real sunlight on the towers: direction from the clock's moment, strength from the sun's
+  // height over Central Europe, so they brighten through the morning and dim after sunset
+  const sunAlt = day ? centralSun(new Date(slotTs(dayK))) : 0;
+  const lighting = useMemo(() => {
+    if (!day) return null;
+    const dayness = Math.max(0, Math.min(1, (sunAlt + 2) / 20));
+    return new LightingEffect({
+      ambient: new AmbientLight({ color: [255, 255, 255], intensity: 0.45 + 0.4 * dayness }),
+      sun: new SunLight({ timestamp: Date.parse(slotTs(dayK)), color: [255, 236, 206], intensity: 2.2 * dayness }),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [day, dayK]);
+  const sunArc = useMemo(
+    () => (day ? Array.from({ length: day.slots }, (_, k) => centralSun(new Date(Date.parse(day.start) + k * day.step_s * 1000))) : []),
+    [day],
+  );
+
   const prices: Record<string, PriceRow> = day
     ? Object.fromEntries(
         Object.entries(day.prices)
@@ -891,6 +1149,10 @@ export default function EuropeView() {
   const timeOf = day ? marketTime : utc;
   const zonesOf = (iso: string) => Object.entries(prices).filter(([, p]) => p.country === iso);
   const countryFill = (iso: string): RGB => {
+    if (shade === "none") {
+      const light = day ? Math.max(0, Math.min(1, (sunAlt + 4) / 24)) : 0;
+      return [PLAIN_LAND[0] - 8 + 14 * light, PLAIN_LAND[1] - 8 + 16 * light, PLAIN_LAND[2] - 8 + 20 * light].map(Math.round) as RGB;
+    }
     if (shade === "renewable") return shareColor(shareOf(iso));
     const zones = zonesOf(iso);
     return zones.length === 1 ? priceColor(zones[0][1].eur_mwh) : zones.length > 1 ? MULTI_ZONE : NO_DATA;
@@ -1043,9 +1305,16 @@ export default function EuropeView() {
     }
     // slow orbit over Europe while no country is focused
     const map = mapRef.current;
+    if (map && map.loaded()) {
+      // sky: near-black at night, deep blue by day (sun height over Central Europe)
+      const when = new Date(Date.parse(d.start) + Math.floor(daySlot.current) * d.step_s * 1000);
+      const light = Math.max(0, Math.min(1, (centralSun(when) + 4) / 24));
+      const sky = [5 + 9 * light, 7 + 17 * light, 11 + 29 * light].map(Math.round);
+      if (map.getLayer("background")) map.setPaintProperty("background", "background-color", `rgb(${sky.join(",")})`);
+    }
     if (map && !selectedRef.current && map.loaded()) {
       const f = daySlot.current / d.slots;
-      map.jumpTo({ bearing: -12 + 24 * f, pitch: 32 });
+      map.jumpTo({ bearing: -14 + 28 * f, pitch: 55 });
     }
   };
 
@@ -1066,8 +1335,11 @@ export default function EuropeView() {
   useEffect(() => {
     const flow = clock.current.uniforms(mapRef.current?.getZoom() ?? 4, 72);
     const noDepth = { depthCompare: "always", depthWriteEnabled: false } as const;
+    // day view: flat lines are hidden where a tower stands in front of them
+    const flowDepth = { depthCompare: "less-equal", depthWriteEnabled: false } as const;
     const shares = stats?.countries;
     overlay.current?.setProps({
+      effects: lighting ? [lighting] : [],
       layers: [
         new SolidPolygonLayer<Shape>({
           id: "eu-countries",
@@ -1081,6 +1353,13 @@ export default function EuropeView() {
           pickable: true,
           autoHighlight: true,
           highlightColor: [255, 255, 255, 22],
+          parameters: noDepth,
+        }),
+        new BitmapLayer({
+          id: "eu-night",
+          visible: !!day && !!night,
+          image: night ?? undefined,
+          bounds: NIGHT_BOUNDS,
           parameters: noDepth,
         }),
         new PathLayer<number[]>({
@@ -1127,7 +1406,8 @@ export default function EuropeView() {
               id: `eu-grid-${b.min}`,
               data: b.paths,
               getPath: (d) => d,
-              getColor: [...b.color, b.alpha],
+              getColor: [...b.color, day ? Math.round(b.alpha * 0.35) : b.alpha],
+              updateTriggers: { getColor: [!!day] },
               getWidth: b.width,
               widthUnits: "pixels",
               parameters: noDepth,
@@ -1291,18 +1571,47 @@ export default function EuropeView() {
           fontWeight: 600,
           parameters: noDepth,
         }),
+        new ScatterplotLayer<{ iso: string; total: number; group: string }>({
+          id: "eu-tower-pools",
+          data: towerPools,
+          getPosition: (t) => ANCHOR[t.iso],
+          getRadius: (t) => 30_000 + Math.sqrt(t.total) * 450,
+          getFillColor: (t) => [...(FUEL_COLOR[t.group] ?? FUEL_COLOR.other), 70],
+          stroked: false,
+          parameters: {
+            depthCompare: "always",
+            depthWriteEnabled: false,
+            blend: true,
+            blendColorSrcFactor: "src-alpha",
+            blendColorDstFactor: "one",
+            blendAlphaSrcFactor: "one",
+            blendAlphaDstFactor: "one-minus-src-alpha",
+          },
+        }),
+        new ColumnLayer<TowerPiece>({
+          id: "eu-towers",
+          data: towers,
+          getPosition: (t) => [...ANCHOR[t.iso], t.base * TOWER_M_PER_MW] as [number, number, number],
+          getElevation: (t) => t.drawn * TOWER_M_PER_MW,
+          getFillColor: (t) => [...(FUEL_COLOR[t.group] ?? FUEL_COLOR.other), 235],
+          radius: TOWER_RADIUS_M,
+          diskResolution: 24,
+          extruded: true,
+          pickable: true,
+          material: { ambient: 0.55, diffuse: 0.6, shininess: 20, specularColor: [50, 50, 50] },
+        }),
         // dark casing so the flow lines read over countries, plants and grid
         new PathLayer<Arc>({
           id: "eu-flow-casing",
           data: show.flows ? arcs : [],
           getPath: (d) => d.path,
-          getColor: (d) => [4, 6, 10, !selected || touches(d) ? 190 : 60],
-          getWidth: (d) => 5 + Math.min(4, d.mw / 700),
-          updateTriggers: { getColor: [selected] },
+          getColor: (d) => [4, 6, 10, !selected || touches(d) ? (day ? 120 : 190) : 60],
+          getWidth: (d) => (day ? 3.5 : 5) + Math.min(4, d.mw / 700),
+          updateTriggers: { getColor: [selected, !!day], getWidth: [!!day] },
           widthUnits: "pixels",
           capRounded: true,
           jointRounded: true,
-          parameters: noDepth,
+          parameters: day ? flowDepth : noDepth,
         }),
         new FlowArrowLayer<Arc>({
           id: "eu-flows",
@@ -1310,10 +1619,10 @@ export default function EuropeView() {
           getPath: (d) => d.path,
           getTimestamps: (d) => d.timestamps,
           // with a country focused, its own flows stay bright and the rest fade
-          getColor: (d) => [...FLOW, !selected || touches(d) ? 255 : 45],
-          getWidth: (d) => 20 + Math.min(12, d.mw / 250),
+          getColor: (d) => [...FLOW, !selected || touches(d) ? (day ? 165 : 255) : 45],
+          getWidth: (d) => (day ? 14 : 20) + Math.min(12, d.mw / 250),
           getArrowStyle: (d) => [1.4 + Math.min(1.8, d.mw / 1500), 4.5 + Math.min(5, d.mw / 500), 1],
-          updateTriggers: { getColor: [selected] },
+          updateTriggers: { getColor: [selected, !!day], getWidth: [!!day] },
           widthUnits: "pixels",
           capRounded: true,
           jointRounded: true,
@@ -1323,7 +1632,7 @@ export default function EuropeView() {
           strokePx: 2.4,
           lineAlpha: 0.85,
           parameters: {
-            depthCompare: "always",
+            depthCompare: day ? "less-equal" : "always",
             depthWriteEnabled: false,
             blend: true,
             blendColorSrcFactor: "one",
@@ -1334,7 +1643,7 @@ export default function EuropeView() {
         }),
         new TextLayer<Arc>({
           id: "eu-flow-labels",
-          data: !show.flows ? [] : selected ? arcs.filter(touches) : arcs.filter((a) => a.mw >= LABEL_MW),
+          data: !show.flows || (day && !selected) ? [] : selected ? arcs.filter(touches) : arcs.filter((a) => a.mw >= LABEL_MW),
           getPosition: (a) => a.path[20],
           getText: (a) => power(a.mw),
           getSize: 11,
@@ -1349,10 +1658,28 @@ export default function EuropeView() {
           getPixelOffset: [0, -12],
           parameters: noDepth,
         }),
+        new TextLayer<TowerPiece, CollisionFilterExtensionProps<TowerPiece>>({
+          id: "eu-tower-labels",
+          data: towers.filter((t) => t.group === towerTop.get(t.iso) && t.total >= TOWER_LABEL_MW),
+          getPosition: (t) => [...ANCHOR[t.iso], (t.base + t.drawn) * TOWER_M_PER_MW + 25_000] as [number, number, number],
+          getText: (t) => `${t.iso} ${Math.round(t.total / 1000)} GW`,
+          getSize: 12,
+          getColor: [236, 240, 246, 255],
+          fontFamily: "Inter, system-ui, sans-serif",
+          fontWeight: 700,
+          background: true,
+          getBackgroundColor: [6, 9, 14, 200],
+          backgroundPadding: [4, 2],
+          // labels that would overlap hide; the bigger country wins
+          extensions: [new CollisionFilterExtension()],
+          collisionGroup: "tower-labels",
+          getCollisionPriority: (t) => Math.min(1000, t.total / 100),
+          parameters: noDepth,
+        }),
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
+  }, [frame, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
   // the EU aggregate is hourly: label it with the start of its hour
   const euHour = day ? Math.floor((dayK * day.step_s) / 3600) * (3600 / day.step_s) : 0;
@@ -1397,9 +1724,42 @@ export default function EuropeView() {
         <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">
           {day ? "24 hours of electricity" : "Grid, plants & cross-border flows"}
         </div>
+        {/* the two views: the live map, and one real day as a time-lapse */}
+        <div className="mt-3 inline-flex rounded border border-white/15 p-0.5 text-[11px]">
+          <a
+            href="/"
+            className={`rounded px-2.5 py-1 ${!day ? "bg-white/15 text-slate-100" : "text-slate-400 hover:text-slate-100"}`}
+          >
+            Live map
+          </a>
+          <a
+            href="/?day=latest"
+            className={`rounded px-2.5 py-1 ${day ? "bg-white/15 text-slate-100" : "text-slate-400 hover:text-slate-100"}`}
+          >
+            24 hours
+          </a>
+        </div>
         {day && dayCharts && (
-          <div className="mt-3 w-[220px]">
-            <div className="text-[40px] font-light leading-none tabular-nums tracking-wide">{marketTime(slotTs(dayK))}</div>
+          <div className="mt-3 w-[240px]">
+            <div className="flex items-end justify-between">
+              <div className="whitespace-nowrap text-[34px] font-light leading-none tabular-nums tracking-wide">
+                {marketTime(slotTs(dayK))}
+              </div>
+              <svg width={64} height={30} className="mb-1" aria-label="sun height over Central Europe">
+                <line x1={0} x2={64} y1={20} y2={20} stroke="rgba(255,255,255,0.25)" />
+                <path
+                  d={sunArc.map((a, i) => `${i ? "L" : "M"}${((i / (sunArc.length - 1)) * 64).toFixed(1)},${(20 - Math.max(-10, a) * 0.42).toFixed(1)}`).join("")}
+                  fill="none"
+                  stroke="rgba(255,214,72,0.45)"
+                />
+                <circle
+                  cx={(dayK / Math.max(1, sunArc.length - 1)) * 64}
+                  cy={20 - Math.max(-10, sunAlt) * 0.42}
+                  r={3.5}
+                  fill={sunAlt > 0 ? "#ffd648" : "#9aa7bd"}
+                />
+              </svg>
+            </div>
             <DayChart
               title="EU solar + wind"
               unit={eu ? `${gw((eu.generation_mw.solar ?? 0) + (eu.generation_mw.wind ?? 0))}` : "GW"}
@@ -1583,16 +1943,37 @@ export default function EuropeView() {
           <div className="pointer-events-none absolute right-5 top-16 z-10 w-[230px] rounded-md border border-white/[0.07] bg-black/45 px-4 py-3 backdrop-blur">
             <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">European Union</div>
             <PowerBlock power={eu} time={timeOf} />
+            {day && ranking.length > 0 && (
+              <>
+                <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Largest producers now</div>
+                <div className="mt-1.5 space-y-1">
+                  {ranking.map((c) => (
+                    <div key={c.iso} className="flex items-center gap-2 text-[11px] tabular-nums">
+                      <span className="w-6 text-slate-300">{c.iso}</span>
+                      <div className="flex h-[7px] flex-1 overflow-hidden rounded-sm bg-white/[0.05]">
+                        {c.parts.map(([g, v]) => (
+                          <div
+                            key={g}
+                            style={{ width: `${(v / ranking[0].total) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }}
+                          />
+                        ))}
+                      </div>
+                      <span className="w-12 text-right text-slate-200">{gw(c.total)}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
             <div className="mt-3 text-[10px] text-[#8d94a1]">Click a country for its figures and flows.</div>
           </div>
         )
       )}
 
       <div className="pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm">
-        {stats && (
+        {(stats || day) && (
           <div>
             <div className="pointer-events-auto flex gap-1">
-              {(["renewable", "price"] as const).map((m) => (
+              {(["none", "renewable", "price"] as const).filter((m) => m !== "none" || day).map((m) => (
                 <button
                   key={m}
                   onClick={() => setShade(m)}
@@ -1600,12 +1981,12 @@ export default function EuropeView() {
                     shade === m ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
                   }`}
                 >
-                  {m === "renewable" ? "Renewable share" : "Day-ahead price"}
+                  {m === "none" ? "None" : m === "renewable" ? "Renewable share" : "Price"}
                 </button>
               ))}
             </div>
-            <div className="mt-1.5 h-2 rounded-sm" style={{ background: gradient }} />
-            <div className="mt-0.5 flex justify-between text-[9px] text-[#8d94a1]">
+            {shade !== "none" && <div className="mt-1.5 h-2 rounded-sm" style={{ background: gradient }} />}
+            <div className={`mt-0.5 flex justify-between text-[9px] text-[#8d94a1] ${shade === "none" ? "hidden" : ""}`}>
               {shade === "renewable" ? (
                 <>
                   <span>0 %</span>
@@ -1628,7 +2009,27 @@ export default function EuropeView() {
             )}
           </div>
         )}
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+        {day && (
+          <div>
+            <div className="mb-1.5 text-[11px] leading-snug text-slate-300">
+              Each tower is one country's power generation at the time on the clock, stacked by source.
+            </div>
+            <div className="text-[9px] uppercase tracking-[0.18em] text-[#8d94a1]">Sources (1 GW = 14 km of height)</div>
+            <div className="mt-1.5 grid grid-cols-3 gap-x-3 gap-y-1">
+              {[...TOWER_ORDER].reverse().map((g) => (
+                <div key={g} className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-sm" style={{ background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }} />
+                  {FUEL_LABEL[g] === "Bioenergy & waste" ? "Bio & waste" : FUEL_LABEL[g] === "Coal & lignite" ? "Coal" : FUEL_LABEL[g]}
+                </div>
+              ))}
+            </div>
+            <div className="mt-2 flex items-center gap-2">
+              <span className="h-2 w-5 rounded-sm" style={{ background: "linear-gradient(90deg, rgba(2,5,18,0.75), transparent)" }} />
+              Night (sun below the horizon)
+            </div>
+          </div>
+        )}
+        <div className={`grid grid-cols-2 gap-x-4 gap-y-1 ${day && !show.plants ? "hidden" : ""}`}>
           {plantGroups.map((g) => (
             <div key={g} className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(FUEL_COLOR[g]) }} />
@@ -1685,8 +2086,30 @@ export default function EuropeView() {
         </div>
       )}
 
+      {day && captions.length > 0 && !selected && (
+        <div className="pointer-events-none absolute left-1/2 top-6 z-10 flex -translate-x-1/2 flex-col items-center gap-2">
+          {captions.map((h) => {
+            const c = captionText(h, countryName);
+            const age = daySlot.current - h.slot;
+            const alpha = Math.min(1, age / 0.6, (CAPTION_SLOTS - age) / 2);
+            return (
+              <div
+                key={h.kind}
+                className="min-w-[340px] rounded-lg border border-white/[0.1] bg-[#05070b]/80 px-5 py-3 text-center backdrop-blur"
+                style={{ opacity: alpha, transform: `translateY(${(1 - Math.min(1, age / 0.6)) * -8}px)` }}
+              >
+                <div className="text-[10px] uppercase tracking-[0.28em]" style={{ color: rgbCss(c.color) }}>
+                  {marketTime(slotTs(h.slot))} · {c.title}
+                </div>
+                <div className="mt-1 text-[17px] font-light text-slate-100">{c.text}</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {day && (
-        <div className="absolute bottom-12 left-1/2 z-10 flex w-[440px] -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
+        <div className="absolute bottom-12 left-1/2 z-10 flex w-[560px] -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
           <button
             onClick={() => {
               if (!dayPlaying.current && daySlot.current >= day.slots - 1) daySlot.current = 0;
@@ -1696,6 +2119,15 @@ export default function EuropeView() {
           >
             {dayPlaying.current ? "Pause" : "▶ Play"}
           </button>
+          <div className="relative flex-1">
+            {(day.highlights ?? []).map((h) => (
+              <span
+                key={h.kind}
+                title={captionText(h, countryName).title}
+                className="pointer-events-none absolute -top-2 h-1.5 w-1.5 -translate-x-1/2 rounded-full"
+                style={{ left: `${(h.slot / (day.slots - 1)) * 100}%`, background: rgbCss(captionText(h, countryName).color) }}
+              />
+            ))}
           <input
             type="range"
             min={0}
@@ -1705,8 +2137,9 @@ export default function EuropeView() {
               dayPlaying.current = false;
               daySlot.current = Number(e.target.value);
             }}
-            className="flex-1 accent-sky-300"
+            className="w-full accent-sky-300"
           />
+          </div>
           <span className="w-[112px] text-right tabular-nums text-[#aab3c0]">{marketTime(slotTs(dayK))}</span>
         </div>
       )}

@@ -16,7 +16,8 @@ Writes frontend/public/data/eu/day/<YYYY-MM-DD>.json and updates day/index.json:
    "prices": {zone: {"country", "values": [EUR/MWh]}},
    "countries": {ISO: {"load": [MW], "renewable_share": [%], "generation": {group: [MW]}}},
    "eu": {"step_s": 3600, "load": [...], "renewable_share": [...], "generation": {...}},
-   "borders": [{"a", "b", "values": [MW, a -> b positive]}]}
+   "borders": [{"a", "b", "values": [MW, a -> b positive]}],
+   "highlights": [...]}  (key moments, scripts/day_highlights.py)
 
     uv run python scripts/build_eu_day.py 2026-10-02
 """
@@ -34,6 +35,7 @@ from zoneinfo import ZoneInfo
 import httpx
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from day_highlights import highlights  # noqa: E402
 from fetch_eu_snapshot import (  # noqa: E402
     CODES,
     FUEL_GROUP,
@@ -160,6 +162,7 @@ def main() -> None:
         "eu": eu,
         "borders": list(borders.values()),
     }
+    payload["highlights"] = highlights(payload)
     path = args.out / f"{day.isoformat()}.json"
     path.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
     days = sorted(p.stem for p in args.out.glob("20*.json"))

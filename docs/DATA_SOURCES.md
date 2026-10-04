@@ -36,6 +36,7 @@ bundled one (newer wins). Reservoirs need the repo secret `ENTSOE_API_KEY`.
 |---|---:|---|
 | `day/<YYYY-MM-DD>.json` | 96 slots (15 min) of a local day (Europe/Berlin) | Energy-Charts with start/end: `/price` per zone, `/public_power` per country (and EU, hourly), `/cbpf` per country |
 | `day/index.json` | list of built days | — (`?day=latest` opens the newest) |
+| `day/<date>.json` → `highlights` | ~9 key moments per day | computed by `scripts/day_highlights.py` from the same file: min/max of EU load, solar, wind, gas; lowest/highest zone price; largest border flow; highest renewable share at the solar peak. The captions only word these values |
 
 The time-lapse clock shows the market's own time (CET/CEST) of the slot on screen.
 The "price range, all zones" chart is the lowest and highest zone price per slot.
