@@ -1415,13 +1415,17 @@ export default function EuropeView() {
           highlightColor: [255, 255, 255, 22],
           parameters: noDepth,
         }),
-        new BitmapLayer({
-          id: "eu-night",
-          visible: !!day && !!night,
-          image: night ?? undefined,
-          bounds: NIGHT_BOUNDS,
-          parameters: noDepth,
-        }),
+        // only once the night image for this slot exists (an empty image throws)
+        ...(day && night
+          ? [
+              new BitmapLayer({
+                id: "eu-night",
+                image: night,
+                bounds: NIGHT_BOUNDS,
+                parameters: noDepth,
+              }),
+            ]
+          : []),
         new PathLayer<number[]>({
           id: "eu-coast",
           data: countries?.coast ?? [],
