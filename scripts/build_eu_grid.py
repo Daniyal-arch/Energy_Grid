@@ -8,7 +8,7 @@ Writes frontend/public/data/eu/:
                   plus units and capacity per country and group (units >= 1 MW)
   plants/<ISO>.json  every operating unit >= 1 MW of one country, loaded on focus
   gas.json        gas pipelines, LNG terminals, storages (SciGRID_gas IGGIELGN, 2021)
-  world.json      land of all other countries (GeoJSON, coarse), the globe's base
+  world.json      land of all countries (GeoJSON, coarse), the globe's base
   countries.json  country polygons (ISO code, name, label point), borders, coast
 
 Sources: PyPSA-Eur prebuilt OSM network (Zenodo 18619025, ODbL),
@@ -365,14 +365,11 @@ def write(name: str, payload: dict) -> None:
 
 
 def build_world() -> dict:
-    """Land of every other country, coarse, as the globe's base (no data on it)."""
+    """Land of every country, coarse, as the globe's base (Europe's data draws on top)."""
     with (SRC / "countries.geojson").open(encoding="utf-8") as f:
         fc = json.load(f)
-    covered = {GISCO_ID.get(c, c) for c in COUNTRIES}
     features = []
     for feat in fc["features"]:
-        if feat["properties"]["CNTR_ID"] in covered:
-            continue
         geom = shape(feat["geometry"]).simplify(WORLD_TOL)
         polys = list(geom.geoms) if geom.geom_type == "MultiPolygon" else [geom]
         rings = [
