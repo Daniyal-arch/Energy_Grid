@@ -790,6 +790,7 @@ export default function EuropeView() {
   // phones: panels live in a bottom sheet, one at a time
   const [isMobile, setIsMobile] = useState(isNarrow);
   const [sheet, setSheet] = useState<"none" | "stats" | "menu">("none");
+  const [legendOpen, setLegendOpen] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia(MOBILE_QUERY);
     const onChange = () => setIsMobile(mq.matches);
@@ -2279,28 +2280,30 @@ export default function EuropeView() {
       />
     </>
   );
+  // the newest key moment as one small line (several can share a slot: show the last)
+  const caption = day && !selected && captions.length > 0 ? captions[captions.length - 1] : null;
   const captionCards =
-    day &&
-    !selected &&
-    captions.map((h) => {
-      const c = captionText(h, countryName);
-      const age = daySlot.current - h.slot;
+    caption &&
+    (() => {
+      const c = captionText(caption, countryName);
+      const age = daySlot.current - caption.slot;
       const alpha = Math.min(1, age / 0.6, (CAPTION_SLOTS - age) / 2);
-      return (
+      return [
         <div
-          key={h.kind}
-          className={`rounded-lg border border-white/[0.1] bg-[#05070b]/85 text-center backdrop-blur ${
-            isMobile ? "w-full px-3 py-2" : "min-w-[340px] px-5 py-3"
+          key={caption.kind}
+          className={`flex max-w-full items-center gap-2 rounded-full border border-white/[0.1] bg-[#05070b]/85 px-3.5 py-1.5 backdrop-blur ${
+            isMobile ? "text-[12px]" : "text-[12.5px]"
           }`}
-          style={{ opacity: alpha, transform: `translateY(${(1 - Math.min(1, age / 0.6)) * -8}px)` }}
+          style={{ opacity: alpha }}
         >
-          <div className="text-[10px] uppercase tracking-[0.28em]" style={{ color: rgbCss(c.color) }}>
-            {marketTime(slotTs(h.slot))} · {c.title}
-          </div>
-          <div className={`mt-1 font-light text-slate-100 ${isMobile ? "text-[14px]" : "text-[17px]"}`}>{c.text}</div>
-        </div>
-      );
-    });
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: rgbCss(c.color) }} />
+          <span className="shrink-0 text-[10px] uppercase tracking-[0.18em]" style={{ color: rgbCss(c.color) }}>
+            {marketTime(slotTs(caption.slot)).replace(" CEST", "").replace(" CET", "")} · {c.title}
+          </span>
+          <span className="truncate font-light text-slate-100">{c.text}</span>
+        </div>,
+      ];
+    })();
   const sectionTitle = (t: string) => <div className="text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">{t}</div>;
 
   // ---------------------------------------------------------------- phone headline (bottom card, collapsed)
@@ -2326,63 +2329,87 @@ export default function EuropeView() {
       {!isMobile ? (
         <>
           {/* ------------------------------------------------ desktop */}
-          <div className="absolute left-4 top-4 z-10 rounded-md bg-[#05070b]/75 px-3 py-2 backdrop-blur-sm">
-            <div className="font-serif text-[34px] uppercase leading-none tracking-[0.2em]">Europe</div>
-            <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">
-              {day ? "24 hours of electricity" : "Grid, plants & cross-border flows"}
-            </div>
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              {tabsNav}
-              {countrySelect}
-            </div>
-            {dayPicker && <div className="mt-2">{dayPicker}</div>}
-            {day && dayCharts && (
-              <div className="mt-3 w-[240px]">
-                <div className="flex items-end justify-between">
-                  <div className="whitespace-nowrap text-[34px] font-light leading-none tabular-nums tracking-wide">
-                    {marketTime(slotTs(dayK))}
-                  </div>
-                  <div className="mb-1">{sunArcSvg(64, 30)}</div>
-                </div>
-                <DayChart
-                  title="EU solar + wind"
-                  unit={eu ? `${gw((eu.generation_mw.solar ?? 0) + (eu.generation_mw.wind ?? 0))}` : "GW"}
-                  layers={[
-                    { values: dayCharts.wind, color: FUEL_COLOR.wind },
-                    { values: dayCharts.solar, color: FUEL_COLOR.solar },
-                  ]}
-                  k={dayK}
-                  slots={day.slots}
-                />
-                <DayChart
-                  title="Price range, all zones"
-                  unit={
-                    dayCharts.low[dayK] != null
-                      ? `${Math.round(dayCharts.low[dayK] as number)}–${Math.round(dayCharts.high[dayK] as number)} €/MWh`
-                      : "€/MWh"
-                  }
-                  band={{ low: dayCharts.low, high: dayCharts.high, color: [214, 140, 96] }}
-                  k={dayK}
-                  slots={day.slots}
-                />
+          <div className="pointer-events-none absolute bottom-4 left-4 top-4 z-10 flex w-[284px] flex-col gap-2">
+            <div className="pointer-events-auto rounded-xl border border-white/[0.07] bg-[#0b0f16]/88 px-4 py-3 backdrop-blur">
+              <div className="font-serif text-[30px] uppercase leading-none tracking-[0.2em]">Europe</div>
+              <div className="mt-1.5 text-[10px] uppercase tracking-[0.28em] text-[#b9ab9b]">
+                {day ? "24 hours of electricity" : "Grid, plants & power flows"}
               </div>
-            )}
-            <div className="mt-3">{layerChips}</div>
-            {topFlows.length > 0 && (
-              <div className="mt-5 w-[210px]">
-                <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">Largest cross-border flows</div>
-                <div className="mt-2 space-y-1">
-                  {topFlows.map((f) => (
-                    <div key={`${f.from}${f.to}`} className="flex items-center justify-between text-[12px] tabular-nums">
-                      <span className="tracking-[0.08em] text-slate-200">
-                        {f.from} <span className="text-[#8f877e]">→</span> {f.to}
-                      </span>
-                      <span style={{ color: rgbCss(FLOW) }}>{gw(f.mw)}</span>
+              <div className="mt-3 flex items-center gap-2">
+                {tabsNav}
+                <div className="min-w-0 flex-1 [&_select]:w-full">{countrySelect}</div>
+              </div>
+              {dayPicker && <div className="mt-2 [&_select]:flex-1">{dayPicker}</div>}
+              {day && dayCharts && (
+                <div className="mt-3">
+                  <div className="flex items-end justify-between">
+                    <div className="whitespace-nowrap text-[30px] font-light leading-none tabular-nums tracking-wide">
+                      {marketTime(slotTs(dayK))}
                     </div>
-                  ))}
+                    <div className="mb-0.5">{sunArcSvg(60, 28)}</div>
+                  </div>
+                  <DayChart
+                    title="EU solar + wind"
+                    unit={eu ? `${gw((eu.generation_mw.solar ?? 0) + (eu.generation_mw.wind ?? 0))}` : "GW"}
+                    layers={[
+                      { values: dayCharts.wind, color: FUEL_COLOR.wind },
+                      { values: dayCharts.solar, color: FUEL_COLOR.solar },
+                    ]}
+                    k={dayK}
+                    slots={day.slots}
+                  />
+                  <DayChart
+                    title="Price range, all zones"
+                    unit={
+                      dayCharts.low[dayK] != null
+                        ? `${Math.round(dayCharts.low[dayK] as number)}–${Math.round(dayCharts.high[dayK] as number)} €/MWh`
+                        : "€/MWh"
+                    }
+                    band={{ low: dayCharts.low, high: dayCharts.high, color: [214, 140, 96] }}
+                    k={dayK}
+                    slots={day.slots}
+                  />
                 </div>
+              )}
+              {!day && topFlows.length > 0 && (
+                <div className="mt-4">
+                  <div className="text-[9px] uppercase tracking-[0.22em] text-[#8f877e]">Largest cross-border flows</div>
+                  <div className="mt-1.5 space-y-0.5">
+                    {topFlows.slice(0, 5).map((f) => (
+                      <div key={`${f.from}${f.to}`} className="flex items-center justify-between text-[12px] tabular-nums">
+                        <span className="tracking-[0.08em] text-slate-200">
+                          {f.from} <span className="text-[#8f877e]">→</span> {f.to}
+                        </span>
+                        <span style={{ color: rgbCss(FLOW) }}>{gw(f.mw)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex-1" />
+
+            {/* the map's controls and key, folded to one card */}
+            <div className="pointer-events-auto max-h-[60%] overflow-y-auto rounded-xl border border-white/[0.07] bg-[#0b0f16]/88 px-4 py-3 text-[11px] text-slate-300 backdrop-blur [scrollbar-width:thin]">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">Map</span>
+                <button
+                  onClick={() => setLegendOpen(!legendOpen)}
+                  className="rounded-full px-2 py-0.5 text-[10px] text-[#8d94a1] hover:bg-white/10 hover:text-slate-100"
+                >
+                  Legend {legendOpen ? "▾" : "▸"}
+                </button>
               </div>
-            )}
+              <div className="mt-2">{layerChips}</div>
+              {shadeBlock && (
+                <div className="mt-2.5">
+                  <div className="mb-1 text-[9px] uppercase tracking-[0.18em] text-[#8d94a1]">Colour countries by</div>
+                  {shadeBlock}
+                </div>
+              )}
+              {legendOpen && <div className="mt-3 space-y-3 border-t border-white/[0.06] pt-3">{keysBlock}</div>}
+            </div>
           </div>
 
           <aside className="absolute bottom-4 right-4 top-4 z-10 flex w-[336px] flex-col overflow-hidden">
@@ -2406,11 +2433,6 @@ export default function EuropeView() {
             <div className="min-h-0 flex-1 overflow-y-auto pr-1 [scrollbar-width:thin]">{focus ? countryBody : euBody}</div>
           </aside>
 
-          <div className="pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm">
-            {shadeBlock}
-            {keysBlock}
-          </div>
-
           {focus && styleSwitch && (
             <div className="absolute left-1/2 top-4 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border border-white/[0.1] bg-[#05070b]/80 px-3 py-1.5 text-[11px] text-slate-300 backdrop-blur">
               <span className="text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">3D style</span>
@@ -2419,7 +2441,9 @@ export default function EuropeView() {
           )}
 
           {captionCards && captionCards.length > 0 && (
-            <div className="pointer-events-none absolute left-1/2 top-6 z-10 flex -translate-x-1/2 flex-col items-center gap-2">{captionCards}</div>
+            <div className="pointer-events-none absolute bottom-[98px] left-1/2 z-10 flex max-w-[600px] -translate-x-1/2 justify-center">
+              {captionCards}
+            </div>
           )}
 
           {(dayTimeline || replayTimeline) && (
