@@ -1,4 +1,12 @@
-import { AmbientLight, COORDINATE_SYSTEM, LightingEffect, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
+import {
+  AmbientLight,
+  COORDINATE_SYSTEM,
+  _GlobeView as GlobeView,
+  LightingEffect,
+  MapView,
+  _SunLight as SunLight,
+  type PickingInfo,
+} from "@deck.gl/core";
 import { PathStyleExtension, type PathStyleExtensionProps } from "@deck.gl/extensions";
 import { BitmapLayer, ColumnLayer, LineLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
@@ -351,6 +359,7 @@ function setMapProjection(map: maplibregl.Map, flat: boolean): void {
   const apply = () => {
     try {
       if (map.getProjection()?.type !== want) map.setProjection({ type: want });
+      map.fire("deckviewsync");
       return true;
     } catch {
       return false; // style not ready yet
@@ -1015,6 +1024,18 @@ export default function EuropeView() {
       },
     });
     map.addControl(o);
+    // keep deck.gl's view in step with the map's projection (globe or flat); the
+    // overlay alone only rechecks it on style changes, which races the globe setup
+    const syncViews = () => {
+      const globe = map.getProjection()?.type === "globe";
+      const view = globe ? new GlobeView({ id: "mapbox" }) : new MapView({ id: "mapbox" });
+      // views is accepted at runtime; the overlay's typings narrow it to null
+      o.setProps({ views: view } as unknown as Parameters<typeof o.setProps>[0]);
+    };
+    map.on("load", syncViews);
+    map.on("styledata", syncViews);
+    map.on("projectiontransition", syncViews);
+    map.on("deckviewsync", syncViews);
     overlay.current = o;
     mapRef.current = map;
     return () => map.remove();
