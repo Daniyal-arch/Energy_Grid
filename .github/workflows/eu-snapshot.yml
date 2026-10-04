@@ -36,14 +36,18 @@ jobs:
       - name: Install dependencies
         run: pip install httpx
 
-      - name: Reference figures (installed capacity, reservoirs), once per run
+      - name: Reference figures (capacity, reservoirs, gas storage, Ember), once per run
         env:
           # optional repo secret; without it reservoirs are skipped
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+          # gas storage (GIE AGSI+) and Ember yearly data for the country cards
+          AGSI_API_KEY: ${{ secrets.AGSI_API_KEY }}
+          EMBER_API_KEY: ${{ secrets.EMBER_API_KEY }}
         run: |
           mkdir -p ref
           pip install python-dotenv
           python scripts/fetch_eu_reference.py --out ref || echo "reference fetch failed"
+          python scripts/fetch_eu_dossier.py --out ref || echo "dossier fetch failed"
 
       - name: Snapshot every 30 min for ~5 h 45 min
         env:
@@ -53,7 +57,7 @@ jobs:
           while [ "$SECONDS" -lt "$end" ]; do
             started=$SECONDS
             rm -rf store && mkdir -p store/eu
-            cp ref/reference.json store/eu/ 2>/dev/null || true
+            cp ref/reference.json ref/dossier.json store/eu/ 2>/dev/null || true
             if python scripts/fetch_eu_snapshot.py --out store/eu; then
               (
                 cd store

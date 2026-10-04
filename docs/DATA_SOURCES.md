@@ -26,6 +26,7 @@ uv run python scripts/build_eu_grid.py
 | `flows.json` | 79 borders | Energy-Charts `/cbpf` per country (ENTSO-E physical flows): latest complete 15-min value per border, plus 24 h of 15-min values for the replay |
 | `stats.json` | EU + per country | Energy-Charts `/public_power` (country=eu and per country): load, generation by source group, published renewable share of generation; `/price` day-ahead price for 41 bidding zones |
 | `reference.json` | per country | Energy-Charts `/installed_power` (newest year with values) and ENTSO-E A72 hydro reservoir energy (newest week, same week a year earlier) |
+| `dossier.json` | gas storage: EU + 19 countries; Ember: 36 countries | GIE AGSI+ daily gas storage (fill % of working gas volume, TWh, trend), last ~400 days; Ember yearly electricity data (CC BY 4.0): generation by source since 2000, published renewable share and carbon intensity of generation. `scripts/fetch_eu_dossier.py` (AGSI_API_KEY, EMBER_API_KEY) |
 
 `.github/workflows/eu-snapshot.yml` refreshes these every 30 min onto the `eu-data`
 branch; the app reads that copy from raw.githubusercontent.com and falls back to the
@@ -37,6 +38,7 @@ bundled one (newer wins). Reservoirs need the repo secret `ENTSOE_API_KEY`.
 |---|---:|---|
 | `day/<YYYY-MM-DD>.json` | 96 slots (15 min) of a local day (Europe/Berlin) | Energy-Charts with start/end: `/price` per zone, `/public_power` per country (and EU, hourly), `/cbpf` per country |
 | `day/index.json` | list of built days | — (`?day=latest` opens the newest) |
+| `week/<ISO>.json`, `week/EU.json` | newest 7 built days per country | the day files' values concatenated, unchanged (load, renewable share, generation by source, prices of the country's zones); written by `build_eu_day.py` with every archive run, or `--weeks-only` |
 | `day/<date>.json` → `highlights` | ~9 key moments per day | computed by `scripts/day_highlights.py` from the same file: min/max of EU load, solar, wind, gas; lowest/highest zone price; largest border flow; highest renewable share at the solar peak. The captions only word these values |
 
 **Rolling archive:** `.github/workflows/eu-days.yml` runs every morning

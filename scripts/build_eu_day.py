@@ -21,6 +21,7 @@ Writes frontend/public/data/eu/day/<YYYY-MM-DD>.json and updates day/index.json:
 
     uv run python scripts/build_eu_day.py 2026-10-02      # one day
     uv run python scripts/build_eu_day.py --recent 30    # rolling 30-day archive
+    uv run python scripts/build_eu_day.py --weeks-only   # week/<ISO>.json from built days
 """
 
 from __future__ import annotations
@@ -176,6 +177,62 @@ def day_payload(day: date, raw: dict) -> dict:
     return payload
 
 
+def write_weeks(day_dir: Path, days: int = 7) -> int:
+    """Per-country files of the newest `days` built days, back to back, for the
+    country cards: week/<ISO>.json and week/EU.json next to the day folder.
+
+    Values are the day files' own, unchanged; slots of the days are concatenated."""
+    files = sorted(day_dir.glob("20*.json"))[-days:]
+    if not files:
+        return 0
+    loaded = [json.loads(f.read_text(encoding="utf-8")) for f in files]
+    out = day_dir.parent / "week"
+    out.mkdir(parents=True, exist_ok=True)
+    isos = sorted({iso for d in loaded for iso in d["countries"]})
+
+    def join(pick) -> dict:
+        series: dict = {"load": [], "renewable_share": [], "generation": {}}
+        for d in loaded:
+            c = pick(d)
+            n = d["slots"]
+            series["load"] += (c or {}).get("load") or [None] * n
+            series["renewable_share"] += (c or {}).get("renewable_share") or [None] * n
+            for g in {g for x in loaded for g in ((pick(x) or {}).get("generation") or {})}:
+                series["generation"].setdefault(g, [])
+            for g, col_all in series["generation"].items():
+                col_all += ((c or {}).get("generation") or {}).get(g) or [None] * n
+        return series
+
+    meta = {
+        "source": loaded[-1]["source"],
+        "days": [d["date"] for d in loaded],
+        "start": loaded[0]["start"],
+        "step_s": STEP,
+    }
+    for iso in isos:
+        prices = {}
+        for d in loaded:
+            for zone, z in d["prices"].items():
+                if z["country"] == iso:
+                    prices.setdefault(zone, [])
+        for zone in prices:
+            for d in loaded:
+                z = d["prices"].get(zone)
+                prices[zone] += z["values"] if z else [None] * d["slots"]
+        payload = {
+            **meta,
+            "country": iso,
+            **join(lambda d, i=iso: d["countries"].get(i)),
+            "prices": prices,
+        }
+        (out / f"{iso}.json").write_text(
+            json.dumps(payload, separators=(",", ":")), encoding="utf-8"
+        )
+    eu = {**meta, "country": "EU", **join(lambda d: d.get("eu")), "prices": {}}
+    (out / "EU.json").write_text(json.dumps(eu, separators=(",", ":")), encoding="utf-8")
+    return len(isos) + 1
+
+
 def write_index(out: Path) -> list[str]:
     days = sorted(p.stem for p in out.glob("20*.json"))
     (out / "index.json").write_text(json.dumps({"days": days}), encoding="utf-8")
@@ -198,9 +255,13 @@ def main() -> None:
         help="with --recent: always rebuild the newest N days (late corrections)",
     )
     parser.add_argument("--out", type=Path, default=OUT)
+    parser.add_argument("--weeks-only", action="store_true", help="only rebuild week/ files")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
+    if args.weeks_only:
+        print(f"week/: {write_weeks(args.out)} files")
+        return
     if args.recent:
         yesterday = datetime.now(TZ).date() - timedelta(days=1)
         wanted = [yesterday - timedelta(days=i) for i in range(args.recent)]
@@ -230,6 +291,7 @@ def main() -> None:
                 flush=True,
             )
     days = write_index(args.out)
+    print(f"week/: {write_weeks(args.out)} files from the newest {min(7, len(days))} days")
     print(f"index: {len(days)} days, {days[0] if days else '-'} .. {days[-1] if days else '-'}")
 
 

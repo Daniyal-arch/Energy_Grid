@@ -13,9 +13,22 @@ import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { FUEL_COLOR, FUEL_LABEL, STACK_ORDER, gw, power } from "../lib/energy";
 import { FlowArrowLayer } from "../lib/flowArrowLayer";
 import { FlowClock, curvedPath, flowDistances } from "../lib/flowLayers";
 import { rgbCss, type RGB } from "../lib/theme";
+import {
+  Card,
+  GasCard,
+  HistoryCard,
+  NowCard,
+  SourcesCard,
+  TradeCard,
+  WeekCard,
+  type EmberRow,
+  type GasRow,
+  type WeekFile,
+} from "./CountryCards";
 
 // Europe's transmission grid, power plants and measured cross-border flows (the app's only view).
 // Static layers: frontend/public/data/eu/{grid,plants,countries}.json from
@@ -248,31 +261,6 @@ const VOLTAGE_BANDS: Array<{ min: number; label: string; color: RGB; width: numb
 ];
 const band = (kv: number) => VOLTAGE_BANDS.find((b) => kv >= b.min)!;
 
-const FUEL_ORDER = ["solar", "wind", "nuclear", "gas", "coal", "hydro", "bio", "oil", "other"];
-const FUEL_COLOR: Record<string, RGB> = {
-  nuclear: [255, 96, 150],
-  coal: [160, 146, 132],
-  gas: [255, 128, 72],
-  oil: [214, 96, 64],
-  hydro: [84, 156, 255],
-  wind: [72, 222, 184],
-  solar: [255, 214, 72],
-  bio: [150, 196, 92],
-  storage: [196, 196, 214],
-  other: [168, 146, 210],
-};
-const FUEL_LABEL: Record<string, string> = {
-  nuclear: "Nuclear",
-  coal: "Coal & lignite",
-  gas: "Gas",
-  oil: "Oil",
-  hydro: "Hydro",
-  wind: "Wind",
-  solar: "Solar",
-  bio: "Bioenergy & waste",
-  storage: "Storage",
-  other: "Other",
-};
 const PLANT_LABEL: Record<string, string> = { ...FUEL_LABEL, gas: "Gas & oil" };
 
 // where each country's flow arcs start and end (inland points, not capitals)
@@ -427,7 +415,7 @@ const marketTime = (iso: string) => MARKET_CLOCK.format(new Date(iso));
 
 // day view: one tower of generation per country, stacked steady sources first and the
 // weather-driven ones on top, so solar visibly swells at noon and vanishes at night
-const TOWER_ORDER = ["nuclear", "coal", "gas", "oil", "hydro", "bio", "other", "wind", "solar"];
+const TOWER_ORDER = STACK_ORDER;
 const TOWER_M_PER_MW = 14; // 1 GW of generation stands 14 km tall
 const TOWER_RADIUS_M = 58_000;
 const TOWER_LABEL_MW = 8000; // towers from this total carry a "DE 61 GW" label
@@ -661,7 +649,6 @@ const pairs = (flat: number[]): [number, number][] => {
   for (let k = 0; k < flat.length; k += 2) p.push([flat[k], flat[k + 1]]);
   return p;
 };
-const gw = (mw: number) => `${(Math.abs(mw) / 1000).toFixed(1)} GW`;
 const utc = (iso: string) => `${iso.slice(11, 16)} UTC`;
 
 async function getJson<T>(url: string): Promise<T> {
@@ -721,44 +708,6 @@ function powerHtml(title: string, p: Power | undefined): string {
     <div style="margin-top:6px">${rows}</div>`;
 }
 
-const power = (mw: number) => (Math.abs(mw) >= 1000 ? gw(mw) : `${Math.round(Math.abs(mw))} MW`);
-
-/** Load, published renewable share and generation mix of one interval. */
-function PowerBlock({ power: p, time = utc }: { power: Power; time?: (iso: string) => string }) {
-  const sources = FUEL_ORDER.filter((f) => (p.generation_mw[f] ?? 0) > 0).sort((a, b) => p.generation_mw[b] - p.generation_mw[a]);
-  const max = Math.max(1, ...Object.values(p.generation_mw));
-  return (
-    <>
-      <div className="mt-0.5 text-[9px] uppercase tracking-[0.2em] text-[#8f877e]">interval {time(p.ts)}</div>
-      <div className="mt-2 grid grid-cols-2 gap-2">
-        <div>
-          <div className="text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Load</div>
-          <div className="text-[20px] font-light tabular-nums">{power(p.load_mw)}</div>
-        </div>
-        {p.renewable_share_of_generation != null && (
-          <div>
-            <div className="text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Renewable gen.</div>
-            <div className="text-[20px] font-light tabular-nums">{p.renewable_share_of_generation.toFixed(1)} %</div>
-          </div>
-        )}
-      </div>
-      <div className="mt-3 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Generation by source</div>
-      <div className="mt-1.5 space-y-1">
-        {sources.map((f) => (
-          <div key={f}>
-            <div className="flex justify-between text-[11px] tabular-nums text-slate-200">
-              <span>{FUEL_LABEL[f]}</span>
-              <span>{power(p.generation_mw[f])}</span>
-            </div>
-            <div className="mt-0.5 h-[3px] rounded-full bg-white/[0.06]">
-              <div className="h-full rounded-full" style={{ width: `${(p.generation_mw[f] / max) * 100}%`, background: rgbCss(FUEL_COLOR[f]) }} />
-            </div>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-}
 
 /** Drawn mouse pointer with a click ripple; headless capture has no OS cursor. */
 function TourCursor({ tour }: { tour: { cursor: [number, number]; ripple: { at: number; x: number; y: number } | null } }) {
@@ -802,6 +751,12 @@ export default function EuropeView() {
   const [stats, setStats] = useState<StatsFile | null>(null);
   const [gas, setGas] = useState<GasFile | null>(null);
   const [reference, setReference] = useState<ReferenceFile | null>(null);
+  const [dossier, setDossier] = useState<{
+    fetched: string;
+    gas: Record<string, GasRow>;
+    ember: Record<string, EmberRow>;
+  } | null>(null);
+  const [week, setWeek] = useState<(WeekFile & { country: string }) | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [frame, setFrame] = useState(0);
   // the day view is its own picture: price on the ground, generation towers, night shadow
@@ -916,6 +871,7 @@ export default function EuropeView() {
       loadSnapshot<FlowsFile>("flows.json", setFlows);
       loadSnapshot<StatsFile>("stats.json", setStats);
       loadSnapshot<ReferenceFile>("reference.json", setReference);
+      loadSnapshot<NonNullable<typeof dossier>>("dossier.json", setDossier);
     };
     load();
     const t = setInterval(load, 10 * 60 * 1000);
@@ -1268,6 +1224,32 @@ export default function EuropeView() {
   );
 
   const focus = useMemo(() => countries?.countries.find((c) => c.iso === selected) ?? null, [countries, selected]);
+  // last days of the selection (or the EU): the cloud archive's file or the bundled one,
+  // whichever holds more days
+  const weekCache = useRef(new Map<string, WeekFile & { country: string }>());
+  useEffect(() => {
+    const iso = selected ?? "EU";
+    const cached = weekCache.current.get(iso);
+    if (cached) {
+      setWeek(cached);
+      return;
+    }
+    let live = true;
+    const remote = fetch(`${DAYS_REMOTE.replace(/\/day$/, "/week")}/${iso}.json`, { signal: AbortSignal.timeout(6000) }).then((r) =>
+      r.ok ? (r.json() as Promise<WeekFile & { country: string }>) : Promise.reject(new Error(String(r.status))),
+    );
+    const local = getJson<WeekFile & { country: string }>(`/data/eu/week/${iso}.json`);
+    Promise.allSettled([remote, local]).then((res) => {
+      const ok = res.flatMap((x) => (x.status === "fulfilled" ? [x.value] : []));
+      const best = ok.sort((a, b) => b.days.length - a.days.length)[0] ?? null;
+      if (best) weekCache.current.set(iso, best);
+      if (live) setWeek(best);
+    });
+    return () => {
+      live = false;
+    };
+  }, [selected]);
+
   // shareable country links: ?country=FR stays in the address bar
   useEffect(() => {
     if (CAPTURE) return;
@@ -2087,43 +2069,61 @@ export default function EuropeView() {
       </div>
     </>
   );
-  const euBody = eu && (
-    <>
-      <PowerBlock power={eu} time={timeOf} />
+  // ---------------------------------------------------------------- cards
+  const weekMarker =
+    week && day && week.days.includes(day.date)
+      ? Math.round((Date.parse(slotTs(dayK)) - Date.parse(week.start)) / (week.step_s * 1000))
+      : null;
+  const sources: [string, string][] = [
+    ["Load, generation, renewable share, prices, flows", "Energy-Charts (Fraunhofer ISE), from ENTSO-E data; values passed through, latest complete 15-min interval per country."],
+    ["Gas storage", "GIE AGSI+, daily, fill as % of working gas volume."],
+    ["Yearly generation and carbon intensity", "Ember yearly electricity data (CC BY 4.0), as published."],
+    ["Installed capacity", "Energy-Charts installed power, newest year with values."],
+    ["Hydro reservoirs", "ENTSO-E Transparency, weekly stored energy."],
+    ["Plants, grid, gas network", "powerplantmatching; PyPSA-Eur from OpenStreetMap (ODbL); SciGRID_gas (2021)."],
+    ["Derived on this page", "Net import/export = sum of the measured border flows; nothing else is computed."],
+  ];
+  const euBody = (
+    <div className="space-y-2.5">
+      {eu && <NowCard now={eu} time={timeOf(eu.ts)} />}
+      {week?.country === "EU" && week.load.some((v) => v != null) && <WeekCard week={week} marker={weekMarker} />}
       {day && ranking.length > 0 && (
-        <>
-          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Largest producers now</div>
-          <div className="mt-1.5 space-y-1">
+        <Card title="Largest producers now">
+          <div className="space-y-1">
             {ranking.map((c) => (
               <div key={c.iso} className="flex items-center gap-2 text-[11px] tabular-nums">
                 <span className="w-6 text-slate-300">{c.iso}</span>
                 <div className="flex h-[7px] flex-1 overflow-hidden rounded-sm bg-white/[0.05]">
                   {c.parts.map(([g, v]) => (
-                    <div
-                      key={g}
-                      style={{ width: `${(v / ranking[0].total) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }}
-                    />
+                    <div key={g} style={{ width: `${(v / ranking[0].total) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }} />
                   ))}
                 </div>
                 <span className="w-12 text-right text-slate-200">{gw(c.total)}</span>
               </div>
             ))}
           </div>
-        </>
+        </Card>
       )}
-    </>
+      {dossier?.gas.EU && <GasCard gas={dossier.gas.EU} />}
+      <SourcesCard items={sources} />
+    </div>
   );
+  const tradeRows = focusFlows.map((f) => ({ other: f.from === selected ? f.to : f.from, mw: f.to === selected ? f.mw : -f.mw }));
+  const netMw = tradeRows.length ? tradeRows.reduce((a, t) => a + t.mw, 0) : null;
+  const singleZone = focusZones.length === 1 ? { label: focusZones[0][0], value: focusZones[0][1].eur_mwh } : null;
   const countryBody = focus && (
-    <>
+    <div className="space-y-2.5">
       {focusPower ? (
-        <PowerBlock power={focusPower} time={timeOf} />
+        <NowCard now={focusPower} time={timeOf(focusPower.ts)} price={singleZone} netMw={netMw} />
       ) : (
-        <div className="mt-2 text-[11px] text-[#8d94a1]">No load or generation data from Energy-Charts for this country.</div>
+        <Card title="Right now">
+          <div className="text-[11px] text-[#8d94a1]">No load or generation data from Energy-Charts for this country.</div>
+        </Card>
       )}
-      {focusZones.length > 0 && (
-        <>
-          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Day-ahead price · {timeOf(focusZones[0][1].ts)}</div>
-          <div className="mt-1.5 space-y-0.5">
+      {week?.country === selected && week.load.some((v) => v != null) && <WeekCard week={week} marker={weekMarker} />}
+      {focusZones.length > 1 && (
+        <Card title="Day-ahead price" note={timeOf(focusZones[0][1].ts)}>
+          <div className="space-y-0.5">
             {focusZones.map(([zone, pr]) => (
               <div key={zone} className="flex justify-between text-[11px] tabular-nums text-slate-200">
                 <span className="flex items-center gap-2">
@@ -2134,30 +2134,14 @@ export default function EuropeView() {
               </div>
             ))}
           </div>
-        </>
+        </Card>
       )}
-      {focusFlows.length > 0 && (
-        <>
-          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Cross-border physical flows</div>
-          <div className="mt-1.5 space-y-0.5">
-            {focusFlows.map((f) => {
-              const out = f.from === selected;
-              return (
-                <div key={`${f.from}${f.to}`} className="flex justify-between text-[11px] tabular-nums">
-                  <span className="text-slate-200">
-                    <span style={{ color: out ? rgbCss(FLOW) : "#f0b37e" }}>{out ? "export →" : "import ←"}</span> {out ? f.to : f.from}
-                  </span>
-                  <span>{power(f.mw)}</span>
-                </div>
-              );
-            })}
-          </div>
-        </>
-      )}
+      {tradeRows.length > 0 && <TradeCard rows={tradeRows} time={timeOf(focusFlows[0].ts)} />}
+      {selected && dossier?.gas[selected] && <GasCard gas={dossier.gas[selected]} />}
+      {selected && dossier?.ember[selected] && <HistoryCard ember={dossier.ember[selected]} />}
       {focusCapacity && (
-        <>
-          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Installed capacity · {focusCapacity.year}</div>
-          <div className="mt-1.5 space-y-1">
+        <Card title="Installed capacity" note={`Energy-Charts · ${focusCapacity.year}`}>
+          <div className="space-y-1">
             {Object.entries(focusCapacity.gw)
               .filter(([, v]) => v > 0)
               .sort((x, y) => y[1] - x[1])
@@ -2168,48 +2152,29 @@ export default function EuropeView() {
                     <span>{v.toFixed(1)} GW</span>
                   </div>
                   <div className="mt-0.5 h-[3px] rounded-full bg-white/[0.06]">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${(v / all[0][1]) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }}
-                    />
+                    <div className="h-full rounded-full" style={{ width: `${(v / all[0][1]) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }} />
                   </div>
                 </div>
               ))}
           </div>
-        </>
+        </Card>
       )}
       {focusReservoir && (
-        <>
-          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Hydro reservoirs</div>
-          <div className="mt-1 text-[11px] text-slate-200">
-            <span className="text-[16px] font-light tabular-nums">{focusReservoir.twh.toFixed(1)} TWh</span> stored, week of{" "}
-            {focusReservoir.week}
-          </div>
+        <Card title="Hydro reservoirs" note={`ENTSO-E · week of ${focusReservoir.week}`} accent={[84, 156, 255]}>
+          <div className="text-[22px] font-light tabular-nums text-slate-100">{focusReservoir.twh.toFixed(1)} TWh</div>
           {focusReservoir.year_ago_twh != null && (
             <div className="text-[10px] text-[#8d94a1]">same week last year: {focusReservoir.year_ago_twh.toFixed(1)} TWh</div>
           )}
-        </>
-      )}
-      {(focusLng.length > 0 || focusStorages.length > 0) && (
-        <>
-          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Gas infrastructure (2021 dataset)</div>
-          {focusLng.length > 0 && (
-            <div className="mt-1 text-[11px] text-slate-200">
-              LNG terminals: <span className="text-[#8d94a1]">{focusLng.map((g) => g[0]).join(", ")}</span>
-            </div>
-          )}
-          {focusStorages.length > 0 && <div className="mt-0.5 text-[11px] text-slate-200">Gas storage sites: {focusStorages.length}</div>}
-        </>
+        </Card>
       )}
       {focusPlants.length > 0 && (
-        <>
-          <div className="mt-4 text-[9px] uppercase tracking-[0.16em] text-[#8d94a1]">Plants on the map (units ≥ 1 MW)</div>
-          <div className="mt-1 text-[10px] text-[#8d94a1]">
+        <Card title="Plants on the map" note="powerplantmatching">
+          <div className="mb-1.5 text-[10px] text-[#8d94a1]">
             {plantStyle === "bars"
               ? "Columns: units ≥ 10 MW, height ∝ √ installed capacity (not current output)"
-              : `Beams: plants ≥ ${BEAM_MIN_MW} MW, height ∝ √ installed capacity. Fields: smaller units summed per ${HEX_KM * 2} km hexagon, coloured by the largest fuel.`}
+              : `Beams: plants ≥ ${BEAM_MIN_MW} MW. Fields: smaller units summed per ${HEX_KM * 2} km hexagon.`}
           </div>
-          <div className="mt-1.5 space-y-0.5">
+          <div className="space-y-0.5">
             {focusPlants.map(([g, [n, mw]]) => (
               <div key={g} className="flex justify-between text-[11px] tabular-nums text-slate-200">
                 <span className="flex items-center gap-2">
@@ -2217,14 +2182,25 @@ export default function EuropeView() {
                   {PLANT_LABEL[g]}
                 </span>
                 <span>
-                  {power(mw)} <span className="text-[#8d94a1]">· {n}</span>
+                  {power(mw)} <span className="text-[#8d94a1]">· {n} units</span>
                 </span>
               </div>
             ))}
           </div>
-        </>
+        </Card>
       )}
-    </>
+      {(focusLng.length > 0 || focusStorages.length > 0) && (
+        <Card title="Gas infrastructure" note="SciGRID_gas · 2021" accent={[255, 150, 92]}>
+          {focusLng.length > 0 && (
+            <div className="text-[11px] text-slate-200">
+              LNG terminals: <span className="text-[#8d94a1]">{focusLng.map((g) => g[0]).join(", ")}</span>
+            </div>
+          )}
+          {focusStorages.length > 0 && <div className="mt-0.5 text-[11px] text-slate-200">Gas storage sites: {focusStorages.length}</div>}
+        </Card>
+      )}
+      <SourcesCard items={sources} />
+    </div>
   );
   const dayTimeline = day && (
     <>
@@ -2393,25 +2369,26 @@ export default function EuropeView() {
             )}
           </div>
 
-          {focus ? (
-            <div className="absolute right-5 top-16 z-10 max-h-[calc(100vh-110px)] w-[250px] overflow-y-auto rounded-md border border-white/[0.09] bg-black/60 px-4 py-3 backdrop-blur">
-              <div className="flex items-start justify-between">
-                <div className="font-serif text-[20px] uppercase leading-tight tracking-[0.12em]">{focus.name}</div>
-                <button onClick={() => setSelected(null)} className="text-[11px] text-slate-400 hover:text-slate-100" title="Back to Europe">
+          <aside className="absolute bottom-4 right-4 top-4 z-10 flex w-[336px] flex-col overflow-hidden">
+            <div className="mb-2 flex items-center gap-2 rounded-xl border border-white/[0.07] bg-[#0b0f16]/90 px-4 py-2.5 backdrop-blur">
+              <div className="min-w-0 flex-1">
+                <div className="truncate font-serif text-[20px] uppercase leading-tight tracking-[0.12em]">
+                  {focus ? focus.name : "European Union"}
+                </div>
+                {!focus && <div className="text-[10px] text-[#8d94a1]">Click a country on the map for its cards.</div>}
+              </div>
+              {focus && (
+                <button
+                  onClick={() => setSelected(null)}
+                  className="rounded border border-white/15 px-2 py-0.5 text-[11px] text-slate-300 hover:text-slate-100"
+                  title="Back to Europe"
+                >
                   ✕
                 </button>
-              </div>
-              {countryBody}
+              )}
             </div>
-          ) : (
-            eu && (
-              <div className="pointer-events-none absolute right-5 top-16 z-10 w-[230px] rounded-md border border-white/[0.07] bg-black/45 px-4 py-3 backdrop-blur">
-                <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">European Union</div>
-                {euBody}
-                <div className="mt-3 text-[10px] text-[#8d94a1]">Click a country for its figures and flows.</div>
-              </div>
-            )
-          )}
+            <div className="min-h-0 flex-1 overflow-y-auto pr-1 [scrollbar-width:thin]">{focus ? countryBody : euBody}</div>
+          </aside>
 
           <div className="pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm">
             {shadeBlock}
@@ -2442,7 +2419,9 @@ export default function EuropeView() {
             </div>
           )}
 
-          <div className="pointer-events-none absolute bottom-4 right-5 z-10 text-right text-[9px] leading-relaxed text-[#77706a]">{credits}</div>
+          <div className="pointer-events-none absolute bottom-4 right-[360px] z-10 max-w-[520px] text-right text-[9px] leading-relaxed text-[#77706a]">
+            {credits}
+          </div>
         </>
       ) : (
         <>
