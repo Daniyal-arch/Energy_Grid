@@ -1,10 +1,5 @@
 import { AmbientLight, LightingEffect, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
-import {
-  CollisionFilterExtension,
-  PathStyleExtension,
-  type CollisionFilterExtensionProps,
-  type PathStyleExtensionProps,
-} from "@deck.gl/extensions";
+import { PathStyleExtension, type PathStyleExtensionProps } from "@deck.gl/extensions";
 import { BitmapLayer, ColumnLayer, LineLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
@@ -458,8 +453,8 @@ const centralSun = (when: Date) => {
 /** Night shadow over Europe at a moment, drawn per pixel in Web Mercator rows. */
 function nightImage(when: Date): HTMLCanvasElement {
   const { decl, eqMin } = sunState(when);
-  const W = 256;
-  const H = 192;
+  const W = 128;
+  const H = 96;
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = H;
@@ -763,7 +758,7 @@ export default function EuropeView() {
   // day time-lapse: slot position (fractional) and play state live in refs; frame re-renders
   const [day, setDay] = useState<DayFile | null>(null);
   const daySlot = useRef(0);
-  const [nightFrames, setNightFrames] = useState<ImageBitmap[] | null>(null);
+  const [, setNightVersion] = useState(0); // bumps when a night frame is ready
   const [dayList, setDayList] = useState<string[]>([]);
   // phones: panels live in a bottom sheet, one at a time
   const [isMobile, setIsMobile] = useState(isNarrow);
@@ -834,14 +829,14 @@ export default function EuropeView() {
     const frame = () =>
       map.fitBounds(
         [
-          [-9, 36],
-          [27, 63],
+          isNarrow() ? [-10, 41] : [-9, 36],
+          isNarrow() ? [27, 60] : [27, 63],
         ],
         {
           padding: isNarrow()
-            ? { left: 8, right: 8, top: 170, bottom: 120 }
+            ? { left: 4, right: 4, top: 120, bottom: 60 }
             : { left: 300, right: 300, top: 40, bottom: 110 },
-          pitch: 55,
+          pitch: isNarrow() ? 52 : 55,
           duration: 0,
         },
       );
@@ -849,18 +844,23 @@ export default function EuropeView() {
     else map.once("load", frame);
   }, [day]);
 
+  // night shadow for the slot on screen (and the next one), cached as it is computed
+  const nightCache = useRef(new Map<number, ImageBitmap>());
+  const nightSlot = day ? Math.min(day.slots - 1, Math.floor(daySlot.current)) : -1;
   useEffect(() => {
-    if (!day) return;
+    if (!day || nightSlot < 0) return;
     let live = true;
-    Promise.all(
-      Array.from({ length: day.slots }, (_, k) =>
-        createImageBitmap(nightImage(new Date(Date.parse(day.start) + k * day.step_s * 1000))),
-      ),
-    ).then((frames) => live && setNightFrames(frames));
+    for (const k of [nightSlot, Math.min(day.slots - 1, nightSlot + 1)]) {
+      if (nightCache.current.has(k)) continue;
+      createImageBitmap(nightImage(new Date(Date.parse(day.start) + k * day.step_s * 1000))).then((b) => {
+        nightCache.current.set(k, b);
+        if (live) setNightVersion((v) => v + 1);
+      });
+    }
     return () => {
       live = false;
     };
-  }, [day]);
+  }, [day, nightSlot]);
 
   // the snapshot is optional: without it the map still renders, unshaded and still
   useEffect(() => {
@@ -880,13 +880,15 @@ export default function EuropeView() {
       container: container.current,
       style: BLANK_STYLE,
       bounds: EUROPE,
-      fitBoundsOptions: { padding: 24 },
+      fitBoundsOptions: { padding: isNarrow() ? { top: 150, bottom: 110, left: 6, right: 6 } : 24 },
       attributionControl: false,
       renderWorldCopies: false,
+      pixelRatio: Math.min(window.devicePixelRatio, isNarrow() ? 1.5 : 2),
     });
     map.on("zoomend", () => setZoom(map.getZoom()));
     const o = new MapboxOverlay({
       interleaved: false,
+      useDevicePixels: isNarrow() ? 1.5 : true,
       layers: [],
       // click a country to focus it; click it again or the sea to go back to Europe
       onClick: ({ object, layer }: PickingInfo) => {
@@ -1157,7 +1159,7 @@ export default function EuropeView() {
   const captions = day?.highlights?.filter((h) => daySlot.current >= h.slot && daySlot.current < h.slot + CAPTION_SLOTS) ?? [];
   const countryName = (iso?: string) => countries?.countries.find((c) => c.iso === iso)?.name ?? iso ?? "";
   const towerTop = useMemo(() => new Map(towers.map((t) => [t.iso, t.group])), [towers]);
-  const night = nightFrames?.[dayK] ?? null;
+  const night = nightCache.current.get(dayK) ?? null;
   // real sunlight on the towers: direction from the clock's moment, strength from the sun's
   // height over Central Europe, so they brighten through the morning and dim after sunset
   const sunAlt = day ? centralSun(new Date(slotTs(dayK))) : 0;
@@ -1364,7 +1366,7 @@ export default function EuropeView() {
       const sky = [5 + 9 * light, 7 + 17 * light, 11 + 29 * light].map(Math.round);
       if (map.getLayer("background")) map.setPaintProperty("background", "background-color", `rgb(${sky.join(",")})`);
     }
-    if (map && !selectedRef.current && map.loaded()) {
+    if (map && !selectedRef.current && map.loaded() && !isNarrow()) {
       const f = daySlot.current / d.slots;
       map.jumpTo({ bearing: -14 + 28 * f, pitch: 55 });
     }
@@ -1373,10 +1375,16 @@ export default function EuropeView() {
   // one clock for the arrows; only the uniforms change per frame
   useEffect(() => {
     let raf = 0;
+    let tick = 0;
     const loop = (now: number) => {
       clock.current.tick(now, mapRef.current?.getZoom() ?? 4, 40);
       if (CAPTURE && !DAY_PARAM) tourTick(now);
       dayTick(now);
+      // phones: re-render the page every other frame
+      if (isNarrow() && (tick = (tick + 1) % 2) === 1) {
+        raf = requestAnimationFrame(loop);
+        return;
+      }
       setFrame((n) => n + 1);
       raf = requestAnimationFrame(loop);
     };
@@ -1695,7 +1703,14 @@ export default function EuropeView() {
         }),
         new TextLayer<Arc>({
           id: "eu-flow-labels",
-          data: !show.flows || (day && !selected) ? [] : selected ? arcs.filter(touches) : arcs.filter((a) => a.mw >= LABEL_MW),
+          data:
+            !show.flows || (day && !selected)
+              ? []
+              : selected
+                ? arcs.filter(touches)
+                : isMobile
+                  ? [...arcs].sort((a, b) => b.mw - a.mw).slice(0, 4)
+                  : arcs.filter((a) => a.mw >= LABEL_MW),
           getPosition: (a) => a.path[20],
           getText: (a) => power(a.mw),
           getSize: 11,
@@ -1710,9 +1725,12 @@ export default function EuropeView() {
           getPixelOffset: [0, -12],
           parameters: noDepth,
         }),
-        new TextLayer<TowerPiece, CollisionFilterExtensionProps<TowerPiece>>({
+        new TextLayer<TowerPiece>({
           id: "eu-tower-labels",
-          data: towers.filter((t) => t.group === towerTop.get(t.iso) && t.total >= TOWER_LABEL_MW),
+          data: towers
+            .filter((t) => t.group === towerTop.get(t.iso) && t.total >= TOWER_LABEL_MW)
+            .sort((a, b) => b.total - a.total)
+            .slice(0, isMobile ? 5 : 9),
           getPosition: (t) => [...ANCHOR[t.iso], (t.base + t.drawn) * TOWER_M_PER_MW + 25_000] as [number, number, number],
           getText: (t) => `${t.iso} ${Math.round(t.total / 1000)} GW`,
           getSize: 12,
@@ -1723,9 +1741,6 @@ export default function EuropeView() {
           getBackgroundColor: [6, 9, 14, 200],
           backgroundPadding: [4, 2],
           // labels that would overlap hide; the bigger country wins
-          extensions: [new CollisionFilterExtension()],
-          collisionGroup: "tower-labels",
-          getCollisionPriority: (t) => Math.min(1000, t.total / 100),
           parameters: noDepth,
         }),
       ],
@@ -1776,17 +1791,19 @@ export default function EuropeView() {
 
       <div
         className={`absolute z-10 rounded-md bg-[#05070b]/75 px-3 py-2 backdrop-blur-sm ${
-          isMobile ? "left-2 right-2 top-2" : "left-4 top-4"
+          isMobile ? "left-2 right-2 top-2 flex flex-wrap items-center gap-x-2 gap-y-1.5" : "left-4 top-4"
         }`}
       >
-        <div className={`font-serif uppercase leading-none tracking-[0.2em] ${isMobile ? "text-[22px]" : "text-[34px]"}`}>
+        <div className={`font-serif uppercase leading-none tracking-[0.2em] ${isMobile ? "mr-1 text-[20px]" : "text-[34px]"}`}>
           Europe
         </div>
-        <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">
-          {day ? "24 hours of electricity" : "Grid, plants & cross-border flows"}
-        </div>
+        {!isMobile && (
+          <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">
+            {day ? "24 hours of electricity" : "Grid, plants & cross-border flows"}
+          </div>
+        )}
         {/* the two views: the live map, and one real day as a time-lapse */}
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+        <div className={isMobile ? "contents" : "mt-3 flex flex-wrap items-center gap-2"}>
           <nav className="inline-flex rounded border border-white/15 p-0.5 text-[11px]">
             {TABS.map((t) => {
               const active = t.id === (DAY_PARAM ? "day" : "live");
@@ -1820,7 +1837,7 @@ export default function EuropeView() {
           )}
         </div>
         {day && dayList.length > 0 && (
-          <div className="mt-2 flex items-center gap-1 text-[11px]">
+          <div className={`flex items-center gap-1 text-[11px] ${isMobile ? "" : "mt-2"}`}>
             {(() => {
               const i = dayList.indexOf(day.date);
               const go = (d?: string) => {
@@ -1866,9 +1883,11 @@ export default function EuropeView() {
           </div>
         )}
         {day && dayCharts && (
-          <div className="mt-3 w-[240px]">
+          <div className={isMobile ? "w-full" : "mt-3 w-[240px]"}>
             <div className="flex items-end justify-between">
-              <div className="whitespace-nowrap text-[34px] font-light leading-none tabular-nums tracking-wide">
+              <div
+                className={`whitespace-nowrap font-light leading-none tabular-nums tracking-wide ${isMobile ? "text-[24px]" : "text-[34px]"}`}
+              >
                 {marketTime(slotTs(dayK))}
               </div>
               <svg width={64} height={30} className="mb-1" aria-label="sun height over Central Europe">
@@ -1913,7 +1932,7 @@ export default function EuropeView() {
             )}
           </div>
         )}
-        <div className={`mt-3 flex gap-1 ${isMobile ? "overflow-x-auto" : "flex-wrap"}`}>
+        <div className={`mt-3 flex flex-wrap gap-1 ${isMobile ? "hidden" : ""}`}>
           {(Object.keys(show) as Array<keyof typeof show>).map((k) => (
             <button
               key={k}
@@ -2136,6 +2155,24 @@ export default function EuropeView() {
         }
         style={isMobile ? { bottom: sheetBottom } : undefined}
       >
+        {isMobile && (
+          <div>
+            <div className="text-[9px] uppercase tracking-[0.18em] text-[#8d94a1]">Layers</div>
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {(Object.keys(show) as Array<keyof typeof show>).map((k) => (
+                <button
+                  key={k}
+                  onClick={() => setShow({ ...show, [k]: !show[k] })}
+                  className={`rounded border px-2.5 py-1 text-[11px] capitalize ${
+                    show[k] ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
+                  }`}
+                >
+                  {k}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         {(stats || day) && (
           <div>
             <div className="pointer-events-auto flex gap-1">
