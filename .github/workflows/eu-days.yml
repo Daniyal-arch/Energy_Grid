@@ -1,0 +1,64 @@
+name: Europe day archive
+
+# Keeps a rolling archive of complete days for the 24-hours view
+# (scripts/build_eu_day.py --recent): every morning it builds yesterday, rebuilds the
+# two newest days to pick up late corrections, and drops days older than the window.
+# The archive lives on the `eu-days` branch (eu/day/<date>.json + index.json); the app
+# reads it from raw.githubusercontent.com next to the days bundled with the site.
+#
+# First run / backfill: Actions -> "Europe day archive" -> Run workflow (days = 30).
+
+on:
+  schedule:
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+    inputs:
+      days:
+        description: "How many complete days to keep"
+        default: "30"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eu-days
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install httpx tzdata
+
+      - name: Fetch the current archive
+        run: |
+          mkdir -p store
+          if git ls-remote --exit-code origin eu-days >/dev/null; then
+            git fetch --depth 1 origin eu-days
+            git --work-tree=store checkout FETCH_HEAD -- .
+          fi
+          mkdir -p store/eu/day
+
+      - name: Build missing days
+        run: python scripts/build_eu_day.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/day
+
+      - name: Publish
+        env:
+          REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+        run: |
+          cd store
+          rm -rf .git
+          git init -q -b eu-days
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Europe day archive $(date -u +%Y-%m-%d)"
+          git push -q -f "$REMOTE" eu-days

@@ -38,6 +38,13 @@ bundled one (newer wins). Reservoirs need the repo secret `ENTSOE_API_KEY`.
 | `day/index.json` | list of built days | — (`?day=latest` opens the newest) |
 | `day/<date>.json` → `highlights` | ~9 key moments per day | computed by `scripts/day_highlights.py` from the same file: min/max of EU load, solar, wind, gas; lowest/highest zone price; largest border flow; highest renewable share at the solar peak. The captions only word these values |
 
+**Rolling archive:** `.github/workflows/eu-days.yml` runs every morning
+(`build_eu_day.py --recent 30`): it builds yesterday, rebuilds the two newest days
+for late corrections and drops days older than 30, on the `eu-days` branch. All
+missing days are fetched in one window (one request per series), so a 30-day
+backfill costs about as much as one day. The app merges that archive with the days
+bundled in `frontend/public/data/eu/day/` and offers them in a date picker.
+
 The time-lapse clock shows the market's own time (CET/CEST) of the slot on screen.
 The "price range, all zones" chart is the lowest and highest zone price per slot.
 

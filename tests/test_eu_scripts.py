@@ -39,3 +39,39 @@ def test_day_window_follows_daylight_saving():
     assert day_window(date(2026, 10, 25))[1] == 100  # clocks go back
     start, _ = day_window(date(2026, 9, 24))
     assert start.isoformat() == "2026-09-23T22:00:00+00:00"  # local midnight, CEST
+
+
+def test_day_payload_cuts_one_day_from_a_multi_day_window():
+    from build_eu_day import day_payload
+
+    first, _ = day_window(date(2026, 9, 24))
+    t0 = int(first.timestamp())
+    q = [t0 + 900 * k for k in range(192)]  # two days of 15-min stamps
+    raw = {
+        "eu": {
+            "unix_seconds": [t0 + 3600 * h for h in range(48)],
+            "production_types": [
+                {"name": "Solar", "data": [float(h) for h in range(48)]},
+                {"name": "Load", "data": [1000.0 + h for h in range(48)]},
+            ],
+        },
+        "prices": {"DE-LU": {"unix_seconds": q, "price": [float(k) for k in range(192)]}},
+        "power": {
+            "de": {
+                "unix_seconds": q,
+                "production_types": [
+                    {"name": "Wind onshore", "data": [1.0] * 192},
+                    {"name": "Wind offshore", "data": [2.0] * 192},
+                    {"name": "Load", "data": [5.0] * 192},
+                ],
+            }
+        },
+        "cbpf": {"de": {"unix_seconds": q, "countries": [{"name": "France", "data": [0.5] * 192}]}},
+    }
+    second = day_payload(date(2026, 9, 25), raw)
+    assert second["slots"] == 96
+    assert second["prices"]["DE-LU"]["values"][0] == 96.0  # first slot of the second day
+    assert second["countries"]["DE"]["generation"]["wind"][0] == 3.0  # onshore + offshore
+    assert second["eu"]["generation"]["solar"][:4] == [24.0] * 4  # hourly value fills 4 slots
+    assert second["borders"] == [{"a": "FR", "b": "DE", "values": [500.0] * 96}]
+    assert second["highlights"]  # key moments computed for the day

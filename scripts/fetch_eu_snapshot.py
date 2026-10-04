@@ -190,6 +190,11 @@ def get(client: httpx.Client, path: str, code: str = "", **params: str) -> dict 
             wait = float(r.headers.get("retry-after") or 10) + 2
             time.sleep(wait)
             continue
+        if r.status_code >= 500:
+            # the service is briefly unavailable now and then: wait and try again
+            print(f"  {code or params}: HTTP {r.status_code}, retry", flush=True)
+            time.sleep(30 * (attempt + 1))
+            continue
         if r.status_code != 200:
             return None
         return r.json()

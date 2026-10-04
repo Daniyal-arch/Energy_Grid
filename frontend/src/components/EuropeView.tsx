@@ -619,6 +619,18 @@ async function getJson<T>(url: string): Promise<T> {
 
 // refreshed every 30 min by .github/workflows/eu-snapshot.yml
 const SNAPSHOT_REMOTE = "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-data/eu";
+// rolling archive of complete days, kept by .github/workflows/eu-days.yml
+const DAYS_REMOTE = "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day";
+const MOBILE_QUERY = "(max-width: 767px)";
+const isNarrow = () => window.matchMedia(MOBILE_QUERY).matches;
+const dayLabel = (d: string) =>
+  new Date(`${d}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+
+/** Views of the app, shown as tabs (more join as they are built). */
+const TABS: { id: "live" | "day"; label: string; href: string }[] = [
+  { id: "live", label: "Live map", href: "/" },
+  { id: "day", label: "24 hours", href: "/?day=latest" },
+];
 
 /**
  * Hands over the copy bundled with the app at once, then the cloud snapshot if it
@@ -752,6 +764,16 @@ export default function EuropeView() {
   const [day, setDay] = useState<DayFile | null>(null);
   const daySlot = useRef(0);
   const [nightFrames, setNightFrames] = useState<ImageBitmap[] | null>(null);
+  const [dayList, setDayList] = useState<string[]>([]);
+  // phones: panels live in a bottom sheet, one at a time
+  const [isMobile, setIsMobile] = useState(isNarrow);
+  const [sheet, setSheet] = useState<"none" | "info" | "legend" | "sources">("none");
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_QUERY);
+    const onChange = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
   const dayPlaying = useRef(!CAPTURE);
   const lastFrame = useRef<number | null>(null);
   const [units, setUnits] = useState<{ iso: string; rows: Unit[] } | null>(null);
@@ -778,12 +800,22 @@ export default function EuropeView() {
 
   useEffect(() => {
     if (!DAY_PARAM) return;
-    const pick =
-      DAY_PARAM === "latest"
-        ? getJson<{ days: string[] }>("/data/eu/day/index.json").then((i) => i.days[i.days.length - 1])
-        : Promise.resolve(DAY_PARAM);
-    pick
-      .then((d) => getJson<DayFile>(`/data/eu/day/${d}.json`))
+    // days from the cloud archive (eu-days branch) plus any bundled with the site
+    Promise.allSettled([
+      fetch(`${DAYS_REMOTE}/index.json?t=${Date.now()}`, { signal: AbortSignal.timeout(6000) }).then((r) =>
+        r.ok ? (r.json() as Promise<{ days: string[] }>) : Promise.reject(new Error(String(r.status))),
+      ),
+      getJson<{ days: string[] }>("/data/eu/day/index.json"),
+    ])
+      .then(([remote, local]) => {
+        const remoteDays = remote.status === "fulfilled" ? remote.value.days : [];
+        const localDays = local.status === "fulfilled" ? local.value.days : [];
+        const all = [...new Set([...remoteDays, ...localDays])].sort();
+        if (!all.length) throw new Error("no days built yet");
+        setDayList(all);
+        const d = DAY_PARAM !== "latest" && all.includes(DAY_PARAM) ? DAY_PARAM : all[all.length - 1];
+        return getJson<DayFile>(remoteDays.includes(d) ? `${DAYS_REMOTE}/${d}.json` : `/data/eu/day/${d}.json`);
+      })
       .then((d) => {
         if (DAY_AT) {
           const [h, m] = DAY_AT.split(":").map(Number);
@@ -805,7 +837,13 @@ export default function EuropeView() {
           [-9, 36],
           [27, 63],
         ],
-        { padding: { left: 300, right: 300, top: 40, bottom: 110 }, pitch: 55, duration: 0 },
+        {
+          padding: isNarrow()
+            ? { left: 8, right: 8, top: 170, bottom: 120 }
+            : { left: 300, right: 300, top: 40, bottom: 110 },
+          pitch: 55,
+          duration: 0,
+        },
       );
     if (map.loaded()) frame();
     else map.once("load", frame);
@@ -1165,12 +1203,26 @@ export default function EuropeView() {
   );
 
   const focus = useMemo(() => countries?.countries.find((c) => c.iso === selected) ?? null, [countries, selected]);
+  // shareable country links: ?country=FR stays in the address bar
+  useEffect(() => {
+    if (CAPTURE) return;
+    const params = new URLSearchParams(window.location.search);
+    if (selected) params.set("country", selected);
+    else params.delete("country");
+    const qs = params.toString();
+    window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname);
+    document.title = focus ? `${focus.name} · Europe InfraAtlas` : "Europe InfraAtlas";
+    if (focus) setSheet("info");
+  }, [selected, focus]);
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
     if (focus) {
       // tilt into the country so the plant columns stand up
-      const cam = map.cameraForBounds(bbox(focus), { padding: { left: 280, right: 320, top: 90, bottom: 60 } });
+      const pad = isNarrow()
+        ? { left: 10, right: 10, top: 150, bottom: Math.round(window.innerHeight * 0.48) }
+        : { left: 280, right: 320, top: 90, bottom: 60 };
+      const cam = map.cameraForBounds(bbox(focus), { padding: pad });
       if (!cam?.center) return;
       map.flyTo({ center: cam.center, zoom: Math.min(6.2, (cam.zoom ?? 5) - 0.1), pitch: 52, bearing: -12, duration: 1400 });
     } else {
@@ -1714,31 +1766,105 @@ export default function EuropeView() {
   const focusReservoir = selected ? reference?.reservoirs[selected] : undefined;
   const focusLng = selected && gas ? gas.lng.filter((g) => g[1] === selected) : [];
   const focusStorages = selected && gas ? gas.storages.filter((g) => g[1] === selected) : [];
+  // phones: one sheet above the bottom bar (and above the timeline when there is one)
+  const sheetClass = "absolute inset-x-2 z-20 max-h-[46vh] overflow-y-auto rounded-md border border-white/[0.09] bg-[#05070b]/95 px-4 py-3 backdrop-blur";
+  const sheetBottom = day || seriesLength > 1 ? 104 : 52;
 
   return (
     <div className="relative h-screen w-screen overflow-hidden text-slate-100" style={{ background: SEA }}>
       <div ref={container} className="absolute inset-0" />
 
-      <div className="absolute left-4 top-4 z-10 rounded-md bg-[#05070b]/70 px-3 py-2 backdrop-blur-sm">
-        <div className="font-serif text-[34px] uppercase leading-none tracking-[0.2em]">Europe</div>
+      <div
+        className={`absolute z-10 rounded-md bg-[#05070b]/75 px-3 py-2 backdrop-blur-sm ${
+          isMobile ? "left-2 right-2 top-2" : "left-4 top-4"
+        }`}
+      >
+        <div className={`font-serif uppercase leading-none tracking-[0.2em] ${isMobile ? "text-[22px]" : "text-[34px]"}`}>
+          Europe
+        </div>
         <div className="mt-2 text-[10px] uppercase tracking-[0.32em] text-[#b9ab9b]">
           {day ? "24 hours of electricity" : "Grid, plants & cross-border flows"}
         </div>
         {/* the two views: the live map, and one real day as a time-lapse */}
-        <div className="mt-3 inline-flex rounded border border-white/15 p-0.5 text-[11px]">
-          <a
-            href="/"
-            className={`rounded px-2.5 py-1 ${!day ? "bg-white/15 text-slate-100" : "text-slate-400 hover:text-slate-100"}`}
-          >
-            Live map
-          </a>
-          <a
-            href="/?day=latest"
-            className={`rounded px-2.5 py-1 ${day ? "bg-white/15 text-slate-100" : "text-slate-400 hover:text-slate-100"}`}
-          >
-            24 hours
-          </a>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <nav className="inline-flex rounded border border-white/15 p-0.5 text-[11px]">
+            {TABS.map((t) => {
+              const active = t.id === (DAY_PARAM ? "day" : "live");
+              return (
+                <a
+                  key={t.id}
+                  href={t.href}
+                  className={`rounded px-2.5 py-1 ${active ? "bg-white/15 text-slate-100" : "text-slate-400 hover:text-slate-100"}`}
+                >
+                  {t.label}
+                </a>
+              );
+            })}
+          </nav>
+          {countries && (
+            <select
+              value={selected ?? ""}
+              onChange={(e) => setSelected(e.target.value || null)}
+              className="rounded border border-white/15 bg-[#0b0e15] px-1.5 py-1 text-[11px] text-slate-200"
+              aria-label="Country"
+            >
+              <option value="">All of Europe</option>
+              {[...countries.countries]
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((c) => (
+                  <option key={c.iso} value={c.iso}>
+                    {c.name}
+                  </option>
+                ))}
+            </select>
+          )}
         </div>
+        {day && dayList.length > 0 && (
+          <div className="mt-2 flex items-center gap-1 text-[11px]">
+            {(() => {
+              const i = dayList.indexOf(day.date);
+              const go = (d?: string) => {
+                if (!d) return;
+                const params = new URLSearchParams(window.location.search);
+                params.set("day", d);
+                params.delete("at");
+                window.location.search = params.toString();
+              };
+              return (
+                <>
+                  <button
+                    onClick={() => go(dayList[i - 1])}
+                    disabled={i <= 0}
+                    className="rounded border border-white/15 px-1.5 py-0.5 text-slate-300 disabled:opacity-30"
+                    aria-label="Previous day"
+                  >
+                    ‹
+                  </button>
+                  <select
+                    value={day.date}
+                    onChange={(e) => go(e.target.value)}
+                    className="rounded border border-white/15 bg-[#0b0e15] px-1.5 py-0.5 text-slate-200"
+                    aria-label="Day"
+                  >
+                    {[...dayList].reverse().map((d) => (
+                      <option key={d} value={d}>
+                        {dayLabel(d)}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => go(dayList[i + 1])}
+                    disabled={i < 0 || i >= dayList.length - 1}
+                    className="rounded border border-white/15 px-1.5 py-0.5 text-slate-300 disabled:opacity-30"
+                    aria-label="Next day"
+                  >
+                    ›
+                  </button>
+                </>
+              );
+            })()}
+          </div>
+        )}
         {day && dayCharts && (
           <div className="mt-3 w-[240px]">
             <div className="flex items-end justify-between">
@@ -1760,6 +1886,8 @@ export default function EuropeView() {
                 />
               </svg>
             </div>
+            {!isMobile && (
+              <>
             <DayChart
               title="EU solar + wind"
               unit={eu ? `${gw((eu.generation_mw.solar ?? 0) + (eu.generation_mw.wind ?? 0))}` : "GW"}
@@ -1781,9 +1909,11 @@ export default function EuropeView() {
               k={dayK}
               slots={day.slots}
             />
+              </>
+            )}
           </div>
         )}
-        <div className="mt-3 flex flex-wrap gap-1">
+        <div className={`mt-3 flex gap-1 ${isMobile ? "overflow-x-auto" : "flex-wrap"}`}>
           {(Object.keys(show) as Array<keyof typeof show>).map((k) => (
             <button
               key={k}
@@ -1796,7 +1926,7 @@ export default function EuropeView() {
             </button>
           ))}
         </div>
-        {topFlows.length > 0 && (
+        {topFlows.length > 0 && !isMobile && (
           <div className="mt-5 w-[210px]">
             <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">Largest cross-border flows</div>
             <div className="mt-2 space-y-1">
@@ -1813,14 +1943,36 @@ export default function EuropeView() {
         )}
       </div>
 
-      {focus ? (
-        <div className="absolute right-5 top-16 z-10 max-h-[calc(100vh-110px)] w-[250px] overflow-y-auto rounded-md border border-white/[0.09] bg-black/60 px-4 py-3 backdrop-blur">
+      {isMobile && sheet !== "info" ? null : focus ? (
+        <div
+          className={
+            isMobile
+              ? `${sheetClass}`
+              : "absolute right-5 top-16 z-10 max-h-[calc(100vh-110px)] w-[250px] overflow-y-auto rounded-md border border-white/[0.09] bg-black/60 px-4 py-3 backdrop-blur"
+          }
+          style={isMobile ? { bottom: sheetBottom } : undefined}
+        >
           <div className="flex items-start justify-between">
             <div className="font-serif text-[20px] uppercase leading-tight tracking-[0.12em]">{focus.name}</div>
             <button onClick={() => setSelected(null)} className="text-[11px] text-slate-400 hover:text-slate-100" title="Back to Europe">
               ✕
             </button>
           </div>
+          {isMobile && show.plants && (
+            <div className="mt-2 flex gap-1 text-[11px]">
+              {(["bars", "beams"] as const).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setPlantStyle(m)}
+                  className={`rounded border px-2 py-0.5 ${
+                    plantStyle === m ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-400"
+                  }`}
+                >
+                  {m === "bars" ? "Bars" : "Beams & fields"}
+                </button>
+              ))}
+            </div>
+          )}
           {focusPower ? (
             <PowerBlock power={focusPower} time={timeOf} />
           ) : (
@@ -1940,7 +2092,14 @@ export default function EuropeView() {
         </div>
       ) : (
         eu && (
-          <div className="pointer-events-none absolute right-5 top-16 z-10 w-[230px] rounded-md border border-white/[0.07] bg-black/45 px-4 py-3 backdrop-blur">
+          <div
+            className={
+              isMobile
+                ? sheetClass
+                : "pointer-events-none absolute right-5 top-16 z-10 w-[230px] rounded-md border border-white/[0.07] bg-black/45 px-4 py-3 backdrop-blur"
+            }
+            style={isMobile ? { bottom: sheetBottom } : undefined}
+          >
             <div className="text-[9px] uppercase tracking-[0.24em] text-[#8f877e]">European Union</div>
             <PowerBlock power={eu} time={timeOf} />
             {day && ranking.length > 0 && (
@@ -1969,7 +2128,14 @@ export default function EuropeView() {
         )
       )}
 
-      <div className="pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm">
+      <div
+        className={
+          isMobile
+            ? `${sheetClass} space-y-3 text-[11px] text-slate-300 ${sheet === "legend" ? "" : "hidden"}`
+            : "pointer-events-none absolute bottom-4 left-4 z-10 w-[270px] space-y-3 rounded-md bg-[#05070b]/70 px-3 py-3 text-[11px] text-slate-300 backdrop-blur-sm"
+        }
+        style={isMobile ? { bottom: sheetBottom } : undefined}
+      >
         {(stats || day) && (
           <div>
             <div className="pointer-events-auto flex gap-1">
@@ -2069,7 +2235,7 @@ export default function EuropeView() {
         </div>
       </div>
 
-      {focus && show.plants && (
+      {focus && show.plants && !isMobile && (
         <div className="absolute left-1/2 top-4 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md border border-white/[0.1] bg-[#05070b]/80 px-3 py-1.5 text-[11px] text-slate-300 backdrop-blur">
           <span className="text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">3D style</span>
           {(["bars", "beams"] as const).map((m) => (
@@ -2087,7 +2253,11 @@ export default function EuropeView() {
       )}
 
       {day && captions.length > 0 && !selected && (
-        <div className="pointer-events-none absolute left-1/2 top-6 z-10 flex -translate-x-1/2 flex-col items-center gap-2">
+        <div
+          className={`pointer-events-none absolute z-10 flex flex-col items-center gap-2 ${
+            isMobile ? "inset-x-2 bottom-[104px]" : "left-1/2 top-6 -translate-x-1/2"
+          }`}
+        >
           {captions.map((h) => {
             const c = captionText(h, countryName);
             const age = daySlot.current - h.slot;
@@ -2095,13 +2265,15 @@ export default function EuropeView() {
             return (
               <div
                 key={h.kind}
-                className="min-w-[340px] rounded-lg border border-white/[0.1] bg-[#05070b]/80 px-5 py-3 text-center backdrop-blur"
+                className={`rounded-lg border border-white/[0.1] bg-[#05070b]/80 text-center backdrop-blur ${
+                  isMobile ? "w-full px-3 py-2" : "min-w-[340px] px-5 py-3"
+                }`}
                 style={{ opacity: alpha, transform: `translateY(${(1 - Math.min(1, age / 0.6)) * -8}px)` }}
               >
                 <div className="text-[10px] uppercase tracking-[0.28em]" style={{ color: rgbCss(c.color) }}>
                   {marketTime(slotTs(h.slot))} · {c.title}
                 </div>
-                <div className="mt-1 text-[17px] font-light text-slate-100">{c.text}</div>
+                <div className={`mt-1 font-light text-slate-100 ${isMobile ? "text-[14px]" : "text-[17px]"}`}>{c.text}</div>
               </div>
             );
           })}
@@ -2109,7 +2281,11 @@ export default function EuropeView() {
       )}
 
       {day && (
-        <div className="absolute bottom-12 left-1/2 z-10 flex w-[560px] -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
+        <div
+          className={`absolute z-10 flex items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur ${
+            isMobile ? "inset-x-2 bottom-12" : "bottom-12 left-1/2 w-[560px] -translate-x-1/2"
+          }`}
+        >
           <button
             onClick={() => {
               if (!dayPlaying.current && daySlot.current >= day.slots - 1) daySlot.current = 0;
@@ -2140,12 +2316,18 @@ export default function EuropeView() {
             className="w-full accent-sky-300"
           />
           </div>
-          <span className="w-[112px] text-right tabular-nums text-[#aab3c0]">{marketTime(slotTs(dayK))}</span>
+          <span className={`text-right tabular-nums text-[#aab3c0] ${isMobile ? "w-[72px]" : "w-[112px]"}`}>
+            {marketTime(slotTs(dayK))}
+          </span>
         </div>
       )}
 
       {seriesLength > 1 && !day && (
-        <div className="absolute bottom-12 left-1/2 z-10 flex w-[440px] -translate-x-1/2 items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur">
+        <div
+          className={`absolute z-10 flex items-center gap-3 rounded-md border border-white/[0.08] bg-[#05070b]/80 px-3 py-2 text-[11px] text-slate-200 backdrop-blur ${
+            isMobile ? "inset-x-2 bottom-12" : "bottom-12 left-1/2 w-[440px] -translate-x-1/2"
+          }`}
+        >
           <button
             onClick={() => {
               if (!playing && replay == null) setReplay(0);
@@ -2173,13 +2355,41 @@ export default function EuropeView() {
         </div>
       )}
 
-      <div className="pointer-events-none absolute bottom-4 right-5 z-10 text-right text-[9px] leading-relaxed text-[#77706a]">
+      <div
+        className={
+          isMobile
+            ? `${sheetClass} text-[10px] leading-relaxed text-[#9a938c] ${sheet === "sources" ? "" : "hidden"}`
+            : "pointer-events-none absolute bottom-4 right-5 z-10 text-right text-[9px] leading-relaxed text-[#77706a]"
+        }
+        style={isMobile ? { bottom: sheetBottom } : undefined}
+      >
         <div>Grid: PyPSA-Eur network from © OpenStreetMap contributors (ODbL) · Plants ≥ 20 MW: powerplantmatching</div>
         <div>
           Flows, load, generation, renewable share, prices, installed capacity: Energy-Charts (Fraunhofer ISE) from ENTSO-E data ·
           Reservoirs: ENTSO-E · Gas: SciGRID_gas (2021) · Borders: © EuroGeographics
         </div>
       </div>
+      {isMobile && (
+        <div className="absolute inset-x-2 bottom-2 z-20 flex gap-1 text-[11px]">
+          {(
+            [
+              ["info", focus ? focus.name : "Europe now"],
+              ["legend", "Legend"],
+              ["sources", "Sources"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              onClick={() => setSheet(sheet === id ? "none" : id)}
+              className={`flex-1 truncate rounded-md border px-2 py-2 backdrop-blur ${
+                sheet === id ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 bg-[#05070b]/80 text-slate-300"
+              }`}
+            >
+              {label} {sheet === id ? "▾" : "▴"}
+            </button>
+          ))}
+        </div>
+      )}
       {CAPTURE && tour.current.started != null && <TourCursor tour={tour.current} />}
       {(error || !grid) && (
         <div className="absolute inset-0 z-20 flex items-center justify-center text-sm text-slate-400">

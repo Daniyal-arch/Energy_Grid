@@ -19,7 +19,8 @@ Writes frontend/public/data/eu/day/<YYYY-MM-DD>.json and updates day/index.json:
    "borders": [{"a", "b", "values": [MW, a -> b positive]}],
    "highlights": [...]}  (key moments, scripts/day_highlights.py)
 
-    uv run python scripts/build_eu_day.py 2026-10-02
+    uv run python scripts/build_eu_day.py 2026-10-02      # one day
+    uv run python scripts/build_eu_day.py --recent 30    # rolling 30-day archive
 """
 
 from __future__ import annotations
@@ -97,59 +98,68 @@ def power_series(data: dict, start: int, slots: int) -> dict:
     }
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("day", help="local day, YYYY-MM-DD (must be complete)")
-    parser.add_argument("--out", type=Path, default=OUT)
-    args = parser.parse_args()
-    day = date.fromisoformat(args.day)
-    start_dt, slots = day_window(day)
-    start = int(start_dt.timestamp())
-    end_dt = start_dt + timedelta(seconds=STEP * slots - 60)
+def fetch_window(first: date, last: date) -> dict:
+    """Every source for the local days first..last in one pass (one request per series).
+
+    Asking once for the whole window keeps a 30-day backfill as cheap as a single day
+    (~110 requests, paced for Energy-Charts' rate limit).
+    """
+    start_dt, _ = day_window(first)
+    end_start, end_slots = day_window(last)
+    end_dt = end_start + timedelta(seconds=STEP * end_slots - 60)
     window = {
         "start": start_dt.strftime("%Y-%m-%dT%H:%MZ"),
         "end": end_dt.strftime("%Y-%m-%dT%H:%MZ"),
     }
-
-    prices: dict[str, dict] = {}
-    countries: dict[str, dict] = {}
-    borders: dict[frozenset[str], dict] = {}
-    with httpx.Client(timeout=90, headers={"User-Agent": "Germany-InfraAtlas/0.1"}) as client:
-        eu_raw = get(client, "/public_power", "eu", **window)
+    raw: dict = {"eu": None, "prices": {}, "power": {}, "cbpf": {}}
+    with httpx.Client(timeout=180, headers={"User-Agent": "Germany-InfraAtlas/0.1"}) as client:
+        raw["eu"] = get(client, "/public_power", "eu", **window)
         time.sleep(3)
-        eu = power_series(eu_raw, start, slots) if eu_raw else None
-        for zone, iso in PRICE_ZONES.items():
-            data = get(client, "/price", bzn=zone, **window)
+        for zone in PRICE_ZONES:
+            raw["prices"][zone] = get(client, "/price", bzn=zone, **window)
             time.sleep(3)
-            if data:
-                prices[zone] = {
-                    "country": iso,
-                    "values": align(data["unix_seconds"], data["price"], start, slots),
-                }
-        print(f"prices: {len(prices)} of {len(PRICE_ZONES)} zones", flush=True)
+        print(f"prices: {sum(1 for v in raw['prices'].values() if v)} zones", flush=True)
         for code in CODES:
-            home = code.upper()
-            pp = get(client, "/public_power", code, **window)
+            raw["power"][code] = get(client, "/public_power", code, **window)
             time.sleep(3)
-            if pp:
-                countries[home] = power_series(pp, start, slots)
-            data = get(client, "/cbpf", code, **window)
+            raw["cbpf"][code] = get(client, "/cbpf", code, **window)
             time.sleep(3)
-            if not data:
-                continue
-            for s in data.get("countries", []):
-                other = NAME_TO_ISO.get(s.get("name"))
-                if not other or frozenset((home, other)) in borders:
-                    continue
-                # Energy-Charts: positive = import into the asked country (other -> home)
-                borders[frozenset((home, other))] = {
-                    "a": other,
-                    "b": home,
-                    "values": align(data["unix_seconds"], s["data"], start, slots, scale=1000.0),
-                }
-            print(f"{home}: power {'ok' if pp else '-'}, {len(borders)} borders so far", flush=True)
+            print(f"{code.upper()}: power {'ok' if raw['power'][code] else '-'}", flush=True)
+    return raw
 
-    args.out.mkdir(parents=True, exist_ok=True)
+
+def day_payload(day: date, raw: dict) -> dict:
+    """One local day cut from the fetched window, on its own 15-min grid."""
+    start_dt, slots = day_window(day)
+    start = int(start_dt.timestamp())
+    prices: dict[str, dict] = {}
+    for zone, iso in PRICE_ZONES.items():
+        data = raw["prices"].get(zone)
+        if data:
+            prices[zone] = {
+                "country": iso,
+                "values": align(data["unix_seconds"], data["price"], start, slots),
+            }
+    countries = {
+        code.upper(): power_series(data, start, slots)
+        for code, data in raw["power"].items()
+        if data
+    }
+    borders: dict[frozenset[str], dict] = {}
+    for code, data in raw["cbpf"].items():
+        if not data:
+            continue
+        home = code.upper()
+        for s in data.get("countries", []):
+            other = NAME_TO_ISO.get(s.get("name"))
+            if not other or frozenset((home, other)) in borders:
+                continue
+            # Energy-Charts: positive = import into the asked country (other -> home)
+            borders[frozenset((home, other))] = {
+                "a": other,
+                "b": home,
+                "values": align(data["unix_seconds"], s["data"], start, slots, scale=1000.0),
+            }
     payload = {
         "source": SOURCE,
         "date": day.isoformat(),
@@ -159,19 +169,68 @@ def main() -> None:
         "slots": slots,
         "prices": prices,
         "countries": countries,
-        "eu": eu,
+        "eu": power_series(raw["eu"], start, slots) if raw["eu"] else None,
         "borders": list(borders.values()),
     }
     payload["highlights"] = highlights(payload)
-    path = args.out / f"{day.isoformat()}.json"
-    path.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
-    days = sorted(p.stem for p in args.out.glob("20*.json"))
-    (args.out / "index.json").write_text(json.dumps({"days": days}), encoding="utf-8")
-    missing = sum(v is None for z in prices.values() for v in z["values"])
-    print(
-        f"{path} ({path.stat().st_size / 1e6:.2f} MB): {slots} slots, {len(prices)} price zones "
-        f"({missing} empty slots), {len(countries)} countries, {len(borders)} borders"
+    return payload
+
+
+def write_index(out: Path) -> list[str]:
+    days = sorted(p.stem for p in out.glob("20*.json"))
+    (out / "index.json").write_text(json.dumps({"days": days}), encoding="utf-8")
+    return days
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("day", nargs="?", help="one local day, YYYY-MM-DD (must be complete)")
+    parser.add_argument(
+        "--recent",
+        type=int,
+        default=0,
+        help="keep the last N complete days: build missing ones, delete older ones",
     )
+    parser.add_argument(
+        "--refresh",
+        type=int,
+        default=2,
+        help="with --recent: always rebuild the newest N days (late corrections)",
+    )
+    parser.add_argument("--out", type=Path, default=OUT)
+    args = parser.parse_args()
+    args.out.mkdir(parents=True, exist_ok=True)
+
+    if args.recent:
+        yesterday = datetime.now(TZ).date() - timedelta(days=1)
+        wanted = [yesterday - timedelta(days=i) for i in range(args.recent)]
+        have = {p.stem for p in args.out.glob("20*.json")}
+        todo = sorted(
+            d for i, d in enumerate(wanted) if i < args.refresh or d.isoformat() not in have
+        )
+        for stale in have - {d.isoformat() for d in wanted}:
+            (args.out / f"{stale}.json").unlink()
+            print(f"removed {stale}")
+    elif args.day:
+        todo = [date.fromisoformat(args.day)]
+    else:
+        parser.error("give a day or --recent N")
+
+    if todo:
+        raw = fetch_window(todo[0], todo[-1])
+        for day in todo:
+            payload = day_payload(day, raw)
+            path = args.out / f"{day.isoformat()}.json"
+            path.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
+            missing = sum(v is None for z in payload["prices"].values() for v in z["values"])
+            print(
+                f"{path.name} ({path.stat().st_size / 1e6:.2f} MB): {payload['slots']} slots, "
+                f"{len(payload['prices'])} price zones ({missing} empty slots), "
+                f"{len(payload['countries'])} countries, {len(payload['borders'])} borders",
+                flush=True,
+            )
+    days = write_index(args.out)
+    print(f"index: {len(days)} days, {days[0] if days else '-'} .. {days[-1] if days else '-'}")
 
 
 if __name__ == "__main__":
