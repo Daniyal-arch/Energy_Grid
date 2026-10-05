@@ -146,6 +146,19 @@ class Grid:
             "periodEnd": stamp(self.start + STEP * self.slots),
         }
 
+    def windows(self, days: int = 180) -> list[dict[str, str]]:
+        """The grid's period in pieces (ENTSO-E answers at most one year per request)."""
+
+        def stamp(sec: int) -> str:
+            return datetime.fromtimestamp(sec, tz=UTC).strftime("%Y%m%d%H%M")
+
+        end = self.start + STEP * self.slots
+        cuts = [*range(self.start, end, days * 86400), end]
+        return [
+            {"periodStart": stamp(a), "periodEnd": stamp(b)}
+            for a, b in zip(cuts, cuts[1:], strict=False)
+        ]
+
 
 def _ts(text: str) -> int:
     return int(datetime.strptime(text, "%Y-%m-%dT%H:%MZ").replace(tzinfo=UTC).timestamp())
@@ -228,10 +241,12 @@ def run(jobs: Iterable[tuple[str, Callable[[], object]]]) -> dict[str, object]:
 def price(client: httpx.Client, zone: str, grid: Grid) -> dict | None:
     """Day-ahead price of one zone: {"unix_seconds", "price"} (EUR/MWh)."""
     eic = ZONE_EIC[zone]
-    root = request(
-        client, {"documentType": "A44", "in_Domain": eic, "out_Domain": eic, **grid.params()}
-    )
-    found = series_of(root, "price.amount", grid)
+    found = []
+    for window in grid.windows():
+        root = request(
+            client, {"documentType": "A44", "in_Domain": eic, "out_Domain": eic, **window}
+        )
+        found += series_of(root, "price.amount", grid)
     seq = "classificationSequence_AttributeInstanceComponent.position"
     # EUR only (Ukraine's market publishes in UAH)
     found = [(m, v) for m, v in found if m.get("currency_Unit.name") == "EUR"]
@@ -244,6 +259,33 @@ def price(client: httpx.Client, zone: str, grid: Grid) -> dict | None:
             if v is not None:
                 merged[k] = v
     return {"unix_seconds": grid.seconds(), "price": merged}
+
+
+def zone_generation(
+    client: httpx.Client, zone: str, psr_types: list[str], grid: Grid
+) -> Series | None:
+    """Actual generation (MW) of the given production types in one bidding zone, summed
+    per slot over the types reported for it (A75 with a psrType filter)."""
+    total = grid.empty()
+    for psr in psr_types:
+        for window in grid.windows():
+            root = request(
+                client,
+                {
+                    "documentType": "A75",
+                    "processType": "A16",
+                    "in_Domain": ZONE_EIC[zone],
+                    "psrType": psr,
+                    **window,
+                },
+            )
+            for meta, values in series_of(root, "quantity", grid):
+                if "outBiddingZone_Domain.mRID" in meta:
+                    continue
+                for k, v in enumerate(values):
+                    if v is not None:
+                        total[k] = (total[k] or 0.0) + v
+    return total if any(v is not None for v in total) else None
 
 
 def power(client: httpx.Client, iso: str, grid: Grid) -> dict | None:

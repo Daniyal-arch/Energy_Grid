@@ -32,15 +32,28 @@ import {
   Card,
   GasCard,
   HistoryCard,
+  LngCard,
   NowCard,
   SourcesCard,
   TradeCard,
   WeekCard,
   type EmberRow,
   type GasRow,
+  type LngRow,
   type WeekFile,
 } from "./CountryCards";
+import {
+  PRICE_METRICS,
+  ZONE_POINT,
+  priceMetricById,
+  stopColor,
+  stopGradient,
+  type CarpetFile,
+  type PriceMetricId,
+  type PricesFile,
+} from "../lib/prices";
 import { WindField, WindParticles, type WindFile } from "../lib/windParticles";
+import { CaptureCard, CarpetCard, MonthsCard, ZoneCard, ZoneRankingCard } from "./PriceCards";
 import { AggregateCard, RankingCard, type RankRow } from "./TransitionCards";
 
 // Europe's transmission grid, power plants and measured cross-border flows (the app's only view).
@@ -426,6 +439,11 @@ const DAY_SECONDS = Number(new URLSearchParams(window.location.search).get("dayS
 const DAY_AT = new URLSearchParams(window.location.search).get("at");
 // ?view=transition: 25 years of Ember data on the whole globe (&metric=, &scope=world, &year=)
 const TRANSITION = new URLSearchParams(window.location.search).get("view") === "transition" && !DAY_PARAM;
+// ?view=prices: twelve months of day-ahead prices per bidding zone (&zone=, &metric=)
+const PRICES = new URLSearchParams(window.location.search).get("view") === "prices" && !DAY_PARAM;
+// the yearly views: a coloured map without the grid, plants and live flows
+const STATIC_VIEW = TRANSITION || PRICES;
+const PR_MULTI: RGB = [44, 47, 58]; // countries with several price zones (markers instead)
 const YEAR_PARAM = new URLSearchParams(window.location.search).get("year");
 const SEC_PER_YEAR = 0.9; // play speed of the Transition tab
 const TR_NO_DATA: RGB = [40, 43, 52]; // no Ember value for that country and year
@@ -722,12 +740,13 @@ const dayLabel = (d: string) =>
   new Date(`${d}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
 
 /** Views of the app, shown as tabs (more join as they are built). */
-const TABS: { id: "live" | "day" | "transition"; label: string; short: string; href: string }[] = [
-  { id: "live", label: "Live", short: "Live", href: "/" },
+const TABS: { id: "live" | "day" | "prices" | "transition"; label: string; short: string; href: string }[] = [
+  { id: "live", label: "Live map", short: "Live", href: "/" },
   { id: "day", label: "24 hours", short: "24 h", href: "/?day=latest" },
-  { id: "transition", label: "2000–2025", short: "25 yrs", href: "/?view=transition" },
+  { id: "prices", label: "Prices", short: "Prices", href: "/?view=prices" },
+  { id: "transition", label: "25 years", short: "25 yrs", href: "/?view=transition" },
 ];
-const ACTIVE_TAB = DAY_PARAM ? "day" : TRANSITION ? "transition" : "live";
+const ACTIVE_TAB = DAY_PARAM ? "day" : TRANSITION ? "transition" : PRICES ? "prices" : "live";
 
 /**
  * Hands over the copy bundled with the app at once, then the cloud snapshot if it
@@ -811,15 +830,16 @@ export default function EuropeView() {
   const [dossier, setDossier] = useState<{
     fetched: string;
     gas: Record<string, GasRow>;
+    lng?: Record<string, LngRow>;
     ember: Record<string, EmberRow>;
   } | null>(null);
   const [week, setWeek] = useState<(WeekFile & { country: string }) | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [frame, setFrame] = useState(0);
   // the day view is its own picture: price on the ground, generation towers, night shadow
-  const [shade, setShade] = useState<"none" | "renewable" | "price">(DAY_PARAM || TRANSITION ? "none" : "renewable");
+  const [shade, setShade] = useState<"none" | "renewable" | "price">(DAY_PARAM || STATIC_VIEW ? "none" : "renewable");
   const [show, setShow] = useState(
-    TRANSITION
+    STATIC_VIEW
       ? { plants: false, flows: false, substations: false, gas: false, wind: false }
       : DAY_PARAM
         ? { plants: false, flows: true, substations: false, gas: false, wind: true }
@@ -844,6 +864,14 @@ export default function EuropeView() {
   const [hoverTip, setHoverTip] = useState<{ x: number; y: number; iso3: string } | null>(null);
   const yearPos = useRef(0);
   const yearPlaying = useRef(false);
+  // Prices tab: the year's statistics, the colour metric, the zone in the panel and its carpet
+  const [pricesFile, setPricesFile] = useState<PricesFile | null>(null);
+  const [priceMetricId, setPriceMetricId] = useState<PriceMetricId>(() => {
+    const m = new URLSearchParams(window.location.search).get("metric");
+    return PRICE_METRICS.some((x) => x.id === m) ? (m as PriceMetricId) : "negative";
+  });
+  const [zoneSel, setZoneSel] = useState(() => new URLSearchParams(window.location.search).get("zone") ?? "DE-LU");
+  const [carpet, setCarpet] = useState<CarpetFile | null>(null);
   // 24 h replay: index into the flow series, null = latest complete interval
   const [replay, setReplay] = useState<number | null>(null);
   // day time-lapse: slot position (fractional) and play state live in refs; frame re-renders
@@ -918,6 +946,44 @@ export default function EuropeView() {
       })
       .catch((e) => setError(String(e)));
   }, []);
+
+  // Prices tab: the daily rebuild on the eu-days branch, or the bundled copy if newer
+  const ARCHIVE_REMOTE = DAYS_REMOTE.replace(/\/day$/, "");
+  useEffect(() => {
+    if (!PRICES) return;
+    let bundled: PricesFile | null = null;
+    getJson<PricesFile>("/data/eu/prices.json")
+      .then((v) => {
+        bundled = v;
+        setPricesFile((cur) => (cur && cur.fetched > v.fetched ? cur : v));
+      })
+      .catch((e) => setError(String(e)));
+    fetch(`${ARCHIVE_REMOTE}/prices.json?t=${Date.now()}`, { signal: AbortSignal.timeout(8000) })
+      .then((res) => (res.ok ? (res.json() as Promise<PricesFile>) : Promise.reject()))
+      .then((v) => {
+        if (!bundled || v.fetched > bundled.fetched) setPricesFile(v);
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (!PRICES) return;
+    let live = true;
+    setCarpet(null);
+    fetch(`${ARCHIVE_REMOTE}/prices/${zoneSel}.json`, { signal: AbortSignal.timeout(8000) })
+      .then((res) => (res.ok ? (res.json() as Promise<CarpetFile>) : Promise.reject(new Error(String(res.status)))))
+      .catch(() => getJson<CarpetFile>(`/data/eu/prices/${zoneSel}.json`))
+      .then((c) => live && setCarpet(c))
+      .catch(() => {});
+    const params = new URLSearchParams(window.location.search);
+    params.set("zone", zoneSel);
+    params.set("metric", priceMetricId);
+    window.history.replaceState(null, "", `?${params.toString()}`);
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [zoneSel, priceMetricId]);
 
   useEffect(() => {
     if (!TRANSITION) return;
@@ -999,6 +1065,16 @@ export default function EuropeView() {
         // phones: a tap on the map closes any open sheet
         setSheet("none");
         if (TRANSITION) return; // picked on the globe's own land layer (below)
+        if (PRICES) {
+          // a zone marker, or a country: its (first) price zone
+          if (layer?.id === "pr-zones" && object) setZoneSel((object as { zone: string }).zone);
+          else if (layer?.id === "eu-countries" && object) {
+            const iso = (object as Shape).iso;
+            const zones = Object.entries(pricesRef.current?.zones ?? {}).filter(([, z]) => z.country === iso);
+            if (zones.length) setZoneSel(zones[0][0]);
+          }
+          return;
+        }
         if (layer?.id === "eu-countries" && object) {
           const iso = (object as Shape).iso;
           setSelected((cur) => (cur === iso ? null : iso));
@@ -1008,6 +1084,35 @@ export default function EuropeView() {
       },
       getTooltip: ({ object, layer }: PickingInfo) => {
         if (!object || !layer || TRANSITION) return null;
+        if (PRICES) {
+          const pf = pricesRef.current;
+          const m = priceMetricById(priceMetricRef.current);
+          if (!pf) return null;
+          const tip = (name: string, zones: [string, (typeof pf.zones)[string]][]) => ({
+            html: `<b>${name}</b>${zones
+              .map(([zone, z]) => `<div>${zones.length > 1 || zone !== name ? `${zone}: ` : ""}${m.label.toLowerCase()} <b>${m.format(m.value(z))}</b></div>`)
+              .join("")}<div style="color:#8d94a1">${pf.period[0].slice(0, 7)} to ${pf.period[1].slice(0, 7)} · click for the zone</div>`,
+            style: {
+              background: "rgba(8,10,14,0.92)",
+              color: "#e2e8f0",
+              fontSize: "11px",
+              lineHeight: "1.5",
+              padding: "8px 10px",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "6px",
+            },
+          });
+          if (layer.id === "pr-zones") {
+            const zone = (object as { zone: string }).zone;
+            return pf.zones[zone] ? tip(zone, [[zone, pf.zones[zone]]]) : null;
+          }
+          if (layer.id === "eu-countries") {
+            const s = object as Shape;
+            const zones = Object.entries(pf.zones).filter(([, z]) => z.country === s.iso);
+            return zones.length ? tip(s.name, zones) : { html: `<b>${s.name}</b><div>no day-ahead price at ENTSO-E</div>` };
+          }
+          return null;
+        }
         const style = {
           background: "rgba(8,10,14,0.92)",
           color: "#e2e8f0",
@@ -1114,6 +1219,10 @@ export default function EuropeView() {
   const statsRef = useRef<StatsFile | null>(null);
   const transitionRef = useRef<TransitionFile | null>(null);
   transitionRef.current = transition;
+  const pricesRef = useRef<PricesFile | null>(null);
+  pricesRef.current = pricesFile;
+  const priceMetricRef = useRef<PriceMetricId>(priceMetricId);
+  priceMetricRef.current = priceMetricId;
   const plantsRef = useRef<PlantsFile | null>(null);
   statsRef.current = stats;
   plantsRef.current = plants;
@@ -1324,6 +1433,11 @@ export default function EuropeView() {
   const zonesOf = (iso: string) => Object.entries(prices).filter(([, p]) => p.country === iso);
   const countryFill = (iso: string): RGB => {
     if (TRANSITION) return metricColor(metric, trValue(ISO3[iso])) ?? TR_NO_DATA;
+    if (PRICES) {
+      const zones = priceZonesOf(iso);
+      if (zones.length > 1) return PR_MULTI;
+      return (zones[0] && stopColor(priceMetric.stops, priceMetric.value(zones[0][1]))) || NO_DATA;
+    }
     if (shade === "none") {
       const light = day ? Math.max(0, Math.min(1, (sunAlt + 4) / 24)) : 0;
       return [PLAIN_LAND[0] - 8 + 14 * light, PLAIN_LAND[1] - 8 + 16 * light, PLAIN_LAND[2] - 8 + 20 * light].map(Math.round) as RGB;
@@ -1333,6 +1447,18 @@ export default function EuropeView() {
     return zones.length === 1 ? priceColor(zones[0][1].eur_mwh) : zones.length > 1 ? MULTI_ZONE : NO_DATA;
   };
   const metric = metricById(metricId);
+  const priceMetric = priceMetricById(priceMetricId);
+  const priceZonesOf = (iso: string) => Object.entries(pricesFile?.zones ?? {}).filter(([, z]) => z.country === iso);
+  // zone markers where a country has several price zones
+  const zoneMarkers = useMemo(
+    () =>
+      PRICES && pricesFile
+        ? Object.entries(pricesFile.zones).flatMap(([zone, z]) =>
+            ZONE_POINT[zone] ? [{ zone, z, at: ZONE_POINT[zone].at, short: ZONE_POINT[zone].short }] : [],
+          )
+        : [],
+    [pricesFile],
+  );
   const yearK = transition ? Math.min(transition.years.length - 1, Math.floor(yearPos.current)) : 0;
   const year = transition?.years[yearK] ?? "";
   const trValue = (code: string | undefined) => (code ? (transition?.entities[code]?.[metric.id][yearK] ?? null) : null);
@@ -1475,9 +1601,13 @@ export default function EuropeView() {
     return gas.pipes.filter(([, f]) => f.some((v, k) => (k % 2 ? v >= y0 && v <= y1 : v >= x0 && v <= x1 && f[k + 1] >= y0 && f[k + 1] <= y1)));
   }, [show.gas, gas, gasDetail, focus, zoom]);
   const focusRings = useMemo(() => {
-    const c = TRANSITION ? countries?.countries.find((k) => ISO3[k.iso] === pick) : focus;
+    const c = TRANSITION
+      ? countries?.countries.find((k) => ISO3[k.iso] === pick)
+      : PRICES
+        ? countries?.countries.find((k) => k.iso === pricesFile?.zones[zoneSel]?.country)
+        : focus;
     return c ? c.polygons.map((rings) => pairs(rings[0])) : [];
-  }, [focus, pick, countries]);
+  }, [focus, pick, countries, pricesFile, zoneSel]);
   const touches = (a: Arc) => a.from === selected || a.to === selected;
 
   // ---- video tour: a drawn cursor glides to each country and clicks it ----
@@ -1694,7 +1824,7 @@ export default function EuropeView() {
             const c = countryFill(d.iso);
             return [...(!selected ? c : d.iso === selected ? lift(c, 0.05) : dim(c, 0.45)), 255];
           },
-          updateTriggers: { getFillColor: [shares, selected, shade, day, dayK, metricId, yearK] },
+          updateTriggers: { getFillColor: [shares, selected, shade, day, dayK, metricId, yearK, priceMetricId, pricesFile] },
           transitions: TRANSITION ? { getFillColor: 450 } : undefined,
           pickable: true,
           autoHighlight: true,
@@ -1927,6 +2057,51 @@ export default function EuropeView() {
           parameters: noDepth,
         }),
         worldText,
+        new ScatterplotLayer<(typeof zoneMarkers)[number]>({
+          id: "pr-zones",
+          data: zoneMarkers,
+          getPosition: (m) => m.at,
+          getRadius: (m) => (m.zone === zoneSel ? 9 : 7),
+          radiusUnits: "pixels",
+          getFillColor: (m) => [...(stopColor(priceMetric.stops, priceMetric.value(m.z)) ?? NO_DATA), 245],
+          stroked: true,
+          getLineColor: (m) => (m.zone === zoneSel ? [255, 246, 230, 255] : [8, 10, 14, 230]),
+          lineWidthUnits: "pixels",
+          getLineWidth: (m) => (m.zone === zoneSel ? 2 : 1.2),
+          updateTriggers: { getFillColor: [priceMetricId], getRadius: [zoneSel], getLineColor: [zoneSel], getLineWidth: [zoneSel] },
+          pickable: true,
+          parameters: noDepth,
+        }),
+        new TextLayer<{ at: [number, number]; text: string; offset: [number, number] }>({
+          id: "pr-values",
+          data: PRICES && pricesFile
+            ? [
+                ...countryLabels.flatMap((c) => {
+                  const zones = priceZonesOf(c.iso);
+                  return zones.length === 1
+                    ? [{ at: c.label, text: priceMetric.format(priceMetric.value(zones[0][1])), offset: [0, 12] as [number, number] }]
+                    : [];
+                }),
+                ...(zoom >= 3.6 ? zoneMarkers : []).map((m) => ({
+                  at: m.at,
+                  text: `${m.short} ${priceMetric.format(priceMetric.value(m.z))}`,
+                  offset: [0, 14] as [number, number],
+                })),
+              ]
+            : [],
+          getPosition: (d) => d.at,
+          getText: (d) => d.text,
+          getPixelOffset: (d) => d.offset,
+          getSize: 11,
+          getColor: [255, 255, 255, 235],
+          fontFamily: "Inter, system-ui, sans-serif",
+          fontWeight: 700,
+          outlineWidth: 3,
+          outlineColor: [6, 8, 12, 220],
+          fontSettings: { sdf: true },
+          updateTriggers: { getText: [priceMetricId] },
+          parameters: noDepth,
+        }),
         new TextLayer<Country>({
           id: "tr-values",
           data: TRANSITION ? countryLabels : [],
@@ -2069,7 +2244,7 @@ export default function EuropeView() {
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
+  }, [frame, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
   // label the EU figures with the start of their interval (hourly in older archives)
   const euStep = day?.eu?.step_s ?? 3600;
@@ -2335,6 +2510,8 @@ export default function EuropeView() {
   );
   const credits = TRANSITION ? (
     <div>Yearly data: Ember (CC BY 4.0) · Outlines: © EuroGeographics</div>
+  ) : PRICES ? (
+    <div>Prices, solar and wind output: ENTSO-E Transparency Platform · Outlines: © EuroGeographics</div>
   ) : (
     <>
       <div>Grid: PyPSA-Eur network from © OpenStreetMap contributors (ODbL) · Plants ≥ 20 MW: powerplantmatching</div>
@@ -2356,6 +2533,7 @@ export default function EuropeView() {
       "Renewable share = renewable types / all generation types reported. Border flow = flow one way minus the other. EU = sum of the member states with data.",
     ],
     ["Gas storage", "GIE AGSI+, daily, fill as % of working gas volume."],
+    ["LNG", "GIE ALSI, daily: send-out into the grid and the terminals' declared send-out capacity (GWh/day), LNG in tanks."],
     ["Yearly generation and carbon intensity", "Ember yearly electricity data (CC BY 4.0), as published."],
     ["Installed capacity", "Energy-Charts installed power, newest year with values."],
     ["Hydro reservoirs", "ENTSO-E Transparency, weekly stored energy."],
@@ -2394,6 +2572,7 @@ export default function EuropeView() {
         </Card>
       )}
       {dossier?.gas.EU && <GasCard gas={dossier.gas.EU} />}
+      {dossier?.lng?.EU && <LngCard lng={dossier.lng.EU} />}
       <SourcesCard items={sources} />
     </div>
   );
@@ -2427,6 +2606,7 @@ export default function EuropeView() {
       )}
       {tradeRows.length > 0 && <TradeCard rows={tradeRows} time={timeOf(focusFlows[0].ts)} />}
       {selected && dossier?.gas[selected] && <GasCard gas={dossier.gas[selected]} />}
+      {selected && dossier?.lng?.[selected] && <LngCard lng={dossier.lng[selected]} />}
       {selected && dossier?.ember[selected] && <HistoryCard ember={dossier.ember[selected]} />}
       {focusCapacity && (
         <Card title="Installed capacity" note={`Energy-Charts · ${focusCapacity.year}`}>
@@ -2685,9 +2865,85 @@ export default function EuropeView() {
     </div>
   );
 
+  // ---------------------------------------------------------------- Prices tab pieces
+  const zoneStats = pricesFile?.zones[zoneSel];
+  const zoneCountry = countries?.countries.find((c) => c.iso === zoneStats?.country)?.name ?? "";
+  const periodLabel = pricesFile
+    ? `${new Date(`${pricesFile.period[0]}T12:00:00Z`).toLocaleDateString("en-GB", { month: "short", year: "numeric" })} – ${new Date(`${pricesFile.period[1]}T12:00:00Z`).toLocaleDateString("en-GB", { month: "short", year: "numeric" })}`
+    : "";
+  const priceMetricChips = (
+    <div className="grid grid-cols-2 gap-1">
+      {PRICE_METRICS.map((m) => (
+        <button
+          key={m.id}
+          onClick={() => setPriceMetricId(m.id)}
+          className={`rounded border px-2 text-left ${isMobile ? "py-1.5 text-[12px]" : "py-1 text-[10.5px]"} ${
+            priceMetricId === m.id ? "border-white/30 bg-white/12 text-slate-100" : "border-white/10 text-slate-400 hover:text-slate-200"
+          }`}
+        >
+          {m.label}
+        </button>
+      ))}
+    </div>
+  );
+  const zoneSelect = pricesFile && (
+    <select value={zoneSel} onChange={(e) => setZoneSel(e.target.value)} className={selectClass} aria-label="Price zone">
+      {Object.keys(pricesFile.zones)
+        .sort()
+        .map((zone) => (
+          <option key={zone} value={zone}>
+            {zone}
+          </option>
+        ))}
+    </select>
+  );
+  const priceKey = (
+    <div>
+      <div className="h-2 rounded-sm" style={{ background: stopGradient(priceMetric.stops) }} />
+      <div className="mt-0.5 flex justify-between text-[9px] text-[#8d94a1]">
+        {priceMetric.ticks.map((t) => (
+          <span key={t}>{t}</span>
+        ))}
+      </div>
+      <div className="mt-1.5 flex items-center gap-2 text-[9px] text-[#8d94a1]">
+        <span className="h-2 w-3 rounded-sm" style={{ background: rgbCss(PR_MULTI) }} />
+        several price zones: one marker each
+      </div>
+    </div>
+  );
+  const priceSources: [string, string][] = [
+    [
+      "Prices",
+      "ENTSO-E day-ahead prices (A44) of the coupled auction, every 15 minutes since 1 Oct 2025 (hourly zones fill all four quarters).",
+    ],
+    [
+      "Computed from them",
+      "Average = mean of all 15-min prices. Hours below zero = 15-min intervals with a negative price × 0.25 h. Capture price = Σ price × output / Σ output, with ENTSO-E's actual solar (B16) and wind (B18 + B19) generation of the zone; capture rate = capture price / average.",
+    ],
+    ["Period", `Statistics: the twelve full months ${periodLabel}. The carpet runs on to ${pricesFile?.carpet_until ?? ""}.`],
+    ["Markers", "Zone markers in DK, IT, NO and SE are placed for reading, not at an official zone centre."],
+  ];
+  const priceBody = pricesFile && zoneStats && (
+    <div className="space-y-2.5">
+      <ZoneCard zone={zoneSel} z={zoneStats} period={periodLabel} />
+      <CarpetCard carpet={carpet} until={pricesFile.carpet_until} />
+      <MonthsCard months={pricesFile.months} values={zoneStats.negative_by_month} />
+      <CaptureCard z={zoneStats} />
+      <ZoneRankingCard zones={pricesFile.zones} metric={priceMetric} selected={zoneSel} onPick={setZoneSel} />
+      <SourcesCard items={priceSources} />
+    </div>
+  );
+  // the side panel's title, body and back button, per view
+  const panelTitle = TRANSITION ? trTitle : PRICES ? `${zoneSel}${zoneCountry && zoneCountry !== zoneSel ? ` · ${zoneCountry}` : ""}` : focus ? focus.name : "European Union";
+  const panelBody = TRANSITION ? trBody : PRICES ? priceBody : focus ? countryBody : euBody;
+
   // ---------------------------------------------------------------- phone headline (bottom card, collapsed)
   const headPower = focus ? focusPower : eu;
-  const headline = TRANSITION
+  const headline = PRICES
+    ? zoneStats
+      ? `${priceMetric.label} ${priceMetric.format(priceMetric.value(zoneStats))}`
+      : "Loading…"
+    : TRANSITION
     ? trAggregate
       ? `${metric.short} ${formatMetric(metric, (trPicked ?? trAggregate)[metric.id][yearK])}`
       : "Loading…"
@@ -2718,10 +2974,29 @@ export default function EuropeView() {
                 {TRANSITION && scope === "world" ? "World" : "Europe"}
               </div>
               <div className="mt-1.5 text-[10px] uppercase tracking-[0.28em] text-[#b9ab9b]">
-                {day ? "24 hours of electricity" : TRANSITION ? "25 years of electricity" : "Grid, plants & power flows"}
+                {day
+                  ? "24 hours of electricity"
+                  : TRANSITION
+                    ? "25 years of electricity"
+                    : PRICES
+                      ? "12 months of power prices"
+                      : "Grid, plants & power flows"}
               </div>
               <div className="mt-3">{tabsNav}</div>
-              {!TRANSITION && <div className="mt-2 [&_select]:w-full">{countrySelect}</div>}
+              {!STATIC_VIEW && <div className="mt-2 [&_select]:w-full">{countrySelect}</div>}
+              {PRICES && (
+                <div className="mt-3 space-y-2.5">
+                  <div className="flex items-center gap-2 [&_select]:flex-1">
+                    <span className="text-[9px] uppercase tracking-[0.18em] text-[#8d94a1]">Zone</span>
+                    {zoneSelect}
+                  </div>
+                  <div>
+                    <div className="mb-1 text-[9px] uppercase tracking-[0.18em] text-[#8d94a1]">Colour the map by</div>
+                    {priceMetricChips}
+                  </div>
+                  <div className="text-[10px] text-[#8d94a1]">Day-ahead market, {periodLabel}</div>
+                </div>
+              )}
               {TRANSITION && (
                 <div className="mt-3 space-y-2.5">
                   {scopeSwitch}
@@ -2800,8 +3075,18 @@ export default function EuropeView() {
               </div>
             )}
 
+            {PRICES && (
+              <div className="pointer-events-auto rounded-xl border border-white/[0.07] bg-[#0b0f16]/88 px-4 py-3 text-[11px] text-slate-300 backdrop-blur">
+                <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">{priceMetric.label}</div>
+                {priceKey}
+                <div className="mt-2 text-[10px] leading-snug text-[#8d94a1]">
+                  Each zone: {priceMetric.note}, {periodLabel}. Click one for every 15-min price of the year.
+                </div>
+              </div>
+            )}
+
             {/* the map's controls and key, folded to one card */}
-            <div className={`pointer-events-auto max-h-[60%] ${TRANSITION ? "hidden" : ""} overflow-y-auto rounded-xl border border-white/[0.07] bg-[#0b0f16]/88 px-4 py-3 text-[11px] text-slate-300 backdrop-blur [scrollbar-width:thin]`}>
+            <div className={`pointer-events-auto max-h-[60%] ${STATIC_VIEW ? "hidden" : ""} overflow-y-auto rounded-xl border border-white/[0.07] bg-[#0b0f16]/88 px-4 py-3 text-[11px] text-slate-300 backdrop-blur [scrollbar-width:thin]`}>
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">Map</span>
                 <button
@@ -2825,14 +3110,16 @@ export default function EuropeView() {
           <aside className="absolute bottom-4 right-4 top-4 z-10 flex w-[336px] flex-col overflow-hidden">
             <div className="mb-2 flex items-center gap-2 rounded-xl border border-white/[0.07] bg-[#0b0f16]/90 px-4 py-2.5 backdrop-blur">
               <div className="min-w-0 flex-1">
-                <div className="truncate font-serif text-[20px] uppercase leading-tight tracking-[0.12em]">
-                  {TRANSITION ? trTitle : focus ? focus.name : "European Union"}
-                </div>
-                {TRANSITION
-                  ? !pick && <div className="text-[10px] text-[#8d94a1]">Click any country on the globe.</div>
-                  : !focus && <div className="text-[10px] text-[#8d94a1]">Click a country on the map for its cards.</div>}
+                <div className="truncate font-serif text-[20px] uppercase leading-tight tracking-[0.12em]">{panelTitle}</div>
+                {PRICES ? (
+                  <div className="text-[10px] text-[#8d94a1]">Click a country or zone marker on the map.</div>
+                ) : TRANSITION ? (
+                  !pick && <div className="text-[10px] text-[#8d94a1]">Click any country on the globe.</div>
+                ) : (
+                  !focus && <div className="text-[10px] text-[#8d94a1]">Click a country on the map for its cards.</div>
+                )}
               </div>
-              {(TRANSITION ? pick : focus) && (
+              {!PRICES && (TRANSITION ? pick : focus) && (
                 <button
                   onClick={() => (TRANSITION ? setPick(null) : setSelected(null))}
                   className="rounded border border-white/15 px-2 py-0.5 text-[11px] text-slate-300 hover:text-slate-100"
@@ -2842,9 +3129,7 @@ export default function EuropeView() {
                 </button>
               )}
             </div>
-            <div className="min-h-0 flex-1 overflow-y-auto pr-1 [scrollbar-width:thin]">
-              {TRANSITION ? trBody : focus ? countryBody : euBody}
-            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto pr-1 [scrollbar-width:thin]">{panelBody}</div>
           </aside>
 
           {focus && styleSwitch && (
@@ -2955,8 +3240,8 @@ export default function EuropeView() {
             >
               <div className="min-w-0 flex-1">
                 <div className="truncate text-[10px] uppercase tracking-[0.2em] text-[#8f877e]">
-                  {TRANSITION ? `${trTitle} · ${year}` : focus ? focus.name : "European Union"}
-                  {!TRANSITION && headPower ? ` · ${timeOf(headPower.ts)}` : ""}
+                  {TRANSITION ? `${trTitle} · ${year}` : PRICES ? `${zoneSel} · ${periodLabel}` : focus ? focus.name : "European Union"}
+                  {!STATIC_VIEW && headPower ? ` · ${timeOf(headPower.ts)}` : ""}
                 </div>
                 <div className="truncate text-[15px] tabular-nums text-slate-100">{headline}</div>
               </div>
@@ -2968,16 +3253,14 @@ export default function EuropeView() {
             <div className="absolute inset-x-0 bottom-0 z-30 flex max-h-[72dvh] flex-col rounded-t-2xl border-t border-white/[0.12] bg-[#070a10]/97 backdrop-blur">
               <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-3">
                 <div className="min-w-0 flex-1">
-                  <div className="truncate font-serif text-[18px] uppercase tracking-[0.12em]">
-                    {TRANSITION ? trTitle : focus ? focus.name : "European Union"}
-                  </div>
+                  <div className="truncate font-serif text-[18px] uppercase tracking-[0.12em]">{panelTitle}</div>
                 </div>
                 {TRANSITION && pick && (
                   <button onClick={() => setPick(null)} className="rounded border border-white/15 px-2 py-1 text-[11px] text-slate-300">
                     {scope === "world" ? "World" : "Europe"}
                   </button>
                 )}
-                {!TRANSITION && focus && (
+                {!STATIC_VIEW && focus && (
                   <button onClick={() => setSelected(null)} className="rounded border border-white/15 px-2 py-1 text-[11px] text-slate-300">
                     All Europe
                   </button>
@@ -2991,9 +3274,9 @@ export default function EuropeView() {
                 </button>
               </div>
               <div className="overflow-y-auto px-4 pb-6 pt-1 text-slate-200">
-                {!TRANSITION && focus && styleSwitch && <div className="mt-2">{styleSwitch}</div>}
-                {TRANSITION ? trBody : focus ? countryBody : euBody}
-                {!TRANSITION && !focus && (
+                {!STATIC_VIEW && focus && styleSwitch && <div className="mt-2">{styleSwitch}</div>}
+                {panelBody}
+                {!STATIC_VIEW && !focus && (
                   <div className="mt-4 text-[11px] text-[#8d94a1]">Tap a country on the map for its figures, or pick one in ☰.</div>
                 )}
               </div>
@@ -3013,6 +3296,24 @@ export default function EuropeView() {
                 </button>
               </div>
               <div className="space-y-5 overflow-y-auto px-4 py-4 text-[12px] text-slate-300">
+                {PRICES && (
+                  <>
+                    <div className="space-y-1.5">
+                      {sectionTitle("Zone")}
+                      <div onChange={() => setSheet("none")} className="[&_select]:w-full [&_select]:py-2 [&_select]:text-[13px]">
+                        {zoneSelect}
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      {sectionTitle("Colour the map by")}
+                      {priceMetricChips}
+                    </div>
+                    <div className="space-y-1.5">
+                      {sectionTitle("Legend")}
+                      {priceKey}
+                    </div>
+                  </>
+                )}
                 {TRANSITION && (
                   <>
                     <div className="space-y-1.5">
@@ -3029,7 +3330,7 @@ export default function EuropeView() {
                     </div>
                   </>
                 )}
-                <div className={`space-y-1.5 ${TRANSITION ? "hidden" : ""}`}>
+                <div className={`space-y-1.5 ${STATIC_VIEW ? "hidden" : ""}`}>
                   {sectionTitle("Country")}
                   <div
                     onChange={() => setSheet("none")}
@@ -3044,7 +3345,7 @@ export default function EuropeView() {
                     <div className="[&_select]:flex-1 [&_select]:py-2 [&_select]:text-[13px]">{dayPicker}</div>
                   </div>
                 )}
-                <div className={`space-y-1.5 ${TRANSITION ? "hidden" : ""}`}>
+                <div className={`space-y-1.5 ${STATIC_VIEW ? "hidden" : ""}`}>
                   {sectionTitle("Layers")}
                   {layerChips}
                 </div>
@@ -3054,7 +3355,7 @@ export default function EuropeView() {
                     {shadeBlock}
                   </div>
                 )}
-                <div className={`space-y-3 ${TRANSITION ? "hidden" : ""}`}>
+                <div className={`space-y-3 ${STATIC_VIEW ? "hidden" : ""}`}>
                   {sectionTitle("Legend")}
                   {keysBlock}
                 </div>

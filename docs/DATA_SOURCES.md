@@ -85,6 +85,38 @@ bundled in `frontend/public/data/eu/day/` and offers them in a date picker.
 The time-lapse clock shows the market's own time (CET/CEST) of the slot on screen.
 The "price range, all zones" chart is the lowest and highest zone price per slot.
 
+## Prices tab (`scripts/build_prices.py`)
+
+| File | Records | Source |
+|---|---:|---|
+| `prices.json` | 43 bidding zones | ENTSO-E A44 day-ahead prices (the coupled auction, as above) and A75 actual solar (B16) and wind (B18 offshore + B19 onshore) generation per bidding zone, from the 1st of the month twelve months back to yesterday |
+| `prices/<zone>.json` | one row per local day x 96 quarter-hours | the same prices on the local clock (Europe/Berlin), rounded to 0.1 EUR/MWh: the "carpet". In the autumn hour that repeats, the first value is kept; the skipped spring hour is empty |
+
+Computed in the build script, over the last twelve **full** calendar months:
+
+- **Average price:** the mean of all 15-min prices (hourly zones fill all four quarters).
+- **Hours below zero:** the number of 15-min intervals with a negative price × 0.25 h,
+  in total and per month.
+- **Lowest / highest:** the extreme 15-min price and its interval (passthrough).
+- **Capture price:** Σ(price × output) / Σ(output) over the intervals that have both,
+  for solar and for wind. This is what a MWh of that source earned on average.
+  **Capture rate:** capture price / average price. The TWh behind each weighting are
+  shown. Solar is missing for ME, NO2–NO5 and RS, and wind for AL and NO5: ENTSO-E has
+  no generation there. UA has no prices in EUR.
+
+Zone markers for countries with several zones (DK, IT, NO, SE) are placed for reading,
+not at an official zone centre. The `eu-days` workflow rebuilds the files daily on the
+`eu-days` branch, and the app prefers that copy when it is newer.
+
+## LNG send-out (`scripts/fetch_eu_dossier.py`, in `dossier.json`)
+
+GIE ALSI (same key as AGSI+), daily for the EU and the 12 countries with terminals (BE,
+DE, ES, FI, FR, GR, HR, IT, LT, NL, PL, PT), last ~400 days, passthrough:
+- `sendOut`: LNG regasified into the grid, GWh/day
+- `dtrs`: declared total reference send-out, the terminals' declared send-out
+  capacity, GWh/day
+- `inventory.gwh`: LNG in tanks
+
 ## Wind layer (`scripts/fetch_wind.py`)
 
 | File | Records | Source |
