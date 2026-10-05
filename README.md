@@ -13,8 +13,11 @@ the generation mix of each country.
   reservoirs and gas infrastructure.
 - **24 hours:** `?day=2026-09-24` plays one real day every 15 minutes: market clock,
   flows, prices and renewable share changing through the day.
+- **2000–2025:** `?view=transition` colours every country on the globe by Ember's
+  yearly renewable share, wind + solar share, coal share or carbon intensity and plays
+  25 years; click a country for its generation by source.
 
-All figures come from public sources (Energy-Charts / ENTSO-E, powerplantmatching,
+All figures come from public sources (ENTSO-E, Ember, GIE, powerplantmatching,
 OpenStreetMap via PyPSA-Eur, SciGRID_gas, Eurostat GISCO); see
 [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
 

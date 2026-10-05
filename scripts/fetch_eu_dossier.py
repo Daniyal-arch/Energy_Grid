@@ -102,10 +102,12 @@ def gas(client: httpx.Client, key: str, iso: str) -> dict | None:
 
 
 def ember(client: httpx.Client, key: str, entity: str) -> dict | None:
+    # countries by ISO alpha-3 code; Ember's aggregates (the EU) by name
+    who = {"entity": entity} if entity == "EU" else {"entity_code": entity}
     gen = get(
         client,
         f"{EMBER_URL}/electricity-generation/yearly",
-        {"entity_code": entity, "start_date": "2000", "api_key": key},
+        {**who, "start_date": "2000", "api_key": key},
     )
     if not gen or not gen.get("data"):
         return None
@@ -122,7 +124,7 @@ def ember(client: httpx.Client, key: str, entity: str) -> dict | None:
     ci = get(
         client,
         f"{EMBER_URL}/carbon-intensity/yearly",
-        {"entity_code": entity, "start_date": "2000", "api_key": key},
+        {**who, "start_date": "2000", "api_key": key},
     )
     intensity = [None] * len(years)
     for r in (ci or {}).get("data", []):

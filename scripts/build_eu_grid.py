@@ -365,7 +365,8 @@ def write(name: str, payload: dict) -> None:
 
 
 def build_world() -> dict:
-    """Land of every country, coarse, as the globe's base (Europe's data draws on top)."""
+    """Land of every country, coarse, as the globe's base (Europe's data draws on top),
+    with its ISO 3166-1 alpha-3 code."""
     with (SRC / "countries.geojson").open(encoding="utf-8") as f:
         fc = json.load(f)
     features = []
@@ -381,7 +382,11 @@ def build_world() -> dict:
             features.append(
                 {
                     "type": "Feature",
-                    "properties": {"name": feat["properties"]["NAME_ENGL"]},
+                    "properties": {
+                        "name": feat["properties"]["NAME_ENGL"],
+                        # joins Ember's yearly data on the Transition tab
+                        "iso3": feat["properties"].get("ISO3_CODE") or "",
+                    },
                     "geometry": {"type": "MultiPolygon", "coordinates": rings},
                 }
             )
