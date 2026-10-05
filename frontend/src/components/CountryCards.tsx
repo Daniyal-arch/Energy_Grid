@@ -347,6 +347,64 @@ export function GasCard({ gas }: { gas: GasRow }) {
   );
 }
 
+export interface LngRow {
+  date: string;
+  /** GWh per day sent into the grid */
+  send_out: number | null;
+  /** declared total reference send-out (GWh per day) */
+  capacity: number | null;
+  inventory_gwh: number | null;
+  series: [string, number | null][];
+}
+
+/** LNG send-out (GIE ALSI): today, the last ~13 months, and the same day a year ago. */
+export function LngCard({ lng }: { lng: LngRow }) {
+  const pts = lng.series.filter((p): p is [string, number] => p[1] != null);
+  const n = pts.length;
+  const yearAgo = (() => {
+    const t = Date.parse(lng.date) - 365 * 86_400_000;
+    let best: [string, number] | null = null;
+    for (const p of pts) if (!best || Math.abs(Date.parse(p[0]) - t) < Math.abs(Date.parse(best[0]) - t)) best = p;
+    return best && Math.abs(Date.parse(best[0]) - t) < 4 * 86_400_000 ? best : null;
+  })();
+  const top = Math.max(1, lng.capacity ?? 0, ...pts.map((p) => p[1]));
+  const x = (i: number) => (i / Math.max(1, n - 1)) * W;
+  const y = (v: number) => 60 - (v / top) * 58;
+  let d = "";
+  pts.forEach(([, v], i) => (d += `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`));
+  const fmt = (v: number) => v.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  return (
+    <Card title="LNG send-out" note={`GIE ALSI · ${lng.date}`} accent={[120, 180, 255]}>
+      <div className="flex items-end justify-between">
+        <div>
+          <div className="text-[26px] font-light leading-none tabular-nums text-slate-100">
+            {lng.send_out != null ? fmt(lng.send_out) : "–"} <span className="text-[13px] text-slate-300">GWh/day</span>
+          </div>
+          <div className={`mt-1 text-[10px] ${muted}`}>
+            {lng.capacity != null ? `regasified into the grid; terminals declare ${fmt(lng.capacity)} GWh/day` : "regasified into the grid"}
+          </div>
+        </div>
+        <div className="text-right text-[10px] tabular-nums">
+          {yearAgo && <div className={muted}>a year ago {fmt(yearAgo[1])}</div>}
+          {lng.inventory_gwh != null && <div className={muted}>in tanks {fmt(lng.inventory_gwh)} GWh</div>}
+        </div>
+      </div>
+      <svg viewBox={`0 0 ${W} 62`} className="mt-2 w-full">
+        {lng.capacity != null && (
+          <line x1={0} x2={W} y1={y(lng.capacity)} y2={y(lng.capacity)} stroke="rgba(255,255,255,0.18)" strokeDasharray="2 3" />
+        )}
+        <path d={`${d}L${x(n - 1)},60L0,60Z`} fill="rgba(120,180,255,0.16)" />
+        <path d={d} fill="none" stroke="#78b4ff" strokeWidth={1.3} />
+      </svg>
+      <div className={`flex justify-between text-[9px] ${muted}`}>
+        <span>{pts[0]?.[0]}</span>
+        {lng.capacity != null && <span>dashed: declared send-out</span>}
+        <span>{lng.date}</span>
+      </div>
+    </Card>
+  );
+}
+
 /** 25 years of generation by source (Ember, yearly) with the published carbon intensity. */
 export function HistoryCard({ ember }: { ember: EmberRow }) {
   const [hover, setHover] = useState<number | null>(null);
