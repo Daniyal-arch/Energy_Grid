@@ -1,7 +1,8 @@
 name: Europe day archive
 
 # Keeps a rolling archive of complete days for the 24-hours view
-# (scripts/build_eu_day.py --recent): every morning it builds yesterday, rebuilds the
+# (scripts/build_eu_day.py --recent, from ENTSO-E): every morning (07:23 UTC, when the
+# late TSOs have sent yesterday's last hours) it builds yesterday, rebuilds the
 # two newest days to pick up late corrections, and drops days older than the window.
 # The archive lives on the `eu-days` branch (eu/day/<date>.json + index.json); the app
 # reads it from raw.githubusercontent.com next to the days bundled with the site.
@@ -10,7 +11,7 @@ name: Europe day archive
 
 on:
   schedule:
-    - cron: "23 5 * * *"
+    - cron: "23 7 * * *"
   workflow_dispatch:
     inputs:
       days:
@@ -36,7 +37,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install httpx tzdata
+        run: pip install httpx python-dotenv tzdata
 
       - name: Fetch the current archive
         run: |
@@ -48,6 +49,8 @@ jobs:
           mkdir -p store/eu/day
 
       - name: Build missing days
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_eu_day.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/day
 
       - name: Publish

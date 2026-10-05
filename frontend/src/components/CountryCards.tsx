@@ -87,11 +87,13 @@ export function NowCard({
   time,
   price,
   netMw,
+  footnote,
 }: {
   now: NowFigures;
   time: string;
   price?: { label: string; value: number } | null;
   netMw?: number | null;
+  footnote?: string;
 }) {
   const parts = STACK_ORDER.map((g) => [g, now.generation_mw[g] ?? 0] as [string, number]).filter(([, v]) => v > 0);
   const total = parts.reduce((a, [, v]) => a + v, 0) || 1;
@@ -130,6 +132,7 @@ export function NowCard({
           </div>
         ))}
       </div>
+      {footnote && <div className={`mt-2 text-[10px] ${muted}`}>{footnote}</div>}
     </Card>
   );
 }

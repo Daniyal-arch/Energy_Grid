@@ -162,13 +162,22 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=OUT, help="output directory")
     out: Path = parser.parse_args().out
     caps: dict[str, dict] = {}
+    caps_fetched = datetime.now(UTC).isoformat(timespec="seconds")
     reservoirs: dict[str, dict] = {}
-    with httpx.Client(timeout=120, headers={"User-Agent": "Germany-InfraAtlas/0.1"}) as client:
-        for code in COUNTRIES:
-            r = get(client, EC + "/installed_power", {"country": code, "time_step": "yearly"})
-            time.sleep(3)
-            if r is not None and r.status_code == 200 and (row := capacity(r.json())):
-                caps[code.upper()] = row
+    with httpx.Client(timeout=120, headers={"User-Agent": "Europe-InfraAtlas/0.3"}) as client:
+        first = get(client, EC + "/installed_power", {"country": "de", "time_step": "yearly"})
+        if first is not None and first.status_code == 200:
+            for code in COUNTRIES:
+                r = get(client, EC + "/installed_power", {"country": code, "time_step": "yearly"})
+                time.sleep(3)
+                if r is not None and r.status_code == 200 and (row := capacity(r.json())):
+                    caps[code.upper()] = row
+        if not caps and (OUT / "reference.json").exists():
+            # Energy-Charts unreachable: keep the capacity fetched last time, with its date
+            previous = json.loads((OUT / "reference.json").read_text(encoding="utf-8"))
+            caps = previous.get("capacity", {})
+            caps_fetched = previous.get("capacity_fetched") or previous.get("fetched", "")
+            print(f"Energy-Charts unreachable: installed capacity from {caps_fetched}", flush=True)
         print(f"installed capacity for {len(caps)} countries", flush=True)
         key = os.environ.get("ENTSOE_API_KEY")
         if key:
@@ -185,6 +194,7 @@ def main() -> None:
                 "source": "Energy-Charts (Fraunhofer ISE) installed power; "
                 "ENTSO-E Transparency A72 reservoir filling",
                 "fetched": datetime.now(UTC).isoformat(timespec="seconds"),
+                "capacity_fetched": caps_fetched,
                 "capacity": caps,
                 "reservoirs": reservoirs,
             },

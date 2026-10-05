@@ -1,7 +1,7 @@
 name: Europe power snapshot
 
 # Refreshes the Europe view's figures (cross-border flows, load, generation by
-# source, published renewable share; scripts/fetch_eu_snapshot.py) every 30 min
+# source, prices; scripts/fetch_eu_snapshot.py, from ENTSO-E) every 30 min
 # into eu/flows.json + eu/stats.json on the `eu-data` branch, plus eu/reference.json
 # (installed capacity, reservoirs; scripts/fetch_eu_reference.py) once per run. The frontend reads
 # them from raw.githubusercontent.com and falls back to its bundled copy.
@@ -34,23 +34,23 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install httpx
+        run: pip install httpx python-dotenv
 
       - name: Reference figures (capacity, reservoirs, gas storage, Ember), once per run
         env:
-          # optional repo secret; without it reservoirs are skipped
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
           # gas storage (GIE AGSI+) and Ember yearly data for the country cards
           AGSI_API_KEY: ${{ secrets.AGSI_API_KEY }}
           EMBER_API_KEY: ${{ secrets.EMBER_API_KEY }}
         run: |
           mkdir -p ref
-          pip install python-dotenv
           python scripts/fetch_eu_reference.py --out ref || echo "reference fetch failed"
           python scripts/fetch_eu_dossier.py --out ref || echo "dossier fetch failed"
 
       - name: Snapshot every 30 min for ~5 h 45 min
         env:
+          # required: every live figure comes from ENTSO-E
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
           REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: |
           end=$((SECONDS + 20700))

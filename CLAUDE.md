@@ -47,10 +47,14 @@ uv run python scripts/build_eu_day.py 2026-09-24 # one day for the time-lapse (?
 
 - **uv** is installed user-level and not on PATH. In PowerShell prepend
   `$env:Path = "$env:APPDATA\Python\Python313\Scripts;$env:Path"`.
-- **Energy-Charts** answers HTTP 429 to bursts: one request at a time, ~3 s apart,
-  honour Retry-After. Its newest 15-min interval is often partial; use the newest
-  complete one (`newest_complete_index` in `scripts/fetch_eu_snapshot.py`).
-- **ENTSO-E** (`ENTSOE_API_KEY`) is slow for many requests; used only for reservoirs.
+- **ENTSO-E** (`ENTSOE_API_KEY`) is the source of every live figure since 2026-10-05
+  (`scripts/entsoe.py`): four requests at a time, ~1 min for a snapshot, ~2 min for a
+  30-day archive. Newest intervals arrive late and in parts (Italy zone by zone); the
+  rules for picking the newest complete interval are in docs/DATA_SOURCES.md.
+- **Energy-Charts** has answered HTTP 503 since 2026-09-24; only installed capacity
+  still comes from it (carried over while it is down). It answers 429 to bursts.
+- **Ember** serves all countries in one request (`scripts/fetch_transition.py`); its
+  aggregates are asked by name (`entity=EU`), countries by ISO alpha-3 code.
 - **powerplantmatching** lists German units individually (MaStR): German wind is per
   turbine and sums ~12 % above the official capacity; the panel shows both.
 - **Windows** needs the `tzdata` package for `zoneinfo` (already a dependency).

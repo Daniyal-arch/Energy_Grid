@@ -21,28 +21,62 @@ uv run python scripts/build_eu_grid.py
 
 ## Live figures (`scripts/fetch_eu_snapshot.py`, `scripts/fetch_eu_reference.py`)
 
+Since 2026-10-05 the time series come straight from the **ENTSO-E Transparency
+Platform** (`scripts/entsoe.py`, needs `ENTSOE_API_KEY`). Energy-Charts, which
+republished the same ENTSO-E data, has answered HTTP 503 ("No server is available")
+since 2026-09-24. Probes: `scripts/probe_entsoe_core.py`, `scripts/probe_entsoe_coverage.py`,
+`scripts/probe_entsoe_italy.py`.
+
 | File | Records | Source |
 |---|---:|---|
-| `flows.json` | 79 borders | Energy-Charts `/cbpf` per country (ENTSO-E physical flows): latest complete 15-min value per border, plus 24 h of 15-min values for the replay |
-| `stats.json` | EU + per country | Energy-Charts `/public_power` (country=eu and per country): load, generation by source group, published renewable share of generation; `/price` day-ahead price for 41 bidding zones |
-| `reference.json` | per country | Energy-Charts `/installed_power` (newest year with values) and ENTSO-E A72 hydro reservoir energy (newest week, same week a year earlier) |
+| `flows.json` | 73 borders | ENTSO-E A11 physical flows, both directions per border; net flow = one direction minus the other (computed). Newest measured 15-min value per border, plus 24 h of 15-min values for the replay |
+| `stats.json` | 29 countries + EU, 43 price zones | ENTSO-E A65 actual total load and A75 actual generation per production type per country; A44 day-ahead price per bidding zone |
+| `reference.json` | per country | Energy-Charts `/installed_power` (newest year with values, fetched before the outage) and ENTSO-E A72 hydro reservoir energy (newest week, same week a year earlier) |
 | `dossier.json` | gas storage: EU + 19 countries; Ember: 36 countries | GIE AGSI+ daily gas storage (fill % of working gas volume, TWh, trend), last ~400 days; Ember yearly electricity data (CC BY 4.0): generation by source since 2000, published renewable share and carbon intensity of generation. `scripts/fetch_eu_dossier.py` (AGSI_API_KEY, EMBER_API_KEY) |
+
+**Rules applied to ENTSO-E data** (values are never changed, only grouped, summed or
+skipped):
+
+- **Resolution:** every series is placed on a 15-min grid; a 30- or 60-min value fills
+  each 15-min slot it covers. A03 curves (a point holds until the next one) are expanded.
+- **Day-ahead price:** where a zone has several A44 series (EXAA for DE-LU and AT,
+  Spain's intraday auctions), the coupled day-ahead auction is used: the series
+  without a classification sequence, else sequence 1. The probe showed DE-LU
+  sequence 1 tracking NL and FR, and AT sequence 1 tracking SI.
+- **Generation:** only generation series (`inBiddingZone`); consumption series such as
+  pumping and battery charging are left out. Grouped by fuel as before.
+- **Renewable share of generation (computed):** biomass, geothermal, hydro run-of-river,
+  hydro reservoir, marine, other renewable, solar and wind, divided by all generation
+  types reported for the interval. Pumped storage and waste count as not renewable.
+- **Newest interval:** the newest 15-min interval in which the country's load and every
+  reporting type have a value. A type silent for 4 hours counts as not reporting:
+  Italy, for example, sends no coal values while its coal units are off. An interval
+  whose load or total generation is below 60 % of the highest value of the 2 hours
+  before is still arriving in parts, so the snapshot steps back past it. Italy, for
+  example, publishes zone by zone over several hours. Each country card shows its own
+  interval time.
+- **EU (computed):** the sum over the EU member states on the map that have data, at the
+  newest interval where every one of them is complete; the card names how many members
+  were summed. Cyprus and Malta are not mapped.
+- **Coverage gaps:** ENTSO-E has no load or generation for GB, UA, MD and XK, no
+  generation for MK, and Romania's data arrives more than two days late. There are no
+  flows on GB–DK, MD–RO, RO–UA, RS–XK and MK–XK. There are no prices for IE, BA, XK and MD.
 
 `.github/workflows/eu-snapshot.yml` refreshes these every 30 min onto the `eu-data`
 branch; the app reads that copy from raw.githubusercontent.com and falls back to the
-bundled one (newer wins). Reservoirs need the repo secret `ENTSOE_API_KEY`.
+bundled one (newer wins). It needs the repo secret `ENTSOE_API_KEY`.
 
 ## One day for the time-lapse (`scripts/build_eu_day.py`)
 
 | File | Records | Source |
 |---|---:|---|
-| `day/<YYYY-MM-DD>.json` | 96 slots (15 min) of a local day (Europe/Berlin) | Energy-Charts with start/end: `/price` per zone, `/public_power` per country (and EU, hourly), `/cbpf` per country |
+| `day/<YYYY-MM-DD>.json` | 96 slots (15 min) of a local day (Europe/Berlin) | ENTSO-E A44 prices per zone, A65 load and A75 generation per country, A11 flows per border, with the rules above; EU = per-slot sum over the member states with data (`eu.sum_of`). Days before 2026-10 came from Energy-Charts (EU hourly) |
 | `day/index.json` | list of built days | — (`?day=latest` opens the newest) |
 | `week/<ISO>.json`, `week/EU.json` | newest 7 built days per country | the day files' values concatenated, unchanged (load, renewable share, generation by source, prices of the country's zones); written by `build_eu_day.py` with every archive run, or `--weeks-only` |
 | `day/<date>.json` → `highlights` | ~9 key moments per day | computed by `scripts/day_highlights.py` from the same file: min/max of EU load, solar, wind, gas; lowest/highest zone price; largest border flow; highest renewable share at the solar peak. The captions only word these values |
 
 **Rolling archive:** `.github/workflows/eu-days.yml` runs every morning
-(`build_eu_day.py --recent 30`): it builds yesterday, rebuilds the two newest days
+at 07:23 UTC (`build_eu_day.py --recent 30`): it builds yesterday, rebuilds the two newest days
 for late corrections and drops days older than 30, on the `eu-days` branch. All
 missing days are fetched in one window (one request per series), so a 30-day
 backfill costs about as much as one day. The app merges that archive with the days
@@ -53,8 +87,8 @@ The "price range, all zones" chart is the lowest and highest zone price per slot
 
 ## Notes
 
-- Energy-Charts answers 429 to bursts; all scripts ask one request at a time.
-- ENTSO-E Transparency (A11) returns the same flows but took more than 10 minutes for
-  all 164 border directions (`scripts/probe_entsoe_borders.py`).
-- Energy-Charts has no load/generation data for GB, UA and XK, and no prices for IE,
-  MK, BA, AL, XK, UA, MD.
+- ENTSO-E allows 400 requests a minute; the scripts ask four at a time. A full snapshot
+  (~270 requests) took about a minute on 2026-10-05; single answers range from 0.3 s
+  to 50 s.
+- Energy-Charts answers 429 to bursts. `scripts/fetch_eu_reference.py` still asks it
+  one request at a time for installed capacity.

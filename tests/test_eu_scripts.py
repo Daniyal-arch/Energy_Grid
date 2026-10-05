@@ -48,16 +48,9 @@ def test_day_payload_cuts_one_day_from_a_multi_day_window():
     t0 = int(first.timestamp())
     q = [t0 + 900 * k for k in range(192)]  # two days of 15-min stamps
     raw = {
-        "eu": {
-            "unix_seconds": [t0 + 3600 * h for h in range(48)],
-            "production_types": [
-                {"name": "Solar", "data": [float(h) for h in range(48)]},
-                {"name": "Load", "data": [1000.0 + h for h in range(48)]},
-            ],
-        },
         "prices": {"DE-LU": {"unix_seconds": q, "price": [float(k) for k in range(192)]}},
         "power": {
-            "de": {
+            "DE": {
                 "unix_seconds": q,
                 "production_types": [
                     {"name": "Wind onshore", "data": [1.0] * 192},
@@ -66,12 +59,68 @@ def test_day_payload_cuts_one_day_from_a_multi_day_window():
                 ],
             }
         },
-        "cbpf": {"de": {"unix_seconds": q, "countries": [{"name": "France", "data": [0.5] * 192}]}},
+        "flows": {"FR>DE": {"unix_seconds": q, "values": [500.0] * 192}},
     }
     second = day_payload(date(2026, 9, 25), raw)
     assert second["slots"] == 96
     assert second["prices"]["DE-LU"]["values"][0] == 96.0  # first slot of the second day
     assert second["countries"]["DE"]["generation"]["wind"][0] == 3.0  # onshore + offshore
-    assert second["eu"]["generation"]["solar"][:4] == [24.0] * 4  # hourly value fills 4 slots
+    assert second["eu"]["sum_of"] == ["DE"]  # the EU members with data that day, summed
+    assert second["eu"]["generation"]["wind"][:2] == [3.0, 3.0]
     assert second["borders"] == [{"a": "FR", "b": "DE", "values": [500.0] * 96}]
     assert second["highlights"]  # key moments computed for the day
+
+
+def test_series_of_fills_a03_curves_and_coarse_resolutions():
+    import xml.etree.ElementTree as ET
+    from datetime import UTC, datetime
+
+    from entsoe import Grid, series_of
+
+    doc = """<GL_MarketDocument xmlns="urn:x"><TimeSeries><curveType>A03</curveType>
+      <Period><timeInterval><start>2026-10-01T00:00Z</start><end>2026-10-01T02:00Z</end></timeInterval>
+      <resolution>PT60M</resolution>
+      <Point><position>1</position><quantity>10</quantity></Point>
+      </Period></TimeSeries><TimeSeries><curveType>A01</curveType>
+      <Period><timeInterval><start>2026-10-01T00:00Z</start><end>2026-10-01T00:30Z</end></timeInterval>
+      <resolution>PT15M</resolution>
+      <Point><position>1</position><quantity>1</quantity></Point>
+      <Point><position>2</position><quantity>2</quantity></Point>
+      </Period></TimeSeries></GL_MarketDocument>"""
+    t0 = datetime(2026, 10, 1, tzinfo=UTC)
+    grid = Grid(t0, t0.replace(hour=3))
+    (_, hourly), (_, quarter) = series_of(ET.fromstring(doc), "quantity", grid)
+    # one A03 point holds to the period end; an hourly value fills four 15-min slots
+    assert hourly == [10.0] * 8 + [None] * 4
+    assert quarter == [1.0, 2.0] + [None] * 10
+
+
+def test_eu_sum_waits_for_every_member():
+    from datetime import UTC, datetime
+
+    from entsoe import eu_sum
+
+    t0 = int(datetime(2026, 10, 1, tzinfo=UTC).timestamp())
+
+    def country(load, solar, gas):
+        return {
+            "unix_seconds": [t0, t0 + 900, t0 + 1800],
+            "production_types": [
+                {"name": "Solar", "data": solar},
+                {"name": "Fossil gas", "data": gas},
+                {"name": "Load", "data": load},
+            ],
+        }
+
+    eu = eu_sum(
+        {
+            "DE": country([10.0, 10.0, 10.0], [3.0, 3.0, 3.0], [1.0, 1.0, 1.0]),
+            "FR": country([20.0, 20.0, None], [1.0, None, 1.0], [3.0, 3.0, 3.0]),
+            "PL": country([None, None, None], [None, None, None], [None, None, None]),
+        }
+    )
+    assert eu is not None and eu["sum_of"] == ["DE", "FR"]  # PL has no load: not a member
+    cols = {t["name"]: t["data"] for t in eu["production_types"]}
+    assert cols["Load"] == [30.0, 30.0, None]  # FR has no load in slot 3
+    assert cols["Solar"] == [4.0, 3.0, None]  # FR reports no solar in slot 2: adds nothing
+    assert cols["Renewable share of generation"] == [50.0, 42.9, None]

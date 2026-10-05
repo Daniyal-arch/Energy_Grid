@@ -1,21 +1,23 @@
 """One full day of European electricity, every 15 minutes, for the time-lapse (?europe&day=).
 
-Asks Energy-Charts (Fraunhofer ISE; ENTSO-E data) for a whole local day (Central European
-time, midnight to midnight), one request at a time because the API answers 429 to bursts:
-  /price?bzn=zone         day-ahead price per bidding zone
-  /public_power?country   load, generation by source group, published renewable share
-  /public_power?country=eu  the EU aggregate (hourly)
-  /cbpf?country           physical cross-border flows per neighbour
+Asks ENTSO-E Transparency (scripts/entsoe.py; ENTSOE_API_KEY) for whole local days
+(Central European time, midnight to midnight), one request per series for the window:
+  A44  day-ahead price per bidding zone
+  A65  load per country
+  A75  generation per production type per country
+  A11  physical flows per border, both directions
 
 Values are passthrough, aligned to the day's 15-min slots (null where a source has no
 value); generation is grouped by fuel like the snapshot (e.g. wind onshore + offshore).
-Each border is taken from the first country that reports it (sign flipped as needed).
+Computed (scripts/entsoe.py): renewable share of generation, each border's net flow,
+and the EU totals (sum over the member states with data, named in "eu.sum_of").
 
 Writes frontend/public/data/eu/day/<YYYY-MM-DD>.json and updates day/index.json:
   {"date", "timezone", "start", "step_s", "slots",
    "prices": {zone: {"country", "values": [EUR/MWh]}},
    "countries": {ISO: {"load": [MW], "renewable_share": [%], "generation": {group: [MW]}}},
-   "eu": {"step_s": 3600, "load": [...], "renewable_share": [...], "generation": {...}},
+   "eu": {"step_s": 900, "sum_of": [ISO], "load": [...], "renewable_share": [...],
+          "generation": {...}},
    "borders": [{"a", "b", "values": [MW, a -> b positive]}],
    "highlights": [...]}  (key moments, scripts/day_highlights.py)
 
@@ -29,7 +31,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import time
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -37,15 +38,9 @@ from zoneinfo import ZoneInfo
 import httpx
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import entsoe  # noqa: E402
 from day_highlights import highlights  # noqa: E402
-from fetch_eu_snapshot import (  # noqa: E402
-    CODES,
-    FUEL_GROUP,
-    NAME_TO_ISO,
-    PRICE_ZONES,
-    SOURCE,
-    get,
-)
+from fetch_eu_snapshot import COUNTRIES, FUEL_GROUP, PRICE_ZONES, SOURCE, USER_AGENT  # noqa: E402
 
 OUT = Path(__file__).resolve().parents[1] / "frontend" / "public" / "data" / "eu" / "day"
 TZ = ZoneInfo("Europe/Berlin")  # CET/CEST, the market's own clock
@@ -100,33 +95,30 @@ def power_series(data: dict, start: int, slots: int) -> dict:
 
 
 def fetch_window(first: date, last: date) -> dict:
-    """Every source for the local days first..last in one pass (one request per series).
-
-    Asking once for the whole window keeps a 30-day backfill as cheap as a single day
-    (~110 requests, paced for Energy-Charts' rate limit).
-    """
+    """Every source for the local days first..last in one pass (one request per series),
+    so a 30-day backfill costs about as much as a single day (~270 requests)."""
     start_dt, _ = day_window(first)
     end_start, end_slots = day_window(last)
-    end_dt = end_start + timedelta(seconds=STEP * end_slots - 60)
-    window = {
-        "start": start_dt.strftime("%Y-%m-%dT%H:%MZ"),
-        "end": end_dt.strftime("%Y-%m-%dT%H:%MZ"),
+    grid = entsoe.Grid(start_dt, end_start + timedelta(seconds=STEP * end_slots))
+    with httpx.Client(timeout=300, headers=USER_AGENT) as client:
+        got = entsoe.run(
+            [(f"price:{z}", lambda z=z: entsoe.price(client, z, grid)) for z in PRICE_ZONES]
+            + [(f"power:{c}", lambda c=c: entsoe.power(client, c, grid)) for c in COUNTRIES]
+        )
+        flows = entsoe.flows(client, entsoe.BORDERS, grid)
+    power = {c: got[f"power:{c}"] for c in COUNTRIES if got.get(f"power:{c}")}
+    print(
+        f"prices: {sum(1 for z in PRICE_ZONES if got.get(f'price:{z}'))} zones, "
+        f"power: {len(power)} countries, flows: {len(flows)} borders",
+        flush=True,
+    )
+    return {
+        "prices": {z: got.get(f"price:{z}") for z in PRICE_ZONES},
+        "power": power,
+        "flows": {
+            f"{a}>{b}": {"unix_seconds": grid.seconds(), "values": v} for (a, b), v in flows.items()
+        },
     }
-    raw: dict = {"eu": None, "prices": {}, "power": {}, "cbpf": {}}
-    with httpx.Client(timeout=180, headers={"User-Agent": "Germany-InfraAtlas/0.1"}) as client:
-        raw["eu"] = get(client, "/public_power", "eu", **window)
-        time.sleep(3)
-        for zone in PRICE_ZONES:
-            raw["prices"][zone] = get(client, "/price", bzn=zone, **window)
-            time.sleep(3)
-        print(f"prices: {sum(1 for v in raw['prices'].values() if v)} zones", flush=True)
-        for code in CODES:
-            raw["power"][code] = get(client, "/public_power", code, **window)
-            time.sleep(3)
-            raw["cbpf"][code] = get(client, "/cbpf", code, **window)
-            time.sleep(3)
-            print(f"{code.upper()}: power {'ok' if raw['power'][code] else '-'}", flush=True)
-    return raw
 
 
 def day_payload(day: date, raw: dict) -> dict:
@@ -141,26 +133,24 @@ def day_payload(day: date, raw: dict) -> dict:
                 "country": iso,
                 "values": align(data["unix_seconds"], data["price"], start, slots),
             }
-    countries = {
-        code.upper(): power_series(data, start, slots)
-        for code, data in raw["power"].items()
-        if data
-    }
-    borders: dict[frozenset[str], dict] = {}
-    for code, data in raw["cbpf"].items():
-        if not data:
-            continue
-        home = code.upper()
-        for s in data.get("countries", []):
-            other = NAME_TO_ISO.get(s.get("name"))
-            if not other or frozenset((home, other)) in borders:
-                continue
-            # Energy-Charts: positive = import into the asked country (other -> home)
-            borders[frozenset((home, other))] = {
-                "a": other,
-                "b": home,
-                "values": align(data["unix_seconds"], s["data"], start, slots, scale=1000.0),
-            }
+    countries = {}
+    for iso, data in raw["power"].items():
+        series = power_series(data, start, slots) if data else None
+        values = (series or {}).get("load", []) + [
+            v for col in (series or {}).get("generation", {}).values() for v in col
+        ]
+        if series and any(v is not None for v in values):
+            countries[iso] = series
+    # EU: the members with data on this day, summed per slot (scripts/entsoe.py)
+    seconds = next(iter(raw["power"].values()), {}).get("unix_seconds", [])
+    first = (start - seconds[0]) // STEP if seconds else 0
+    eu = entsoe.eu_sum(raw["power"], range(max(0, first), min(len(seconds), first + slots)))
+    borders = []
+    for key, data in raw["flows"].items():
+        a, b = key.split(">")
+        values = align(data["unix_seconds"], data["values"], start, slots)
+        if any(v is not None for v in values):
+            borders.append({"a": a, "b": b, "values": values})  # a -> b positive
     payload = {
         "source": SOURCE,
         "date": day.isoformat(),
@@ -170,8 +160,12 @@ def day_payload(day: date, raw: dict) -> dict:
         "slots": slots,
         "prices": prices,
         "countries": countries,
-        "eu": power_series(raw["eu"], start, slots) if raw["eu"] else None,
-        "borders": list(borders.values()),
+        "eu": (
+            {"step_s": STEP, "sum_of": eu["sum_of"], **power_series(eu, start, slots)}
+            if eu
+            else None
+        ),
+        "borders": borders,
     }
     payload["highlights"] = highlights(payload)
     return payload
