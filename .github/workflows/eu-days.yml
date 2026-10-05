@@ -53,6 +53,9 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_eu_day.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/day
 
+      - name: Wind for the same days (Open-Meteo, one pass over the window)
+        run: python scripts/fetch_wind.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/wind || echo "wind fetch failed"
+
       - name: Publish
         env:
           REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git

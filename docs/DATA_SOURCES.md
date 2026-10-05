@@ -85,6 +85,29 @@ bundled in `frontend/public/data/eu/day/` and offers them in a date picker.
 The time-lapse clock shows the market's own time (CET/CEST) of the slot on screen.
 The "price range, all zones" chart is the lowest and highest zone price per slot.
 
+## Wind layer (`scripts/fetch_wind.py`)
+
+| File | Records | Source |
+|---|---:|---|
+| `wind.json` | 30 hours (6 back, 24 ahead) x 720 points | Open-Meteo forecast API (best-match weather models, CC BY 4.0, free for non-commercial use): hourly `wind_speed_100m` and `wind_direction_100m`, i.e. at wind-turbine hub height, on a 2-degree grid over lon -25..45, lat 34..72. Model values, not measurements |
+| `wind/<YYYY-MM-DD>.json` | the hours of one local day x 720 points | the same, for the archive days (one request per batch over the whole window; on the `eu-days` branch, the newest days bundled) |
+
+Values are passthrough (speed in 0.1 m/s, direction in degrees, where the wind blows
+from). The particles on the map move through a field interpolated between grid points
+and between hours, for drawing only; the legend names it as model data. Open-Meteo
+counts one call per location (600 a minute, 10,000 a day), so the grid goes in two
+batches a minute apart; a 30-day archive costs about as much as one day.
+
+## Transition tab (`scripts/fetch_transition.py`)
+
+| File | Records | Source |
+|---|---:|---|
+| `transition.json` | 209 countries + 8 aggregates, 2000-2025 | Ember yearly electricity data (CC BY 4.0), two bulk requests: generation by source (TWh), published shares of generation (renewables, wind and solar, coal), published total generation, carbon intensity of generation. About half of the countries have no 2025 figures yet; they are drawn grey for 2025 |
+| `world.json` | outlines + ISO alpha-3 | Eurostat GISCO 1:20M (coarse), the code joins Ember's entity code |
+
+The ranking in World view lists the 30 countries with the largest published total
+generation in the year shown.
+
 ## Notes
 
 - ENTSO-E allows 400 requests a minute; the scripts ask four at a time. A full snapshot

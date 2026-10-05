@@ -40,6 +40,7 @@ import {
   type GasRow,
   type WeekFile,
 } from "./CountryCards";
+import { WindField, WindParticles, type WindFile } from "../lib/windParticles";
 import { AggregateCard, RankingCard, type RankRow } from "./TransitionCards";
 
 // Europe's transmission grid, power plants and measured cross-border flows (the app's only view).
@@ -819,11 +820,15 @@ export default function EuropeView() {
   const [shade, setShade] = useState<"none" | "renewable" | "price">(DAY_PARAM || TRANSITION ? "none" : "renewable");
   const [show, setShow] = useState(
     TRANSITION
-      ? { plants: false, flows: false, substations: false, gas: false }
+      ? { plants: false, flows: false, substations: false, gas: false, wind: false }
       : DAY_PARAM
-        ? { plants: false, flows: true, substations: false, gas: false }
-        : { plants: true, flows: true, substations: true, gas: true },
+        ? { plants: false, flows: true, substations: false, gas: false, wind: true }
+        : { plants: true, flows: true, substations: true, gas: true, wind: false },
   );
+  // wind at 100 m (Open-Meteo): the live file or the replayed day's, and its particles
+  const [windFile, setWindFile] = useState<WindFile | null>(null);
+  const windField = useMemo(() => (windFile ? new WindField(windFile) : null), [windFile]);
+  const particles = useMemo(() => (isNarrow() ? new WindParticles(1200, 6) : new WindParticles(3600, 8)), []);
   // Transition tab: Ember data, the colour metric, Europe or the world, the picked
   // country (ISO alpha-3) and the year (position and play state live in refs)
   const [transition, setTransition] = useState<TransitionFile | null>(null);
@@ -899,6 +904,11 @@ export default function EuropeView() {
         return getJson<DayFile>(remoteDays.includes(d) ? `${DAYS_REMOTE}/${d}.json` : `/data/eu/day/${d}.json`);
       })
       .then((d) => {
+        fetch(`${DAYS_REMOTE.replace(/\/day$/, "/wind")}/${d.date}.json`, { signal: AbortSignal.timeout(6000) })
+          .then((r) => (r.ok ? (r.json() as Promise<WindFile>) : Promise.reject(new Error(String(r.status)))))
+          .catch(() => getJson<WindFile>(`/data/eu/wind/${d.date}.json`))
+          .then(setWindFile)
+          .catch(() => {});
         if (DAY_AT) {
           const [h, m] = DAY_AT.split(":").map(Number);
           daySlot.current = Math.max(0, Math.min(d.slots - 1, Math.floor(((h || 0) * 60 + (m || 0)) / 15)));
@@ -960,6 +970,7 @@ export default function EuropeView() {
       loadSnapshot<StatsFile>("stats.json", setStats);
       loadSnapshot<ReferenceFile>("reference.json", setReference);
       loadSnapshot<NonNullable<typeof dossier>>("dossier.json", setDossier);
+      if (!DAY_PARAM && !TRANSITION) loadSnapshot<WindFile>("wind.json", setWindFile);
     };
     load();
     const t = setInterval(load, 10 * 60 * 1000);
@@ -1577,10 +1588,26 @@ export default function EuropeView() {
   selectedRef.current = selected;
   // flat map for the tilted 3D views (24 h towers, a country's plants), globe otherwise
   const wantFlat = () => !!dayRef.current || !!selectedRef.current;
+  const windRef = useRef<{ field: WindField | null; on: boolean }>({ field: null, on: false });
+  windRef.current = { field: windField, on: show.wind };
+  const windTick = (dtMs: number) => {
+    const { field, on } = windRef.current;
+    const map = mapRef.current;
+    if (!field || !on || !map || dtMs <= 0) return;
+    const d = dayRef.current;
+    const when = d ? Date.parse(d.start) + daySlot.current * d.step_s * 1000 : Date.now();
+    const b = map.getBounds();
+    const box: [number, number, number, number] =
+      map.getProjection()?.type === "globe" ? [-30, 30, 50, 75] : [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()];
+    // ~1.2 degrees a second at 10 m/s over the whole of Europe; slower when zoomed in
+    const degPerMs = 0.12 * Math.pow(2, 2.5 - map.getZoom());
+    particles.step(field, field.hourAt(when), dtMs / 1000, degPerMs, box);
+  };
   const dayTick = (now: number) => {
     const d = dayRef.current;
     const dt = lastFrame.current == null ? 0 : Math.min(100, now - lastFrame.current);
     lastFrame.current = now;
+    windTick(dt);
     const t = transitionRef.current;
     if (t && yearPlaying.current) {
       yearPos.current = Math.min(t.years.length - 1, yearPos.current + dt / 1000 / SEC_PER_YEAR);
@@ -1737,6 +1764,21 @@ export default function EuropeView() {
               parameters: noDepth,
             }),
         ),
+        new LineLayer({
+          id: "eu-wind",
+          data: show.wind && windField ? particles.segments() : [],
+          getWidth: isMobile ? 1.1 : 1.3,
+          widthUnits: "pixels",
+          parameters: {
+            depthCompare: day ? "less-equal" : "always",
+            depthWriteEnabled: false,
+            blend: true,
+            blendColorSrcFactor: "src-alpha",
+            blendColorDstFactor: "one",
+            blendAlphaSrcFactor: "one",
+            blendAlphaDstFactor: "one-minus-src-alpha",
+          },
+        }),
         new PathLayer<[number, number[]], PathStyleExtensionProps<[number, number[]]>>({
           id: "eu-gas-pipes",
           data: gasPipes,
@@ -2027,7 +2069,7 @@ export default function EuropeView() {
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
+  }, [frame, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
   // label the EU figures with the start of their interval (hourly in older archives)
   const euStep = day?.eu?.step_s ?? 3600;
@@ -2254,6 +2296,12 @@ export default function EuropeView() {
         ))}
       </div>
       <div className="space-y-1">
+        {show.wind && (
+          <div className="flex items-center gap-2">
+            <span className="h-[3px] w-5 rounded" style={{ background: "linear-gradient(90deg, rgba(150,190,220,0.25), rgb(250,250,255))" }} />
+            Wind at 100 m: calm → ≥ 15 m/s (model, hourly)
+          </div>
+        )}
         <div className="flex items-center gap-2">
           <span className="h-[3px] w-5 rounded" style={{ background: `linear-gradient(90deg, transparent, ${rgbCss(FLOW)})` }} />
           Cross-border flow
@@ -2292,7 +2340,7 @@ export default function EuropeView() {
       <div>Grid: PyPSA-Eur network from © OpenStreetMap contributors (ODbL) · Plants ≥ 20 MW: powerplantmatching</div>
       <div>
         Flows, load, generation, prices, reservoirs: ENTSO-E Transparency Platform · Installed capacity: Energy-Charts ·
-        Gas: SciGRID_gas (2021), GIE · Yearly data: Ember · Borders: © EuroGeographics
+        Gas: SciGRID_gas (2021), GIE · Yearly data: Ember · Wind: Open-Meteo (CC BY 4.0) · Borders: © EuroGeographics
       </div>
     </>
   );
@@ -2311,6 +2359,10 @@ export default function EuropeView() {
     ["Yearly generation and carbon intensity", "Ember yearly electricity data (CC BY 4.0), as published."],
     ["Installed capacity", "Energy-Charts installed power, newest year with values."],
     ["Hydro reservoirs", "ENTSO-E Transparency, weekly stored energy."],
+    [
+      "Wind",
+      "Open-Meteo forecast API, wind at 100 m (turbine hub height), hourly on a 2° grid: model values, not measurements. Between grid points and hours the particles follow an interpolated field.",
+    ],
     ["Plants, grid, gas network", "powerplantmatching; PyPSA-Eur from OpenStreetMap (ODbL); SciGRID_gas (2021)."],
     ["Derived on this page", "Net import/export = sum of the measured border flows."],
   ];

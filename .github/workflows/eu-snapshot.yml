@@ -46,6 +46,8 @@ jobs:
           mkdir -p ref
           python scripts/fetch_eu_reference.py --out ref || echo "reference fetch failed"
           python scripts/fetch_eu_dossier.py --out ref || echo "dossier fetch failed"
+          # wind at 100 m (Open-Meteo), 6 h back and 24 h ahead: covers this run
+          python scripts/fetch_wind.py --live --out ref || echo "wind fetch failed"
 
       - name: Snapshot every 30 min for ~5 h 45 min
         env:
@@ -57,7 +59,7 @@ jobs:
           while [ "$SECONDS" -lt "$end" ]; do
             started=$SECONDS
             rm -rf store && mkdir -p store/eu
-            cp ref/reference.json ref/dossier.json store/eu/ 2>/dev/null || true
+            cp ref/reference.json ref/dossier.json ref/wind.json store/eu/ 2>/dev/null || true
             if python scripts/fetch_eu_snapshot.py --out store/eu; then
               (
                 cd store
