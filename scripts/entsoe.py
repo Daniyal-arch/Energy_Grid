@@ -118,6 +118,7 @@ RENEWABLE = {
     "Solar",
     "Wind offshore",
     "Wind onshore",
+    "Wind",  # Great Britain (Elexon) reports onshore and offshore together
 }
 RESOLUTION_S = {"PT15M": 900, "PT30M": 1800, "PT60M": 3600}
 

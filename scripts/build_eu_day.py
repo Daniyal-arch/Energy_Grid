@@ -39,6 +39,7 @@ import httpx
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import entsoe  # noqa: E402
+import gb  # noqa: E402
 from day_highlights import highlights  # noqa: E402
 from fetch_eu_snapshot import COUNTRIES, FUEL_GROUP, PRICE_ZONES, SOURCE, USER_AGENT  # noqa: E402
 
@@ -106,7 +107,17 @@ def fetch_window(first: date, last: date) -> dict:
             + [(f"power:{c}", lambda c=c: entsoe.power(client, c, grid)) for c in COUNTRIES]
         )
         flows = entsoe.flows(client, entsoe.BORDERS, grid)
+        # Great Britain from Elexon, as in the snapshot
+        gb_power: dict | None = None
+        try:
+            readings = gb.fuelinst(client, grid)
+            gb_power = gb.power(client, grid, readings)
+            flows.update(gb.flows(client, grid, readings))
+        except RuntimeError as err:
+            print(f"Great Britain skipped: {err}", flush=True)
     power = {c: got[f"power:{c}"] for c in COUNTRIES if got.get(f"power:{c}")}
+    if gb_power:
+        power["GB"] = gb_power
     print(
         f"prices: {sum(1 for z in PRICE_ZONES if got.get(f'price:{z}'))} zones, "
         f"power: {len(power)} countries, flows: {len(flows)} borders",

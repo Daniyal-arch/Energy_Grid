@@ -2821,6 +2821,10 @@ export default function EuropeView() {
   const sources: [string, string][] = [
     ["Load, generation, prices, flows", "ENTSO-E Transparency Platform; values passed through, newest complete 15-min interval per country."],
     [
+      "Great Britain",
+      "Elexon (BMRS): generation by fuel every 5 minutes (the reading at each quarter-hour), national demand half-hourly, and every interconnector's flow. Transmission-level only.",
+    ],
+    [
       "Computed from them",
       "Renewable share = renewable types / all generation types reported. Border flow = flow one way minus the other. EU = sum of the member states with data.",
     ],
@@ -2874,7 +2878,17 @@ export default function EuropeView() {
   const countryBody = focus && (
     <div className="space-y-2.5">
       {focusPower ? (
-        <NowCard now={focusPower} time={timeOf(focusPower.ts)} price={singleZone} netMw={netMw} />
+        <NowCard
+          now={focusPower}
+          time={timeOf(focusPower.ts)}
+          price={singleZone}
+          netMw={netMw}
+          footnote={
+            selected === "GB"
+              ? "Great Britain: Elexon, transmission-connected generation and national demand. Rooftop solar and small wind are not metered here."
+              : undefined
+          }
+        />
       ) : (
         <Card title="Right now">
           <div className="text-[11px] text-[#8d94a1]">No load or generation data from ENTSO-E for this country.</div>

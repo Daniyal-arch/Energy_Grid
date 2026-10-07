@@ -35,6 +35,7 @@ import httpx
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import entsoe  # noqa: E402
+import gb  # noqa: E402
 
 OUT = Path(__file__).resolve().parents[1] / "frontend" / "public" / "data" / "eu"
 SOURCE = "ENTSO-E Transparency Platform"
@@ -63,6 +64,7 @@ FUEL_GROUP = {
     "Other renewables": "other",
     "Others": "other",
     "Battery": "other",
+    "Wind": "wind",
 }
 
 # countries asked for load and generation (ENTSO-E has none for GB, UA, MD and XK)
@@ -234,9 +236,20 @@ def main() -> None:
             flush=True,
         )
         border_series = entsoe.flows(client, entsoe.BORDERS, grid)
+        # Great Britain from Elexon (ENTSO-E has none since Brexit); its border flows
+        # replace ENTSO-E's for all GB links, which also adds GB-DK
+        gb_power: dict | None = None
+        try:
+            readings = gb.fuelinst(client, grid)
+            gb_power = gb.power(client, grid, readings)
+            border_series.update(gb.flows(client, grid, readings))
+        except RuntimeError as err:
+            print(f"Great Britain skipped: {err}", flush=True)
         print(f"flows: {len(border_series)} of {len(entsoe.BORDERS)} borders", flush=True)
 
     raw_power = {c: got[f"power:{c}"] for c in COUNTRIES if got.get(f"power:{c}")}
+    if gb_power:
+        raw_power["GB"] = gb_power
     stats = {c: row for c, data in raw_power.items() if (row := power(data))}
     eu = eu_now(raw_power)
     prices: dict[str, dict] = {}

@@ -58,9 +58,23 @@ skipped):
 - **EU (computed):** the sum over the EU member states on the map that have data, at the
   newest interval where every one of them is complete; the card names how many members
   were summed. Cyprus and Malta are not mapped.
-- **Coverage gaps:** ENTSO-E has no load or generation for GB, UA, MD and XK, no
+- **Coverage gaps:** ENTSO-E has no load or generation for GB (Elexon fills it), UA, MD and XK, no
   generation for MK, and Romania's data arrives more than two days late. There are no
-  flows on GB–DK, MD–RO, RO–UA, RS–XK and MK–XK. There are no prices for IE, BA, XK and MD.
+  flows on MD–RO, RO–UA, RS–XK and MK–XK (GB–DK comes from Elexon). There are no prices for IE, BA, XK and MD.
+
+**Great Britain** (`scripts/gb.py`, Elexon Insights API, no key): ENTSO-E has no GB load or
+generation since Brexit. Generation by fuel comes from `FUELINST`, every 5 minutes, for
+transmission-connected units; the reading at the start of each quarter-hour is used.
+Demand is the half-hourly initial national demand outturn, filling both quarters.
+Rooftop solar and small wind are not metered at this level, so GB's renewable share is
+computed over transmission-connected generation. Border flows also come from `FUELINST`
+(positive = import into GB). Each border is the sum of its links (computed):
+- GB–FR = IFA + IFA2 + ElecLink
+- GB–IE = East-West + Greenlink
+- GB–NL = BritNed, GB–BE = Nemo, GB–NO = North Sea Link, GB–DK = Viking
+
+These replace ENTSO-E's GB borders. Moyle (Scotland to Northern Ireland) is inside the
+UK on this map and is not drawn.
 
 `.github/workflows/eu-snapshot.yml` refreshes these every 30 min onto the `eu-data`
 branch; the app reads that copy from raw.githubusercontent.com and falls back to the
