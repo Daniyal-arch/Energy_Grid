@@ -2126,11 +2126,12 @@ export default function EuropeView() {
             id: "w-datacentres",
             data: worldShow.datacentres && dcFile ? dcFile.points.filter((d) => near([d[0], d[1]])) : [],
             getPosition: (d) => [d[0], d[1]],
-            getRadius: zoom < 3 ? 1.8 : 2.6,
+            // small and quiet: many sites sit close together in Europe and the US
+            getRadius: zoom < 3 ? 1.1 : zoom < 5 ? 1.5 : 2.4,
             radiusUnits: "pixels",
-            getFillColor: [...DC_COLOR, 210],
+            getFillColor: [...DC_COLOR, zoom < 5 ? 150 : 210],
             pickable: true,
-            updateTriggers: { getRadius: [zoom < 3] },
+            updateTriggers: { getRadius: [zoom < 3, zoom < 5], getFillColor: [zoom < 5] },
             parameters: { depthCompare: "always", depthWriteEnabled: false },
           }),
           new PathLayer<Arc>({

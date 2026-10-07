@@ -7,8 +7,12 @@ put in one class (computed from its tags):
   hv     110 kV or more
   field  below 110 kV, mostly offshore wind farm export and inter-array cables
   other  no voltage tagged
-Geometry simplified to about 500 m (shapely), coordinates to 3 decimals. OpenStreetMap
-is a mapped subset: well mapped around Europe, sparse elsewhere.
+Some cables are tagged underwater along their whole route, landfall and onshore part
+included, so each line is cut to the sea: the parts over land (Eurostat GISCO country
+outlines, 1:20M) are removed. Cables in lakes and narrow fjords fall inside those
+outlines and drop out with them. Geometry simplified to about 500 m (shapely),
+coordinates to 3 decimals; pieces shorter than ~2 km are left out. OpenStreetMap is a
+mapped subset: well mapped around Europe, sparse elsewhere.
 
 Writes frontend/public/data/eu/cables.json:
   {"source", "fetched", "count", "cables": [[class, kV | null, name | null, [lon, lat, ...]]]}
@@ -26,7 +30,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import httpx
-from shapely.geometry import LineString
+from shapely.geometry import LineString, MultiLineString, shape
+from shapely.ops import unary_union
+from shapely.prepared import prep
 
 OUT = Path(__file__).resolve().parents[1] / "frontend" / "public" / "data" / "eu"
 OVERPASS = "https://overpass-api.de/api/interpreter"
@@ -35,6 +41,14 @@ QUERY = (
     'way["power"="cable"]["submarine"="yes"];);out tags geom;'
 )
 TOLERANCE = 0.005  # degrees, about 500 m
+MIN_PIECE = 0.02  # degrees, about 2 km
+GISCO = Path(__file__).resolve().parents[1] / "data" / "eu" / "countries.geojson"
+
+
+def land():
+    """All countries' outlines as one shape (Eurostat GISCO 1:20M)."""
+    feats = json.loads(GISCO.read_text(encoding="utf-8"))["features"]
+    return unary_union([shape(f["geometry"]).buffer(0) for f in feats])
 
 
 def kilovolts(tag: str | None) -> int | None:
@@ -67,6 +81,8 @@ def main() -> None:
             time.sleep(60 * (attempt + 1))
         else:
             raise RuntimeError("Overpass: no answer")
+    ground = land()
+    on_land = prep(ground)
     cables = []
     for e in r.json()["elements"]:
         pts = [(p["lon"], p["lat"]) for p in e.get("geometry", [])]
@@ -83,9 +99,22 @@ def main() -> None:
             if kv
             else "other"
         )
-        line = LineString(pts).simplify(TOLERANCE, preserve_topology=False)
-        flat = [round(v, 3) for xy in line.coords for v in xy]
-        cables.append([cls, kv, tags.get("name"), flat])
+        line = LineString(pts)
+        # keep only the stretches at sea
+        sea = line.difference(ground) if on_land.intersects(line) else line
+        pieces = (
+            list(sea.geoms)
+            if isinstance(sea, MultiLineString)
+            else [sea]
+            if isinstance(sea, LineString)
+            else []
+        )
+        for piece in pieces:
+            if piece.length < MIN_PIECE:
+                continue
+            piece = piece.simplify(TOLERANCE, preserve_topology=False)
+            flat = [round(v, 3) for xy in piece.coords for v in xy]
+            cables.append([cls, kv, tags.get("name"), flat])
     out.mkdir(parents=True, exist_ok=True)
     path = out / "cables.json"
     path.write_text(
