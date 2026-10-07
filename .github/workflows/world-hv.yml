@@ -1,0 +1,59 @@
+name: World high-voltage lines
+
+# Builds the World tab's grid layer: every power line of 220 kV and more mapped in
+# OpenStreetMap (scripts/fetch_world_hv.py, Overpass, box by box), cut into vector tiles
+# with tippecanoe (zoom 0-9, the 500 kV+ backbone at every zoom) and uploaded to the R2
+# bucket infraatlas-data as grid/world-hv.pmtiles. Re-run by hand to refresh.
+# Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/world-hv.yml]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: world-hv
+  cancel-in-progress: true
+
+jobs:
+  lines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Fetch lines from OpenStreetMap (about an hour)
+        run: |
+          pip install httpx
+          python scripts/fetch_world_hv.py --out hv.geojsons
+
+      - name: Build tippecanoe
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4
+          sudo make -C /tmp/tippecanoe install
+
+      - name: Cut into vector tiles
+        run: |
+          tippecanoe -o world-hv.pmtiles -l hv -Z0 -z9 --simplification=6 \
+            --no-feature-limit --no-tile-size-limit \
+            --attribution='© OpenStreetMap contributors (ODbL)' --force hv.geojsons
+          ls -la world-hv.pmtiles
+
+      - name: Upload to R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@4 r2 object put infraatlas-data/grid/world-hv.pmtiles \
+            --file world-hv.pmtiles --content-type application/vnd.pmtiles --remote
