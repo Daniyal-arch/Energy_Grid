@@ -821,6 +821,15 @@ const ACTIVE_TAB = DAY_PARAM ? "day" : TRANSITION ? "transition" : PRICES ? "pri
  * Hands over the copy bundled with the app at once, then the cloud snapshot if it
  * is newer (the remote fetch can be slow or missing, so it never blocks the map).
  */
+/** A snapshot with nothing in it (a failed refresh) must never replace good data. */
+function hasData(v: unknown): boolean {
+  const o = v as { borders?: unknown[]; countries?: Record<string, unknown>; regions?: Record<string, unknown> };
+  if (Array.isArray(o.borders)) return o.borders.length > 0;
+  if (o.countries && typeof o.countries === "object") return Object.keys(o.countries).length > 0;
+  if (o.regions && typeof o.regions === "object") return Object.keys(o.regions).length > 0;
+  return true;
+}
+
 function loadSnapshot<T extends { fetched: string }>(name: string, use: (v: T) => void): void {
   let bundled: T | null = null;
   getJson<T>(`/data/eu/${name}`)
@@ -832,7 +841,7 @@ function loadSnapshot<T extends { fetched: string }>(name: string, use: (v: T) =
   fetch(`${SNAPSHOT_REMOTE}/${name}?t=${Date.now()}`, { signal: AbortSignal.timeout(8000) })
     .then((r) => (r.ok ? (r.json() as Promise<T>) : Promise.reject()))
     .then((v) => {
-      if (!bundled || v.fetched > bundled.fetched) use(v);
+      if (hasData(v) && (!bundled || v.fetched > bundled.fetched)) use(v);
     })
     .catch(() => {});
 }

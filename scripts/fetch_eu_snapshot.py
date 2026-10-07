@@ -298,6 +298,15 @@ def main() -> None:
         "day_ahead_prices": prices,
     }
     (out / "stats.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
+    # what this run got, for the app's freshness note and for debugging the workflow
+    health = {
+        "fetched": fetched,
+        "entsoe_requests": dict(entsoe.OUTCOMES),
+        "countries": len(stats),
+        "borders": len(rows),
+        "price_zones": len(prices),
+    }
+    (out / "health.json").write_text(json.dumps(health, indent=1), encoding="utf-8")
     print(
         f"{len(rows)} borders, {len(stats)} countries with power data, {len(prices)} price zones, "
         f"EU: {eu['ts'] + ' over ' + str(len(eu['sum_of'])) + ' members' if eu else 'none'}"
@@ -309,3 +318,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+    # an empty run must not replace the last good snapshot: fail, so nothing is published
+    if not entsoe.OUTCOMES.get("200"):
+        print("no ENTSO-E request succeeded:", dict(entsoe.OUTCOMES), file=sys.stderr)
+        sys.exit(1)

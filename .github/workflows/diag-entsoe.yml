@@ -1,0 +1,48 @@
+name: Diagnose ENTSO-E from GitHub
+
+# One-off check: why did the snapshot's ENTSO-E requests fail on the runner? Runs the
+# probe (status codes, timings, sizes; never the key) and publishes its output to the
+# `diag` branch as entsoe.txt. Triggered by a change to this file or by hand.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/diag-entsoe.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Probe
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+        run: |
+          pip install -q httpx python-dotenv
+          mkdir -p out
+          {
+            echo "key set: $([ -n "$ENTSOE_API_KEY" ] && echo yes || echo NO), length ${#ENTSOE_API_KEY}"
+            echo "runner IP: $(curl -s https://api.ipify.org)"
+            curl -s -o /dev/null -w "ENTSO-E without key: HTTP %{http_code}\n" "https://web-api.tp.entsoe.eu/api?documentType=A44"
+            python scripts/probe_entsoe_core.py 2>&1 | head -40
+          } > out/entsoe.txt 2>&1
+          cat out/entsoe.txt
+      - name: Publish
+        env:
+          REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+        run: |
+          cd out
+          git init -q -b diag
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "ENTSO-E diagnosis $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "$REMOTE" diag

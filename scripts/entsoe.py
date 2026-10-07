@@ -29,6 +29,7 @@ from __future__ import annotations
 import os
 import time
 import xml.etree.ElementTree as ET
+from collections import Counter
 from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
@@ -165,22 +166,34 @@ def _ts(text: str) -> int:
     return int(datetime.strptime(text, "%Y-%m-%dT%H:%MZ").replace(tzinfo=UTC).timestamp())
 
 
+# outcome of every request, for the run's health report ("200", "no data", "HTTP 401", ...)
+OUTCOMES: Counter[str] = Counter()
+
+
 def request(client: httpx.Client, params: dict[str, str]) -> ET.Element | None:
     """One API call; None when ENTSO-E has no data (it answers with an acknowledgement)."""
     query = {"securityToken": os.environ["ENTSOE_API_KEY"], **params}
     for attempt in range(5):
         try:
             r = client.get(BASE, params=query)
-        except httpx.TransportError:
+        except httpx.TransportError as err:
+            OUTCOMES[err.__class__.__name__] += 1
             time.sleep(5 * (attempt + 1))
             continue
         if r.status_code == 429 or r.status_code >= 500:
+            OUTCOMES[f"HTTP {r.status_code}"] += 1
             time.sleep(float(r.headers.get("retry-after") or 10 * (attempt + 1)))
             continue
         if r.status_code != 200:
+            OUTCOMES[f"HTTP {r.status_code}"] += 1
             return None
         root = ET.fromstring(r.content)
-        return None if root.tag.endswith("Acknowledgement_MarketDocument") else root
+        if root.tag.endswith("Acknowledgement_MarketDocument"):
+            OUTCOMES["no data"] += 1
+            return None
+        OUTCOMES["200"] += 1
+        return root
+    OUTCOMES["gave up"] += 1
     return None
 
 
