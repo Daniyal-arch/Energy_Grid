@@ -14,6 +14,8 @@ export interface DataCentresFile {
   fetched: string;
   count: number;
   by_country: Record<string, number>;
+  /** sites per 1-degree cell: [lon, lat, count] (computed in scripts/fetch_world.py) */
+  clusters: [number, number, number][];
   /** [lon, lat, name, operator] */
   points: [number, number, string | null, string | null][];
 }

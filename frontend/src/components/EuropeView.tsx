@@ -74,7 +74,17 @@ import {
   type DataCentresFile,
   type WorldStatsFile,
 } from "../lib/world";
-import { AccessCard, BrazilCard, DataCentresCard, NemCard, UsCard, WorldCountryCard } from "./WorldCards";
+import {
+  HV_STEPS,
+  HV_TILES,
+  PLANT_TYPE_COLOR,
+  PLANT_TYPE_LABEL,
+  PREDICTED_TILES,
+  STATUS_LABEL,
+  unitVector,
+  type WorldPlantsFile,
+} from "../lib/worldPlants";
+import { AccessCard, BrazilCard, DataCentresCard, NemCard, PlantsCard, UsCard, WorldCountryCard } from "./WorldCards";
 import { CaptureCard, MonthsCard, TimeOfDayCard, ZoneCard, ZoneRankingCard } from "./PriceCards";
 import { AggregateCard, RankingCard, type RankRow } from "./TransitionCards";
 
@@ -421,8 +431,8 @@ const GLOBE_STYLE: maplibregl.StyleSpecification = {
 // read with HTTP range requests; only the tiles in view travel
 const pmtiles = new Protocol();
 maplibregl.addProtocol("pmtiles", pmtiles.tile);
-const GRID_TILES = "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/grid/world-grid.pmtiles";
-const GRID_LAYERS = ["grid-predicted", "grid-mapped"];
+const GRID_LAYERS = ["hv-glow", "hv-lines"];
+const PREDICTED_LAYERS = ["grid-predicted"];
 // Europe faces the camera from here; beyond this angle its layers are on the far side
 const EUROPE_CENTRE: [number, number] = [12, 50];
 const FAR_SIDE_DEG = 78;
@@ -955,7 +965,20 @@ export default function EuropeView() {
     months: string[];
     entities: Record<string, { renewables: (number | null)[]; wind_solar: (number | null)[]; coal: (number | null)[] }>;
   } | null>(null);
-  const [worldShow, setWorldShow] = useState({ grid: true, datacentres: true, australia: true, usa: true, brazil: true, cables: true });
+  const [worldShow, setWorldShow] = useState({
+    grid: true,
+    plants: true,
+    datacentres: true,
+    usa: true,
+    brazil: true,
+    australia: true,
+    cables: true,
+    predicted: false,
+  });
+  // GEM's plants: which status is on the map, the file, and names (loaded on first hover)
+  const [plantStatus, setPlantStatus] = useState<string>("operating");
+  const [worldPlants, setWorldPlants] = useState<WorldPlantsFile | null>(null);
+  const plantNames = useRef<string[] | null>(null);
   const [brazil, setBrazil] = useState<BrazilFile | null>(null);
   const [cables, setCables] = useState<Cable[] | null>(null);
   const wantCables = show.cables || (WORLD && worldShow.cables);
@@ -1090,6 +1113,7 @@ export default function EuropeView() {
     newer<WorldStatsFile>("world_stats.json", setWorldStats);
     newer<DataCentresFile>("datacentres.json", setDcFile);
     getJson<NonNullable<typeof monthly>>("/data/eu/monthly.json").then(setMonthly).catch(() => {});
+    getJson<WorldPlantsFile>("/data/eu/world_plants.json").then(setWorldPlants).catch(() => {});
     const live = () => {
       loadSnapshot<AemoFile>("aemo.json", setAemo);
       loadSnapshot<UsFile>("us.json", setUs);
@@ -1228,6 +1252,29 @@ export default function EuropeView() {
             border: "1px solid rgba(255,255,255,0.1)",
             borderRadius: "6px",
           };
+          if (layer.id === "w-plants") {
+            const k = object as number;
+            const wp = worldPlantsRef.current;
+            if (!wp) return null;
+            const pt = wp.points[k];
+            if (!plantNames.current) {
+              plantNames.current = [];
+              getJson<{ names: string[] }>("/data/eu/world_plant_names.json")
+                .then((d) => (plantNames.current = d.names))
+                .catch(() => {});
+            }
+            const name = plantNames.current[k] || "Power plant";
+            const status = wp.statuses[pt[3]];
+            const year = pt[5] ? ` · ${status === "retired" ? "retired" : "from"} ${pt[5]}` : "";
+            return {
+              html: `<b>${name}</b><div>${PLANT_TYPE_LABEL[wp.types[pt[2]]] ?? wp.types[pt[2]]} · ${pt[4].toLocaleString("en-US")} MW · ${STATUS_LABEL[status] ?? status}${year}</div><div style="color:#8d94a1">Global Energy Monitor, Sep 2026</div>`,
+              style,
+            };
+          }
+          if (layer.id === "w-dc-clusters") {
+            const c = object as DataCentresFile["clusters"][number];
+            return { html: `<b>${c[2]} data centres</b><div>mapped in OpenStreetMap within this 1° cell</div>`, style };
+          }
           if (layer.id === "w-datacentres") {
             const d = object as DataCentresFile["points"][number];
             return {
@@ -1382,31 +1429,64 @@ export default function EuropeView() {
     map.on("deckviewsync", syncViews);
     if (WORLD) {
       map.on("load", () => {
-        map.addSource("world-grid", {
+        map.addSource("world-predicted", {
           type: "vector",
-          url: GRID_TILES,
-          attribution: "Gridfinder (Arderne et al. 2020), © OpenStreetMap contributors",
+          url: PREDICTED_TILES,
+          attribution: "Gridfinder (Arderne et al. 2020)",
         });
-        const width = ["interpolate", ["linear"], ["zoom"], 1, 0.35, 5, 0.8, 9, 1.4] as const;
+        map.addSource("world-hv", { type: "vector", url: HV_TILES, attribution: "© OpenStreetMap contributors" });
         map.addLayer(
           {
             id: "grid-predicted",
             type: "line",
-            source: "world-grid",
+            source: "world-predicted",
             "source-layer": "grid",
             filter: ["==", ["get", "source"], "gridfinder"],
-            paint: { "line-color": "rgba(255,190,110,0.32)", "line-width": width as unknown as number },
+            layout: { visibility: "none" },
+            paint: { "line-color": "rgba(255,190,110,0.35)", "line-width": 0.6 },
+          },
+          "world-pick",
+        );
+        const kv = ["coalesce", ["get", "kv"], 0];
+        const color = ["step", kv, HV_STEPS[0][1], ...HV_STEPS.slice(1).flat()];
+        // a soft glow under the backbone, then the lines; heavier for higher voltage
+        map.addLayer(
+          {
+            id: "hv-glow",
+            type: "line",
+            source: "world-hv",
+            "source-layer": "hv",
+            filter: [">=", kv, 380] as unknown as maplibregl.FilterSpecification,
+            paint: {
+              "line-color": color as unknown as string,
+              "line-width": ["interpolate", ["linear"], ["zoom"], 1, 2, 5, 4, 9, 7] as unknown as number,
+              "line-blur": 3,
+              "line-opacity": 0.28,
+            },
           },
           "world-pick",
         );
         map.addLayer(
           {
-            id: "grid-mapped",
+            id: "hv-lines",
             type: "line",
-            source: "world-grid",
-            "source-layer": "grid",
-            filter: ["==", ["get", "source"], "openstreetmap"],
-            paint: { "line-color": "rgba(150,200,255,0.7)", "line-width": width as unknown as number },
+            source: "world-hv",
+            "source-layer": "hv",
+            layout: { "line-cap": "round", "line-join": "round" },
+            paint: {
+              "line-color": color as unknown as string,
+              "line-width": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                1,
+                ["step", kv, 0.35, 380, 0.6, 500, 0.9],
+                5,
+                ["step", kv, 0.7, 380, 1.1, 500, 1.6],
+                9,
+                ["step", kv, 1.2, 380, 1.8, 500, 2.6],
+              ] as unknown as number,
+            },
           },
           "world-pick",
         );
@@ -1432,6 +1512,8 @@ export default function EuropeView() {
 
   // the tooltip callback is created once; it reads the latest data through refs
   const statsRef = useRef<StatsFile | null>(null);
+  const worldPlantsRef = useRef<WorldPlantsFile | null>(null);
+  worldPlantsRef.current = worldPlants;
   const brazilRef = useRef<BrazilFile | null>(null);
   brazilRef.current = brazil;
   const transitionRef = useRef<TransitionFile | null>(null);
@@ -1742,10 +1824,12 @@ export default function EuropeView() {
     const apply = () => {
       for (const id of GRID_LAYERS)
         if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", worldShow.grid ? "visible" : "none");
+      for (const id of PREDICTED_LAYERS)
+        if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", worldShow.predicted ? "visible" : "none");
     };
     if (map.isStyleLoaded()) apply();
     else map.once("idle", apply);
-  }, [worldShow.grid]);
+  }, [worldShow.grid, worldShow.predicted]);
   useEffect(() => {
     const map = mapRef.current;
     if (!WORLD || !map) return;
@@ -1764,6 +1848,25 @@ export default function EuropeView() {
       }),
     [us],
   );
+  const plantVectors = useMemo(
+    () => (worldPlants ? worldPlants.points.map((pt) => unitVector(pt[0], pt[1])) : []),
+    [worldPlants],
+  );
+  const camera = mapRef.current?.getCenter();
+  const camKey = camera ? `${Math.round(camera.lng / 3)}:${Math.round(camera.lat / 3)}` : "";
+  const nearPlants = useMemo(() => {
+    if (!WORLD || !worldPlants || !camera) return [];
+    const [cx, cy, cz] = unitVector(camera.lng, camera.lat);
+    const st = worldPlants.statuses.indexOf(plantStatus);
+    const out: number[] = [];
+    worldPlants.points.forEach((pt, k) => {
+      const v = plantVectors[k];
+      // cos 80 degrees: the side facing the camera, with a margin
+      if (pt[3] === st && v[0] * cx + v[1] * cy + v[2] * cz > 0.17) out.push(k);
+    });
+    return out;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [worldPlants, plantVectors, plantStatus, camKey]);
   const iso3Names = useMemo(() => new Map((world?.features ?? []).map((f) => [f.properties.iso3, f.properties.name])), [world]);
   const nameOf3 = (code: string) => transition?.entities[code]?.name ?? iso3Names.get(code) ?? code;
   const nemArcs = useMemo<Arc[]>(
@@ -2122,18 +2225,91 @@ export default function EuropeView() {
             zoom >= 2.2,
           ),
           ...regionFlowLayers("w-br", brArcs, flow, FLOW, 300),
-          new ScatterplotLayer<DataCentresFile["points"][number]>({
-            id: "w-datacentres",
-            data: worldShow.datacentres && dcFile ? dcFile.points.filter((d) => near([d[0], d[1]])) : [],
-            getPosition: (d) => [d[0], d[1]],
-            // small and quiet: many sites sit close together in Europe and the US
-            getRadius: zoom < 3 ? 1.1 : zoom < 5 ? 1.5 : 2.4,
+          // GEM's plants of the chosen status, sized by capacity, coloured by fuel
+          new ScatterplotLayer<number>({
+            id: "w-plants",
+            data: worldShow.plants && worldPlants ? nearPlants : [],
+            getPosition: (k) => [worldPlants!.points[k][0], worldPlants!.points[k][1]],
+            getRadius: (k) => Math.min(9, 0.6 + Math.sqrt(worldPlants!.points[k][4]) * (zoom < 3 ? 0.07 : 0.11)),
             radiusUnits: "pixels",
-            getFillColor: [...DC_COLOR, zoom < 5 ? 150 : 210],
+            getFillColor: (k) => {
+              const c = PLANT_TYPE_COLOR[worldPlants!.types[worldPlants!.points[k][2]]] ?? [150, 150, 150];
+              return plantStatus === "retired" ? [110, 110, 120, 170] : plantStatus === "planned" ? [...c, 60] : [...c, 210];
+            },
+            stroked: plantStatus !== "operating",
+            getLineColor: (k) => [...(PLANT_TYPE_COLOR[worldPlants!.types[worldPlants!.points[k][2]]] ?? [150, 150, 150]), 230],
+            lineWidthUnits: "pixels",
+            getLineWidth: 1,
+            updateTriggers: { getRadius: [zoom < 3], getFillColor: [plantStatus], getLineColor: [plantStatus] },
             pickable: true,
-            updateTriggers: { getRadius: [zoom < 3, zoom < 5], getFillColor: [zoom < 5] },
             parameters: { depthCompare: "always", depthWriteEnabled: false },
           }),
+          // data centres: glowing hubs when zoomed out, single sites zoomed in
+          ...(worldShow.datacentres && dcFile && zoom < 4.5
+            ? [
+                new ScatterplotLayer<DataCentresFile["clusters"][number]>({
+                  id: "w-dc-glow",
+                  data: dcFile.clusters.filter((c) => near([c[0], c[1]])),
+                  getPosition: (c) => [c[0], c[1]],
+                  getRadius: (c) => 6 + Math.sqrt(c[2]) * 3.2,
+                  radiusUnits: "pixels",
+                  getFillColor: [...DC_COLOR, 45],
+                  parameters: {
+                    depthCompare: "always",
+                    depthWriteEnabled: false,
+                    blend: true,
+                    blendColorSrcFactor: "src-alpha",
+                    blendColorDstFactor: "one",
+                    blendAlphaSrcFactor: "one",
+                    blendAlphaDstFactor: "one-minus-src-alpha",
+                  },
+                }),
+                new ScatterplotLayer<DataCentresFile["clusters"][number]>({
+                  id: "w-dc-clusters",
+                  data: dcFile.clusters.filter((c) => near([c[0], c[1]])),
+                  getPosition: (c) => [c[0], c[1]],
+                  getRadius: (c) => 1.6 + Math.sqrt(c[2]) * 0.9,
+                  radiusUnits: "pixels",
+                  getFillColor: [236, 220, 255, 235],
+                  stroked: true,
+                  getLineColor: [...DC_COLOR, 255],
+                  lineWidthUnits: "pixels",
+                  getLineWidth: 1.2,
+                  pickable: true,
+                  parameters: { depthCompare: "always", depthWriteEnabled: false },
+                }),
+                new TextLayer<DataCentresFile["clusters"][number]>({
+                  id: "w-dc-counts",
+                  data: zoom >= 2.4 ? dcFile.clusters.filter((c) => c[2] >= 25 && near([c[0], c[1]])) : [],
+                  getPosition: (c) => [c[0], c[1]],
+                  getText: (c) => String(c[2]),
+                  getSize: 10,
+                  getColor: [236, 220, 255, 255],
+                  fontFamily: "Inter, system-ui, sans-serif",
+                  fontWeight: 700,
+                  getPixelOffset: (c) => [0, -(10 + Math.sqrt(c[2]) * 1.4)],
+                  outlineWidth: 3,
+                  outlineColor: [6, 8, 12, 230],
+                  fontSettings: { sdf: true },
+                  parameters: { depthCompare: "always", depthWriteEnabled: false },
+                }),
+              ]
+            : [
+                new ScatterplotLayer<DataCentresFile["points"][number]>({
+                  id: "w-datacentres",
+                  data: worldShow.datacentres && dcFile ? dcFile.points.filter((d) => near([d[0], d[1]])) : [],
+                  getPosition: (d) => [d[0], d[1]],
+                  getRadius: 3.2,
+                  radiusUnits: "pixels",
+                  getFillColor: [236, 220, 255, 235],
+                  stroked: true,
+                  getLineColor: [...DC_COLOR, 255],
+                  lineWidthUnits: "pixels",
+                  getLineWidth: 1.4,
+                  pickable: true,
+                  parameters: { depthCompare: "always", depthWriteEnabled: false },
+                }),
+              ]),
           new PathLayer<Arc>({
             id: "w-nem-casing",
             data: worldShow.australia ? nemArcs.filter((a) => near(a.path[15])) : [],
@@ -2289,7 +2465,7 @@ export default function EuropeView() {
           transitions: TRANSITION ? { getFillColor: 450 } : undefined,
           // World tab: below the grid lines, which MapLibre draws (interleaved overlays read
           // beforeId at runtime; deck's typings leave it out)
-          ...((WORLD && worldShow.grid && mapRef.current?.getLayer("grid-predicted") ? { beforeId: "grid-predicted" } : {}) as object),
+          ...((WORLD && mapRef.current?.getLayer("grid-predicted") ? { beforeId: "grid-predicted" } : {}) as object),
           pickable: true,
           autoHighlight: true,
           highlightColor: [255, 255, 255, 22],
@@ -2737,7 +2913,7 @@ export default function EuropeView() {
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, brazil, cables, worldStats, dcFile, aemo, nemArcs, us, usArcs, worldShow, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
+  }, [frame, worldPlants, nearPlants, plantStatus, brazil, cables, worldStats, dcFile, aemo, nemArcs, us, usArcs, worldShow, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
   // label the EU figures with the start of their interval (hourly in older archives)
   const euStep = day?.eu?.step_s ?? 3600;
@@ -3022,7 +3198,7 @@ export default function EuropeView() {
     </>
   );
   const credits = WORLD ? (
-    <div>Access: World Bank (CC BY 4.0) · Grid: Gridfinder (CC BY 4.0) · Data centres, cables: © OpenStreetMap contributors (ODbL) · US: EIA-930 · Brazil: ONS · Australia: AEMO · Outlines: © EuroGeographics</div>
+    <div>Plants: Global Energy Monitor (CC BY 4.0) · Access: World Bank (CC BY 4.0) · Grid, data centres, cables: © OpenStreetMap contributors (ODbL) · US: EIA-930 · Brazil: ONS · Australia: AEMO · Outlines: © EuroGeographics</div>
   ) : TRANSITION ? (
     <div>Yearly data: Ember (CC BY 4.0) · Outlines: © EuroGeographics</div>
   ) : PRICES ? (
@@ -3486,16 +3662,25 @@ export default function EuropeView() {
       </div>
       <div className="mt-2 space-y-1 text-[10px] text-slate-300">
         <div className="flex items-center gap-2">
-          <span className="h-[2px] w-5 rounded" style={{ background: "rgba(150,200,255,0.9)" }} />
-          Power line, mapped (OpenStreetMap)
+          <span className="h-[3px] w-5 rounded" style={{ background: "rgb(214,240,255)" }} />
+          <span className="h-[2px] w-3 rounded" style={{ background: "rgba(120,180,240,0.9)" }} />
+          <span className="h-[1px] w-3 rounded" style={{ background: "rgba(96,140,200,0.8)" }} />
+          Power line: ≥ 500 kV, 300–499, 220–299 kV
         </div>
+        {worldShow.plants && (
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+            <span className="text-slate-300">Plants ({STATUS_LABEL[plantStatus]?.toLowerCase()}):</span>
+            {Object.entries(PLANT_TYPE_LABEL).map(([k, v]) => (
+              <span key={k} className="flex items-center gap-1 text-[9px] text-slate-400">
+                <span className="h-1.5 w-1.5 rounded-full" style={{ background: rgbCss(PLANT_TYPE_COLOR[k]) }} />
+                {v}
+              </span>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-2">
-          <span className="h-[2px] w-5 rounded" style={{ background: "rgba(255,190,110,0.7)" }} />
-          Power line, predicted (Gridfinder)
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(DC_COLOR) }} />
-          Data centre mapped in OpenStreetMap
+          <span className="h-2.5 w-2.5 rounded-full border" style={{ borderColor: rgbCss(DC_COLOR), background: "rgba(236,220,255,0.9)" }} />
+          Data centres mapped in OpenStreetMap (hub size = sites)
         </div>
         <div className="flex items-center gap-2">
           <span className="h-[3px] w-5 rounded" style={{ background: `linear-gradient(90deg, transparent, ${rgbCss(FLOW)})` }} />
@@ -3524,8 +3709,12 @@ export default function EuropeView() {
           }`}
         >
           {k === "grid"
-            ? "Power grid"
-            : k === "datacentres"
+            ? "Power grid ≥ 220 kV"
+            : k === "plants"
+              ? "Power plants"
+              : k === "predicted"
+                ? "Predicted local grid"
+                : k === "datacentres"
               ? "Data centres"
               : k === "australia"
                 ? "Australia live"
@@ -3538,7 +3727,26 @@ export default function EuropeView() {
       ))}
     </div>
   );
+  const statusChips = (
+    <div className="flex flex-wrap gap-1">
+      {["operating", "construction", "planned", "retired"].map((st) => (
+        <button
+          key={st}
+          onClick={() => setPlantStatus(st)}
+          className={`rounded border ${isMobile ? "px-3 py-1.5 text-[12px]" : "px-2 py-0.5 text-[10px]"} ${
+            plantStatus === st ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-400 hover:text-slate-200"
+          }`}
+        >
+          {STATUS_LABEL[st]}
+        </button>
+      ))}
+    </div>
+  );
   const worldSources: [string, string][] = [
+    [
+      "Power plants",
+      "Global Energy Monitor, Global Integrated Power Tracker, September 2026 release (CC BY 4.0). Units summed per location, fuel and status; planned = pre-construction + announced; retired includes mothballed; cancelled and shelved left out.",
+    ],
     ["Access to electricity", "World Bank WDI EG.ELC.ACCS.ZS (CC BY 4.0), % of population; each country coloured by its newest year."],
     [
       "Data centres",
@@ -3559,7 +3767,7 @@ export default function EuropeView() {
     ["Renewables", "Ember yearly data (CC BY 4.0), newest year with a figure; by month: Ember monthly data, last 24 months (fewer countries)."],
     [
       "Power grid",
-      "Gridfinder (Arderne et al. 2020, CC BY 4.0): transmission and distribution lines, either mapped in OpenStreetMap or predicted from night-time lights and roads where nothing is mapped. Vector tiles up to zoom 8, served from Cloudflare R2.",
+      "OpenStreetMap (ODbL): every power line tagged 220 kV or more, with its voltage; vector tiles served from Cloudflare R2. Well mapped in Europe and North America, patchier elsewhere. Predicted local grid (optional): Gridfinder (Arderne et al. 2020, CC BY 4.0), lines predicted from night-time lights and roads.",
     ],
     [
       "Undersea cables",
@@ -3576,6 +3784,17 @@ export default function EuropeView() {
           dc={dcFile}
           renewables={worldPickRenewables}
           monthly={monthly?.entities[pick] ? { months: monthly.months, ...monthly.entities[pick] } : null}
+        />
+      )}
+      {worldPlants && (
+        <PlantsCard
+          title={pick ? `Power plants · ${nameOf3(pick)}` : "World power plants"}
+          data={pick ? (worldPlants.countries[pick] ?? {}) : worldPlants.world}
+          status={plantStatus}
+          onStatus={(st) => {
+            setPlantStatus(st);
+            setWorldShow((w) => ({ ...w, plants: true }));
+          }}
         />
       )}
       {us && <UsCard us={us} />}

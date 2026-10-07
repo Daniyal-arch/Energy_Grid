@@ -3,6 +3,7 @@ import { useState } from "react";
 import { stopColor } from "../lib/prices";
 import { rgbCss } from "../lib/theme";
 import { FUEL_COLOR, FUEL_LABEL, STACK_ORDER } from "../lib/energy";
+import { PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, STATUS_LABEL } from "../lib/worldPlants";
 import {
   ACCESS_STOPS,
   BR_SOURCE,
@@ -367,6 +368,65 @@ export function BrazilCard({ br }: { br: BrazilFile }) {
       </div>
       <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
         Imperatriz is ONS's junction node where the North, Northeast and Southeast lines meet.
+      </div>
+    </Card>
+  );
+}
+
+/** GEM's capacity by status and fuel (world or one country); click a status to map it. */
+export function PlantsCard({
+  title,
+  data,
+  status,
+  onStatus,
+}: {
+  title: string;
+  data: Record<string, Record<string, number>>;
+  status: string;
+  onStatus: (s: string) => void;
+}) {
+  const order = ["operating", "construction", "planned", "retired"];
+  const totals = order.map((st) => Object.values(data[st] ?? {}).reduce((a, v) => a + v, 0));
+  const max = Math.max(1, ...totals);
+  const fmt = (mw: number) => (mw >= 1e6 ? `${(mw / 1e6).toFixed(2)} TW` : mw >= 1000 ? `${Math.round(mw / 1000).toLocaleString("en-US")} GW` : `${Math.round(mw)} MW`);
+  return (
+    <Card title={title} note="Global Energy Monitor" accent={[255, 196, 120]}>
+      <div className="space-y-2">
+        {order.map((st, i) => {
+          const parts = Object.entries(data[st] ?? {}).filter(([, v]) => v > 0);
+          return (
+            <button
+              key={st}
+              onClick={() => onStatus(st)}
+              className={`block w-full rounded px-1.5 py-1 text-left hover:bg-white/[0.05] ${status === st ? "bg-white/[0.08] ring-1 ring-white/15" : ""}`}
+            >
+              <div className="flex justify-between text-[11px] tabular-nums">
+                <span className="text-slate-200">{STATUS_LABEL[st]}</span>
+                <span className="text-slate-100">{fmt(totals[i])}</span>
+              </div>
+              <div className="mt-1 flex h-[7px] overflow-hidden rounded-sm bg-white/[0.04]" style={{ width: `${(totals[i] / max) * 100}%` }}>
+                {parts.map(([t, v]) => (
+                  <div
+                    key={t}
+                    title={`${PLANT_TYPE_LABEL[t] ?? t} ${fmt(v)}`}
+                    style={{ width: `${(v / (totals[i] || 1)) * 100}%`, background: rgbCss(PLANT_TYPE_COLOR[t] ?? [150, 150, 150]) }}
+                  />
+                ))}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-x-2.5 gap-y-0.5 text-[9px] text-slate-400">
+        {Object.entries(PLANT_TYPE_LABEL).map(([k, v]) => (
+          <span key={k} className="flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: rgbCss(PLANT_TYPE_COLOR[k]) }} />
+            {v}
+          </span>
+        ))}
+      </div>
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Planned = pre-construction + announced. Retired includes mothballed. Cancelled and shelved projects are left out. Click a row to show it on the map.
       </div>
     </Card>
   );

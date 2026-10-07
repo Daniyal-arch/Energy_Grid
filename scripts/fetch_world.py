@@ -11,6 +11,7 @@
 Writes frontend/public/data/eu/:
   world_stats.json  {"source", "fetched", "years", "access": {ISO3: [% or null per year]}}
   datacentres.json  {"source", "fetched", "count", "by_country": {ISO3: n},
+                     "clusters": [[lon, lat, sites]] (per 1-degree cell, computed),
                      "points": [[lon, lat, name, operator]]}
 
     uv run python scripts/fetch_world.py [--out DIR] [--skip-osm]
@@ -108,6 +109,19 @@ def by_country(points: list[list]) -> dict[str, int]:
     return dict(sorted(counts.items(), key=lambda kv: -kv[1]))
 
 
+def clusters(points: list[list], step: float = 1.0) -> list[list]:
+    """Sites per 1-degree cell: [lon, lat, count], at the mean position of the cell's sites."""
+    cells: dict[tuple[int, int], list] = {}
+    for lon, lat, *_ in points:
+        c = cells.setdefault((int(lon // step), int(lat // step)), [0.0, 0.0, 0])
+        c[0] += lon
+        c[1] += lat
+        c[2] += 1
+    return sorted(
+        ([round(x / n, 3), round(y / n, 3), n] for x, y, n in cells.values()), key=lambda c: -c[2]
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=OUT)
@@ -143,6 +157,7 @@ def main() -> None:
                         "fetched": fetched,
                         "count": len(pts),
                         "by_country": by_country(pts),
+                        "clusters": clusters(pts),
                         "points": pts,
                     },
                     separators=(",", ":"),
