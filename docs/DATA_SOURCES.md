@@ -162,15 +162,18 @@ DE, ES, FI, FR, GR, HR, IT, LT, NL, PL, PT), last ~400 days, passthrough:
 Renewable share in the World country card: Ember yearly data (`transition.json`), the
 newest year with a figure.
 
-## Wind layer (`scripts/fetch_wind.py`)
+## Wind and sun layers (`scripts/fetch_wind.py`)
 
 | File | Records | Source |
 |---|---:|---|
 | `wind.json` | 30 hours (6 back, 24 ahead) x 720 points | Open-Meteo forecast API (best-match weather models, CC BY 4.0, free for non-commercial use): hourly `wind_speed_100m` and `wind_direction_100m`, i.e. at wind-turbine hub height, on a 2-degree grid over lon -25..45, lat 34..72. Model values, not measurements |
 | `wind/<YYYY-MM-DD>.json` | the hours of one local day x 720 points | the same, for the archive days (one request per batch over the whole window; on the `eu-days` branch, the newest days bundled) |
 
-Values are passthrough (speed in 0.1 m/s, direction in degrees, where the wind blows
-from). The particles on the map move through a field interpolated between grid points
+Values are passthrough: wind speed at 100 m in 0.1 m/s, its direction in degrees (where
+the wind blows from), shortwave radiation in W/m² (global horizontal, the average of the
+preceding hour: the sun layer) and total cloud cover in %. The same requests return all
+four, so the sun layer costs no extra calls. Archive days fetched before the sun layer
+are refetched once by the next archive run. The particles on the map move through a field interpolated between grid points
 and between hours, for drawing only; the legend names it as model data. Open-Meteo
 counts one call per location (600 a minute, 10,000 a day), so the grid goes in two
 batches a minute apart; a 30-day archive costs about as much as one day.

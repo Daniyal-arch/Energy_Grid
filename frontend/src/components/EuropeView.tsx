@@ -54,6 +54,7 @@ import {
   type PriceMetricId,
   type PricesFile,
 } from "../lib/prices";
+import { SUN_MAX_WM2, sunBounds, sunImage } from "../lib/sunLayer";
 import { WindField, WindParticles, type WindFile } from "../lib/windParticles";
 import {
   ACCESS_STOPS,
@@ -879,14 +880,22 @@ export default function EuropeView() {
   const [shade, setShade] = useState<"none" | "renewable" | "price" | "offline">(DAY_PARAM || STATIC_VIEW ? "none" : "renewable");
   const [show, setShow] = useState(
     STATIC_VIEW
-      ? { plants: false, flows: false, substations: false, gas: false, wind: false }
+      ? { plants: false, flows: false, substations: false, gas: false, wind: false, sun: false }
       : DAY_PARAM
-        ? { plants: false, flows: true, substations: false, gas: false, wind: true }
-        : { plants: true, flows: true, substations: true, gas: true, wind: false },
+        ? { plants: false, flows: true, substations: false, gas: false, wind: true, sun: false }
+        : { plants: true, flows: true, substations: true, gas: true, wind: false, sun: false },
   );
   // wind at 100 m (Open-Meteo): the live file or the replayed day's, and its particles
   const [windFile, setWindFile] = useState<WindFile | null>(null);
   const windField = useMemo(() => (windFile ? new WindField(windFile) : null), [windFile]);
+  // sun layer images, one per hour of the weather file, made when first shown
+  const sunCache = useRef(new Map<number, HTMLCanvasElement | null>());
+  useEffect(() => sunCache.current.clear(), [windFile]);
+  const sunAt = (h: number) => {
+    if (!windFile) return null;
+    if (!sunCache.current.has(h)) sunCache.current.set(h, sunImage(windFile, h));
+    return sunCache.current.get(h) ?? null;
+  };
   const particles = useMemo(() => (isNarrow() ? new WindParticles(1200, 6) : new WindParticles(3600, 8)), []);
   // Transition tab: Ember data, the colour metric, Europe or the world, the picked
   // country (ISO alpha-3) and the year (position and play state live in refs)
@@ -2153,6 +2162,33 @@ export default function EuropeView() {
           highlightColor: [255, 255, 255, 22],
           parameters: noDepth,
         }),
+        // sunshine: this hour's image fading into the next one's (drawing only)
+        ...(() => {
+          if (!show.sun || !windFile?.ghi || !windField) return [];
+          const when = day ? Date.parse(day.start) + daySlot.current * day.step_s * 1000 : Date.now();
+          const hour = windField.hourAt(when);
+          const h0 = Math.floor(hour);
+          const f = hour - h0;
+          return [
+            [h0, 1 - f],
+            [Math.min(windField.hours - 1, h0 + 1), f],
+          ].flatMap(([h, a], n) => {
+            const image = sunAt(h);
+            return image && a > 0.01
+              ? [
+                  new BitmapLayer({
+                    id: `eu-sun-${n}`,
+                    image,
+                    bounds: sunBounds(windFile.grid),
+                    _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+                    opacity: a,
+                    textureParameters: { minFilter: "linear", magFilter: "linear" },
+                    parameters: noDepth,
+                  }),
+                ]
+              : [];
+          });
+        })(),
         // only once the night image for this slot exists (an empty image throws)
         ...(day && night
           ? [
@@ -2800,6 +2836,12 @@ export default function EuropeView() {
         ))}
       </div>
       <div className="space-y-1">
+        {show.sun && (
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-5 rounded" style={{ background: "linear-gradient(90deg, rgba(255,176,60,0.1), rgba(255,246,180,0.75))" }} />
+            Sunshine: 0 → ≥ {SUN_MAX_WM2} W/m² (model, hourly)
+          </div>
+        )}
         {show.wind && (
           <div className="flex items-center gap-2">
             <span className="h-[3px] w-5 rounded" style={{ background: "linear-gradient(90deg, rgba(150,190,220,0.25), rgb(250,250,255))" }} />
@@ -2878,7 +2920,7 @@ export default function EuropeView() {
     ["Hydro reservoirs", "ENTSO-E Transparency, weekly stored energy."],
     [
       "Wind",
-      "Open-Meteo forecast API, wind at 100 m (turbine hub height), hourly on a 2° grid: model values, not measurements. Between grid points and hours the particles follow an interpolated field.",
+      "Open-Meteo forecast API, wind at 100 m (turbine hub height) and shortwave radiation (sunshine, W/m², average of the hour), hourly on a 2° grid: model values, not measurements. Between grid points and hours the drawing is interpolated.",
     ],
     ["Plants, grid, gas network", "powerplantmatching; PyPSA-Eur from OpenStreetMap (ODbL); SciGRID_gas (2021)."],
     ["Derived on this page", "Net import/export = sum of the measured border flows."],

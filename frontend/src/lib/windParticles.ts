@@ -12,6 +12,10 @@ export interface WindFile {
   speed: (number | null)[][];
   /** per hour, per grid point: degrees, where the wind blows from */
   dir: (number | null)[][];
+  /** per hour, per grid point: shortwave radiation, W/m2 (files from October 2026 on) */
+  ghi?: (number | null)[][];
+  /** per hour, per grid point: total cloud cover, % */
+  cloud?: (number | null)[][];
 }
 
 export class WindField {
