@@ -6,6 +6,8 @@ Ember yearly electricity data (CC BY 4.0, EMBER_API_KEY), two bulk requests
                                   shares of generation: renewables, wind and solar,
                                   coal (all entities, 2000 onwards)
   /carbon-intensity/yearly        published carbon intensity of generation (gCO2/kWh)
+  /electricity-generation/monthly the same published shares per month, last 24 months
+                                  (Ember covers fewer countries monthly)
 
 Values are passthrough. "Net imports" is trade, not generation, and is left out of the
 sources. Countries are keyed by ISO 3166-1 alpha-3 (Ember's entity code); aggregates
@@ -17,6 +19,9 @@ Writes frontend/public/data/eu/transition.json:
                 "renewables": [%], "wind_solar": [%], "coal": [%], "intensity": [g/kWh],
                 "total_twh": [TWh]}}}
   (every list runs over "years"; null where Ember has no value)
+and frontend/public/data/eu/monthly.json:
+  {"source", "fetched", "months": [YYYY-MM], "entities": {ISO3 | name: {"renewables",
+   "wind_solar", "coal": [% per month]}}}
 
     uv run python scripts/fetch_transition.py [--out DIR]
 """
@@ -61,10 +66,10 @@ AGGREGATES = {
 }
 
 
-def get(client: httpx.Client, path: str, key: str) -> list[dict]:
+def get(client: httpx.Client, path: str, key: str, start: str = "2000") -> list[dict]:
     for attempt in range(4):
         try:
-            r = client.get(f"{URL}{path}", params={"start_date": "2000", "api_key": key})
+            r = client.get(f"{URL}{path}", params={"start_date": start, "api_key": key})
         except httpx.TransportError:
             time.sleep(5 * (attempt + 1))
             continue
@@ -76,6 +81,42 @@ def get(client: httpx.Client, path: str, key: str) -> list[dict]:
     raise RuntimeError(f"Ember {path}: no answer")
 
 
+def write_monthly(out: Path, rows: list[dict]) -> None:
+    """Ember's published monthly shares of generation, per entity (passthrough)."""
+    months = sorted({r["date"][:7] for r in rows})
+    at = {m: i for i, m in enumerate(months)}
+    entities: dict[str, dict] = {}
+    for r in rows:
+        if r["series"] not in SHARES or r.get("share_of_generation_pct") is None:
+            continue
+        if r["is_aggregate_entity"]:
+            if r["entity"] not in AGGREGATES:
+                continue
+            k = r["entity"]
+        else:
+            k = r.get("entity_code") or ""
+        if not k:
+            continue
+        e = entities.setdefault(k, {v: [None] * len(months) for v in SHARES.values()})
+        e[SHARES[r["series"]]][at[r["date"][:7]]] = round(r["share_of_generation_pct"], 1)
+    path = out / "monthly.json"
+    path.write_text(
+        json.dumps(
+            {
+                "source": "Ember monthly electricity data (CC BY 4.0), as published",
+                "fetched": datetime.now(UTC).isoformat(timespec="seconds"),
+                "months": months,
+                "entities": dict(sorted(entities.items())),
+            },
+            separators=(",", ":"),
+        ),
+        encoding="utf-8",
+    )
+    print(
+        f"monthly.json: {len(entities)} entities, {months[0] if months else '-'}..{months[-1] if months else '-'}"
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=OUT)
@@ -84,6 +125,9 @@ def main() -> None:
     with httpx.Client(timeout=180, headers={"User-Agent": "Europe-InfraAtlas/0.3"}) as client:
         gen = get(client, "/electricity-generation/yearly", key)
         ci = get(client, "/carbon-intensity/yearly", key)
+        now = datetime.now(UTC)
+        since = f"{now.year - 2}-{now.month:02d}"
+        monthly = get(client, "/electricity-generation/monthly", key, since)
     print(f"Ember rows: generation {len(gen):,}, carbon intensity {len(ci):,}")
     years = sorted({r["date"] for r in gen})
     at = {y: i for i, y in enumerate(years)}
@@ -131,6 +175,7 @@ def main() -> None:
             e["intensity"][at[r["date"]]] = round(r["emissions_intensity_gco2_per_kwh"], 1)
 
     out.mkdir(parents=True, exist_ok=True)
+    write_monthly(out, monthly)
     payload = {
         "source": "Ember yearly electricity data (CC BY 4.0), as published",
         "fetched": datetime.now(UTC).isoformat(timespec="seconds"),

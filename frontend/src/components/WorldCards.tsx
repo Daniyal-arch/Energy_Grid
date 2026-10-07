@@ -65,12 +65,15 @@ export function WorldCountryCard({
   stats,
   dc,
   renewables,
+  monthly,
 }: {
   code: string;
   name: string;
   stats: WorldStatsFile | null;
   dc: DataCentresFile | null;
   renewables: { value: number; year: string } | null;
+  /** Ember's monthly shares of generation, last 24 months */
+  monthly?: { months: string[]; renewables: (number | null)[]; wind_solar: (number | null)[] } | null;
 }) {
   const [hover, setHover] = useState<number | null>(null);
   const series = stats?.access[code];
@@ -127,6 +130,7 @@ export function WorldCountryCard({
           </div>
         </>
       )}
+      {monthly && <MonthlyShares {...monthly} />}
     </Card>
   );
 }
@@ -245,5 +249,52 @@ export function UsCard({ us }: { us: UsFile }) {
         {us.flows.hour ? hourLabel(us.flows.hour) : "–"} (EIA publishes them about two days later).
       </div>
     </Card>
+  );
+}
+
+/** Renewable and wind + solar share of generation, month by month (Ember). */
+function MonthlyShares({ months, renewables, wind_solar }: { months: string[]; renewables: (number | null)[]; wind_solar: (number | null)[] }) {
+  const [hover, setHover] = useState<number | null>(null);
+  const n = months.length;
+  const x = (i: number) => (i / Math.max(1, n - 1)) * W;
+  const y = (v: number) => 56 - (v / 100) * 52;
+  const line = (vals: (number | null)[]) =>
+    vals.map((v, i) => (v == null ? "" : `${i && vals[i - 1] != null ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`)).join("");
+  const last = (() => {
+    for (let i = n - 1; i >= 0; i--) if (renewables[i] != null) return i;
+    return -1;
+  })();
+  const i = hover ?? last;
+  if (last < 0) return null;
+  const label = (m: string) => new Date(`${m}-15T12:00:00Z`).toLocaleDateString("en-GB", { month: "short", year: "2-digit" });
+  return (
+    <>
+      <div className={`mt-3 mb-1 flex justify-between text-[9px] uppercase tracking-[0.16em] ${muted}`}>
+        <span>Share of generation, by month</span>
+        <span className="normal-case tracking-normal tabular-nums">
+          <span className="text-[#5fd6b8]">{renewables[i] != null ? `${Math.round(renewables[i] as number)} % renewable` : "–"}</span>
+          <span className="text-[#ffd648]"> · {wind_solar[i] != null ? `${Math.round(wind_solar[i] as number)} % wind+solar` : "–"}</span>
+          <span className={muted}> · {label(months[i])}</span>
+        </span>
+      </div>
+      <svg
+        viewBox={`0 0 ${W} 60`}
+        className="w-full touch-none"
+        onPointerMove={(e) => {
+          const r = e.currentTarget.getBoundingClientRect();
+          setHover(Math.max(0, Math.min(n - 1, Math.round(((e.clientX - r.left) / r.width) * (n - 1)))));
+        }}
+        onPointerLeave={() => setHover(null)}
+      >
+        <path d={line(renewables)} fill="none" stroke="#5fd6b8" strokeWidth={1.6} />
+        <path d={line(wind_solar)} fill="none" stroke="#ffd648" strokeWidth={1.4} />
+        <line x1={x(i)} x2={x(i)} y1={0} y2={60} stroke="rgba(255,255,255,0.35)" />
+      </svg>
+      <div className={`flex justify-between text-[9px] ${muted}`}>
+        <span>{label(months[0])}</span>
+        <span>Ember monthly</span>
+        <span>{label(months[n - 1])}</span>
+      </div>
+    </>
   );
 }

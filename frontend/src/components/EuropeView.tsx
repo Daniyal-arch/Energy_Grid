@@ -891,6 +891,11 @@ export default function EuropeView() {
   const [dcFile, setDcFile] = useState<DataCentresFile | null>(null);
   const [aemo, setAemo] = useState<AemoFile | null>(null);
   const [us, setUs] = useState<UsFile | null>(null);
+  const [monthly, setMonthly] = useState<{
+    fetched: string;
+    months: string[];
+    entities: Record<string, { renewables: (number | null)[]; wind_solar: (number | null)[]; coal: (number | null)[] }>;
+  } | null>(null);
   const [worldShow, setWorldShow] = useState({ datacentres: true, australia: true, usa: true });
   const [zoneSel, setZoneSel] = useState(() => new URLSearchParams(window.location.search).get("zone") ?? "DE-LU");
 
@@ -1016,6 +1021,7 @@ export default function EuropeView() {
     };
     newer<WorldStatsFile>("world_stats.json", setWorldStats);
     newer<DataCentresFile>("datacentres.json", setDcFile);
+    getJson<NonNullable<typeof monthly>>("/data/eu/monthly.json").then(setMonthly).catch(() => {});
     const live = () => {
       loadSnapshot<AemoFile>("aemo.json", setAemo);
       loadSnapshot<UsFile>("us.json", setUs);
@@ -3274,11 +3280,20 @@ export default function EuropeView() {
       "United States",
       "EIA-930 hourly data (EIA API v2, public domain) for the 13 EIA regions: demand (about 1 h behind), generation by fuel and net interchange (about a day behind), flows between regions (about two days behind), each with its own hour. Region markers are placed for reading.",
     ],
-    ["Renewables", "Ember yearly data (CC BY 4.0), newest year with a figure."],
+    ["Renewables", "Ember yearly data (CC BY 4.0), newest year with a figure; by month: Ember monthly data, last 24 months (fewer countries)."],
   ];
   const worldBody = (
     <div className="space-y-2.5">
-      {pick && <WorldCountryCard code={pick} name={nameOf3(pick)} stats={worldStats} dc={dcFile} renewables={worldPickRenewables} />}
+      {pick && (
+        <WorldCountryCard
+          code={pick}
+          name={nameOf3(pick)}
+          stats={worldStats}
+          dc={dcFile}
+          renewables={worldPickRenewables}
+          monthly={monthly?.entities[pick] ? { months: monthly.months, ...monthly.entities[pick] } : null}
+        />
+      )}
       {us && <UsCard us={us} />}
       {aemo && <NemCard aemo={aemo} />}
       {worldStats && <AccessCard stats={worldStats} names={nameOf3} onPick={setPick} />}

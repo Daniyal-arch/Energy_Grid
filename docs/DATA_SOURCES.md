@@ -150,6 +150,7 @@ batches a minute apart; a 30-day archive costs about as much as one day.
 | File | Records | Source |
 |---|---:|---|
 | `transition.json` | 209 countries + 8 aggregates, 2000-2025 | Ember yearly electricity data (CC BY 4.0), two bulk requests: generation by source (TWh), published shares of generation (renewables, wind and solar, coal), published total generation, carbon intensity of generation. About half of the countries have no 2025 figures yet; they are drawn grey for 2025 |
+| `monthly.json` | 90 countries and aggregates, last 24 months | Ember monthly electricity data (CC BY 4.0), the same three published shares per month (renewables, wind and solar, coal); shown in the World tab's country card |
 | `world.json` | outlines + ISO alpha-3 | Eurostat GISCO 1:20M (coarse), the code joins Ember's entity code |
 
 The ranking in World view lists the 30 countries with the largest published total
