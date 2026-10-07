@@ -11,6 +11,7 @@ import { PathStyleExtension, type PathStyleExtensionProps } from "@deck.gl/exten
 import { BitmapLayer, ColumnLayer, LineLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
+import { Protocol } from "pmtiles";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { FUEL_COLOR, FUEL_LABEL, STACK_ORDER, gw, power } from "../lib/energy";
@@ -412,6 +413,12 @@ const GLOBE_STYLE: maplibregl.StyleSpecification = {
     },
   ],
 };
+// the world grid: vector tiles in one PMTiles file on R2 (.github/workflows/world-grid.yml),
+// read with HTTP range requests; only the tiles in view travel
+const pmtiles = new Protocol();
+maplibregl.addProtocol("pmtiles", pmtiles.tile);
+const GRID_TILES = "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/grid/world-grid.pmtiles";
+const GRID_LAYERS = ["grid-predicted", "grid-mapped"];
 // Europe faces the camera from here; beyond this angle its layers are on the far side
 const EUROPE_CENTRE: [number, number] = [12, 50];
 const FAR_SIDE_DEG = 78;
@@ -944,7 +951,7 @@ export default function EuropeView() {
     months: string[];
     entities: Record<string, { renewables: (number | null)[]; wind_solar: (number | null)[]; coal: (number | null)[] }>;
   } | null>(null);
-  const [worldShow, setWorldShow] = useState({ datacentres: true, australia: true, usa: true, cables: true });
+  const [worldShow, setWorldShow] = useState({ grid: true, datacentres: true, australia: true, usa: true, cables: true });
   const [cables, setCables] = useState<Cable[] | null>(null);
   const wantCables = show.cables || (WORLD && worldShow.cables);
   useEffect(() => {
@@ -1356,6 +1363,38 @@ export default function EuropeView() {
     map.on("styledata", syncViews);
     map.on("projectiontransition", syncViews);
     map.on("deckviewsync", syncViews);
+    if (WORLD) {
+      map.on("load", () => {
+        map.addSource("world-grid", {
+          type: "vector",
+          url: GRID_TILES,
+          attribution: "Gridfinder (Arderne et al. 2020), © OpenStreetMap contributors",
+        });
+        const width = ["interpolate", ["linear"], ["zoom"], 1, 0.35, 5, 0.8, 9, 1.4] as const;
+        map.addLayer(
+          {
+            id: "grid-predicted",
+            type: "line",
+            source: "world-grid",
+            "source-layer": "grid",
+            filter: ["==", ["get", "source"], "gridfinder"],
+            paint: { "line-color": "rgba(255,190,110,0.32)", "line-width": width as unknown as number },
+          },
+          "world-pick",
+        );
+        map.addLayer(
+          {
+            id: "grid-mapped",
+            type: "line",
+            source: "world-grid",
+            "source-layer": "grid",
+            filter: ["==", ["get", "source"], "openstreetmap"],
+            paint: { "line-color": "rgba(150,200,255,0.7)", "line-width": width as unknown as number },
+          },
+          "world-pick",
+        );
+      });
+    }
     if (TRANSITION || WORLD) {
       // any country on the globe: hover for its value, click for its history
       map.on("click", (e) => {
@@ -1678,6 +1717,16 @@ export default function EuropeView() {
     if (map.isStyleLoaded()) apply();
     else map.once("idle", apply);
   }, [worldStats, pick]);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!WORLD || !map) return;
+    const apply = () => {
+      for (const id of GRID_LAYERS)
+        if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", worldShow.grid ? "visible" : "none");
+    };
+    if (map.isStyleLoaded()) apply();
+    else map.once("idle", apply);
+  }, [worldShow.grid]);
   useEffect(() => {
     const map = mapRef.current;
     if (!WORLD || !map) return;
@@ -2201,6 +2250,9 @@ export default function EuropeView() {
           },
           updateTriggers: { getFillColor: [shares, selected, shade, day, dayK, metricId, yearK, priceMetricId, pricesFile, outages] },
           transitions: TRANSITION ? { getFillColor: 450 } : undefined,
+          // World tab: below the grid lines, which MapLibre draws (interleaved overlays read
+          // beforeId at runtime; deck's typings leave it out)
+          ...((WORLD && worldShow.grid && mapRef.current?.getLayer("grid-predicted") ? { beforeId: "grid-predicted" } : {}) as object),
           pickable: true,
           autoHighlight: true,
           highlightColor: [255, 255, 255, 22],
@@ -2933,7 +2985,7 @@ export default function EuropeView() {
     </>
   );
   const credits = WORLD ? (
-    <div>Access: World Bank (CC BY 4.0) · Data centres, cables: © OpenStreetMap contributors (ODbL) · US: EIA-930 · Australia: AEMO · Outlines: © EuroGeographics</div>
+    <div>Access: World Bank (CC BY 4.0) · Grid: Gridfinder (CC BY 4.0) · Data centres, cables: © OpenStreetMap contributors (ODbL) · US: EIA-930 · Australia: AEMO · Outlines: © EuroGeographics</div>
   ) : TRANSITION ? (
     <div>Yearly data: Ember (CC BY 4.0) · Outlines: © EuroGeographics</div>
   ) : PRICES ? (
@@ -3397,6 +3449,14 @@ export default function EuropeView() {
       </div>
       <div className="mt-2 space-y-1 text-[10px] text-slate-300">
         <div className="flex items-center gap-2">
+          <span className="h-[2px] w-5 rounded" style={{ background: "rgba(150,200,255,0.9)" }} />
+          Power line, mapped (OpenStreetMap)
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-[2px] w-5 rounded" style={{ background: "rgba(255,190,110,0.7)" }} />
+          Power line, predicted (Gridfinder)
+        </div>
+        <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(DC_COLOR) }} />
           Data centre mapped in OpenStreetMap
         </div>
@@ -3426,7 +3486,15 @@ export default function EuropeView() {
             worldShow[k] ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
           }`}
         >
-          {k === "datacentres" ? "Data centres" : k === "australia" ? "Australia live" : k === "usa" ? "United States" : "Undersea cables"}
+          {k === "grid"
+            ? "Power grid"
+            : k === "datacentres"
+              ? "Data centres"
+              : k === "australia"
+                ? "Australia live"
+                : k === "usa"
+                  ? "United States"
+                  : "Undersea cables"}
         </button>
       ))}
     </div>
@@ -3446,6 +3514,10 @@ export default function EuropeView() {
       "EIA-930 hourly data (EIA API v2, public domain) for the 13 EIA regions: demand (about 1 h behind), generation by fuel and net interchange (about a day behind), flows between regions (about two days behind), each with its own hour. Region markers are placed for reading.",
     ],
     ["Renewables", "Ember yearly data (CC BY 4.0), newest year with a figure; by month: Ember monthly data, last 24 months (fewer countries)."],
+    [
+      "Power grid",
+      "Gridfinder (Arderne et al. 2020, CC BY 4.0): transmission and distribution lines, either mapped in OpenStreetMap or predicted from night-time lights and roads where nothing is mapped. Vector tiles up to zoom 8, served from Cloudflare R2.",
+    ],
     [
       "Undersea cables",
       "OpenStreetMap (ODbL): power cables mapped underwater, classed by their tags (HVDC, AC from 110 kV, smaller, untagged). Well mapped around Europe, sparse elsewhere.",
