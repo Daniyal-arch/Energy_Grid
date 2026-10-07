@@ -48,12 +48,22 @@ import {
   priceMetricById,
   stopColor,
   stopGradient,
-  type CarpetFile,
   type PriceMetricId,
   type PricesFile,
 } from "../lib/prices";
 import { WindField, WindParticles, type WindFile } from "../lib/windParticles";
-import { CaptureCard, CarpetCard, MonthsCard, ZoneCard, ZoneRankingCard } from "./PriceCards";
+import {
+  ACCESS_STOPS,
+  ACCESS_TICKS,
+  DC_COLOR,
+  NEM_POINT,
+  latest,
+  type AemoFile,
+  type DataCentresFile,
+  type WorldStatsFile,
+} from "../lib/world";
+import { AccessCard, DataCentresCard, NemCard, WorldCountryCard } from "./WorldCards";
+import { CaptureCard, MonthsCard, TimeOfDayCard, ZoneCard, ZoneRankingCard } from "./PriceCards";
 import { AggregateCard, RankingCard, type RankRow } from "./TransitionCards";
 
 // Europe's transmission grid, power plants and measured cross-border flows (the app's only view).
@@ -442,7 +452,9 @@ const TRANSITION = new URLSearchParams(window.location.search).get("view") === "
 // ?view=prices: twelve months of day-ahead prices per bidding zone (&zone=, &metric=)
 const PRICES = new URLSearchParams(window.location.search).get("view") === "prices" && !DAY_PARAM;
 // the yearly views: a coloured map without the grid, plants and live flows
-const STATIC_VIEW = TRANSITION || PRICES;
+// ?view=world: power around the world on the globe (access, data centres, Australia live)
+const WORLD = new URLSearchParams(window.location.search).get("view") === "world" && !DAY_PARAM;
+const STATIC_VIEW = TRANSITION || PRICES || WORLD;
 const PR_MULTI: RGB = [44, 47, 58]; // countries with several price zones (markers instead)
 const YEAR_PARAM = new URLSearchParams(window.location.search).get("year");
 const SEC_PER_YEAR = 0.9; // play speed of the Transition tab
@@ -740,13 +752,14 @@ const dayLabel = (d: string) =>
   new Date(`${d}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" });
 
 /** Views of the app, shown as tabs (more join as they are built). */
-const TABS: { id: "live" | "day" | "prices" | "transition"; label: string; short: string; href: string }[] = [
+const TABS: { id: "live" | "day" | "prices" | "transition" | "world"; label: string; short: string; href: string }[] = [
   { id: "live", label: "Live map", short: "Live", href: "/" },
   { id: "day", label: "24 hours", short: "24 h", href: "/?day=latest" },
   { id: "prices", label: "Prices", short: "Prices", href: "/?view=prices" },
   { id: "transition", label: "25 years", short: "25 yrs", href: "/?view=transition" },
+  { id: "world", label: "World", short: "World", href: "/?view=world" },
 ];
-const ACTIVE_TAB = DAY_PARAM ? "day" : TRANSITION ? "transition" : PRICES ? "prices" : "live";
+const ACTIVE_TAB = DAY_PARAM ? "day" : TRANSITION ? "transition" : PRICES ? "prices" : WORLD ? "world" : "live";
 
 /**
  * Hands over the copy bundled with the app at once, then the cloud snapshot if it
@@ -864,14 +877,19 @@ export default function EuropeView() {
   const [hoverTip, setHoverTip] = useState<{ x: number; y: number; iso3: string } | null>(null);
   const yearPos = useRef(0);
   const yearPlaying = useRef(false);
-  // Prices tab: the year's statistics, the colour metric, the zone in the panel and its carpet
+  // Prices tab: the twelve months of statistics, the colour metric and the zone in the panel
   const [pricesFile, setPricesFile] = useState<PricesFile | null>(null);
   const [priceMetricId, setPriceMetricId] = useState<PriceMetricId>(() => {
     const m = new URLSearchParams(window.location.search).get("metric");
     return PRICE_METRICS.some((x) => x.id === m) ? (m as PriceMetricId) : "negative";
   });
+  // World tab: access per country, mapped data centres, Australia's live market
+  const [worldStats, setWorldStats] = useState<WorldStatsFile | null>(null);
+  const [dcFile, setDcFile] = useState<DataCentresFile | null>(null);
+  const [aemo, setAemo] = useState<AemoFile | null>(null);
+  const [worldShow, setWorldShow] = useState({ datacentres: true, australia: true });
   const [zoneSel, setZoneSel] = useState(() => new URLSearchParams(window.location.search).get("zone") ?? "DE-LU");
-  const [carpet, setCarpet] = useState<CarpetFile | null>(null);
+
   // 24 h replay: index into the flow series, null = latest complete interval
   const [replay, setReplay] = useState<number | null>(null);
   // day time-lapse: slot position (fractional) and play state live in refs; frame re-renders
@@ -968,22 +986,40 @@ export default function EuropeView() {
   }, []);
   useEffect(() => {
     if (!PRICES) return;
-    let live = true;
-    setCarpet(null);
-    fetch(`${ARCHIVE_REMOTE}/prices/${zoneSel}.json`, { signal: AbortSignal.timeout(8000) })
-      .then((res) => (res.ok ? (res.json() as Promise<CarpetFile>) : Promise.reject(new Error(String(res.status)))))
-      .catch(() => getJson<CarpetFile>(`/data/eu/prices/${zoneSel}.json`))
-      .then((c) => live && setCarpet(c))
-      .catch(() => {});
     const params = new URLSearchParams(window.location.search);
     params.set("zone", zoneSel);
     params.set("metric", priceMetricId);
     window.history.replaceState(null, "", `?${params.toString()}`);
-    return () => {
-      live = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoneSel, priceMetricId]);
+
+  useEffect(() => {
+    if (!WORLD) return;
+    // the daily copy on the eu-days branch, or the bundled one if newer
+    const newer = <T extends { fetched: string }>(name: string, use: (v: T) => void) => {
+      let bundled: T | null = null;
+      getJson<T>(`/data/eu/${name}`)
+        .then((v) => {
+          bundled = v;
+          use(v);
+        })
+        .catch(() => {});
+      fetch(`${ARCHIVE_REMOTE}/${name}?t=${Date.now()}`, { signal: AbortSignal.timeout(8000) })
+        .then((res) => (res.ok ? (res.json() as Promise<T>) : Promise.reject()))
+        .then((v) => {
+          if (!bundled || v.fetched > bundled.fetched) use(v);
+        })
+        .catch(() => {});
+    };
+    newer<WorldStatsFile>("world_stats.json", setWorldStats);
+    newer<DataCentresFile>("datacentres.json", setDcFile);
+    const live = () => loadSnapshot<AemoFile>("aemo.json", setAemo);
+    live();
+    const t = setInterval(live, 5 * 60 * 1000);
+    getJson<TransitionFile>("/data/eu/transition.json").then(setTransition).catch(() => {});
+    getJson<WorldFile>("/data/eu/world.json").then(setWorld).catch(() => {});
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!TRANSITION) return;
@@ -1084,6 +1120,29 @@ export default function EuropeView() {
       },
       getTooltip: ({ object, layer }: PickingInfo) => {
         if (!object || !layer || TRANSITION) return null;
+        if (WORLD) {
+          const style = {
+            background: "rgba(8,10,14,0.92)",
+            color: "#e2e8f0",
+            fontSize: "11px",
+            lineHeight: "1.5",
+            padding: "8px 10px",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "6px",
+          };
+          if (layer.id === "w-datacentres") {
+            const d = object as DataCentresFile["points"][number];
+            return {
+              html: `<b>${d[2] ?? "Data centre"}</b>${d[3] ? `<div>${d[3]}</div>` : ""}<div style="color:#8d94a1">OpenStreetMap</div>`,
+              style,
+            };
+          }
+          if (layer.id === "w-nem-flows") {
+            const a = object as Arc;
+            return { html: `<b>${a.from} → ${a.to}</b> ${power(a.mw)}<div style="color:#8d94a1">AEMO interconnector flow, 5-min dispatch</div>`, style };
+          }
+          return null;
+        }
         if (PRICES) {
           const pf = pricesRef.current;
           const m = priceMetricById(priceMetricRef.current);
@@ -1197,12 +1256,12 @@ export default function EuropeView() {
     map.on("styledata", syncViews);
     map.on("projectiontransition", syncViews);
     map.on("deckviewsync", syncViews);
-    if (TRANSITION) {
+    if (TRANSITION || WORLD) {
       // any country on the globe: hover for its value, click for its history
       map.on("click", (e) => {
         const f = map.queryRenderedFeatures(e.point, { layers: ["world-land"] })[0];
         const code = (f?.properties?.iso3 as string | undefined) || null;
-        setPick((cur) => (code && code !== cur && transitionRef.current?.entities[code] ? code : null));
+        setPick((cur) => (code && code !== cur && (WORLD || transitionRef.current?.entities[code]) ? code : null));
       });
       map.on("mousemove", "world-land", (e) => {
         const code = e.features?.[0]?.properties?.iso3 as string | undefined;
@@ -1433,6 +1492,7 @@ export default function EuropeView() {
   const zonesOf = (iso: string) => Object.entries(prices).filter(([, p]) => p.country === iso);
   const countryFill = (iso: string): RGB => {
     if (TRANSITION) return metricColor(metric, trValue(ISO3[iso])) ?? TR_NO_DATA;
+    if (WORLD) return stopColor(ACCESS_STOPS, accessOf(ISO3[iso])?.value) ?? TR_NO_DATA;
     if (PRICES) {
       const zones = priceZonesOf(iso);
       if (zones.length > 1) return PR_MULTI;
@@ -1498,6 +1558,46 @@ export default function EuropeView() {
     else params.delete("scope");
     window.history.replaceState(null, "", `?${params.toString()}`);
   }, [scope, metricId]);
+  // World tab: the globe's land coloured by the newest access figure of each country
+  const accessOf = (code: string | undefined) => (code && worldStats ? latest(worldStats.access[code], worldStats.years) : null);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!WORLD || !worldStats || !map) return;
+    const apply = () => {
+      if (!map.getLayer("world-land")) return;
+      const pairs: string[] = [];
+      for (const code of Object.keys(worldStats.access)) {
+        const c = stopColor(ACCESS_STOPS, latest(worldStats.access[code], worldStats.years)?.value);
+        if (c) pairs.push(code, `rgb(${c.join(",")})`);
+      }
+      map.setPaintProperty("world-land", "fill-color", pairs.length ? ["match", ["get", "iso3"], ...pairs, rgbCss(TR_NO_DATA)] : LAND);
+      map.setPaintProperty("world-coast", "line-color", "rgba(6,9,14,0.6)");
+      map.setFilter("world-pick", ["==", ["get", "iso3"], pick ?? ""]);
+    };
+    if (map.isStyleLoaded()) apply();
+    else map.once("idle", apply);
+  }, [worldStats, pick]);
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!WORLD || !map) return;
+    const go = () => map.flyTo({ center: isNarrow() ? [40, 5] : [40, 12], zoom: isNarrow() ? 0.8 : 1.35, duration: 1600 });
+    if (map.loaded()) go();
+    else map.once("load", go);
+  }, []);
+  const iso3Names = useMemo(() => new Map((world?.features ?? []).map((f) => [f.properties.iso3, f.properties.name])), [world]);
+  const nameOf3 = (code: string) => transition?.entities[code]?.name ?? iso3Names.get(code) ?? code;
+  const nemArcs = useMemo<Arc[]>(
+    () =>
+      (aemo?.interconnectors ?? []).flatMap((c, n) => {
+        if (c.mw == null || Math.abs(c.mw) < IDLE_MW || !NEM_POINT[c.from] || !NEM_POINT[c.to]) return [];
+        const [a, b] = c.mw > 0 ? [c.from, c.to] : [c.to, c.from];
+        // two links share a pair of regions: bend them apart
+        const path = curvedPath(NEM_POINT[a], NEM_POINT[b], c.id.includes("MNSP") ? -0.22 : 0.16, 30);
+        return [{ from: a, to: b, mw: Math.abs(c.mw), ts: aemo?.settlement ?? "", path, timestamps: flowDistances(path, false, n * 91_000) }];
+      }),
+    [aemo],
+  );
+
   // label points of the world's countries: the middle of each one's largest outline
   const worldLabels = useMemo(
     () =>
@@ -1601,7 +1701,7 @@ export default function EuropeView() {
     return gas.pipes.filter(([, f]) => f.some((v, k) => (k % 2 ? v >= y0 && v <= y1 : v >= x0 && v <= x1 && f[k + 1] >= y0 && f[k + 1] <= y1)));
   }, [show.gas, gas, gasDetail, focus, zoom]);
   const focusRings = useMemo(() => {
-    const c = TRANSITION
+    const c = TRANSITION || WORLD
       ? countries?.countries.find((k) => ISO3[k.iso] === pick)
       : PRICES
         ? countries?.countries.find((k) => k.iso === pricesFile?.zones[zoneSel]?.country)
@@ -1809,8 +1909,82 @@ export default function EuropeView() {
       updateTriggers: { getText: [metricId, yearK] },
       parameters: { depthCompare: "always", depthWriteEnabled: false },
     });
+    const near = (p: [number, number]) => angularDistance(p, centreLL) < 80;
+    const worldLayers = WORLD
+      ? [
+          new ScatterplotLayer<DataCentresFile["points"][number]>({
+            id: "w-datacentres",
+            data: worldShow.datacentres && dcFile ? dcFile.points.filter((d) => near([d[0], d[1]])) : [],
+            getPosition: (d) => [d[0], d[1]],
+            getRadius: zoom < 3 ? 1.8 : 2.6,
+            radiusUnits: "pixels",
+            getFillColor: [...DC_COLOR, 210],
+            pickable: true,
+            updateTriggers: { getRadius: [zoom < 3] },
+            parameters: { depthCompare: "always", depthWriteEnabled: false },
+          }),
+          new PathLayer<Arc>({
+            id: "w-nem-casing",
+            data: worldShow.australia ? nemArcs.filter((a) => near(a.path[15])) : [],
+            getPath: (d) => d.path,
+            getColor: [4, 6, 10, 190],
+            getWidth: (d) => 5 + Math.min(4, d.mw / 300),
+            widthUnits: "pixels",
+            capRounded: true,
+            jointRounded: true,
+            parameters: { depthCompare: "always", depthWriteEnabled: false },
+          }),
+          new FlowArrowLayer<Arc>({
+            id: "w-nem-flows",
+            data: worldShow.australia ? nemArcs.filter((a) => near(a.path[15])) : [],
+            getPath: (d) => d.path,
+            getTimestamps: (d) => d.timestamps,
+            getColor: [...FLOW, 255],
+            getWidth: (d) => 18 + Math.min(12, d.mw / 80),
+            getArrowStyle: (d) => [1.4 + Math.min(1.8, d.mw / 400), 4.5 + Math.min(5, d.mw / 150), 1],
+            widthUnits: "pixels",
+            capRounded: true,
+            jointRounded: true,
+            pickable: true,
+            phase: flow.phase,
+            spacing: flow.spacing,
+            strokePx: 2.4,
+            lineAlpha: 0.85,
+            parameters: {
+              depthCompare: "always",
+              depthWriteEnabled: false,
+              blend: true,
+              blendColorSrcFactor: "one",
+              blendColorDstFactor: "one-minus-src-alpha",
+              blendAlphaSrcFactor: "one",
+              blendAlphaDstFactor: "one-minus-src-alpha",
+            },
+          }),
+          new TextLayer<{ id: string; at: [number, number]; text: string }>({
+            id: "w-nem-labels",
+            data:
+              worldShow.australia && aemo
+                ? Object.entries(aemo.regions).flatMap(([id, rg]) =>
+                    NEM_POINT[id] && near(NEM_POINT[id])
+                      ? [{ id, at: NEM_POINT[id], text: `${id.replace(/1$/, "")} ${rg.price != null ? Math.round(rg.price) : "–"} A$` }]
+                      : [],
+                  )
+                : [],
+            getPosition: (d) => d.at,
+            getText: (d) => d.text,
+            getSize: 11,
+            getColor: [214, 244, 255, 255],
+            fontFamily: "Inter, system-ui, sans-serif",
+            fontWeight: 700,
+            background: true,
+            getBackgroundColor: [6, 9, 14, 215],
+            backgroundPadding: [5, 2],
+            parameters: { depthCompare: "always", depthWriteEnabled: false },
+          }),
+        ]
+      : [];
     if (!facing) {
-      overlay.current?.setProps({ layers: TRANSITION ? [worldText] : [] });
+      overlay.current?.setProps({ layers: TRANSITION ? [worldText] : WORLD ? worldLayers : [] });
       return;
     }
     overlay.current?.setProps({
@@ -1881,7 +2055,7 @@ export default function EuropeView() {
           jointRounded: true,
           parameters: noDepth,
         }),
-        ...lineBands.map(
+        ...(STATIC_VIEW ? [] : lineBands).map(
           (b) =>
             new PathLayer<[number, number][]>({
               id: `eu-grid-${b.min}`,
@@ -1933,7 +2107,7 @@ export default function EuropeView() {
         }),
         new PathLayer<{ mw: number; path: [number, number][] }, PathStyleExtensionProps>({
           id: "eu-hvdc",
-          data: links,
+          data: STATIC_VIEW ? [] : links,
           getPath: (d) => d.path,
           getColor: [...HVDC, 190],
           getWidth: 1,
@@ -2057,6 +2231,7 @@ export default function EuropeView() {
           parameters: noDepth,
         }),
         worldText,
+        ...worldLayers,
         new ScatterplotLayer<(typeof zoneMarkers)[number]>({
           id: "pr-zones",
           data: zoneMarkers,
@@ -2244,7 +2419,7 @@ export default function EuropeView() {
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
+  }, [frame, worldStats, dcFile, aemo, nemArcs, worldShow, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
   // label the EU figures with the start of their interval (hourly in older archives)
   const euStep = day?.eu?.step_s ?? 3600;
@@ -2289,7 +2464,7 @@ export default function EuropeView() {
           <a
             key={t.id}
             href={t.href}
-            className={`flex-1 whitespace-nowrap rounded px-2.5 py-1 text-center ${
+            className={`flex-1 whitespace-nowrap rounded py-1 text-center ${isMobile ? "px-1.5" : "px-1 text-[10.5px]"} ${
               active ? "bg-white/15 text-slate-100" : "text-slate-400 hover:text-slate-100"
             }`}
           >
@@ -2508,7 +2683,9 @@ export default function EuropeView() {
       </div>
     </>
   );
-  const credits = TRANSITION ? (
+  const credits = WORLD ? (
+    <div>Access: World Bank (CC BY 4.0) · Data centres: © OpenStreetMap contributors (ODbL) · Australia: AEMO · Outlines: © EuroGeographics</div>
+  ) : TRANSITION ? (
     <div>Yearly data: Ember (CC BY 4.0) · Outlines: © EuroGeographics</div>
   ) : PRICES ? (
     <div>Prices, solar and wind output: ENTSO-E Transparency Platform · Outlines: © EuroGeographics</div>
@@ -2706,7 +2883,7 @@ export default function EuropeView() {
       </div>
     </>
   );
-  const replayTimeline = seriesLength > 1 && !day && (
+  const replayTimeline = seriesLength > 1 && !day && !STATIC_VIEW && (
     <>
       <button
         onClick={() => {
@@ -2920,26 +3097,90 @@ export default function EuropeView() {
       "Computed from them",
       "Average = mean of all 15-min prices. Hours below zero = 15-min intervals with a negative price × 0.25 h. Capture price = Σ price × output / Σ output, with ENTSO-E's actual solar (B16) and wind (B18 + B19) generation of the zone; capture rate = capture price / average.",
     ],
-    ["Period", `Statistics: the twelve full months ${periodLabel}. The carpet runs on to ${pricesFile?.carpet_until ?? ""}.`],
+    ["Period", `The twelve full months ${periodLabel}. Time of day: the average price per local hour (CET/CEST), per season and per month.`],
     ["Markers", "Zone markers in DK, IT, NO and SE are placed for reading, not at an official zone centre."],
   ];
   const priceBody = pricesFile && zoneStats && (
     <div className="space-y-2.5">
       <ZoneCard zone={zoneSel} z={zoneStats} period={periodLabel} />
-      <CarpetCard carpet={carpet} until={pricesFile.carpet_until} />
+      <TimeOfDayCard z={zoneStats} months={pricesFile.months} />
       <MonthsCard months={pricesFile.months} values={zoneStats.negative_by_month} />
       <CaptureCard z={zoneStats} />
       <ZoneRankingCard zones={pricesFile.zones} metric={priceMetric} selected={zoneSel} onPick={setZoneSel} />
       <SourcesCard items={priceSources} />
     </div>
   );
+  // ---------------------------------------------------------------- World tab pieces
+  const worldPickRenewables = pick && transition?.entities[pick] ? latest(transition.entities[pick].renewables, transition.years) : null;
+  const worldKey = (
+    <div>
+      <div className="h-2 rounded-sm" style={{ background: stopGradient(ACCESS_STOPS) }} />
+      <div className="mt-0.5 flex justify-between text-[9px] text-[#8d94a1]">
+        {ACCESS_TICKS.map((t) => (
+          <span key={t}>{t}</span>
+        ))}
+      </div>
+      <div className="mt-2 space-y-1 text-[10px] text-slate-300">
+        <div className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(DC_COLOR) }} />
+          Data centre mapped in OpenStreetMap
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-[3px] w-5 rounded" style={{ background: `linear-gradient(90deg, transparent, ${rgbCss(FLOW)})` }} />
+          Australia: interconnector flow, live
+        </div>
+      </div>
+    </div>
+  );
+  const worldChips = (
+    <div className="flex flex-wrap gap-1">
+      {(Object.keys(worldShow) as Array<keyof typeof worldShow>).map((k) => (
+        <button
+          key={k}
+          onClick={() => setWorldShow({ ...worldShow, [k]: !worldShow[k] })}
+          className={`rounded border ${isMobile ? "px-3 py-1.5 text-[12px]" : "px-2 py-0.5 text-[10px]"} ${
+            worldShow[k] ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
+          }`}
+        >
+          {k === "datacentres" ? "Data centres" : "Australia live"}
+        </button>
+      ))}
+    </div>
+  );
+  const worldSources: [string, string][] = [
+    ["Access to electricity", "World Bank WDI EG.ELC.ACCS.ZS (CC BY 4.0), % of population; each country coloured by its newest year."],
+    [
+      "Data centres",
+      "OpenStreetMap (ODbL): features tagged telecom=data_center or building=data_center. A mapped subset: counts follow mapping effort, not capacity. Countries assigned with Eurostat GISCO outlines.",
+    ],
+    [
+      "Australia",
+      "AEMO's public NEM summary, 5-minute dispatch: price (AUD/MWh), demand, interconnector flows. Region markers are placed for reading.",
+    ],
+    ["Renewables", "Ember yearly data (CC BY 4.0), newest year with a figure."],
+  ];
+  const worldBody = (
+    <div className="space-y-2.5">
+      {pick && <WorldCountryCard code={pick} name={nameOf3(pick)} stats={worldStats} dc={dcFile} renewables={worldPickRenewables} />}
+      {aemo && <NemCard aemo={aemo} />}
+      {worldStats && <AccessCard stats={worldStats} names={nameOf3} onPick={setPick} />}
+      {dcFile && <DataCentresCard dc={dcFile} names={nameOf3} />}
+      <SourcesCard items={worldSources} />
+    </div>
+  );
+
   // the side panel's title, body and back button, per view
-  const panelTitle = TRANSITION ? trTitle : PRICES ? `${zoneSel}${zoneCountry && zoneCountry !== zoneSel ? ` · ${zoneCountry}` : ""}` : focus ? focus.name : "European Union";
-  const panelBody = TRANSITION ? trBody : PRICES ? priceBody : focus ? countryBody : euBody;
+  const panelTitle = WORLD ? (pick ? nameOf3(pick) : "World") : TRANSITION ? trTitle : PRICES ? `${zoneSel}${zoneCountry && zoneCountry !== zoneSel ? ` · ${zoneCountry}` : ""}` : focus ? focus.name : "European Union";
+  const panelBody = WORLD ? worldBody : TRANSITION ? trBody : PRICES ? priceBody : focus ? countryBody : euBody;
 
   // ---------------------------------------------------------------- phone headline (bottom card, collapsed)
   const headPower = focus ? focusPower : eu;
-  const headline = PRICES
+  const worldAccess = worldStats ? latest(worldStats.access[pick ?? "WLD"], worldStats.years) : null;
+  const headline = WORLD
+    ? worldAccess
+      ? `Electricity access ${worldAccess.value.toFixed(1)} % (${worldAccess.year})`
+      : "Loading…"
+    : PRICES
     ? zoneStats
       ? `${priceMetric.label} ${priceMetric.format(priceMetric.value(zoneStats))}`
       : "Loading…"
@@ -2971,7 +3212,7 @@ export default function EuropeView() {
           <div className="pointer-events-none absolute bottom-4 left-4 top-4 z-10 flex w-[284px] flex-col gap-2">
             <div className="pointer-events-auto rounded-xl border border-white/[0.07] bg-[#0b0f16]/88 px-4 py-3 backdrop-blur">
               <div className="font-serif text-[30px] uppercase leading-none tracking-[0.2em]">
-                {TRANSITION && scope === "world" ? "World" : "Europe"}
+                {WORLD || (TRANSITION && scope === "world") ? "World" : "Europe"}
               </div>
               <div className="mt-1.5 text-[10px] uppercase tracking-[0.28em] text-[#b9ab9b]">
                 {day
@@ -2980,7 +3221,9 @@ export default function EuropeView() {
                     ? "25 years of electricity"
                     : PRICES
                       ? "12 months of power prices"
-                      : "Grid, plants & power flows"}
+                      : WORLD
+                        ? "Power around the world"
+                        : "Grid, plants & power flows"}
               </div>
               <div className="mt-3">{tabsNav}</div>
               {!STATIC_VIEW && <div className="mt-2 [&_select]:w-full">{countrySelect}</div>}
@@ -3046,7 +3289,7 @@ export default function EuropeView() {
                   />
                 </div>
               )}
-              {!day && topFlows.length > 0 && (
+              {!day && !STATIC_VIEW && topFlows.length > 0 && (
                 <div className="mt-4">
                   <div className="text-[9px] uppercase tracking-[0.22em] text-[#8f877e]">Largest cross-border flows</div>
                   <div className="mt-1.5 space-y-0.5">
@@ -3075,12 +3318,23 @@ export default function EuropeView() {
               </div>
             )}
 
+            {WORLD && (
+              <div className="pointer-events-auto rounded-xl border border-white/[0.07] bg-[#0b0f16]/88 px-4 py-3 text-[11px] text-slate-300 backdrop-blur">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">Access to electricity</span>
+                </div>
+                {worldKey}
+                <div className="mt-2.5">{worldChips}</div>
+                <div className="mt-2 text-[10px] leading-snug text-[#8d94a1]">Click a country for its card. Drag to turn the globe.</div>
+              </div>
+            )}
+
             {PRICES && (
               <div className="pointer-events-auto rounded-xl border border-white/[0.07] bg-[#0b0f16]/88 px-4 py-3 text-[11px] text-slate-300 backdrop-blur">
                 <div className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300">{priceMetric.label}</div>
                 {priceKey}
                 <div className="mt-2 text-[10px] leading-snug text-[#8d94a1]">
-                  Each zone: {priceMetric.note}, {periodLabel}. Click one for every 15-min price of the year.
+                  Each zone: {priceMetric.note}, {periodLabel}. Click one for its prices by time of day.
                 </div>
               </div>
             )}
@@ -3113,15 +3367,17 @@ export default function EuropeView() {
                 <div className="truncate font-serif text-[20px] uppercase leading-tight tracking-[0.12em]">{panelTitle}</div>
                 {PRICES ? (
                   <div className="text-[10px] text-[#8d94a1]">Click a country or zone marker on the map.</div>
+                ) : WORLD ? (
+                  !pick && <div className="text-[10px] text-[#8d94a1]">Click any country on the globe.</div>
                 ) : TRANSITION ? (
                   !pick && <div className="text-[10px] text-[#8d94a1]">Click any country on the globe.</div>
                 ) : (
                   !focus && <div className="text-[10px] text-[#8d94a1]">Click a country on the map for its cards.</div>
                 )}
               </div>
-              {!PRICES && (TRANSITION ? pick : focus) && (
+              {!PRICES && (TRANSITION || WORLD ? pick : focus) && (
                 <button
-                  onClick={() => (TRANSITION ? setPick(null) : setSelected(null))}
+                  onClick={() => (TRANSITION || WORLD ? setPick(null) : setSelected(null))}
                   className="rounded border border-white/15 px-2 py-0.5 text-[11px] text-slate-300 hover:text-slate-100"
                   title="Back to Europe"
                 >
@@ -3164,6 +3420,20 @@ export default function EuropeView() {
             </div>
           )}
 
+          {WORLD && hoverTip && (
+            <div
+              className="pointer-events-none absolute z-20 rounded-md border border-white/10 bg-[#080a0e]/95 px-2.5 py-1.5 text-[11px] leading-snug text-slate-200"
+              style={{ left: hoverTip.x + 14, top: hoverTip.y + 14 }}
+            >
+              <b>{nameOf3(hoverTip.iso3)}</b>
+              <div>
+                Electricity access:{" "}
+                <b>{accessOf(hoverTip.iso3) ? `${accessOf(hoverTip.iso3)?.value.toFixed(1)} % (${accessOf(hoverTip.iso3)?.year})` : "no figure"}</b>
+              </div>
+              {(dcFile?.by_country[hoverTip.iso3] ?? 0) > 0 && <div>{dcFile?.by_country[hoverTip.iso3]} data centres mapped (OSM)</div>}
+            </div>
+          )}
+
           {TRANSITION && hoverTip && transition && (
             <div
               className="pointer-events-none absolute z-20 rounded-md border border-white/10 bg-[#080a0e]/95 px-2.5 py-1.5 text-[11px] leading-snug text-slate-200"
@@ -3186,7 +3456,7 @@ export default function EuropeView() {
           {/* ------------------------------------------------ phone: map first */}
           <div className="absolute inset-x-0 top-0 z-20 flex items-center gap-2 bg-[#05070b]/85 px-3 py-2 backdrop-blur">
             <div className="font-serif text-[17px] uppercase leading-none tracking-[0.18em]">
-              {TRANSITION && scope === "world" ? "World" : "Europe"}
+              {WORLD || (TRANSITION && scope === "world") ? "World" : "Europe"}
             </div>
             <div className="flex-1" />
             {tabsNav}
@@ -3240,7 +3510,7 @@ export default function EuropeView() {
             >
               <div className="min-w-0 flex-1">
                 <div className="truncate text-[10px] uppercase tracking-[0.2em] text-[#8f877e]">
-                  {TRANSITION ? `${trTitle} · ${year}` : PRICES ? `${zoneSel} · ${periodLabel}` : focus ? focus.name : "European Union"}
+                  {WORLD ? (pick ? nameOf3(pick) : "World") : TRANSITION ? `${trTitle} · ${year}` : PRICES ? `${zoneSel} · ${periodLabel}` : focus ? focus.name : "European Union"}
                   {!STATIC_VIEW && headPower ? ` · ${timeOf(headPower.ts)}` : ""}
                 </div>
                 <div className="truncate text-[15px] tabular-nums text-slate-100">{headline}</div>
@@ -3255,7 +3525,7 @@ export default function EuropeView() {
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-serif text-[18px] uppercase tracking-[0.12em]">{panelTitle}</div>
                 </div>
-                {TRANSITION && pick && (
+                {(TRANSITION || WORLD) && pick && (
                   <button onClick={() => setPick(null)} className="rounded border border-white/15 px-2 py-1 text-[11px] text-slate-300">
                     {scope === "world" ? "World" : "Europe"}
                   </button>
@@ -3296,6 +3566,18 @@ export default function EuropeView() {
                 </button>
               </div>
               <div className="space-y-5 overflow-y-auto px-4 py-4 text-[12px] text-slate-300">
+                {WORLD && (
+                  <>
+                    <div className="space-y-1.5">
+                      {sectionTitle("Layers")}
+                      {worldChips}
+                    </div>
+                    <div className="space-y-1.5">
+                      {sectionTitle("Legend")}
+                      {worldKey}
+                    </div>
+                  </>
+                )}
                 {PRICES && (
                   <>
                     <div className="space-y-1.5">

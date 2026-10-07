@@ -89,8 +89,7 @@ The "price range, all zones" chart is the lowest and highest zone price per slot
 
 | File | Records | Source |
 |---|---:|---|
-| `prices.json` | 43 bidding zones | ENTSO-E A44 day-ahead prices (the coupled auction, as above) and A75 actual solar (B16) and wind (B18 offshore + B19 onshore) generation per bidding zone, from the 1st of the month twelve months back to yesterday |
-| `prices/<zone>.json` | one row per local day x 96 quarter-hours | the same prices on the local clock (Europe/Berlin), rounded to 0.1 EUR/MWh: the "carpet". In the autumn hour that repeats, the first value is kept; the skipped spring hour is empty |
+| `prices.json` | 43 bidding zones | ENTSO-E A44 day-ahead prices (the coupled auction, as above) and A75 actual solar (B16) and wind (B18 offshore + B19 onshore) generation per bidding zone, over the last twelve full calendar months |
 
 Computed in the build script, over the last twelve **full** calendar months:
 
@@ -103,10 +102,14 @@ Computed in the build script, over the last twelve **full** calendar months:
   **Capture rate:** capture price / average price. The TWh behind each weighting are
   shown. Solar is missing for ME, NO2–NO5 and RS, and wind for AL and NO5: ENTSO-E has
   no generation there. UA has no prices in EUR.
+- **Price by time of day:** the average of the prices in each local hour of the day
+  (CET/CEST), per month and per season (winter Dec-Feb, spring Mar-May, summer Jun-Aug,
+  autumn Sep-Nov of the twelve months).
 
 Zone markers for countries with several zones (DK, IT, NO, SE) are placed for reading,
-not at an official zone centre. The `eu-days` workflow rebuilds the files daily on the
-`eu-days` branch, and the app prefers that copy when it is newer.
+not at an official zone centre. The `eu-days` workflow checks daily and rebuilds the file
+when a new month is complete (on the `eu-days` branch; the app prefers that copy when
+it is newer).
 
 ## LNG send-out (`scripts/fetch_eu_dossier.py`, in `dossier.json`)
 
@@ -116,6 +119,17 @@ DE, ES, FI, FR, GR, HR, IT, LT, NL, PL, PT), last ~400 days, passthrough:
 - `dtrs`: declared total reference send-out, the terminals' declared send-out
   capacity, GWh/day
 - `inventory.gwh`: LNG in tanks
+
+## World tab (`scripts/fetch_world.py`, `scripts/fetch_aemo.py`)
+
+| File | Records | Source |
+|---|---:|---|
+| `world_stats.json` | 216 countries + world, 2000-2024 | World Bank WDI `EG.ELC.ACCS.ZS`, access to electricity (% of population), CC BY 4.0, as published. The map colours each country by its newest year (the tooltip names it) |
+| `datacentres.json` | 4,500 sites | OpenStreetMap (ODbL) via Overpass: `telecom=data_center` or `building=data_center`, one point per site (ways and relations at their centre; points sharing a 3-decimal position count once). Countries assigned with Eurostat GISCO outlines (computed): 4,434 fall inside one. A mapped subset: counts follow mapping effort, not capacity |
+| `aemo.json` | 5 regions, 6 interconnectors | AEMO's public NEM summary, the newest 5-minute dispatch: price (AUD/MWh), total demand, net interchange, scheduled and semi-scheduled generation per region, interconnector flows with AEMO's sign (positive = from the first region in the name). Refreshed with every snapshot run. Region markers are placed for reading |
+
+Renewable share in the World country card: Ember yearly data (`transition.json`), the
+newest year with a figure.
 
 ## Wind layer (`scripts/fetch_wind.py`)
 

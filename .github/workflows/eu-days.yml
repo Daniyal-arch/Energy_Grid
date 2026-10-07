@@ -58,6 +58,13 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_prices.py --out store/eu || echo "prices failed; keeping yesterday's"
 
+      - name: World figures (World Bank access, OpenStreetMap data centres)
+        run: |
+          pip install shapely
+          curl -sL -o data_gisco.geojson https://gisco-services.ec.europa.eu/distribution/v2/countries/geojson/CNTR_RG_20M_2024_4326.geojson || true
+          mkdir -p data/eu && mv data_gisco.geojson data/eu/countries.geojson || true
+          python scripts/fetch_world.py --out store/eu || echo "world fetch failed; keeping the last copy"
+
       - name: Wind for the same days (Open-Meteo, one pass over the window)
         run: python scripts/fetch_wind.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/wind || echo "wind fetch failed"
 

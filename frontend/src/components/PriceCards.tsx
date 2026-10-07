@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 
-import { CARPET_KEY, carpetColor, monthLabel, type CarpetFile, type PriceMetric, type ZoneStats } from "../lib/prices";
+import { HOUR_KEY, SEASON_COLOR, hourColor, monthLabel, type PriceMetric, type ZoneStats } from "../lib/prices";
 import { rgbCss } from "../lib/theme";
 import { Card } from "./CountryCards";
 
@@ -31,7 +31,7 @@ export function ZoneCard({ zone, z, period }: { zone: string; z: ZoneStats; peri
   return (
     <Card title={`${zone} · 12 months`} note={period}>
       <div className="grid grid-cols-2 gap-1.5">
-        <Tile label="Average price" value={`${Math.round(z.mean)} €`} sub="per MWh, every 15 min weighted equally" />
+        <Tile label="Average price" value={`${Math.round(z.mean)} €`} sub="per MWh" />
         <Tile label="Below zero" value={`${Math.round(z.negative_hours)} h`} sub="hours with a negative price" />
         <Tile label="Lowest" value={eur(z.min[0])} sub={when(z.min[1])} />
         <Tile label="Highest" value={eur(z.max[0])} sub={when(z.max[1])} />
@@ -43,85 +43,185 @@ export function ZoneCard({ zone, z, period }: { zone: string; z: ZoneStats; peri
   );
 }
 
-const CELL_W = 3; // px per quarter-hour
+const W = 300;
+const HOURS = Array.from({ length: 24 }, (_, h) => h);
+const SEASON_LABEL: Record<string, string> = { winter: "Winter", spring: "Spring", summer: "Summer", autumn: "Autumn" };
+const hh = (h: number) => `${String(h).padStart(2, "0")}:00`;
 
-/** Every 15-min price of the year: one row per day, one column per quarter-hour. */
-export function CarpetCard({ carpet, until }: { carpet: CarpetFile | null; until: string }) {
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const [hover, setHover] = useState<{ d: number; q: number } | null>(null);
-  const rows = carpet?.values.length ?? 0;
-  useEffect(() => {
-    const c = canvas.current;
-    if (!c || !carpet) return;
-    c.width = 96;
-    c.height = rows;
-    const ctx = c.getContext("2d");
-    if (!ctx) return;
-    const img = ctx.createImageData(96, rows);
-    carpet.values.forEach((row, d) =>
-      row.forEach((v, q) => {
-        const at = (d * 96 + q) * 4;
-        const col = v == null ? ([16, 18, 24] as const) : carpetColor(v / 10);
-        img.data[at] = col[0];
-        img.data[at + 1] = col[1];
-        img.data[at + 2] = col[2];
-        img.data[at + 3] = 255;
-      }),
-    );
-    ctx.putImageData(img, 0, 0);
-  }, [carpet, rows]);
-  // the first day of each month, labelled at its row
-  const months = useMemo(
-    () => (carpet?.days ?? []).flatMap((d, i) => (d.endsWith("-01") ? [{ i, label: monthLabel(d.slice(0, 7)) }] : [])),
-    [carpet],
-  );
-  const v = hover && carpet ? carpet.values[hover.d]?.[hover.q] : null;
+/** When in the day power is cheap: the average price per hour, by season or by month. */
+export function TimeOfDayCard({ z, months }: { z: ZoneStats; months: string[] }) {
+  const [mode, setMode] = useState<"seasons" | "months">("seasons");
+  const [hover, setHover] = useState<{ h: number; m?: number } | null>(null);
+  const lines = Object.keys(SEASON_LABEL).filter((k) => z.by_season_hour[k]);
+  const all = lines.flatMap((k) => z.by_season_hour[k]).filter((v): v is number => v != null);
+  // the cheapest and dearest hour among the season averages (values as computed)
+  let low: { k: string; h: number; v: number } | null = null;
+  let high: { k: string; h: number; v: number } | null = null;
+  for (const k of lines)
+    z.by_season_hour[k].forEach((v, h) => {
+      if (v == null) return;
+      if (!low || v < low.v) low = { k, h, v };
+      if (!high || v > high.v) high = { k, h, v };
+    });
+  const lo = low as { k: string; h: number; v: number } | null;
+  const hi = high as { k: string; h: number; v: number } | null;
+  const top = Math.max(10, ...all);
+  const bottom = Math.min(0, ...all);
+  const H = 120;
+  const y = (v: number) => 6 + ((top - v) / (top - bottom)) * (H - 12);
+  const x = (h: number) => (h / 23) * W;
+  const span = (k: string) => ({ winter: "Dec–Feb", spring: "Mar–May", summer: "Jun–Aug", autumn: "Sep–Nov" })[k] ?? "";
+  const pickLine = (e: React.PointerEvent<Element>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    setHover({ h: Math.max(0, Math.min(23, Math.round(((e.clientX - r.left) / r.width) * 23))) });
+  };
+  const pickCell = (e: React.PointerEvent<Element>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const h = Math.max(0, Math.min(23, Math.floor(((e.clientX - r.left) / r.width) * 24)));
+    const m = Math.max(0, Math.min(months.length - 1, Math.floor(((e.clientY - r.top) / r.height) * months.length)));
+    setHover({ h, m });
+  };
   return (
-    <Card title="Every 15 minutes" note={carpet ? `to ${until}` : "loading…"}>
-      <div className={`mb-1.5 h-4 text-[10px] tabular-nums ${muted}`}>
-        {hover && carpet
-          ? `${new Date(`${carpet.days[hover.d]}T12:00:00Z`).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" })} · ${String(Math.floor(hover.q / 4)).padStart(2, "0")}:${String((hover.q % 4) * 15).padStart(2, "0")} · ${v == null ? "no price" : eur(v / 10)}`
-          : "Rows: days. Columns: time of day (CET/CEST). Hover for a price."}
-      </div>
-      <div className="flex gap-1.5">
-        <div className="relative w-[34px] shrink-0 text-[9px] text-[#8d94a1]" style={{ height: rows }}>
-          {months.map((m) => (
-            <span key={m.i} className="absolute right-0 -translate-y-1/2" style={{ top: m.i }}>
-              {m.label}
-            </span>
-          ))}
-        </div>
-        <div>
-          <canvas
-            ref={canvas}
-            className="block touch-none"
-            style={{ width: 96 * CELL_W, height: rows, imageRendering: "pixelated" }}
-            onPointerMove={(e) => {
-              const r = e.currentTarget.getBoundingClientRect();
-              const d = Math.floor(((e.clientY - r.top) / r.height) * rows);
-              const q = Math.floor(((e.clientX - r.left) / r.width) * 96);
-              setHover(d >= 0 && d < rows && q >= 0 && q < 96 ? { d, q } : null);
+    <Card title="Price by time of day" note="average per hour, CET/CEST">
+      <div className="mb-2 flex gap-1 text-[10px]">
+        {(["seasons", "months"] as const).map((m) => (
+          <button
+            key={m}
+            onClick={() => {
+              setMode(m);
+              setHover(null);
             }}
-            onPointerLeave={() => setHover(null)}
-          />
-          <div className={`mt-1 flex justify-between text-[9px] ${muted}`} style={{ width: 96 * CELL_W }}>
-            <span>00:00</span>
-            <span>06:00</span>
-            <span>12:00</span>
-            <span>18:00</span>
-            <span>24:00</span>
-          </div>
-        </div>
-      </div>
-      <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] text-slate-400">
-        {CARPET_KEY.map(([label, c]) => (
-          <span key={label} className="flex items-center gap-1">
-            <span className="h-2 w-2.5 rounded-sm" style={{ background: rgbCss(c) }} />
-            {label}
-          </span>
+            className={`rounded px-2 py-0.5 ${mode === m ? "bg-white/15 text-slate-100" : "text-slate-400 hover:text-slate-200"}`}
+          >
+            {m === "seasons" ? "By season" : "By month"}
+          </button>
         ))}
-        <span className={muted}>€/MWh</span>
       </div>
+      {mode === "seasons" ? (
+        <>
+          <div className="mb-1 min-h-[30px] text-[10px] leading-snug tabular-nums text-slate-300">
+            {hover ? (
+              <>
+                <span className={muted}>{hh(hover.h)} · </span>
+                {lines.map((k) => {
+                  const v = z.by_season_hour[k][hover.h];
+                  return (
+                    <span key={k} className="mr-2 whitespace-nowrap" style={{ color: rgbCss(SEASON_COLOR[k]) }}>
+                      {SEASON_LABEL[k]} {v == null ? "–" : `${Math.round(v)} €`}
+                    </span>
+                  );
+                })}
+              </>
+            ) : (
+              lo &&
+              hi && (
+                <>
+                  Cheapest on average: <b className="text-slate-100">{hh(lo.h)}</b> in {SEASON_LABEL[lo.k].toLowerCase()} ({Math.round(lo.v)}{" "}
+                  €/MWh). Dearest: <b className="text-slate-100">{hh(hi.h)}</b> in {SEASON_LABEL[hi.k].toLowerCase()} ({Math.round(hi.v)} €).
+                </>
+              )
+            )}
+          </div>
+          <svg viewBox={`0 0 ${W} ${H}`} className="w-full touch-none overflow-visible" onPointerMove={pickLine} onPointerLeave={() => setHover(null)}>
+            {bottom < 0 && <rect x={0} y={y(0)} width={W} height={y(bottom) - y(0)} fill="rgba(110,210,255,0.08)" />}
+            <line x1={0} x2={W} y1={y(0)} y2={y(0)} stroke="rgba(255,255,255,0.35)" strokeDasharray="3 3" />
+            <text x={W} y={y(0) - 3} textAnchor="end" fontSize={9} fill="#8d94a1">
+              0 €
+            </text>
+            <text x={W} y={y(top) + 8} textAnchor="end" fontSize={9} fill="#8d94a1">
+              {Math.round(top)} €
+            </text>
+            {lines.map((k) => (
+              <path
+                key={k}
+                d={z.by_season_hour[k]
+                  .map((v, h) => (v == null ? "" : `${h && z.by_season_hour[k][h - 1] != null ? "L" : "M"}${x(h).toFixed(1)},${y(v).toFixed(1)}`))
+                  .join("")}
+                fill="none"
+                stroke={rgbCss(SEASON_COLOR[k])}
+                strokeWidth={2}
+                strokeLinejoin="round"
+              />
+            ))}
+            {hover && <line x1={x(hover.h)} x2={x(hover.h)} y1={0} y2={H} stroke="rgba(255,255,255,0.5)" />}
+          </svg>
+          <div className={`mt-0.5 flex justify-between text-[9px] ${muted}`}>
+            {[0, 6, 12, 18, 23].map((h) => (
+              <span key={h}>{hh(h)}</span>
+            ))}
+          </div>
+          <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px]">
+            {lines.map((k) => (
+              <span key={k} className="flex items-center gap-1.5 text-slate-300">
+                <span className="h-[3px] w-4 rounded" style={{ background: rgbCss(SEASON_COLOR[k]) }} />
+                {SEASON_LABEL[k]} <span className={muted}>{span(k)}</span>
+              </span>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="mb-1 h-4 text-[10px] tabular-nums text-slate-300">
+            {hover?.m != null ? (
+              <>
+                {monthLabel(months[hover.m])} · {hh(hover.h)} ·{" "}
+                <b>
+                  {z.by_month_hour[hover.m]?.[hover.h] == null
+                    ? "–"
+                    : `${Math.round(z.by_month_hour[hover.m][hover.h] as number)} €/MWh on average`}
+                </b>
+              </>
+            ) : (
+              <span className={muted}>Rows: months. Columns: hours. Hover a cell.</span>
+            )}
+          </div>
+          <div className="flex gap-1.5">
+            <div className="flex w-[40px] shrink-0 flex-col gap-px text-right text-[9px] leading-[13px] text-[#8d94a1]">
+              {months.map((m) => (
+                <span key={m}>{monthLabel(m)}</span>
+              ))}
+            </div>
+            <div className="flex-1">
+              <div
+                className="grid touch-none gap-px"
+                style={{ gridTemplateColumns: "repeat(24, 1fr)" }}
+                onPointerMove={pickCell}
+                onPointerLeave={() => setHover(null)}
+              >
+                {z.by_month_hour.flatMap((row, m) =>
+                  HOURS.map((h) => {
+                    const v = row[h];
+                    return (
+                      <span
+                        key={`${m}-${h}`}
+                        className="h-[13px] rounded-[2px]"
+                        style={{
+                          background: v == null ? "#14161c" : rgbCss(hourColor(v)),
+                          outline: hover?.m === m && hover.h === h ? "1px solid white" : undefined,
+                        }}
+                      />
+                    );
+                  }),
+                )}
+              </div>
+              <div className={`mt-1 flex justify-between text-[9px] ${muted}`}>
+                {[0, 6, 12, 18, 23].map((h) => (
+                  <span key={h}>{hh(h)}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[9px] text-slate-400">
+            {HOUR_KEY.map(([label, c]) => (
+              <span key={label} className="flex items-center gap-1">
+                <span className="h-2 w-2.5 rounded-sm" style={{ background: rgbCss(c) }} />
+                {label}
+              </span>
+            ))}
+            <span className={muted}>€/MWh</span>
+          </div>
+        </>
+      )}
     </Card>
   );
 }

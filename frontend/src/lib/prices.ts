@@ -19,21 +19,19 @@ export interface ZoneStats {
   wind_capture: number | null;
   wind_capture_rate: number | null;
   wind_twh: number | null;
+  /** average price per local hour of the day, per month (rows follow PricesFile.months) */
+  by_month_hour: (number | null)[][];
+  /** the same per season */
+  by_season_hour: Record<string, (number | null)[]>;
 }
 export interface PricesFile {
   fetched: string;
   /** the twelve full months the statistics cover */
   period: [string, string];
-  carpet_until: string;
   months: string[];
+  /** season -> the months it covers in the period */
+  seasons: Record<string, string[]>;
   zones: Record<string, ZoneStats>;
-}
-export interface CarpetFile {
-  zone: string;
-  country: string;
-  days: string[];
-  /** per local day, 96 quarter-hours: price x 10 (EUR/MWh) */
-  values: (number | null)[][];
 }
 
 export type PriceMetricId = "negative" | "mean" | "solar" | "wind";
@@ -127,7 +125,7 @@ export const stopGradient = (stops: Array<[number, RGB]>) => {
   return `linear-gradient(90deg, ${stops.map(([v, c]) => `rgb(${c.join(",")}) ${((v - a) / (b - a)) * 100}%`).join(", ")})`;
 };
 
-// the carpet: below zero in ice blue, cheap in deep teal, expensive in ember and red
+// hour-of-day grid: below zero in ice blue, cheap in deep teal, expensive in ember and red
 const CARPET: Array<[number, RGB]> = [
   [0, [20, 48, 60]],
   [50, [30, 96, 100]],
@@ -136,14 +134,14 @@ const CARPET: Array<[number, RGB]> = [
   [260, [222, 60, 56]],
   [500, [255, 120, 210]],
 ];
-export function carpetColor(eur: number): RGB {
+export function hourColor(eur: number): RGB {
   if (eur < 0) {
     const t = Math.min(1, -eur / 100);
     return [Math.round(70 + 140 * t), Math.round(196 + 52 * t), 255];
   }
   return stopColor(CARPET, eur) as RGB;
 }
-export const CARPET_KEY: Array<[string, RGB]> = [
+export const HOUR_KEY: Array<[string, RGB]> = [
   ["< 0", [110, 210, 255]],
   ["0", CARPET[0][1]],
   ["50", CARPET[1][1]],
@@ -173,6 +171,13 @@ export const ZONE_POINT: Record<string, { at: [number, number]; short: string }>
   "IT-Calabria": { at: [16.35, 38.95], short: "IT-Cal" },
   "IT-Sicily": { at: [14.1, 37.5], short: "IT-Sic" },
   "IT-Sardinia": { at: [9.0, 40.1], short: "IT-Sar" },
+};
+
+export const SEASON_COLOR: Record<string, RGB> = {
+  winter: [120, 170, 255],
+  spring: [124, 222, 150],
+  summer: [255, 206, 84],
+  autumn: [236, 128, 84],
 };
 
 export const monthLabel = (ym: string) =>
