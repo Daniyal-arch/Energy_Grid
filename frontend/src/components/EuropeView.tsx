@@ -235,6 +235,14 @@ function priceColor(eur: number | null | undefined): RGB {
   }
   return PRICE_STOPS[PRICE_STOPS.length - 1][1];
 }
+// undersea power cables (OpenStreetMap): [class, kV | null, name | null, flat lon/lat]
+type Cable = [string, number | null, string | null, number[]];
+const CABLE_STYLE: Record<string, { color: [number, number, number, number]; width: number; label: string }> = {
+  hvdc: { color: [178, 146, 255, 230], width: 1.8, label: "HVDC" },
+  hv: { color: [110, 190, 255, 210], width: 1.5, label: "AC, 110 kV and more" },
+  field: { color: [72, 222, 184, 150], width: 0.9, label: "below 110 kV (mostly offshore wind)" },
+  other: { color: [150, 160, 176, 130], width: 0.8, label: "voltage not mapped" },
+};
 // generating capacity offline (GW): none stays calm, a lot glows hot
 const OFFLINE_STOPS: Array<[number, RGB]> = [
   [0, [34, 38, 48]],
@@ -880,10 +888,10 @@ export default function EuropeView() {
   const [shade, setShade] = useState<"none" | "renewable" | "price" | "offline">(DAY_PARAM || STATIC_VIEW ? "none" : "renewable");
   const [show, setShow] = useState(
     STATIC_VIEW
-      ? { plants: false, flows: false, substations: false, gas: false, wind: false, sun: false }
+      ? { plants: false, flows: false, substations: false, gas: false, wind: false, sun: false, cables: false }
       : DAY_PARAM
-        ? { plants: false, flows: true, substations: false, gas: false, wind: true, sun: false }
-        : { plants: true, flows: true, substations: true, gas: true, wind: false, sun: false },
+        ? { plants: false, flows: true, substations: false, gas: false, wind: true, sun: false, cables: false }
+        : { plants: true, flows: true, substations: true, gas: true, wind: false, sun: false, cables: false },
   );
   // wind at 100 m (Open-Meteo): the live file or the replayed day's, and its particles
   const [windFile, setWindFile] = useState<WindFile | null>(null);
@@ -936,7 +944,15 @@ export default function EuropeView() {
     months: string[];
     entities: Record<string, { renewables: (number | null)[]; wind_solar: (number | null)[]; coal: (number | null)[] }>;
   } | null>(null);
-  const [worldShow, setWorldShow] = useState({ datacentres: true, australia: true, usa: true });
+  const [worldShow, setWorldShow] = useState({ datacentres: true, australia: true, usa: true, cables: true });
+  const [cables, setCables] = useState<Cable[] | null>(null);
+  const wantCables = show.cables || (WORLD && worldShow.cables);
+  useEffect(() => {
+    if (!wantCables || cables) return;
+    getJson<{ cables: Cable[] }>("/data/eu/cables.json")
+      .then((d) => setCables(d.cables))
+      .catch(() => {});
+  }, [wantCables, cables]);
   const [zoneSel, setZoneSel] = useState(() => new URLSearchParams(window.location.search).get("zone") ?? "DE-LU");
 
   // 24 h replay: index into the flow series, null = latest complete interval
@@ -1174,6 +1190,21 @@ export default function EuropeView() {
       },
       getTooltip: ({ object, layer }: PickingInfo) => {
         if (!object || !layer || TRANSITION) return null;
+        if (layer.id === "w-cables") {
+          const c = object as Cable;
+          return {
+            html: `<b>${c[2] ?? "Undersea power cable"}</b><div>${(CABLE_STYLE[c[0]] ?? CABLE_STYLE.other).label}${c[1] ? ` · ${c[1]} kV` : ""}</div><div style="color:#8d94a1">OpenStreetMap</div>`,
+            style: {
+              background: "rgba(8,10,14,0.92)",
+              color: "#e2e8f0",
+              fontSize: "11px",
+              lineHeight: "1.5",
+              padding: "8px 10px",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "6px",
+            },
+          };
+        }
         if (WORLD) {
           const style = {
             background: "rgba(8,10,14,0.92)",
@@ -1991,8 +2022,21 @@ export default function EuropeView() {
       parameters: { depthCompare: "always", depthWriteEnabled: false },
     });
     const near = (p: [number, number]) => angularDistance(p, centreLL) < 80;
+    const cableLayer = (on: boolean) =>
+      new PathLayer<Cable>({
+        id: "w-cables",
+        // on the globe only the side facing the camera
+        data: on && cables ? cables.filter((c) => near([c[3][0], c[3][1]])) : [],
+        getPath: (c) => pairs(c[3]),
+        getColor: (c) => (CABLE_STYLE[c[0]] ?? CABLE_STYLE.other).color,
+        getWidth: (c) => (CABLE_STYLE[c[0]] ?? CABLE_STYLE.other).width,
+        widthUnits: "pixels",
+        pickable: true,
+        parameters: { depthCompare: "always", depthWriteEnabled: false },
+      });
     const worldLayers = WORLD
       ? [
+          cableLayer(worldShow.cables),
           new ScatterplotLayer<DataCentresFile["points"][number]>({
             id: "w-datacentres",
             data: worldShow.datacentres && dcFile ? dcFile.points.filter((d) => near([d[0], d[1]])) : [],
@@ -2416,6 +2460,7 @@ export default function EuropeView() {
         }),
         worldText,
         ...worldLayers,
+        ...(!WORLD && show.cables ? [cableLayer(true)] : []),
         new ScatterplotLayer<(typeof zoneMarkers)[number]>({
           id: "pr-zones",
           data: zoneMarkers,
@@ -2603,7 +2648,7 @@ export default function EuropeView() {
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, worldStats, dcFile, aemo, nemArcs, us, usArcs, worldShow, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
+  }, [frame, cables, worldStats, dcFile, aemo, nemArcs, us, usArcs, worldShow, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
   // label the EU figures with the start of their interval (hourly in older archives)
   const euStep = day?.eu?.step_s ?? 3600;
@@ -2836,6 +2881,14 @@ export default function EuropeView() {
         ))}
       </div>
       <div className="space-y-1">
+        {show.cables && (
+          <div className="flex items-center gap-2">
+            <span className="h-[2px] w-3 rounded" style={{ background: "rgb(178,146,255)" }} />
+            <span className="h-[2px] w-3 rounded" style={{ background: "rgb(110,190,255)" }} />
+            <span className="h-[2px] w-3 rounded" style={{ background: "rgba(72,222,184,0.7)" }} />
+            Undersea cable: HVDC, AC ≥ 110 kV, smaller (OSM)
+          </div>
+        )}
         {show.sun && (
           <div className="flex items-center gap-2">
             <span className="h-2 w-5 rounded" style={{ background: "linear-gradient(90deg, rgba(255,176,60,0.1), rgba(255,246,180,0.75))" }} />
@@ -2880,7 +2933,7 @@ export default function EuropeView() {
     </>
   );
   const credits = WORLD ? (
-    <div>Access: World Bank (CC BY 4.0) · Data centres: © OpenStreetMap contributors (ODbL) · US: EIA-930 · Australia: AEMO · Outlines: © EuroGeographics</div>
+    <div>Access: World Bank (CC BY 4.0) · Data centres, cables: © OpenStreetMap contributors (ODbL) · US: EIA-930 · Australia: AEMO · Outlines: © EuroGeographics</div>
   ) : TRANSITION ? (
     <div>Yearly data: Ember (CC BY 4.0) · Outlines: © EuroGeographics</div>
   ) : PRICES ? (
@@ -3355,6 +3408,11 @@ export default function EuropeView() {
           <span className="h-2.5 w-2.5 rounded-full border" style={{ borderColor: rgbCss(US_COLOR), background: rgbCss(US_COLOR, 0.25) }} />
           US region, size by demand
         </div>
+        <div className="flex items-center gap-2">
+          <span className="h-[2px] w-5 rounded" style={{ background: "rgb(178,146,255)" }} />
+          <span className="h-[2px] w-3 rounded" style={{ background: "rgb(110,190,255)" }} />
+          Undersea cable: HVDC, AC ≥ 110 kV
+        </div>
       </div>
     </div>
   );
@@ -3368,7 +3426,7 @@ export default function EuropeView() {
             worldShow[k] ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
           }`}
         >
-          {k === "datacentres" ? "Data centres" : k === "australia" ? "Australia live" : "United States"}
+          {k === "datacentres" ? "Data centres" : k === "australia" ? "Australia live" : k === "usa" ? "United States" : "Undersea cables"}
         </button>
       ))}
     </div>
@@ -3388,6 +3446,10 @@ export default function EuropeView() {
       "EIA-930 hourly data (EIA API v2, public domain) for the 13 EIA regions: demand (about 1 h behind), generation by fuel and net interchange (about a day behind), flows between regions (about two days behind), each with its own hour. Region markers are placed for reading.",
     ],
     ["Renewables", "Ember yearly data (CC BY 4.0), newest year with a figure; by month: Ember monthly data, last 24 months (fewer countries)."],
+    [
+      "Undersea cables",
+      "OpenStreetMap (ODbL): power cables mapped underwater, classed by their tags (HVDC, AC from 110 kV, smaller, untagged). Well mapped around Europe, sparse elsewhere.",
+    ],
   ];
   const worldBody = (
     <div className="space-y-2.5">
