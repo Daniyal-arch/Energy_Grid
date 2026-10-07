@@ -2,7 +2,7 @@ name: World high-voltage lines
 
 # Builds the World tab's grid layer: every power line of 220 kV and more mapped in
 # OpenStreetMap (scripts/fetch_world_hv.py, Overpass, box by box), cut into vector tiles
-# with tippecanoe (zoom 0-9, the 500 kV+ backbone at every zoom) and uploaded to the R2
+# with tippecanoe (zoom 0-9; 500 kV+ from zoom 0, 300 kV+ from 1, the rest from 3) and uploaded to the R2
 # bucket infraatlas-data as grid/world-hv.pmtiles. Re-run by hand to refresh.
 # Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
 

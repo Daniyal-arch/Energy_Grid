@@ -7,8 +7,9 @@ once with its highest voltage in kV. Used for the World tab's grid layer, built 
 vector tiles by .github/workflows/world-grid.yml. OpenStreetMap is a mapped subset:
 complete in much of Europe and North America, patchier elsewhere.
 
-Writes one GeoJSON feature per line (GeoJSONSeq):
-  {"type": "Feature", "properties": {"kv", "name"}, "geometry": LineString}
+Writes one GeoJSON feature per line (GeoJSONSeq), with tippecanoe's minimum zoom so the
+backbone (500 kV and more) shows at every zoom and lower voltages appear zoomed in:
+  {"type": "Feature", "tippecanoe": {"minzoom"}, "properties": {"kv", "name"}, "geometry": LineString}
 
     uv run python scripts/fetch_world_hv.py --out data/world/hv_lines.geojsons
 """
@@ -92,12 +93,12 @@ def main() -> None:
                     seen.add(el["id"])
                     tags = el.get("tags", {})
                     coords = [[round(p["lon"], 4), round(p["lat"], 4)] for p in el["geometry"]]
+                    kv = kilovolts(tags.get("voltage", "")) or 0
                     feature = {
                         "type": "Feature",
-                        "properties": {
-                            "kv": kilovolts(tags.get("voltage", "")),
-                            "name": tags.get("name"),
-                        },
+                        # the backbone first: 500 kV+ at every zoom, lower voltages zoomed in
+                        "tippecanoe": {"minzoom": 0 if kv >= 500 else 1 if kv >= 300 else 3},
+                        "properties": {"kv": kv or None, "name": tags.get("name")},
                         "geometry": {"type": "LineString", "coordinates": coords},
                     }
                     f.write(json.dumps(feature, separators=(",", ":"), ensure_ascii=False) + "\n")
