@@ -1,0 +1,59 @@
+name: World grid tiles
+
+# Builds the world grid layer once (re-run by hand when the source changes):
+# downloads Gridfinder's grid.gpkg (Arderne et al. 2020, Zenodo 3628142, CC BY 4.0,
+# 725 MB, 3.68 M lines: mapped from OpenStreetMap or predicted by Gridfinder) on
+# GitHub's runner, cuts it into vector tiles (tippecanoe, zoom 0-8, one PMTiles file)
+# and uploads that file to the R2 bucket infraatlas-data. Nothing large touches git.
+# Probe: scripts/probe_gridfinder.py. Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/world-grid.yml]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: world-grid
+  cancel-in-progress: true
+
+jobs:
+  tiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - name: Tools (GDAL, tippecanoe)
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q gdal-bin build-essential libsqlite3-dev zlib1g-dev
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4
+          sudo make -C /tmp/tippecanoe install
+          tippecanoe --version
+
+      - name: Download Gridfinder grid.gpkg (725 MB)
+        run: |
+          curl -L --fail --progress-bar -o grid.gpkg https://zenodo.org/records/3628142/files/grid.gpkg
+          ls -la grid.gpkg
+
+      - name: Cut into vector tiles
+        run: |
+          # one feature per line, keeping the 'source' field (openstreetmap | gridfinder)
+          ogr2ogr -f GeoJSONSeq grid.geojsons grid.gpkg grid
+          rm grid.gpkg
+          tippecanoe -o world-grid.pmtiles -l grid -Z0 -z8 \
+            --drop-densest-as-needed --simplification=4 \
+            --attribution='Gridfinder (Arderne et al. 2020), OpenStreetMap contributors, CC BY 4.0' \
+            --force grid.geojsons
+          ls -la world-grid.pmtiles
+
+      - name: Upload to R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@4 r2 object put infraatlas-data/grid/world-grid.pmtiles \
+            --file world-grid.pmtiles --content-type application/vnd.pmtiles --remote
