@@ -53,6 +53,7 @@ jobs:
         env:
           # required: every live figure comes from ENTSO-E
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
           REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: |
           end=$((SECONDS + 20700))
@@ -62,6 +63,8 @@ jobs:
             cp ref/reference.json ref/dossier.json ref/wind.json store/eu/ 2>/dev/null || true
             # Australia's live market (AEMO, 5-min) rides along with each snapshot
             python scripts/fetch_aemo.py --out store/eu || echo "AEMO fetch failed"
+            # the US grid (EIA-930); needs the EIA_API_KEY secret
+            python scripts/fetch_us.py --out store/eu || echo "EIA fetch failed"
             if python scripts/fetch_eu_snapshot.py --out store/eu; then
               (
                 cd store

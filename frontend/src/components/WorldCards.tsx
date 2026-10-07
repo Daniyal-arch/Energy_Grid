@@ -2,7 +2,8 @@ import { useState } from "react";
 
 import { stopColor } from "../lib/prices";
 import { rgbCss } from "../lib/theme";
-import { ACCESS_STOPS, NEM_NAME, latest, type AemoFile, type DataCentresFile, type WorldStatsFile } from "../lib/world";
+import { FUEL_COLOR, FUEL_LABEL, STACK_ORDER } from "../lib/energy";
+import { ACCESS_STOPS, NEM_NAME, latest, type AemoFile, type DataCentresFile, type UsFile, type WorldStatsFile } from "../lib/world";
 import { Card } from "./CountryCards";
 
 const muted = "text-[#8d94a1]";
@@ -186,6 +187,62 @@ export function DataCentresCard({ dc, names }: { dc: DataCentresFile; names: (is
             <span className="w-10 text-right text-slate-100">{n}</span>
           </div>
         ))}
+      </div>
+    </Card>
+  );
+}
+
+const UTC_HOUR = new Intl.DateTimeFormat("en-GB", { timeZone: "UTC", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+const hourLabel = (h: string) => `${UTC_HOUR.format(new Date(`${h}:00:00Z`))} UTC`;
+
+/** The US grid (EIA-930): demand now, the generation mix and flows as EIA has published them. */
+export function UsCard({ us }: { us: UsFile }) {
+  const all = us.regions.US48;
+  const regions = Object.entries(us.regions).filter(([id]) => id !== "US48");
+  // the Lower-48 mix: the regions' newest mixes do not share one hour, so the card shows
+  // the largest region-level mixes next to each other instead of adding them up
+  const mixRows = regions
+    .filter(([, r]) => r.mix)
+    .sort((a, b) => (b[1].demand?.[1] ?? 0) - (a[1].demand?.[1] ?? 0));
+  const pts = us.us48_demand;
+  const max = Math.max(1, ...pts.map((p) => p[1]));
+  const min = Math.min(...pts.map((p) => p[1]));
+  const x = (i: number) => (i / Math.max(1, pts.length - 1)) * W;
+  const y = (v: number) => 40 - ((v - min) / (max - min || 1)) * 36;
+  return (
+    <Card title="United States" note="EIA-930" accent={[255, 196, 120]}>
+      {all?.demand && (
+        <>
+          <div className="text-[26px] font-light leading-none tabular-nums text-slate-100">{(all.demand[1] / 1000).toFixed(0)} GW</div>
+          <div className={`mt-1 text-[10px] ${muted}`}>Lower-48 demand, {hourLabel(all.demand[0])}</div>
+          {pts.length > 2 && (
+            <svg viewBox={`0 0 ${W} 42`} className="mt-1.5 w-full" aria-label="Lower-48 demand, last 48 hours">
+              <path d={pts.map(([, v], i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("")} fill="none" stroke="#ffc478" strokeWidth={1.4} />
+            </svg>
+          )}
+        </>
+      )}
+      <div className={`mt-3 mb-1 text-[9px] uppercase tracking-[0.14em] ${muted}`}>Generation by source, per region</div>
+      <div className="space-y-1">
+        {mixRows.map(([id, r]) => {
+          const parts = STACK_ORDER.map((g) => [g, r.mix?.mw[g] ?? 0] as [string, number]).filter(([, v]) => v > 0);
+          const total = parts.reduce((a, [, v]) => a + v, 0) || 1;
+          return (
+            <div key={id} className="flex items-center gap-2 text-[10.5px] tabular-nums" title={`${r.name}, ${r.mix ? hourLabel(r.mix.hour) : ""}`}>
+              <span className="w-10 text-slate-300">{id}</span>
+              <div className="flex h-[7px] flex-1 overflow-hidden rounded-sm">
+                {parts.map(([g, v]) => (
+                  <div key={g} title={`${FUEL_LABEL[g] ?? g} ${Math.round(v).toLocaleString("en-US")} MW`} style={{ width: `${(v / total) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }} />
+                ))}
+              </div>
+              <span className="w-12 text-right text-slate-200">{r.demand ? `${(r.demand[1] / 1000).toFixed(0)} GW` : "–"}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Bars: generation mix of EIA's newest hour per region (about a day behind). GW: demand now. Flows on the map:{" "}
+        {us.flows.hour ? hourLabel(us.flows.hour) : "–"} (EIA publishes them about two days later).
       </div>
     </Card>
   );

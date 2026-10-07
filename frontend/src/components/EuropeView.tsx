@@ -57,12 +57,15 @@ import {
   ACCESS_TICKS,
   DC_COLOR,
   NEM_POINT,
+  US_COLOR,
+  US_POINT,
   latest,
   type AemoFile,
+  type UsFile,
   type DataCentresFile,
   type WorldStatsFile,
 } from "../lib/world";
-import { AccessCard, DataCentresCard, NemCard, WorldCountryCard } from "./WorldCards";
+import { AccessCard, DataCentresCard, NemCard, UsCard, WorldCountryCard } from "./WorldCards";
 import { CaptureCard, MonthsCard, TimeOfDayCard, ZoneCard, ZoneRankingCard } from "./PriceCards";
 import { AggregateCard, RankingCard, type RankRow } from "./TransitionCards";
 
@@ -887,7 +890,8 @@ export default function EuropeView() {
   const [worldStats, setWorldStats] = useState<WorldStatsFile | null>(null);
   const [dcFile, setDcFile] = useState<DataCentresFile | null>(null);
   const [aemo, setAemo] = useState<AemoFile | null>(null);
-  const [worldShow, setWorldShow] = useState({ datacentres: true, australia: true });
+  const [us, setUs] = useState<UsFile | null>(null);
+  const [worldShow, setWorldShow] = useState({ datacentres: true, australia: true, usa: true });
   const [zoneSel, setZoneSel] = useState(() => new URLSearchParams(window.location.search).get("zone") ?? "DE-LU");
 
   // 24 h replay: index into the flow series, null = latest complete interval
@@ -1012,7 +1016,10 @@ export default function EuropeView() {
     };
     newer<WorldStatsFile>("world_stats.json", setWorldStats);
     newer<DataCentresFile>("datacentres.json", setDcFile);
-    const live = () => loadSnapshot<AemoFile>("aemo.json", setAemo);
+    const live = () => {
+      loadSnapshot<AemoFile>("aemo.json", setAemo);
+      loadSnapshot<UsFile>("us.json", setUs);
+    };
     live();
     const t = setInterval(live, 5 * 60 * 1000);
     getJson<TransitionFile>("/data/eu/transition.json").then(setTransition).catch(() => {});
@@ -1134,6 +1141,21 @@ export default function EuropeView() {
             const d = object as DataCentresFile["points"][number];
             return {
               html: `<b>${d[2] ?? "Data centre"}</b>${d[3] ? `<div>${d[3]}</div>` : ""}<div style="color:#8d94a1">OpenStreetMap</div>`,
+              style,
+            };
+          }
+          if (layer.id === "w-us-flows") {
+            const a = object as Arc;
+            return {
+              html: `<b>${a.from} → ${a.to}</b> ${power(a.mw)}<div style="color:#8d94a1">EIA-930 interchange, ${a.ts.replace("T", " ")}:00 UTC</div>`,
+              style,
+            };
+          }
+          if (layer.id === "w-us-regions") {
+            const [id, rg] = object as [string, UsFile["regions"][string]];
+            const net = rg.interchange ? `<div>${rg.interchange[1] >= 0 ? "Net export" : "Net import"} ${power(rg.interchange[1])} (${rg.interchange[0].replace("T", " ")}:00 UTC)</div>` : "";
+            return {
+              html: `<b>${rg.name}</b> (${id})<div>Demand ${rg.demand ? power(rg.demand[1]) : "–"} · ${rg.demand ? rg.demand[0].replace("T", " ") : ""}:00 UTC</div>${net}<div style="color:#8d94a1">EIA-930</div>`,
               style,
             };
           }
@@ -1584,6 +1606,17 @@ export default function EuropeView() {
     if (map.loaded()) go();
     else map.once("load", go);
   }, []);
+  // US: flows between EIA regions (and to Canada and Mexico) at EIA's newest complete hour
+  const usArcs = useMemo<Arc[]>(
+    () =>
+      (us?.flows.pairs ?? []).flatMap((f, n) => {
+        if (Math.abs(f.mw) < IDLE_MW || !US_POINT[f.a] || !US_POINT[f.b]) return [];
+        const [a, b] = f.mw > 0 ? [f.a, f.b] : [f.b, f.a];
+        const path = curvedPath(US_POINT[a], US_POINT[b], 0.16, 30);
+        return [{ from: a, to: b, mw: Math.abs(f.mw), ts: us?.flows.hour ?? "", path, timestamps: flowDistances(path, false, n * 91_000) }];
+      }),
+    [us],
+  );
   const iso3Names = useMemo(() => new Map((world?.features ?? []).map((f) => [f.properties.iso3, f.properties.name])), [world]);
   const nameOf3 = (code: string) => transition?.entities[code]?.name ?? iso3Names.get(code) ?? code;
   const nemArcs = useMemo<Arc[]>(
@@ -1959,6 +1992,82 @@ export default function EuropeView() {
               blendAlphaSrcFactor: "one",
               blendAlphaDstFactor: "one-minus-src-alpha",
             },
+          }),
+          new ScatterplotLayer<[string, NonNullable<UsFile["regions"][string]>]>({
+            id: "w-us-regions",
+            data:
+              worldShow.usa && us
+                ? Object.entries(us.regions).filter(([id, rg]) => US_POINT[id] && rg.demand && near(US_POINT[id]))
+                : [],
+            getPosition: ([id]) => US_POINT[id],
+            getRadius: ([, rg]) => 4 + Math.sqrt((rg.demand?.[1] ?? 0) / 1000) * 1.6,
+            radiusUnits: "pixels",
+            getFillColor: [...US_COLOR, 70],
+            stroked: true,
+            getLineColor: [...US_COLOR, 230],
+            lineWidthUnits: "pixels",
+            getLineWidth: 1.2,
+            pickable: true,
+            parameters: { depthCompare: "always", depthWriteEnabled: false },
+          }),
+          new PathLayer<Arc>({
+            id: "w-us-casing",
+            data: worldShow.usa ? usArcs.filter((a) => near(a.path[15])) : [],
+            getPath: (d) => d.path,
+            getColor: [4, 6, 10, 190],
+            getWidth: (d) => 5 + Math.min(4, d.mw / 1500),
+            widthUnits: "pixels",
+            capRounded: true,
+            jointRounded: true,
+            parameters: { depthCompare: "always", depthWriteEnabled: false },
+          }),
+          new FlowArrowLayer<Arc>({
+            id: "w-us-flows",
+            data: worldShow.usa ? usArcs.filter((a) => near(a.path[15])) : [],
+            getPath: (d) => d.path,
+            getTimestamps: (d) => d.timestamps,
+            getColor: [...FLOW, 235],
+            getWidth: (d) => 16 + Math.min(12, d.mw / 500),
+            getArrowStyle: (d) => [1.4 + Math.min(1.8, d.mw / 2500), 4.5 + Math.min(5, d.mw / 900), 1],
+            widthUnits: "pixels",
+            capRounded: true,
+            jointRounded: true,
+            pickable: true,
+            phase: flow.phase,
+            spacing: flow.spacing,
+            strokePx: 2.4,
+            lineAlpha: 0.85,
+            parameters: {
+              depthCompare: "always",
+              depthWriteEnabled: false,
+              blend: true,
+              blendColorSrcFactor: "one",
+              blendColorDstFactor: "one-minus-src-alpha",
+              blendAlphaSrcFactor: "one",
+              blendAlphaDstFactor: "one-minus-src-alpha",
+            },
+          }),
+          new TextLayer<{ id: string; at: [number, number]; text: string }>({
+            id: "w-us-labels",
+            data:
+              worldShow.usa && us && zoom >= 2.2
+                ? Object.entries(us.regions).flatMap(([id, rg]) =>
+                    US_POINT[id] && rg.demand && near(US_POINT[id])
+                      ? [{ id, at: US_POINT[id], text: `${id} ${Math.round(rg.demand[1] / 1000)} GW` }]
+                      : [],
+                  )
+                : [],
+            getPosition: (d) => d.at,
+            getText: (d) => d.text,
+            getSize: 10.5,
+            getColor: [255, 232, 200, 255],
+            fontFamily: "Inter, system-ui, sans-serif",
+            fontWeight: 700,
+            background: true,
+            getBackgroundColor: [6, 9, 14, 200],
+            backgroundPadding: [4, 2],
+            getPixelOffset: [0, -14],
+            parameters: { depthCompare: "always", depthWriteEnabled: false },
           }),
           new TextLayer<{ id: string; at: [number, number]; text: string }>({
             id: "w-nem-labels",
@@ -2419,7 +2528,7 @@ export default function EuropeView() {
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, worldStats, dcFile, aemo, nemArcs, worldShow, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
+  }, [frame, worldStats, dcFile, aemo, nemArcs, us, usArcs, worldShow, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
   // label the EU figures with the start of their interval (hourly in older archives)
   const euStep = day?.eu?.step_s ?? 3600;
@@ -2684,7 +2793,7 @@ export default function EuropeView() {
     </>
   );
   const credits = WORLD ? (
-    <div>Access: World Bank (CC BY 4.0) · Data centres: © OpenStreetMap contributors (ODbL) · Australia: AEMO · Outlines: © EuroGeographics</div>
+    <div>Access: World Bank (CC BY 4.0) · Data centres: © OpenStreetMap contributors (ODbL) · US: EIA-930 · Australia: AEMO · Outlines: © EuroGeographics</div>
   ) : TRANSITION ? (
     <div>Yearly data: Ember (CC BY 4.0) · Outlines: © EuroGeographics</div>
   ) : PRICES ? (
@@ -3127,7 +3236,11 @@ export default function EuropeView() {
         </div>
         <div className="flex items-center gap-2">
           <span className="h-[3px] w-5 rounded" style={{ background: `linear-gradient(90deg, transparent, ${rgbCss(FLOW)})` }} />
-          Australia: interconnector flow, live
+          Flow between regions (Australia live, US as published)
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-full border" style={{ borderColor: rgbCss(US_COLOR), background: rgbCss(US_COLOR, 0.25) }} />
+          US region, size by demand
         </div>
       </div>
     </div>
@@ -3142,7 +3255,7 @@ export default function EuropeView() {
             worldShow[k] ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
           }`}
         >
-          {k === "datacentres" ? "Data centres" : "Australia live"}
+          {k === "datacentres" ? "Data centres" : k === "australia" ? "Australia live" : "United States"}
         </button>
       ))}
     </div>
@@ -3157,11 +3270,16 @@ export default function EuropeView() {
       "Australia",
       "AEMO's public NEM summary, 5-minute dispatch: price (AUD/MWh), demand, interconnector flows. Region markers are placed for reading.",
     ],
+    [
+      "United States",
+      "EIA-930 hourly data (EIA API v2, public domain) for the 13 EIA regions: demand (about 1 h behind), generation by fuel and net interchange (about a day behind), flows between regions (about two days behind), each with its own hour. Region markers are placed for reading.",
+    ],
     ["Renewables", "Ember yearly data (CC BY 4.0), newest year with a figure."],
   ];
   const worldBody = (
     <div className="space-y-2.5">
       {pick && <WorldCountryCard code={pick} name={nameOf3(pick)} stats={worldStats} dc={dcFile} renewables={worldPickRenewables} />}
+      {us && <UsCard us={us} />}
       {aemo && <NemCard aemo={aemo} />}
       {worldStats && <AccessCard stats={worldStats} names={nameOf3} onPick={setPick} />}
       {dcFile && <DataCentresCard dc={dcFile} names={nameOf3} />}

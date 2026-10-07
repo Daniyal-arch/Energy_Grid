@@ -61,3 +61,39 @@ export const NEM_NAME: Record<string, string> = {
   TAS1: "Tasmania",
 };
 export const DC_COLOR: RGB = [196, 150, 255];
+
+export interface UsRegion {
+  name: string;
+  /** [hour (UTC), MW] */
+  demand: [string, number] | null;
+  generation: [string, number] | null;
+  /** positive = net export */
+  interchange: [string, number] | null;
+  mix: { hour: string; mw: Record<string, number> } | null;
+}
+export interface UsFile {
+  fetched: string;
+  regions: Record<string, UsRegion>;
+  us48_demand: [string, number][];
+  flows: { hour: string | null; pairs: { a: string; b: string; mw: number }[] };
+}
+
+/** Where each EIA region's marker sits (map placement, not an official centre). */
+export const US_POINT: Record<string, [number, number]> = {
+  CAL: [-119.6, 37.2],
+  NW: [-116.5, 45.6],
+  SW: [-111.2, 34.0],
+  CENT: [-98.6, 39.2],
+  TEX: [-98.8, 31.2],
+  MIDW: [-89.6, 42.6],
+  TEN: [-86.4, 35.9],
+  SE: [-86.2, 32.4],
+  FLA: [-81.6, 28.2],
+  CAR: [-79.4, 35.4],
+  MIDA: [-77.4, 39.9],
+  NY: [-75.4, 42.9],
+  NE: [-71.6, 44.2],
+  CAN: [-96.0, 51.5],
+  MEX: [-108.0, 28.5],
+};
+export const US_COLOR: [number, number, number] = [255, 196, 120];
