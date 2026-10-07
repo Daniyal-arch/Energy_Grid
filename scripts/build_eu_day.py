@@ -286,6 +286,10 @@ def main() -> None:
         raw = fetch_window(todo[0], todo[-1])
         for day in todo:
             payload = day_payload(day, raw)
+            if not payload["countries"] and not payload["prices"]:
+                # a failed fetch must not replace a good day already in the archive
+                print(f"{day}: no data fetched, keeping the existing file", flush=True)
+                continue
             path = args.out / f"{day.isoformat()}.json"
             path.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
             missing = sum(v is None for z in payload["prices"].values() for v in z["values"])
