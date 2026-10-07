@@ -64,7 +64,7 @@ def rows(client: httpx.Client, route: str, params: dict) -> list[dict]:
     offset = 0
     while True:
         query = {
-            "api_key": os.environ["EIA_API_KEY"],
+            "api_key": os.environ["EIA_API_KEY"].strip(),
             "frequency": "hourly",
             "data[0]": "value",
             "length": 5000,

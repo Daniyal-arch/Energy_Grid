@@ -59,7 +59,7 @@ def _t(text: str) -> datetime:
 
 def documents(client: httpx.Client, zone: str, now: datetime) -> list[ET.Element]:
     params = {
-        "securityToken": os.environ["ENTSOE_API_KEY"],
+        "securityToken": os.environ["ENTSOE_API_KEY"].strip(),
         "documentType": "A80",
         "biddingZone_Domain": entsoe.ZONE_EIC[zone],
         "periodStart": (now - timedelta(hours=1)).strftime("%Y%m%d%H00"),
@@ -207,7 +207,8 @@ def main() -> None:
         "fetched": now.isoformat(timespec="seconds"),
         "at": now.isoformat(timespec="seconds"),
         "total": {
-            k: round(sum(c[k] for c in countries.values()), 1) for k in ("offline_mw", "planned_mw", "forced_mw", "left_out")
+            k: round(sum(c[k] for c in countries.values()), 1)
+            for k in ("offline_mw", "planned_mw", "forced_mw", "left_out")
         },
         "countries": dict(sorted(countries.items())),
         "zones": dict(sorted(per_zone.items())),

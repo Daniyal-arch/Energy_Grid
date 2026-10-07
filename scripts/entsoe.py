@@ -172,7 +172,7 @@ OUTCOMES: Counter[str] = Counter()
 
 def request(client: httpx.Client, params: dict[str, str]) -> ET.Element | None:
     """One API call; None when ENTSO-E has no data (it answers with an acknowledgement)."""
-    query = {"securityToken": os.environ["ENTSOE_API_KEY"], **params}
+    query = {"securityToken": os.environ["ENTSOE_API_KEY"].strip(), **params}
     for attempt in range(5):
         try:
             r = client.get(BASE, params=query)

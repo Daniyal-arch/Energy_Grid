@@ -179,7 +179,7 @@ def main() -> None:
             caps_fetched = previous.get("capacity_fetched") or previous.get("fetched", "")
             print(f"Energy-Charts unreachable: installed capacity from {caps_fetched}", flush=True)
         print(f"installed capacity for {len(caps)} countries", flush=True)
-        key = os.environ.get("ENTSOE_API_KEY")
+        key = (os.environ.get("ENTSOE_API_KEY") or "").strip()
         if key:
             for iso, eic in RESERVOIR_AREA.items():
                 if row := reservoir(client, key, eic):

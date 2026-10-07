@@ -121,7 +121,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=OUT)
     out: Path = parser.parse_args().out
-    key = os.environ["EMBER_API_KEY"]
+    key = os.environ["EMBER_API_KEY"].strip()
     with httpx.Client(timeout=180, headers={"User-Agent": "Europe-InfraAtlas/0.3"}) as client:
         gen = get(client, "/electricity-generation/yearly", key)
         ci = get(client, "/carbon-intensity/yearly", key)

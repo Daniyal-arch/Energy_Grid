@@ -193,8 +193,8 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=OUT)
     out: Path = parser.parse_args().out
-    agsi_key = os.environ.get("AGSI_API_KEY", "")
-    ember_key = os.environ.get("EMBER_API_KEY", "")
+    agsi_key = os.environ.get("AGSI_API_KEY", "").strip()
+    ember_key = os.environ.get("EMBER_API_KEY", "").strip()
     gas_out: dict[str, dict] = {}
     lng_out: dict[str, dict] = {}
     ember_out: dict[str, dict] = {}
