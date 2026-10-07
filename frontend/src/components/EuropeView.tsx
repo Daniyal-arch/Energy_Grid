@@ -1516,6 +1516,8 @@ export default function EuropeView() {
     }
     overlay.current = o;
     mapRef.current = map;
+    // development only: lets headless checks move the camera
+    if (import.meta.env.DEV) (window as unknown as { __map: maplibregl.Map }).__map = map;
     return () => map.remove();
   }, []);
 
