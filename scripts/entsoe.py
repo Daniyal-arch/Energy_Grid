@@ -22,10 +22,15 @@ Computed here and documented in docs/DATA_SOURCES.md:
   - border net flow: flow one way minus flow the other way (both measured)
   - EU: per interval, the sum over the member states with data (listed in "sum_of"),
     only where every one of them reports load and generation
+Left out as reporting errors (counted in "left_out", docs/DATA_SOURCES.md): a load value
+above twice the country's installed capacity, or one production type above all of it
+(installed capacity from reference.json; 150 GW where it has none). Example: Bulgaria
+2026-10-06 01:00 UTC, 254 GW of coal and 256 GW of load against 18 GW installed.
 """
 
 from __future__ import annotations
 
+import json
 import os
 import time
 import xml.etree.ElementTree as ET
@@ -33,6 +38,8 @@ from collections import Counter
 from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
+from functools import cache
+from pathlib import Path
 
 import httpx
 from dotenv import load_dotenv
@@ -122,6 +129,10 @@ RENEWABLE = {
     "Wind",  # Great Britain (Elexon) reports onshore and offshore together
 }
 RESOLUTION_S = {"PT15M": 900, "PT30M": 1800, "PT60M": 3600}
+REFERENCE = (
+    Path(__file__).resolve().parents[1] / "frontend" / "public" / "data" / "eu" / "reference.json"
+)
+FALLBACK_CAP_MW = 150_000.0  # above any European country's record load (France, ~102 GW)
 
 Series = list[float | None]
 
@@ -331,7 +342,36 @@ def power(client: httpx.Client, iso: str, grid: Grid) -> dict | None:
                 col[k] = v
     if not generation and all(v is None for v in load):
         return None
-    return shaped(grid.seconds(), load, generation)
+    left = drop_implausible(iso, load, generation)
+    if left:
+        print(f"{iso}: {left} values above its installed capacity left out", flush=True)
+    result = shaped(grid.seconds(), load, generation)
+    result["left_out"] = left
+    return result
+
+
+@cache
+def installed_mw() -> dict[str, float]:
+    """Each country's installed capacity, all types (MW), from the bundled reference.json."""
+    try:
+        caps = json.loads(REFERENCE.read_text(encoding="utf-8")).get("capacity", {})
+    except (OSError, ValueError):
+        return {}
+    return {iso: 1000.0 * sum(c.get("gw", {}).values()) for iso, c in caps.items()}
+
+
+def drop_implausible(iso: str, load: Series, generation: dict[str, Series]) -> int:
+    """Clear values no country's grid can carry (reporting errors, e.g. a unit slip):
+    load above twice the installed capacity, a type above all of it. Returns how many."""
+    cap = installed_mw().get(iso)
+    limits = (2 * cap, cap) if cap else (FALLBACK_CAP_MW, FALLBACK_CAP_MW)
+    left = 0
+    for col, limit in [(load, limits[0]), *((c, limits[1]) for c in generation.values())]:
+        for k, v in enumerate(col):
+            if v is not None and v > limit:
+                col[k] = None
+                left += 1
+    return left
 
 
 def shaped(seconds: list[int], load: Series, generation: dict[str, Series]) -> dict:

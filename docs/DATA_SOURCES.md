@@ -58,6 +58,13 @@ skipped):
 - **EU (computed):** the sum over the EU member states on the map that have data, at the
   newest interval where every one of them is complete; the card names how many members
   were summed. Cyprus and Malta are not mapped.
+- **Reporting errors left out** (`scripts/entsoe.py`, `drop_implausible`): a load value
+  above twice the country's installed capacity, or one production type above all of it,
+  is cleared (null) and counted in `left_out`. Installed capacity is the bundled
+  `reference.json` (all types); a country without it gets a 150 GW limit, above any
+  European country's record load. Example: Bulgaria, 2026-10-06 01:00–02:00 UTC, reported
+  254 GW of coal and 256 GW of load against 18 GW installed (its usual: about 1.5 GW and
+  3.5 GW). The rule only removes values; nothing is filled in.
 - **Coverage gaps:** ENTSO-E has no load or generation for GB (Elexon fills it), UA, MD and XK, no
   generation for MK, and Romania's data arrives more than two days late. There are no
   flows on MD–RO, RO–UA, RS–XK and MK–XK (GB–DK comes from Elexon). There are no prices for IE, BA, XK and MD.
