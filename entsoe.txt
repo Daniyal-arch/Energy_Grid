@@ -1,0 +1,23 @@
+key set: yes, length 37
+runner IP: 40.76.191.164
+ENTSO-E without key: HTTP 401
+A44 DE-LU 365 d: HTTP 401 in 8.2s <?xml version="1.0" encoding="UTF-8"?>
+<Acknowledgement_MarketDocument
+	xmlns="urn:iec62325.351:tc57wg16:451-1:acknowledgementdocument:7:0">
+	<mRID>0041c00a-3f4a-4</mRID>
+	<createdDateTime>2026-10-07T
+A65 DE 1 d: HTTP 401 in 0.4s <?xml version="1.0" encoding="UTF-8"?>
+<Acknowledgement_MarketDocument
+	xmlns="urn:iec62325.351:tc57wg16:451-1:acknowledgementdocument:7:0">
+	<mRID>b05179f8-18ad-4</mRID>
+	<createdDateTime>2026-10-07T
+A75 DE 1 d: HTTP 401 in 8.8s <?xml version="1.0" encoding="UTF-8"?>
+<Acknowledgement_MarketDocument
+	xmlns="urn:iec62325.351:tc57wg16:451-1:acknowledgementdocument:7:0">
+	<mRID>a57dc55f-fb77-4</mRID>
+	<createdDateTime>2026-10-07T
+A11 DE>FR 1 d: HTTP 401 in 6.3s <?xml version="1.0" encoding="UTF-8"?>
+<Acknowledgement_MarketDocument
+	xmlns="urn:iec62325.351:tc57wg16:451-1:acknowledgementdocument:7:0">
+	<mRID>31b28c90-df8c-4</mRID>
+	<createdDateTime>2026-10-07T
