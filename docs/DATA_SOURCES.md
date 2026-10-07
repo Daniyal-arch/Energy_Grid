@@ -76,6 +76,22 @@ computed over transmission-connected generation. Border flows also come from `FU
 These replace ENTSO-E's GB borders. Moyle (Scotland to Northern Ireland) is inside the
 UK on this map and is not drawn.
 
+**Plants offline** (`scripts/fetch_outages.py`, `outages.json`): ENTSO-E A80 unavailability
+of generation units per bidding zone. Each request returns a zip of outage documents.
+Units of 100 MW and more must report.
+- The newest revision of each document is used; cancelled (A09) and withdrawn (A13)
+  ones are left out.
+- Offline now = nominal power − available capacity at this moment (computed); units
+  with less than 1 MW offline are left out.
+- Totals per zone, country and Europe are sums of the units (computed). "Planned" (A53)
+  and "forced" (A54) are as reported.
+- A unit reporting more than 2,000 MW nominal is left out as mis-reported, because no
+  single generating unit in Europe is that large. Italy's operator, for example, sends
+  kW labelled as MW. The number left out is shown.
+- The units carry no coordinates, and powerplantmatching has almost no EIC codes to
+  join on (26 of 165,064), so outages are shown per country and listed, never placed
+  on a plant.
+
 `.github/workflows/eu-snapshot.yml` refreshes these every 30 min onto the `eu-data`
 branch; the app reads that copy from raw.githubusercontent.com and falls back to the
 bundled one (newer wins). It needs the repo secret `ENTSOE_API_KEY`.

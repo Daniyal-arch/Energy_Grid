@@ -34,12 +34,15 @@ import {
   HistoryCard,
   LngCard,
   NowCard,
+  OutageCard,
   SourcesCard,
   TradeCard,
   WeekCard,
   type EmberRow,
   type GasRow,
   type LngRow,
+  type OutageTotals,
+  type OutageUnit,
   type WeekFile,
 } from "./CountryCards";
 import {
@@ -230,6 +233,26 @@ function priceColor(eur: number | null | undefined): RGB {
     }
   }
   return PRICE_STOPS[PRICE_STOPS.length - 1][1];
+}
+// generating capacity offline (GW): none stays calm, a lot glows hot
+const OFFLINE_STOPS: Array<[number, RGB]> = [
+  [0, [34, 38, 48]],
+  [1, [74, 52, 56]],
+  [5, [146, 64, 54]],
+  [15, [214, 92, 60]],
+  [30, [246, 150, 80]],
+];
+function offlineColor(gwOff: number | null | undefined): RGB {
+  if (gwOff == null) return NO_DATA;
+  for (let i = 1; i < OFFLINE_STOPS.length; i++) {
+    const [s1, c1] = OFFLINE_STOPS[i];
+    const [s0, c0] = OFFLINE_STOPS[i - 1];
+    if (gwOff <= s1) {
+      const t = (gwOff - s0) / (s1 - s0);
+      return [0, 1, 2].map((k) => Math.round(c0[k] + (c1[k] - c0[k]) * t)) as RGB;
+    }
+  }
+  return OFFLINE_STOPS[OFFLINE_STOPS.length - 1][1];
 }
 const GAS: RGB = [255, 150, 92]; // LNG terminals and storages (gas = orange, as gas plants)
 const GAS_PIPE: RGB = [226, 206, 160]; // pale sand, dashed, so pipelines never read as power lines
@@ -853,7 +876,7 @@ export default function EuropeView() {
   const [error, setError] = useState<string | null>(null);
   const [frame, setFrame] = useState(0);
   // the day view is its own picture: price on the ground, generation towers, night shadow
-  const [shade, setShade] = useState<"none" | "renewable" | "price">(DAY_PARAM || STATIC_VIEW ? "none" : "renewable");
+  const [shade, setShade] = useState<"none" | "renewable" | "price" | "offline">(DAY_PARAM || STATIC_VIEW ? "none" : "renewable");
   const [show, setShow] = useState(
     STATIC_VIEW
       ? { plants: false, flows: false, substations: false, gas: false, wind: false }
@@ -891,6 +914,14 @@ export default function EuropeView() {
   const [dcFile, setDcFile] = useState<DataCentresFile | null>(null);
   const [aemo, setAemo] = useState<AemoFile | null>(null);
   const [us, setUs] = useState<UsFile | null>(null);
+  // generating units offline now (ENTSO-E), refreshed with the snapshot
+  const [outages, setOutages] = useState<{
+    fetched: string;
+    at: string;
+    total: OutageTotals;
+    countries: Record<string, OutageTotals>;
+    units: OutageUnit[];
+  } | null>(null);
   const [monthly, setMonthly] = useState<{
     fetched: string;
     months: string[];
@@ -1086,6 +1117,7 @@ export default function EuropeView() {
       loadSnapshot<ReferenceFile>("reference.json", setReference);
       loadSnapshot<NonNullable<typeof dossier>>("dossier.json", setDossier);
       if (!DAY_PARAM && !TRANSITION) loadSnapshot<WindFile>("wind.json", setWindFile);
+      if (!DAY_PARAM && !STATIC_VIEW) loadSnapshot<NonNullable<typeof outages>>("outages.json", setOutages);
     };
     load();
     const t = setInterval(load, 10 * 60 * 1000);
@@ -1531,6 +1563,7 @@ export default function EuropeView() {
       return [PLAIN_LAND[0] - 8 + 14 * light, PLAIN_LAND[1] - 8 + 16 * light, PLAIN_LAND[2] - 8 + 20 * light].map(Math.round) as RGB;
     }
     if (shade === "renewable") return shareColor(shareOf(iso));
+    if (shade === "offline") return outages ? offlineColor((outages.countries[iso]?.offline_mw ?? 0) / 1000) : NO_DATA;
     const zones = zonesOf(iso);
     return zones.length === 1 ? priceColor(zones[0][1].eur_mwh) : zones.length > 1 ? MULTI_ZONE : NO_DATA;
   };
@@ -2113,7 +2146,7 @@ export default function EuropeView() {
             const c = countryFill(d.iso);
             return [...(!selected ? c : d.iso === selected ? lift(c, 0.05) : dim(c, 0.45)), 255];
           },
-          updateTriggers: { getFillColor: [shares, selected, shade, day, dayK, metricId, yearK, priceMetricId, pricesFile] },
+          updateTriggers: { getFillColor: [shares, selected, shade, day, dayK, metricId, yearK, priceMetricId, pricesFile, outages] },
           transitions: TRANSITION ? { getFillColor: 450 } : undefined,
           pickable: true,
           autoHighlight: true,
@@ -2562,8 +2595,8 @@ export default function EuropeView() {
   const focusFlows = selected ? arcs.filter(touches).sort((x, y) => y.mw - x.mw) : [];
   const focusPlants = selected && plants ? Object.entries(plants.by_country[selected] ?? {}).sort((x, y) => y[1][1] - x[1][1]) : [];
   const plantGroups = plants ? plants.groups.filter((g) => g !== "other") : [];
-  const stops = shade === "renewable" ? SHARE_STOPS : PRICE_STOPS;
-  const top = shade === "renewable" ? 100 : PRICE_MAX;
+  const stops = shade === "renewable" ? SHARE_STOPS : shade === "offline" ? OFFLINE_STOPS : PRICE_STOPS;
+  const top = shade === "renewable" ? 100 : shade === "offline" ? 30 : PRICE_MAX;
   const gradient = `linear-gradient(90deg, ${stops.map(([s, c]) => `${rgbCss(c)} ${(s / top) * 100}%`).join(", ")})`;
   const focusZones = selected ? zonesOf(selected) : [];
   const focusCapacity = selected ? reference?.capacity[selected] : undefined;
@@ -2688,8 +2721,8 @@ export default function EuropeView() {
   const shadeBlock = (stats || day) && (
     <div>
       <div className="pointer-events-auto flex gap-1">
-        {(["none", "renewable", "price"] as const)
-          .filter((m) => m !== "none" || day)
+        {(["none", "renewable", "price", "offline"] as const)
+          .filter((m) => (m !== "none" || day) && (m !== "offline" || (!day && outages)))
           .map((m) => (
             <button
               key={m}
@@ -2698,7 +2731,7 @@ export default function EuropeView() {
                 shade === m ? "border-white/25 bg-white/10 text-slate-100" : "border-white/10 text-slate-500"
               }`}
             >
-              {m === "none" ? "None" : m === "renewable" ? "Renewable share" : "Price"}
+              {m === "none" ? "None" : m === "renewable" ? "Renewable share" : m === "price" ? "Price" : "Plants offline"}
             </button>
           ))}
       </div>
@@ -2711,6 +2744,12 @@ export default function EuropeView() {
                 <span>0 %</span>
                 <span>50 %</span>
                 <span>100 % of generation</span>
+              </>
+            ) : shade === "offline" ? (
+              <>
+                <span>0</span>
+                <span>15</span>
+                <span>≥ 30 GW offline now</span>
               </>
             ) : (
               <>
@@ -2830,6 +2869,10 @@ export default function EuropeView() {
     ],
     ["Gas storage", "GIE AGSI+, daily, fill as % of working gas volume."],
     ["LNG", "GIE ALSI, daily: send-out into the grid and the terminals' declared send-out capacity (GWh/day), LNG in tanks."],
+    [
+      "Plants offline",
+      "ENTSO-E unavailability of generating units (A80), newest revision, cancelled ones left out. Offline = nominal power minus available capacity now; totals are sums. Units report from 100 MW; they carry no coordinates, so outages are shown per country.",
+    ],
     ["Yearly generation and carbon intensity", "Ember yearly electricity data (CC BY 4.0), as published."],
     ["Installed capacity", "Energy-Charts installed power, newest year with values."],
     ["Hydro reservoirs", "ENTSO-E Transparency, weekly stored energy."],
@@ -2869,6 +2912,7 @@ export default function EuropeView() {
       )}
       {dossier?.gas.EU && <GasCard gas={dossier.gas.EU} />}
       {dossier?.lng?.EU && <LngCard lng={dossier.lng.EU} />}
+      {!day && outages && outages.units.length > 0 && <OutageCard totals={outages.total} units={outages.units} at={outages.at} />}
       <SourcesCard items={sources} />
     </div>
   );
@@ -2913,6 +2957,13 @@ export default function EuropeView() {
       {tradeRows.length > 0 && <TradeCard rows={tradeRows} time={timeOf(focusFlows[0].ts)} />}
       {selected && dossier?.gas[selected] && <GasCard gas={dossier.gas[selected]} />}
       {selected && dossier?.lng?.[selected] && <LngCard lng={dossier.lng[selected]} />}
+      {!day && selected && outages?.countries[selected] && (
+        <OutageCard
+          totals={outages.countries[selected]}
+          units={outages.units.filter((u) => u.country === selected)}
+          at={outages.at}
+        />
+      )}
       {selected && dossier?.ember[selected] && <HistoryCard ember={dossier.ember[selected]} />}
       {focusCapacity && (
         <Card title="Installed capacity" note={`Energy-Charts · ${focusCapacity.year}`}>

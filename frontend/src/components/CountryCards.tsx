@@ -405,6 +405,75 @@ export function LngCard({ lng }: { lng: LngRow }) {
   );
 }
 
+export interface OutageUnit {
+  zone: string;
+  country: string;
+  unit: string | null;
+  plant: string | null;
+  fuel: string;
+  nominal_mw: number;
+  available_mw: number;
+  offline_mw: number;
+  type: string;
+  start: string;
+  end: string;
+}
+export interface OutageTotals {
+  offline_mw: number;
+  planned_mw: number;
+  forced_mw: number;
+  left_out: number;
+}
+
+const untilLabel = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+/** Generating units offline right now (ENTSO-E unavailability), largest first. */
+export function OutageCard({ totals, units, at }: { totals: OutageTotals; units: OutageUnit[]; at: string }) {
+  const [all, setAll] = useState(false);
+  const shown = all ? units : units.slice(0, 8);
+  return (
+    <Card title="Plants offline now" note={`ENTSO-E · ${new Date(at).toISOString().slice(11, 16)} UTC`} accent={[230, 96, 72]}>
+      <div className="flex items-end justify-between">
+        <div>
+          <div className="text-[26px] font-light leading-none tabular-nums text-slate-100">{power(totals.offline_mw)}</div>
+          <div className={`mt-1 text-[10px] ${muted}`}>of generating capacity unavailable, {units.length} units</div>
+        </div>
+        <div className="text-right text-[10px] tabular-nums">
+          <div className="text-[#f0a07e]">forced {power(totals.forced_mw)}</div>
+          <div className={muted}>planned {power(totals.planned_mw)}</div>
+        </div>
+      </div>
+      <div className="mt-2.5 space-y-1">
+        {shown.map((u, i) => (
+          <div key={`${u.zone}-${u.unit}-${i}`} className="text-[11px] leading-tight">
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex min-w-0 items-center gap-1.5 text-slate-200">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: rgbCss(FUEL_COLOR[u.fuel] ?? FUEL_COLOR.other) }} />
+                <span className="truncate">{u.plant || u.unit}</span>
+              </span>
+              <span className="shrink-0 tabular-nums text-slate-100">{power(u.offline_mw)}</span>
+            </div>
+            <div className={`pl-3.5 text-[9.5px] ${muted}`}>
+              {u.type === "forced" ? <span className="text-[#f0a07e]">forced</span> : u.type} · {FUEL_LABEL[u.fuel] ?? u.fuel} · until {untilLabel(u.end)}
+              {u.available_mw > 0 ? ` · ${power(u.available_mw)} of ${power(u.nominal_mw)} still available` : ""}
+            </div>
+          </div>
+        ))}
+      </div>
+      {units.length > 8 && (
+        <button onClick={() => setAll(!all)} className="mt-2 text-[10px] text-sky-300 hover:text-sky-200">
+          {all ? "Show fewer" : `Show all ${units.length}`}
+        </button>
+      )}
+      {totals.left_out > 0 && (
+        <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+          {totals.left_out} reports left out: their nominal power exceeds any single unit in Europe (a reporting error at the source).
+        </div>
+      )}
+    </Card>
+  );
+}
+
 /** 25 years of generation by source (Ember, yearly) with the published carbon intensity. */
 export function HistoryCard({ ember }: { ember: EmberRow }) {
   const [hover, setHover] = useState<number | null>(null);
