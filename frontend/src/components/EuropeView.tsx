@@ -55,22 +55,26 @@ import {
   type PriceMetricId,
   type PricesFile,
 } from "../lib/prices";
+import { regionArcs, regionDotLayers, regionFlowLayers } from "../lib/regionLayers";
 import { SUN_MAX_WM2, sunBounds, sunImage } from "../lib/sunLayer";
 import { WindField, WindParticles, type WindFile } from "../lib/windParticles";
 import {
   ACCESS_STOPS,
   ACCESS_TICKS,
+  BR_COLOR,
+  BR_POINT,
   DC_COLOR,
   NEM_POINT,
   US_COLOR,
   US_POINT,
   latest,
   type AemoFile,
+  type BrazilFile,
   type UsFile,
   type DataCentresFile,
   type WorldStatsFile,
 } from "../lib/world";
-import { AccessCard, DataCentresCard, NemCard, UsCard, WorldCountryCard } from "./WorldCards";
+import { AccessCard, BrazilCard, DataCentresCard, NemCard, UsCard, WorldCountryCard } from "./WorldCards";
 import { CaptureCard, MonthsCard, TimeOfDayCard, ZoneCard, ZoneRankingCard } from "./PriceCards";
 import { AggregateCard, RankingCard, type RankRow } from "./TransitionCards";
 
@@ -951,7 +955,8 @@ export default function EuropeView() {
     months: string[];
     entities: Record<string, { renewables: (number | null)[]; wind_solar: (number | null)[]; coal: (number | null)[] }>;
   } | null>(null);
-  const [worldShow, setWorldShow] = useState({ grid: true, datacentres: true, australia: true, usa: true, cables: true });
+  const [worldShow, setWorldShow] = useState({ grid: true, datacentres: true, australia: true, usa: true, brazil: true, cables: true });
+  const [brazil, setBrazil] = useState<BrazilFile | null>(null);
   const [cables, setCables] = useState<Cable[] | null>(null);
   const wantCables = show.cables || (WORLD && worldShow.cables);
   useEffect(() => {
@@ -1088,6 +1093,7 @@ export default function EuropeView() {
     const live = () => {
       loadSnapshot<AemoFile>("aemo.json", setAemo);
       loadSnapshot<UsFile>("us.json", setUs);
+      loadSnapshot<BrazilFile>("brazil.json", setBrazil);
     };
     live();
     const t = setInterval(live, 5 * 60 * 1000);
@@ -1228,6 +1234,17 @@ export default function EuropeView() {
               html: `<b>${d[2] ?? "Data centre"}</b>${d[3] ? `<div>${d[3]}</div>` : ""}<div style="color:#8d94a1">OpenStreetMap</div>`,
               style,
             };
+          }
+          if (layer.id === "w-br-flows") {
+            const a = object as Arc;
+            return { html: `<b>${a.from} → ${a.to}</b> ${power(a.mw)}<div style="color:#8d94a1">ONS interchange, ${a.ts.slice(11, 16)} BRT</div>`, style };
+          }
+          if (layer.id === "w-br-regions") {
+            const d = object as { id: string; mw: number };
+            const sub = brazilRef.current?.subsystems[d.id];
+            return sub
+              ? { html: `<b>${sub.name}</b><div>Load ${power(sub.load ?? 0)}</div><div style="color:#8d94a1">ONS, live</div>`, style }
+              : null;
           }
           if (layer.id === "w-us-flows") {
             const a = object as Arc;
@@ -1415,6 +1432,8 @@ export default function EuropeView() {
 
   // the tooltip callback is created once; it reads the latest data through refs
   const statsRef = useRef<StatsFile | null>(null);
+  const brazilRef = useRef<BrazilFile | null>(null);
+  brazilRef.current = brazil;
   const transitionRef = useRef<TransitionFile | null>(null);
   transitionRef.current = transition;
   const pricesRef = useRef<PricesFile | null>(null);
@@ -2083,9 +2102,26 @@ export default function EuropeView() {
         pickable: true,
         parameters: { depthCompare: "always", depthWriteEnabled: false },
       });
+    const brArcs =
+      WORLD && worldShow.brazil && brazil
+        ? regionArcs(brazil.flows, BR_POINT, brazil.at ?? "").filter((a) => near(a.path[15]))
+        : [];
     const worldLayers = WORLD
       ? [
           cableLayer(worldShow.cables),
+          ...regionDotLayers(
+            "w-br",
+            worldShow.brazil && brazil
+              ? Object.entries(brazil.subsystems).flatMap(([id, sub]) =>
+                  BR_POINT[id] && sub.load != null && near(BR_POINT[id])
+                    ? [{ id, at: BR_POINT[id], mw: sub.load, label: `${id} ${(sub.load / 1000).toFixed(0)} GW` }]
+                    : [],
+                )
+              : [],
+            BR_COLOR,
+            zoom >= 2.2,
+          ),
+          ...regionFlowLayers("w-br", brArcs, flow, FLOW, 300),
           new ScatterplotLayer<DataCentresFile["points"][number]>({
             id: "w-datacentres",
             data: worldShow.datacentres && dcFile ? dcFile.points.filter((d) => near([d[0], d[1]])) : [],
@@ -2700,7 +2736,7 @@ export default function EuropeView() {
       ],
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frame, cables, worldStats, dcFile, aemo, nemArcs, us, usArcs, worldShow, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
+  }, [frame, brazil, cables, worldStats, dcFile, aemo, nemArcs, us, usArcs, worldShow, pricesFile, priceMetricId, zoneSel, zoneMarkers, windField, particles, worldLabels, bigSystems, metricId, yearK, transition, night, lighting, towerPools, shapes, countries, visiblePlants, focusColumns, focusSmall, focusHexes, hexPeak, beamSegments, plantStyle, plants, lineBands, links, arcs, countryLabels, stats, selected, focusRings, gas, gasPipes, gasDetail, substations, show, shade]);
 
   // label the EU figures with the start of their interval (hourly in older archives)
   const euStep = day?.eu?.step_s ?? 3600;
@@ -2985,7 +3021,7 @@ export default function EuropeView() {
     </>
   );
   const credits = WORLD ? (
-    <div>Access: World Bank (CC BY 4.0) · Grid: Gridfinder (CC BY 4.0) · Data centres, cables: © OpenStreetMap contributors (ODbL) · US: EIA-930 · Australia: AEMO · Outlines: © EuroGeographics</div>
+    <div>Access: World Bank (CC BY 4.0) · Grid: Gridfinder (CC BY 4.0) · Data centres, cables: © OpenStreetMap contributors (ODbL) · US: EIA-930 · Brazil: ONS · Australia: AEMO · Outlines: © EuroGeographics</div>
   ) : TRANSITION ? (
     <div>Yearly data: Ember (CC BY 4.0) · Outlines: © EuroGeographics</div>
   ) : PRICES ? (
@@ -3494,7 +3530,9 @@ export default function EuropeView() {
                 ? "Australia live"
                 : k === "usa"
                   ? "United States"
-                  : "Undersea cables"}
+                  : k === "brazil"
+                    ? "Brazil live"
+                    : "Undersea cables"}
         </button>
       ))}
     </div>
@@ -3512,6 +3550,10 @@ export default function EuropeView() {
     [
       "United States",
       "EIA-930 hourly data (EIA API v2, public domain) for the 13 EIA regions: demand (about 1 h behind), generation by fuel and net interchange (about a day behind), flows between regions (about two days behind), each with its own hour. Region markers are placed for reading.",
+    ],
+    [
+      "Brazil",
+      "ONS Energia Agora: load, generation by source and imports/exports per subsystem, and the flows between subsystems, as published every few minutes. Markers are placed for reading; Imperatriz is ONS's junction node.",
     ],
     ["Renewables", "Ember yearly data (CC BY 4.0), newest year with a figure; by month: Ember monthly data, last 24 months (fewer countries)."],
     [
@@ -3536,6 +3578,7 @@ export default function EuropeView() {
         />
       )}
       {us && <UsCard us={us} />}
+      {brazil && <BrazilCard br={brazil} />}
       {aemo && <NemCard aemo={aemo} />}
       {worldStats && <AccessCard stats={worldStats} names={nameOf3} onPick={setPick} />}
       {dcFile && <DataCentresCard dc={dcFile} names={nameOf3} />}

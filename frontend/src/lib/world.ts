@@ -97,3 +97,32 @@ export const US_POINT: Record<string, [number, number]> = {
   MEX: [-108.0, 28.5],
 };
 export const US_COLOR: [number, number, number] = [255, 196, 120];
+
+export interface BrazilFile {
+  fetched: string;
+  /** ONS's own timestamp (Brasilia time) */
+  at: string;
+  subsystems: Record<string, { name: string; load: number | null; import: number; export: number; generation: Record<string, number> }>;
+  /** positive = from -> to */
+  flows: { id: string; from: string; to: string; mw: number }[];
+  international: Record<string, number>;
+}
+/** ONS subsystems, the Imperatriz junction (IMP) and the southern international link (INT): map placements. */
+export const BR_POINT: Record<string, [number, number]> = {
+  SE: [-46.5, -20.5],
+  S: [-51.8, -27.3],
+  NE: [-39.8, -8.8],
+  N: [-54.5, -4.5],
+  IMP: [-47.49, -5.53],
+  INT: [-57.0, -30.2],
+};
+export const BR_COLOR: [number, number, number] = [150, 236, 140];
+export const BR_SOURCE: Record<string, { label: string; color: [number, number, number] }> = {
+  hydro: { label: "Hydro", color: [84, 156, 255] },
+  itaipu: { label: "Itaipu (hydro)", color: [60, 120, 230] },
+  wind: { label: "Wind", color: [72, 222, 184] },
+  solar: { label: "Solar", color: [255, 214, 72] },
+  distributed: { label: "Distributed (MMGD)", color: [255, 236, 150] },
+  nuclear: { label: "Nuclear", color: [255, 96, 150] },
+  thermal: { label: "Thermal", color: [214, 120, 80] },
+};

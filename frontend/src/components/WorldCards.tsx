@@ -3,7 +3,17 @@ import { useState } from "react";
 import { stopColor } from "../lib/prices";
 import { rgbCss } from "../lib/theme";
 import { FUEL_COLOR, FUEL_LABEL, STACK_ORDER } from "../lib/energy";
-import { ACCESS_STOPS, NEM_NAME, latest, type AemoFile, type DataCentresFile, type UsFile, type WorldStatsFile } from "../lib/world";
+import {
+  ACCESS_STOPS,
+  BR_SOURCE,
+  NEM_NAME,
+  latest,
+  type AemoFile,
+  type BrazilFile,
+  type DataCentresFile,
+  type UsFile,
+  type WorldStatsFile,
+} from "../lib/world";
 import { Card } from "./CountryCards";
 
 const muted = "text-[#8d94a1]";
@@ -296,5 +306,68 @@ function MonthlyShares({ months, renewables, wind_solar }: { months: string[]; r
         <span>{label(months[n - 1])}</span>
       </div>
     </>
+  );
+}
+
+const NODE_NAME: Record<string, string> = { SE: "Southeast", S: "South", NE: "Northeast", N: "North", IMP: "Imperatriz", INT: "Argentina / Uruguay" };
+
+/** Brazil's grid (ONS): load and generation per subsystem, and the flows between them. */
+export function BrazilCard({ br }: { br: BrazilFile }) {
+  const rows = Object.entries(br.subsystems);
+  const at = br.at ? new Date(br.at) : null;
+  return (
+    <Card title="Brazil · live" note={`ONS · ${at ? at.toLocaleString("en-GB", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }) : ""} BRT`} accent={[150, 236, 140]}>
+      <div className="space-y-1.5">
+        {rows.map(([id, s]) => {
+          const parts = Object.entries(s.generation).filter(([, v]) => v > 0);
+          const total = parts.reduce((a, [, v]) => a + v, 0) || 1;
+          return (
+            <div key={id}>
+              <div className="flex justify-between text-[11px] tabular-nums text-slate-200">
+                <span>{s.name}</span>
+                <span>
+                  load {s.load != null ? `${(s.load / 1000).toFixed(1)} GW` : "–"}{" "}
+                  <span className={muted}>· {s.export > s.import ? `exports ${(s.export / 1000).toFixed(1)}` : `imports ${(s.import / 1000).toFixed(1)}`} GW</span>
+                </span>
+              </div>
+              <div className="mt-0.5 flex h-[6px] overflow-hidden rounded-sm">
+                {parts.map(([src, v]) => (
+                  <div
+                    key={src}
+                    title={`${BR_SOURCE[src]?.label ?? src} ${(v / 1000).toFixed(1)} GW`}
+                    style={{ width: `${(v / total) * 100}%`, background: rgbCss(BR_SOURCE[src]?.color ?? [150, 150, 150]) }}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-x-2.5 gap-y-0.5 text-[9px] text-slate-400">
+        {Object.entries(BR_SOURCE).map(([k, v]) => (
+          <span key={k} className="flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-sm" style={{ background: rgbCss(v.color) }} />
+            {v.label}
+          </span>
+        ))}
+      </div>
+      <div className={`mt-3 mb-1 text-[9px] uppercase tracking-[0.14em] ${muted}`}>Flows between subsystems</div>
+      <div className="space-y-0.5">
+        {br.flows.map((f) => {
+          const there = f.mw >= 0;
+          return (
+            <div key={f.id} className="flex justify-between text-[11px] tabular-nums text-slate-200">
+              <span>
+                {NODE_NAME[there ? f.from : f.to] ?? f.from} <span className={muted}>→</span> {NODE_NAME[there ? f.to : f.from] ?? f.to}
+              </span>
+              <span>{Math.abs(Math.round(f.mw)).toLocaleString("en-US")} MW</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Imperatriz is ONS's junction node where the North, Northeast and Southeast lines meet.
+      </div>
+    </Card>
   );
 }

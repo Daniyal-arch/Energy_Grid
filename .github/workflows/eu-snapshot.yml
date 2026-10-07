@@ -63,6 +63,7 @@ jobs:
             cp ref/reference.json ref/dossier.json ref/wind.json store/eu/ 2>/dev/null || true
             # Australia's live market (AEMO, 5-min) rides along with each snapshot
             python scripts/fetch_aemo.py --out store/eu || echo "AEMO fetch failed"
+            python scripts/fetch_brazil.py --out store/eu || echo "ONS fetch failed"
             # the US grid (EIA-930); needs the EIA_API_KEY secret
             python scripts/fetch_us.py --out store/eu || echo "EIA fetch failed"
             # generating units offline now (ENTSO-E unavailability)
