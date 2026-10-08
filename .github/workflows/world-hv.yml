@@ -5,7 +5,7 @@ name: World high-voltage lines
 # in parallel jobs (each with its own time limit), merged (a line in two regions is kept
 # once), cut into vector tiles with tippecanoe (zoom 0-9; 500 kV+ from zoom 0, 300 kV+ from
 # 1, the rest from 3) and uploaded to the R2 bucket infraatlas-data as grid/world-hv.pmtiles.
-# Re-run by hand to refresh. Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+# Re-run by hand to refresh (Actions > World high-voltage lines > Run workflow). Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
 
 on:
   workflow_dispatch:
