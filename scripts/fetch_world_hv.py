@@ -1,17 +1,17 @@
 """The world's high-voltage power lines (220 kV and more) from OpenStreetMap.
 
 Overpass (no key; OpenStreetMap contributors, ODbL; scripts/probe_osm_hv.py): ways
-tagged power=line whose voltage tag has a component of 200 kV or more, fetched box by
-box over the world (boxes that time out are split into quarters), then each line written
-once with its highest voltage in kV. Used for the World tab's grid layer, built into
-vector tiles by .github/workflows/world-grid.yml. OpenStreetMap is a mapped subset:
+tagged power=line whose voltage tag has a component of 200 kV or more, fetched in 10°
+boxes over one region (boxes that time out are split into quarters), then each line
+written once with its highest voltage in kV. The workflow (.github/workflows/world-hv.yml)
+runs the regions in parallel and merges them (a line in two regions is kept once). OpenStreetMap is a mapped subset:
 complete in much of Europe and North America, patchier elsewhere.
 
 Writes one GeoJSON feature per line (GeoJSONSeq), with tippecanoe's minimum zoom so the
 backbone (500 kV and more) shows at every zoom and lower voltages appear zoomed in:
   {"type": "Feature", "tippecanoe": {"minzoom"}, "properties": {"kv", "name"}, "geometry": LineString}
 
-    uv run python scripts/fetch_world_hv.py --out data/world/hv_lines.geojsons
+    uv run python scripts/fetch_world_hv.py --region eu --out data/world/hv-eu.geojsons
 """
 
 from __future__ import annotations
@@ -24,6 +24,18 @@ from pathlib import Path
 import httpx
 
 OVERPASS = "https://overpass-api.de/api/interpreter"
+# regions (south, west, north, east) that together cover the land between 60° S and 80° N
+REGIONS = {
+    "na": (10, -170, 80, -50),
+    "sa": (-60, -95, 10, -30),
+    "eu": (35, -25, 72, 45),
+    "af": (-36, -20, 35, 55),
+    "mea": (10, 45, 45, 90),
+    "north": (45, 45, 80, 180),
+    "asia": (-12, 60, 45, 150),
+    "oc": (-50, 110, -10, 180),
+}
+BOX = 10
 HV = r"(^|;)([2-9][0-9]{5}|[1-9][0-9]{6})($|;)"
 PAUSE_S = 10
 
@@ -72,8 +84,14 @@ def query(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--region", choices=sorted(REGIONS), required=True)
+    parser.add_argument("--overpass", default=OVERPASS, help="Overpass endpoint")
     parser.add_argument("--out", type=Path, required=True)
-    out: Path = parser.parse_args().out
+    args = parser.parse_args()
+    out: Path = args.out
+    global OVERPASS
+    OVERPASS = args.overpass
+    south, west, north, east = REGIONS[args.region]
     seen: set[int] = set()
     count = points = 0
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -83,9 +101,9 @@ def main() -> None:
         ) as client,
         out.open("w", encoding="utf-8") as f,
     ):
-        for s in range(-60, 80, 20):
-            for w in range(-180, 180, 30):
-                elements = query(client, s, w, s + 20, w + 30)
+        for s in range(south, north, BOX):
+            for w in range(west, east, BOX):
+                elements = query(client, s, w, min(north, s + BOX), min(east, w + BOX))
                 new = 0
                 for el in elements:
                     if el["id"] in seen or len(el.get("geometry", [])) < 2:
@@ -98,7 +116,7 @@ def main() -> None:
                         "type": "Feature",
                         # the backbone first: 500 kV+ at every zoom, lower voltages zoomed in
                         "tippecanoe": {"minzoom": 0 if kv >= 500 else 1 if kv >= 300 else 3},
-                        "properties": {"kv": kv or None, "name": tags.get("name")},
+                        "properties": {"id": el["id"], "kv": kv or None, "name": tags.get("name")},
                         "geometry": {"type": "LineString", "coordinates": coords},
                     }
                     f.write(json.dumps(feature, separators=(",", ":"), ensure_ascii=False) + "\n")

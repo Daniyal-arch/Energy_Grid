@@ -1,10 +1,11 @@
 name: World high-voltage lines
 
-# Builds the World tab's grid layer: every power line of 220 kV and more mapped in
-# OpenStreetMap (scripts/fetch_world_hv.py, Overpass, box by box), cut into vector tiles
-# with tippecanoe (zoom 0-9; 500 kV+ from zoom 0, 300 kV+ from 1, the rest from 3) and uploaded to the R2
-# bucket infraatlas-data as grid/world-hv.pmtiles. Re-run by hand to refresh.
-# Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+# Builds the grid layer for the world: every power line of 220 kV and more mapped in
+# OpenStreetMap (scripts/fetch_world_hv.py, Overpass, 10° boxes). Eight regions are fetched
+# in parallel jobs (each with its own time limit), merged (a line in two regions is kept
+# once), cut into vector tiles with tippecanoe (zoom 0-9; 500 kV+ from zoom 0, 300 kV+ from
+# 1, the rest from 3) and uploaded to the R2 bucket infraatlas-data as grid/world-hv.pmtiles.
+# Re-run by hand to refresh. Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
 
 on:
   workflow_dispatch:
@@ -20,9 +21,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lines:
+  region:
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        region: [na, sa, eu, af, mea, north, asia, oc]
     steps:
       - uses: actions/checkout@v5
 
@@ -30,10 +35,33 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch lines from OpenStreetMap (about an hour)
+      - name: Fetch the region's lines from OpenStreetMap
         run: |
           pip install httpx
-          python scripts/fetch_world_hv.py --out hv.geojsons
+          python scripts/fetch_world_hv.py --region ${{ matrix.region }} --out hv-${{ matrix.region }}.geojsons
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hv-${{ matrix.region }}
+          path: hv-${{ matrix.region }}.geojsons
+          retention-days: 3
+
+  tiles:
+    needs: region
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: hv-*
+          merge-multiple: true
+
+      - name: Merge the regions (each line once)
+        run: |
+          ls -la hv-*.geojsons
+          cat hv-*.geojsons | sort -u > hv.geojsons
+          wc -l hv.geojsons
 
       - name: Build tippecanoe
         run: |
