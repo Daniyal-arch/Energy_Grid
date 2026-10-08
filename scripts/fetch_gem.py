@@ -195,7 +195,9 @@ def wrangler(*args: str) -> bool:
     env.setdefault("CLOUDFLARE_ACCOUNT_ID", ACCOUNT_ID)
     if not env.get("CLOUDFLARE_API_TOKEN"):
         raise SystemExit("set CLOUDFLARE_API_TOKEN (.env or the workflow's secret)")
-    done = subprocess.run([npx, "--yes", "wrangler@4", *args], env=env, check=False)
+    env.setdefault("WRANGLER_SEND_METRICS", "false")
+    cmd = [npx, "--yes", "--package=wrangler@4", "--", "wrangler", *args]
+    done = subprocess.run(cmd, env=env, check=False, stdin=subprocess.DEVNULL)
     return done.returncode == 0
 
 
