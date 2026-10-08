@@ -51,13 +51,19 @@ def kilovolts(tag: str) -> int | None:
 
 
 def query(
-    client: httpx.Client, s: float, w: float, n: float, e: float, depth: int = 0
+    client: httpx.Client,
+    s: float,
+    w: float,
+    n: float,
+    e: float,
+    depth: int = 0,
+    endpoint: str = OVERPASS,
 ) -> list[dict]:
     """Lines in one box; a box Overpass cannot finish is split into four."""
     q = f'[out:json][timeout:240];way["power"="line"]["voltage"~"{HV}"]({s},{w},{n},{e});out tags geom;'
     for attempt in range(3):
         try:
-            r = client.post(OVERPASS, data={"data": q})
+            r = client.post(endpoint, data={"data": q})
         except httpx.TransportError:
             time.sleep(30 * (attempt + 1))
             continue
@@ -78,7 +84,7 @@ def query(
     ms, mw = (s + n) / 2, (w + e) / 2
     out: list[dict] = []
     for box in ((s, w, ms, mw), (s, mw, ms, e), (ms, w, n, mw), (ms, mw, n, e)):
-        out += query(client, *box, depth=depth + 1)
+        out += query(client, *box, depth=depth + 1, endpoint=endpoint)
     return out
 
 
@@ -89,8 +95,6 @@ def main() -> None:
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     out: Path = args.out
-    global OVERPASS
-    OVERPASS = args.overpass
     south, west, north, east = REGIONS[args.region]
     seen: set[int] = set()
     count = points = 0
@@ -103,7 +107,9 @@ def main() -> None:
     ):
         for s in range(south, north, BOX):
             for w in range(west, east, BOX):
-                elements = query(client, s, w, min(north, s + BOX), min(east, w + BOX))
+                elements = query(
+                    client, s, w, min(north, s + BOX), min(east, w + BOX), endpoint=args.overpass
+                )
                 new = 0
                 for el in elements:
                     if el["id"] in seen or len(el.get("geometry", [])) < 2:
