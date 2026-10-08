@@ -5,63 +5,100 @@
 An interactive, source-backed map of the world's power system, starting with Europe:
 live figures, history, prices and infrastructure on one globe. Every number shown is
 passthrough from a named source or computed in a build script and documented in
-docs/DATA_SOURCES.md. It is a static site (frontend + JSON built by scripts). Data
-APIs and an AI agent come next as Cloudflare Workers next to it.
+docs/DATA_SOURCES.md. It is a static site (frontend + JSON built by scripts); large
+geometry lives as PMTiles on Cloudflare R2. A data API and an AI agent come later.
 
 The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
 
 ## What exists
 
-- **Live map** (Europe): grid, plants, gas, cross-border flows, wind, country cards
-  (ENTSO-E, GIE AGSI+/ALSI, Ember, Open-Meteo).
-- **24 hours:** a 30-day archive of real days, every 15 minutes, with wind.
-- **Prices:** twelve months per bidding zone: hours below zero, price by time of day,
-  solar and wind capture prices.
-- **25 years:** Ember's yearly data for every country on the globe, 2000-2025.
-- **World:** electricity access (World Bank), mapped data centres (OpenStreetMap),
-  Australia's market live (AEMO).
-- Data refresh: `eu-snapshot.yml` (every 30 min onto `eu-data`), `eu-days.yml`
-  (daily onto `eu-days`).
+- **One map** (`frontend/src/ui`, `frontend/src/map`): a Layers panel (on/off, coverage,
+  legend), "colour countries by", search, a time control (Live · 24 h · Years), a
+  context panel in tabs, Stories with shareable links, a phone layout. Europe live is
+  the default. `?capture=16x9` still opens the earlier single view for video recording.
+- **Europe:** grid, plants, gas, cross-border flows, wind and sunshine, outages, a
+  30-day archive every 15 minutes, twelve months of prices per zone, LNG and storage
+  (ENTSO-E, Elexon, GIE, Ember, Open-Meteo, powerplantmatching, SciGRID_gas).
+- **World:** GEM power plants by status, OSM high-voltage lines (PMTiles on R2),
+  Gridfinder's predicted grid, undersea power cables, data centres, electricity access,
+  Ember's yearly and monthly data, live grids of the US (EIA-930), Brazil (ONS) and
+  Australia (AEMO).
+- Refresh: `eu-snapshot.yml` (every 30 min onto `eu-data`), `eu-days.yml` (daily onto
+  `eu-days`), `world-hv.yml` and `world-grid.yml` (tiles onto R2, on demand).
 
-## Next, in order
+## Data sources to add, one by one
 
-1. **World power plants** (Global Energy Monitor, Global Integrated Power tracker, CC BY
-   4.0; the download needs a form). Every plant on the globe by fuel and status:
-   operating, construction, planned, retired. Answers "what is the world building, and
-   how fast is coal retiring?". Nuclear reactors are part of it.
-2. **US live grid** (EIA-930, hourly per balancing authority, interchange between them;
-   needs `EIA_API_KEY`).
-3. **World transmission grid** (Gridfinder, CC BY 4.0, 725 MB download): high-voltage
-   lines as vector tiles (PMTiles on Cloudflare R2, read with range requests).
-4. **Smaller additions:** Ember monthly for the world; IEA hydrogen projects (IEA
-   account); battery storage projects; more live grids (Brazil ONS, India Grid-India).
+Each one: a probe (`scripts/probe_*.py`), a fetch/build script, its file in
+docs/DATA_SOURCES.md, a layer and/or panel card, and the workflow that refreshes it.
+Credentials go in `.env` and `.env.example` (and the repo secrets for workflows).
 
-## Data APIs and the agent (Cloudflare)
+### Global (first)
 
-The static files stay the source of the map. Next to them:
+1. **Taiwan live grid** (Taipower open data, every generating unit every 10 min, load;
+   no key). Live layer like US/Brazil/Australia, plus a card.
+2. **Ontario live grid** (IESO public reports: demand, generation by fuel, intertie flows,
+   prices; no key).
+3. **Alberta live grid** (AESO API: supply and demand, pool price, interchange;
+   `AESO_API_KEY`).
+4. **South Korea** (KPX via data.go.kr: demand, regional solar and wind; `DATA_GO_KR_KEY`).
+5. **Turkey** (EPİAŞ transparency platform: generation by source, prices;
+   `EPIAS_USERNAME`, `EPIAS_PASSWORD`).
+6. **Gas pipelines and LNG terminals worldwide** (GEM Global Gas Infrastructure Tracker,
+   GeoJSON; the download needs a form). Routes by status, capacity, start year.
+7. **Solar and wind resource maps** (Global Solar Atlas: irradiation; Global Wind Atlas:
+   mean wind speed at 100 m; GeoTIFF, large downloads) as raster tiles on R2: "where is
+   the resource".
+8. **Weather worldwide** (ECMWF open data: wind at 100 m, surface radiation; GRIB2 every
+   6 h) for wind particles and sunshine on the whole globe.
+9. **Installed capacity per country** (IRENA renewable capacity statistics, yearly).
+10. Later live grids: Japan (OCCTO and the nine area utilities), India (Grid-India),
+    South Africa (Eskom data portal), Chile (Coordinador Eléctrico Nacional), Uruguay
+    (ADME), New Zealand (Transpower/EMI).
 
-- **R2** (object storage): PMTiles for large geometry, Parquet for long time series.
-- **D1** (SQLite): the same figures as tables (`prices`, `flows`, `generation`,
-  `plants`, `access`), loaded by the build scripts, for queries the files cannot answer
-  (any date range, any zone).
-- **Data API Worker:** typed, read-only endpoints over D1/R2 with caching. The same
-  endpoints are exposed as an **MCP server**, so Claude Desktop or any agent can use
-  them: a product in itself (free tier, paid keys).
-- **Agent Worker** ("Ask the map"):
-  - Claude via the Anthropic API, with tools that call the data API (`query_prices`,
-    `get_flows`, `country_profile`, `find_plants`), never free text for numbers.
-  - Grounding rule: every number in an answer must come from a tool result; a check
-    compares the numbers in the draft with the tool outputs before it is shown, and
-    each answer lists its sources.
-  - Streaming answers (SSE), prompt caching for the system prompt and tool
-    definitions, per-IP rate limits, a cost budget per day, logs of every tool call.
-  - Evals: a fixed set of questions with known answers from the data, run in CI;
-    scores for correctness, citation coverage, latency and cost.
-- Credentials needed then: `ANTHROPIC_API_KEY`, a Cloudflare API token (or
-  `wrangler login`).
+### United States
+
+1. **Interconnection queues** (LBNL "Queued Up": every project waiting to connect,
+   by state, type, size and year; Excel, yearly).
+2. **Every generator** (EIA-860M, monthly: operating, planned and retiring units of
+   1 MW or more, with location).
+3. **Transmission lines** (HIFLD: 69–765 kV with voltage) as vector tiles on R2.
+4. **Wind turbines and solar farms** (USWTDB: every turbine; USPVDB: solar outlines).
+5. **Hourly CO₂ per power plant** (EPA CAMPD API; `EPA_API_KEY`).
+6. **EV chargers** (NREL AFDC station locator; `NREL_API_KEY`).
+7. **Power outages per county** (ORNL EAGLE-I, every 15 min, yearly releases).
+8. **Wholesale prices by node/zone** (ISO data: ERCOT, CAISO, NYISO, MISO, SPP, ISO-NE).
+
+### Europe
+
+1. **Gas flows at every border point** (ENTSOG transparency API): a gas version of the
+   power-flow map.
+2. **Denmark every 5 minutes** (Energinet Energi Data Service: CO₂ intensity, prices,
+   production).
+3. **Finland every 3 minutes** (Fingrid open data; `FINGRID_API_KEY`).
+4. **Great Britain** (NESO data portal: carbon-intensity forecast, the grid connection
+   queue).
+5. **Offshore wind farms and sea cables** (EMODnet Human Activities).
+6. **More ENTSO-E series:** imbalance prices, day-ahead wind and solar forecasts,
+   cross-border capacities, installed capacity per unit (replaces Energy-Charts).
+7. **Retail electricity prices** (Eurostat, households and industry) and **emissions
+   per installation** (EU ETS, EUTL).
+
+## The agent (after the datasets)
+
+- FastAPI + LangGraph, traced with Langfuse; a free LLM to start (Groq Llama 3.3 70B,
+  Gemini Flash as fallback) behind a provider adapter.
+- Data as Parquet on R2, queried with DuckDB; a small Postgres (Neon) only for app state
+  (users, saved views, conversations).
+- Tools over the data (`query_prices`, `get_flows`, `country_profile`, `find_plants`),
+  also exposed as an MCP server. Grounding: every number in an answer comes from a tool
+  result and is checked against it; each answer lists its sources.
+- Evals in CI: fixed questions with known answers; correctness, citation coverage,
+  latency, cost.
+- Keys then: `GROQ_API_KEY`, `GOOGLE_API_KEY`, `LANGFUSE_*`, `DATABASE_URL`.
 
 ## Possible products
 
-The map is the shop window. Paying use cases: clean, merged datasets (plants, grid,
-flows, prices) as an API or MCP server; reports for grid-connection and siting; alerts
-(negative prices, low storage) for traders and flexible loads.
+The map is the shop window. Paying use cases: history and exports (CSV/API), alerts
+(negative prices, outages, low storage), queue and plant-pipeline layers, country
+reports, and site screening for data centres and developers (grid distance, resource,
+queue congestion, prices).
