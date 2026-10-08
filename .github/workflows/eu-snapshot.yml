@@ -65,6 +65,7 @@ jobs:
             python scripts/fetch_aemo.py --out store/eu || echo "AEMO fetch failed"
             python scripts/fetch_brazil.py --out store/eu || echo "ONS fetch failed"
             python scripts/fetch_taiwan.py --out store/eu || echo "Taipower fetch failed"
+            python scripts/fetch_ontario.py --out store/eu || echo "IESO fetch failed"
             # the US grid (EIA-930); needs the EIA_API_KEY secret
             python scripts/fetch_us.py --out store/eu || echo "EIA fetch failed"
             # generating units offline now (ENTSO-E unavailability)
