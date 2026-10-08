@@ -1,0 +1,70 @@
+name: GEM trackers
+
+# Every Monday: checks Global Energy Monitor's download page for new releases of the
+# trackers the site is built from (scripts/fetch_gem.py, release record in
+# scripts/gem_releases.json). Only when a release changed does it go through GEM's
+# download form (your details from the GEM_* secrets), download the files onto this
+# machine, rebuild the site's files and commit them to main. Raw files are never kept.
+#
+# Trackers with a build step so far: integrated-power -> scripts/build_world_plants.py.
+# Add a tracker to TRACKERS and its build to the "Rebuild" step when its layer exists.
+# Needs secrets GEM_NAME, GEM_EMAIL, GEM_ORGANIZATION, GEM_SECTOR, GEM_COUNTRY.
+
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gem
+  cancel-in-progress: false
+
+env:
+  TRACKERS: integrated-power
+
+jobs:
+  gem:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install httpx python-dotenv openpyxl
+
+      - name: New releases? (download only those)
+        id: gem
+        env:
+          GEM_NAME: ${{ secrets.GEM_NAME }}
+          GEM_EMAIL: ${{ secrets.GEM_EMAIL }}
+          GEM_ORGANIZATION: ${{ secrets.GEM_ORGANIZATION }}
+          GEM_SECTOR: ${{ secrets.GEM_SECTOR }}
+          GEM_COUNTRY: ${{ secrets.GEM_COUNTRY }}
+        run: python scripts/fetch_gem.py --by-release --only $TRACKERS
+
+      - name: Rebuild the site's files
+        if: steps.gem.outputs.changed != ''
+        run: |
+          for t in ${{ steps.gem.outputs.changed }}; do
+            case "$t" in
+              integrated-power) python scripts/build_world_plants.py ;;
+            esac
+          done
+
+      - name: Commit to main
+        if: steps.gem.outputs.changed != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/gem_releases.json frontend/public/data/eu/
+          git diff --cached --quiet && exit 0
+          git commit -m "GEM: new release of ${{ steps.gem.outputs.changed }}"
+          git pull --rebase origin main
+          git push origin HEAD:main

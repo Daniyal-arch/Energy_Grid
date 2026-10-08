@@ -1,8 +1,8 @@
 """The world's power plants from Global Energy Monitor, for the World tab.
 
-Source: Global Energy Monitor, Global Integrated Power Tracker, September 2026 release
-(CC BY 4.0), the Excel file saved by hand into data/world/ (GEM's download needs a
-form). 183,404 units (scripts/probe_gem.py).
+Source: Global Energy Monitor, Global Integrated Power Tracker, newest release
+(CC BY 4.0): the Excel file scripts/fetch_gem.py keeps in data/world/gem/integrated-power/
+(it goes through GEM's download form). 183,404 units in September 2026 (scripts/probe_gem.py).
 
 Kept (computed here, documented in docs/DATA_SOURCES.md):
   - statuses grouped: operating; construction; planned = pre-construction + announced;
@@ -29,11 +29,24 @@ from pathlib import Path
 from openpyxl import load_workbook
 
 ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "data" / "world" / "Global Integrated Power September 2026.xlsx"
+# the newest release fetched by scripts/fetch_gem.py (one Excel file in the folder)
+GEM_DIR = ROOT / "data" / "world" / "gem" / "integrated-power"
 OUT = ROOT / "frontend" / "public" / "data" / "eu"
-SOURCE = (
-    "Global Energy Monitor, Global Integrated Power Tracker, September 2026 release (CC BY 4.0)"
-)
+
+
+def source_file() -> Path:
+    files = sorted(GEM_DIR.glob("*.xlsx"))
+    if not files:
+        raise SystemExit(f"no Excel file in {GEM_DIR}: run scripts/fetch_gem.py first")
+    return files[-1]
+
+
+def source_label(path: Path) -> str:
+    """The release as GEM names its file, e.g. "September 2026"."""
+    release = path.stem.replace("Global Integrated Power", "").strip() or path.stem
+    return f"Global Energy Monitor, Global Integrated Power Tracker, {release} release (CC BY 4.0)"
+
+
 TYPES = {
     "utility-scale solar": "solar",
     "wind": "wind",
@@ -57,7 +70,8 @@ STATUS_ORDER = ["operating", "construction", "planned", "retired"]
 
 
 def main() -> None:
-    wb = load_workbook(SRC, read_only=True, data_only=True)
+    src = source_file()
+    wb = load_workbook(src, read_only=True, data_only=True)
     countries = wb["Regions, area, and countries"].iter_rows(values_only=True)
     head = next(countries)
     name_i, iso_i = head.index("GEM Standard Country Name/Area"), head.index("ISO-alpha3 Code")
@@ -129,7 +143,7 @@ def main() -> None:
 
     fetched = datetime.now(UTC).isoformat(timespec="seconds")
     payload = {
-        "source": SOURCE,
+        "source": source_label(src),
         "fetched": fetched,
         "types": TYPE_ORDER,
         "statuses": STATUS_ORDER,
@@ -143,7 +157,7 @@ def main() -> None:
     )
     (OUT / "world_plant_names.json").write_text(
         json.dumps(
-            {"source": SOURCE, "fetched": fetched, "names": names},
+            {"source": source_label(src), "fetched": fetched, "names": names},
             separators=(",", ":"),
             ensure_ascii=False,
         ),
