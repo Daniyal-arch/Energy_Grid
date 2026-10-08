@@ -15,10 +15,16 @@ when its new release arrives. scripts/gem_releases.json (committed) records each
 release and files, so the weekly workflow (.github/workflows/gem.yml) knows what the site
 was built from. GEM's data is CC BY 4.0.
 
+The workflow also keeps the raw files in the private R2 bucket infraatlas-raw (no public
+access: the files are not republished), under gem/<tracker>/<slug><ext>, one key per GEM
+file so a new release replaces the old one. --pull-r2 copies them to this computer without
+going through GEM's form again (needs CLOUDFLARE_API_TOKEN; uses wrangler via npx).
+
     uv run python scripts/fetch_gem.py --check          # list trackers with a new release
     uv run python scripts/fetch_gem.py                  # download those (and missing ones)
     uv run python scripts/fetch_gem.py --only gas-infrastructure
-    python scripts/fetch_gem.py --by-release --only integrated-power   # the workflow
+    uv run python scripts/fetch_gem.py --pull-r2        # the workflow's downloads, from R2
+    python scripts/fetch_gem.py --by-release --push-r2  # the workflow
 """
 
 from __future__ import annotations
@@ -27,6 +33,8 @@ import argparse
 import json
 import os
 import re
+import shutil
+import subprocess
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -37,6 +45,8 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "data" / "world" / "gem"
 PAGE_JS = "https://api.globalenergymonitor.org/static/gem-download-page.js"
+RAW_BUCKET = "infraatlas-raw"  # private: no public access
+ACCOUNT_ID = "a8ebfc5ad3d6228569de28c66a5f6367"  # the Cloudflare account (not a secret)
 SUBMIT = "https://auxunjnrktkmeqyoyngm.supabase.co/rest/v1/rpc/mint_submission"
 PRESIGN = "https://auxunjnrktkmeqyoyngm.supabase.co/functions/v1/presign"
 # GEM's public (publishable) key, as embedded in its download form
@@ -119,7 +129,9 @@ def form_fields() -> dict:
     }
 
 
-def download(client: httpx.Client, tracker: str, slugs: list[str], fields: dict) -> list[str]:
+def download(
+    client: httpx.Client, tracker: str, slugs: list[str], fields: dict
+) -> list[tuple[str, str]]:
     """GEM's form for one tracker: submit, exchange the token, fetch the files."""
     headers = {
         "content-type": "application/json",
@@ -160,12 +172,31 @@ def download(client: httpx.Client, tracker: str, slugs: list[str], fields: dict)
                 print(f"\r  {name}: {size / 1e6:.0f} MB", end="", flush=True)
         print(flush=True)
         tmp.replace(folder / name)
-        saved.append(name)
+        saved.append((name, u.get("slug") or Path(name).stem))
     # the previous release's files go
+    names = {n for n, _ in saved}
     for old in folder.iterdir():
-        if old.is_file() and old.name not in saved and not old.name.startswith("."):
+        if old.is_file() and old.name not in names and not old.name.startswith("."):
             old.unlink()
     return saved
+
+
+def r2_key(tracker: str, name: str, slug: str) -> str:
+    """One key per GEM file (its slug), so a new release overwrites the old one."""
+    return f"gem/{tracker}/{slug}{Path(name).suffix}"
+
+
+def wrangler(*args: str) -> bool:
+    npx = shutil.which("npx")
+    if not npx:
+        raise SystemExit("npx (Node.js) is needed for R2")
+    load_dotenv(ROOT / ".env")
+    env = {**os.environ}
+    env.setdefault("CLOUDFLARE_ACCOUNT_ID", ACCOUNT_ID)
+    if not env.get("CLOUDFLARE_API_TOKEN"):
+        raise SystemExit("set CLOUDFLARE_API_TOKEN (.env or the workflow's secret)")
+    done = subprocess.run([npx, "--yes", "wrangler@4", *args], env=env, check=False)
+    return done.returncode == 0
 
 
 def main() -> None:
@@ -178,11 +209,26 @@ def main() -> None:
         action="store_true",
         help="decide by GEM's release only, not by the files here (a fresh workflow machine)",
     )
+    parser.add_argument("--push-r2", action="store_true", help="also store downloads in R2")
+    parser.add_argument("--pull-r2", action="store_true", help="copy the files from R2 to here")
     args = parser.parse_args()
     manifest_path = ROOT / "scripts" / "gem_releases.json"
     manifest = (
         json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
     )
+    if args.pull_r2:
+        for t in args.only or list(manifest):
+            for name, key in manifest.get(t, {}).get("keys", {}).items():
+                path = OUT / t / name
+                if path.exists():
+                    print(f"{t}/{name}: here already", flush=True)
+                    continue
+                path.parent.mkdir(parents=True, exist_ok=True)
+                print(f"{t}/{name} <- r2://{RAW_BUCKET}/{key}", flush=True)
+                wrangler(
+                    "r2", "object", "get", f"{RAW_BUCKET}/{key}", "--file", str(path), "--remote"
+                )
+        return
     with httpx.Client(timeout=600, follow_redirects=True) as client:
         live = releases(client)
         wanted = args.only or WANTED
@@ -205,13 +251,16 @@ def main() -> None:
             )
             if args.force or changed or (not files_ok and not args.by_release):
                 todo.append(t)
-        # for workflows: which trackers changed
-        if gh := os.environ.get("GITHUB_OUTPUT"):
-            with open(gh, "a", encoding="utf-8") as f:
-                f.write(f"changed={' '.join(todo)}\n")
+        gh = os.environ.get("GITHUB_OUTPUT")
         if args.check or not todo:
+            if gh:
+                with open(gh, "a", encoding="utf-8") as f:
+                    f.write(f"changed={' '.join(todo) if args.check else ''}\n")
             return
         fields = form_fields()
+        if args.push_r2:
+            wrangler("r2", "bucket", "create", RAW_BUCKET)  # fails harmlessly if it exists
+        done = []
         for t in todo:
             print(f"downloading {t} ({live[t]['updated']})", flush=True)
             try:
@@ -219,15 +268,30 @@ def main() -> None:
             except (httpx.HTTPError, RuntimeError) as err:
                 print(f"  {t} failed: {err}", file=sys.stderr, flush=True)
                 continue
+            keys = {name: r2_key(t, name, slug) for name, slug in files}
+            if args.push_r2:
+                for name, key in keys.items():
+                    print(f"  r2://{RAW_BUCKET}/{key}", flush=True)
+                    path = str(OUT / t / name)
+                    if not wrangler(
+                        "r2", "object", "put", f"{RAW_BUCKET}/{key}", "--file", path, "--remote"
+                    ):
+                        raise SystemExit(f"upload of {t}/{name} to R2 failed")
             manifest[t] = {
                 "desc": live[t]["desc"],
                 "updated": live[t]["updated"],
-                "files": files,
+                "files": [name for name, _ in files],
+                "keys": keys if args.push_r2 else manifest.get(t, {}).get("keys", {}),
                 "downloaded": datetime.now(UTC).isoformat(timespec="seconds"),
             }
             manifest_path.write_text(
                 json.dumps(manifest, indent=1, ensure_ascii=False), encoding="utf-8"
             )
+            done.append(t)
+        # for workflows: which trackers were downloaded
+        if gh:
+            with open(gh, "a", encoding="utf-8") as f:
+                f.write(f"changed={' '.join(done)}\n")
 
 
 if __name__ == "__main__":

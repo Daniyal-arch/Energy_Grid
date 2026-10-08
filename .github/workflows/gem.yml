@@ -1,19 +1,32 @@
 name: GEM trackers
 
 # Every Monday: checks Global Energy Monitor's download page for new releases of the
-# trackers the site is built from (scripts/fetch_gem.py, release record in
-# scripts/gem_releases.json). Only when a release changed does it go through GEM's
-# download form (your details from the GEM_* secrets), download the files onto this
-# machine, rebuild the site's files and commit them to main. Raw files are never kept.
+# trackers this project uses (scripts/fetch_gem.py; release record in
+# scripts/gem_releases.json). Only for a changed release does it go through GEM's
+# download form (your details from the GEM_* secrets) and download the files onto this
+# machine. The raw files go to the private R2 bucket infraatlas-raw (no public access:
+# GEM's files are not republished); `uv run python scripts/fetch_gem.py --pull-r2` copies
+# them to your computer. Trackers with a build step rebuild the site's files, and the
+# release record and those files are committed to main.
 #
-# Trackers with a build step so far: integrated-power -> scripts/build_world_plants.py.
-# Add a tracker to TRACKERS and its build to the "Rebuild" step when its layer exists.
-# Needs secrets GEM_NAME, GEM_EMAIL, GEM_ORGANIZATION, GEM_SECTOR, GEM_COUNTRY.
+# Run by hand (Actions > GEM trackers > Run workflow) with "force" to fetch everything once.
+# Build steps so far: integrated-power -> scripts/build_world_plants.py.
+# Needs secrets GEM_NAME, GEM_EMAIL, GEM_ORGANIZATION, GEM_SECTOR, GEM_COUNTRY,
+# CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
 
 on:
   schedule:
     - cron: "17 5 * * 1"
   workflow_dispatch:
+    inputs:
+      trackers:
+        description: "GEM tracker ids, space-separated (empty = every tracker the project uses)"
+        required: false
+        default: ""
+      force:
+        description: "Download even if the release did not change"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -22,13 +35,10 @@ concurrency:
   group: gem
   cancel-in-progress: false
 
-env:
-  TRACKERS: integrated-power
-
 jobs:
   gem:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v5
 
@@ -39,7 +49,7 @@ jobs:
       - name: Install dependencies
         run: pip install httpx python-dotenv openpyxl
 
-      - name: New releases? (download only those)
+      - name: New releases? (download those, keep them in private R2)
         id: gem
         env:
           GEM_NAME: ${{ secrets.GEM_NAME }}
@@ -47,7 +57,18 @@ jobs:
           GEM_ORGANIZATION: ${{ secrets.GEM_ORGANIZATION }}
           GEM_SECTOR: ${{ secrets.GEM_SECTOR }}
           GEM_COUNTRY: ${{ secrets.GEM_COUNTRY }}
-        run: python scripts/fetch_gem.py --by-release --only $TRACKERS
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          args="--by-release --push-r2"
+          [ "${{ inputs.force }}" = "true" ] && args="$args --force"
+          only="${{ inputs.trackers }}"
+          if [ -n "$only" ]; then
+            python scripts/fetch_gem.py $args --only $only
+          else
+            python scripts/fetch_gem.py $args
+          fi
+          ls -la data/world/gem/*/ 2>/dev/null || true
 
       - name: Rebuild the site's files
         if: steps.gem.outputs.changed != ''
