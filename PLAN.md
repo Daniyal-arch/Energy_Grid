@@ -34,9 +34,9 @@ Credentials go in `.env` and `.env.example` (and the repo secrets for workflows)
 
 ### Global (first)
 
-1. **Taiwan live grid** (Taipower open data, every generating unit every 10 min, load;
+1. ✅ **Taiwan live grid** (Taipower open data, every generating unit every 10 min, load;
    no key). Live layer like US/Brazil/Australia, plus a card.
-2. **Ontario live grid** (IESO public reports: demand, generation by fuel, intertie flows,
+2. ✅ **Ontario live grid** (IESO public reports: demand, generation by fuel, intertie flows,
    prices; no key).
 3. **Alberta live grid** (AESO API: supply and demand, pool price, interchange;
    `AESO_API_KEY`).
@@ -48,9 +48,9 @@ Credentials go in `.env` and `.env.example` (and the repo secrets for workflows)
 7. **Solar and wind resource maps** (Global Solar Atlas: irradiation; Global Wind Atlas:
    mean wind speed at 100 m; GeoTIFF, large downloads) as raster tiles on R2: "where is
    the resource".
-8. **Weather worldwide** (ECMWF open data: wind at 100 m, surface radiation; GRIB2 every
+8. ✅ **Weather worldwide** (ECMWF open data: wind at 100 m, surface radiation; GRIB2 every
    6 h) for wind particles and sunshine on the whole globe.
-9. **Installed capacity per country** (IRENA renewable capacity statistics, yearly).
+9. ✅ **Installed capacity per country** (IRENA renewable capacity statistics, yearly).
 10. Later live grids: Japan (OCCTO and the nine area utilities), India (Grid-India),
     South Africa (Eskom data portal), Chile (Coordinador Eléctrico Nacional), Uruguay
     (ADME), New Zealand (Transpower/EMI).
