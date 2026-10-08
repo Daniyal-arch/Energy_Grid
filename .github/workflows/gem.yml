@@ -10,7 +10,8 @@ name: GEM trackers
 # release record and those files are committed to main.
 #
 # Run by hand (Actions > GEM trackers > Run workflow) with "force" to fetch everything once.
-# Build steps so far: integrated-power -> scripts/build_world_plants.py.
+# Build steps: integrated-power -> scripts/build_world_plants.py; the pipeline, terminal,
+# field, mine, industry and methane trackers -> scripts/build_gem_layers.py.
 # Needs secrets GEM_NAME, GEM_EMAIL, GEM_ORGANIZATION, GEM_SECTOR, GEM_COUNTRY,
 # CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
 
@@ -47,7 +48,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install httpx python-dotenv openpyxl
+        run: pip install httpx python-dotenv openpyxl shapely
 
       - name: New releases? (download those, keep them in private R2)
         id: gem
@@ -72,12 +73,23 @@ jobs:
 
       - name: Rebuild the site's files
         if: steps.gem.outputs.changed != ''
+        env:
+          # the other trackers' files come back from the private bucket
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
+          layers=no
           for t in ${{ steps.gem.outputs.changed }}; do
             case "$t" in
               integrated-power) python scripts/build_world_plants.py ;;
+              gas-infrastructure|oil-infrastructure|coal-terminals|oil-gas-extraction|coal-mines|iron-steel|cement|chemicals|iron-ore-mines|methane-emitters) layers=yes ;;
             esac
           done
+          # the map's other GEM layers read several trackers: one build for all
+          if [ "$layers" = yes ]; then
+            python scripts/fetch_gem.py --pull-r2
+            python scripts/build_gem_layers.py
+          fi
 
       - name: Commit to main
         if: steps.gem.outputs.changed != ''
