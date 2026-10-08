@@ -5,7 +5,174 @@
   "files": [
    "Global Integrated Power September 2026.xlsx"
   ],
-  "downloaded": "2026-10-07T06:18:00+00:00",
-  "note": "downloaded by hand through GEM's form"
+  "keys": {
+   "Global Integrated Power September 2026.xlsx": "gem/integrated-power/integrated-power-tracker.xlsx"
+  },
+  "downloaded": "2026-10-08T07:28:53+00:00"
+ },
+ "gas-infrastructure": {
+  "desc": "GGIT Gas Pipelines + LNG Terminals + LNG Carriers (xlsx + GIS).",
+  "updated": "Dec 2025",
+  "files": [
+   "GEM-GGIT-Gas-Pipelines-2025-11.xlsx",
+   "GEM-GGIT-Gas-Pipelines-2025-11.zip",
+   "GEM-GGIT-LNG-Teminals-2025-09.xlsx",
+   "GEM-GGIT-LNG-Terminals-2025-09-gis-files.zip",
+   "GEM LNG Carrier Tracker - June 2026 release.xlsx"
+  ],
+  "keys": {
+   "GEM-GGIT-Gas-Pipelines-2025-11.xlsx": "gem/gas-infrastructure/gas-pipeline-tracker.xlsx",
+   "GEM-GGIT-Gas-Pipelines-2025-11.zip": "gem/gas-infrastructure/gas-pipeline-gis.zip",
+   "GEM-GGIT-LNG-Teminals-2025-09.xlsx": "gem/gas-infrastructure/lng-terminal-tracker.xlsx",
+   "GEM-GGIT-LNG-Terminals-2025-09-gis-files.zip": "gem/gas-infrastructure/lng-terminal-gis.zip",
+   "GEM LNG Carrier Tracker - June 2026 release.xlsx": "gem/gas-infrastructure/lng-carrier-tracker.xlsx"
+  },
+  "downloaded": "2026-10-08T07:29:11+00:00"
+ },
+ "oil-infrastructure": {
+  "desc": "GOIT Oil/NGL Pipelines (xlsx + GIS formats)",
+  "updated": "Jun 2026",
+  "files": [
+   "GEM-GOIT-Oil-NGL-Pipelines-2026-06.xlsx",
+   "GEM-GOIT-Oil-NGL-Pipelines-2026-06-corrected.zip"
+  ],
+  "keys": {
+   "GEM-GOIT-Oil-NGL-Pipelines-2026-06.xlsx": "gem/oil-infrastructure/oil-pipeline-tracker.xlsx",
+   "GEM-GOIT-Oil-NGL-Pipelines-2026-06-corrected.zip": "gem/oil-infrastructure/oil-pipeline-gis.zip"
+  },
+  "downloaded": "2026-10-08T07:29:23+00:00"
+ },
+ "oil-gas-extraction": {
+  "desc": "Global Oil and Gas Extraction Tracker",
+  "updated": "Mar 2026",
+  "files": [
+   "Global-Oil-and-Gas-Extraction-Tracker-March-2026.xlsx"
+  ],
+  "keys": {
+   "Global-Oil-and-Gas-Extraction-Tracker-March-2026.xlsx": "gem/oil-gas-extraction/oil-gas-extraction-tracker.xlsx"
+  },
+  "downloaded": "2026-10-08T07:29:26+00:00"
+ },
+ "coal-mines": {
+  "desc": "Global Coal Mine Tracker, including supplemental releases, historical production, and methane sources.",
+  "updated": "May 2026",
+  "files": [
+   "Global Coal Mine Tracker, August 2026.xlsx",
+   "Global-Coal-Mine-Tracker-September-2024-Supplement-v2.xlsx",
+   "Global-Coal-Mine-Tracker-December-2024-Supplement-Historical-Production-from-2018-to-2023.xlsx",
+   "Coal Mine Boundaries and Methane Sources - version 1.0.2 (built on May 12 2026 09.50 EST).zip"
+  ],
+  "keys": {
+   "Global Coal Mine Tracker, August 2026.xlsx": "gem/coal-mines/coal-mine-tracker.xlsx",
+   "Global-Coal-Mine-Tracker-September-2024-Supplement-v2.xlsx": "gem/coal-mines/coal-mine-supplement.xlsx",
+   "Global-Coal-Mine-Tracker-December-2024-Supplement-Historical-Production-from-2018-to-2023.xlsx": "gem/coal-mines/coal-mine-historical-production.xlsx",
+   "Coal Mine Boundaries and Methane Sources - version 1.0.2 (built on May 12 2026 09.50 EST).zip": "gem/coal-mines/coal-mine-boundaries-methane.zip"
+  },
+  "downloaded": "2026-10-08T07:29:37+00:00"
+ },
+ "coal-terminals": {
+  "desc": "Global Coal Terminals Tracker",
+  "updated": "Dec 2024",
+  "files": [
+   "Global-Coal-Terminals-Tracker-December-2024.xlsx"
+  ],
+  "keys": {
+   "Global-Coal-Terminals-Tracker-December-2024.xlsx": "gem/coal-terminals/coal-terminal-tracker.xlsx"
+  },
+  "downloaded": "2026-10-08T07:29:40+00:00"
+ },
+ "iron-steel": {
+  "desc": "Global Iron and Steel Tracker \\u2014 plant-level + iron unit + steel unit data.",
+  "updated": "Jun 2026",
+  "files": [
+   "Plant-level data - Global Iron and Steel Tracker - September 2026 (V1).xlsx",
+   "Iron unit data - Global Iron and Steel Tracker - September 2026 (V1).xlsx",
+   "Steel unit data - Global Iron and Steel Tracker - September 2026 (V1).xlsx"
+  ],
+  "keys": {
+   "Plant-level data - Global Iron and Steel Tracker - September 2026 (V1).xlsx": "gem/iron-steel/iron-steel-plant-tracker.xlsx",
+   "Iron unit data - Global Iron and Steel Tracker - September 2026 (V1).xlsx": "gem/iron-steel/iron-steel-iron-unit.xlsx",
+   "Steel unit data - Global Iron and Steel Tracker - September 2026 (V1).xlsx": "gem/iron-steel/iron-steel-steel-unit.xlsx"
+  },
+  "downloaded": "2026-10-08T07:29:48+00:00"
+ },
+ "cement": {
+  "desc": "Global Cement and Concrete Tracker",
+  "updated": "Jul 2026",
+  "files": [
+   "Plant-level data - Global Cement and Concrete Tracker - July 2026 - Standard Copy V1.xlsx"
+  ],
+  "keys": {
+   "Plant-level data - Global Cement and Concrete Tracker - July 2026 - Standard Copy V1.xlsx": "gem/cement/cement-concrete-tracker.xlsx"
+  },
+  "downloaded": "2026-10-08T07:29:52+00:00"
+ },
+ "iron-ore-mines": {
+  "desc": "Global Iron Ore Mines Tracker + met coal & iron ore production data.",
+  "updated": "Dec 2025",
+  "files": [
+   "Global Iron Ore Mines Tracker - September 2026 - Standard Copy (V1).xlsx",
+   "Production-Consumption-of-Met-Coal-Iron-Ore-by-Steel-Industry-December-2025-Standard-Copy-V1.xlsx"
+  ],
+  "keys": {
+   "Global Iron Ore Mines Tracker - September 2026 - Standard Copy (V1).xlsx": "gem/iron-ore-mines/iron-ore-mines-tracker.xlsx",
+   "Production-Consumption-of-Met-Coal-Iron-Ore-by-Steel-Industry-December-2025-Standard-Copy-V1.xlsx": "gem/iron-ore-mines/met-coal-iron-ore-production.xlsx"
+  },
+  "downloaded": "2026-10-08T07:29:57+00:00"
+ },
+ "chemicals": {
+  "desc": "Global Chemicals Inventory \\u2014 plant-level data",
+  "updated": "Nov 2025",
+  "files": [
+   "Plant-level data - Global Chemicals Inventory - November 2025 V2.xlsx"
+  ],
+  "keys": {
+   "Plant-level data - Global Chemicals Inventory - November 2025 V2.xlsx": "gem/chemicals/chemicals-inventory.xlsx"
+  },
+  "downloaded": "2026-10-08T07:30:00+00:00"
+ },
+ "energy-ownership": {
+  "desc": "Global Energy Ownership Tracker",
+  "updated": "Aug 2026",
+  "files": [
+   "Global-Energy-Ownership-Tracker-September-2026-V2.xlsx"
+  ],
+  "keys": {
+   "Global-Energy-Ownership-Tracker-September-2026-V2.xlsx": "gem/energy-ownership/energy-ownership-tracker.xlsx"
+  },
+  "downloaded": "2026-10-08T07:30:08+00:00"
+ },
+ "coal-finance": {
+  "desc": "Global Coal Project Finance Tracker",
+  "updated": "Aug 2026",
+  "files": [
+   "Global Coal Project Finance Tracker_August 2026_Global Energy Monitor.xlsx"
+  ],
+  "keys": {
+   "Global Coal Project Finance Tracker_August 2026_Global Energy Monitor.xlsx": "gem/coal-finance/coal-project-finance-tracker.xlsx"
+  },
+  "downloaded": "2026-10-08T07:30:15+00:00"
+ },
+ "gas-finance": {
+  "desc": "Gas Finance Tracker",
+  "updated": "Jul 2026",
+  "files": [
+   "Gas-Finance-Tracker-Data-July-2026.xlsx"
+  ],
+  "keys": {
+   "Gas-Finance-Tracker-Data-July-2026.xlsx": "gem/gas-finance/gas-finance-tracker.xlsx"
+  },
+  "downloaded": "2026-10-08T07:30:19+00:00"
+ },
+ "methane-emitters": {
+  "desc": "Global Methane Emitters Tracker",
+  "updated": "Dec 2025",
+  "files": [
+   "GMET_V3_12-12-2025.xlsx"
+  ],
+  "keys": {
+   "GMET_V3_12-12-2025.xlsx": "gem/methane-emitters/methane-emitters-tracker.xlsx"
+  },
+  "downloaded": "2026-10-08T07:30:22+00:00"
  }
 }
