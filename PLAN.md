@@ -43,8 +43,16 @@ Credentials go in `.env` and `.env.example` (and the repo secrets for workflows)
 4. **South Korea** (KPX via data.go.kr: demand, regional solar and wind; `DATA_GO_KR_KEY`).
 5. **Turkey** (EPİAŞ transparency platform: generation by source, prices;
    `EPIAS_USERNAME`, `EPIAS_PASSWORD`).
-6. **Gas pipelines and LNG terminals worldwide** (GEM Global Gas Infrastructure Tracker,
-   GeoJSON; the download needs a form). Routes by status, capacity, start year.
+6. **GEM trackers beyond power plants** (Global Energy Monitor; each download needs the form;
+   files in `data/world/`, gitignored). Power plants of every fuel are already in the
+   Integrated Power Tracker.
+   - Fuel infrastructure layer: gas pipelines + LNG terminals (GGIT), oil/NGL pipelines
+     (GOIT), coal terminals.
+   - Fuel supply layer: oil and gas extraction fields (GOGET), coal mines.
+   - Industry layer (large electricity users): iron and steel, cement and concrete,
+     chemicals, iron ore mines.
+   - Panels and the agent: energy ownership (who owns each asset), coal and gas project
+     finance, methane emitters.
 7. **Solar and wind resource maps** (Global Solar Atlas: irradiation; Global Wind Atlas:
    mean wind speed at 100 m; GeoTIFF, large downloads) as raster tiles on R2: "where is
    the resource".
