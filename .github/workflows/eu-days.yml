@@ -65,6 +65,8 @@ jobs:
           mkdir -p data/eu && mv data_gisco.geojson data/eu/countries.geojson || true
           python scripts/fetch_world.py --out store/eu || echo "world fetch failed; keeping the last copy"
           python scripts/fetch_cables.py --out store/eu || echo "cables fetch failed; keeping the last copy"
+          # installed capacity per country and technology (IRENA, twice-yearly releases)
+          python scripts/fetch_irena.py --out store/eu || echo "IRENA fetch failed; keeping the last copy"
 
       - name: Wind for the same days (Open-Meteo, one pass over the window)
         run: python scripts/fetch_wind.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/wind || echo "wind fetch failed"
