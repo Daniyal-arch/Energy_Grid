@@ -119,6 +119,21 @@ export const BR_POINT: Record<string, [number, number]> = {
   INT: [-57.0, -30.2],
 };
 export const BR_COLOR: [number, number, number] = [150, 236, 140];
+
+/** Taiwan (Taipower): every unit's net output every 10 minutes (scripts/fetch_taiwan.py). */
+export interface TaiwanFile {
+  fetched: string;
+  /** Taipower's own timestamp, Taipei time */
+  at: string;
+  total_mw: number;
+  types: { key: string; label: string; group: string; installed_mw: number | null; net_mw: number | null }[];
+  /** battery charging (negative) */
+  charging_mw: number;
+  units: { type: string; group: string; name: string; plant: string | null; installed_mw: number | null; net_mw: number | null; note: string }[];
+}
+/** Taiwan's marker (map placement, the island's middle). */
+export const TW_POINT: [number, number] = [120.97, 23.7];
+export const TW_COLOR: [number, number, number] = [255, 150, 190];
 export const BR_SOURCE: Record<string, { label: string; color: [number, number, number] }> = {
   hydro: { label: "Hydro", color: [84, 156, 255] },
   itaipu: { label: "Itaipu (hydro)", color: [60, 120, 230] },
@@ -127,4 +142,34 @@ export const BR_SOURCE: Record<string, { label: string; color: [number, number, 
   distributed: { label: "Distributed (MMGD)", color: [255, 236, 150] },
   nuclear: { label: "Nuclear", color: [255, 96, 150] },
   thermal: { label: "Thermal", color: [214, 120, 80] },
+};
+
+/** Ontario (IESO public reports): demand, price, every generator, interties (scripts/fetch_ontario.py). */
+export interface OntarioFile {
+  fetched: string;
+  demand: { at: string; mw: number } | null;
+  price: { at: string; cad_mwh: number } | null;
+  generation: { at: string; total_mw: number; by_fuel: Record<string, number>; units: [string, string, number][] } | null;
+  /** positive = export from Ontario */
+  interties: { at: string; flows: { to: string; name: string; mw: number }[] } | null;
+}
+/** Ontario and its neighbours (map placements for reading). */
+export const ON_POINT: Record<string, [number, number]> = {
+  ON: [-81.2, 46.2],
+  QC: [-72.6, 47.6],
+  NY: [-75.2, 42.9],
+  MI: [-84.8, 43.4],
+  MN: [-94.4, 46.6],
+  MB: [-97.6, 51.6],
+};
+export const ON_COLOR: [number, number, number] = [255, 214, 120];
+/** IESO fuel names -> the app's fuel palette */
+export const ON_FUEL: Record<string, string> = {
+  NUCLEAR: "nuclear",
+  GAS: "gas",
+  HYDRO: "hydro",
+  WIND: "wind",
+  SOLAR: "solar",
+  BIOFUEL: "bio",
+  OTHER: "other",
 };

@@ -7,9 +7,13 @@ The earlier Germany atlas (backend, ingestion, agent) is archived in the git tag
 
 ## Layout
 
-- `frontend/` — React + Vite + TS + MapLibre GL + deck.gl + Tailwind. One view:
-  `src/components/EuropeView.tsx`. Custom GPU layers in `src/lib/` (`flowArrowLayer.ts`
-  chevron flows, `flowLayers.ts` path geometry and the flow clock).
+- `frontend/` — React + Vite + TS + MapLibre GL + deck.gl + Tailwind + zustand. One map:
+  `src/app/` state, loaders, colours (`store.ts` holds layers and stories); `src/map/`
+  the map (`MapCanvas.tsx` render loop, `build.ts` every deck.gl layer, `style.ts`
+  MapLibre style and labels); `src/ui/` panels (Layers, context panel, time bar).
+  `src/components/` cards, `src/lib/` data helpers and custom GPU layers
+  (`flowArrowLayer.ts` chevron flows, `flowLayers.ts` path geometry and the flow clock).
+  `src/components/EuropeView.tsx` is the earlier view, kept for `?capture` recordings.
 - `frontend/public/data/eu/` — static JSON the app reads (built by `scripts/`).
 - `scripts/` — data fetch/build scripts and probes (Python).
 - `frontend/scripts/record-video.mjs` — video recorder (virtual clock, see docs/VIDEO.md).

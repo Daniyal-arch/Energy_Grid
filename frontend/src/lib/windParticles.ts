@@ -1,6 +1,7 @@
-// Wind layer: particles drifting with Open-Meteo's hourly wind at 100 m (wind.json, built
-// by scripts/fetch_wind.py). The field is read as published on its 2-degree grid; between
-// grid points and between hours it is interpolated for drawing only.
+// Wind layer: particles drifting with the wind at 100 m: ECMWF every 3 h for the whole
+// globe (wind_world.json, scripts/fetch_ecmwf.py) or Open-Meteo hourly over Europe for the
+// archived days (scripts/fetch_wind.py). The field is read as published on its 2-degree
+// grid; between grid points and between time steps it is interpolated for drawing only.
 
 export interface WindFile {
   fetched: string;
@@ -21,7 +22,9 @@ export interface WindFile {
 export class WindField {
   readonly grid: WindFile["grid"];
   readonly start: number;
+  /** number of time steps in the file */
   readonly hours: number;
+  private readonly stepMs: number;
   private u: Float32Array[];
   private v: Float32Array[];
 
@@ -29,6 +32,7 @@ export class WindField {
     this.grid = file.grid;
     this.start = Date.parse(file.start);
     this.hours = file.speed.length;
+    this.stepMs = (file.step_s || 3600) * 1000;
     const n = file.grid.nx * file.grid.ny;
     this.u = [];
     this.v = [];
@@ -53,9 +57,9 @@ export class WindField {
     }
   }
 
-  /** Hour position (fractional) of a moment, clamped to the file. */
+  /** Time-step position (fractional) of a moment, clamped to the file. */
   hourAt(ms: number): number {
-    return Math.max(0, Math.min(this.hours - 1, (ms - this.start) / 3_600_000));
+    return Math.max(0, Math.min(this.hours - 1, (ms - this.start) / this.stepMs));
   }
 
   /** [u, v] in m/s at a point, or null outside the grid or where values are missing. */
@@ -101,6 +105,16 @@ export interface WindSegments {
   };
 }
 
+/** Particle trails as binary paths (a PathLayer draws them on the globe too). */
+export interface WindPaths {
+  length: number;
+  startIndices: Uint32Array;
+  attributes: {
+    getPath: { value: Float32Array; size: 2 };
+    getColor: { value: Uint8Array; size: 4; normalized: true };
+  };
+}
+
 export class WindParticles {
   private readonly n: number;
   private readonly trail: number;
@@ -113,6 +127,8 @@ export class WindParticles {
   // two sets of output buffers, swapped every frame so the GPU copy always updates
   private readonly out: { src: Float32Array; dst: Float32Array; col: Uint8Array }[];
   private flip = 0;
+  private readonly pathOut: { pos: Float32Array; col: Uint8Array }[];
+  private readonly starts: Uint32Array;
 
   constructor(n: number, trail: number) {
     this.n = n;
@@ -127,6 +143,8 @@ export class WindParticles {
       dst: new Float32Array(segs * 2),
       col: new Uint8Array(segs * 4),
     }));
+    this.pathOut = [0, 1].map(() => ({ pos: new Float32Array(n * trail * 2), col: new Uint8Array(n * trail * 4) }));
+    this.starts = Uint32Array.from({ length: n }, (_, p) => p * trail);
     for (let p = 0; p < n; p++) this.life[p] = 0; // all spawn on the first step
   }
 
@@ -174,6 +192,23 @@ export class WindParticles {
       this.pos[base] = lon + (u * degPerMs * dt) / k;
       this.pos[base + 1] = lat + v * degPerMs * dt;
     }
+  }
+
+  /** Trails as paths (binary attributes, one colour per point), brighter at the head. */
+  paths(): WindPaths {
+    this.flip ^= 1;
+    const { pos, col } = this.pathOut[this.flip];
+    pos.set(this.pos);
+    const tr = this.trail;
+    for (let p = 0; p < this.n; p++) {
+      const life = Math.min(1, this.age[p] / 0.4, (this.life[p] - this.age[p]) / 0.6);
+      for (let t = 0; t < tr; t++) speedRGBA(this.speed[p], col, 4 * (p * tr + t), Math.max(0, life) * (1 - t / (tr - 1)));
+    }
+    return {
+      length: this.n,
+      startIndices: this.starts,
+      attributes: { getPath: { value: pos, size: 2 }, getColor: { value: col, size: 4, normalized: true } },
+    };
   }
 
   /** Trail segments for a LineLayer (binary attributes), brighter at the head. */

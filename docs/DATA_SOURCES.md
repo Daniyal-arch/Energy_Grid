@@ -58,6 +58,11 @@ skipped):
 - **EU (computed):** the sum over the EU member states on the map that have data, at the
   newest interval where every one of them is complete; the card names how many members
   were summed. Cyprus and Malta are not mapped.
+- **Prices on the map and in the EU card (computed in the app):** the EU card's "Price
+  now" is the median of the bidding zones' day-ahead prices at the clock, with the
+  number of zones named. Under a country's name the map shows its zone's price, or the
+  lowest–highest of its zones. The Prices layer colours each country by its zone's price,
+  or the median of its zones; the tooltip lists every zone.
 - **Reporting errors left out** (`scripts/entsoe.py`, `drop_implausible`): a load value
   above twice the country's installed capacity, or one production type above all of it,
   is cleared (null) and counted in `left_out`. Installed capacity is the bundled

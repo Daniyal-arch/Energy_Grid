@@ -8,10 +8,13 @@ import {
   ACCESS_STOPS,
   BR_SOURCE,
   NEM_NAME,
+  ON_FUEL,
   latest,
   type AemoFile,
   type BrazilFile,
   type DataCentresFile,
+  type OntarioFile,
+  type TaiwanFile,
   type UsFile,
   type WorldStatsFile,
 } from "../lib/world";
@@ -428,6 +431,182 @@ export function PlantsCard({
       <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
         Planned = pre-construction + announced. Retired includes mothballed. Cancelled and shelved projects are left out. Click a row to show it on the map.
       </div>
+    </Card>
+  );
+}
+
+const TAIPEI = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Taipei", hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" });
+
+/** Taiwan: net output of every generating unit (Taipower, every 10 minutes). */
+export function TaiwanCard({ tw }: { tw: TaiwanFile }) {
+  const [all, setAll] = useState(false);
+  const total = tw.total_mw || 1;
+  const types = tw.types.filter((t) => (t.net_mw ?? 0) > 0 || (t.installed_mw ?? 0) > 0);
+  const flagged = tw.units.filter((u) => u.note).sort((a, b) => (b.installed_mw ?? 0) - (a.installed_mw ?? 0));
+  const gw = (mw: number | null) => (mw == null ? "–" : `${(mw / 1000).toFixed(1)} GW`);
+  return (
+    <Card title="Taiwan · live" note={`Taipower · ${TAIPEI.format(new Date(tw.at))} Taipei`} accent={[255, 150, 190]}>
+      <div className="text-[26px] font-light leading-none tabular-nums text-slate-100">{gw(tw.total_mw)}</div>
+      <div className={`mt-1 text-[10px] ${muted}`}>net generation of {tw.units.length} units; an island grid without interconnectors</div>
+      <div className="mt-2.5 flex h-[8px] overflow-hidden rounded-sm bg-white/[0.05]">
+        {types.map((t) => (
+          <div key={t.key} title={t.label} style={{ width: `${((t.net_mw ?? 0) / total) * 100}%`, background: rgbCss(FUEL_COLOR[t.group] ?? FUEL_COLOR.other) }} />
+        ))}
+      </div>
+      <div className={`mt-3 mb-1 grid grid-cols-[1fr_56px_44px] text-[9px] uppercase tracking-[0.14em] ${muted}`}>
+        <span>Type</span>
+        <span className="text-right">Now</span>
+        <span className="text-right">Share</span>
+      </div>
+      <div className="space-y-1">
+        {types.map((t) => (
+          <div key={t.key}>
+            <div className="grid grid-cols-[1fr_56px_44px] text-[11px] tabular-nums text-slate-200">
+              <span className="flex items-center gap-1.5 truncate">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: rgbCss(FUEL_COLOR[t.group] ?? FUEL_COLOR.other) }} />
+                {t.label}
+              </span>
+              <span className="text-right">{gw(t.net_mw)}</span>
+              <span className="text-right">{Math.round(((t.net_mw ?? 0) / total) * 100)} %</span>
+            </div>
+            {t.installed_mw != null && t.installed_mw > 0 && (
+              <div className="mt-0.5 flex items-center gap-2 pl-3.5">
+                <span className="relative h-[3px] flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+                  <span
+                    className="absolute inset-y-0 left-0 rounded-full"
+                    style={{ width: `${Math.min(100, ((t.net_mw ?? 0) / t.installed_mw) * 100)}%`, background: rgbCss(FUEL_COLOR[t.group] ?? FUEL_COLOR.other, 0.7) }}
+                  />
+                </span>
+                <span className={`w-[84px] text-right text-[9.5px] ${muted}`}>of {gw(t.installed_mw)} installed</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      {tw.charging_mw < 0 && (
+        <div className="mt-2 text-[11px] text-slate-300">
+          Storage charging <span className="tabular-nums text-slate-100">{gw(Math.abs(tw.charging_mw))}</span>
+        </div>
+      )}
+      {flagged.length > 0 && (
+        <>
+          <div className={`mt-3 mb-1 text-[9px] uppercase tracking-[0.14em] ${muted}`}>Units with a status note ({flagged.length})</div>
+          <div className="space-y-0.5">
+            {(all ? flagged : flagged.slice(0, 8)).map((u, i) => (
+              <div key={`${u.name}-${i}`} className="text-[11px] tabular-nums">
+                <div className="flex justify-between gap-2 text-slate-200">
+                  <span className="truncate">
+                    {u.name}
+                    {u.plant && <span className={muted}> · {u.plant}</span>}
+                  </span>
+                  <span className="shrink-0">
+                    {Math.round(u.net_mw ?? 0)} / {Math.round(u.installed_mw ?? 0)} MW
+                  </span>
+                </div>
+                <div className={`text-[9.5px] ${muted}`}>
+                  {u.type} · {u.note}
+                </div>
+              </div>
+            ))}
+          </div>
+          {flagged.length > 8 && (
+            <button onClick={() => setAll(!all)} className="mt-1 text-[10.5px] text-sky-300 hover:underline">
+              {all ? "Show fewer" : `Show all ${flagged.length}`}
+            </button>
+          )}
+        </>
+      )}
+      <div className={`mt-2 text-[10px] ${muted}`}>
+        Type totals are Taipower's own; shares and the total are computed. Notes and type names translated from Taipower's Chinese.
+      </div>
+    </Card>
+  );
+}
+
+const EST_TIME = (iso: string) => `${iso.slice(11, 16)} EST`;
+
+/** Ontario (IESO): demand and price every 5 minutes, every generator hourly, interties. */
+export function OntarioCard({ on }: { on: OntarioFile }) {
+  const [all, setAll] = useState(false);
+  const g = on.generation;
+  const fuels = g ? Object.entries(g.by_fuel).filter(([, mw]) => mw > 0) : [];
+  const total = g?.total_mw || 1;
+  return (
+    <Card title="Ontario · live" note={`IESO · ${on.demand ? EST_TIME(on.demand.at) : ""}`} accent={[255, 214, 120]}>
+      <div className="grid grid-cols-2 gap-1.5">
+        <div className="rounded-lg bg-white/[0.035] px-2.5 py-2">
+          <div className={`text-[9px] uppercase tracking-[0.16em] ${muted}`}>Demand</div>
+          <div className="text-[19px] font-light tabular-nums text-slate-100">{on.demand ? `${(on.demand.mw / 1000).toFixed(1)} GW` : "–"}</div>
+          <div className={`text-[9.5px] ${muted}`}>Ontario demand, 5 min</div>
+        </div>
+        <div className="rounded-lg bg-white/[0.035] px-2.5 py-2">
+          <div className={`text-[9px] uppercase tracking-[0.16em] ${muted}`}>Price</div>
+          <div className="text-[19px] font-light tabular-nums text-slate-100">{on.price ? `${on.price.cad_mwh.toFixed(1)}` : "–"}</div>
+          <div className={`text-[9.5px] ${muted}`}>CAD/MWh, Ontario zonal, {on.price ? EST_TIME(on.price.at) : ""}</div>
+        </div>
+      </div>
+      {g && (
+        <>
+          <div className={`mt-3 mb-1 flex justify-between text-[9px] uppercase tracking-[0.14em] ${muted}`}>
+            <span>Generation by fuel</span>
+            <span className="normal-case tracking-normal">hour from {EST_TIME(g.at)}</span>
+          </div>
+          <div className="flex h-[8px] overflow-hidden rounded-sm bg-white/[0.05]">
+            {fuels.map(([f, mw]) => (
+              <div key={f} title={f} style={{ width: `${(mw / total) * 100}%`, background: rgbCss(FUEL_COLOR[ON_FUEL[f] ?? "other"] ?? FUEL_COLOR.other) }} />
+            ))}
+          </div>
+          <div className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-0.5">
+            {fuels.map(([f, mw]) => (
+              <div key={f} className="flex justify-between text-[11px] tabular-nums text-slate-200">
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full" style={{ background: rgbCss(FUEL_COLOR[ON_FUEL[f] ?? "other"] ?? FUEL_COLOR.other) }} />
+                  {FUEL_LABEL[ON_FUEL[f] ?? "other"] ?? f}
+                </span>
+                <span>{Math.round((mw / total) * 100)} %</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      {on.interties && (
+        <>
+          <div className={`mt-3 mb-1 flex justify-between text-[9px] uppercase tracking-[0.14em] ${muted}`}>
+            <span>Interties</span>
+            <span className="normal-case tracking-normal">{EST_TIME(on.interties.at)}</span>
+          </div>
+          <div className="space-y-0.5">
+            {on.interties.flows.map((x) => (
+              <div key={x.to} className="flex justify-between text-[11px] tabular-nums text-slate-200">
+                <span>
+                  {x.mw >= 0 ? "Ontario" : x.name} <span className={muted}>→</span> {x.mw >= 0 ? x.name : "Ontario"}
+                </span>
+                <span>{Math.abs(Math.round(x.mw))} MW</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      {g && (
+        <>
+          <div className={`mt-3 mb-1 text-[9px] uppercase tracking-[0.14em] ${muted}`}>Largest generators this hour</div>
+          <div className="space-y-0.5">
+            {(all ? g.units : g.units.slice(0, 8)).map(([name, fuel, mw]) => (
+              <div key={name} className="flex justify-between text-[11px] tabular-nums text-slate-200">
+                <span className="flex items-center gap-1.5 truncate">
+                  <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: rgbCss(FUEL_COLOR[ON_FUEL[fuel] ?? "other"] ?? FUEL_COLOR.other) }} />
+                  {name}
+                </span>
+                <span>{Math.round(mw)} MW</span>
+              </div>
+            ))}
+          </div>
+          <button onClick={() => setAll(!all)} className="mt-1 text-[10.5px] text-sky-300 hover:underline">
+            {all ? "Show fewer" : `Show all ${g.units.length}`}
+          </button>
+        </>
+      )}
+      <div className={`mt-2 text-[10px] ${muted}`}>IESO runs on Eastern Standard Time all year. Fuel totals and shares are sums of the generators reporting (computed).</div>
     </Card>
   );
 }
