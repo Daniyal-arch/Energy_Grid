@@ -168,6 +168,67 @@ DE, ES, FI, FR, GR, HR, IT, LT, NL, PL, PT), last ~400 days, passthrough:
   capacity, GWh/day
 - `inventory.gwh`: LNG in tanks
 
+## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
+
+| File | Records | Source |
+|---|---:|---|
+| `gas_flows.json` | ~80 pairs: borders, pipeline sources outside Europe, each country's LNG terminals; 31 gas days | ENTSOG Transparency Platform API (`transparency.entsog.eu/api/v1`, no key): `operationaldatas`, indicator "Physical Flow", period type day, kWh/d per operator, point and direction (shown in GWh/d, rounded to 1 MWh). Sides and point types from `interconnections`, `connectionpoints` and `operatorpointdirections`. Probe: `scripts/probe_entsog.py` |
+
+**Gas day:** 06:00 to 06:00 Central European time (CET/CEST), as ENTSOG publishes it
+(05:00–05:00 UTC in winter, 04:00–04:00 UTC in summer). The file holds the newest
+complete gas day and the 30 before it. **Complete:** every point that reported the day
+before has reported this day too. On 2026-10-10 the probe saw about 70 % of the points
+for the gas day that had ended 7 hours earlier, and all of them for the day before; the
+morning run (07:23 UTC) therefore usually ends on the day before yesterday.
+
+**Rules** (values are never changed, only grouped, summed or left out):
+
+- **Points:** cross-border transmission points (borders and pipelines from outside) and
+  LNG entry points. Storage (also storage across a border), production, distribution,
+  final consumers and trading points are left out: this is gas moving between countries
+  and into Europe, not the whole balance.
+- **Sides:** each operator's country and the country across come from ENTSOG's
+  interconnection list; points missing from it use the operator's own entry. TAP AG is
+  registered in Switzerland and is placed in Greece for those points; ENTSOG's "UK" is GB.
+- **Left out as double reports:** a pipe-in-pipe operator that names the operator whose
+  pipe it shares (both report the same gas; e.g. Gasunie Deutschland at Dornum next to
+  Open Grid Europe), points flagged as double reporting, an operator's physical points on
+  a border where it reports a virtual interconnection point (VIP) for that border (the
+  VIP bundles them: e.g. GTS's VIP TTF-THE-H = Bocholtz + Bunde), and **Dornum GASPOOL**,
+  which repeats Dornum / NETRA (OGE) to the decimal every day (the script warns if that
+  ever changes). ENTSOG's own `aggregatedData` sums Dornum twice and is not used.
+- **One side per border:** a border is the sum of one country's operators' reports, both
+  directions: the side whose own reports show the larger net flow into its country over
+  the window (the importing side). Where both sides report, the other side's net is kept
+  in `other_side_net`; over 2026-09-07..10-09 the two agree within 1 GWh/d a day on
+  most borders (DE–NL, BE–GB, GB–IE, CZ–DE…). Larger gaps: AT–DE (Austria's sum has
+  Überackern, Germany's has VIP Oberkappel and Lindau; 44 GWh/d), BE–NL (23), DK–PL (16), ES–FR (9).
+- **Net flow** a→b = the a→b sum minus the b→a sum (computed). Some operators report a
+  VIP as one net direction (GTS) where the other side reports both (Gasunie Deutschland),
+  so the two directions differ by side while the net agrees.
+- **Sources outside Europe** (the countries on this map, less Norway, whose gas comes from
+  the shelf) are named by the system across the border, with the origin ENTSOG gives the
+  import point (`importFromCountryKey`) where it differs: Kipi and Kipoi (Türkiye → Greece)
+  carry gas from **Azerbaijan**, Strandzha 2 (Türkiye → Bulgaria) **Russian gas through
+  TurkStream**, Kotlovka (Belarus → Lithuania) Russian gas for Kaliningrad. Tarifa: ENTSOG
+  names Algeria, but the Maghreb–Europe pipeline now carries gas from Spain to Morocco.
+  TAP enters Italy at Melendugno from Albania; it crosses Greece and Albania without a
+  reported point there, so Albania shows gas leaving and none arriving.
+- **LNG** per country = the transmission operators' entries at the LNG points (the LNG
+  operators' own rows report the same gas). Against GIE ALSI send-out (the LNG card), gas
+  day 2026-10-03: BE, FR, LT, NL, PT within 0.5 %, DE 270 vs 275, ES 578 vs 558, PL 62
+  vs 56, IT 386 vs 457 GWh/d; Croatia's operator reports 0 at Krk while ALSI reports 84.
+- **Map:** the sources outside Europe and each country's LNG terminals are drawn at fixed
+  points placed for reading (`frontend/src/lib/gasFlows.ts`), not at a measured place;
+  arcs from 5 GWh/d, labels from 250 GWh/d. The EU card sums the sources (computed) and
+  the last 30 gas days (computed, TWh).
+
+ENTSOG answers a whole month of every point in one request (`limit=-1`, ~30 MB, ~7 s).
+`limit` counts rows before the server drops empty ones, so `limit`/`offset` paging skips
+rows; the script asks one window with `limit=-1`. Eight requests in a row all answered.
+Refreshed daily by `.github/workflows/eu-days.yml` onto the `eu-days` branch; the app
+prefers that copy when it is newer than the bundled one.
+
 ## World tab (`scripts/fetch_world.py`, `scripts/fetch_aemo.py`)
 
 | File | Records | Source |
