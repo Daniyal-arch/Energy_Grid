@@ -47,6 +47,34 @@ uv run python scripts/build_eu_day.py 2026-09-24 # one day for the time-lapse (?
 7. **No over-engineering:** static site, scripts, one workflow. No backend unless a
    feature truly needs one.
 
+## Working rules (every session, on a laptop or in the cloud)
+
+- **Branches and PRs.** Pushing `main` deploys the live site (Cloudflare builds it). Cloud
+  sessions work on their own branch and open a pull request; the owner merges. The data
+  branches `eu-data` and `eu-days` are written by GitHub Actions: never commit to them or
+  force-push them.
+- **Commits** carry no AI attribution (no `Co-Authored-By` or generated-with lines).
+- **Secrets** stay in the environment (`.env` locally, repo secrets in Actions, the cloud
+  environment's settings): never print, log or commit a key. Cloudflare and the GEM form
+  details live as repo secrets; a session that needs R2 or GEM triggers the workflow
+  (`gh workflow run ...`) rather than holding the key.
+- **Raw licensed files** (GEM downloads) live only in the private R2 bucket
+  `infraatlas-raw`; never commit or republish them. Big downloads run in GitHub Actions.
+- **Visual style:** reference-clean, calm maps; the grid stays the hero; no busy, blurred
+  or blinking layers; animation only where it carries data (flows, the clock). Keys and
+  legends compact and off the land; one Layers panel and one context panel, no new
+  floating panels per dataset. A new dataset is a layer (with its key and source) plus a
+  card in the existing panels.
+- **Every figure on screen** names its source; computed values say how ("median of 43
+  zones", "sum of the member states reporting"). Prices keep the source's precision.
+- **Before a PR:** `uv run ruff check . && uv run ruff format .`, `uv run pytest`,
+  `cd frontend && npm run build`. In the PR, describe what the map shows now, the new
+  files in docs/DATA_SOURCES.md, and the link of the session
+  (`https://claude.ai/code/${CLAUDE_CODE_REMOTE_SESSION_ID/#cse_/session_}`).
+- **Videos and screenshots** are never committed; recordings follow docs/VIDEO.md (only
+  sourced values on screen).
+- Task briefs for cloud sessions are in `docs/tasks/`.
+
 ## Data notes (this environment)
 
 - **uv** is installed user-level and not on PATH. In PowerShell prepend
