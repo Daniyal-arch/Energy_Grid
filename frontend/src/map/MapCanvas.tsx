@@ -27,6 +27,8 @@ import { GRID_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, STYLE, addGridLayers, dayFr
 import { TIP_STYLE, countryHtml, tooltip } from "./tooltip";
 
 const SEC_PER_YEAR = 0.9;
+/** From this zoom the map is flat (mercator) everywhere. */
+const FLAT_ZOOM = 7;
 const ISO2_OF = Object.fromEntries(Object.entries(ISO3).map(([a, b]) => [b, a]));
 
 /** Where new wind particles appear on the globe: the side facing the camera, narrower
@@ -99,10 +101,20 @@ export default function MapCanvas() {
     });
     map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
     let deckHover = false;
+    let deckSynced = false;
     const overlay = new MapboxOverlay({
       // drawn inside the map's own WebGL context: needed for the globe
       interleaved: true,
       layers: [],
+      // deck.gl follows the map's moves only once it has loaded; a link's or a story's first
+      // camera jump comes earlier, and hover picking would keep the start camera until a pan.
+      // One move after its first frame brings it up to date. (onLoad cannot be used: the
+      // overlay re-sends its props every frame and would replace deck.gl's own onLoad.)
+      onAfterRender: () => {
+        if (deckSynced) return;
+        deckSynced = true;
+        requestAnimationFrame(() => map.fire("move"));
+      },
       getTooltip: tooltip,
       onHover: (info: PickingInfo) => {
         deckHover = !!info.object;
@@ -193,9 +205,13 @@ export default function MapCanvas() {
     let flatNow: boolean | null = null;
     // the price blocks stand up: flat, tilted map
     const raisedPrices = () => useApp.getState().layers.prices;
+    // zoomed in, the map is flat too: deck.gl's globe drifts from MapLibre's by several pixels
+    // from about zoom 9 (10 px at zoom 10, measured), while at zoom 7 globe and mercator agree
+    // to a pixel, so the switch does not show (a little hysteresis keeps it from flapping)
+    const zoomedIn = () => map.getZoom() >= (flatNow ? FLAT_ZOOM - 0.25 : FLAT_ZOOM);
     const wantFlat = () => {
       const s = useApp.getState();
-      return s.mode === "day" || (s.mode === "live" && (!!selectedIso2(s.selection) || raisedPrices()));
+      return s.mode === "day" || zoomedIn() || (s.mode === "live" && (!!selectedIso2(s.selection) || raisedPrices()));
     };
     const applyProjection = () => {
       const flat = wantFlat();
