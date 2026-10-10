@@ -17,6 +17,10 @@ the generation mix of each country.
   yearly renewable share, wind + solar share, coal share or carbon intensity and plays
   25 years; click a country for its generation by source.
 
+- **United States:** every generator of 1 MW and more (EIA-860M), transmission lines
+  from 100 kV (OpenStreetMap), every wind turbine (USWTDB) and the interconnection queue
+  per state (LBNL Queued Up): `?story=us-grid`, `?story=us-queue`.
+
 All figures come from public sources (ENTSO-E, Ember, GIE, powerplantmatching,
 OpenStreetMap via PyPSA-Eur, SciGRID_gas, Eurostat GISCO); see
 [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).

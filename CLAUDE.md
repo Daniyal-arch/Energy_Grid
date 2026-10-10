@@ -14,7 +14,8 @@ The earlier Germany atlas (backend, ingestion, agent) is archived in the git tag
   `src/components/` cards, `src/lib/` data helpers and custom GPU layers
   (`flowArrowLayer.ts` chevron flows, `flowLayers.ts` path geometry and the flow clock).
   `src/components/EuropeView.tsx` is the earlier view, kept for `?capture` recordings.
-- `frontend/public/data/eu/` — static JSON the app reads (built by `scripts/`).
+- `frontend/public/data/eu/` — static JSON the app reads (built by `scripts/`); the US grid
+  pack in `frontend/public/data/us/` (`scripts/fetch_us_grid.py`, `.github/workflows/us-grid.yml`).
 - `scripts/` — data fetch/build scripts and probes (Python).
 - `frontend/scripts/record-video.mjs` — video recorder (virtual clock, see docs/VIDEO.md).
 - `.github/workflows/eu-snapshot.yml` — refreshes live figures onto the `eu-data` branch.
