@@ -6,6 +6,8 @@ import { useMemo, type ReactNode } from "react";
 import { Card, SourcesCard } from "../components/CountryCards";
 import { FinanceCountryCard, FinanceWorldCard } from "../components/FinanceCards";
 import { BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard } from "../components/WorldCards";
+import { UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
+import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
 import type { FinanceFile } from "../lib/finance";
 import { CLASS_LABEL, GEM_PIPES, GEM_POINTS, type GemPipesFile, type GemPointsFile } from "../lib/gem";
 import { rgbCss } from "../lib/theme";
@@ -262,6 +264,26 @@ function PlantsWorldCard({ iso3 }: { iso3?: string }) {
   );
 }
 
+/** The US layers: only for the US (or no country selected). */
+function UsStats({ id, iso3 }: { id: LayerId; iso3?: string }) {
+  const plants = useFile<UsPlantsFile>(id === "plantsUS" ? "usPlants" : null);
+  const turbines = useFile<UsTurbinesFile>(id === "turbinesUS" ? "usTurbines" : null);
+  const queue = useFile<UsQueueFile>(id === "usQueue" ? "usQueue" : null);
+  const status = useApp((s) => s.plantStatus);
+  const names = useStateNames();
+  if (iso3 && iso3 !== "USA") return null;
+  if (plants) return <UsPlantsCard f={plants} status={status} onStatus={(st) => actions.setPlantStatus(st as PlantStatus)} />;
+  if (turbines) return <UsTurbinesCard t={turbines} names={names} />;
+  if (queue)
+    return (
+      <>
+        <UsQueueCard q={queue} />
+        <UsQueueStatesCard q={queue} names={names} />
+      </>
+    );
+  return null;
+}
+
 function LiveGridsCards() {
   const us = useFile<UsFile>("us");
   const br = useFile<BrazilFile>("brazil");
@@ -328,6 +350,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
           return <FinanceStats key="finance" iso3={iso3} />;
         }
         if (id === "plantsWorld") return <PlantsWorldCard key={id} iso3={iso3} />;
+        if (id === "plantsUS" || id === "turbinesUS" || id === "usQueue") return <UsStats key={id} id={id} iso3={iso3} />;
         if (id === "liveGrids") return iso3 ? null : <LiveGridsCards key={id} />;
         if (id === "dataCentres") return <DataCentresStats key={id} iso3={iso3} />;
         if (id === "cables") return iso3 ? null : <CablesCard key={id} />;

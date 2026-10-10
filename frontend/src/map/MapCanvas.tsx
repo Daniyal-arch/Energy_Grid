@@ -15,6 +15,7 @@ import { rgbCss } from "../lib/theme";
 import { EUROPE_ISO3, ISO3, metricById, metricColor, type MetricId, type TransitionFile } from "../lib/transition";
 import { WindField, WindParticles, type WindFile } from "../lib/windParticles";
 import { ACCESS_STOPS, latest, type WorldStatsFile } from "../lib/world";
+import { US_CENTRE } from "../lib/us";
 import { TR_NO_DATA, stopColor } from "../app/colors";
 import { ensure, fileOf, useDataStore } from "../app/data";
 import { centralSun, nightImage, DAY_SECONDS } from "../app/day";
@@ -23,7 +24,7 @@ import { actions, clearYearFromUrl, motion, useApp, writeUrl, yearFromUrl, type 
 import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
 import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection } from "./build";
 import { memo } from "./memo";
-import { GRID_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, STYLE, addGridLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, worldCamera } from "./style";
+import { GRID_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, STYLE, US_GRID_LAYERS, addGridLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, usFrame, worldCamera } from "./style";
 import { TIP_STYLE, countryHtml, tooltip } from "./tooltip";
 
 const SEC_PER_YEAR = 0.9;
@@ -48,6 +49,10 @@ function wantedKeys(): string[] {
   if (L.gas) keys.push("gas");
   if (L.cables) keys.push("cables");
   if (L.plantsWorld) keys.push("worldPlants");
+  // EIA wins over GEM in the US: GEM's points inside the states are left out
+  if (L.plantsUS) keys.push("usPlants", ...(L.plantsWorld ? ["usStates"] : []));
+  if (L.turbinesUS) keys.push("usTurbines");
+  if (L.usQueue) keys.push("usQueue", "usStates");
   if (L.dataCentres) keys.push("datacentres");
   if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario");
   if (L.financeCoal || L.financeGas) keys.push("gemFinance");
@@ -196,15 +201,17 @@ export default function MapCanvas() {
     map.on("moveend", () => {
       const c = map.getCenter();
       writeUrl({ center: [c.lng, c.lat], zoom: map.getZoom(), pitch: map.getPitch(), bearing: map.getBearing() });
-      // the overview panel follows the camera: Europe when it faces Europe, else the world
-      const region = angularDistance([c.lng, c.lat], EUROPE_CENTRE) < 35 ? "europe" : "world";
+      // the overview panel follows the camera: Europe or the US when it faces them, else the world
+      const at: [number, number] = [c.lng, c.lat];
+      const usZoom = isNarrow() ? 1.3 : 2.6; // closer than the world view: phones frame the US further out
+      const region = angularDistance(at, EUROPE_CENTRE) < 35 ? "europe" : angularDistance(at, US_CENTRE) < 24 && map.getZoom() >= usZoom ? "us" : "world";
       if (region !== useApp.getState().region) useApp.setState({ region });
     });
 
     // ------------------------------------------------------------ camera: stories, search, selection
     let flatNow: boolean | null = null;
-    // the price blocks stand up: flat, tilted map
-    const raisedPrices = () => useApp.getState().layers.prices;
+    // the price blocks and the US queue stand up: flat, tilted map
+    const raisedPrices = () => useApp.getState().layers.prices || useApp.getState().layers.usQueue;
     // zoomed in, the map is flat too: deck.gl's globe drifts from MapLibre's by several pixels
     // from about zoom 9 (10 px at zoom 10, measured), while at zoom 7 globe and mercator agree
     // to a pixel, so the switch does not show (a little hysteresis keeps it from flapping)
@@ -222,8 +229,10 @@ export default function MapCanvas() {
     const fly = (to: NonNullable<ReturnType<typeof useApp.getState>["flyTo"]>) => {
       applyProjection();
       if (to === "day") return dayFrame(map, 1200);
+      if (to === "us" || to === "usQueue") return usFrame(map, to === "usQueue" && wantFlat(), 1400);
       const cam = to === "europe" ? europeView(map) : to === "world" ? worldCamera() : to;
-      map.flyTo({ center: cam.center, zoom: cam.zoom, pitch: 0, bearing: 0, duration: 1400 });
+      const tilt = typeof to === "object" && wantFlat();
+      map.flyTo({ center: cam.center, zoom: cam.zoom, pitch: tilt ? (to.pitch ?? 0) : 0, bearing: tilt ? (to.bearing ?? 0) : 0, duration: 1400 });
     };
     /** Run once a file has arrived (a link can open on a country before its outline loads). */
     const whenFile = (key: string, run: () => void) => {
@@ -287,7 +296,7 @@ export default function MapCanvas() {
         applyProjection();
         if (flatNow && !was) dayFrame(map, 1100);
         if (!flatNow && was) fly("europe");
-      }
+      } else if (s.mode === "live" && !s.selection && s.layers.usQueue !== prev.layers.usQueue) applyProjection();
     });
     // a link with a selection or a camera, or a story's first camera
     map.once("style.load", () => {
@@ -349,11 +358,13 @@ export default function MapCanvas() {
         // Europe's countries draw their own outline
         map.setFilter("world-pick", ["==", ["get", "iso3"], selectedIso2(s.selection) ? "" : pick]);
       }
-      const gk = `${s.layers.gridWorld}|${s.layers.predicted}`;
+      const gk = `${s.layers.gridWorld}|${s.layers.predicted}|${s.layers.gridUS}`;
       if (gk !== gridKey) {
         gridKey = gk;
         if (s.layers.gridWorld) addGridLayers(map, "hv");
         if (s.layers.predicted) addGridLayers(map, "predicted");
+        if (s.layers.gridUS) addGridLayers(map, "us");
+        for (const id of US_GRID_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.gridUS ? "visible" : "none");
         for (const id of GRID_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.gridWorld ? "visible" : "none");
         for (const id of PREDICTED_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.predicted ? "visible" : "none");
       }
