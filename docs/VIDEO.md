@@ -36,6 +36,25 @@ the panel's close button so the camera returns to Europe. 38 s at 30 fps takes a
 `?capture=16x9&day=...` the recorder starts the day on its first frame instead of the
 country tour; use `--seconds` a little longer than `daySeconds`.
 
+## The app's 24 h view (price slabs and generation towers)
+
+`&app=1` records the current app instead of the earlier single view. The link sets
+everything: the day, the layers, the Layers panel closed (`panel=closed`) and the camera
+`cam=lon,lat,zoom,pitch,bearing` (the address bar writes it as you move the map; the 24 h
+view's padding is restored with it). The recorder starts the day at 00:00 and plays it
+through (36 s).
+
+```sh
+npm run record:video -- --format 16x9 --viewport 1525x740 --scale 1.25 --seconds 37 \
+  --poster-at 18 --name europe-day-prices \
+  --url "http://localhost:5173/?mode=day&day=2026-10-07&colour=none&layers=flows,prices,towers,gridEU,wind,sun,night&panel=closed&cam=17.35,52.77,3.84,60,-30&app=1"
+```
+
+With `record` in the link the app takes a bundled copy of the day before the archive
+(raw.githubusercontent.com can take a minute to answer); to record an archive day, copy
+`day/<date>.json` and `wind/<date>.json` from the `eu-days` branch into
+`frontend/public/data/eu/` and add the date to `day/index.json` for the run.
+
 ## Options
 
 | Option | Default | Meaning |

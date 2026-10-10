@@ -56,7 +56,7 @@ export interface LayerInfo {
 }
 export const LAYERS: LayerInfo[] = [
   { id: "flows", label: "Cross-border flows", desc: "Power moving between countries now", group: "Electricity now", coverage: "Europe", color: "rgb(120,222,255)", modes: ["live", "day"] },
-  { id: "prices", label: "Prices", desc: "Day-ahead price glowing on each country", group: "Electricity now", coverage: "Europe", color: "rgb(255,196,90)", modes: ["live", "day"] },
+  { id: "prices", label: "Prices", desc: "Each country rises by its day-ahead price; generation towers stand on top", group: "Electricity now", coverage: "Europe", color: "rgb(255,196,90)", modes: ["live", "day"] },
   { id: "liveGrids", label: "Live grids", desc: "US, Brazil, Australia, Taiwan, Ontario now", group: "Electricity now", coverage: "World", color: "rgb(255,196,120)", modes: ["live"] },
   { id: "towers", label: "Generation towers", desc: "Each country's output by source", group: "Electricity now", coverage: "Europe", color: "rgb(255,214,72)", modes: ["day"] },
   { id: "gridEU", label: "Transmission lines", desc: "220–750 kV, by voltage", group: "Power grid", coverage: "Europe", color: "rgb(236,178,120)" },
@@ -189,7 +189,7 @@ export const STORIES: Story[] = [
     blurb: "24 hours, every 15 minutes",
     mode: "day",
     colour: "none",
-    layers: ["flows", "towers", "night", "wind", "gridEU"],
+    layers: ["flows", "towers", "prices", "night", "wind", "gridEU"],
     camera: "day",
   },
   {
@@ -287,6 +287,8 @@ interface AppState {
   /** a camera move requested by the UI (story, search); the map consumes it */
   flyTo: Camera | "europe" | "world" | "day" | null;
   sheet: "none" | "panel" | "layers" | "search";
+  /** the Layers panel is open (desktop) */
+  layersPanel: boolean;
 }
 
 /** Positions between the integer steps (24 h slot, year), advanced by the map's render loop
@@ -312,6 +314,7 @@ export const useApp = create<AppState>(() => ({
   region: "europe",
   flyTo: null,
   sheet: "none",
+  layersPanel: true,
 }));
 
 export const actions = {
@@ -346,6 +349,9 @@ export const actions = {
   },
   setPlantStatus(plantStatus: PlantStatus) {
     useApp.setState((s) => ({ plantStatus, layers: { ...s.layers, plantsWorld: true }, story: null }));
+  },
+  setPlantStyle(plantStyle: "bars" | "beams") {
+    useApp.setState({ plantStyle });
   },
   /** Jump the 24 h clock to a slot (pauses at the end of the day). */
   seekDay(slot: number) {
@@ -438,10 +444,11 @@ export function readUrl(): void {
   const tab = p.get("tab");
   if (tab) patch.tab = tab;
   if (p.get("style") === "beams") patch.plantStyle = "beams";
+  if (p.get("panel") === "closed") patch.layersPanel = false;
   const cam = p.get("cam");
   if (cam) {
-    const [lon, lat, zoom] = cam.split(",").map(Number);
-    if ([lon, lat, zoom].every(Number.isFinite)) patch.flyTo = { center: [lon, lat], zoom };
+    const [lon, lat, zoom, pitch, bearing] = cam.split(",").map(Number);
+    if ([lon, lat, zoom].every(Number.isFinite)) patch.flyTo = { center: [lon, lat], zoom, pitch: Number.isFinite(pitch) ? pitch : undefined, bearing: bearing || 0 };
   }
   useApp.setState(patch);
 }
@@ -461,12 +468,17 @@ export function writeUrl(camera?: Camera): void {
   }
   if (s.day) p.set("day", s.day);
   if (s.layers.plantsWorld && s.plantStatus !== "operating") p.set("status", s.plantStatus);
+  if (s.plantStyle === "beams") p.set("style", "beams");
+  if (!s.layersPanel) p.set("panel", "closed");
   const sel = s.selection;
   if (sel?.kind === "country") p.set("sel", `country:${sel.iso2 ?? sel.iso3}`);
   if (sel?.kind === "zone") p.set("sel", `zone:${sel.id}`);
   if (sel?.kind === "region") p.set("sel", `region:${sel.grid}:${sel.id}`);
   if (sel && s.tab !== "now") p.set("tab", s.tab);
-  if (camera) p.set("cam", `${camera.center[0].toFixed(2)},${camera.center[1].toFixed(2)},${camera.zoom.toFixed(2)}`);
+  if (camera) {
+    const tilt = camera.pitch || camera.bearing ? `,${(camera.pitch ?? 0).toFixed(0)},${(camera.bearing ?? 0).toFixed(0)}` : "";
+    p.set("cam", `${camera.center[0].toFixed(2)},${camera.center[1].toFixed(2)},${camera.zoom.toFixed(2)}${tilt}`);
+  }
   window.history.replaceState(null, "", `?${p.toString()}`);
 }
 

@@ -2,7 +2,7 @@
 // One render loop outside React advances the clocks and hands deck.gl its layers; React
 // only mounts this once. When nothing moves and nothing changed, a frame costs nothing.
 
-import { AmbientLight, LightingEffect, MapView, _GlobeView as GlobeView, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
+import { AmbientLight, DirectionalLight, LightingEffect, MapView, _GlobeView as GlobeView, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
 import { useEffect, useRef } from "react";
@@ -23,7 +23,7 @@ import { actions, clearYearFromUrl, motion, useApp, writeUrl, yearFromUrl, type 
 import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
 import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection } from "./build";
 import { memo } from "./memo";
-import { GRID_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, STYLE, addGridLayers, dayFrame, europeCamera, europeView, setProjection, worldCamera } from "./style";
+import { GRID_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, STYLE, addGridLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, worldCamera } from "./style";
 import { TIP_STYLE, countryHtml, tooltip } from "./tooltip";
 
 const SEC_PER_YEAR = 0.9;
@@ -144,7 +144,7 @@ export default function MapCanvas() {
       const pick = (sel: Selection, tab = "now") => actions.select(same(s.selection, sel) ? null : sel, tab);
       const id = info?.layer?.id ?? "";
       if (info?.object) {
-        if (id === "eu-countries") {
+        if (id === "eu-countries" || id === "price-terrain") {
           const iso = (info.object as Shape).iso;
           return pick({ kind: "country", iso2: iso, iso3: ISO3[iso] }, s.colour.startsWith("pr_") ? "prices" : s.mode === "years" ? "years" : "now");
         }
@@ -183,7 +183,7 @@ export default function MapCanvas() {
     map.on("dragstart", () => useApp.getState().sheet !== "none" && useApp.setState({ sheet: "none" }));
     map.on("moveend", () => {
       const c = map.getCenter();
-      writeUrl({ center: [c.lng, c.lat], zoom: map.getZoom() });
+      writeUrl({ center: [c.lng, c.lat], zoom: map.getZoom(), pitch: map.getPitch(), bearing: map.getBearing() });
       // the overview panel follows the camera: Europe when it faces Europe, else the world
       const region = angularDistance([c.lng, c.lat], EUROPE_CENTRE) < 35 ? "europe" : "world";
       if (region !== useApp.getState().region) useApp.setState({ region });
@@ -191,9 +191,11 @@ export default function MapCanvas() {
 
     // ------------------------------------------------------------ camera: stories, search, selection
     let flatNow: boolean | null = null;
+    // the price blocks stand up: flat, tilted map
+    const raisedPrices = () => useApp.getState().layers.prices;
     const wantFlat = () => {
       const s = useApp.getState();
-      return s.mode === "day" || (s.mode === "live" && !!selectedIso2(s.selection));
+      return s.mode === "day" || (s.mode === "live" && (!!selectedIso2(s.selection) || raisedPrices()));
     };
     const applyProjection = () => {
       const flat = wantFlat();
@@ -264,6 +266,12 @@ export default function MapCanvas() {
         // a story sets its camera itself
         focusCountry(s.selection, prev.selection);
       } else if (s.mode !== prev.mode) applyProjection();
+      else if (s.mode === "live" && !s.selection && s.layers.prices !== prev.layers.prices) {
+        const was = flatNow;
+        applyProjection();
+        if (flatNow && !was) dayFrame(map, 1100);
+        if (!flatNow && was) fly("europe");
+      }
     });
     // a link with a selection or a camera, or a story's first camera
     map.once("style.load", () => {
@@ -273,7 +281,9 @@ export default function MapCanvas() {
         useApp.setState({ flyTo: null });
         if (typeof to === "object") {
           applyProjection();
-          map.jumpTo({ center: to.center, zoom: to.zoom });
+          // the 24 h view keeps its padding, so a link opens on the same picture
+          const padding = s.mode === "day" ? dayPadding() : undefined;
+          map.jumpTo({ center: to.center, zoom: to.zoom, pitch: to.pitch ?? (s.mode === "day" ? 55 : 0), bearing: to.bearing ?? 0, padding });
         } else fly(to);
       } else if (s.selection) focusCountry(s.selection, null);
       else {
@@ -370,6 +380,8 @@ export default function MapCanvas() {
     let odd = false;
     let wantedKey = "";
     let lastLabels: LabelCollection | null = null;
+    const recording = new URLSearchParams(window.location.search).has("record");
+    let ready = false;
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop);
       if (import.meta.env.DEV && (window as unknown as { __stop?: boolean }).__stop) return;
@@ -476,17 +488,31 @@ export default function MapCanvas() {
         sun,
         night,
       };
-      // real sunlight on the towers and columns: direction from the clock, strength from the sun's height
+      // light on the towers, columns and price slabs: a fixed key light from the south-west keeps
+      // their shape sharp at night; real sunlight (direction from the clock) adds day on top
       const lighting = memo("lighting", [day, dayK], () => {
         if (!day) return null;
         const dayness = Math.max(0, Math.min(1, (sunAlt + 2) / 20));
         return new LightingEffect({
-          ambient: new AmbientLight({ color: [255, 255, 255], intensity: 0.45 + 0.4 * dayness }),
-          sun: new SunLight({ timestamp: slotMs, color: [255, 236, 206], intensity: 2.2 * dayness }),
+          ambient: new AmbientLight({ color: [255, 255, 255], intensity: 0.75 + 0.15 * dayness }),
+          key: new DirectionalLight({ color: [255, 255, 255], intensity: 1.2 - 0.9 * dayness, direction: [1, 2, -5] }),
+          sun: new SunLight({ timestamp: slotMs, color: [255, 236, 206], intensity: 1.6 * dayness }),
         });
       });
       const effects = memo("effects", [lighting], () => (lighting ? [lighting] : []));
       overlay.setProps({ layers: buildLayers(frame), effects });
+      // recordings (frontend/scripts/record-video.mjs): ready once the day, its weather and the map are in
+      if (recording && !ready && map.loaded() && (s.mode !== "day" || (day && (!(s.layers.wind || s.layers.sun) || windFile)))) {
+        ready = true;
+        Object.assign(window, {
+          __captureReady: true,
+          __captureGo: () => {
+            if (s.mode !== "day") return;
+            actions.seekDay(0);
+            useApp.setState({ playing: true });
+          },
+        });
+      }
       // labels: MapLibre re-places them only when their content changed
       const labels = labelsOf();
       if (labels !== lastLabels) {

@@ -12,9 +12,12 @@ import { rgbCss, type RGB } from "../lib/theme";
 import { METRICS, metricGradient } from "../lib/transition";
 import { ACCESS_STOPS, ACCESS_TICKS, BR_COLOR, DC_COLOR, ON_COLOR, TW_COLOR, US_COLOR } from "../lib/world";
 import { HV_STEPS, PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, STATUS_LABEL } from "../lib/worldPlants";
-import { PRICE_GLOW_STOPS, PRICE_GLOW_TICKS } from "../app/colors";
 import { CABLE_STYLE, FLOW, GAS, HVDC, MULTI_ZONE, OFFLINE_STOPS, PRICE_STOPS, SHARE_STOPS, SUBSTATION, VOLTAGE_BANDS, gradientCss } from "../app/colors";
 import { BEAM_MIN_MW } from "../app/geo";
+import { useDataStore } from "../app/data";
+import type { StatsFile } from "../app/types";
+import { priceRange, rampCss } from "../map/priceTerrain";
+import { currentDay } from "../map/tooltip";
 import {
   COLOURS,
   LAYERS,
@@ -113,17 +116,26 @@ export function ColourLegend({ colour }: { colour: ColourId }) {
   return null;
 }
 
+/** The Prices layer's key: the colour runs over the replayed day's own range. */
+function PriceKey() {
+  const mode = useApp((s) => s.mode);
+  const files = useDataStore((d) => d.files);
+  const range = priceRange(mode === "day" ? currentDay() : null, files.stats as StatsFile | undefined);
+  const ticks = range ? [`${Math.round(range[0])}`, `${Math.round((range[0] + range[1]) / 2)}`, `${Math.round(range[1])} €/MWh`] : ["cheapest", "", "dearest"];
+  return (
+    <Scale
+      gradient={rampCss}
+      ticks={ticks}
+      note={`Slab height: day-ahead price (100 €/MWh stands 50 km; several zones: their median). Colour: cheapest to dearest ${mode === "day" ? "of this day" : "right now"}; below zero lies flat in cyan. Towers on the slabs: generation. ENTSO-E.`}
+    />
+  );
+}
+
 function LayerLegend({ id }: { id: LayerId }) {
   const status = useApp((s) => s.plantStatus);
   switch (id) {
     case "prices":
-      return (
-        <Scale
-          gradient={gradientCss(PRICE_GLOW_STOPS)}
-          ticks={PRICE_GLOW_TICKS}
-          note="Day-ahead price at the clock; several zones: their middle. Cyan ripples: below zero. ENTSO-E."
-        />
-      );
+      return <PriceKey />;
     case "flows":
       return <Note>Arrows point the way the power goes; labels from 1 GW. ENTSO-E, every 15 minutes.</Note>;
     case "liveGrids":

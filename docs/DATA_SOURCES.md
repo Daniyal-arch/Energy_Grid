@@ -60,9 +60,15 @@ skipped):
   were summed. Cyprus and Malta are not mapped.
 - **Prices on the map and in the EU card (computed in the app):** the EU card's "Price
   now" is the median of the bidding zones' day-ahead prices at the clock, with the
-  number of zones named. Under a country's name the map shows its zone's price, or the
-  lowest–highest of its zones. The Prices layer colours each country by its zone's price,
-  or the median of its zones; the tooltip lists every zone.
+  number of zones named. With the price colour, the map shows under a country's name its
+  zone's price, or the lowest–highest of its zones. The Prices layer
+  (`frontend/src/map/priceTerrain.ts`) raises each country as a low slab: its height is
+  its zone's price, or the median of its zones (computed), 100 €/MWh standing 50 km; its
+  colour places that price between the lowest (from 0) and highest zone price of the
+  replayed day (live: of the snapshot), named in the key; below zero lies flat in cyan. In 24 h the generation towers stand on the blocks
+  and the flows arc from block to block. Between two 15-min values the height glides
+  (drawing only, as the towers do); labels and the hover card (every zone's own price)
+  show the slot's value.
 - **Reporting errors left out** (`scripts/entsoe.py`, `drop_implausible`): a load value
   above twice the country's installed capacity, or one production type above all of it,
   is cleared (null) and counted in `left_out`. Installed capacity is the bundled

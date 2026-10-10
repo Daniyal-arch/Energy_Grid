@@ -53,7 +53,7 @@ export const PRICE_STOPS: ColorStops = [
   [150, [86, 50, 58]],
   [250, [140, 54, 40]],
 ];
-// the price glow (Prices layer): below zero ice cyan, cheap green, dear red, extreme magenta
+// the Prices layer: below zero ice cyan, cheap green, dear red, extreme magenta
 export const PRICE_GLOW_STOPS: ColorStops = [
   [-50, [90, 235, 255]],
   [0, [70, 225, 170]],

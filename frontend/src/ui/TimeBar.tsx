@@ -57,6 +57,7 @@ function DayBar() {
   const i = days.indexOf(date);
   // the newest key moment on the clock, as one line (several can share a slot: the last)
   const caption = (day.highlights ?? []).filter((h) => slot >= h.slot && slot < h.slot + CAPTION_SLOTS).pop();
+  const clock = marketTime(at(k)).split(" ");
   const c = caption ? captionText(caption, name) : null;
   return (
     <div className="w-full">
@@ -82,6 +83,27 @@ function DayBar() {
         >
           {playing ? "❚❚" : "▶"}
         </button>
+        {/* the market clock (CET/CEST) of the data on the map, and the day */}
+        <div className="shrink-0 leading-none">
+          <div className="tabular-nums text-[24px] font-semibold tracking-tight text-slate-50">
+            {clock[0]}
+            <span className="ml-1 text-[11px] font-medium tracking-normal text-slate-400">{clock[1]}</span>
+          </div>
+          <div className="mt-1 flex items-center text-[10.5px] text-slate-300">
+            <button disabled={i <= 0} onClick={() => actions.setDay(days[i - 1])} className="pr-1 hover:text-white disabled:opacity-30" aria-label="Previous day">
+              ‹
+            </button>
+            {dayLabel(date)}
+            <button
+              disabled={i < 0 || i >= days.length - 1}
+              onClick={() => actions.setDay(days[i + 1])}
+              className="pl-1 hover:text-white disabled:opacity-30"
+              aria-label="Next day"
+            >
+              ›
+            </button>
+          </div>
+        </div>
         <div className="min-w-0 flex-1">
           <div className="relative">
             {(day.highlights ?? []).map((h) => {
@@ -111,23 +133,6 @@ function DayBar() {
               className="w-full accent-sky-300"
               aria-label="Time of day"
             />
-          </div>
-          <div className="flex justify-between text-[10px] text-[#8d94a1]">
-            <span>
-              <button disabled={i <= 0} onClick={() => actions.setDay(days[i - 1])} className="mr-1 px-1 hover:text-slate-200 disabled:opacity-30" aria-label="Previous day">
-                ‹
-              </button>
-              {dayLabel(date)}
-              <button
-                disabled={i < 0 || i >= days.length - 1}
-                onClick={() => actions.setDay(days[i + 1])}
-                className="ml-1 px-1 hover:text-slate-200 disabled:opacity-30"
-                aria-label="Next day"
-              >
-                ›
-              </button>
-            </span>
-            <span className="tabular-nums text-slate-200">{marketTime(at(k))}</span>
           </div>
         </div>
       </div>

@@ -221,6 +221,9 @@ export function europeView(map: maplibregl.Map): { center: [number, number]; zoo
 export const europeCamera = () => ({ center: (isNarrow() ? [12, 46] : [12, 49]) as [number, number], zoom: isNarrow() ? 1.7 : 2.55 });
 export const worldCamera = () => ({ center: (isNarrow() ? [30, 8] : [34, 14]) as [number, number], zoom: isNarrow() ? 1.05 : 2.05 });
 
+/** Room the 24 h view keeps free around the map (MapLibre keeps it as the camera's padding). */
+export const dayPadding = () => (isNarrow() ? { left: 4, right: 4, top: 90, bottom: 160 } : { left: 320, right: 380, top: 70, bottom: 110 });
+
 /** The 24 h view: continental Europe, tilted so the towers fill the screen. */
 export const dayFrame = (map: maplibregl.Map, duration = 0) =>
   map.fitBounds(
@@ -228,9 +231,5 @@ export const dayFrame = (map: maplibregl.Map, duration = 0) =>
       isNarrow() ? [-10, 41] : [-9, 36],
       isNarrow() ? [27, 60] : [27, 63],
     ],
-    {
-      padding: isNarrow() ? { left: 4, right: 4, top: 90, bottom: 160 } : { left: 320, right: 380, top: 70, bottom: 110 },
-      pitch: isNarrow() ? 52 : 55,
-      duration,
-    },
+    { padding: dayPadding(), pitch: isNarrow() ? 52 : 55, duration },
   );

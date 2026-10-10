@@ -62,7 +62,6 @@ import {
   stopColor,
 } from "../app/colors";
 import { TOWER_LABEL_MW, TOWER_M_PER_MW, TOWER_RADIUS_M, NIGHT_BOUNDS } from "../app/day";
-import { PRICE_GLOW_STOPS } from "../app/colors";
 import { ANCHOR, BEAM_MIN_MW, HEX_KM, SMALL, angularDistance, bbox, hexBins, pairs, unitVector } from "../app/geo";
 import type { ColourId, LayerId, PlantStatus, Selection, TimeMode } from "../app/store";
 import type {
@@ -86,6 +85,7 @@ import type {
   Unit,
 } from "../app/types";
 import { memo, NONE } from "./memo";
+import { priceTerrain, type Terrain } from "./priceTerrain";
 
 export interface Frame {
   mode: TimeMode;
@@ -259,6 +259,8 @@ export function buildLayers(fr: Frame): Layer[] {
   const shapes = memo("shapes", [countries], () =>
     countries ? countries.countries.flatMap((c) => c.polygons.map((rings) => ({ iso: c.iso, name: c.name, polygon: rings.map(pairs) }))) : [],
   );
+  // prices: each country a block as high as its price (map/priceTerrain.ts)
+  const terrain = facingEurope && isOn("prices") ? priceTerrain(fr, dayK, shapes) : null;
   const fillKey = [fr.colour, f.stats, f.outages, f.prices, f.transition, f.worldStats, f.irena, fr.mode, day, dayK, fr.yearK, sel, Math.round(sunLight(fr) * 20)];
   if (facingEurope) {
     layers.push(
@@ -568,14 +570,17 @@ export function buildLayers(fr: Frame): Layer[] {
   }
 
   // ---------------------------------------------------------------- generation towers (24 h)
-  if (day && countries && isOn("towers") && facingEurope) layers.push(...towerLayers(fr, day, dayK, countries, sel));
-
-  // ---------------------------------------------------------------- prices: a glow per country
-  if (facingEurope && isOn("prices")) layers.push(...priceLayers(fr, dayK));
+  // ---------------------------------------------------------------- prices: blocks, towers on top
+  if (terrain) layers.push(...terrain.layers);
+  const towers = day && countries && isOn("towers") && facingEurope;
+  if (towers) layers.push(...towerLayers(fr, day, dayK, countries, sel, terrain));
 
   // ---------------------------------------------------------------- cross-border flows
   if (facingEurope && isOn("flows")) {
-    const arcs = flowArcs(fr, dayK);
+    const flat = flowArcs(fr, dayK);
+    // over the price blocks the flows arc from the top of one to the top of the other
+    const arcs = terrain ? memo("liftedArcs", [flat, fr.day ? fr.daySlot : 0, f.stats], () => flat.map((a) => liftArc(a, terrain))) : flat;
+    const deep = !!day || !!terrain;
     const touches = (a: Arc) => a.from === sel || a.to === sel;
     parts.push(
       memo("lbl-flows", [arcs, sel, !!day, fr.isMobile], () =>
@@ -595,7 +600,7 @@ export function buildLayers(fr: Frame): Layer[] {
         widthUnits: "pixels",
         capRounded: true,
         jointRounded: true,
-        parameters: day ? { depthCompare: "less-equal", depthWriteEnabled: false } : ON_TOP,
+        parameters: deep ? { depthCompare: "less-equal", depthWriteEnabled: false } : ON_TOP,
       }),
       new FlowArrowLayer<Arc>({
         id: "eu-flows",
@@ -614,7 +619,7 @@ export function buildLayers(fr: Frame): Layer[] {
         spacing: fr.clock.spacing,
         strokePx: 2.4,
         lineAlpha: 0.85,
-        parameters: { ...OVER, depthCompare: day ? "less-equal" : "always", depthWriteEnabled: false },
+        parameters: { ...OVER, depthCompare: deep ? "less-equal" : "always", depthWriteEnabled: false },
       }),
     );
   }
@@ -654,7 +659,23 @@ function flowArcs(fr: Frame, dayK: number): Arc[] {
   });
 }
 
-function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: CountriesFile, sel: string | null): Layer[] {
+/** A flow lifted from the top of one price block to the top of the other, bowing upwards. */
+function liftArc(a: Arc, terrain: Terrain): Arc {
+  const h0 = terrain.height(a.from);
+  const h1 = terrain.height(a.to);
+  const n = a.path.length - 1;
+  const path = a.path.map((p, i) => {
+    const t = i / n;
+    return [p[0], p[1], h0 + (h1 - h0) * t + 22_000 * Math.sin(Math.PI * t)];
+  }) as unknown as [number, number][];
+  return { ...a, path };
+}
+
+/** Text the tower and price labels may use (deck.gl draws its own glyph atlas). */
+const LABEL_CHARS = `${Array.from({ length: 95 }, (_, i) => String.fromCharCode(32 + i)).join("")}€·−`;
+
+function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: CountriesFile, sel: string | null, terrain: Terrain | null): Layer[] {
+  const lifted = (iso: string) => (terrain ? terrain.height(iso) : 0);
   const names = memo("towerNames", [countries], () => new Map(countries.countries.map((c) => [c.iso, c.name])));
   const frac = Math.max(0, Math.min(1, fr.daySlot - dayK));
   const next = Math.min(day.slots - 1, dayK + 1);
@@ -679,6 +700,13 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
     towers.push(...pieces);
   }
   const top = new Map(towers.map((t) => [t.iso, t.group]));
+  // where each tower ends (metres), for the labels
+  const tops = new Map<string, number>();
+  for (const t of towers) tops.set(t.iso, Math.max(tops.get(t.iso) ?? 0, lifted(t.iso) + (t.base + t.drawn) * TOWER_M_PER_MW));
+  const labelled = towers
+    .filter((t) => t.group === top.get(t.iso) && t.total >= TOWER_LABEL_MW)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, fr.isMobile ? 5 : 9);
   const pools = memo("towerPools", [day, dayK, sel], () => {
     const best = new Map<string, TowerPiece>();
     for (const t of towers) if (!best.has(t.iso) || t.mw > best.get(t.iso)!.mw) best.set(t.iso, t);
@@ -688,8 +716,9 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
     new ScatterplotLayer<{ iso: string; total: number; group: string }>({
       id: "eu-tower-pools",
       data: pools,
-      getPosition: (t) => ANCHOR[t.iso],
+      getPosition: (t) => [...ANCHOR[t.iso], lifted(t.iso) + 600] as [number, number, number],
       getRadius: (t) => 30_000 + Math.sqrt(t.total) * 450,
+      updateTriggers: { getPosition: [fr.daySlot, !!terrain] },
       getFillColor: (t) => [...(FUEL_COLOR[t.group] ?? FUEL_COLOR.other), 70],
       stroked: false,
       parameters: ADD,
@@ -697,7 +726,7 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
     new ColumnLayer<TowerPiece>({
       id: "eu-towers",
       data: towers,
-      getPosition: (t) => [...ANCHOR[t.iso], t.base * TOWER_M_PER_MW] as [number, number, number],
+      getPosition: (t) => [...ANCHOR[t.iso], lifted(t.iso) + t.base * TOWER_M_PER_MW] as [number, number, number],
       getElevation: (t) => t.drawn * TOWER_M_PER_MW,
       getFillColor: (t) => [...(FUEL_COLOR[t.group] ?? FUEL_COLOR.other), 235],
       radius: TOWER_RADIUS_M,
@@ -708,19 +737,22 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
     }),
     new TextLayer<TowerPiece>({
       id: "eu-tower-labels",
-      data: towers
-        .filter((t) => t.group === top.get(t.iso) && t.total >= TOWER_LABEL_MW)
-        .sort((a, b) => b.total - a.total)
-        .slice(0, fr.isMobile ? 5 : 9),
-      getPosition: (t) => [...ANCHOR[t.iso], (t.base + t.drawn) * TOWER_M_PER_MW + 25_000] as [number, number, number],
-      getText: (t) => `${t.iso} ${Math.round(t.total / 1000)} GW`,
+      data: labelled,
+      getPosition: (t) => [...ANCHOR[t.iso], (tops.get(t.iso) ?? 0) + 25_000] as [number, number, number],
+      // generation and, with the Prices layer, the price
+      getText: (t) => {
+        const p = terrain?.price(t.iso);
+        return `${t.iso} ${Math.round(t.total / 1000)} GW${p != null ? ` · ${Math.round(p)} €` : ""}`;
+      },
       getSize: 12,
       getColor: [236, 240, 246, 255],
       fontFamily: "Inter, system-ui, sans-serif",
       fontWeight: 700,
+      characterSet: LABEL_CHARS,
       background: true,
       getBackgroundColor: [6, 9, 14, 200],
       backgroundPadding: [4, 2],
+      updateTriggers: { getText: [dayK, !!terrain] },
       parameters: ON_TOP,
     }),
   ];
@@ -737,7 +769,7 @@ function countryLabels(fr: Frame, countries: CountriesFile): LabelFeature[] {
   const prices = pr ? (fr.files.prices as PricesFile | undefined) : undefined;
   const ir = IR_METRIC[fr.colour];
   const irena = ir ? (fr.files.irena as IrenaFile | undefined) : undefined;
-  const live = fr.colour === "price" || fr.layers.prices ? "price" : fr.colour === "renewable" ? "renewable" : null;
+  const live = fr.colour === "price" ? "price" : fr.colour === "renewable" ? "renewable" : null;
   const day = fr.day;
   const dayK = day ? Math.min(day.slots - 1, Math.floor(fr.daySlot)) : 0;
   const stats = live ? (fr.files.stats as StatsFile | undefined) : undefined;
@@ -1177,76 +1209,6 @@ function financeLayers(fr: Frame): Layer[] {
       getLineWidth: 1,
       pickable: true,
       parameters: ON_TOP,
-    }),
-  ];
-}
-
-/** A country's day-ahead price at the clock: its zone's, or the middle of its zones (€/MWh). */
-function countryPrice(fr: Frame, iso: string, dayK: number): number | null {
-  const v = fr.day
-    ? Object.values(fr.day.prices).flatMap((z) => (z.country === iso && z.values[dayK] != null ? [z.values[dayK] as number] : []))
-    : Object.values((fr.files.stats as StatsFile | undefined)?.day_ahead_prices ?? {}).flatMap((p) => (p.country === iso ? [p.eur_mwh] : []));
-  if (!v.length) return null;
-  const s = [...v].sort((a, b) => a - b);
-  const m = s.length >> 1;
-  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
-}
-
-/** Prices on the map: a glowing disc at each country in the colour of its price, breathing
- *  slowly; where power costs less than nothing, cyan ripples run outwards. */
-function priceLayers(fr: Frame, dayK: number): Layer[] {
-  const countries = (fr.files.countries as CountriesFile | undefined)?.countries ?? [];
-  const rows = memo("price-rows", [countries, fr.day, dayK, fr.files.stats], () =>
-    countries.flatMap((c) => {
-      const p = ANCHOR[c.iso] ? countryPrice(fr, c.iso, dayK) : null;
-      return p == null ? [] : [{ iso: c.iso, at: ANCHOR[c.iso], price: p, color: stopColor(PRICE_GLOW_STOPS, Math.max(-50, Math.min(350, p))) ?? [200, 200, 200] }];
-    }),
-  );
-  type Row = (typeof rows)[number];
-  const t = fr.now / 1000;
-  const breathe = 1 + 0.06 * Math.sin(t * 1.6);
-  const base = fr.day ? 95_000 : 70_000; // metres: under the towers in 24 h, smaller on the globe
-  const negative = rows.filter((r) => r.price < 0);
-  // 24 h: towers hide the glow behind them
-  const blend = fr.day ? { ...ADD, depthCompare: "less-equal" as const } : ADD;
-  const ripples = negative.flatMap((r) => [0, 1, 2].map((n) => ({ r, k: (t / 2.4 + n / 3) % 1 })));
-  return [
-    new ScatterplotLayer<Row>({
-      id: "price-glow",
-      data: rows,
-      getPosition: (r) => r.at,
-      getRadius: (r) => base * (0.95 + Math.min(0.5, Math.abs(r.price) / 300)) * breathe,
-      getFillColor: (r) => [...r.color, 70],
-      updateTriggers: { getRadius: [breathe] },
-      transitions: { getFillColor: 320 },
-      parameters: blend,
-    }),
-    new ScatterplotLayer<Row>({
-      id: "price-disc",
-      data: rows,
-      getPosition: (r) => r.at,
-      getRadius: base * 0.42,
-      getFillColor: (r) => [...r.color, 150],
-      stroked: true,
-      getLineColor: (r) => [...r.color, 240],
-      lineWidthUnits: "pixels",
-      getLineWidth: 1.6,
-      transitions: { getFillColor: 320, getLineColor: 320 },
-      pickable: true,
-      parameters: blend,
-    }),
-    new ScatterplotLayer<{ r: Row; k: number }>({
-      id: "price-ripples",
-      data: ripples,
-      getPosition: (d) => d.r.at,
-      getRadius: (d) => base * (0.5 + 1.8 * d.k),
-      filled: false,
-      stroked: true,
-      getLineColor: (d) => [90, 235, 255, Math.round(220 * (1 - d.k))],
-      lineWidthUnits: "pixels",
-      getLineWidth: 2,
-      updateTriggers: { getRadius: [t], getLineColor: [t] },
-      parameters: blend,
     }),
   ];
 }

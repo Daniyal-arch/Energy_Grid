@@ -7,8 +7,9 @@ import MapCanvas from "../map/MapCanvas";
 import { LIVE_KEYS, ensure, useDataStore } from "../app/data";
 import { MOBILE_QUERY } from "../app/geo";
 import { STORIES, actions, readUrl, useApp, writeUrl } from "../app/store";
-import LayersPanel, { ColourLegend } from "./LayersPanel";
-import { COLOURS } from "../app/store";
+import LayersPanel from "./LayersPanel";
+import MapLegend from "./MapLegend";
+import MapOptions from "./MapOptions";
 import Panel from "./Panel";
 import Search from "./Search";
 import TimeBar, { TimeControl } from "./TimeBar";
@@ -92,7 +93,8 @@ const Brand = () => (
 );
 
 function Desktop() {
-  const [layersOpen, setLayersOpen] = useState(true);
+  const layersOpen = useApp((s) => s.layersPanel);
+  const setLayersOpen = (v: boolean) => useApp.setState({ layersPanel: v });
   return (
     <>
       <header className="absolute inset-x-3 top-3 z-30 flex items-center gap-3">
@@ -103,7 +105,7 @@ function Desktop() {
         </div>
         <TimeControl />
       </header>
-      <aside className="absolute bottom-14 left-3 top-16 z-20 flex w-[268px] flex-col">
+      <aside className={`absolute left-3 top-16 z-20 flex w-[268px] flex-col ${layersOpen ? "bottom-14" : "pointer-events-none [&>button]:pointer-events-auto"}`}>
         <button
           onClick={() => setLayersOpen(!layersOpen)}
           className="flex items-center justify-between rounded-t-xl border border-b-0 border-white/10 bg-[#0b0f16]/92 px-3 py-2 text-[11px] uppercase tracking-[0.2em] text-slate-300 backdrop-blur"
@@ -111,10 +113,13 @@ function Desktop() {
         >
           Layers <span className="text-[9px]">{layersOpen ? "▲" : "▼"}</span>
         </button>
-        {layersOpen && (
+        {layersOpen ? (
           <div className="min-h-0 flex-1 overflow-y-auto rounded-b-xl border border-t-0 border-white/10 bg-[#0b0f16]/92 backdrop-blur">
             <LayersPanel />
           </div>
+        ) : (
+          // panel closed: the key to what is on the map, where the map has least to show
+          <MapLegend />
         )}
       </aside>
       <aside className="absolute bottom-14 right-3 top-16 z-20 flex w-[372px] flex-col overflow-hidden rounded-xl border border-white/10 bg-[#080b11]/92 backdrop-blur">
@@ -123,22 +128,9 @@ function Desktop() {
       <div className="absolute bottom-3 left-[290px] right-[396px] z-20">
         <TimeBar />
       </div>
-      <MapKey />
+      <MapOptions />
       <div className="pointer-events-none absolute bottom-1 left-3 z-10 max-w-[260px] text-[8.5px] leading-tight text-slate-500">{CREDITS}</div>
     </>
-  );
-}
-
-/** What the countries' colour means, always visible on the map while a colour is chosen. */
-function MapKey() {
-  const colour = useApp((s) => s.colour);
-  if (colour === "none") return null;
-  const label = COLOURS.find((c) => c.id === colour)?.label ?? "";
-  return (
-    <div className="pointer-events-none absolute bottom-14 left-[290px] z-20 w-[230px] rounded-lg border border-white/10 bg-[#0b0f16]/88 px-3 py-2 backdrop-blur">
-      <div className="mb-1 text-[10px] uppercase tracking-[0.16em] text-slate-300">{label}</div>
-      <ColourLegend colour={colour} />
-    </div>
   );
 }
 
@@ -163,6 +155,7 @@ function Phone() {
           </div>
         </div>
       )}
+      <MapOptions />
       <div className="absolute inset-x-2 bottom-14 z-20">
         <TimeBar />
       </div>
@@ -202,7 +195,7 @@ export default function App() {
   useEffect(
     () =>
       useApp.subscribe((s, prev) => {
-        if (s.story !== prev.story || s.mode !== prev.mode || s.colour !== prev.colour || s.layers !== prev.layers || s.selection !== prev.selection || s.tab !== prev.tab || s.day !== prev.day || s.plantStatus !== prev.plantStatus)
+        if (s.story !== prev.story || s.mode !== prev.mode || s.colour !== prev.colour || s.layers !== prev.layers || s.selection !== prev.selection || s.tab !== prev.tab || s.day !== prev.day || s.plantStatus !== prev.plantStatus || s.plantStyle !== prev.plantStyle || s.layersPanel !== prev.layersPanel)
           writeUrl();
       }),
     [],

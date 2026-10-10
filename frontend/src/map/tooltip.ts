@@ -17,6 +17,7 @@ import { dayPower, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { useApp, motion } from "../app/store";
 import type { Arc, Cable, DayFile, GasSite, Hex, Plant, PlantsFile, Power, Shape, StatsFile, Substation, TowerPiece, Unit } from "../app/types";
+import { priceState } from "./priceTerrain";
 
 export const TIP_STYLE = {
   background: "rgba(8,10,14,0.92)",
@@ -232,15 +233,13 @@ function tooltipHtml(id: string, object: unknown): string | null {
       const a = object as Arc;
       return `<b>${a.from} → ${a.to}</b> ${power(a.mw)}${SRC(`IESO actual intertie flow, ${a.ts.slice(11, 16)} EST`)}`;
     }
-    case "price-disc": {
-      const r = object as { iso: string; price: number };
-      const s = useApp.getState();
-      const zones = (s.mode === "day"
-        ? Object.entries(currentDay()?.prices ?? {}).flatMap(([z, v]) => (v.country === r.iso ? [[z, v.values[Math.floor(motion.daySlot)]] as const] : []))
-        : Object.entries(fileOf<StatsFile>("stats")?.day_ahead_prices ?? {}).flatMap(([z, p]) => (p.country === r.iso ? [[z, p.eur_mwh] as const] : []))
-      ).filter(([, v]) => v != null);
-      const list = zones.length > 1 ? zones.map(([z, v]) => `<div>${z}: <b>${Math.round(v as number)} €/MWh</b></div>`).join("") : `<div><b>${Math.round(r.price)} €/MWh</b> day-ahead</div>`;
-      return `<b>${r.iso}</b>${list}${zones.length > 1 ? `<div style="color:#8d94a1">glow: the middle of its zones</div>` : ""}${r.price < 0 ? `<div style="color:#5aebff">below zero: producers pay to deliver</div>` : ""}${SRC("ENTSO-E day-ahead auction, 15 min")}`;
+    case "price-terrain": {
+      const iso = (object as Shape).iso;
+      const st = priceState;
+      const zones = st.zones.of[iso] ?? [];
+      const list = zones.map((z) => `<div>${z}: <b>${st.prices[z] != null ? `${st.prices[z].toFixed(2)} €/MWh` : "–"}</b></div>`).join("");
+      const note = zones.length > 1 ? `<div style="color:#8d94a1">height: the median of its zones</div>` : "";
+      return `<b>${(object as Shape).name}</b>${list}${note}${SRC("ENTSO-E day-ahead auction, 15 min · click for the country")}`;
     }
     case "pr-zones": {
       const zone = (object as { zone: string }).zone;

@@ -7,6 +7,8 @@ import { create } from "zustand";
 
 export const SNAPSHOT_REMOTE = "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-data/eu";
 export const ARCHIVE_REMOTE = "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu";
+// recordings (frontend/scripts/record-video.mjs) wait for the archive instead of falling back
+const RECORDING = new URLSearchParams(window.location.search).has("record");
 
 export async function getJson<T>(url: string): Promise<T> {
   const r = await fetch(url);
@@ -90,21 +92,21 @@ const STATIC: Record<string, Loader> = {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)
     const [remote, local] = await Promise.allSettled([
-      fetch(`${ARCHIVE_REMOTE}/day/index.json?t=${Date.now()}`, { signal: AbortSignal.timeout(4000) }).then((r) =>
+      fetch(`${ARCHIVE_REMOTE}/day/index.json?t=${Date.now()}`, { signal: AbortSignal.timeout(RECORDING ? 30_000 : 4000) }).then((r) =>
         r.ok ? (r.json() as Promise<{ days: string[] }>) : Promise.reject(),
       ),
       getJson<{ days: string[] }>("/data/eu/day/index.json"),
     ]);
     const remoteDays = remote.status === "fulfilled" ? remote.value.days : [];
     const localDays = local.status === "fulfilled" ? local.value.days : [];
-    set({ remote: remoteDays, all: [...new Set([...remoteDays, ...localDays])].sort() });
+    set({ remote: remoteDays, local: localDays, all: [...new Set([...remoteDays, ...localDays])].sort() });
   },
 };
 
 /** The archive first, then the bundled copy (day files, their wind, week and unit files). */
 function archiveFirst(remote: string, local: string): Loader {
   return (set) =>
-    fetch(remote, { signal: AbortSignal.timeout(8000) })
+    fetch(remote, { signal: AbortSignal.timeout(RECORDING ? 60_000 : 8000) })
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .catch(() => getJson(local))
       .then(set);
@@ -114,7 +116,9 @@ function loaderFor(key: string): Loader | null {
   if (STATIC[key]) return STATIC[key];
   const [kind, arg] = key.split(":");
   // a day only in the bundle loads from the bundle (no wait for the archive)
-  const inArchive = () => (useDataStore.getState().files.dayIndex as { remote: string[] } | undefined)?.remote.includes(arg) ?? true;
+  const index = () => useDataStore.getState().files.dayIndex as { remote: string[]; local: string[] } | undefined;
+  // recordings take a bundled copy first (the archive can be slow to answer)
+  const inArchive = () => !(RECORDING && index()?.local.includes(arg)) && (index()?.remote.includes(arg) ?? true);
   if (kind === "day") return inArchive() ? archiveFirst(`${ARCHIVE_REMOTE}/day/${arg}.json`, `/data/eu/day/${arg}.json`) : bundled(`day/${arg}.json`);
   if (kind === "dayWind") return inArchive() ? archiveFirst(`${ARCHIVE_REMOTE}/wind/${arg}.json`, `/data/eu/wind/${arg}.json`) : bundled(`wind/${arg}.json`);
   if (kind === "week")
