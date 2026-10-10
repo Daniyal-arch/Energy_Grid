@@ -104,6 +104,22 @@ export const STYLE: maplibregl.StyleSpecification = {
       paint: { "text-color": "rgb(255,222,150)", "text-halo-color": "rgba(6,8,12,0.95)", "text-halo-width": 2.4 },
     },
     {
+      id: "label-gas",
+      type: "symbol",
+      source: "labels",
+      filter: ["==", ["get", "kind"], "gas"],
+      layout: { "text-field": ["get", "text"], "text-font": ["noto-medium"], "text-size": 10.5, "text-offset": [0, 1], "symbol-sort-key": ["get", "rank"] },
+      paint: { "text-color": "rgb(255,222,170)", "text-halo-color": "rgba(10,8,4,0.95)", "text-halo-width": 2.4 },
+    },
+    {
+      id: "label-gas-nodes",
+      type: "symbol",
+      source: "labels",
+      filter: ["==", ["get", "kind"], "gasNode"],
+      layout: { "text-field": ["get", "text"], "text-font": ["noto-medium"], "text-size": 9.5, "text-offset": [0, 1.1], "text-max-width": 9 },
+      paint: { "text-color": "rgb(240,200,140)", "text-halo-color": "rgba(6,8,12,0.95)", "text-halo-width": 2 },
+    },
+    {
       id: "label-flows",
       type: "symbol",
       source: "labels",

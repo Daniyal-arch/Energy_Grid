@@ -20,6 +20,8 @@ import {
 } from "../components/CountryCards";
 import { CaptureCard, MonthsCard, TimeOfDayCard, ZoneCard, ZoneRankingCard } from "../components/PriceCards";
 import { FinanceCountryCard, FinanceWorldCard } from "../components/FinanceCards";
+import { GasInOutCard, GasSourcesCard } from "../components/GasFlowCards";
+import type { GasFlowsFile } from "../lib/gasFlows";
 import { IrenaCountryCard, IrenaRankingCard } from "../components/IrenaCards";
 import type { FinanceFile } from "../lib/finance";
 import { AggregateCard, RankingCard, type RankRow } from "../components/TransitionCards";
@@ -172,6 +174,7 @@ function EuropePanel() {
   const stats = useFile<StatsFile>("stats");
   const outages = useFile<OutagesFile>(mode === "live" ? "outages" : null);
   const dossier = useFile<Dossier>("dossier");
+  const gasFlows = useFile<GasFlowsFile>("gasFlows");
   const { day, k, ts, timeOf } = useDayNow();
   // the EU figures carry the start of their interval (hourly in older archives)
   const euStep = day?.eu?.step_s ?? 3600;
@@ -254,6 +257,7 @@ function EuropePanel() {
       label: "Gas & LNG",
       body: () => (
         <>
+          {gasFlows && <GasSourcesCard file={gasFlows} />}
           {dossier?.gas.EU && <GasCard gas={dossier.gas.EU} />}
           {dossier?.lng?.EU && <LngCard lng={dossier.lng.EU} />}
           {!dossier && <Empty>Loading GIE figures…</Empty>}
@@ -265,6 +269,9 @@ function EuropePanel() {
   ];
   return <Frame title="European Union" sub={mode === "day" && day ? `${day.date} · ${timeOf(ts(k))}` : "Live · ENTSO-E"} tabs={withStats(tabs, statsOn)} close={false} />;
 }
+
+/** A country appears in the gas-flow file (one of its borders, sources or LNG terminals). */
+const countryFlowsShown = (f: GasFlowsFile, iso: string) => f.pairs.some((p) => p.a === iso || p.b === iso);
 
 function Hint({ children }: { children: ReactNode }) {
   return <div className={`px-1 text-[10.5px] ${muted}`}>{children}</div>;
@@ -357,6 +364,7 @@ function CountryPanel({ iso }: { iso: string }) {
   const reference = useFile<ReferenceFile>("reference");
   const plants = useFile<PlantsFile>("plants");
   const gas = useFile<GasFile>("gas");
+  const gasFlows = useFile<GasFlowsFile>("gasFlows");
   const irena = useFile<IrenaFile>("irena");
   const yearLabel = useYearLabel();
   const { day, k, ts, timeOf } = useDayNow();
@@ -438,6 +446,9 @@ function CountryPanel({ iso }: { iso: string }) {
       label: "Gas & LNG",
       body: () => (
         <>
+          {gasFlows && countryFlowsShown(gasFlows, iso) && (
+            <GasInOutCard file={gasFlows} iso={iso} countryName={(c) => countries?.countries.find((x) => x.iso === c)?.name ?? c} />
+          )}
           {dossier?.gas[iso] && <GasCard gas={dossier.gas[iso]} />}
           {dossier?.lng?.[iso] && <LngCard lng={dossier.lng[iso]} />}
           {(lng.length > 0 || storages.length > 0) && (
@@ -450,7 +461,7 @@ function CountryPanel({ iso }: { iso: string }) {
               {storages.length > 0 && <div className="mt-0.5 text-[11px] text-slate-200">Gas storage sites: {storages.length}</div>}
             </Card>
           )}
-          {!dossier?.gas[iso] && !dossier?.lng?.[iso] && !lng.length && !storages.length && <Empty>No gas storage or LNG reported for {name}.</Empty>}
+          {!dossier?.gas[iso] && !dossier?.lng?.[iso] && !lng.length && !storages.length && !(gasFlows && countryFlowsShown(gasFlows, iso)) && <Empty>No gas storage or LNG reported for {name}.</Empty>}
           <SourcesCard items={GAS_SOURCES} />
         </>
       ),

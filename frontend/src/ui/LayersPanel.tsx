@@ -5,6 +5,7 @@
 import { useState, type ReactNode } from "react";
 
 import { FUEL_COLOR, FUEL_LABEL } from "../lib/energy";
+import { GAS_FLOW, GAS_LABEL_GWH, type GasFlowsFile } from "../lib/gasFlows";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
@@ -131,6 +132,22 @@ function PriceKey() {
   );
 }
 
+/** Gas flows: the newest complete gas day, sources outside Europe placed for reading. */
+function GasFlowKey() {
+  const day = useDataStore((d) => (d.files.gasFlows as GasFlowsFile | undefined)?.gas_day);
+  return (
+    <>
+      <Swatches>
+        <Swatch color={rgbCss(GAS_FLOW)} kind="line" label="net flow, GWh per gas day" />
+        <Swatch color={rgbCss(GAS_FLOW)} label="source / LNG terminals" />
+      </Swatches>
+      <Note>
+        Gas day {day ?? "…"} (06:00–06:00 CET). Labels from {GAS_LABEL_GWH} GWh/d. Sources outside Europe and each country's LNG terminals are placed for reading. ENTSOG, physical flow.
+      </Note>
+    </>
+  );
+}
+
 function LayerLegend({ id }: { id: LayerId }) {
   const status = useApp((s) => s.plantStatus);
   switch (id) {
@@ -138,6 +155,8 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <PriceKey />;
     case "flows":
       return <Note>Arrows point the way the power goes; labels from 1 GW. ENTSO-E, every 15 minutes.</Note>;
+    case "gasFlows":
+      return <GasFlowKey />;
     case "liveGrids":
       return (
         <Swatches>

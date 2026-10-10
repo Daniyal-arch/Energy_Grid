@@ -11,12 +11,14 @@ import { priceMetricById, type PricesFile } from "../lib/prices";
 import { ISO3, formatMetric, metricById, type TransitionFile } from "../lib/transition";
 import { NEM_NAME, latest, type WorldStatsFile } from "../lib/world";
 import { PLANT_TYPE_LABEL, STATUS_LABEL, type WorldPlantsFile } from "../lib/worldPlants";
+import { endName, gwhd, latestOf, type GasFlowsFile } from "../lib/gasFlows";
+import type { GasArc } from "./build";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { dayPower, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { useApp, motion } from "../app/store";
-import type { Arc, Cable, DayFile, GasSite, Hex, Plant, PlantsFile, Power, Shape, StatsFile, Substation, TowerPiece, Unit } from "../app/types";
+import type { Arc, Cable, CountriesFile, DayFile, GasSite, Hex, Plant, PlantsFile, Power, Shape, StatsFile, Substation, TowerPiece, Unit } from "../app/types";
 import { priceState } from "./priceTerrain";
 
 export const TIP_STYLE = {
@@ -252,6 +254,16 @@ function tooltipHtml(id: string, object: unknown): string | null {
     case "eu-flows": {
       const a = object as Arc;
       return `<b>${a.from} → ${a.to}</b> ${gw(a.mw)}${SRC(`physical flow, interval ${utc(a.ts)} · ENTSO-E`)}`;
+    }
+    case "eu-gas-flows": {
+      const a = object as GasArc;
+      const g = fileOf<GasFlowsFile>("gasFlows");
+      if (!g) return null;
+      const cname = (iso: string) => fileOf<CountriesFile>("countries")?.countries.find((c) => c.iso === iso)?.name ?? iso;
+      const p = a.pair;
+      const pts = p.points.filter((x) => x[3]).slice(0, 4).map((x) => `<div style="color:#8d94a1">${x[0]} ${gwhd(x[3])}</div>`).join("");
+      const two = p.kind === "border" && latestOf(p.ab) && latestOf(p.ba) ? `<div>${gwhd(latestOf(p.ab))} ${p.a}→${p.b}, ${gwhd(latestOf(p.ba))} back</div>` : "";
+      return `<b>${endName(a.from, g, cname, a.country)} → ${endName(a.to, g, cname, a.country)}</b> ${gwhd(a.gwh)}${two}${pts}${SRC(`net physical flow, gas day ${g.gas_day} · ENTSOG, sum of ${cname(p.read_from)}'s operators' reports`)}`;
     }
     case "eu-lng":
     case "eu-gas-storage": {

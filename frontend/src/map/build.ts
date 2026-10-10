@@ -9,6 +9,7 @@ import { BitmapLayer, ColumnLayer, LineLayer, PathLayer, ScatterplotLayer, Solid
 import { FUEL_COLOR, STACK_ORDER, power } from "../lib/energy";
 import { FlowArrowLayer } from "../lib/flowArrowLayer";
 import { curvedPath, flowDistances } from "../lib/flowLayers";
+import { GAS_FLOW, GAS_IDLE_GWH, GAS_LABEL_GWH, GAS_NODE_AT, GAS_NODE_LABEL, endAt, gwhd, latestOf, type GasFlowsFile, type GasPair } from "../lib/gasFlows";
 import { ZONE_POINT, priceMetricById, type PricesFile } from "../lib/prices";
 import { MONEY, usd, type FinanceFile, type FinanceFlow, type FinanceProject } from "../lib/finance";
 import { GEM_PIPES, GEM_POINTS, IDLE, type GemPipesFile, type GemPointsFile, type GemPoint } from "../lib/gem";
@@ -225,7 +226,7 @@ export const sunLight = (fr: Frame) => (fr.day ? Math.max(0, Math.min(1, (fr.sun
 export interface LabelFeature {
   type: "Feature";
   geometry: { type: "Point"; coordinates: [number, number] };
-  properties: { kind: "country" | "zone" | "flow" | "region" | "dc" | "money"; text: string; sub: string; rank: number };
+  properties: { kind: "country" | "zone" | "flow" | "gas" | "gasNode" | "region" | "dc" | "money"; text: string; sub: string; rank: number };
 }
 export interface LabelCollection {
   type: "FeatureCollection";
@@ -624,6 +625,9 @@ export function buildLayers(fr: Frame): Layer[] {
     );
   }
 
+  // ---------------------------------------------------------------- gas flows (ENTSOG, newest gas day)
+  if (facingEurope && fr.mode === "live" && isOn("gasFlows")) layers.push(...gasFlowLayers(fr, sel));
+
   // ---------------------------------------------------------------- price-zone markers, names
   if (facingEurope) layers.push(...zoneMarkers(fr));
   if (facingEurope && countries) parts.push(countryLabels(fr, countries));
@@ -657,6 +661,104 @@ function flowArcs(fr: Frame, dayK: number): Arc[] {
     });
     return out.sort((x, y) => x.mw - y.mw);
   });
+}
+
+export interface GasArc {
+  from: string;
+  to: string;
+  /** the country at the European end (LNG arcs: the country of the terminals) */
+  country: string;
+  gwh: number;
+  pair: GasPair;
+  path: [number, number][];
+  timestamps: number[];
+}
+
+/** Net gas flow of each pair on the newest gas day, as amber chevrons. They bow the other
+ *  way from the power flows, so the two layers stay apart between the same countries. */
+function gasFlowLayers(fr: Frame, sel: string | null): Layer[] {
+  const g = fr.files.gasFlows as GasFlowsFile | undefined;
+  if (!g) return [];
+  const arcs = memo("gasArcs", [g], () => {
+    const out: GasArc[] = [];
+    g.pairs.forEach((p, n) => {
+      const net = latestOf(p.net);
+      if (net == null || Math.abs(net) < GAS_IDLE_GWH) return;
+      const [from, to] = net > 0 ? [p.a, p.b] : [p.b, p.a];
+      const a = endAt(from, p.b, ANCHOR);
+      const b = endAt(to, p.b, ANCHOR);
+      if (!a || !b) return;
+      const path = curvedPath(a, b, p.kind === "border" ? -0.16 : -0.1, 40);
+      out.push({ from, to, country: p.b, gwh: Math.abs(net), pair: p, path, timestamps: flowDistances(path, false, n * 67_000) });
+    });
+    return out.sort((x, y) => x.gwh - y.gwh);
+  });
+  const touches = (a: GasArc) => a.from === sel || a.to === sel || a.country === sel;
+  parts.push(
+    memo("lbl-gas", [arcs, sel, fr.isMobile], () =>
+      (sel ? arcs.filter(touches) : fr.isMobile ? [...arcs].sort((a, b) => b.gwh - a.gwh).slice(0, 4) : arcs.filter((a) => a.gwh >= GAS_LABEL_GWH)).map((a) =>
+        label("gas", a.path[20], gwhd(a.gwh), "", -a.gwh),
+      ),
+    ),
+    memo("lbl-gas-nodes", [g, arcs], () => {
+      const used = new Set(arcs.flatMap((a) => [a.from, a.to]));
+      return Object.entries(GAS_NODE_AT)
+        .filter(([k]) => used.has(k) && g.nodes[k])
+        .map(([k, at]) => label("gasNode", at, GAS_NODE_LABEL[k] ?? g.nodes[k], "", 0));
+    }),
+  );
+  const nodes = memo("gasNodes", [arcs], () => {
+    const seen = new Map<string, [number, number]>();
+    for (const a of arcs) for (const k of [a.from, a.to]) if (GAS_NODE_AT[k] || k === "LNG") seen.set(`${k}:${a.country}`, endAt(k, a.country, ANCHOR)!);
+    return [...seen.values()];
+  });
+  const amber = (d: GasArc, a: number) => [...GAS_FLOW, !sel || touches(d) ? a : 45] as [number, number, number, number];
+  return [
+    new ScatterplotLayer<[number, number]>({
+      id: "eu-gas-nodes",
+      data: nodes,
+      getPosition: (d) => d,
+      getRadius: 3.2,
+      radiusUnits: "pixels",
+      getFillColor: [...GAS_FLOW, 230],
+      getLineColor: [6, 8, 12, 220],
+      lineWidthUnits: "pixels",
+      getLineWidth: 1.2,
+      stroked: true,
+      parameters: ON_TOP,
+    }),
+    new PathLayer<GasArc>({
+      id: "eu-gas-casing",
+      data: arcs,
+      getPath: (d) => d.path,
+      getColor: (d) => [4, 6, 10, !sel || touches(d) ? 190 : 60],
+      getWidth: (d) => 5 + Math.min(4, d.gwh / 300),
+      updateTriggers: { getColor: [sel] },
+      widthUnits: "pixels",
+      capRounded: true,
+      jointRounded: true,
+      parameters: ON_TOP,
+    }),
+    new FlowArrowLayer<GasArc>({
+      id: "eu-gas-flows",
+      data: arcs,
+      getPath: (d) => d.path,
+      getTimestamps: (d) => d.timestamps,
+      getColor: (d) => amber(d, 255),
+      getWidth: (d) => 16 + Math.min(14, d.gwh / 90),
+      getArrowStyle: (d) => [1.3 + Math.min(1.9, d.gwh / 600), 4 + Math.min(6, d.gwh / 200), 1],
+      updateTriggers: { getColor: [sel] },
+      widthUnits: "pixels",
+      capRounded: true,
+      jointRounded: true,
+      pickable: true,
+      phase: fr.clock.phase,
+      spacing: fr.clock.spacing,
+      strokePx: 2.4,
+      lineAlpha: 0.85,
+      parameters: { ...OVER, depthCompare: "always", depthWriteEnabled: false },
+    }),
+  ];
 }
 
 /** A flow lifted from the top of one price block to the top of the other, bowing upwards. */

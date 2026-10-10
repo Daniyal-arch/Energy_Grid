@@ -53,6 +53,7 @@ function wantedKeys(): string[] {
   if (s.mode === "live") {
     keys.push("stats");
     if (L.flows) keys.push("flows");
+    if (L.gasFlows) keys.push("gasFlows");
     if (L.wind || L.sun) keys.push("windWorld");
   }
   if (s.colour === "offline") keys.push("outages");

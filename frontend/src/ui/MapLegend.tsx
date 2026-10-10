@@ -4,6 +4,7 @@
 import type { ReactNode } from "react";
 
 import { FUEL_COLOR, STACK_ORDER } from "../lib/energy";
+import { GAS_FLOW, type GasFlowsFile } from "../lib/gasFlows";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
 import { rgbCss } from "../lib/theme";
 import { FLOW, VOLTAGE_BANDS } from "../app/colors";
@@ -44,6 +45,11 @@ function PriceRow() {
   );
 }
 
+function GasDay() {
+  const day = useDataStore((d) => (d.files.gasFlows as GasFlowsFile | undefined)?.gas_day);
+  return <>gas day {day ?? "…"}</>;
+}
+
 function LayerRow({ id }: { id: LayerId }) {
   switch (id) {
     case "prices":
@@ -67,6 +73,14 @@ function LayerRow({ id }: { id: LayerId }) {
         <Row label="Flows">
           <Line color={rgbCss(FLOW)} />
           way the power goes · ENTSO-E
+        </Row>
+      );
+    case "gasFlows":
+      return (
+        <Row label="Gas">
+          <Line color={rgbCss(GAS_FLOW)} />
+          net flow, GWh/d · <GasDay />
+          <div className={muted}>sources placed for reading · ENTSOG</div>
         </Row>
       );
     case "gridEU":
