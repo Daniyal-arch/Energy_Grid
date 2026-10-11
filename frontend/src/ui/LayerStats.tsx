@@ -17,7 +17,8 @@ import type { WorldPlantsFile } from "../lib/worldPlants";
 import { CABLE_STYLE } from "../app/colors";
 import { useFile } from "../app/data";
 import { LAYERS, STATS_LAYERS, actions, useApp, type LayerId, type PlantStatus } from "../app/store";
-import type { Cable, WorldFile } from "../app/types";
+import type { Cable, UnitOutputFile, WorldFile } from "../app/types";
+import { FUEL_COLOR } from "../lib/energy";
 
 const muted = "text-[#8d94a1]";
 const CLASS_COLOR = ["rgb(120,222,160)", "rgb(255,196,96)", "rgb(160,170,190)", "rgb(130,134,146)"];
@@ -333,6 +334,53 @@ export function useStatsLayers(): LayerId[] {
   return LAYERS.filter((l) => STATS_LAYERS.has(l.id) && layers[l.id] && (!l.modes || l.modes.includes(mode))).map((l) => l.id);
 }
 
+/** Output per plant at the clock (24 h): the largest producers now and what the file covers. */
+function PlantOutputCard({ iso3 }: { iso3?: string }) {
+  const slot = useApp((s) => s.slot);
+  const want = useApp((s) => s.day);
+  const index = useFile<{ all: string[] }>("dayIndex");
+  const date = want && index?.all.includes(want) ? want : (index?.all[index.all.length - 1] ?? null);
+  const f = useFile<UnitOutputFile>(date ? `unitOut:${date}` : null);
+  const iso2 = iso3 ? Object.entries(ISO3).find(([, v]) => v === iso3)?.[0] : undefined;
+  if (!f) return <Card title="Plant output">{date ? "Loading…" : "No day chosen."}</Card>;
+  const k = Math.min(f.slots - 1, slot);
+  const rows = f.plants
+    .map((p, i) => ({ name: p[5], iso: p[3], fuel: f.fuels[p[2]], cap: p[4], mw: f.output[i][k] }))
+    .filter((r) => (!iso2 || r.iso === iso2) && r.mw != null) as { name: string; iso: string; fuel: string; cap: number | null; mw: number }[];
+  const total = rows.reduce((a, r) => a + r.mw, 0);
+  const top = [...rows].sort((a, b) => b.mw - a.mw).slice(0, 10);
+  const counts = Object.entries(f.countries).filter(([c]) => !iso2 || c === iso2);
+  const units = counts.reduce((a, [, c]) => a + (c.units ?? 0), 0);
+  const placed = counts.reduce((a, [, c]) => a + (c.placed ?? 0), 0);
+  const max = top[0]?.mw || 1;
+  return (
+    <Card title="Plant output" note={`ENTSO-E per unit · ${f.date}`}>
+      <div className="text-[22px] font-light text-slate-50">
+        {(total / 1000).toFixed(1)} GW <span className={`text-[11px] ${muted}`}>from {rows.length} plants at the clock (sum, computed)</span>
+      </div>
+      <div className="mt-2 space-y-1">
+        {top.map((r) => (
+          <div key={r.name + r.iso} className="text-[11px]">
+            <div className="flex justify-between gap-2">
+              <span className="truncate text-slate-200">
+                {r.name} <span className={muted}>{r.iso}</span>
+              </span>
+              <span className="tabular-nums text-slate-100">{Math.round(r.mw).toLocaleString("en-US")} MW</span>
+            </div>
+            <div className="h-1 rounded bg-white/[0.06]">
+              <div className="h-1 rounded" style={{ width: `${(100 * r.mw) / max}%`, background: rgbCss(FUEL_COLOR[r.fuel] ?? FUEL_COLOR.other) }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Units of 100 MW and more: {placed.toLocaleString("en-US")} of {units.toLocaleString("en-US")} placed on the map with the JRC Open Power Plants Database.
+        {f.areas_without_data.length ? ` No output per unit this day from ${f.areas_without_data.join(", ")}.` : ""} Germany, the Nordics, Austria and Switzerland publish about five days late.
+      </div>
+    </Card>
+  );
+}
+
 export function LayerStatsTab({ iso3 }: { iso3?: string }) {
   const ids = useStatsLayers();
   const seen = new Set<string>();
@@ -350,6 +398,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
           return <FinanceStats key="finance" iso3={iso3} />;
         }
         if (id === "plantsWorld") return <PlantsWorldCard key={id} iso3={iso3} />;
+        if (id === "plantOutput") return <PlantOutputCard key={id} iso3={iso3} />;
         if (id === "plantsUS" || id === "turbinesUS" || id === "usQueue") return <UsStats key={id} id={id} iso3={iso3} />;
         if (id === "liveGrids") return iso3 ? null : <LiveGridsCards key={id} />;
         if (id === "dataCentres") return <DataCentresStats key={id} iso3={iso3} />;

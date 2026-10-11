@@ -110,6 +110,21 @@ const STATIC: Record<string, Loader> = {
     const localDays = local.status === "fulfilled" ? local.value.days : [];
     set({ remote: remoteDays, local: localDays, all: [...new Set([...remoteDays, ...localDays])].sort() });
   },
+  // output per plant (scripts/build_eu_units.py): the archive's days and the bundled ones
+  unitIndex: async (set) => {
+    const [remote, local] = await Promise.allSettled([
+      fetch(`${ARCHIVE_REMOTE}/units/index.json?t=${Date.now()}`, { signal: AbortSignal.timeout(RECORDING ? 30_000 : 4000) }).then((r) =>
+        r.ok ? (r.json() as Promise<{ days: string[]; complete: string[] }>) : Promise.reject(),
+      ),
+      getJson<{ days: string[]; complete: string[] }>("/data/eu/units/index.json"),
+    ]);
+    const ok = [remote, local].flatMap((x) => (x.status === "fulfilled" ? [x.value] : []));
+    set({
+      days: [...new Set(ok.flatMap((x) => x.days))].sort(),
+      complete: [...new Set(ok.flatMap((x) => x.complete))].sort(),
+      remote: remote.status === "fulfilled" ? remote.value.days : [],
+    });
+  },
 };
 
 /** The archive first, then the bundled copy (day files, their wind, week and unit files). */
@@ -140,6 +155,10 @@ function loaderFor(key: string): Loader | null {
         const ok = res.flatMap((x) => (x.status === "fulfilled" ? [x.value] : []));
         set(ok.sort((a, b) => b.days.length - a.days.length)[0] ?? null);
       });
+  if (kind === "unitOut") {
+    const remote = (useDataStore.getState().files.unitIndex as { remote: string[] } | undefined)?.remote.includes(arg) ?? true;
+    return remote && !RECORDING ? archiveFirst(`${ARCHIVE_REMOTE}/units/${arg}.json`, `/data/eu/units/${arg}.json`) : bundled(`units/${arg}.json`);
+  }
   if (kind === "units") return (set) => getJson<{ plants: unknown[] }>(`/data/eu/plants/${arg}.json`).then((d) => set(d.plants));
   return null;
 }

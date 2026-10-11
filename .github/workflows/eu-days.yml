@@ -53,6 +53,11 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_eu_day.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/day
 
+      - name: Output per plant (ENTSO-E per unit; the last 8 days, so late publishers fill in)
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+        run: python scripts/build_eu_units.py --recent 8 --out store/eu/units || echo "unit output failed; keeping the last copies"
+
       - name: Twelve months of prices per zone (Prices tab)
         env:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}

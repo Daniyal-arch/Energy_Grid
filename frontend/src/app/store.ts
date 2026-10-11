@@ -32,6 +32,7 @@ export type LayerId =
   | "methane"
   | "gas"
   | "gasFlows"
+  | "plantOutput"
   | "financeCoal"
   | "financeGas"
   | "steel"
@@ -85,6 +86,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "oilGasFields", label: "Oil and gas fields", desc: "Where oil and gas are produced", group: "Gas, oil & coal", coverage: "World", color: "rgb(214,96,64)" },
   { id: "coalMines", label: "Coal mines", desc: "Sized by capacity", group: "Gas, oil & coal", coverage: "World", color: "rgb(160,146,132)" },
   { id: "methane", label: "Methane plumes", desc: "Leaks seen by satellites", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,90,200)" },
+  { id: "plantOutput", label: "Plant output", desc: "What each large plant produces at the clock", group: "Power plants", coverage: "Europe", color: "rgb(255,214,140)", modes: ["day"] },
   { id: "gasFlows", label: "Gas flows", desc: "Gas crossing borders and entering Europe, per gas day", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(255,178,62)", modes: ["live"] },
   { id: "gas", label: "Gas storage", desc: "Underground storage sites", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(255,150,92)" },
   { id: "financeCoal", label: "Who finances coal power", desc: "Money from lenders' countries to coal plants", group: "Money", coverage: "World", color: "rgb(232,204,128)" },
@@ -102,6 +104,7 @@ export const LAYERS: LayerInfo[] = [
 /** Layers with their own figures in the panel's "On the map" tab (ui/LayerStats.tsx). */
 export const STATS_LAYERS = new Set<LayerId>([
   "liveGrids",
+  "plantOutput",
   "plantsWorld",
   "plantsUS",
   "turbinesUS",
@@ -217,6 +220,16 @@ export const STORIES: Story[] = [
     mode: "day",
     colour: "none",
     layers: ["flows", "towers", "prices", "night", "wind", "gridEU"],
+    camera: "day",
+  },
+  {
+    id: "plants-day",
+    group: "Europe",
+    label: "Plants through a day",
+    blurb: "What each large plant produced, every 15 minutes",
+    mode: "day",
+    colour: "none",
+    layers: ["plantOutput", "gridEU", "night"],
     camera: "day",
   },
   {

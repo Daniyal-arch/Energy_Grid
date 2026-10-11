@@ -74,6 +74,7 @@ function wantedKeys(): string[] {
     keys.push("dayIndex");
     const date = dayDate();
     if (date) keys.push(`day:${date}`, `dayWind:${date}`);
+    if (L.plantOutput) keys.push("unitIndex", ...(date ? [`unitOut:${date}`] : []));
   }
   const iso = selectedIso2(s.selection);
   if (iso && L.plantsEU && s.mode === "live") keys.push("plants", `units:${iso}`);
@@ -428,6 +429,13 @@ export default function MapCanvas() {
         wanted.forEach((k) => ensure(k));
       }
 
+      // "Plants through a day" opens on the newest day every big producer has reported
+      // (Germany and others publish output per unit about five days late)
+      if (s.story === "plants-day" && !s.day) {
+        const idx = files.unitIndex as { complete: string[] } | undefined;
+        const newest = idx?.complete[idx.complete.length - 1];
+        if (newest) useApp.setState({ day: newest });
+      }
       // the clocks
       const date = s.mode === "day" ? dayDate() : null;
       const day = date ? ((files[`day:${date}`] as DayFile | undefined) ?? null) : null;

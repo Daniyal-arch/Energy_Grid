@@ -15,11 +15,12 @@ import { endName, gwhd, latestOf, type GasFlowsFile } from "../lib/gasFlows";
 import type { GasArc } from "./build";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
-import { dayPower, utc } from "../app/day";
+import { dayPower, marketTime, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { useApp, motion } from "../app/store";
-import type { Arc, Cable, CountriesFile, DayFile, GasSite, Hex, Plant, PlantsFile, Power, Shape, StatsFile, Substation, TowerPiece, Unit } from "../app/types";
+import type { Arc, Cable, CountriesFile, DayFile, GasSite, Hex, Plant, PlantsFile, Power, Shape, StatsFile, Substation, TowerPiece, Unit, UnitOutputFile } from "../app/types";
 import { priceState } from "./priceTerrain";
+import type { PlantOutputRow } from "./build";
 import { largestType, queueMw } from "./usLayers";
 import { US_TYPE_LABEL, gwText, operatingMw, ratioText, type UsPlantsFile, type UsQueueFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
 
@@ -317,6 +318,17 @@ function tooltipHtml(id: string, object: unknown): string | null {
       const lng = id === "eu-lng";
       const cap = g[5] != null ? (lng ? ` · send-out ${g[5]} M m³/day` : ` · working gas ${g[5].toLocaleString("en-US")} M m³`) : "";
       return `<b>${g[0]}</b><div>${lng ? "LNG terminal" : "Gas storage"}${cap}${g[4] ? ` · since ${g[4]}` : ""}</div>${SRC("SciGRID_gas 2021")}`;
+    }
+    case "eu-plant-output": {
+      const r = object as PlantOutputRow;
+      const day = currentDay();
+      const f = day ? fileOf<UnitOutputFile>(`unitOut:${day.date}`) : undefined;
+      if (!f || !day) return null;
+      const k = Math.min(f.slots - 1, Math.floor(motion.daySlot));
+      const mw = f.output[r.k]?.[k];
+      const t = new Date(Date.parse(day.start) + k * day.step_s * 1000).toISOString();
+      const share = mw != null && r.capacity ? ` · ${Math.round((100 * mw) / r.capacity)} % of its capacity` : "";
+      return `<b>${r.name}</b><div>${FUEL_LABEL[r.fuel] ?? r.fuel} · ${r.iso} · ${r.units} unit${r.units > 1 ? "s" : ""}</div><div><b>${mw != null ? power(mw) : "no value"}</b> at ${marketTime(t)}${share}</div>${r.capacity ? `<div style="color:#8d94a1">capacity ${power(r.capacity)} (JRC, sum of its units)</div>` : ""}${SRC("ENTSO-E output per generation unit (A73), 15 min or hourly; placed with the JRC Open Power Plants Database")}`;
     }
     case "eu-towers": {
       const t = object as TowerPiece;

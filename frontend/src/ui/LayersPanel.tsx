@@ -177,6 +177,15 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <Note>Arrows point the way the power goes; labels from 1 GW. ENTSO-E, every 15 minutes.</Note>;
     case "gasFlows":
       return <GasFlowKey />;
+    case "plantOutput":
+      return (
+        <>
+          {fuelSwatches(["nuclear", "coal", "gas", "hydro", "wind", "bio", "oil"], FUEL_COLOR, FUEL_LABEL)}
+          <Note>
+            Ring: the plant's capacity (JRC, sum of its units); disc: its output at the clock (ENTSO-E, per unit of 100 MW and more). Grey dots: no value at this time. Germany, the Nordics, Austria and Switzerland publish about five days late; Italy, Denmark, Great Britain and Croatia publish none.
+          </Note>
+        </>
+      );
     case "liveGrids":
       return (
         <Swatches>

@@ -76,6 +76,16 @@ function LayerRow({ id }: { id: LayerId }) {
           way the power goes · ENTSO-E
         </Row>
       );
+    case "plantOutput":
+      return (
+        <Row label="Plants">
+          <div>
+            <span className="mr-1 inline-block h-2 w-2 rounded-full border border-slate-300/70 align-middle" /> capacity ·{" "}
+            <span className="mr-1 inline-block h-2 w-2 rounded-full bg-slate-200 align-middle" /> output now
+          </div>
+          <div className={muted}>units of 100 MW+ · ENTSO-E, JRC</div>
+        </Row>
+      );
     case "gasFlows":
       return (
         <Row label="Gas">

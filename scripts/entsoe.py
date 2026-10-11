@@ -223,6 +223,11 @@ def series_of(root: ET.Element | None, value_tag: str, grid: Grid) -> list[tuple
         psr = ts.find("n:MktPSRType/n:psrType", ns)
         if psr is not None:
             meta["psrType"] = psr.text or ""
+        # output per generation unit (A73): the unit's EIC code and name
+        res = ts.find("n:MktPSRType/n:PowerSystemResources", ns)
+        if res is not None:
+            meta["unit"] = res.findtext("n:mRID", default="", namespaces=ns)
+            meta["unit_name"] = res.findtext("n:name", default="", namespaces=ns)
         variable = ts.findtext("n:curveType", default="A01", namespaces=ns) == "A03"
         values = grid.empty()
         for period in ts.findall("n:Period", ns):

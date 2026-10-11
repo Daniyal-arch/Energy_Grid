@@ -154,3 +154,19 @@ export interface OutagesFile {
   countries: Record<string, OutageTotals>;
   units: OutageUnit[];
 }
+
+/** Output per plant through a day (scripts/build_eu_units.py, units/<date>.json). */
+export interface UnitOutputFile {
+  source: string;
+  date: string;
+  start: string;
+  step_s: number;
+  slots: number;
+  fuels: string[];
+  /** [lon, lat, fuel index, ISO, capacity MW (JRC) | null, name, units] */
+  plants: [number, number, number, string, number | null, string, number][];
+  /** MW per slot, one row per plant */
+  output: (number | null)[][];
+  countries: Record<string, { units?: number; placed?: number }>;
+  areas_without_data: string[];
+}

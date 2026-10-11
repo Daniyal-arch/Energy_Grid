@@ -85,6 +85,7 @@ import type {
   Substation,
   TowerPiece,
   Unit,
+  UnitOutputFile,
 } from "../app/types";
 import { memo, NONE } from "./memo";
 import { priceTerrain, type Terrain } from "./priceTerrain";
@@ -576,6 +577,8 @@ export function buildLayers(fr: Frame): Layer[] {
   // ---------------------------------------------------------------- generation towers (24 h)
   // ---------------------------------------------------------------- prices: blocks, towers on top
   if (terrain) layers.push(...terrain.layers);
+  // ---------------------------------------------------------------- output per plant (24 h)
+  if (day && facingEurope && isOn("plantOutput")) layers.push(...plantOutputLayers(fr, dayK));
   const towers = day && countries && isOn("towers") && facingEurope;
   if (towers) layers.push(...towerLayers(fr, day, dayK, countries, sel, terrain));
 
@@ -774,6 +777,78 @@ function gasFlowLayers(fr: Frame, sel: string | null): Layer[] {
       strokePx: 2.2,
       lineAlpha: 0.8,
       parameters: { ...OVER, depthCompare: "always", depthWriteEnabled: false },
+    }),
+  ];
+}
+
+/** One plant of the output file, for the layers and the hover card. */
+export interface PlantOutputRow {
+  k: number;
+  at: [number, number];
+  fuel: string;
+  iso: string;
+  capacity: number | null;
+  name: string;
+  units: number;
+}
+
+/** What each large plant produced at the clock (ENTSO-E per unit, placed with the JRC
+ *  database): a ring for its capacity, a disc for its output, both in the fuel's colour.
+ *  The disc glides between two 15-min values (drawing only); cards show the slot's value. */
+function plantOutputLayers(fr: Frame, dayK: number): Layer[] {
+  const file = fr.day ? (fr.files[`unitOut:${fr.day.date}`] as UnitOutputFile | undefined) : undefined;
+  if (!file) return [];
+  const rows = memo("plantOutRows", [file], () =>
+    file.plants.map((p, k) => ({ k, at: [p[0], p[1]] as [number, number], fuel: file.fuels[p[2]], iso: p[3], capacity: p[4], name: p[5], units: p[6] })),
+  );
+  const frac = Math.max(0, Math.min(1, fr.daySlot - dayK));
+  const next = Math.min(file.slots - 1, dayK + 1);
+  const now = (r: PlantOutputRow) => {
+    const v = file.output[r.k];
+    const a = v[dayK];
+    if (a == null) return null;
+    const b = v[next] ?? a;
+    return Math.max(0, a + (b - a) * frac);
+  };
+  // pixels for a MW figure: the square root, so area follows power
+  const px = (mw: number) => 1.2 + Math.sqrt(Math.max(0, mw)) * (fr.zoom < 5 ? 0.2 : 0.28);
+  const colour = (r: PlantOutputRow) => FUEL_COLOR[r.fuel] ?? FUEL_COLOR.other;
+  const key = [fr.daySlot, file];
+  return [
+    new ScatterplotLayer<PlantOutputRow>({
+      id: "eu-plant-capacity",
+      data: rows,
+      getPosition: (r) => r.at,
+      getRadius: (r) => px(r.capacity ?? 0),
+      radiusUnits: "pixels",
+      filled: false,
+      stroked: true,
+      getLineColor: (r) => [...colour(r), 120],
+      lineWidthUnits: "pixels",
+      getLineWidth: 1,
+      updateTriggers: { getRadius: [fr.zoom < 5] },
+      parameters: ON_TOP,
+    }),
+    new ScatterplotLayer<PlantOutputRow>({
+      id: "eu-plant-glow",
+      data: rows,
+      getPosition: (r) => r.at,
+      getRadius: (r) => px(now(r) ?? 0) * 1.9,
+      radiusUnits: "pixels",
+      getFillColor: (r) => [...colour(r), (now(r) ?? 0) > 1 ? 40 : 0],
+      updateTriggers: { getRadius: [...key, fr.zoom < 5], getFillColor: key },
+      parameters: ADD,
+    }),
+    new ScatterplotLayer<PlantOutputRow>({
+      id: "eu-plant-output",
+      data: rows,
+      getPosition: (r) => r.at,
+      getRadius: (r) => (now(r) == null ? 1 : px(now(r) ?? 0)),
+      radiusUnits: "pixels",
+      getFillColor: (r) => (now(r) == null ? [120, 124, 136, 120] : [...colour(r), 230]),
+      updateTriggers: { getRadius: [...key, fr.zoom < 5], getFillColor: key },
+      pickable: true,
+      parameters: ON_TOP,
     }),
   ];
 }

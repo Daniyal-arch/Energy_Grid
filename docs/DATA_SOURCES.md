@@ -134,6 +134,28 @@ bundled in `frontend/public/data/eu/day/` and offers them in a date picker.
 The time-lapse clock shows the market's own time (CET/CEST) of the slot on screen.
 The "price range, all zones" chart is the lowest and highest zone price per slot.
 
+## Output per plant (`scripts/build_eu_units.py`, `units/<date>.json`)
+
+| File | Records | Source |
+|---|---:|---|
+| `units/<YYYY-MM-DD>.json` | ~1,300 units in ~600 plants, 96 slots | ENTSO-E Transparency A73 "actual generation per generation unit" (processType A16, units of 100 MW and more), one request per country area and local day; Germany per control area (50Hertz, Amprion, TenneT DE, TransnetBW). Probe: `scripts/probe_unit_output.py` |
+| `units/index.json` | days built, and the complete ones | a day is complete when Germany's four control areas, France, Spain, Poland, Czechia and the Netherlands have all reported |
+
+- **Placement:** the unit's EIC code (as ENTSO-E reports it) looked up in the JRC Open
+  Power Plants Database 1.0 (JRC-PPDB-OPEN, CC BY 4.0, Zenodo 3574566, `JRC_OPEN_UNITS.csv`,
+  `eic_g`), which gives the coordinates, the plant (`eic_p`, `name_p`) and the unit's
+  capacity (`capacity_g`). About 84 % of the units are placed; the rest are counted per
+  country and not drawn. The JRC file dates from 2019: units built since are not placed,
+  and a plant's capacity can differ from today's (a few plants report more output than it).
+- **Values:** passthrough MW, on the day's 15-min slots like the day files (hourly series fill
+  their four slots). Computed: a plant's units summed per slot, its capacity as the sum of
+  its units' JRC capacities, its fuel as that of its largest unit, the card's total and the
+  hover card's share of capacity. Between two slots the disc on the map glides (drawing only).
+- **Publication:** Germany, the Nordic countries, Austria and Switzerland publish about five
+  days late; Italy, Denmark, Great Britain and Croatia publish no output per unit. The daily
+  archive run rebuilds the last 8 days so late publications fill in; the story "Plants
+  through a day" opens on the newest complete day.
+
 ## Prices tab (`scripts/build_prices.py`)
 
 | File | Records | Source |
