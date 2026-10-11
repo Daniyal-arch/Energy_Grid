@@ -5,6 +5,7 @@ description = "Europe's power system as an interactive map: grid, plants, cross-
 requires-python = ">=3.11"
 # the data scripts in scripts/ (fetch + build the files the frontend reads)
 dependencies = [
+    "duckdb>=1.1",  # Overture GeoParquet for the US lines (fetch_us_lines.py)
     "eccodes>=2.49.0",
     "httpx>=0.27",
     "openpyxl>=3.1.5",

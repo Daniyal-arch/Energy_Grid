@@ -15,10 +15,14 @@ export type LayerId =
   | "hvdc"
   | "substations"
   | "gridWorld"
+  | "gridUS"
   | "predicted"
   | "cables"
   | "plantsEU"
   | "plantsWorld"
+  | "plantsUS"
+  | "turbinesUS"
+  | "usQueue"
   | "gasPipes"
   | "oilPipes"
   | "lngTerminals"
@@ -54,6 +58,8 @@ export interface LayerInfo {
   color: string;
   /** only in these time modes (all when absent) */
   modes?: TimeMode[];
+  /** listed in the Layers panel only while on: the layer belongs to this story */
+  story?: string;
 }
 export const LAYERS: LayerInfo[] = [
   { id: "flows", label: "Cross-border flows", desc: "Power moving between countries now", group: "Electricity now", coverage: "Europe", color: "rgb(120,222,255)", modes: ["live", "day"] },
@@ -64,10 +70,14 @@ export const LAYERS: LayerInfo[] = [
   { id: "hvdc", label: "HVDC links", desc: "Direct-current links between grids", group: "Power grid", coverage: "Europe", color: "rgb(178,146,255)" },
   { id: "substations", label: "Substations", desc: "220 kV and more, shown zoomed in", group: "Power grid", coverage: "Europe", color: "rgb(226,232,240)" },
   { id: "gridWorld", label: "High-voltage lines", desc: "220 kV and more, mapped in OpenStreetMap", group: "Power grid", coverage: "World", color: "rgb(160,210,255)" },
+  { id: "gridUS", label: "US transmission lines", desc: "100–765 kV by voltage, mapped in OpenStreetMap", group: "Power grid", coverage: "US", color: "rgb(236,178,120)" },
   { id: "cables", label: "Undersea power cables", desc: "HVDC and AC cables at sea", group: "Power grid", coverage: "World", color: "rgb(110,190,255)" },
   { id: "predicted", label: "Predicted local grid", desc: "Estimated from night lights (Gridfinder)", group: "Power grid", coverage: "World", color: "rgb(255,190,110)" },
   { id: "plantsEU", label: "Power plants", desc: "20 MW and more, by fuel", group: "Power plants", coverage: "Europe", color: "rgb(255,128,72)" },
   { id: "plantsWorld", label: "Power plants worldwide", desc: "Operating, building, planned or retired", group: "Power plants", coverage: "World", color: "rgb(255,214,72)" },
+  { id: "plantsUS", label: "US power plants", desc: "Every generator of 1 MW and more (EIA)", group: "Power plants", coverage: "US", color: "rgb(255,128,72)" },
+  { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
+  { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Power plants", coverage: "US", color: "rgb(196,196,214)", story: "us-queue" },
   { id: "gasPipes", label: "Gas pipelines", desc: "Operating, under construction, proposed", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,196,96)" },
   { id: "oilPipes", label: "Oil pipelines", desc: "Crude oil and NGL", group: "Gas, oil & coal", coverage: "World", color: "rgb(222,110,82)" },
   { id: "lngTerminals", label: "LNG terminals", desc: "Import and export, sized by capacity", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,150,92)" },
@@ -93,6 +103,9 @@ export const LAYERS: LayerInfo[] = [
 export const STATS_LAYERS = new Set<LayerId>([
   "liveGrids",
   "plantsWorld",
+  "plantsUS",
+  "turbinesUS",
+  "usQueue",
   "cables",
   "gasPipes",
   "oilPipes",
@@ -158,7 +171,10 @@ export type Selection =
   | { kind: "region"; grid: "us" | "br" | "au" | "tw" | "on"; id: string };
 
 export type PlantStatus = "operating" | "construction" | "planned" | "retired";
+export type Region = "europe" | "world" | "us";
 
+/** A fixed camera, or a frame the map computes for the screen (map/style.ts). */
+export type CameraPreset = Camera | "europe" | "world" | "day" | "us" | "usQueue";
 export interface Camera {
   center: [number, number];
   zoom: number;
@@ -173,7 +189,9 @@ export interface Story {
   colour: ColourId;
   layers: LayerId[];
   plantStatus?: PlantStatus;
-  camera: Camera | "europe" | "world" | "day";
+  camera: CameraPreset;
+  /** the overview panel the story opens on (else from its camera) */
+  region?: Region;
 }
 export const STORIES: Story[] = [
   {
@@ -259,6 +277,27 @@ export const STORIES: Story[] = [
     camera: { center: [100, 22], zoom: 2.1 },
   },
   {
+    id: "us-grid",
+    label: "US grid",
+    blurb: "Every plant, the lines, every wind turbine",
+    mode: "live",
+    colour: "none",
+    layers: ["gridUS", "plantsUS", "turbinesUS"],
+    plantStatus: "operating",
+    camera: "us",
+    region: "us",
+  },
+  {
+    id: "us-queue",
+    label: "US interconnection queue",
+    blurb: "What is waiting to connect, state by state",
+    mode: "live",
+    colour: "none",
+    layers: ["usQueue"],
+    camera: "usQueue",
+    region: "us",
+  },
+  {
     id: "heavy-industry",
     label: "Heavy industry",
     blurb: "Steel, cement and chemical plants",
@@ -285,9 +324,9 @@ interface AppState {
   tab: string;
   story: string | null;
   /** where the camera looks: decides the default panel */
-  region: "europe" | "world";
+  region: Region;
   /** a camera move requested by the UI (story, search); the map consumes it */
-  flyTo: Camera | "europe" | "world" | "day" | null;
+  flyTo: CameraPreset | null;
   sheet: "none" | "panel" | "layers" | "search";
   /** the Layers panel is open (desktop) */
   layersPanel: boolean;
@@ -350,7 +389,8 @@ export const actions = {
     });
   },
   setPlantStatus(plantStatus: PlantStatus) {
-    useApp.setState((s) => ({ plantStatus, layers: { ...s.layers, plantsWorld: true }, story: null }));
+    // the status shows on whichever plants layer is on (GEM's worldwide one by default)
+    useApp.setState((s) => ({ plantStatus, layers: s.layers.plantsUS || s.layers.plantsWorld ? s.layers : { ...s.layers, plantsWorld: true }, story: null }));
   },
   setPlantStyle(plantStyle: "bars" | "beams") {
     useApp.setState({ plantStyle });
@@ -388,7 +428,7 @@ export const actions = {
       plantStatus: st.plantStatus ?? useApp.getState().plantStatus,
       selection: null,
       tab: st.mode === "years" ? "years" : st.colour.startsWith("pr_") ? "prices" : st.layers.some((l) => STATS_LAYERS.has(l)) ? "layers" : "now",
-      region: st.camera === "world" ? "world" : st.camera === "europe" || st.camera === "day" ? "europe" : useApp.getState().region,
+      region: st.region ?? (st.camera === "world" ? "world" : st.camera === "europe" || st.camera === "day" ? "europe" : useApp.getState().region),
       playing: st.mode !== "live",
       slot: 0,
       yearK: 0,
@@ -469,7 +509,7 @@ export function writeUrl(camera?: Camera): void {
     p.set("layers", (Object.keys(s.layers) as LayerId[]).filter((k) => s.layers[k]).join(","));
   }
   if (s.day) p.set("day", s.day);
-  if (s.layers.plantsWorld && s.plantStatus !== "operating") p.set("status", s.plantStatus);
+  if ((s.layers.plantsWorld || s.layers.plantsUS) && s.plantStatus !== "operating") p.set("status", s.plantStatus);
   if (s.plantStyle === "beams") p.set("style", "beams");
   if (!s.layersPanel) p.set("panel", "closed");
   const sel = s.selection;

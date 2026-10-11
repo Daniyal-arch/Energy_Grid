@@ -100,5 +100,22 @@ export const WORLD_SOURCES: Sources = [
   ],
 ];
 
+export const US_SOURCES: Sources = [
+  [
+    "Power plants",
+    "EIA-860M, Preliminary Monthly Electric Generator Inventory (public domain): every generator of 1 MW and more with its plant's coordinates. Capacity is net summer capacity, EIA's measure. Grouped by fuel (EIA energy source code; pumped storage and batteries as storage) and status; summed per plant, fuel and status for the map. In the US this layer replaces GEM's plants while it is on.",
+  ],
+  [
+    "Interconnection queue",
+    "Lawrence Berkeley National Laboratory and GridTracker (Interconnection.fyi), Queued Up (CC BY 4.0): every request to connect a power plant or storage to the transmission grid, from 7 ISOs/RTOs and 50 utilities. Active and suspended requests summed by state, type, study phase and proposed online year; a hybrid counts under each of its types. LBNL's report adds an estimate for hybrids without a storage size; that estimate is not shown.",
+  ],
+  ["Wind turbines", "U.S. Wind Turbine Database (USGS, LBNL, American Clean Power; public domain): every turbine with its capacity, hub height and rotor, positions checked on aerial imagery."],
+  [
+    "Transmission lines",
+    "OpenStreetMap (ODbL), read through Overture Maps: power lines and cables of 100 kV and more touching a US state, coloured by voltage like Europe's grid. HIFLD's transmission layer is no longer public (its open portal closed in 2025; Esri's archived copy is under a proprietary licence).",
+  ],
+  ["State outlines", "U.S. Census Bureau cartographic boundary file, states 1:20M (2024), public domain."],
+];
+
 export const CREDITS =
-  "ENTSO-E · Elexon · GIE · Ember (CC BY 4.0) · Open-Meteo (CC BY 4.0) · Global Energy Monitor (CC BY 4.0) · World Bank · EIA · ONS · AEMO · © OpenStreetMap contributors (ODbL) · powerplantmatching · SciGRID_gas · © EuroGeographics";
+  "ENTSO-E · Elexon · GIE · Ember (CC BY 4.0) · Open-Meteo (CC BY 4.0) · Global Energy Monitor (CC BY 4.0) · World Bank · EIA · LBNL & GridTracker (CC BY 4.0) · USWTDB · ONS · AEMO · © OpenStreetMap contributors (ODbL) · powerplantmatching · SciGRID_gas · © EuroGeographics";

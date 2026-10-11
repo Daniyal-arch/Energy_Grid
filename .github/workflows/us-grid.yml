@@ -1,0 +1,120 @@
+name: US grid
+
+# The US grid pack (docs/DATA_SOURCES.md, "United States").
+#
+# data: scripts/fetch_us_grid.py checks each source for a new release and rebuilds only those
+#   files (frontend/public/data/us/): EIA-860M monthly (out around the 24th), LBNL's
+#   interconnection queue yearly, the U.S. Wind Turbine Database quarterly. The monthly run
+#   checks all three; changed files are committed to main. scripts/check_us_totals.py then
+#   logs the national total against EIA's Electric Power Monthly (no gate, only the log).
+# lines: scripts/fetch_us_lines.py reads OpenStreetMap's power lines from 100 kV through
+#   Overture Maps (newest release, public S3, ~5 min), tippecanoe cuts them into vector tiles
+#   (345 kV+ from zoom 0, 200 kV from 3, 100 kV from 5) and they go to the R2 bucket
+#   infraatlas-data as grid/us-lines.pmtiles. Quarterly, by hand, and when this file changes
+#   on main.
+#
+# Run by hand: Actions > US grid > Run workflow ("force" rebuilds the data files, "lines"
+# rebuilds the tiles). Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID (lines only);
+# the sources need no key.
+
+on:
+  schedule:
+    - cron: "37 6 26 * *" # monthly: EIA-860M, queue and turbines releases
+    - cron: "11 4 3 1,4,7,10 *" # quarterly: the lines
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Rebuild the data files even if no source has a new release"
+        type: boolean
+        default: false
+      lines:
+        description: "Rebuild the transmission line tiles"
+        type: boolean
+        default: true
+  push:
+    branches: [main]
+    paths: [.github/workflows/us-grid.yml]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: us-grid
+  cancel-in-progress: false
+
+jobs:
+  data:
+    if: ${{ github.event_name != 'schedule' || github.event.schedule == '37 6 26 * *' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install httpx openpyxl shapely
+
+      - name: New releases? (rebuild those files)
+        id: us
+        run: |
+          args=""
+          [ "${{ inputs.force }}" = "true" ] && args="--force"
+          python scripts/fetch_us_grid.py $args
+
+      - name: Check against EIA's published national total
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: python scripts/check_us_totals.py
+
+      - name: Commit to main
+        if: ${{ !cancelled() && steps.us.outputs.changed != '' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data/us/
+          git diff --cached --quiet && exit 0
+          git commit -m "US grid: new release of ${{ steps.us.outputs.changed }}"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+  lines:
+    if: ${{ github.event_name == 'push' || github.event.schedule == '11 4 3 1,4,7,10 *' || (github.event_name == 'workflow_dispatch' && inputs.lines) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Lines from 100 kV (OpenStreetMap through Overture Maps)
+        run: |
+          pip install duckdb httpx shapely
+          python scripts/fetch_us_lines.py --out us-lines.geojsons
+
+      - name: Build tippecanoe
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4
+          sudo make -C /tmp/tippecanoe install
+
+      - name: Cut into vector tiles
+        run: |
+          tippecanoe -o us-lines.pmtiles -l lines -Z0 -z11 --simplification=4 \
+            --no-feature-limit --no-tile-size-limit \
+            --attribution='© OpenStreetMap contributors (ODbL)' --force us-lines.geojsons
+          ls -la us-lines.pmtiles
+
+      - name: Upload to R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@4 r2 object put infraatlas-data/grid/us-lines.pmtiles \
+            --file us-lines.pmtiles --content-type application/vnd.pmtiles --remote

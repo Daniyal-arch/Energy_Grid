@@ -20,6 +20,8 @@ import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { useApp, motion } from "../app/store";
 import type { Arc, Cable, CountriesFile, DayFile, GasSite, Hex, Plant, PlantsFile, Power, Shape, StatsFile, Substation, TowerPiece, Unit } from "../app/types";
 import { priceState } from "./priceTerrain";
+import { largestType, queueMw } from "./usLayers";
+import { US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
 
 export const TIP_STYLE = {
   background: "rgba(8,10,14,0.92)",
@@ -154,8 +156,49 @@ function financeHtml(id: string, object: unknown): string | null {
   return null;
 }
 
+/** The US grid pack: EIA plants, USWTDB turbines, LBNL's queue per state. */
+function usHtml(id: string, object: unknown): string | null {
+  if (id === "us-plants") {
+    const f = fileOf<UsPlantsFile>("usPlants");
+    const p = f?.points[object as number];
+    if (!f || !p) return null;
+    const [name, state, eia] = f.plants[p[6]];
+    const status = f.statuses[p[3]];
+    const when = p[5] ? ` · ${status === "retired" ? "retired" : status === "operating" ? "since" : "planned for"} ${p[5]}` : "";
+    return `<b>${name}</b><div>${US_TYPE_LABEL[f.types[p[2]]] ?? f.types[p[2]]} · ${p[4].toLocaleString("en-US")} MW net summer · ${STATUS_LABEL[status] ?? status}${when}</div><div>${p[7]} generator${p[7] > 1 ? "s" : ""} · ${state} · EIA plant ${eia}</div>${SRC(`EIA-860M, ${f.release}`)}`;
+  }
+  if (id === "us-turbines") {
+    const f = fileOf<UsTurbinesFile>("usTurbines");
+    const k = object as number;
+    if (!f) return null;
+    const [project, state, year, n, mw] = f.projects[f.project[k]];
+    const kw = f.kw[k];
+    const bits = [f.models[f.model[k]], kw != null ? `${kw.toLocaleString("en-US")} kW` : "", f.hh[k] != null ? `hub ${f.hh[k]} m` : "", f.rd[k] != null ? `rotor ${f.rd[k]} m` : ""].filter(Boolean).join(" · ");
+    const proj = [n ? `${n} turbines` : "", mw ? `${mw.toLocaleString("en-US")} MW` : "", year ? `online ${year}` : "", state].filter(Boolean).join(" · ");
+    return `<b>${project || "Wind turbine"}</b>${f.offshore[k] ? "<div>offshore</div>" : ""}<div>${bits || "turbine"}</div><div style="color:#8d94a1">project: ${proj}</div>${SRC(`USWTDB ${f.release}`)}`;
+  }
+  if (id === "us-queue") {
+    const q = fileOf<UsQueueFile>("usQueue");
+    const code = (object as { code: string }).code;
+    const st = q?.states[code];
+    if (!q || !st) return null;
+    const name = fileOf<UsStatesFile>("usStates")?.states.find((s) => s.code === code)?.name ?? code;
+    const rows = q.types
+      .map((t, i) => [t, st.active[i]] as [string, number])
+      .filter(([, v]) => v > 0)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([t, v]) => `<div style="display:flex;justify-content:space-between;gap:16px"><span>${t}</span><span>${gwText(v)}</span></div>`)
+      .join("");
+    const susp = st.suspended.reduce((a, v) => a + v, 0);
+    return `<b>${name}</b><div><b>${gwText(queueMw(q, code))}</b> in ${st.active_n.toLocaleString("en-US")} active requests · most: ${largestType(q, code)}</div><div style="margin-top:4px">${rows}</div>${susp > 0 ? `<div style="color:#8d94a1">suspended: ${gwText(susp)} in ${st.suspended_n}</div>` : ""}${SRC(`LBNL Queued Up, requests active at the ${q.through} · hybrids counted under each type`)}`;
+  }
+  return null;
+}
+
 function tooltipHtml(id: string, object: unknown): string | null {
   if (id.startsWith("gem-")) return gemHtml(id, object);
+  if (id.startsWith("us-")) return usHtml(id, object);
   if (id.startsWith("fin-")) return financeHtml(id, object);
   const plants = fileOf<PlantsFile>("plants");
   switch (id) {

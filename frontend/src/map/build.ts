@@ -40,6 +40,7 @@ import {
 } from "../lib/world";
 import { ACCESS_STOPS } from "../lib/world";
 import { PLANT_TYPE_COLOR, type WorldPlantsFile } from "../lib/worldPlants";
+import { usTester, type UsStatesFile } from "../lib/us";
 import {
   BORDER,
   CABLE_STYLE,
@@ -87,6 +88,7 @@ import type {
 } from "../app/types";
 import { memo, NONE } from "./memo";
 import { priceTerrain, type Terrain } from "./priceTerrain";
+import { usLayers } from "./usLayers";
 
 export interface Frame {
   mode: TimeMode;
@@ -553,6 +555,7 @@ export function buildLayers(fr: Frame): Layer[] {
 
   // ---------------------------------------------------------------- the world (MapLibre draws the land, grid tiles)
   layers.push(...worldLayers(fr, near));
+  layers.push(...usLayers(fr));
   layers.push(...gemLayers(fr));
   layers.push(...financeLayers(fr));
 
@@ -974,12 +977,19 @@ function worldLayers(fr: Frame, near: (p: [number, number]) => boolean): Layer[]
   if (isOn("plantsWorld") && wp) {
     const st = wp.statuses.indexOf(fr.plantStatus);
     const vectors = memo("plantVectors", [wp], () => wp.points.map((p) => unitVector(p[0], p[1])));
-    const idx = memo("nearPlants", [wp, st, fr.camKey], () => {
+    // with the US plants layer on, EIA-860M wins in the US: GEM's points there are left out
+    const usStates = fr.layers.plantsUS ? (f.usStates as UsStatesFile | undefined) : undefined;
+    const inUs = memo("gemInUs", [wp, usStates], () => {
+      if (!usStates) return null;
+      const test = usTester(usStates);
+      return wp.points.map((p) => (p[0] < -64 || p[0] > 170) && p[1] > 17 && test(p[0], p[1]));
+    });
+    const idx = memo("nearPlants", [wp, st, fr.camKey, inUs], () => {
       const c = unitVector(fr.centre[0], fr.centre[1]);
       const keep: number[] = [];
       wp.points.forEach((p, k) => {
         const v = vectors[k];
-        if (p[3] === st && v[0] * c[0] + v[1] * c[1] + v[2] * c[2] > 0.17) keep.push(k);
+        if (p[3] === st && !inUs?.[k] && v[0] * c[0] + v[1] * c[1] + v[2] * c[2] > 0.17) keep.push(k);
       });
       return keep;
     });

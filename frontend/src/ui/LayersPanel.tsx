@@ -13,6 +13,8 @@ import { rgbCss, type RGB } from "../lib/theme";
 import { METRICS, metricGradient } from "../lib/transition";
 import { ACCESS_STOPS, ACCESS_TICKS, BR_COLOR, DC_COLOR, ON_COLOR, TW_COLOR, US_COLOR } from "../lib/world";
 import { HV_STEPS, PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, STATUS_LABEL } from "../lib/worldPlants";
+import { QUEUE_COLOR, US_BANDS, US_TYPE_COLOR, US_TYPE_LABEL, US_TYPE_ORDER } from "../lib/us";
+import { PLANT_DETAIL_ZOOM, PLANT_MIN_MW, QUEUE_M_PER_GW } from "../map/usLayers";
 import { CABLE_STYLE, FLOW, GAS, HVDC, MULTI_ZONE, OFFLINE_STOPS, PRICE_STOPS, SHARE_STOPS, SUBSTATION, VOLTAGE_BANDS, gradientCss } from "../app/colors";
 import { BEAM_MIN_MW } from "../app/geo";
 import { useDataStore } from "../app/data";
@@ -148,8 +150,26 @@ function GasFlowKey() {
   );
 }
 
-function LayerLegend({ id }: { id: LayerId }) {
+/** The status buttons shared by the plants layers (GEM worldwide, EIA in the US). */
+function StatusButtons() {
   const status = useApp((s) => s.plantStatus);
+  return (
+    <div className="mb-1.5 flex flex-wrap gap-1">
+      {(["operating", "construction", "planned", "retired"] as PlantStatus[]).map((st) => (
+        <button
+          key={st}
+          onClick={() => actions.setPlantStatus(st)}
+          className={`rounded-full border px-2 py-0.5 text-[10px] ${st === status ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-400 hover:text-slate-200"}`}
+        >
+          {STATUS_LABEL[st]}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function LayerLegend({ id }: { id: LayerId }) {
+  const usPlantsOn = useApp((s) => s.layers.plantsUS);
   switch (id) {
     case "prices":
       return <PriceKey />;
@@ -209,18 +229,47 @@ function LayerLegend({ id }: { id: LayerId }) {
     case "plantsWorld":
       return (
         <>
-          <div className="mb-1.5 flex flex-wrap gap-1">
-            {(["operating", "construction", "planned", "retired"] as PlantStatus[]).map((st) => (
-              <button
-                key={st}
-                onClick={() => actions.setPlantStatus(st)}
-                className={`rounded-full border px-2 py-0.5 text-[10px] ${st === status ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-400 hover:text-slate-200"}`}
-              >
-                {STATUS_LABEL[st]}
-              </button>
-            ))}
-          </div>
+          <StatusButtons />
           {fuelSwatches(Object.keys(PLANT_TYPE_COLOR), PLANT_TYPE_COLOR, PLANT_TYPE_LABEL)}
+          {usPlantsOn && <Note>In the US, EIA's inventory is shown instead (US power plants is on).</Note>}
+        </>
+      );
+    case "plantsUS":
+      return (
+        <>
+          <StatusButtons />
+          {fuelSwatches(US_TYPE_ORDER, US_TYPE_COLOR, US_TYPE_LABEL)}
+          <Note>
+            EIA-860M, every generator of 1 MW and more, summed per plant; size grows with net summer capacity. Zoomed out, plants of {PLANT_MIN_MW} MW and more; from zoom {PLANT_DETAIL_ZOOM} every one. In the US,
+            EIA wins over GEM: GEM's points there are hidden while this is on.
+          </Note>
+        </>
+      );
+    case "gridUS":
+      return (
+        <>
+          <Swatches>
+            {US_BANDS.map((b) => (
+              <Swatch key={b.min} color={`rgba(${b.color.join(",")},${Math.min(1, (b.alpha + 60) / 255)})`} kind="line" label={b.label} />
+            ))}
+            <Swatch color="rgb(178,146,255)" kind="dash" label="direct current" />
+          </Swatches>
+          <Note>Europe's voltage colours. OpenStreetMap via Overture: HIFLD's layer is no longer public.</Note>
+        </>
+      );
+    case "turbinesUS":
+      return <Note>Every turbine from zoom 5; zoomed out they are hidden. U.S. Wind Turbine Database.</Note>;
+    case "usQueue":
+      return (
+        <>
+          <Swatches>
+            {["Solar", "Battery", "Wind", "Gas", "Offshore Wind", "Other"].map((t) => (
+              <Swatch key={t} color={rgbCss(QUEUE_COLOR[t])} label={t} />
+            ))}
+          </Swatches>
+          <Note>
+            Height: GW of active requests to connect (1 GW = {QUEUE_M_PER_GW} m); colour: the type with the most. LBNL Queued Up, end of 2025: requests, not plants being built.
+          </Note>
         </>
       );
     case "gasPipes":
@@ -330,7 +379,8 @@ function LayerRow({ info }: { info: LayerInfo }) {
 function Group({ group, open, onToggle }: { group: LayerGroup; open: boolean; onToggle: () => void }) {
   const mode = useApp((s) => s.mode);
   const layers = useApp((s) => s.layers);
-  const inGroup = LAYERS.filter((l) => l.group === group);
+  // a story's own layer is listed only while it is on
+  const inGroup = LAYERS.filter((l) => l.group === group && (!l.story || layers[l.id]));
   const shown = inGroup.filter((l) => !l.modes || l.modes.includes(mode));
   const elsewhere = inGroup.filter((l) => l.modes && !l.modes.includes(mode));
   const active = shown.filter((l) => layers[l.id]).length;

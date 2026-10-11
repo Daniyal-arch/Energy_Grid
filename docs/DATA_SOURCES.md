@@ -1,7 +1,8 @@
 # Data sources
 
-Every file the app reads lives in `frontend/public/data/eu/` and is built by a script
-in `scripts/`. Values are passthrough from the source unless a row says otherwise.
+Every file the app reads lives in `frontend/public/data/eu/` (the US grid pack in
+`frontend/public/data/us/`) and is built by a script in `scripts/`. Values are passthrough
+from the source unless a row says otherwise.
 
 ## Static layers (`scripts/fetch_eu_energy.py` → `scripts/build_eu_grid.py`)
 
@@ -260,6 +261,120 @@ prefers that copy when it is newer than the bundled one.
 
 Renewable share in the World country card: Ember yearly data (`transition.json`), the
 newest year with a figure.
+
+## United States (`scripts/fetch_us_grid.py`, `scripts/fetch_us_lines.py`)
+
+Every power plant, the interconnection queue, every wind turbine and the transmission lines,
+in `frontend/public/data/us/` and on R2. No key. Probes: `scripts/probe_eia860m.py`,
+`scripts/probe_lbnl_queue.py`, `scripts/probe_uswtdb.py`, `scripts/probe_hifld.py`,
+`scripts/probe_us_lines.py`. `.github/workflows/us-grid.yml` checks every month for new
+releases (EIA-860M monthly, the queue yearly, USWTDB quarterly), rebuilds only those files
+and commits them to main; it rebuilds the line tiles quarterly. Each file records the
+release it was built from (`release`).
+
+```sh
+uv run python scripts/fetch_us_grid.py            # files whose source has a new release (--force: all)
+uv run python scripts/check_us_totals.py          # plants vs EIA's published national total
+env -u AWS_ACCESS_KEY_ID -u AWS_SECRET_ACCESS_KEY uv run python scripts/fetch_us_lines.py --out data/us/us-lines.geojsons
+```
+
+### `us/plants.json`: EIA-860M
+
+U.S. Energy Information Administration, Form EIA-860M, Preliminary Monthly Electric Generator
+Inventory (public domain), the newest month on https://www.eia.gov/electricity/data/eia860m/
+(August 2026: published 23 Sep 2026). Generators of 1 MW and more with their plant's
+coordinates; sheets Operating, Planned, Retired and their Puerto Rico twins. The page lists
+the coming months' files inside HTML comments: those placeholders are skipped.
+
+| Field | Source / rule |
+|---|---|
+| `points[]` = [lon, lat, type, status, MW, year, plant, units] | one point per EIA plant, fuel group and status (computed): lon/lat = the plant's `Longitude`/`Latitude`; MW = sum of the units' `Net Summer Capacity (MW)`; year = earliest `Operating Year` (operating), earliest `Planned Operation Year` (under construction, planned) or latest `Retirement Year` (retired); units = number of generators summed |
+| `types` (fuel group) | from `Energy Source Code`: SUN solar; WND wind; NG, OG, BFG, PG, SGP gas; DFO, RFO, JF, KER, PC, WO oil; BIT, SUB, LIG, ANT, RC, WC, SGC, SC coal; NUC nuclear; WAT hydro; MWH storage; WDS, WDL, BLQ, OBS, OBL, OBG, LFG, AB, MSW, SLW bioenergy; GEO geothermal; the rest other. `Technology` "Hydroelectric Pumped Storage" is storage |
+| `statuses` | operating = the Operating sheet (EIA's OP operating, SB standby, OA and OS out of service); under construction = Planned sheet `Status` U, V, TS; planned = P, L, T; retired = the Retired sheet. The Canceled or Postponed sheet is left out (counted in `left_out`) |
+| `plants[]` = [name, state, EIA plant id] | `Plant Name`, `Plant State`, `Plant ID` |
+| `totals`, `states`, `status_detail` | sums of net summer capacity by status and fuel: nationally (50 states and DC, without Puerto Rico, as EIA's national totals), per `Plant State` (Puerto Rico included as PR), and per EIA status code |
+| `additions` | sums by `Planned Operation Year`, status and fuel (Planned sheet) |
+| `retirements_planned` | sums of operating units by `Planned Retirement Year` and fuel |
+| `retired` | sums of the Retired sheet by `Retirement Year` and fuel, from 2010 |
+| `left_out` | canceled or postponed units; units without coordinates (in the sums, not on the map; e.g. early reactors listed without a plant ID); units without a net summer value (counted as 0 MW, as in EIA's totals: mostly parts of combined-cycle plants) |
+
+Check (`scripts/check_us_totals.py`): EIA's Electric Power Monthly Table 6.1 gives
+1,315,876.2 MW of utility-scale net summer capacity in service at the end of July 2026; the
+same build from the July 2026 EIA-860M file gives 1,316,203.6 MW (+0.025 %). Per fuel the two
+differ by at most 1 % (coal +900 MW, storage −400 MW): EIA's table groups by technology, this
+file by energy source code. The map shows the newest month (August 2026: 1,318.8 GW).
+
+### `us/queue.json`: LBNL Queued Up
+
+Lawrence Berkeley National Laboratory and GridTracker (Interconnection.fyi), "Queued Up"
+interconnection queue data file: "licensed CC BY 4.0 ... attribute it to Lawrence Berkeley
+National Laboratory and GridTracker" (LBNL's publication page; the workbook itself carries
+only the DOE copyright notice), the newest
+`lbnl_ix_queue_data_file_thru<YEAR>.xlsx` (2026 edition, May 2026: requests through the end
+of 2025; 7 ISOs/RTOs and 50 non-ISO balancing areas, ~98 % of US capacity). emp.lbl.gov
+answers Cloudflare's block page to scripts; the file comes from eta-publications.lbl.gov.
+Sheet "03. Complete Queue Data", one row per request.
+
+| Field | Source / rule |
+|---|---|
+| `types` | `type_1`, `type_2`, `type_3` as published (Solar, Battery, Gas, Wind, Offshore Wind, Nuclear, Other Storage, Geothermal, Coal, Hydro, Hydrogen, Diesel, Oil, Other); storage = Battery and Other Storage |
+| `total.active`, `states.*.active` | sums of `mw_1..3` under their own `type_1..3` (a hybrid counts under each of its types, as LBNL's "by type" tables do) for `q_status` = active, nationally and per `state` |
+| `total.suspended`, `states.*.suspended` | the same for `q_status` = suspended |
+| `*_n` | number of requests |
+| `phase` | sums of active MW by `IA_phase_clean` as published ("Not reported" where it is empty) |
+| `by_year` | sums of active MW by `prop_year` (proposed online year) |
+| `no_state` | active requests without a `state`: in the national total only |
+
+Check: active generation (every type but storage) sums to 1,312.0 GW, LBNL's headline
+figure (1,312 GW). Storage sums to 552.7 GW; the report's ~749 GW adds LBNL's estimate for
+hybrid projects that report no storage size, which the data file leaves out (its codebook
+says so) and the map does not show. The map raises each state with active requests as a
+slab: height = its active GW (1 GW = 700 m, plus a 3 km floor), colour = the type with the
+most MW there (computed in the app).
+
+### `us/turbines.json`: USWTDB
+
+U.S. Wind Turbine Database (USGS, Lawrence Berkeley National Laboratory, American Clean
+Power; public domain), the CSV download on https://energy.usgs.gov/uswtdb/data/ (V9.1,
+2026-09-28: 77,839 turbines, 129 offshore). One entry per turbine in each column, passthrough.
+
+| Field | Source / rule |
+|---|---|
+| `lon`, `lat` | `xlong`, `ylat` (rounded to 0.0001°) |
+| `kw`, `hh`, `rd` | `t_cap` (kW), `t_hh` (hub height, m), `t_rd` (rotor diameter, m); empty where USWTDB has none |
+| `model`, `models` | `t_model`, listed once |
+| `offshore` | `t_offshore` |
+| `project`, `projects[]` = [name, state, year, turbines, MW] | `p_name`, `t_state`, `p_year`, `p_tnum`, `p_cap`, listed once per project name and state |
+| `mw`, `states` | sums of `t_cap` over the turbines that have one (computed): nationally and per `t_state` with the turbine count |
+
+### `us/states.json`: outlines
+
+U.S. Census Bureau cartographic boundary file, states 1:20,000,000, 2024 (`cb_2024_us_state_20m`,
+KML, public domain): `STUSPS`, `NAME`, polygons rounded to 0.001°; the label point is a point
+inside each state's largest polygon (computed with shapely). Used for the queue slabs, and to
+leave GEM's plants out inside the US while the EIA plants layer is on.
+
+### R2: `grid/us-lines.pmtiles`: transmission lines
+
+HIFLD's "Electric Power Transmission Lines" is no longer public: since HIFLD Open's 2025
+change the HIFLD geoplatform holds no open copy (its organisation has only a 2023 user
+upload), and Esri's copy ("U.S. Electric Power Transmission Lines (Archive)") is archived,
+last updated 30 Sep 2024 and licensed under the Esri Master License Agreement
+(`scripts/probe_hifld.py`). `grid/world-hv.pmtiles` holds no North American lines (its North
+America job never finished). So the lines are OpenStreetMap's (ODbL), the source of the world
+grid layer, read through Overture Maps.
+
+Overture Maps, base theme, type infrastructure (newest release, 2026-09-23.1), classes
+power_line and cable, as GeoParquet on Overture's public S3 bucket read with DuckDB box by
+box (lower 48, Alaska, Hawaii). Kept: lines whose OSM `voltage` tag's highest value is 100 kV
+or more (NERC's bulk electric system threshold; world-hv starts at 220 kV, but 115–161 kV
+lines carry much of the US grid) and that touch a US state (Census outlines; lines crossing a
+border are kept whole). Per line: `kv` (highest voltage), OSM `name`, `dc` (`frequency` 0:
+HVDC), `cable` (underground or submarine); coordinates rounded to 0.0001°. 2026-09-23.1:
+174,801 lines (24,292 of 345 kV and more, 35,317 of 200–344 kV, 115,192 of 100–199 kV); left
+out 36,356 without a voltage tag, 103,511 below 100 kV, 10,048 outside the US. Tiles: 345 kV+
+from zoom 0, 200 kV+ from zoom 3, 100 kV+ from zoom 5, to zoom 11 (18 MB). The map colours
+them with Europe's voltage bands (380 kV+, 275–379, 200–274) and a darker 100–199 kV band.
 
 ## Wind and sun layers (`scripts/fetch_wind.py`)
 

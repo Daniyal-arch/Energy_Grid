@@ -46,6 +46,7 @@ function newer<T extends { fetched: string }>(name: string, remoteBase: string, 
 
 type Loader = (set: (v: unknown) => void) => Promise<unknown>;
 const bundled = (name: string): Loader => (set) => getJson(`/data/eu/${name}`).then(set);
+const bundledUs = (name: string): Loader => (set) => getJson(`/data/us/${name}`).then(set);
 const snapshot = (name: string): Loader => (set) => newer(name, SNAPSHOT_REMOTE, set);
 const archive = (name: string): Loader => (set) => newer(name, ARCHIVE_REMOTE, set);
 
@@ -73,6 +74,11 @@ const STATIC: Record<string, Loader> = {
   gemChemicals: bundled("gem/chemicals.json"),
   gemIronOre: bundled("gem/iron_ore.json"),
   gemFinance: bundled("gem/finance.json"),
+  // the US grid pack (scripts/fetch_us_grid.py; .github/workflows/us-grid.yml refreshes it on main)
+  usPlants: bundledUs("plants.json"),
+  usQueue: bundledUs("queue.json"),
+  usTurbines: bundledUs("turbines.json"),
+  usStates: bundledUs("states.json"),
   flows: snapshot("flows.json"),
   stats: snapshot("stats.json"),
   reference: snapshot("reference.json"),
