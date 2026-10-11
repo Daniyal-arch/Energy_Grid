@@ -300,7 +300,11 @@ function tooltipHtml(id: string, object: unknown): string | null {
     }
     case "eu-flows": {
       const a = object as Arc;
-      return `<b>${a.from} → ${a.to}</b> ${gw(a.mw)}${SRC(`physical flow, interval ${utc(a.ts)} · ENTSO-E`)}`;
+      const cap =
+        a.cap != null && a.cap > 0
+          ? `<div>uses <b>${Math.round((100 * a.mw) / a.cap)} %</b> of the ${gw(a.cap)} on offer <span style="color:#8d94a1">(${a.capDoc === "A31" ? "offered capacity, day-ahead auction" : "forecast transfer capacity, day-ahead"}; share computed)</span></div>`
+          : `<div style="color:#8d94a1">no capacity published for this border${["AT", "BE", "CZ", "DE", "FR", "HR", "HU", "NL", "PL", "RO", "SI", "SK"].includes(a.from) && ["AT", "BE", "CZ", "DE", "FR", "HR", "HU", "NL", "PL", "RO", "SI", "SK"].includes(a.to) ? " (Central Europe sets its limits jointly, flow-based)" : ""}</div>`;
+      return `<b>${a.from} → ${a.to}</b> ${gw(a.mw)}${cap}${SRC(`physical flow, interval ${utc(a.ts)} · ENTSO-E`)}`;
     }
     case "eu-gas-flows": {
       const a = object as GasArc;

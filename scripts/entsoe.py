@@ -318,6 +318,25 @@ def zone_generation(
     return total if any(v is not None for v in total) else None
 
 
+def forecast(client: httpx.Client, iso: str, grid: Grid) -> dict | None:
+    """Day-ahead wind and solar forecast of one country (A69, processType A01), MW:
+    {"solar": [...], "wind": [...]} (wind = offshore + onshore where both are published)."""
+    root = request(
+        client,
+        {"documentType": "A69", "processType": "A01", "in_Domain": AREA_EIC[iso], **grid.params()},
+    )
+    cols: dict[str, Series] = {}
+    for meta, values in series_of(root, "quantity", grid):
+        group = {"B16": "solar", "B18": "wind", "B19": "wind"}.get(meta.get("psrType", ""))
+        if not group:
+            continue
+        col = cols.setdefault(group, grid.empty())
+        for k, v in enumerate(values):
+            if v is not None:
+                col[k] = round((col[k] or 0.0) + v, 1)
+    return cols or None
+
+
 def power(client: httpx.Client, iso: str, grid: Grid) -> dict | None:
     """Load, generation per type and the computed renewable share of one country."""
     eic = AREA_EIC[iso]

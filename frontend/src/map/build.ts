@@ -69,6 +69,7 @@ import type { ColourId, LayerId, PlantStatus, Selection, TimeMode } from "../app
 import type {
   Arc,
   Cable,
+  CapacityFile,
   CountriesFile,
   Country,
   DayFile,
@@ -120,6 +121,8 @@ export interface Frame {
 
 const IDLE_MW = 20;
 const LABEL_MW = 1000; // arcs from this size carry a GW label
+/** A flow from this share of its border's capacity draws a bright core (where a capacity is published). */
+export const FULL_SHARE = 0.9;
 const DETAIL_ZOOM = 5; // below: plants >= 50 MW only
 const GAS_DETAIL_ZOOM = 5.5;
 const COLUMN_MIN_MW = 10;
@@ -609,6 +612,19 @@ export function buildLayers(fr: Frame): Layer[] {
         jointRounded: true,
         parameters: deep ? { depthCompare: "less-equal", depthWriteEnabled: false } : ON_TOP,
       }),
+      // a thin bright core where a flow uses 90 % or more of the capacity on offer
+      new PathLayer<Arc>({
+        id: "eu-flow-full",
+        data: memo("fullArcs", [arcs], () => arcs.filter((a) => a.cap != null && a.cap > 0 && a.mw / a.cap >= FULL_SHARE)),
+        getPath: (d) => d.path,
+        getColor: (d) => [255, 250, 236, !sel || touches(d) ? 235 : 60],
+        getWidth: 1.6,
+        updateTriggers: { getColor: [sel] },
+        widthUnits: "pixels",
+        capRounded: true,
+        jointRounded: true,
+        parameters: deep ? { depthCompare: "less-equal", depthWriteEnabled: false } : ON_TOP,
+      }),
       new FlowArrowLayer<Arc>({
         id: "eu-flows",
         data: arcs,
@@ -653,17 +669,32 @@ function nearFilter(fr: Frame) {
 function flowArcs(fr: Frame, dayK: number): Arc[] {
   const day = fr.day;
   const flows = fr.files.flows as FlowsFile | undefined;
-  return memo("arcs", [day, dayK, flows], () => {
+  const capFile = fr.files.capacity as CapacityFile | undefined;
+  return memo("arcs", [day, dayK, flows, capFile], () => {
     const out: Arc[] = [];
+    // capacity a->b and b->a for the flow's own time: the day file's slot, or the live file's
+    const liveCap = (a: string, b: string, ts: string): [number | null, number | null, string] => {
+      const row = capFile?.borders.find((x) => x.a === a && x.b === b);
+      if (!row || !capFile) return [null, null, ""];
+      const k = Math.floor((Date.parse(ts) - Date.parse(capFile.start)) / 1000 / capFile.step_s);
+      return k >= 0 && k < capFile.slots ? [row.ab[k], row.ba[k], row.doc] : [null, null, ""];
+    };
     const rows = day
-      ? day.borders.map((b) => ({ a: b.a, b: b.b, mw: b.values[dayK], ts: new Date(Date.parse(day.start) + dayK * day.step_s * 1000).toISOString() }))
-      : (flows?.borders ?? []).map((b) => ({ a: b.a, b: b.b, mw: b.mw, ts: b.ts }));
+      ? day.borders.map((b) => ({
+          a: b.a,
+          b: b.b,
+          mw: b.values[dayK],
+          ts: new Date(Date.parse(day.start) + dayK * day.step_s * 1000).toISOString(),
+          cap: [b.capacity_ab?.[dayK] ?? null, b.capacity_ba?.[dayK] ?? null, b.capacity_doc ?? ""] as [number | null, number | null, string],
+        }))
+      : (flows?.borders ?? []).map((b) => ({ a: b.a, b: b.b, mw: b.mw, ts: b.ts, cap: liveCap(b.a, b.b, b.ts) }));
     rows.forEach((f, n) => {
       if (f.mw == null || Math.abs(f.mw) < IDLE_MW) return;
       const [from, to] = f.mw > 0 ? [f.a, f.b] : [f.b, f.a];
       if (!ANCHOR[from] || !ANCHOR[to]) return;
       const path = curvedPath(ANCHOR[from], ANCHOR[to], 0.16, 40);
-      out.push({ from, to, mw: Math.abs(f.mw), ts: f.ts, path, timestamps: flowDistances(path, false, n * 91_000) });
+      const cap = f.mw > 0 ? f.cap[0] : f.cap[1];
+      out.push({ from, to, mw: Math.abs(f.mw), ts: f.ts, path, timestamps: flowDistances(path, false, n * 91_000), cap, capDoc: f.cap[2] });
     });
     return out.sort((x, y) => x.mw - y.mw);
   });

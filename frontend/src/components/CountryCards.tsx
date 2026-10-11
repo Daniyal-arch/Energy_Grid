@@ -15,6 +15,8 @@ export interface NowFigures {
   generation_mw: Record<string, number>;
 }
 export interface WeekFile {
+  /** day-ahead wind and solar forecast (ENTSO-E A69), where the days carry it */
+  forecast?: { solar: (number | null)[]; wind: (number | null)[] };
   days: string[];
   start: string;
   step_s: number;
@@ -142,7 +144,7 @@ const H = 104;
 
 /** Last days: generation mix (stacked), price, or load, every 15 minutes. */
 export function WeekCard({ week, marker }: { week: WeekFile; marker?: number | null }) {
-  const [tab, setTab] = useState<"mix" | "price" | "load">("mix");
+  const [tab, setTab] = useState<"mix" | "price" | "load" | "fc">("mix");
   const [hover, setHover] = useState<number | null>(null);
   const n = week.load.length;
   const x = (i: number) => (i / Math.max(1, n - 1)) * W;
@@ -165,7 +167,31 @@ export function WeekCard({ week, marker }: { week: WeekFile; marker?: number | n
         for (let i = 0; i < n; i++) base[i] = top[i];
         return { d: `${d}Z`, color: FUEL_COLOR[g] ?? FUEL_COLOR.other, key: g };
       });
-      return { paths, lines: [] as { d: string; color: RGB; key: string }[], max, min: 0, unit: "GW", y };
+      return { paths, lines: [] as { d: string; color: RGB; key: string; dash: boolean }[], max, min: 0, unit: "GW", y };
+    }
+    if (tab === "fc") {
+      // forecast (dashed) against what came (solid), wind and solar
+      const solar = week.generation.solar ?? [];
+      const wind = week.generation.wind ?? [];
+      const fc = week.forecast ?? { solar: [], wind: [] };
+      const all = [solar, wind, fc.solar, fc.wind].flat().filter((v): v is number => v != null);
+      const max = all.length ? Math.max(...all) : 1;
+      const y = (v: number) => H - (v / (max || 1)) * H;
+      const path = (col: (number | null)[]) => {
+        let d = "";
+        col.forEach((v, i) => {
+          if (v == null) return;
+          d += `${d && col[i - 1] != null ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`;
+        });
+        return d;
+      };
+      const lines = [
+        { d: path(solar), color: FUEL_COLOR.solar, key: "solar", dash: false },
+        { d: path(fc.solar), color: FUEL_COLOR.solar, key: "solar forecast", dash: true },
+        { d: path(wind), color: FUEL_COLOR.wind, key: "wind", dash: false },
+        { d: path(fc.wind), color: FUEL_COLOR.wind, key: "wind forecast", dash: true },
+      ];
+      return { paths: [], lines, max, min: 0, unit: "GW", y };
     }
     const cols = tab === "price" ? week.prices : { load: week.load };
     const values = Object.values(cols).flat().filter((v): v is number => v != null);
@@ -179,7 +205,7 @@ export function WeekCard({ week, marker }: { week: WeekFile; marker?: number | n
         if (v == null) return;
         d += `${d && col[i - 1] != null ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`;
       });
-      return { d, color: palette[j % palette.length], key: k };
+      return { d, color: palette[j % palette.length], key: k, dash: false };
     });
     return { paths: [], lines, max, min, unit: tab === "price" ? "€/MWh" : "GW", y };
   }, [tab, week, n]);
@@ -192,6 +218,10 @@ export function WeekCard({ week, marker }: { week: WeekFile; marker?: number | n
       return `${fmt.format(stamp(i))} · ${gw(total)} generated`;
     }
     if (tab === "load") return `${fmt.format(stamp(i))} · load ${power(week.load[i] ?? 0)}`;
+    if (tab === "fc") {
+      const v = (col: (number | null)[] | undefined) => (col?.[i] != null ? power(col[i] as number) : "–");
+      return `${fmt.format(stamp(i))} · solar ${v(week.generation.solar)} (forecast ${v(week.forecast?.solar)}) · wind ${v(week.generation.wind)} (${v(week.forecast?.wind)})`;
+    }
     const zones = Object.entries(week.prices)
       .map(([z, col]) => (col[i] != null ? `${z} ${Math.round(col[i] as number)} €` : null))
       .filter(Boolean)
@@ -204,15 +234,15 @@ export function WeekCard({ week, marker }: { week: WeekFile; marker?: number | n
   return (
     <Card title={week.days.length > 1 ? `Last ${week.days.length} days` : "One day"} note="every 15 min · CET/CEST">
       <div className="mb-2 flex gap-1">
-        {(["mix", "price", "load"] as const)
-          .filter((t) => t !== "price" || Object.keys(week.prices).length > 0)
+        {(["mix", "fc", "price", "load"] as const)
+          .filter((t) => (t !== "price" || Object.keys(week.prices).length > 0) && (t !== "fc" || !!week.forecast))
           .map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
               className={`rounded-full px-2.5 py-0.5 text-[10px] ${tab === t ? "bg-white/15 text-slate-100" : `${muted} hover:text-slate-200`}`}
             >
-              {t === "mix" ? "Generation mix" : t === "price" ? "Price" : "Load"}
+              {t === "mix" ? "Generation mix" : t === "fc" ? "Wind & solar vs forecast" : t === "price" ? "Price" : "Load"}
             </button>
           ))}
       </div>
@@ -231,7 +261,7 @@ export function WeekCard({ week, marker }: { week: WeekFile; marker?: number | n
           <path key={p.key} d={p.d} fill={rgbCss(p.color, 0.85)} />
         ))}
         {chart.lines.map((l) => (
-          <path key={l.key} d={l.d} fill="none" stroke={rgbCss(l.color)} strokeWidth={1.3} />
+          <path key={l.key} d={l.d} fill="none" stroke={rgbCss(l.color)} strokeWidth={1.3} strokeDasharray={l.dash ? "3 2" : undefined} opacity={l.dash ? 0.85 : 1} />
         ))}
         {dayTicks.map((i, k) => (
           <g key={k}>
@@ -245,9 +275,12 @@ export function WeekCard({ week, marker }: { week: WeekFile; marker?: number | n
           <line x1={x((hover ?? marker) as number)} x2={x((hover ?? marker) as number)} y1={0} y2={H} stroke="#f1f5f9" strokeWidth={1} />
         )}
         <text x={W - 2} y={9} fontSize={8} fill="#8d94a1" textAnchor="end">
-          {tab === "mix" || tab === "load" ? `${(chart.max / 1000).toFixed(0)} GW` : `${Math.round(chart.max)} €/MWh`}
+          {tab === "price" ? `${Math.round(chart.max)} €/MWh` : `${(chart.max / 1000).toFixed(0)} GW`}
         </text>
       </svg>
+      {tab === "fc" && (
+        <div className={`mt-1 text-[9px] ${muted}`}>Solid: what came (ENTSO-E A75); dashed: the day-ahead forecast (ENTSO-E A69).</div>
+      )}
       {tab === "price" && Object.keys(week.prices).length > 1 && (
         <div className={`mt-1 flex flex-wrap gap-x-3 text-[9px] ${muted}`}>
           {chart.lines.map((l) => (

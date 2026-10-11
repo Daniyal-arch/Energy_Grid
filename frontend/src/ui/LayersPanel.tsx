@@ -174,7 +174,11 @@ function LayerLegend({ id }: { id: LayerId }) {
     case "prices":
       return <PriceKey />;
     case "flows":
-      return <Note>Arrows point the way the power goes; labels from 1 GW. ENTSO-E, every 15 minutes.</Note>;
+      return (
+        <Note>
+          Arrows point the way the power goes; labels from 1 GW. A thin bright core: the flow uses 90 % or more of the capacity offered on that border (where ENTSO-E publishes one; Central Europe and the Nordics set limits jointly and publish none per border). ENTSO-E, every 15 minutes.
+        </Note>
+      );
     case "gasFlows":
       return <GasFlowKey />;
     case "plantOutput":

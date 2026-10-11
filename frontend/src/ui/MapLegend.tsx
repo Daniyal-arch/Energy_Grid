@@ -73,7 +73,7 @@ function LayerRow({ id }: { id: LayerId }) {
       return (
         <Row label="Flows">
           <Line color={rgbCss(FLOW)} />
-          way the power goes · ENTSO-E
+          way the power goes; bright core: 90 %+ of capacity · ENTSO-E
         </Row>
       );
     case "plantOutput":

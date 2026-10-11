@@ -61,7 +61,7 @@ function wantedKeys(): string[] {
   for (const [id, style] of [...Object.entries(GEM_PIPES), ...Object.entries(GEM_POINTS)]) if (L[id as LayerId]) keys.push(style.file);
   if (s.mode === "live") {
     keys.push("stats");
-    if (L.flows) keys.push("flows");
+    if (L.flows) keys.push("flows", "capacity");
     if (L.gasFlows) keys.push("gasFlows");
     if (L.wind || L.sun) keys.push("windWorld");
   }

@@ -81,6 +81,8 @@ const STATIC: Record<string, Loader> = {
   usStates: bundledUs("states.json"),
   flows: snapshot("flows.json"),
   stats: snapshot("stats.json"),
+  // transfer capacity per border, today and tomorrow (scripts/fetch_eu_capacity.py)
+  capacity: snapshot("capacity.json"),
   reference: snapshot("reference.json"),
   dossier: snapshot("dossier.json"),
   outages: snapshot("outages.json"),

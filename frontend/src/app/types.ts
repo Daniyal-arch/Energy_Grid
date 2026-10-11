@@ -82,6 +82,9 @@ export interface Arc {
   to: string;
   mw: number;
   ts: string;
+  /** transfer capacity in the flow's direction (MW) and its document, where published */
+  cap?: number | null;
+  capDoc?: string;
   path: [number, number][];
   timestamps: number[];
 }
@@ -120,7 +123,7 @@ export interface DayFile {
   prices: Record<string, { country: string; values: Series }>;
   countries: Record<string, DaySeries>;
   eu: DaySeries | null;
-  borders: { a: string; b: string; values: Series }[];
+  borders: { a: string; b: string; values: Series; capacity_ab?: Series; capacity_ba?: Series; capacity_doc?: string }[];
   highlights?: Highlight[];
 }
 /** undersea power cable: [class, kV | null, name | null, flat lon/lat] */
@@ -169,4 +172,13 @@ export interface UnitOutputFile {
   output: (number | null)[][];
   countries: Record<string, { units?: number; placed?: number }>;
   areas_without_data: string[];
+}
+
+/** Transfer capacity per country border, today and tomorrow (capacity.json). */
+export interface CapacityFile {
+  fetched: string;
+  start: string;
+  step_s: number;
+  slots: number;
+  borders: { a: string; b: string; ab: Series; ba: Series; doc: string }[];
 }
