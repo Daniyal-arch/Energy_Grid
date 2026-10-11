@@ -27,11 +27,39 @@ The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
   Gridfinder's predicted grid, undersea power cables, data centres, electricity access,
   Ember's yearly and monthly data, live grids of the US (EIA-930), Brazil (ONS) and
   Australia (AEMO).
+- **Added 2026-10-11:** Europe's gas flows (ENTSOG), output per plant through a day
+  (ENTSO-E per unit + JRC), installed capacity from ENTSO-E, border capacity on the flow
+  arrows, wind and solar forecast vs actual, prices to 0.01 €; "A day in the US" (EIA-930),
+  US day-ahead prices at six trading hubs, US fossil units hour by hour (EPA CAMPD).
+  Stories in sections (Europe, United States, World); Live · Years (the day replays are
+  stories).
 - Refresh: `eu-snapshot.yml` (every 30 min onto `eu-data`), `eu-days.yml` (daily onto
   `eu-days`), `world-hv.yml` and `world-grid.yml` (tiles onto R2, on demand), `us-grid.yml`
   (US data monthly onto main, US line tiles quarterly onto R2).
 - Known gap: `grid/world-hv.pmtiles` holds no lines in the Americas (its `na` and `sa` jobs
   did not finish; the tiles' bounds start at 22.5° W). The US has its own lines layer.
+
+## Waiting on the owner (keys and approvals)
+
+- **PJM** (`PJM_API_KEY`): Western Hub price for the Mid-Atlantic region. Needs a PJM Tools
+  account, then apiportal.pjm.com → Data Miner 2 → Primary key (the portal did not resolve
+  from the owner's network on 2026-10-11: try a hotspot or DNS 1.1.1.1). Add it as a cloud
+  network secret (`Ocp-Apim-Subscription-Key` on `api.pjm.com`) and a GitHub secret; no code
+  change needed.
+- **Alberta** (`AESO_API_KEY`), **South Korea** (`DATA_GO_KR_KEY`), **Turkey**
+  (`EPIAS_USERNAME`, `EPIAS_PASSWORD`): global live grids 3–5 below.
+- **Downloads to approve:** Global Solar Atlas PVOUT (~362 MB), Global Wind Atlas (several GB),
+  both in GitHub Actions.
+
+## Next
+
+1. **Check the new daily steps** (eu-days: plant output, US days, US prices, EPA) after the
+   next morning run; fix what fails.
+2. **Cloud wave 2** (briefs in `docs/tasks/`): Climate TRACE emissions per facility
+   (worldwide), the rest of the world high-voltage grid from Overture in Actions, EU CO₂ per
+   installation (EU ETS) with LNG send-out per terminal (GIE ALSI, `AGSI_API_KEY`).
+3. **Product:** downloads (CSV of what a view shows), a country report page, then the agent.
+4. **Videos:** "A day in the US", gas flows into Europe, plants through a day.
 
 ## Data sources to add, one by one
 
