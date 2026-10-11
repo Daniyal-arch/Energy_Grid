@@ -110,6 +110,10 @@ export interface Highlight {
   gw?: number;
   pct?: number;
   eur?: number;
+  /** US price captions: the hub's own $/MWh */
+  usd?: number;
+  /** US hub's short name */
+  name?: string;
   zone?: string;
   country?: string;
   from?: string;
@@ -125,7 +129,8 @@ export interface DayFile {
   start: string;
   step_s: number;
   slots: number;
-  prices: Record<string, { country: string; values: Series }>;
+  /** zone (Europe) or trading hub (US: market and short name too) -> its region and hourly price */
+  prices: Record<string, { country: string; market?: string; name?: string; values: Series }>;
   countries: Record<string, DaySeries>;
   eu: DaySeries | null;
   borders: { a: string; b: string; values: Series; capacity_ab?: Series; capacity_ba?: Series; capacity_doc?: string }[];

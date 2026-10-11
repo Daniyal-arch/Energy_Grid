@@ -177,3 +177,45 @@ export function usTester(file: UsStatesFile): (lon: number, lat: number) => bool
 }
 
 export const gwText = (mw: number) => (mw >= 10_000 ? `${Math.round(mw / 1000).toLocaleString("en-US")} GW` : mw >= 1000 ? `${(mw / 1000).toFixed(1)} GW` : `${Math.round(mw)} MW`);
+
+/** Day-ahead price at one trading hub per market (scripts/fetch_us_prices.py), $/MWh. */
+export interface UsPricesFile {
+  source: string;
+  unit: string;
+  fetched: string;
+  step_s: number;
+  hubs: Record<string, { market: string; name: string; region: string; clock: string }>;
+  /** today and tomorrow in Eastern Time, once published */
+  days: { date: string; start: string; slots: number; prices: Record<string, { country: string; market: string; name: string; values: (number | null)[] }> }[];
+}
+
+export interface HubPrice {
+  hub: string;
+  market: string;
+  name: string;
+  region: string;
+  usd: number;
+}
+
+/** Each hub's price in one hour of a day's prices (hubs without a value left out). */
+export function hubPrices(prices: Record<string, { country: string; market?: string; name?: string; values: (number | null)[] }>, k: number): HubPrice[] {
+  return Object.entries(prices).flatMap(([hub, p]) => {
+    const usd = p.values[k];
+    return usd == null ? [] : [{ hub, market: p.market ?? hub, name: p.name ?? hub, region: p.country, usd }];
+  });
+}
+
+/** The hour of now in us_prices.json: the day and the slot holding it. */
+export function hubPricesNow(f: UsPricesFile, now: number = Date.now()): { rows: HubPrice[]; hour: string } | null {
+  for (const d of f.days) {
+    const k = Math.floor((now - Date.parse(d.start)) / (f.step_s * 1000));
+    if (k >= 0 && k < d.slots) {
+      const rows = hubPrices(d.prices, k);
+      return rows.length ? { rows, hour: new Date(Date.parse(d.start) + k * f.step_s * 1000).toISOString() } : null;
+    }
+  }
+  return null;
+}
+
+/** "$45.20" with the source's two decimals; a minus before the sign. */
+export const usd = (v: number) => `${v < 0 ? "−" : ""}$${Math.abs(v).toFixed(2)}`;

@@ -34,7 +34,7 @@ const Dot = ({ color }: { color: string }) => <span className="mr-0.5 inline-blo
 function PriceRow() {
   const mode = useApp((s) => s.mode);
   const files = useDataStore((d) => d.files);
-  const range = priceRange(mode === "day" ? currentDay() : null, files.stats as StatsFile | undefined);
+  const range = priceRange(mode === "day" && currentDay()?.region !== "us" ? currentDay() : null, files.stats as StatsFile | undefined);
   return (
     <Row label="Prices">
       <div className="flex items-center gap-1.5">

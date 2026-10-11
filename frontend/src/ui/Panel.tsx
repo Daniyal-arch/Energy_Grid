@@ -27,8 +27,8 @@ import type { FinanceFile } from "../lib/finance";
 import { AggregateCard, RankingCard, type RankRow } from "../components/TransitionCards";
 import type { IrenaFile } from "../lib/irena";
 import { AccessCard, BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard, WorldCountryCard } from "../components/WorldCards";
-import { UsCapacityCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
-import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
+import { UsCapacityCard, UsHubPricesCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
+import { hubPrices, hubPricesNow, type UsPlantsFile, type UsPricesFile, type UsQueueFile, type UsTurbinesFile } from "../lib/us";
 import { FUEL_COLOR, FUEL_LABEL, STACK_ORDER, gw, power } from "../lib/energy";
 import { priceMetricById, type PriceMetricId, type PricesFile } from "../lib/prices";
 import { rgbCss } from "../lib/theme";
@@ -691,6 +691,7 @@ function WorldPanel() {
 /** The US replay at the clock: the Lower 48 (EIA's own total) and the largest regions. */
 function UsDayNow({ day, k, ts, timeOf }: { day: DayFile; k: number; ts: (i: number) => string; timeOf: (iso: string) => string }) {
   const us = dayPower(day.eu, k, ts(k)) ?? null;
+  const hubs = hubPrices(day.prices, k);
   const ranking = Object.entries(day.countries)
     .map(([id, c]) => {
       const parts = STACK_ORDER.map((g) => [g, c.generation[g]?.[k] ?? 0] as [string, number]).filter(([, v]) => v > 0);
@@ -705,6 +706,7 @@ function UsDayNow({ day, k, ts, timeOf }: { day: DayFile; k: number; ts: (i: num
       ) : (
         <Empty>EIA has no Lower-48 figure for {timeOf(ts(k))} yet.</Empty>
       )}
+      {hubs.length > 0 && <UsHubPricesCard rows={hubs} time={timeOf(ts(k))} regionName={(id) => day.names?.[id] ?? id} />}
       {ranking.length > 0 && (
         <Card title="Regions this hour" note="EIA-930">
           <div className="space-y-1">
@@ -724,10 +726,12 @@ function UsDayNow({ day, k, ts, timeOf }: { day: DayFile; k: number; ts: (i: num
           </div>
         </Card>
       )}
-      <SourcesCard items={WORLD_SOURCES.filter(([key]) => key === "United States")} />
+      <SourcesCard items={WORLD_SOURCES.filter(([key]) => key === "United States" || (hubs.length > 0 && key === "US prices"))} />
     </>
   );
 }
+
+const ET_HOUR = new Intl.DateTimeFormat("en-GB", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit" });
 
 function UsPanel() {
   const { day, k, ts, timeOf } = useDayNow();
@@ -736,6 +740,8 @@ function UsPanel() {
   const queue = useFile<UsQueueFile>("usQueue");
   const turbines = useFile<UsTurbinesFile>("usTurbines");
   const us = useFile<UsFile>("us");
+  const usPrices = useFile<UsPricesFile>("usPrices");
+  const pricesNow = usPrices ? hubPricesNow(usPrices) : null;
   const status = useApp((s) => s.plantStatus);
   const names = useStateNames();
   const statsOn = useStatsLayers().length > 0;
@@ -791,7 +797,8 @@ function UsPanel() {
       body: () => (
         <>
           {us ? <UsCard us={us} /> : <Empty>Loading EIA-930…</Empty>}
-          <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === "United States")} />
+          {pricesNow && <UsHubPricesCard rows={pricesNow.rows} time={`${ET_HOUR.format(new Date(pricesNow.hour))} ET`} />}
+          <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === "United States" || (pricesNow != null && k === "US prices"))} />
         </>
       ),
     },

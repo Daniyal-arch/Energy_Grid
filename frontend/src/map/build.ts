@@ -272,7 +272,7 @@ export function buildLayers(fr: Frame): Layer[] {
     countries ? countries.countries.flatMap((c) => c.polygons.map((rings) => ({ iso: c.iso, name: c.name, polygon: rings.map(pairs) }))) : [],
   );
   // prices: each country a block as high as its price (map/priceTerrain.ts)
-  const terrain = facingEurope && isOn("prices") ? priceTerrain(fr, dayK, shapes) : null;
+  const terrain = facingEurope && isOn("prices") && day?.region !== "us" ? priceTerrain(fr, dayK, shapes) : null;
   const fillKey = [fr.colour, f.stats, f.outages, f.prices, f.transition, f.worldStats, f.irena, fr.mode, day, dayK, fr.yearK, sel, Math.round(sunLight(fr) * 20)];
   if (facingEurope) {
     layers.push(
@@ -944,6 +944,11 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
     .filter((t) => t.group === top.get(t.iso) && t.total >= TOWER_LABEL_MW)
     .sort((a, b) => b.total - a.total)
     .slice(0, fr.isMobile ? 5 : 9);
+  // US: the day-ahead price at the hub of the region's market (one hub per region)
+  const usHub =
+    day.region === "us"
+      ? memo("towerHubs", [day, dayK], () => new Map(Object.values(day.prices).flatMap((p) => (p.values[dayK] != null ? [[p.country, p.values[dayK] as number] as const] : []))))
+      : null;
   const pools = memo("towerPools", [day, dayK, sel], () => {
     const best = new Map<string, TowerPiece>();
     for (const t of towers) if (!best.has(t.iso) || t.mw > best.get(t.iso)!.mw) best.set(t.iso, t);
@@ -976,10 +981,15 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
       id: "eu-tower-labels",
       data: labelled,
       getPosition: (t) => [...anchorOf(t.iso)!, (tops.get(t.iso) ?? 0) + 25_000] as [number, number, number],
-      // generation and, with the Prices layer, the price
+      // generation and, with the Prices layer, the price; in the US the region's hub price
       getText: (t) => {
+        const gwText = `${t.iso} ${Math.round(t.total / 1000)} GW`;
+        if (usHub) {
+          const p = usHub.get(t.iso);
+          return p != null ? `${gwText} · ${p < 0 ? "−" : ""}$${Math.round(Math.abs(p))}` : gwText;
+        }
         const p = terrain?.price(t.iso);
-        return `${t.iso} ${Math.round(t.total / 1000)} GW${p != null ? ` · ${Math.round(p)} €` : ""}`;
+        return `${gwText}${p != null ? ` · ${Math.round(p)} €` : ""}`;
       },
       getSize: 12,
       getColor: [236, 240, 246, 255],
@@ -989,7 +999,7 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
       background: true,
       getBackgroundColor: [6, 9, 14, 200],
       backgroundPadding: [4, 2],
-      updateTriggers: { getText: [dayK, !!terrain] },
+      updateTriggers: { getText: [dayK, !!terrain, usHub] },
       parameters: ON_TOP,
     }),
   ];
