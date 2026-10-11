@@ -291,6 +291,17 @@ export const STORIES: Story[] = [
     camera: { center: [100, 22], zoom: 2.1 },
   },
   {
+    id: "us-live",
+    group: "United States",
+    label: "US live",
+    blurb: "Demand, generation and flows between the 13 grid regions now",
+    mode: "live",
+    colour: "none",
+    layers: ["liveGrids", "gridUS"],
+    camera: "us",
+    region: "us",
+  },
+  {
     id: "us-grid",
     group: "United States",
     label: "US grid",
