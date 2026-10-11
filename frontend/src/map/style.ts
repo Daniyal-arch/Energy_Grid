@@ -5,6 +5,7 @@ import maplibregl from "maplibre-gl";
 import { Protocol } from "pmtiles";
 
 import { HV_STEPS, HV_TILES, PREDICTED_TILES } from "../lib/worldPlants";
+import { US_BANDS, US_LINES_TILES } from "../lib/us";
 import { isNarrow } from "../app/geo";
 
 export const OCEAN = "#0a111c";
@@ -116,7 +117,38 @@ export const STYLE: maplibregl.StyleSpecification = {
 
 /** The world grid tiles, added the first time they are switched on (a source still loading
  *  would hold back the map's load event; a missing file only logs an error). */
-export function addGridLayers(map: maplibregl.Map, which: "hv" | "predicted"): void {
+export function addGridLayers(map: maplibregl.Map, which: "hv" | "predicted" | "us"): void {
+  if (which === "us" && !map.getSource("us-lines")) {
+    map.addSource("us-lines", { type: "vector", url: US_LINES_TILES, attribution: "© OpenStreetMap contributors" });
+    // Europe's copper bands by voltage (app/colors.ts VOLTAGE_BANDS), the 100-199 kV lines darker
+    const usKv = ["coalesce", ["get", "kv"], 0];
+    const color = ["step", usKv, ...US_BANDS.slice().reverse().flatMap((b, i) => (i === 0 ? [`rgba(${b.color.join(",")},${(b.alpha / 255).toFixed(2)})`] : [b.min, `rgba(${b.color.join(",")},${(b.alpha / 255).toFixed(2)})`]))];
+    const width = ["interpolate", ["linear"], ["zoom"], 3, ["step", usKv, 0.5, 275, 0.6, 380, 0.8], 7, ["step", usKv, 0.7, 275, 0.9, 380, 1.2], 11, ["step", usKv, 1.1, 275, 1.5, 380, 2]];
+    map.addLayer(
+      {
+        id: "us-lines",
+        type: "line",
+        source: "us-lines",
+        "source-layer": "lines",
+        filter: ["!=", ["get", "dc"], 1],
+        layout: { "line-cap": "round", "line-join": "round" },
+        paint: { "line-color": color as unknown as string, "line-width": width as unknown as number },
+      },
+      "world-pick",
+    );
+    // direct-current links dashed, as Europe's HVDC
+    map.addLayer(
+      {
+        id: "us-lines-dc",
+        type: "line",
+        source: "us-lines",
+        "source-layer": "lines",
+        filter: ["==", ["get", "dc"], 1],
+        paint: { "line-color": "rgba(178,146,255,0.8)", "line-width": width as unknown as number, "line-dasharray": [3, 2] },
+      },
+      "world-pick",
+    );
+  }
   if (which === "predicted" && !map.getSource("world-predicted")) {
     map.addSource("world-predicted", { type: "vector", url: PREDICTED_TILES, attribution: "Gridfinder (Arderne et al. 2020)" });
     map.addLayer(
@@ -178,6 +210,7 @@ export function addGridLayers(map: maplibregl.Map, which: "hv" | "predicted"): v
 }
 export const GRID_LAYERS = ["hv-glow", "hv-lines"];
 export const PREDICTED_LAYERS = ["grid-predicted"];
+export const US_GRID_LAYERS = ["us-lines", "us-lines-dc"];
 
 /** Globe for the overview; flat (mercator) for tilted 3D views (towers, plant columns),
  *  which deck.gl's globe mode cannot draw. */
@@ -220,6 +253,14 @@ export function europeView(map: maplibregl.Map): { center: [number, number]; zoo
 }
 export const europeCamera = () => ({ center: (isNarrow() ? [12, 46] : [12, 49]) as [number, number], zoom: isNarrow() ? 1.7 : 2.55 });
 export const worldCamera = () => ({ center: (isNarrow() ? [30, 8] : [34, 14]) as [number, number], zoom: isNarrow() ? 1.05 : 2.05 });
+
+const US_BOUNDS: [[number, number], [number, number]] = [
+  [-124.8, 24.5],
+  [-66.9, 49.4],
+];
+/** The lower 48 between the panels; tilted for the queue raised on the states. */
+export const usFrame = (map: maplibregl.Map, tilted: boolean, duration = 0) =>
+  map.fitBounds(US_BOUNDS, { padding: panelPadding(), pitch: tilted ? 55 : 0, bearing: tilted ? -6 : 0, duration });
 
 /** Room the 24 h view keeps free around the map (MapLibre keeps it as the camera's padding). */
 export const dayPadding = () => (isNarrow() ? { left: 4, right: 4, top: 90, bottom: 160 } : { left: 320, right: 380, top: 70, bottom: 110 });

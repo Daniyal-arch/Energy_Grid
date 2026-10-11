@@ -19,12 +19,19 @@ The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
 - **Europe:** grid, plants, gas, cross-border flows, wind and sunshine, outages, a
   30-day archive every 15 minutes, twelve months of prices per zone, LNG and storage
   (ENTSO-E, Elexon, GIE, Ember, Open-Meteo, powerplantmatching, SciGRID_gas).
+- **United States:** every generator of 1 MW and more (EIA-860M, monthly; replaces GEM in
+  the US while on), transmission lines from 100 kV (OpenStreetMap via Overture, PMTiles on
+  R2), every wind turbine (USWTDB), the interconnection queue raised per state (LBNL Queued
+  Up), a US panel and the stories "US grid" and "US interconnection queue".
 - **World:** GEM power plants by status, OSM high-voltage lines (PMTiles on R2),
   Gridfinder's predicted grid, undersea power cables, data centres, electricity access,
   Ember's yearly and monthly data, live grids of the US (EIA-930), Brazil (ONS) and
   Australia (AEMO).
 - Refresh: `eu-snapshot.yml` (every 30 min onto `eu-data`), `eu-days.yml` (daily onto
-  `eu-days`), `world-hv.yml` and `world-grid.yml` (tiles onto R2, on demand).
+  `eu-days`), `world-hv.yml` and `world-grid.yml` (tiles onto R2, on demand), `us-grid.yml`
+  (US data monthly onto main, US line tiles quarterly onto R2).
+- Known gap: `grid/world-hv.pmtiles` holds no lines in the Americas (its `na` and `sa` jobs
+  did not finish; the tiles' bounds start at 22.5° W). The US has its own lines layer.
 
 ## Data sources to add, one by one
 
@@ -65,12 +72,13 @@ Credentials go in `.env` and `.env.example` (and the repo secrets for workflows)
 
 ### United States
 
-1. **Interconnection queues** (LBNL "Queued Up": every project waiting to connect,
+1. ✅ **Interconnection queues** (LBNL "Queued Up": every project waiting to connect,
    by state, type, size and year; Excel, yearly).
-2. **Every generator** (EIA-860M, monthly: operating, planned and retiring units of
+2. ✅ **Every generator** (EIA-860M, monthly: operating, planned and retiring units of
    1 MW or more, with location).
-3. **Transmission lines** (HIFLD: 69–765 kV with voltage) as vector tiles on R2.
-4. **Wind turbines and solar farms** (USWTDB: every turbine; USPVDB: solar outlines).
+3. ✅ **Transmission lines** as vector tiles on R2: OpenStreetMap from 100 kV through
+   Overture (HIFLD's layer is no longer public since 2025).
+4. ✅ **Wind turbines** (USWTDB: every turbine). Still to do: solar farm outlines (USPVDB).
 5. **Hourly CO₂ per power plant** (EPA CAMPD API; `EPA_API_KEY`).
 6. **EV chargers** (NREL AFDC station locator; `NREL_API_KEY`).
 7. **Power outages per county** (ORNL EAGLE-I, every 15 min, yearly releases).

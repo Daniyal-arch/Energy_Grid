@@ -25,6 +25,8 @@ import type { FinanceFile } from "../lib/finance";
 import { AggregateCard, RankingCard, type RankRow } from "../components/TransitionCards";
 import type { IrenaFile } from "../lib/irena";
 import { AccessCard, BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard, WorldCountryCard } from "../components/WorldCards";
+import { UsCapacityCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
+import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
 import { FUEL_COLOR, FUEL_LABEL, STACK_ORDER, gw, power } from "../lib/energy";
 import { priceMetricById, type PriceMetricId, type PricesFile } from "../lib/prices";
 import { rgbCss } from "../lib/theme";
@@ -38,7 +40,7 @@ import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { actions, useApp } from "../app/store";
 import type { CountriesFile, DayFile, FlowsFile, GasFile, OutagesFile, PlantsFile, ReferenceFile, StatsFile, WorldFile } from "../app/types";
 import { LayerStatsTab, useStatsLayers } from "./LayerStats";
-import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
+import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
 interface Dossier {
   fetched: string;
@@ -113,7 +115,7 @@ export default function Panel() {
   if (sel?.kind === "region") return <RegionPanel grid={sel.grid} id={sel.id} />;
   if (sel?.kind === "country" && european) return <CountryPanel iso={sel.iso2!} />;
   if (sel?.kind === "country" && sel.iso3) return <WorldCountryPanel code={sel.iso3} />;
-  return region === "world" ? <WorldPanel /> : <EuropePanel />;
+  return region === "us" ? <UsPanel /> : region === "world" ? <WorldPanel /> : <EuropePanel />;
 }
 
 /** "On the map" first, while layers with figures are on. */
@@ -670,6 +672,81 @@ function WorldPanel() {
     { id: "years", label: "25 years", body: () => <YearsTab code="World" scope="world" /> },
   ];
   return <Frame title="World" sub={access ? `${access.value.toFixed(1)} % of people have electricity (${access.year}, World Bank)` : undefined} tabs={withStats(tabs, statsOn)} close={false} />;
+}
+
+// ---------------------------------------------------------------- the United States, no selection
+
+function UsPanel() {
+  const plants = useFile<UsPlantsFile>("usPlants");
+  const queue = useFile<UsQueueFile>("usQueue");
+  const turbines = useFile<UsTurbinesFile>("usTurbines");
+  const us = useFile<UsFile>("us");
+  const status = useApp((s) => s.plantStatus);
+  const names = useStateNames();
+  const statsOn = useStatsLayers().length > 0;
+  const plantsOn = useApp((s) => s.layers.plantsUS);
+  const queueOn = useApp((s) => s.layers.usQueue);
+  const sources = <SourcesCard items={US_SOURCES} />;
+  const tabs: Tab[] = [
+    {
+      id: "now",
+      label: "Plants",
+      body: () =>
+        plants ? (
+          <>
+            {!plantsOn && (
+              <button onClick={() => actions.applyStory("us-grid")} className="w-full rounded-lg border border-orange-300/30 px-3 py-1.5 text-left text-[11px] text-orange-200 hover:bg-orange-300/10">
+                Show every plant, the lines and the turbines on the map
+              </button>
+            )}
+            <UsCapacityCard f={plants} />
+            <UsPlantsCard f={plants} status={status} onStatus={(st) => actions.setPlantStatus(st as typeof status)} />
+            {turbines && <UsTurbinesCard t={turbines} names={names} />}
+            {sources}
+          </>
+        ) : (
+          <Empty>Loading EIA's generator inventory…</Empty>
+        ),
+    },
+    { id: "pipeline", label: "Additions & retirements", body: () => (plants ? <><UsPipelineCard f={plants} />{sources}</> : <Empty>Loading EIA's generator inventory…</Empty>) },
+    {
+      id: "queue",
+      label: "Queue",
+      body: () =>
+        queue ? (
+          <>
+            {!queueOn && (
+              <button onClick={() => actions.applyStory("us-queue")} className="w-full rounded-lg border border-slate-300/30 px-3 py-1.5 text-left text-[11px] text-slate-200 hover:bg-white/10">
+                Raise the states by what is waiting to connect
+              </button>
+            )}
+            <UsQueueCard q={queue} />
+            <UsQueueStatesCard q={queue} names={names} />
+            {sources}
+          </>
+        ) : (
+          <Empty>Loading LBNL's queue data…</Empty>
+        ),
+    },
+    {
+      id: "live",
+      label: "Live",
+      body: () => (
+        <>
+          {us ? <UsCard us={us} /> : <Empty>Loading EIA-930…</Empty>}
+          <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === "United States")} />
+        </>
+      ),
+    },
+  ];
+  return (
+    <Frame
+      title="United States"
+      sub={plants ? `EIA-860M ${plants.release}${queue ? ` · queue at the ${queue.through}` : ""}` : undefined}
+      tabs={withStats(tabs, statsOn, "USA")}
+      close={false}
+    />
+  );
 }
 
 function WorldCountryPanel({ code }: { code: string }) {

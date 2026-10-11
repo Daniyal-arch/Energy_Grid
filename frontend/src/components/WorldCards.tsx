@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { stopColor } from "../lib/prices";
-import { rgbCss } from "../lib/theme";
+import { rgbCss, type RGB } from "../lib/theme";
 import { FUEL_COLOR, FUEL_LABEL, STACK_ORDER } from "../lib/energy";
 import { PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, STATUS_LABEL } from "../lib/worldPlants";
 import {
@@ -382,18 +382,26 @@ export function PlantsCard({
   data,
   status,
   onStatus,
+  colors = PLANT_TYPE_COLOR,
+  labels = PLANT_TYPE_LABEL,
+  source = "Global Energy Monitor",
+  note = "Planned = pre-construction + announced. Retired includes mothballed. Cancelled and shelved projects are left out. Click a row to show it on the map.",
 }: {
   title: string;
   data: Record<string, Record<string, number>>;
   status: string;
   onStatus: (s: string) => void;
+  colors?: Record<string, RGB>;
+  labels?: Record<string, string>;
+  source?: string;
+  note?: string;
 }) {
   const order = ["operating", "construction", "planned", "retired"];
   const totals = order.map((st) => Object.values(data[st] ?? {}).reduce((a, v) => a + v, 0));
   const max = Math.max(1, ...totals);
   const fmt = (mw: number) => (mw >= 1e6 ? `${(mw / 1e6).toFixed(2)} TW` : mw >= 1000 ? `${Math.round(mw / 1000).toLocaleString("en-US")} GW` : `${Math.round(mw)} MW`);
   return (
-    <Card title={title} note="Global Energy Monitor" accent={[255, 196, 120]}>
+    <Card title={title} note={source} accent={[255, 196, 120]}>
       <div className="space-y-2">
         {order.map((st, i) => {
           const parts = Object.entries(data[st] ?? {}).filter(([, v]) => v > 0);
@@ -411,8 +419,8 @@ export function PlantsCard({
                 {parts.map(([t, v]) => (
                   <div
                     key={t}
-                    title={`${PLANT_TYPE_LABEL[t] ?? t} ${fmt(v)}`}
-                    style={{ width: `${(v / (totals[i] || 1)) * 100}%`, background: rgbCss(PLANT_TYPE_COLOR[t] ?? [150, 150, 150]) }}
+                    title={`${labels[t] ?? t} ${fmt(v)}`}
+                    style={{ width: `${(v / (totals[i] || 1)) * 100}%`, background: rgbCss(colors[t] ?? [150, 150, 150]) }}
                   />
                 ))}
               </div>
@@ -421,16 +429,16 @@ export function PlantsCard({
         })}
       </div>
       <div className="mt-2 flex flex-wrap gap-x-2.5 gap-y-0.5 text-[9px] text-slate-400">
-        {Object.entries(PLANT_TYPE_LABEL).map(([k, v]) => (
-          <span key={k} className="flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: rgbCss(PLANT_TYPE_COLOR[k]) }} />
-            {v}
-          </span>
-        ))}
+        {Object.keys(colors)
+          .filter((k) => labels[k] && order.some((st) => (data[st]?.[k] ?? 0) > 0))
+          .map((k) => (
+            <span key={k} className="flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: rgbCss(colors[k]) }} />
+              {labels[k]}
+            </span>
+          ))}
       </div>
-      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
-        Planned = pre-construction + announced. Retired includes mothballed. Cancelled and shelved projects are left out. Click a row to show it on the map.
-      </div>
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{note}</div>
     </Card>
   );
 }

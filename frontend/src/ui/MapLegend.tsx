@@ -9,6 +9,7 @@ import { rgbCss } from "../lib/theme";
 import { FLOW, VOLTAGE_BANDS } from "../app/colors";
 import { useDataStore } from "../app/data";
 import { COLOURS, LAYERS, useApp, type LayerId } from "../app/store";
+import { QUEUE_COLOR, US_BANDS } from "../lib/us";
 import type { StatsFile } from "../app/types";
 import { priceRange, rampCss } from "../map/priceTerrain";
 import { currentDay } from "../map/tooltip";
@@ -78,6 +79,32 @@ function LayerRow({ id }: { id: LayerId }) {
               {i < VOLTAGE_BANDS.length - 1 ? b.label.replace(" kV", "") : b.label}
             </span>
           ))}
+        </Row>
+      );
+    case "gridUS":
+      return (
+        <Row label="US grid">
+          {US_BANDS.map((b) => (
+            <span key={b.min} className="mr-1 whitespace-nowrap">
+              <Line color={`rgba(${b.color.join(",")},${Math.min(1, (b.alpha + 60) / 255)})`} />
+              {b.label.replace(" kV", "").replace(", from zoom 5", "")}
+            </span>
+          ))}
+          <span className={muted}>kV · OpenStreetMap</span>
+        </Row>
+      );
+    case "usQueue":
+      return (
+        <Row label="Queue">
+          <div className="flex flex-wrap gap-x-1.5">
+            {["Solar", "Battery", "Wind", "Gas"].map((t) => (
+              <span key={t} className="whitespace-nowrap">
+                <Dot color={rgbCss(QUEUE_COLOR[t])} />
+                {t}
+              </span>
+            ))}
+          </div>
+          <div className={muted}>height = GW waiting · colour = most · LBNL</div>
         </Row>
       );
     default: {
