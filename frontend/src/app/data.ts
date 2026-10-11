@@ -94,6 +94,8 @@ const STATIC: Record<string, Loader> = {
   taiwan: snapshot("taiwan.json"),
   ontario: snapshot("ontario.json"),
   prices: archive("prices.json"),
+  // US day-ahead prices at one hub per market, today and tomorrow (scripts/fetch_us_prices.py)
+  usPrices: archive("us_prices.json"),
   worldStats: archive("world_stats.json"),
   datacentres: archive("datacentres.json"),
   irena: archive("irena.json"),

@@ -4,7 +4,7 @@
 import { useMemo, type ReactNode } from "react";
 
 import { rgbCss, type RGB } from "../lib/theme";
-import { US_TYPE_COLOR, US_TYPE_LABEL, US_TYPE_ORDER, gwText, queueColor, type UsPlantsFile, type UsQueueFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
+import { US_TYPE_COLOR, US_TYPE_LABEL, US_TYPE_ORDER, gwText, queueColor, usd, type HubPrice, type UsPlantsFile, type UsQueueFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
 import { useFile } from "../app/data";
 import { Card } from "./CountryCards";
 import { PlantsCard } from "./WorldCards";
@@ -261,6 +261,28 @@ export function UsTurbinesCard({ t, names }: { t: UsTurbinesFile; names: (code: 
         ))}
       </div>
       <Note>U.S. Wind Turbine Database (USGS, LBNL, American Clean Power; public domain): every turbine's position checked on aerial imagery. Shown on the map from zoom 5.</Note>
+    </Card>
+  );
+}
+
+/** Day-ahead price at one trading hub per market for one hour; no average across hubs. */
+export function UsHubPricesCard({ rows, time, regionName }: { rows: HubPrice[]; time: string; regionName?: (id: string) => string }) {
+  return (
+    <Card title="Day-ahead prices" note={`$/MWh · ${time}`} accent={[240, 214, 92]}>
+      <div className="space-y-1">
+        {rows.map((r) => (
+          <div key={r.hub} className="flex items-center gap-2 text-[11px] tabular-nums" title={`${r.hub} (${r.market})${regionName ? `, EIA region ${regionName(r.region)}` : ""}`}>
+            <span className="w-12 text-slate-400">{r.market}</span>
+            <span className="flex-1 truncate text-slate-300">{r.name}</span>
+            <span className={`w-10 text-right ${muted}`}>{r.region}</span>
+            <span className="w-16 text-right text-slate-100">{usd(r.usd)}</span>
+          </div>
+        ))}
+      </div>
+      <Note>
+        Each market&apos;s day-ahead price (LMP) at its trading hub for this hour, as the market publishes it, matched to the EIA region it covers. One hub per market, not an average.
+        {rows.some((r) => r.market === "PJM") ? "" : " PJM is not shown (its data need an API key)."}
+      </Note>
     </Card>
   );
 }

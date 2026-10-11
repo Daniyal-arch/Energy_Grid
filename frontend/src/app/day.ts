@@ -1,6 +1,7 @@
 // The 24-hour replay: market clock, the sun and night shadow, key moments, one slot as Power.
 
 import type { RGB } from "../lib/theme";
+import { usd } from "../lib/us";
 import type { DayRegion } from "./store";
 import type { DaySeries, Highlight, Power } from "./types";
 
@@ -41,6 +42,10 @@ export const TOWER_LABEL_MW = 8000; // towers from this total carry a "DE 61 GW"
 export const CAPTION_SLOTS = 10; // a caption stays for 2.5 h of the day
 export const NIGHT_BOUNDS: [number, number, number, number] = [-180, -85, 180, 85];
 
+/** A US trading hub with its market's region: "SP15 (California)". */
+const hubText = (h: Highlight, name: (iso?: string) => string) => `${h.name ?? h.zone} (${name(h.country)})`;
+const usdText = (v: number | undefined) => (v == null ? "–" : usd(v));
+
 /** Title and sentence for a key moment; every number is the build script's. */
 export function captionText(h: Highlight, name: (iso?: string) => string, region: DayRegion = "eu"): { title: string; text: string; color: RGB } {
   const us = region === "us";
@@ -53,6 +58,7 @@ export function captionText(h: Highlight, name: (iso?: string) => string, region
     case "flow_max":
       return { title: "Biggest flow", text: `${name(h.from)} sends ${h.gw} GW to ${name(h.to)}.`, color: [120, 222, 255] };
     case "price_low":
+      if (us) return { title: (h.usd ?? 0) < 0 ? "Negative price" : "Cheapest power", text: `${hubText(h, name)} clears at ${usdText(h.usd)}/MWh day-ahead.`, color: [22, 170, 160] };
       return {
         title: (h.eur ?? 0) < 0 ? "Negative price" : "Cheapest power",
         text: `${h.zone === h.country ? name(h.country) : h.zone} pays ${h.eur} €/MWh.`,
@@ -63,6 +69,7 @@ export function captionText(h: Highlight, name: (iso?: string) => string, region
     case "greenest":
       return { title: "Greenest grid", text: `${name(h.country)}: ${h.pct} % of its power is renewable.`, color: [72, 222, 184] };
     case "price_high":
+      if (us) return { title: "Most expensive", text: `${hubText(h, name)} clears at ${usdText(h.usd)}/MWh day-ahead.`, color: [240, 110, 80] };
       return {
         title: "Most expensive",
         text: `${h.zone === h.country ? name(h.country) : h.zone} pays ${h.eur} €/MWh.`,

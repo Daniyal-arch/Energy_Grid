@@ -74,6 +74,10 @@ export const WORLD_SOURCES: Sources = [
     "EIA-930 hourly data (EIA API v2, public domain) for the 13 EIA regions: demand (about 1 h behind), generation by fuel and net interchange (about a day behind), flows between regions (about two days behind), each with its own hour. Region markers are placed for reading.",
   ],
   [
+    "US prices",
+    "Day-ahead price (LMP, $/MWh, two decimals) at one trading hub per market, from each market's public files: CAISO SP15 (TH_SP15_GEN-APND, OASIS) for CAL, ERCOT Hub Average (HB_HUBAVG) for TEX, PJM Western Hub for MIDA (Data Miner 2, needs a key), MISO Illinois Hub for MIDW, SPP South Hub (SPPSOUTH_HUB) for CENT, NYISO N.Y.C. (zone J) for NY, ISO-NE Internal Hub for NE. Each market's own hour (UTC, Central, Eastern Standard or Eastern prevailing time) is converted to the hour on the clock.",
+  ],
+  [
     "Brazil",
     "ONS Energia Agora: load, generation by source and imports/exports per subsystem, and the flows between subsystems, as published every few minutes. Markers are placed for reading; Imperatriz is ONS's junction node.",
   ],

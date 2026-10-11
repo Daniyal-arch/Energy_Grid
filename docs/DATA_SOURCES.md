@@ -147,11 +147,38 @@ The "price range, all zones" chart is the lowest and highest zone price per slot
   `borders` the region pairs (one direction per pair, the other side's report sign-flipped,
   as in `us.json`), `names` EIA's region names.
 - Computed: the renewable share of generation (solar + wind + hydro over every fuel's
-  positive output in the hour) and the key moments (`scripts/day_highlights.py`, prices left
-  out: EIA-930 has none).
+  positive output in the hour) and the key moments (`scripts/day_highlights.py`; the price
+  captions name the cheapest and dearest hub-hour of the day at the hub's own $/MWh, `usd`).
+- `prices`: the day-ahead price at one trading hub per market (next section), keyed by hub,
+  `{"country": EIA region, "market", "name", "values": [$/MWh per hour of the file]}`.
+  `build_us_day.py --prices-only` adds them to days built before (EIA values untouched).
 - Fuel-type data arrive about a day late and interchange about two, so the newest day is three
   days back; the daily archive run builds the missing days and rebuilds the two newest.
 - On the map, 1 GW stands 7 km tall (half of Europe's scale: the regions are larger).
+
+## US day-ahead prices (`scripts/fetch_us_prices.py`, `us_prices.json`, `usday` `prices`)
+
+| Market | Hub (benchmark) | EIA region | Source (public, no key unless named) | Market hour → file hour |
+|---|---|---|---|---|
+| CAISO | `TH_SP15_GEN-APND` (SP15) | CAL | OASIS `PRC_LMP`, `market_run_id=DAM`, `version=12`, zip of CSV, `LMP_TYPE=LMP` | `INTERVALSTARTTIME_GMT` (UTC) |
+| ERCOT | `HB_HUBAVG` | TEX | MIS public report 12331 (DAM Settlement Point Prices), the file posted the day before delivery | hour ending, Central prevailing time; `DSTFlag=Y` is the repeated autumn hour |
+| PJM | Western Hub (pnode 51288) | MIDA | Data Miner 2 `da_hrl_lmps`, `total_lmp_da` (`PJM_API_KEY`, header `Ocp-Apim-Subscription-Key`); skipped when the API answers 401 | `datetime_beginning_utc` |
+| MISO | `ILLINOIS.HUB` | MIDW | market reports `<YYYYMMDD>_da_expost_lmp.csv`, row `LMP` | hour ending 1–24, Eastern Standard Time all year (MISO's market clock) |
+| SPP | `SPPSOUTH_HUB` | CENT | portal file browser `da-lmp-by-settlement-location`, `By_Day/DA-LMP-SL-<YYYYMMDD>0100.csv`, column `LMP` | `GMTIntervalEnd` minus one hour (UTC) |
+| NYISO | `N.Y.C.` (zone J) | NY | `damlbmp/<YYYYMMDD>damlbmp_zone.csv`, `LBMP ($/MWHr)` | hour beginning, Eastern prevailing time (the repeated autumn hour appears twice) |
+| ISO-NE | `.H.INTERNAL_HUB` | NE | `histRpts/da-lmp/WW_DALMP_ISO_<YYYYMMDD>.csv`, column Locational Marginal Price | hour ending, Eastern prevailing time (`02X` is the repeated autumn hour) |
+
+- Currency and unit: USD/MWh, the hub's total LMP (energy + congestion + losses), rounded to
+  two decimals (CAISO serves five, SPP four, the others two). Passthrough otherwise.
+- Hours: for the four local clocks the n-th hour of a market day starts n−1 hours after that
+  day's local midnight, which handles 23- and 25-hour days. The western markets' days begin
+  after Eastern midnight, so one Eastern day takes hours from two of their market days.
+- `us_prices.json`: today and tomorrow in Eastern Time (`days[].prices`, same shape as in the
+  day files); tomorrow fills in as the markets publish it (early afternoon the day before).
+  Refreshed by the daily archive run (`eu-days`, `eu/us_prices.json`).
+- On screen: "A day in the US" tower labels read "TEX 60 GW · $45" (the region's hub at the
+  clock, rounded to the dollar); the "This hour" card and the US Live tab list each hub with
+  its market and price to the cent. One hub per market, never averaged.
 
 ## Output per plant (`scripts/build_eu_units.py`, `units/<date>.json`)
 

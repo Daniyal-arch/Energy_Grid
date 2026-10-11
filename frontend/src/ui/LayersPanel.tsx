@@ -123,7 +123,7 @@ export function ColourLegend({ colour }: { colour: ColourId }) {
 function PriceKey() {
   const mode = useApp((s) => s.mode);
   const files = useDataStore((d) => d.files);
-  const range = priceRange(mode === "day" ? currentDay() : null, files.stats as StatsFile | undefined);
+  const range = priceRange(mode === "day" && currentDay()?.region !== "us" ? currentDay() : null, files.stats as StatsFile | undefined);
   const ticks = range ? [`${Math.round(range[0])}`, `${Math.round((range[0] + range[1]) / 2)}`, `${Math.round(range[1])} €/MWh`] : ["cheapest", "", "dearest"];
   return (
     <Scale
