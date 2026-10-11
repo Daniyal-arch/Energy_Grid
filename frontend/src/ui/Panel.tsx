@@ -37,10 +37,10 @@ import { NEM_NAME, latest, type AemoFile, type BrazilFile, type DataCentresFile,
 import type { WorldPlantsFile } from "../lib/worldPlants";
 import { PRICE_STOPS, stopColor } from "../app/colors";
 import { useFile } from "../app/data";
-import { clockOf, dayFileKey, dayIndexKey, dayPower, utc } from "../app/day";
+import { clockOf, dayFileKey, dayIndexKey, dayPower, unitOutKey, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { actions, useApp } from "../app/store";
-import type { CountriesFile, DayFile, FlowsFile, GasFile, OutagesFile, PlantsFile, ReferenceFile, StatsFile, WorldFile } from "../app/types";
+import type { CountriesFile, DayFile, FlowsFile, GasFile, OutagesFile, PlantsFile, ReferenceFile, StatsFile, WorldFile, UnitOutputFile } from "../app/types";
 import { LayerStatsTab, useStatsLayers } from "./LayerStats";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
@@ -724,8 +724,53 @@ function UsDayNow({ day, k, ts, timeOf }: { day: DayFile; k: number; ts: (i: num
           </div>
         </Card>
       )}
+      <UsCo2Card day={day} k={k} />
       <SourcesCard items={WORLD_SOURCES.filter(([key]) => key === "United States")} />
     </>
+  );
+}
+
+/** CO2 of EPA's fossil units in the hour, summed per EIA region (needs the plant-output file). */
+function UsCo2Card({ day, k }: { day: DayFile; k: number }) {
+  const f = useFile<UnitOutputFile>(unitOutKey("us", day.date));
+  if (!f?.co2_t) return null;
+  const i = Math.min(f.slots - 1, k);
+  const by = new Map<string, number>();
+  let total = 0;
+  let reporting = 0;
+  f.plants.forEach((p, n) => {
+    const v = f.co2_t![n][i];
+    if (v == null) return;
+    reporting += 1;
+    total += v;
+    const r = p[3] || "–";
+    by.set(r, (by.get(r) ?? 0) + v);
+  });
+  const rows = [...by.entries()].sort((a, b) => b[1] - a[1]);
+  const top = rows[0]?.[1] ?? 1;
+  const t = (v: number) => `${Math.round(v).toLocaleString("en-US")} t`;
+  return (
+    <Card title="CO₂ from fossil plants" note="EPA · this hour">
+      <div className="text-[22px] font-light leading-none tabular-nums text-slate-100">{t(total)}</div>
+      <div className={`mt-1 text-[10px] ${muted}`}>sum of {reporting.toLocaleString("en-US")} plants' units reporting this hour (computed)</div>
+      <div className="mt-2 space-y-0.5">
+        {rows.map(([r, v]) => (
+          <div key={r} className="flex items-center gap-2 text-[11px] tabular-nums">
+            <span className="w-10 text-slate-300" title={day.names?.[r]}>
+              {r === "–" ? "none" : r}
+            </span>
+            <div className="h-[6px] flex-1 overflow-hidden rounded-sm bg-white/[0.05]">
+              <div className="h-full rounded-sm bg-[#c9a27a]" style={{ width: `${(v / top) * 100}%` }} />
+            </div>
+            <span className="w-16 text-right text-slate-200">{t(v)}</span>
+          </div>
+        ))}
+      </div>
+      <div className={`mt-1.5 text-[9.5px] leading-snug ${muted}`}>
+        Per EIA region: the plant's balancing authority (EIA-860M) in EIA's region table; "none": no balancing authority listed. CO₂ in tonnes from EPA's short tons. Only units in EPA's
+        trading programmes (fossil, over 25 MW).
+      </div>
+    </Card>
   );
 }
 

@@ -18,7 +18,7 @@ import { ACCESS_STOPS, latest, type WorldStatsFile } from "../lib/world";
 import { US_CENTRE } from "../lib/us";
 import { TR_NO_DATA, stopColor } from "../app/colors";
 import { ensure, fileOf, useDataStore } from "../app/data";
-import { centralSun, dayFileKey, dayIndexKey, nightImage, sunAltAt, DAY_SECONDS } from "../app/day";
+import { centralSun, dayFileKey, dayIndexKey, nightImage, sunAltAt, DAY_SECONDS, unitIndexKey, unitOutKey } from "../app/day";
 import { EUROPE_CENTRE, angularDistance, bbox, isNarrow, MOBILE_QUERY } from "../app/geo";
 import { actions, clearYearFromUrl, motion, useApp, writeUrl, yearFromUrl, type LayerId, type Selection } from "../app/store";
 import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
@@ -75,7 +75,7 @@ function wantedKeys(): string[] {
     const date = dayDate();
     // the US replay has no weather layers
     if (date) keys.push(dayFileKey(s.dayRegion, date), ...(s.dayRegion === "eu" ? [`dayWind:${date}`] : []));
-    if (L.plantOutput) keys.push("unitIndex", ...(date ? [`unitOut:${date}`] : []));
+    if (L.plantOutput) keys.push(unitIndexKey(s.dayRegion), ...(date ? [unitOutKey(s.dayRegion, date)] : []));
   }
   const iso = selectedIso2(s.selection);
   if (iso && L.plantsEU && s.mode === "live") keys.push("plants", `units:${iso}`);
@@ -435,6 +435,12 @@ export default function MapCanvas() {
       if (s.story === "plants-day" && !s.day) {
         const idx = files.unitIndex as { complete: string[] } | undefined;
         const newest = idx?.complete[idx.complete.length - 1];
+        if (newest) useApp.setState({ day: newest });
+      }
+      // the US one opens on the newest day EPA's data are complete for (months back)
+      if (s.story === "us-plants-day" && !s.day) {
+        const idx = files.usUnitIndex as { days: string[] } | undefined;
+        const newest = idx?.days[idx.days.length - 1];
         if (newest) useApp.setState({ day: newest });
       }
       // the clocks
