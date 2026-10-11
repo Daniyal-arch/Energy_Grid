@@ -61,6 +61,9 @@ The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
 3. **Product:** downloads (CSV of what a view shows), a country report page, then the agent.
 4. **Videos:** "A day in the US", gas flows into Europe, plants through a day.
 
+The full catalogue of candidate datasets (Europe, US, world; broad and granular; access and
+licence) is in [docs/DATASETS.md](docs/DATASETS.md).
+
 ## Data sources to add, one by one
 
 Each one: a probe (`scripts/probe_*.py`), a fetch/build script, its file in
