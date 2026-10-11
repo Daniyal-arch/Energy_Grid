@@ -17,6 +17,7 @@ import type { WorldPlantsFile } from "../lib/worldPlants";
 import { CABLE_STYLE } from "../app/colors";
 import { useFile } from "../app/data";
 import { LAYERS, STATS_LAYERS, actions, useApp, type LayerId, type PlantStatus } from "../app/store";
+import { dayIndexKey, unitOutKey } from "../app/day";
 import type { Cable, UnitOutputFile, WorldFile } from "../app/types";
 import { FUEL_COLOR } from "../lib/energy";
 
@@ -338,9 +339,10 @@ export function useStatsLayers(): LayerId[] {
 function PlantOutputCard({ iso3 }: { iso3?: string }) {
   const slot = useApp((s) => s.slot);
   const want = useApp((s) => s.day);
-  const index = useFile<{ all: string[] }>("dayIndex");
+  const region = useApp((s) => s.dayRegion);
+  const index = useFile<{ all: string[] }>(dayIndexKey(region));
   const date = want && index?.all.includes(want) ? want : (index?.all[index.all.length - 1] ?? null);
-  const f = useFile<UnitOutputFile>(date ? `unitOut:${date}` : null);
+  const f = useFile<UnitOutputFile>(date ? unitOutKey(region, date) : null);
   const iso2 = iso3 ? Object.entries(ISO3).find(([, v]) => v === iso3)?.[0] : undefined;
   if (!f) return <Card title="Plant output">{date ? "Loading…" : "No day chosen."}</Card>;
   const k = Math.min(f.slots - 1, slot);
@@ -354,7 +356,7 @@ function PlantOutputCard({ iso3 }: { iso3?: string }) {
   const placed = counts.reduce((a, [, c]) => a + (c.placed ?? 0), 0);
   const max = top[0]?.mw || 1;
   return (
-    <Card title="Plant output" note={`ENTSO-E per unit · ${f.date}`}>
+    <Card title="Plant output" note={`${region === "us" ? "EPA CAMPD, hourly" : "ENTSO-E per unit"} · ${f.date}`}>
       <div className="text-[22px] font-light text-slate-50">
         {(total / 1000).toFixed(1)} GW <span className={`text-[11px] ${muted}`}>from {rows.length} plants at the clock (sum, computed)</span>
       </div>
@@ -373,10 +375,17 @@ function PlantOutputCard({ iso3 }: { iso3?: string }) {
           </div>
         ))}
       </div>
+      {region === "us" ? (
+        <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+          Fossil units in EPA's trading programmes (over 25 MW): {units.toLocaleString("en-US")} units at {f.plants.length.toLocaleString("en-US")} plants, each plant's units summed (computed). Gross
+          load, hour by hour; EPA publishes a quarter within 30 days after it ends, so the newest day is months back.
+        </div>
+      ) : (
       <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
         Units of 100 MW and more: {placed.toLocaleString("en-US")} of {units.toLocaleString("en-US")} placed on the map with the JRC Open Power Plants Database.
         {f.areas_without_data.length ? ` No output per unit this day from ${f.areas_without_data.join(", ")}.` : ""} Germany, the Nordics, Austria and Switzerland publish about five days late.
       </div>
+      )}
     </Card>
   );
 }

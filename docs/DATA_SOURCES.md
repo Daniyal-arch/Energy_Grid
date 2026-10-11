@@ -175,6 +175,54 @@ The "price range, all zones" chart is the lowest and highest zone price per slot
   archive run rebuilds the last 8 days so late publications fill in; the story "Plants
   through a day" opens on the newest complete day.
 
+## US fossil plants hour by hour (`scripts/build_us_units.py`, `usunits/<date>.json`)
+
+| File | Records | Source |
+|---|---:|---|
+| `usunits/<YYYY-MM-DD>.json` | ~1,260 plants (~3,800 units), 24 hours of an Eastern-Time day | EPA Clean Air Markets Program Data (CAMPD API, `api.epa.gov/easey`, `EPA_API_KEY`, public domain): `streaming-services/emissions/apportioned/hourly` (per unit and hour: gross load, CO₂ mass, operating time) and `streaming-services/facilities/attributes` (coordinates, primary fuel, the generators each unit drives with their nameplate MW). Regions: EIA-860M (the month `us/plants.json` was built from, "Balancing Authority Code" per plant) and the EIA-930 reference tables (BA → region). Probe: `scripts/probe_epa_campd.py` |
+| `usunits/index.json` | days built | — |
+
+Same shape as `units/<date>.json` (Europe), so the "Plant output" layer draws it on the US
+replay, plus `co2_t` (tonnes per plant and hour).
+
+- **Units:** those of EPA's emission-trading programmes (Acid Rain, CSAPR...): fossil
+  units over 25 MW. Units that drive a generator or report gross load are kept; industrial
+  boilers reporting only steam load are left out.
+- **Clock:** CAMPD's `date` + `hour` are the facility's local standard time all year (the
+  probe: the hour 2:00 exists on the spring DST day; PUDL converts the same data with each
+  plant's January offset). The plant's time zone comes from its coordinates (`tzfpy`), its
+  standard offset turns the hour into UTC, and the hour is placed on the Eastern-Time day of
+  the US replay (00:00–24:00 EDT/EST). The day's file reads CAMPD's local day and the one
+  before (the West's evening); in winter Puerto Rico's (AST) last Eastern hour falls on its
+  next local day and stays null.
+- **Gross load:** EPA multiplies hourly rates by the operating time before publishing, so
+  `grossLoad` is the MWh generated in the hour, i.e. the hour's mean MW. Gross, not net:
+  plant own use included. Checked: Barry (AL, facility 3), 2026-06-30 12:00 CST, units 4,
+  6A, 6B, 7A, 7B, 8 in EPA's bulk file `emissions-hourly-2026-q2.csv` = 2,074 MW and 896.2
+  short tons of CO₂; the file's 14:00 EDT slot holds 2,074.0 MW and 813.0 t.
+- **Computed:** a plant's MW per hour = the sum of its units (a unit reporting the hour with
+  zero operating time counts 0; no unit reporting = null); CO₂ in tonnes = short tons ×
+  0.90718474, summed per plant; capacity = the sum of the distinct generators' nameplate MW
+  its units list (combined-cycle units share a steam turbine, counted once; null when a unit
+  lists none); fuel = the primary fuel of the largest unit by nameplate (coal includes
+  petroleum coke and coal refuse; gas includes process and other gas); region = EIA region of
+  the plant's balancing authority ("none" for the ~15 plants EIA-860M lists without one).
+  "This hour" sums the plants' CO₂ per region and in total (computed, named on the card).
+- **Lag:** units file a quarter within 30 days after it ends; the API serves dates to the end
+  of the newest quarter as soon as some units have filed (on 2026-10-11: 573 units for Q3,
+  against 3,954 for Q2). A quarter counts as complete when its last day has at least 90 % of
+  the units reporting on the previous quarter's last day; the files are the newest 7 days of
+  the newest complete quarter (on 2026-10-11: up to 2026-06-30, three months back).
+- **Rate limit:** EPA answers HTTP 429 to quick successions (header `X-RateLimit-Limit: 1`);
+  the scripts wait 1.5 s between requests and back off on 429. A whole day for the country is
+  one request of ~73 MB (~10 s); the streaming services are not paged (`emissions-mgmt` is,
+  500 rows a page).
+
+The replay needs the EIA-930 day file of the same date (`usday/`): `.github/workflows/eu-days.yml`
+builds the plant files daily (`EPA_API_KEY` secret) and then the missing `usday` files for
+those dates (`EIA_API_KEY`); `build_us_day.py --recent 30` keeps day files that have a plant
+file.
+
 ## Prices tab (`scripts/build_prices.py`)
 
 | File | Records | Source |
