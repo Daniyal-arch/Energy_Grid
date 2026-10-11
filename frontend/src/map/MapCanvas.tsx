@@ -50,9 +50,11 @@ function wantedKeys(): string[] {
   if (L.cables) keys.push("cables");
   if (L.plantsWorld) keys.push("worldPlants");
   // EIA wins over GEM in the US: GEM's points inside the states are left out
-  if (L.plantsUS) keys.push("usPlants", ...(L.plantsWorld ? ["usStates"] : []));
+  if (L.plantsUS) keys.push("usPlants");
   if (L.turbinesUS) keys.push("usTurbines");
-  if (L.usQueue) keys.push("usQueue", "usStates");
+  // the queue is shaded against the plants each state runs today
+  if (L.usQueue) keys.push("usQueue", "usPlants");
+  if (L.plantsUS || L.turbinesUS || L.gridUS || L.usQueue) keys.push("usStates");
   if (L.dataCentres) keys.push("datacentres");
   if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario");
   if (L.financeCoal || L.financeGas) keys.push("gemFinance");

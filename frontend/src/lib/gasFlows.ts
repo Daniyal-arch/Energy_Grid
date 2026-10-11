@@ -31,6 +31,12 @@ export interface GasFlowsFile {
 }
 
 export const GAS_FLOW: RGB = [255, 178, 62];
+/** Gas moving between European countries: a quieter sand, so the imports lead. */
+export const GAS_TRANSIT: RGB = [190, 160, 122];
+/** Line width (px) for a flow: imports wider than transit, both by the square root of GWh/d. */
+export const gasWidth = (gwh: number, entry: boolean) => (entry ? 7 + Math.min(24, 20 * Math.sqrt(gwh / 1500)) : 3.5 + Math.min(14, 12 * Math.sqrt(gwh / 1500)));
+/** Transit flows from this size carry a label (imports are named at their source). */
+export const GAS_TRANSIT_LABEL_GWH = 400;
 /** below this net flow (GWh/d) no arc is drawn; labels from GAS_LABEL_GWH */
 export const GAS_IDLE_GWH = 5;
 export const GAS_LABEL_GWH = 250;

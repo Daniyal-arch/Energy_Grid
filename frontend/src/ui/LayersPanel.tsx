@@ -5,7 +5,7 @@
 import { useState, type ReactNode } from "react";
 
 import { FUEL_COLOR, FUEL_LABEL } from "../lib/energy";
-import { GAS_FLOW, GAS_LABEL_GWH, type GasFlowsFile } from "../lib/gasFlows";
+import { GAS_FLOW, GAS_TRANSIT, GAS_TRANSIT_LABEL_GWH, type GasFlowsFile } from "../lib/gasFlows";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
@@ -13,7 +13,7 @@ import { rgbCss, type RGB } from "../lib/theme";
 import { METRICS, metricGradient } from "../lib/transition";
 import { ACCESS_STOPS, ACCESS_TICKS, BR_COLOR, DC_COLOR, ON_COLOR, TW_COLOR, US_COLOR } from "../lib/world";
 import { HV_STEPS, PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, STATUS_LABEL } from "../lib/worldPlants";
-import { QUEUE_COLOR, US_BANDS, US_TYPE_COLOR, US_TYPE_LABEL, US_TYPE_ORDER } from "../lib/us";
+import { QUEUE_COLOR, QUEUE_RATIO_TICKS, US_BANDS, US_TYPE_COLOR, US_TYPE_LABEL, US_TYPE_ORDER, queueRatioCss } from "../lib/us";
 import { PLANT_DETAIL_ZOOM, PLANT_MIN_MW, QUEUE_M_PER_GW } from "../map/usLayers";
 import { CABLE_STYLE, FLOW, GAS, HVDC, MULTI_ZONE, OFFLINE_STOPS, PRICE_STOPS, SHARE_STOPS, SUBSTATION, VOLTAGE_BANDS, gradientCss } from "../app/colors";
 import { BEAM_MIN_MW } from "../app/geo";
@@ -140,11 +140,11 @@ function GasFlowKey() {
   return (
     <>
       <Swatches>
-        <Swatch color={rgbCss(GAS_FLOW)} kind="line" label="net flow, GWh per gas day" />
-        <Swatch color={rgbCss(GAS_FLOW)} label="source / LNG terminals" />
+        <Swatch color={rgbCss(GAS_FLOW)} kind="line" label="into Europe: pipelines from outside, LNG" />
+        <Swatch color={rgbCss(GAS_TRANSIT)} kind="line" label="between European countries" />
       </Swatches>
       <Note>
-        Gas day {day ?? "…"} (06:00–06:00 CET). Labels from {GAS_LABEL_GWH} GWh/d. Sources outside Europe and each country's LNG terminals are placed for reading. ENTSOG, physical flow.
+        Net flow on gas day {day ?? "…"} (06:00–06:00 CET); wider = more GWh/d. Each source is labelled with its total into Europe (sum of its points, computed); flows between countries labelled from {GAS_TRANSIT_LABEL_GWH} GWh/d. Sources and each country's LNG terminals are placed for reading. ENTSOG, physical flow.
       </Note>
     </>
   );
@@ -267,9 +267,13 @@ function LayerLegend({ id }: { id: LayerId }) {
               <Swatch key={t} color={rgbCss(QUEUE_COLOR[t])} label={t} />
             ))}
           </Swatches>
-          <Note>
-            Height: GW of active requests to connect (1 GW = {QUEUE_M_PER_GW} m); colour: the type with the most. LBNL Queued Up, end of 2025: requests, not plants being built.
-          </Note>
+          <div className="mt-1.5">
+            <Scale
+              gradient={queueRatioCss}
+              ticks={QUEUE_RATIO_TICKS}
+              note={`Towers: GW of active requests to connect, stacked by type (1 GW = ${(QUEUE_M_PER_GW / 1000).toFixed(1)} km). State shade: GW waiting ÷ GW of plants it runs today (EIA-860M, computed). LBNL Queued Up, end of 2025: requests, not plants being built.`}
+            />
+          </div>
         </>
       );
     case "gasPipes":

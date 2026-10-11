@@ -221,7 +221,10 @@ morning run (07:23 UTC) therefore usually ends on the day before yesterday.
   vs 56, IT 386 vs 457 GWh/d; Croatia's operator reports 0 at Krk while ALSI reports 84.
 - **Map:** the sources outside Europe and each country's LNG terminals are drawn at fixed
   points placed for reading (`frontend/src/lib/gasFlows.ts`), not at a measured place;
-  arcs from 5 GWh/d, labels from 250 GWh/d. The EU card sums the sources (computed) and
+  arcs from 5 GWh/d. Gas entering Europe (pipelines from outside and LNG) is drawn wider and
+  brighter than gas between European countries. Each source carries its total into Europe on
+  the gas day: the sum of its arcs (computed; LNG per country, labelled from 150 GWh/d);
+  flows between countries are labelled from 400 GWh/d. The EU card sums the sources (computed) and
   the last 30 gas days (computed, TWh).
 
 ENTSOG answers a whole month of every point in one request (`limit=-1`, ~30 MB, ~7 s).
@@ -328,9 +331,11 @@ Sheet "03. Complete Queue Data", one row per request.
 Check: active generation (every type but storage) sums to 1,312.0 GW, LBNL's headline
 figure (1,312 GW). Storage sums to 552.7 GW; the report's ~749 GW adds LBNL's estimate for
 hybrid projects that report no storage size, which the data file leaves out (its codebook
-says so) and the map does not show. The map raises each state with active requests as a
-slab: height = its active GW (1 GW = 700 m, plus a 3 km floor), colour = the type with the
-most MW there (computed in the app).
+says so) and the map does not show. On the map each state with active requests carries
+a tower of its active GW stacked by type (1 GW = 1.4 km). The state is shaded by its active
+GW ÷ the GW of plants it runs today, i.e. the operating net summer capacity of all fuels in
+`us/plants.json` (computed in the app, shown as "2.9× its plants"; drawn without a shade
+where a state has no operating plants in EIA-860M).
 
 ### `us/turbines.json`: USWTDB
 

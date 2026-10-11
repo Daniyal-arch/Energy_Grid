@@ -117,8 +117,8 @@ export const STYLE: maplibregl.StyleSpecification = {
       type: "symbol",
       source: "labels",
       filter: ["==", ["get", "kind"], "gasNode"],
-      layout: { "text-field": ["get", "text"], "text-font": ["noto-medium"], "text-size": 9.5, "text-offset": [0, 1.1], "text-max-width": 9 },
-      paint: { "text-color": "rgb(240,200,140)", "text-halo-color": "rgba(6,8,12,0.95)", "text-halo-width": 2 },
+      layout: { "text-field": ["get", "text"], "text-font": ["noto-medium"], "text-size": 10.5, "text-offset": [0, 1.2], "text-max-width": 10, "symbol-sort-key": ["get", "rank"] },
+      paint: { "text-color": "rgb(255,214,150)", "text-halo-color": "rgba(6,8,12,0.95)", "text-halo-width": 2.2 },
     },
     {
       id: "label-flows",

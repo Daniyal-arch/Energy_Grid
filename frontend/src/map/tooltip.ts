@@ -21,7 +21,7 @@ import { useApp, motion } from "../app/store";
 import type { Arc, Cable, CountriesFile, DayFile, GasSite, Hex, Plant, PlantsFile, Power, Shape, StatsFile, Substation, TowerPiece, Unit } from "../app/types";
 import { priceState } from "./priceTerrain";
 import { largestType, queueMw } from "./usLayers";
-import { US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
+import { US_TYPE_LABEL, gwText, operatingMw, ratioText, type UsPlantsFile, type UsQueueFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
 
 export const TIP_STYLE = {
   background: "rgba(8,10,14,0.92)",
@@ -177,7 +177,7 @@ function usHtml(id: string, object: unknown): string | null {
     const proj = [n ? `${n} turbines` : "", mw ? `${mw.toLocaleString("en-US")} MW` : "", year ? `online ${year}` : "", state].filter(Boolean).join(" · ");
     return `<b>${project || "Wind turbine"}</b>${f.offshore[k] ? "<div>offshore</div>" : ""}<div>${bits || "turbine"}</div><div style="color:#8d94a1">project: ${proj}</div>${SRC(`USWTDB ${f.release}`)}`;
   }
-  if (id === "us-queue") {
+  if (id === "us-queue" || id === "us-queue-towers") {
     const q = fileOf<UsQueueFile>("usQueue");
     const code = (object as { code: string }).code;
     const st = q?.states[code];
@@ -191,7 +191,10 @@ function usHtml(id: string, object: unknown): string | null {
       .map(([t, v]) => `<div style="display:flex;justify-content:space-between;gap:16px"><span>${t}</span><span>${gwText(v)}</span></div>`)
       .join("");
     const susp = st.suspended.reduce((a, v) => a + v, 0);
-    return `<b>${name}</b><div><b>${gwText(queueMw(q, code))}</b> in ${st.active_n.toLocaleString("en-US")} active requests · most: ${largestType(q, code)}</div><div style="margin-top:4px">${rows}</div>${susp > 0 ? `<div style="color:#8d94a1">suspended: ${gwText(susp)} in ${st.suspended_n}</div>` : ""}${SRC(`LBNL Queued Up, requests active at the ${q.through} · hybrids counted under each type`)}`;
+    const plants = fileOf<UsPlantsFile>("usPlants");
+    const op = operatingMw(plants, code);
+    const ratio = plants && op > 0 ? `<div>${ratioText(queueMw(q, code) / op)} the ${gwText(op)} of plants it runs today <span style="color:#8d94a1">(EIA-860M ${plants.release}, computed)</span></div>` : "";
+    return `<b>${name}</b><div><b>${gwText(queueMw(q, code))}</b> in ${st.active_n.toLocaleString("en-US")} active requests · most: ${largestType(q, code)}</div>${ratio}<div style="margin-top:4px">${rows}</div>${susp > 0 ? `<div style="color:#8d94a1">suspended: ${gwText(susp)} in ${st.suspended_n}</div>` : ""}${SRC(`LBNL Queued Up, requests active at the ${q.through} · hybrids counted under each type`)}`;
   }
   return null;
 }
