@@ -3,7 +3,7 @@
 import { rgbCss } from "../lib/theme";
 import type { TransitionFile } from "../lib/transition";
 import { useFile } from "../app/data";
-import { CAPTION_SLOTS, captionText, dayLabel, marketTime } from "../app/day";
+import { CAPTION_SLOTS, captionText, clockOf, dayFileKey, dayIndexKey, dayLabel } from "../app/day";
 import { actions, motion, useApp, type TimeMode } from "../app/store";
 import type { CountriesFile, DayFile, FlowsFile } from "../app/types";
 
@@ -38,18 +38,19 @@ export function TimeControl({ small = false }: { small?: boolean }) {
 
 function useDay() {
   const want = useApp((s) => s.day);
-  const index = useFile<{ all: string[]; remote: string[] }>("dayIndex");
+  const region = useApp((s) => s.dayRegion);
+  const index = useFile<{ all: string[]; remote: string[] }>(dayIndexKey(region));
   const date = want && index?.all.includes(want) ? want : (index?.all[index.all.length - 1] ?? null);
-  const day = useFile<DayFile>(date ? `day:${date}` : null);
-  return { index, date, day };
+  const day = useFile<DayFile>(date ? dayFileKey(region, date) : null);
+  return { index, date, day, region };
 }
 
 function DayBar() {
   const slot = useApp((s) => s.slot);
   const playing = useApp((s) => s.playing);
-  const { index, date, day } = useDay();
+  const { index, date, day, region } = useDay();
   const countries = useFile<CountriesFile>("countries");
-  const name = (iso?: string) => countries?.countries.find((c) => c.iso === iso)?.name ?? iso ?? "";
+  const name = (iso?: string) => day?.names?.[iso ?? ""] ?? countries?.countries.find((c) => c.iso === iso)?.name ?? iso ?? "";
   if (!day || !date) return <div className="text-[12px] text-[#8d94a1]">Loading the day…</div>;
   const at = (k: number) => new Date(Date.parse(day.start) + k * day.step_s * 1000).toISOString();
   const k = Math.min(day.slots - 1, slot);
@@ -57,8 +58,9 @@ function DayBar() {
   const i = days.indexOf(date);
   // the newest key moment on the clock, as one line (several can share a slot: the last)
   const caption = (day.highlights ?? []).filter((h) => slot >= h.slot && slot < h.slot + CAPTION_SLOTS).pop();
-  const clock = marketTime(at(k)).split(" ");
-  const c = caption ? captionText(caption, name) : null;
+  const clockFmt = clockOf(day.timezone);
+  const clock = clockFmt(at(k)).split(" ");
+  const c = caption ? captionText(caption, name, region) : null;
   return (
     <div className="w-full">
       {c && (
@@ -107,11 +109,11 @@ function DayBar() {
         <div className="min-w-0 flex-1">
           <div className="relative">
             {(day.highlights ?? []).map((h) => {
-              const t = captionText(h, name);
+              const t = captionText(h, name, region);
               return (
                 <button
                   key={h.kind}
-                  title={`${marketTime(at(h.slot))} · ${t.title}`}
+                  title={`${clockFmt(at(h.slot))} · ${t.title}`}
                   onClick={() => {
                     useApp.setState({ playing: false });
                     actions.seekDay(h.slot);

@@ -58,6 +58,11 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_eu_units.py --recent 8 --out store/eu/units || echo "unit output failed; keeping the last copies"
 
+      - name: The US day by day (EIA-930; three days back, 30 kept)
+        env:
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+        run: python scripts/build_us_day.py --recent 30 --out store/eu/usday || echo "US days failed; keeping the last copies"
+
       - name: Twelve months of prices per zone (Prices tab)
         env:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}

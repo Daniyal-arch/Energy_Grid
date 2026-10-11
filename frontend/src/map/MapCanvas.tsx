@@ -18,7 +18,7 @@ import { ACCESS_STOPS, latest, type WorldStatsFile } from "../lib/world";
 import { US_CENTRE } from "../lib/us";
 import { TR_NO_DATA, stopColor } from "../app/colors";
 import { ensure, fileOf, useDataStore } from "../app/data";
-import { centralSun, nightImage, DAY_SECONDS } from "../app/day";
+import { centralSun, dayFileKey, dayIndexKey, nightImage, sunAltAt, DAY_SECONDS } from "../app/day";
 import { EUROPE_CENTRE, angularDistance, bbox, isNarrow, MOBILE_QUERY } from "../app/geo";
 import { actions, clearYearFromUrl, motion, useApp, writeUrl, yearFromUrl, type LayerId, type Selection } from "../app/store";
 import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
@@ -71,9 +71,10 @@ function wantedKeys(): string[] {
   if (s.colour.startsWith("ir_")) keys.push("irena");
   if (s.mode === "years" || s.colour.startsWith("tr_")) keys.push("transition");
   if (s.mode === "day") {
-    keys.push("dayIndex");
+    keys.push(dayIndexKey(s.dayRegion));
     const date = dayDate();
-    if (date) keys.push(`day:${date}`, `dayWind:${date}`);
+    // the US replay has no weather layers
+    if (date) keys.push(dayFileKey(s.dayRegion, date), ...(s.dayRegion === "eu" ? [`dayWind:${date}`] : []));
     if (L.plantOutput) keys.push("unitIndex", ...(date ? [`unitOut:${date}`] : []));
   }
   const iso = selectedIso2(s.selection);
@@ -84,7 +85,7 @@ function wantedKeys(): string[] {
 /** The replayed day: the one asked for, else the newest in the archive. */
 function dayDate(): string | null {
   const s = useApp.getState();
-  const index = fileOf<{ all: string[] }>("dayIndex");
+  const index = fileOf<{ all: string[] }>(dayIndexKey(s.dayRegion));
   if (!index) return s.day;
   return s.day && index.all.includes(s.day) ? s.day : (index.all[index.all.length - 1] ?? null);
 }
@@ -233,7 +234,7 @@ export default function MapCanvas() {
     const fly = (to: NonNullable<ReturnType<typeof useApp.getState>["flyTo"]>) => {
       applyProjection();
       if (to === "day") return dayFrame(map, 1200);
-      if (to === "us" || to === "usQueue") return usFrame(map, to === "usQueue" && wantFlat(), 1400);
+      if (to === "us" || to === "usQueue" || to === "usDay") return usFrame(map, to !== "us" && wantFlat(), 1400);
       const cam = to === "europe" ? europeView(map) : to === "world" ? worldCamera() : to;
       const tilt = typeof to === "object" && wantFlat();
       map.flyTo({ center: cam.center, zoom: cam.zoom, pitch: tilt ? (to.pitch ?? 0) : 0, bearing: tilt ? (to.bearing ?? 0) : 0, duration: 1400 });
@@ -438,7 +439,7 @@ export default function MapCanvas() {
       }
       // the clocks
       const date = s.mode === "day" ? dayDate() : null;
-      const day = date ? ((files[`day:${date}`] as DayFile | undefined) ?? null) : null;
+      const day = date ? ((files[dayFileKey(s.dayRegion, date)] as DayFile | undefined) ?? null) : null;
       if (day && s.playing) {
         motion.daySlot = Math.min(day.slots - 0.001, motion.daySlot + (dt / 1000) * (day.slots / DAY_SECONDS));
         if (motion.daySlot >= day.slots - 0.001) useApp.setState({ playing: false });
@@ -464,7 +465,7 @@ export default function MapCanvas() {
       }
       if (transition && Math.floor(motion.yearPos) !== s.yearK) useApp.setState({ yearK: Math.floor(motion.yearPos) });
 
-      const windFile = (s.mode === "day" && date ? files[`dayWind:${date}`] : s.mode === "live" ? (files.windWorld ?? files.wind) : undefined) as WindFile | undefined;
+      const windFile = (s.mode === "day" && date && s.dayRegion === "eu" ? files[`dayWind:${date}`] : s.mode === "live" ? (files.windWorld ?? files.wind) : undefined) as WindFile | undefined;
       const field = windFile ? memo("windField", [windFile], () => new WindField(windFile)) : null;
       const windOn = !!field && s.layers.wind;
       const flowsOn = s.layers.flows && (s.mode === "live" ? !!files.flows : !!day);
@@ -487,7 +488,8 @@ export default function MapCanvas() {
       }
       const dayK = day ? Math.min(day.slots - 1, Math.floor(motion.daySlot)) : 0;
       const slotMs = day ? Date.parse(day.start) + dayK * day.step_s * 1000 : 0;
-      const sunAlt = day ? centralSun(new Date(slotMs)) : 0;
+      // the sun over the replayed region (Central Europe, or the middle of the US)
+      const sunAlt = day ? (day.region === "us" ? sunAltAt(-95, 38, new Date(slotMs)) : centralSun(new Date(slotMs))) : 0;
       applyMapLibre(day, sunAlt);
 
       let sun: Frame["sun"] = null;
@@ -522,6 +524,7 @@ export default function MapCanvas() {
         isMobile: mobile,
         wind: windOn && field ? { field, paths: particles.paths() } : null,
         sunAlt,
+        dayRegion: s.dayRegion,
         now,
         sun,
         night,

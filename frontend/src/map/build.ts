@@ -115,6 +115,8 @@ export interface Frame {
   sunAlt: number;
   /** milliseconds, for pulses and ripples (drawing only) */
   now: number;
+  /** the 24 h replay's region (Europe's or the US day files) */
+  dayRegion: "eu" | "us";
   sun: { image: HTMLCanvasElement | null; next: HTMLCanvasElement | null; fade: number; bounds: [number, number, number, number] } | null;
   night: ImageBitmap | null;
 }
@@ -163,6 +165,9 @@ const PR_METRIC: Partial<Record<ColourId, "negative" | "mean" | "solar" | "wind"
   pr_solar: "solar",
   pr_wind: "wind",
 };
+
+/** Where a country's (or a US region's) towers and flow ends stand. */
+const anchorOf = (iso: string): [number, number] | undefined => ANCHOR[iso] ?? US_POINT[iso];
 
 export const selectedIso2 = (sel: Selection | null) => (sel?.kind === "country" ? (sel.iso2 ?? null) : null);
 
@@ -582,11 +587,14 @@ export function buildLayers(fr: Frame): Layer[] {
   if (terrain) layers.push(...terrain.layers);
   // ---------------------------------------------------------------- output per plant (24 h)
   if (day && facingEurope && isOn("plantOutput")) layers.push(...plantOutputLayers(fr, dayK));
-  const towers = day && countries && isOn("towers") && facingEurope;
+  // the 24 h replay faces its own region: Europe, or the US (its 13 regions as towers)
+  const usDay = day?.region === "us";
+  const facingDay = usDay ? angularDistance(fr.centre, [-96, 38]) < 60 : facingEurope;
+  const towers = day && (countries || usDay) && isOn("towers") && facingDay;
   if (towers) layers.push(...towerLayers(fr, day, dayK, countries, sel, terrain));
 
   // ---------------------------------------------------------------- cross-border flows
-  if (facingEurope && isOn("flows")) {
+  if ((day ? facingDay : facingEurope) && isOn("flows")) {
     const flat = flowArcs(fr, dayK);
     // over the price blocks the flows arc from the top of one to the top of the other
     const arcs = terrain ? memo("liftedArcs", [flat, fr.day ? fr.daySlot : 0, f.stats], () => flat.map((a) => liftArc(a, terrain))) : flat;
@@ -691,8 +699,10 @@ function flowArcs(fr: Frame, dayK: number): Arc[] {
     rows.forEach((f, n) => {
       if (f.mw == null || Math.abs(f.mw) < IDLE_MW) return;
       const [from, to] = f.mw > 0 ? [f.a, f.b] : [f.b, f.a];
-      if (!ANCHOR[from] || !ANCHOR[to]) return;
-      const path = curvedPath(ANCHOR[from], ANCHOR[to], 0.16, 40);
+      const pa = anchorOf(from);
+      const pb = anchorOf(to);
+      if (!pa || !pb) return;
+      const path = curvedPath(pa, pb, 0.16, 40);
       const cap = f.mw > 0 ? f.cap[0] : f.cap[1];
       out.push({ from, to, mw: Math.abs(f.mw), ts: f.ts, path, timestamps: flowDistances(path, false, n * 91_000), cap, capDoc: f.cap[2] });
     });
@@ -899,14 +909,16 @@ function liftArc(a: Arc, terrain: Terrain): Arc {
 /** Text the tower and price labels may use (deck.gl draws its own glyph atlas). */
 const LABEL_CHARS = `${Array.from({ length: 95 }, (_, i) => String.fromCharCode(32 + i)).join("")}€·−`;
 
-function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: CountriesFile, sel: string | null, terrain: Terrain | null): Layer[] {
+function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: CountriesFile | undefined, sel: string | null, terrain: Terrain | null): Layer[] {
   const lifted = (iso: string) => (terrain ? terrain.height(iso) : 0);
-  const names = memo("towerNames", [countries], () => new Map(countries.countries.map((c) => [c.iso, c.name])));
+  const names = memo("towerNames", [countries, day.names], () => new Map([...(countries?.countries.map((c) => [c.iso, c.name] as const) ?? []), ...Object.entries(day.names ?? {})]));
+  // the US regions are large: 1 GW stands 7 km there, 14 km in Europe
+  const mPerMw = day.region === "us" ? TOWER_M_PER_MW / 2 : TOWER_M_PER_MW;
   const frac = Math.max(0, Math.min(1, fr.daySlot - dayK));
   const next = Math.min(day.slots - 1, dayK + 1);
   const towers: TowerPiece[] = [];
   for (const [iso, series] of Object.entries(day.countries)) {
-    if (!ANCHOR[iso] || (sel && sel !== iso)) continue;
+    if (!anchorOf(iso) || (sel && sel !== iso)) continue;
     let base = 0;
     let total = 0;
     const pieces: TowerPiece[] = [];
@@ -927,7 +939,7 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
   const top = new Map(towers.map((t) => [t.iso, t.group]));
   // where each tower ends (metres), for the labels
   const tops = new Map<string, number>();
-  for (const t of towers) tops.set(t.iso, Math.max(tops.get(t.iso) ?? 0, lifted(t.iso) + (t.base + t.drawn) * TOWER_M_PER_MW));
+  for (const t of towers) tops.set(t.iso, Math.max(tops.get(t.iso) ?? 0, lifted(t.iso) + (t.base + t.drawn) * mPerMw));
   const labelled = towers
     .filter((t) => t.group === top.get(t.iso) && t.total >= TOWER_LABEL_MW)
     .sort((a, b) => b.total - a.total)
@@ -941,7 +953,7 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
     new ScatterplotLayer<{ iso: string; total: number; group: string }>({
       id: "eu-tower-pools",
       data: pools,
-      getPosition: (t) => [...ANCHOR[t.iso], lifted(t.iso) + 600] as [number, number, number],
+      getPosition: (t) => [...anchorOf(t.iso)!, lifted(t.iso) + 600] as [number, number, number],
       getRadius: (t) => 30_000 + Math.sqrt(t.total) * 450,
       updateTriggers: { getPosition: [fr.daySlot, !!terrain] },
       getFillColor: (t) => [...(FUEL_COLOR[t.group] ?? FUEL_COLOR.other), 70],
@@ -951,8 +963,8 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
     new ColumnLayer<TowerPiece>({
       id: "eu-towers",
       data: towers,
-      getPosition: (t) => [...ANCHOR[t.iso], lifted(t.iso) + t.base * TOWER_M_PER_MW] as [number, number, number],
-      getElevation: (t) => t.drawn * TOWER_M_PER_MW,
+      getPosition: (t) => [...anchorOf(t.iso)!, lifted(t.iso) + t.base * mPerMw] as [number, number, number],
+      getElevation: (t) => t.drawn * mPerMw,
       getFillColor: (t) => [...(FUEL_COLOR[t.group] ?? FUEL_COLOR.other), 235],
       radius: TOWER_RADIUS_M,
       diskResolution: 24,
@@ -963,7 +975,7 @@ function towerLayers(fr: Frame, day: DayFile, dayK: number, countries: Countries
     new TextLayer<TowerPiece>({
       id: "eu-tower-labels",
       data: labelled,
-      getPosition: (t) => [...ANCHOR[t.iso], (tops.get(t.iso) ?? 0) + 25_000] as [number, number, number],
+      getPosition: (t) => [...anchorOf(t.iso)!, (tops.get(t.iso) ?? 0) + 25_000] as [number, number, number],
       // generation and, with the Prices layer, the price
       getText: (t) => {
         const p = terrain?.price(t.iso);

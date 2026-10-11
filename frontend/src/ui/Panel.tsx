@@ -37,7 +37,7 @@ import { NEM_NAME, latest, type AemoFile, type BrazilFile, type DataCentresFile,
 import type { WorldPlantsFile } from "../lib/worldPlants";
 import { PRICE_STOPS, stopColor } from "../app/colors";
 import { useFile } from "../app/data";
-import { dayPower, marketTime, utc } from "../app/day";
+import { clockOf, dayFileKey, dayIndexKey, dayPower, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { actions, useApp } from "../app/store";
 import type { CountriesFile, DayFile, FlowsFile, GasFile, OutagesFile, PlantsFile, ReferenceFile, StatsFile, WorldFile } from "../app/types";
@@ -73,12 +73,13 @@ function useDayNow() {
   const mode = useApp((s) => s.mode);
   const want = useApp((s) => s.day);
   const slot = useApp((s) => s.slot);
-  const index = useFile<{ all: string[] }>(mode === "day" ? "dayIndex" : null);
+  const region = useApp((s) => s.dayRegion);
+  const index = useFile<{ all: string[] }>(mode === "day" ? dayIndexKey(region) : null);
   const date = mode === "day" ? (want && index?.all.includes(want) ? want : (index?.all[index.all.length - 1] ?? null)) : null;
-  const day = useFile<DayFile>(date ? `day:${date}` : null) ?? null;
+  const day = useFile<DayFile>(date ? dayFileKey(region, date) : null) ?? null;
   const k = day ? Math.min(day.slots - 1, slot) : 0;
   const ts = (i: number) => (day ? new Date(Date.parse(day.start) + i * day.step_s * 1000).toISOString() : "");
-  return { day, k, ts, timeOf: day ? marketTime : utc };
+  return { day, k, ts, timeOf: day ? clockOf(day.timezone) : utc };
 }
 
 /** The year on the slider in the years mode, else the newest. */
@@ -687,7 +688,50 @@ function WorldPanel() {
 
 // ---------------------------------------------------------------- the United States, no selection
 
+/** The US replay at the clock: the Lower 48 (EIA's own total) and the largest regions. */
+function UsDayNow({ day, k, ts, timeOf }: { day: DayFile; k: number; ts: (i: number) => string; timeOf: (iso: string) => string }) {
+  const us = dayPower(day.eu, k, ts(k)) ?? null;
+  const ranking = Object.entries(day.countries)
+    .map(([id, c]) => {
+      const parts = STACK_ORDER.map((g) => [g, c.generation[g]?.[k] ?? 0] as [string, number]).filter(([, v]) => v > 0);
+      return { id, total: parts.reduce((a, [, v]) => a + v, 0), parts };
+    })
+    .filter((x) => x.total > 0)
+    .sort((a, b) => b.total - a.total);
+  return (
+    <>
+      {us ? (
+        <NowCard now={us} time={timeOf(ts(k))} footnote="The Lower 48 as EIA reports it (demand and generation by fuel, one hour). Renewable share: solar, wind and hydro over all generation (computed)." />
+      ) : (
+        <Empty>EIA has no Lower-48 figure for {timeOf(ts(k))} yet.</Empty>
+      )}
+      {ranking.length > 0 && (
+        <Card title="Regions this hour" note="EIA-930">
+          <div className="space-y-1">
+            {ranking.map((c) => (
+              <button key={c.id} onClick={() => actions.select({ kind: "region", grid: "us", id: c.id })} className="flex w-full items-center gap-2 text-[11px] tabular-nums hover:opacity-80">
+                <span className="w-10 text-left text-slate-300" title={day.names?.[c.id]}>
+                  {c.id}
+                </span>
+                <div className="flex h-[7px] flex-1 overflow-hidden rounded-sm bg-white/[0.05]">
+                  {c.parts.map(([g, v]) => (
+                    <div key={g} style={{ width: `${(v / ranking[0].total) * 100}%`, background: rgbCss(FUEL_COLOR[g] ?? FUEL_COLOR.other) }} />
+                  ))}
+                </div>
+                <span className="w-12 text-right text-slate-200">{gw(c.total)}</span>
+              </button>
+            ))}
+          </div>
+        </Card>
+      )}
+      <SourcesCard items={WORLD_SOURCES.filter(([key]) => key === "United States")} />
+    </>
+  );
+}
+
 function UsPanel() {
+  const { day, k, ts, timeOf } = useDayNow();
+  const usDay = day?.region === "us" ? day : null;
   const plants = useFile<UsPlantsFile>("usPlants");
   const queue = useFile<UsQueueFile>("usQueue");
   const turbines = useFile<UsTurbinesFile>("usTurbines");
@@ -699,8 +743,10 @@ function UsPanel() {
   const queueOn = useApp((s) => s.layers.usQueue);
   const sources = <SourcesCard items={US_SOURCES} />;
   const tabs: Tab[] = [
+    // the day replay first, while it plays
+    ...(usDay ? [{ id: "now", label: "This hour", body: () => <UsDayNow day={usDay} k={k} ts={ts} timeOf={timeOf} /> }] : []),
     {
-      id: "now",
+      id: usDay ? "plants" : "now",
       label: "Plants",
       body: () =>
         plants ? (

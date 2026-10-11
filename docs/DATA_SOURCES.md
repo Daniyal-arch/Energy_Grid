@@ -135,6 +135,24 @@ bundled in `frontend/public/data/eu/day/` and offers them in a date picker.
 The time-lapse clock shows the market's own time (CET/CEST) of the slot on screen.
 The "price range, all zones" chart is the lowest and highest zone price per slot.
 
+## A day in the US (`scripts/build_us_day.py`, `usday/<date>.json`)
+
+| File | Records | Source |
+|---|---:|---|
+| `usday/<YYYY-MM-DD>.json` | 13 EIA regions + the Lower 48, 24 hours (23/25 with DST) | EIA-930 Hourly Electric Grid Monitor via EIA API v2 (`EIA_API_KEY`, public domain), for a local day in Eastern Time: `region-data` demand (D), `fuel-type-data` generation by fuel (grouped as in `us.json`), `interchange-data` flows between regions and to Canada and Mexico |
+| `usday/index.json` | days built | — |
+
+- Same shape as the Europe day files, so the towers, flows, clock and captions replay it:
+  `countries` are the regions, `eu` holds the Lower 48 as EIA reports it (respondent US48),
+  `borders` the region pairs (one direction per pair, the other side's report sign-flipped,
+  as in `us.json`), `names` EIA's region names.
+- Computed: the renewable share of generation (solar + wind + hydro over every fuel's
+  positive output in the hour) and the key moments (`scripts/day_highlights.py`, prices left
+  out: EIA-930 has none).
+- Fuel-type data arrive about a day late and interchange about two, so the newest day is three
+  days back; the daily archive run builds the missing days and rebuilds the two newest.
+- On the map, 1 GW stands 7 km tall (half of Europe's scale: the regions are larger).
+
 ## Output per plant (`scripts/build_eu_units.py`, `units/<date>.json`)
 
 | File | Records | Source |

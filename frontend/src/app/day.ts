@@ -1,7 +1,24 @@
 // The 24-hour replay: market clock, the sun and night shadow, key moments, one slot as Power.
 
 import type { RGB } from "../lib/theme";
+import type { DayRegion } from "./store";
 import type { DaySeries, Highlight, Power } from "./types";
+
+/** Data keys of the 24 h replay for a region (app/data.ts). */
+export const dayIndexKey = (r: DayRegion) => (r === "us" ? "usDayIndex" : "dayIndex");
+export const dayFileKey = (r: DayRegion, date: string) => (r === "us" ? `usDay:${date}` : `day:${date}`);
+
+const CLOCKS = new Map<string, Intl.DateTimeFormat>();
+/** A day file's own clock: the market's (CET/CEST) for Europe, Eastern Time for the US. */
+export const clockOf = (timezone: string | undefined) => (iso: string) => {
+  const zone = timezone ?? "Europe/Berlin";
+  let f = CLOCKS.get(zone);
+  if (!f) {
+    f = new Intl.DateTimeFormat(zone.startsWith("America/") ? "en-US" : "en-GB", { timeZone: zone, hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZoneName: "short" });
+    CLOCKS.set(zone, f);
+  }
+  return f.format(new Date(iso)).replace(",", "");
+};
 
 const MARKET_CLOCK = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Europe/Berlin",
@@ -22,12 +39,14 @@ export const CAPTION_SLOTS = 10; // a caption stays for 2.5 h of the day
 export const NIGHT_BOUNDS: [number, number, number, number] = [-180, -85, 180, 85];
 
 /** Title and sentence for a key moment; every number is the build script's. */
-export function captionText(h: Highlight, name: (iso?: string) => string): { title: string; text: string; color: RGB } {
+export function captionText(h: Highlight, name: (iso?: string) => string, region: DayRegion = "eu"): { title: string; text: string; color: RGB } {
+  const us = region === "us";
+  const who = us ? "US" : "EU";
   switch (h.kind) {
     case "load_min":
-      return { title: "Night low", text: `Europe uses the least power of the day: ${h.gw} GW.`, color: [154, 167, 189] };
+      return { title: "Night low", text: `${us ? "The Lower 48 use" : "Europe uses"} the least power of the day: ${h.gw} GW.`, color: [154, 167, 189] };
     case "wind_peak":
-      return { title: "Wind peak", text: `EU wind turbines deliver ${h.gw} GW.`, color: [72, 222, 184] };
+      return { title: "Wind peak", text: `${who} wind turbines deliver ${h.gw} GW.`, color: [72, 222, 184] };
     case "flow_max":
       return { title: "Biggest flow", text: `${name(h.from)} sends ${h.gw} GW to ${name(h.to)}.`, color: [120, 222, 255] };
     case "price_low":
@@ -37,7 +56,7 @@ export function captionText(h: Highlight, name: (iso?: string) => string): { tit
         color: [22, 170, 160],
       };
     case "solar_peak":
-      return { title: "Solar peak", text: `EU solar reaches ${h.gw} GW, ${h.pct} % of all generation.`, color: [255, 214, 72] };
+      return { title: "Solar peak", text: `${who} solar reaches ${h.gw} GW, ${h.pct} % of all generation.`, color: [255, 214, 72] };
     case "greenest":
       return { title: "Greenest grid", text: `${name(h.country)}: ${h.pct} % of its power is renewable.`, color: [72, 222, 184] };
     case "price_high":
@@ -47,9 +66,9 @@ export function captionText(h: Highlight, name: (iso?: string) => string): { tit
         color: [240, 110, 80],
       };
     case "load_max":
-      return { title: "Demand peak", text: `Europe needs ${h.gw} GW.`, color: [236, 240, 246] };
+      return { title: "Demand peak", text: `${us ? "The Lower 48 need" : "Europe needs"} ${h.gw} GW.`, color: [236, 240, 246] };
     case "gas_peak":
-      return { title: "Gas peak", text: `EU gas plants deliver ${h.gw} GW.`, color: [255, 128, 72] };
+      return { title: "Gas peak", text: `${who} gas plants deliver ${h.gw} GW.`, color: [255, 128, 72] };
     default:
       return { title: h.kind, text: "", color: [200, 200, 200] };
   }
@@ -78,6 +97,11 @@ export function sunState(when: Date): { decl: number; eqMin: number } {
 }
 
 /** Sun altitude over Central Europe (10 E, 50 N), the reference for lighting and the sun arc. */
+/** Sun altitude (degrees) at a place and moment. */
+export const sunAltAt = (lon: number, lat: number, when: Date) => {
+  const { decl, eqMin } = sunState(when);
+  return sunAltitude(lon, lat, when, decl, eqMin);
+};
 export const centralSun = (when: Date) => {
   const { decl, eqMin } = sunState(when);
   return sunAltitude(10, 50, when, decl, eqMin);

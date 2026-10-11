@@ -116,6 +116,11 @@ export interface Highlight {
   to?: string;
 }
 export interface DayFile {
+  /** "us" for the US replay (scripts/build_us_day.py); Europe's files have none */
+  region?: "us";
+  timezone?: string;
+  /** region names (US) */
+  names?: Record<string, string>;
   date: string;
   start: string;
   step_s: number;

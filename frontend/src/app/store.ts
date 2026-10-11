@@ -66,7 +66,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "flows", label: "Cross-border flows", desc: "Power moving between countries now", group: "Electricity now", coverage: "Europe", color: "rgb(120,222,255)", modes: ["live", "day"] },
   { id: "prices", label: "Prices", desc: "Each country rises by its day-ahead price; generation towers stand on top", group: "Electricity now", coverage: "Europe", color: "rgb(255,196,90)", modes: ["live", "day"] },
   { id: "liveGrids", label: "Live grids", desc: "US, Brazil, Australia, Taiwan, Ontario now", group: "Electricity now", coverage: "World", color: "rgb(255,196,120)", modes: ["live"] },
-  { id: "towers", label: "Generation towers", desc: "Each country's output by source", group: "Electricity now", coverage: "Europe", color: "rgb(255,214,72)", modes: ["day"] },
+  { id: "towers", label: "Generation towers", desc: "Each country's (or US region's) output by source", group: "Electricity now", coverage: "Europe, US", color: "rgb(255,214,72)", modes: ["day"] },
   { id: "gridEU", label: "Transmission lines", desc: "220–750 kV, by voltage", group: "Power grid", coverage: "Europe", color: "rgb(236,178,120)" },
   { id: "hvdc", label: "HVDC links", desc: "Direct-current links between grids", group: "Power grid", coverage: "Europe", color: "rgb(178,146,255)" },
   { id: "substations", label: "Substations", desc: "220 kV and more, shown zoomed in", group: "Power grid", coverage: "Europe", color: "rgb(226,232,240)" },
@@ -177,7 +177,9 @@ export type PlantStatus = "operating" | "construction" | "planned" | "retired";
 export type Region = "europe" | "world" | "us";
 
 /** A fixed camera, or a frame the map computes for the screen (map/style.ts). */
-export type CameraPreset = Camera | "europe" | "world" | "day" | "us" | "usQueue";
+/** Which day files the 24 h replay reads: Europe (15 min, CET) or the US (hourly, ET). */
+export type DayRegion = "eu" | "us";
+export type CameraPreset = Camera | "europe" | "world" | "day" | "us" | "usQueue" | "usDay";
 export interface Camera {
   center: [number, number];
   zoom: number;
@@ -200,6 +202,8 @@ export interface Story {
   camera: CameraPreset;
   /** the overview panel the story opens on (else from its camera) */
   region?: Region;
+  /** the 24 h replay's day files (else Europe's) */
+  dayRegion?: DayRegion;
 }
 export const STORIES: Story[] = [
   {
@@ -315,6 +319,18 @@ export const STORIES: Story[] = [
     region: "us",
   },
   {
+    id: "us-day",
+    group: "United States",
+    label: "A day in the US",
+    blurb: "24 hours of demand, generation and flows between the 13 regions",
+    mode: "day",
+    colour: "none",
+    layers: ["towers", "flows"],
+    camera: "usDay",
+    region: "us",
+    dayRegion: "us",
+  },
+  {
     id: "us-grid",
     group: "United States",
     label: "US grid",
@@ -371,6 +387,8 @@ interface AppState {
   sheet: "none" | "panel" | "layers" | "search";
   /** the Layers panel is open (desktop) */
   layersPanel: boolean;
+  /** the 24 h replay's region */
+  dayRegion: DayRegion;
 }
 
 /** Positions between the integer steps (24 h slot, year), advanced by the map's render loop
@@ -397,6 +415,7 @@ export const useApp = create<AppState>(() => ({
   flyTo: null,
   sheet: "none",
   layersPanel: true,
+  dayRegion: "eu",
 }));
 
 export const actions = {
@@ -475,6 +494,8 @@ export const actions = {
       yearK: 0,
       flyTo: st.camera,
       sheet: "none",
+      dayRegion: st.dayRegion ?? "eu",
+      day: null,
     });
   },
 };

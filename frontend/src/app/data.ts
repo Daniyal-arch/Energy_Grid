@@ -112,6 +112,18 @@ const STATIC: Record<string, Loader> = {
     const localDays = local.status === "fulfilled" ? local.value.days : [];
     set({ remote: remoteDays, local: localDays, all: [...new Set([...remoteDays, ...localDays])].sort() });
   },
+  // the US replay (scripts/build_us_day.py): the archive's days and the bundled ones
+  usDayIndex: async (set) => {
+    const [remote, local] = await Promise.allSettled([
+      fetch(`${ARCHIVE_REMOTE}/usday/index.json?t=${Date.now()}`, { signal: AbortSignal.timeout(RECORDING ? 30_000 : 4000) }).then((r) =>
+        r.ok ? (r.json() as Promise<{ days: string[] }>) : Promise.reject(),
+      ),
+      getJson<{ days: string[] }>("/data/eu/usday/index.json"),
+    ]);
+    const remoteDays = remote.status === "fulfilled" ? remote.value.days : [];
+    const localDays = local.status === "fulfilled" ? local.value.days : [];
+    set({ remote: remoteDays, local: localDays, all: [...new Set([...remoteDays, ...localDays])].sort() });
+  },
   // output per plant (scripts/build_eu_units.py): the archive's days and the bundled ones
   unitIndex: async (set) => {
     const [remote, local] = await Promise.allSettled([
@@ -157,6 +169,11 @@ function loaderFor(key: string): Loader | null {
         const ok = res.flatMap((x) => (x.status === "fulfilled" ? [x.value] : []));
         set(ok.sort((a, b) => b.days.length - a.days.length)[0] ?? null);
       });
+  if (kind === "usDay") {
+    const idx = useDataStore.getState().files.usDayIndex as { remote: string[]; local: string[] } | undefined;
+    const remote = !(RECORDING && idx?.local.includes(arg)) && (idx?.remote.includes(arg) ?? true);
+    return remote ? archiveFirst(`${ARCHIVE_REMOTE}/usday/${arg}.json`, `/data/eu/usday/${arg}.json`) : bundled(`usday/${arg}.json`);
+  }
   if (kind === "unitOut") {
     const remote = (useDataStore.getState().files.unitIndex as { remote: string[] } | undefined)?.remote.includes(arg) ?? true;
     return remote && !RECORDING ? archiveFirst(`${ARCHIVE_REMOTE}/units/${arg}.json`, `/data/eu/units/${arg}.json`) : bundled(`units/${arg}.json`);

@@ -15,7 +15,7 @@ import { endName, gwhd, latestOf, type GasFlowsFile } from "../lib/gasFlows";
 import type { GasArc } from "./build";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
-import { dayPower, marketTime, utc } from "../app/day";
+import { dayFileKey, dayIndexKey, dayPower, marketTime, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { useApp, motion } from "../app/store";
 import type { Arc, Cable, CountriesFile, DayFile, GasSite, Hex, Plant, PlantsFile, Power, Shape, StatsFile, Substation, TowerPiece, Unit, UnitOutputFile } from "../app/types";
@@ -97,9 +97,10 @@ export function countryHtml(name: string, iso2: string | null, iso3: string | nu
 
 export function currentDay(): DayFile | undefined {
   const s = useApp.getState();
-  const index = fileOf<{ all: string[] }>("dayIndex");
+  const region = useApp.getState().dayRegion;
+  const index = fileOf<{ all: string[] }>(dayIndexKey(region));
   const date = s.day ?? index?.all[index.all.length - 1];
-  return date ? fileOf<DayFile>(`day:${date}`) : undefined;
+  return date ? fileOf<DayFile>(dayFileKey(region, date)) : undefined;
 }
 
 let namesAsked = false;
