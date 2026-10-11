@@ -9,7 +9,7 @@ one trading hub per market, matched to the EIA region the market covers.
 |---|---|---|---|
 | CAISO | TH_SP15_GEN-APND (SP15) | CAL | none (OASIS) |
 | ERCOT | HB_HUBAVG | TEX | none (MIS public reports) |
-| PJM | Western Hub | MIDA | `PJM_API_KEY` (free, apiportal.pjm.com); skip if absent |
+| PJM | Western Hub | MIDA | `PJM_API_KEY` (free, apiportal.pjm.com): in the cloud a network secret that adds the header `Ocp-Apim-Subscription-Key` to `api.pjm.com`; scripts send that header from `PJM_API_KEY` when the variable is set; skip PJM if the API answers 401 |
 | MISO | ILLINOIS.HUB | MIDW | none |
 | SPP | SPPSOUTH_HUB | CENT | none |
 | NYISO | N.Y.C. (zone J) | NY | none |

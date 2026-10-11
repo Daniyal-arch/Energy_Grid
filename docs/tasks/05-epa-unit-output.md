@@ -1,6 +1,10 @@
 # 5. US fossil plants hour by hour (EPA CAMPD)
 
-Needs `EPA_API_KEY` in the cloud environment (free: https://api.data.gov/signup/).
+The EPA key (free: https://api.data.gov/signup/) is a **network secret** on the cloud
+environment: requests to `api.epa.gov` get the header `X-Api-Key` added by the proxy, and the
+key is not readable in the session. So the scripts send the key as the `X-Api-Key` header only
+when the `EPA_API_KEY` environment variable is set (GitHub Actions, the laptop) and send no key
+otherwise (cloud). Never put it in a query string or a log.
 
 ## Goal
 
