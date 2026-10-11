@@ -32,7 +32,7 @@ since 2026-09-24. Probes: `scripts/probe_entsoe_core.py`, `scripts/probe_entsoe_
 |---|---:|---|
 | `flows.json` | 73 borders | ENTSO-E A11 physical flows, both directions per border; net flow = one direction minus the other (computed). Newest measured 15-min value per border, plus 24 h of 15-min values for the replay |
 | `stats.json` | 29 countries + EU, 43 price zones | ENTSO-E A65 actual total load and A75 actual generation per production type per country; A44 day-ahead price per bidding zone |
-| `reference.json` | per country | Energy-Charts `/installed_power` (newest year with values, fetched before the outage) and ENTSO-E A72 hydro reservoir energy (newest week, same week a year earlier) |
+| `reference.json` | per country | ENTSO-E A68 installed capacity per production type (processType A33; this year, else last year; grouped by fuel), as each grid operator reports it: some count only part of small rooftop solar (Italy: 11.9 GW). A country ENTSO-E has nothing for (GB, UA) keeps its Energy-Charts figures from before the 2026-09-24 outage, named in its `source`. ENTSO-E A72 hydro reservoir energy (newest week, same week a year earlier) |
 | `dossier.json` | gas storage: EU + 19 countries; Ember: 36 countries | GIE AGSI+ daily gas storage (fill % of working gas volume, TWh, trend), last ~400 days; Ember yearly electricity data (CC BY 4.0): generation by source since 2000, published renewable share and carbon intensity of generation. `scripts/fetch_eu_dossier.py` (AGSI_API_KEY, EMBER_API_KEY) |
 
 **Rules applied to ENTSO-E data** (values are never changed, only grouped, summed or
@@ -119,7 +119,7 @@ bundled one (newer wins). It needs the repo secret `ENTSOE_API_KEY`.
 
 | File | Records | Source |
 |---|---:|---|
-| `day/<YYYY-MM-DD>.json` | 96 slots (15 min) of a local day (Europe/Berlin) | ENTSO-E A44 prices per zone, A65 load and A75 generation per country, A11 flows per border, with the rules above; EU = per-slot sum over the member states with data (`eu.sum_of`). Days before 2026-10 came from Energy-Charts (EU hourly) |
+| `day/<YYYY-MM-DD>.json` | 96 slots (15 min) of a local day (Europe/Berlin) | ENTSO-E A44 prices per zone (EUR/MWh, the source's two decimals; MW one decimal), A65 load and A75 generation per country, A11 flows per border, with the rules above; EU = per-slot sum over the member states with data (`eu.sum_of`). Days before 2026-10 came from Energy-Charts (EU hourly) |
 | `day/index.json` | list of built days | — (`?day=latest` opens the newest) |
 | `week/<ISO>.json`, `week/EU.json` | newest 7 built days per country | the day files' values concatenated, unchanged (load, renewable share, generation by source, prices of the country's zones); written by `build_eu_day.py` with every archive run, or `--weeks-only` |
 | `day/<date>.json` → `highlights` | ~9 key moments per day | computed by `scripts/day_highlights.py` from the same file: min/max of EU load, solar, wind, gas; lowest/highest zone price; largest border flow; highest renewable share at the solar peak. The captions only word these values |

@@ -84,8 +84,8 @@ uv run python scripts/build_eu_day.py 2026-09-24 # one day for the time-lapse (?
   (`scripts/entsoe.py`): four requests at a time, ~1 min for a snapshot, ~2 min for a
   30-day archive. Newest intervals arrive late and in parts (Italy zone by zone); the
   rules for picking the newest complete interval are in docs/DATA_SOURCES.md.
-- **Energy-Charts** has answered HTTP 503 since 2026-09-24; only installed capacity
-  still comes from it (carried over while it is down). It answers 429 to bursts.
+- **Energy-Charts** has answered HTTP 503 since 2026-09-24; nothing depends on it any more
+  (installed capacity comes from ENTSO-E A68; GB and UA keep its older figures).
 - **Ember** serves all countries in one request (`scripts/fetch_transition.py`); its
   aggregates are asked by name (`entity=EU`), countries by ISO alpha-3 code.
 - **powerplantmatching** lists German units individually (MaStR): German wind is per

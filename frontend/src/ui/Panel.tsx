@@ -507,7 +507,7 @@ function CountryPanel({ iso }: { iso: string }) {
             </Card>
           )}
           {capacity && (
-            <Card title="Installed capacity" note={`Energy-Charts · ${capacity.year}`}>
+            <Card title="Installed capacity" note={`${capacity.source === "ENTSO-E A68" ? "ENTSO-E" : (capacity.source ?? "Energy-Charts")} · ${capacity.year}`}>
               <div className="space-y-1">
                 {Object.entries(capacity.gw)
                   .filter(([, v]) => v > 0)

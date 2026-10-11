@@ -56,8 +56,11 @@ def day_window(day: date) -> tuple[datetime, int]:
     return start, int((end - start).total_seconds()) // STEP
 
 
-def align(seconds: list[int], values: list, start: int, slots: int, scale: float = 1.0) -> list:
-    """Values on the day's 15-min grid; coarser series (hourly) fill each slot they cover."""
+def align(
+    seconds: list[int], values: list, start: int, slots: int, scale: float = 1.0, digits: int = 1
+) -> list:
+    """Values on the day's 15-min grid; coarser series (hourly) fill each slot they cover.
+    MW keep one decimal; prices keep the source's two (digits=2)."""
     out: list[float | None] = [None] * slots
     step = (seconds[1] - seconds[0]) if len(seconds) > 1 else STEP
     for sec, v in zip(seconds, values, strict=False):
@@ -66,7 +69,7 @@ def align(seconds: list[int], values: list, start: int, slots: int, scale: float
         first = (int(sec) - start) // STEP
         for k in range(first, first + max(1, step // STEP)):
             if 0 <= k < slots:
-                out[k] = round(float(v) * scale, 1)
+                out[k] = round(float(v) * scale, digits)
     return out
 
 
@@ -142,7 +145,7 @@ def day_payload(day: date, raw: dict) -> dict:
         if data:
             prices[zone] = {
                 "country": iso,
-                "values": align(data["unix_seconds"], data["price"], start, slots),
+                "values": align(data["unix_seconds"], data["price"], start, slots, digits=2),
             }
     countries = {}
     for iso, data in raw["power"].items():

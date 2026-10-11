@@ -34,7 +34,7 @@ export const GAS_SOURCES: Sources = [
 
 export const PLANT_SOURCES: Sources = [
   ["Plants, grid", "powerplantmatching (plants ≥ 20 MW on the overview, every unit ≥ 1 MW for a selected country); PyPSA-Eur from OpenStreetMap (ODbL)."],
-  ["Installed capacity", "Energy-Charts installed power, newest year with values (carried over while Energy-Charts is down)."],
+  ["Installed capacity", "ENTSO-E installed capacity per production type (A68), this year or last; as each grid operator reports it, so small rooftop solar is missing in some countries. Countries ENTSO-E has nothing for keep Energy-Charts' figures from before 24 Sept 2026."],
   ["Hydro reservoirs", "ENTSO-E Transparency, weekly stored energy."],
 ];
 

@@ -23,7 +23,7 @@ export interface GasFile {
 }
 export interface ReferenceFile {
   fetched: string;
-  capacity: Record<string, { year: string; gw: Record<string, number> }>;
+  capacity: Record<string, { year: string | number; gw: Record<string, number>; source?: string }>;
   reservoirs: Record<string, { week: string; twh: number; year_ago_week: string | null; year_ago_twh: number | null }>;
 }
 export interface PriceRow {
