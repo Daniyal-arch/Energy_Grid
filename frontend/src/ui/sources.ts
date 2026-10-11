@@ -23,6 +23,10 @@ export const LIVE_SOURCES: Sources = [
 ];
 
 export const GAS_SOURCES: Sources = [
+  [
+    "Gas flows",
+    "ENTSOG Transparency Platform, physical flow per point and direction, daily (kWh/d, shown in GWh/d). A gas day runs 06:00–06:00 CET/CEST. Cross-border and LNG entry points; storage, production and distribution left out. Each border is the sum of one side's operators' reports, the importing side (both directions); pipe-in-pipe and double reports, physical points bundled in a VIP and one repeated point (Dornum GASPOOL) are left out. Sources are named by the neighbouring system, with ENTSOG's origin (Azerbaijan for Kipi and Kipoi, Russia for Strandzha 2). Newest complete gas day: every point of the day before has reported. Sources and LNG terminals are placed on the map for reading.",
+  ],
   ["Gas storage", "GIE AGSI+, daily, fill as % of working gas volume."],
   ["LNG", "GIE ALSI, daily: send-out into the grid and the terminals' declared send-out capacity (GWh/day), LNG in tanks."],
   ["Gas network", "SciGRID_gas (2021): pipelines, LNG terminals and storage sites."],

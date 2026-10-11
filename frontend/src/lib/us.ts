@@ -122,6 +122,23 @@ export const QUEUE_COLOR: Record<string, RGB> = {
 };
 export const queueColor = (t: string): RGB => QUEUE_COLOR[t] ?? FUEL_COLOR.other;
 
+/** Operating capacity of a state, all fuels (EIA-860M net summer MW). */
+export const operatingMw = (p: UsPlantsFile | undefined, code: string) =>
+  Object.values(p?.states[code]?.operating ?? {}).reduce((sum, v) => sum + v, 0);
+
+/** The queue against what a state runs today: GW waiting ÷ GW operating (computed). */
+export const QUEUE_RATIO_STOPS: Array<[number, RGB]> = [
+  [0, [30, 36, 48]],
+  [0.5, [44, 74, 96]],
+  [1, [58, 118, 132]],
+  [2, [196, 160, 86]],
+  [4, [232, 104, 76]],
+  [8, [214, 64, 150]],
+];
+export const QUEUE_RATIO_TICKS = ["0", "1×", "2×", "4×", "≥ 8×"];
+export const queueRatioCss = `linear-gradient(90deg, ${QUEUE_RATIO_STOPS.map(([, c]) => `rgb(${c.join(",")})`).join(", ")})`;
+export const ratioText = (r: number) => (r >= 10 ? `${Math.round(r)}×` : `${r.toFixed(1)}×`);
+
 /** OpenStreetMap lines from 100 kV (scripts/fetch_us_lines.py), vector tiles on R2. */
 export const US_LINES_TILES = "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/grid/us-lines.pmtiles";
 /** Europe's colour bands, by the same voltage steps, plus the 100–199 kV lines the US grid

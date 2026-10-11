@@ -68,6 +68,9 @@ jobs:
           # installed capacity per country and technology (IRENA, twice-yearly releases)
           python scripts/fetch_irena.py --out store/eu || echo "IRENA fetch failed; keeping the last copy"
 
+      - name: Gas flows per gas day (ENTSOG, no key; newest complete gas day and 30 before)
+        run: python scripts/fetch_entsog.py --out store/eu || echo "ENTSOG fetch failed; keeping yesterday's"
+
       - name: Wind for the same days (Open-Meteo, one pass over the window)
         run: python scripts/fetch_wind.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/wind || echo "wind fetch failed"
 

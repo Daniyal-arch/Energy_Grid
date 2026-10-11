@@ -4,12 +4,13 @@
 import type { ReactNode } from "react";
 
 import { FUEL_COLOR, STACK_ORDER } from "../lib/energy";
+import { GAS_FLOW, GAS_TRANSIT, type GasFlowsFile } from "../lib/gasFlows";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
 import { rgbCss } from "../lib/theme";
 import { FLOW, VOLTAGE_BANDS } from "../app/colors";
 import { useDataStore } from "../app/data";
 import { COLOURS, LAYERS, useApp, type LayerId } from "../app/store";
-import { QUEUE_COLOR, US_BANDS } from "../lib/us";
+import { QUEUE_COLOR, US_BANDS, queueRatioCss } from "../lib/us";
 import type { StatsFile } from "../app/types";
 import { priceRange, rampCss } from "../map/priceTerrain";
 import { currentDay } from "../map/tooltip";
@@ -45,6 +46,11 @@ function PriceRow() {
   );
 }
 
+function GasDay() {
+  const day = useDataStore((d) => (d.files.gasFlows as GasFlowsFile | undefined)?.gas_day);
+  return <>gas day {day ?? "…"}</>;
+}
+
 function LayerRow({ id }: { id: LayerId }) {
   switch (id) {
     case "prices":
@@ -68,6 +74,19 @@ function LayerRow({ id }: { id: LayerId }) {
         <Row label="Flows">
           <Line color={rgbCss(FLOW)} />
           way the power goes · ENTSO-E
+        </Row>
+      );
+    case "gasFlows":
+      return (
+        <Row label="Gas">
+          <div>
+            <Line color={rgbCss(GAS_FLOW)} />
+            into Europe <Line color={rgbCss(GAS_TRANSIT)} />
+            between countries
+          </div>
+          <div className={muted}>
+            net GWh/d, <GasDay /> · sources placed for reading · ENTSOG
+          </div>
         </Row>
       );
     case "gridEU":
@@ -104,7 +123,11 @@ function LayerRow({ id }: { id: LayerId }) {
               </span>
             ))}
           </div>
-          <div className={muted}>height = GW waiting · colour = most · LBNL</div>
+          <div className="flex items-center gap-1.5">
+            <span className="h-1.5 w-12 shrink-0 rounded-sm" style={{ background: queueRatioCss }} />
+            <span>state: waiting ÷ its plants, 0–8×</span>
+          </div>
+          <div className={muted}>tower = GW waiting · LBNL, EIA-860M</div>
         </Row>
       );
     default: {

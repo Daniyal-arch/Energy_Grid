@@ -18,8 +18,9 @@ export async function getJson<T>(url: string): Promise<T> {
 
 /** A refresh with nothing in it (a failed run) must never replace good data. */
 function hasData(v: unknown): boolean {
-  const o = v as { borders?: unknown[]; countries?: Record<string, unknown>; regions?: Record<string, unknown> };
+  const o = v as { pairs?: unknown[]; borders?: unknown[]; countries?: Record<string, unknown>; regions?: Record<string, unknown> };
   if (Array.isArray(o.borders)) return o.borders.length > 0;
+  if (Array.isArray(o.pairs)) return o.pairs.length > 0;
   if (o.countries && typeof o.countries === "object") return Object.keys(o.countries).length > 0;
   if (o.regions && typeof o.regions === "object") return Object.keys(o.regions).length > 0;
   return true;
@@ -94,6 +95,8 @@ const STATIC: Record<string, Loader> = {
   worldStats: archive("world_stats.json"),
   datacentres: archive("datacentres.json"),
   irena: archive("irena.json"),
+  // ENTSOG gas flows per gas day (scripts/fetch_entsog.py, daily on eu-days)
+  gasFlows: archive("gas_flows.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)

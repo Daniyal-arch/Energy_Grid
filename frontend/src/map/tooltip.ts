@@ -11,15 +11,17 @@ import { priceMetricById, type PricesFile } from "../lib/prices";
 import { ISO3, formatMetric, metricById, type TransitionFile } from "../lib/transition";
 import { NEM_NAME, latest, type WorldStatsFile } from "../lib/world";
 import { PLANT_TYPE_LABEL, STATUS_LABEL, type WorldPlantsFile } from "../lib/worldPlants";
+import { endName, gwhd, latestOf, type GasFlowsFile } from "../lib/gasFlows";
+import type { GasArc } from "./build";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { dayPower, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { useApp, motion } from "../app/store";
-import type { Arc, Cable, DayFile, GasSite, Hex, Plant, PlantsFile, Power, Shape, StatsFile, Substation, TowerPiece, Unit } from "../app/types";
+import type { Arc, Cable, CountriesFile, DayFile, GasSite, Hex, Plant, PlantsFile, Power, Shape, StatsFile, Substation, TowerPiece, Unit } from "../app/types";
 import { priceState } from "./priceTerrain";
 import { largestType, queueMw } from "./usLayers";
-import { US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
+import { US_TYPE_LABEL, gwText, operatingMw, ratioText, type UsPlantsFile, type UsQueueFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
 
 export const TIP_STYLE = {
   background: "rgba(8,10,14,0.92)",
@@ -175,7 +177,7 @@ function usHtml(id: string, object: unknown): string | null {
     const proj = [n ? `${n} turbines` : "", mw ? `${mw.toLocaleString("en-US")} MW` : "", year ? `online ${year}` : "", state].filter(Boolean).join(" · ");
     return `<b>${project || "Wind turbine"}</b>${f.offshore[k] ? "<div>offshore</div>" : ""}<div>${bits || "turbine"}</div><div style="color:#8d94a1">project: ${proj}</div>${SRC(`USWTDB ${f.release}`)}`;
   }
-  if (id === "us-queue") {
+  if (id === "us-queue" || id === "us-queue-towers") {
     const q = fileOf<UsQueueFile>("usQueue");
     const code = (object as { code: string }).code;
     const st = q?.states[code];
@@ -189,7 +191,10 @@ function usHtml(id: string, object: unknown): string | null {
       .map(([t, v]) => `<div style="display:flex;justify-content:space-between;gap:16px"><span>${t}</span><span>${gwText(v)}</span></div>`)
       .join("");
     const susp = st.suspended.reduce((a, v) => a + v, 0);
-    return `<b>${name}</b><div><b>${gwText(queueMw(q, code))}</b> in ${st.active_n.toLocaleString("en-US")} active requests · most: ${largestType(q, code)}</div><div style="margin-top:4px">${rows}</div>${susp > 0 ? `<div style="color:#8d94a1">suspended: ${gwText(susp)} in ${st.suspended_n}</div>` : ""}${SRC(`LBNL Queued Up, requests active at the ${q.through} · hybrids counted under each type`)}`;
+    const plants = fileOf<UsPlantsFile>("usPlants");
+    const op = operatingMw(plants, code);
+    const ratio = plants && op > 0 ? `<div>${ratioText(queueMw(q, code) / op)} the ${gwText(op)} of plants it runs today <span style="color:#8d94a1">(EIA-860M ${plants.release}, computed)</span></div>` : "";
+    return `<b>${name}</b><div><b>${gwText(queueMw(q, code))}</b> in ${st.active_n.toLocaleString("en-US")} active requests · most: ${largestType(q, code)}</div>${ratio}<div style="margin-top:4px">${rows}</div>${susp > 0 ? `<div style="color:#8d94a1">suspended: ${gwText(susp)} in ${st.suspended_n}</div>` : ""}${SRC(`LBNL Queued Up, requests active at the ${q.through} · hybrids counted under each type`)}`;
   }
   return null;
 }
@@ -295,6 +300,16 @@ function tooltipHtml(id: string, object: unknown): string | null {
     case "eu-flows": {
       const a = object as Arc;
       return `<b>${a.from} → ${a.to}</b> ${gw(a.mw)}${SRC(`physical flow, interval ${utc(a.ts)} · ENTSO-E`)}`;
+    }
+    case "eu-gas-flows": {
+      const a = object as GasArc;
+      const g = fileOf<GasFlowsFile>("gasFlows");
+      if (!g) return null;
+      const cname = (iso: string) => fileOf<CountriesFile>("countries")?.countries.find((c) => c.iso === iso)?.name ?? iso;
+      const p = a.pair;
+      const pts = p.points.filter((x) => x[3]).slice(0, 4).map((x) => `<div style="color:#8d94a1">${x[0]} ${gwhd(x[3])}</div>`).join("");
+      const two = p.kind === "border" && latestOf(p.ab) && latestOf(p.ba) ? `<div>${gwhd(latestOf(p.ab))} ${p.a}→${p.b}, ${gwhd(latestOf(p.ba))} back</div>` : "";
+      return `<b>${endName(a.from, g, cname, a.country)} → ${endName(a.to, g, cname, a.country)}</b> ${gwhd(a.gwh)}${two}${pts}${SRC(`net physical flow, gas day ${g.gas_day} · ENTSOG, sum of ${cname(p.read_from)}'s operators' reports`)}`;
     }
     case "eu-lng":
     case "eu-gas-storage": {
