@@ -181,8 +181,13 @@ export interface Camera {
   pitch?: number;
   bearing?: number;
 }
+/** The Stories menu's sections. */
+export const STORY_GROUPS = ["Europe", "United States", "World"] as const;
+export type StoryGroup = (typeof STORY_GROUPS)[number];
 export interface Story {
   id: string;
+  /** the Stories menu's section */
+  group: StoryGroup;
   label: string;
   blurb: string;
   mode: TimeMode;
@@ -196,6 +201,7 @@ export interface Story {
 export const STORIES: Story[] = [
   {
     id: "europe-live",
+    group: "Europe",
     label: "Europe live",
     blurb: "Grid, plants and power flows now",
     mode: "live",
@@ -205,6 +211,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "europe-day",
+    group: "Europe",
     label: "A day in Europe",
     blurb: "24 hours, every 15 minutes",
     mode: "day",
@@ -214,6 +221,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "price-year",
+    group: "Europe",
     label: "The price year",
     blurb: "Hours below zero, capture prices",
     mode: "live",
@@ -223,6 +231,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "transition",
+    group: "World",
     label: "25 years of transition",
     blurb: "Every country, 2000–2025",
     mode: "years",
@@ -232,6 +241,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "world-building",
+    group: "World",
     label: "What the world is building",
     blurb: "Plants under construction",
     mode: "live",
@@ -242,6 +252,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "world-live",
+    group: "World",
     label: "Grids beyond Europe",
     blurb: "US, Brazil, Australia, Taiwan, Ontario live",
     mode: "live",
@@ -251,6 +262,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "fuel-routes",
+    group: "World",
     label: "Fuel routes",
     blurb: "Gas and oil pipelines, LNG and coal ports",
     mode: "live",
@@ -260,6 +272,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "methane",
+    group: "World",
     label: "Methane from space",
     blurb: "Plumes seen by satellites, fields and mines",
     mode: "live",
@@ -269,6 +282,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "money",
+    group: "World",
     label: "Who pays for fossil power",
     blurb: "Banks' money flowing to coal and gas",
     mode: "live",
@@ -278,6 +292,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "us-grid",
+    group: "United States",
     label: "US grid",
     blurb: "Every plant, the lines, every wind turbine",
     mode: "live",
@@ -289,6 +304,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "us-queue",
+    group: "United States",
     label: "US interconnection queue",
     blurb: "What is waiting to connect, state by state",
     mode: "live",
@@ -299,6 +315,7 @@ export const STORIES: Story[] = [
   },
   {
     id: "heavy-industry",
+    group: "World",
     label: "Heavy industry",
     blurb: "Steel, cement and chemical plants",
     mode: "live",

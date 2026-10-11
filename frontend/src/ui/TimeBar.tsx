@@ -7,9 +7,9 @@ import { CAPTION_SLOTS, captionText, dayLabel, marketTime } from "../app/day";
 import { actions, motion, useApp, type TimeMode } from "../app/store";
 import type { CountriesFile, DayFile, FlowsFile } from "../app/types";
 
+// A whole day replays through the "A day in Europe" story, not from here.
 const MODES: { id: TimeMode; label: string; title: string }[] = [
   { id: "live", label: "Live", title: "Now: the newest 15-min interval" },
-  { id: "day", label: "24 h", title: "Replay a whole day, every 15 minutes" },
   { id: "years", label: "Years", title: "2000 to today, year by year (Ember)" },
 ];
 

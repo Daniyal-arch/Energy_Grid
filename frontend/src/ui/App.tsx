@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import MapCanvas from "../map/MapCanvas";
 import { LIVE_KEYS, ensure, useDataStore } from "../app/data";
 import { MOBILE_QUERY } from "../app/geo";
-import { STORIES, actions, readUrl, useApp, writeUrl } from "../app/store";
+import { STORIES, STORY_GROUPS, actions, readUrl, useApp, writeUrl, type StoryGroup } from "../app/store";
 import LayersPanel from "./LayersPanel";
 import MapLegend from "./MapLegend";
 import MapOptions from "./MapOptions";
@@ -28,24 +28,52 @@ function useNarrow() {
   return narrow;
 }
 
+/** Stories in three sections (Europe, United States, World); one section open at a time,
+ *  first the one holding the current story, else the one the camera faces. */
 function Stories({ onDone }: { onDone?: () => void }) {
   const story = useApp((s) => s.story);
+  const region = useApp((s) => s.region);
+  const current = STORIES.find((st) => st.id === story)?.group ?? (region === "us" ? "United States" : region === "world" ? "World" : "Europe");
+  const [open, setOpen] = useState<StoryGroup | null>(current);
   const [copied, setCopied] = useState(false);
   return (
     <div className="space-y-1">
-      {STORIES.map((st) => (
-        <button
-          key={st.id}
-          onClick={() => {
-            actions.applyStory(st.id);
-            onDone?.();
-          }}
-          className={`block w-full rounded-lg px-3 py-2 text-left hover:bg-white/[0.07] ${story === st.id ? "bg-white/[0.1]" : ""}`}
-        >
-          <div className="text-[12.5px] text-slate-100">{st.label}</div>
-          <div className="text-[10.5px] text-[#8d94a1]">{st.blurb}</div>
-        </button>
-      ))}
+      {STORY_GROUPS.map((g) => {
+        const list = STORIES.filter((st) => st.group === g);
+        const isOpen = open === g;
+        return (
+          <div key={g} className={`rounded-lg ${isOpen ? "bg-white/[0.03]" : ""}`}>
+            <button
+              onClick={() => setOpen(isOpen ? null : g)}
+              className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-white/[0.06]"
+              aria-expanded={isOpen}
+            >
+              <span className="text-[11px] uppercase tracking-[0.18em] text-slate-200">{g}</span>
+              <span className="flex items-center gap-2 text-[10px] text-[#8d94a1]">
+                {list.length}
+                <span className="text-[9px]">{isOpen ? "▲" : "▼"}</span>
+              </span>
+            </button>
+            {isOpen && (
+              <div className="space-y-0.5 pb-1">
+                {list.map((st) => (
+                  <button
+                    key={st.id}
+                    onClick={() => {
+                      actions.applyStory(st.id);
+                      onDone?.();
+                    }}
+                    className={`block w-full rounded-lg px-3 py-1.5 pl-5 text-left hover:bg-white/[0.07] ${story === st.id ? "bg-white/[0.1]" : ""}`}
+                  >
+                    <div className="text-[12.5px] text-slate-100">{st.label}</div>
+                    <div className="text-[10.5px] text-[#8d94a1]">{st.blurb}</div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
       <button
         onClick={() => {
           navigator.clipboard?.writeText(window.location.href).then(() => {
