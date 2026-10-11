@@ -58,10 +58,18 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_eu_units.py --recent 8 --out store/eu/units || echo "unit output failed; keeping the last copies"
 
-      - name: The US day by day (EIA-930; three days back, 30 kept)
+      - name: The US day by day (EIA-930 and hub prices; three days back, 30 kept)
         env:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+          PJM_API_KEY: ${{ secrets.PJM_API_KEY }}
         run: python scripts/build_us_day.py --recent 30 --out store/eu/usday || echo "US days failed; keeping the last copies"
+
+      - name: US day-ahead prices at one hub per market (today and tomorrow; hub prices into days built without)
+        env:
+          PJM_API_KEY: ${{ secrets.PJM_API_KEY }}
+        run: |
+          python scripts/fetch_us_prices.py --out store/eu || echo "US prices failed; keeping the last copy"
+          python scripts/build_us_day.py --prices-only --out store/eu/usday || echo "US day prices failed"
 
       - name: Twelve months of prices per zone (Prices tab)
         env:
