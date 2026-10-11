@@ -1,0 +1,107 @@
+{
+ "source": "ONS Energia Agora, balanco energetico (Operador Nacional do Sistema Eletrico)",
+ "fetched": "2026-10-11T01:18:43+00:00",
+ "at": "2026-10-10T22:04:00-03:00",
+ "subsystems": {
+  "SE": {
+   "name": "Southeast / Centre-West",
+   "load": 49256.5,
+   "import": 9518.3,
+   "export": 0.0,
+   "generation": {
+    "hydro": 24145.6,
+    "thermal": 6258.5,
+    "wind": 250.2,
+    "nuclear": 1355.0,
+    "solar": 8.0,
+    "distributed": 0.0,
+    "itaipu": 7720.9
+   }
+  },
+  "S": {
+   "name": "South",
+   "load": 12700.6,
+   "import": 3.4,
+   "export": 3923.9,
+   "generation": {
+    "hydro": 15335.3,
+    "thermal": 1074.1,
+    "wind": 211.7,
+    "nuclear": 0.0,
+    "solar": 0.0,
+    "distributed": 0.0
+   }
+  },
+  "NE": {
+   "name": "Northeast",
+   "load": 16437.1,
+   "import": 0.0,
+   "export": 10605.7,
+   "generation": {
+    "hydro": 5076.5,
+    "thermal": 499.5,
+    "wind": 21440.1,
+    "nuclear": 0.0,
+    "solar": 26.6,
+    "distributed": 0.0
+   }
+  },
+  "N": {
+   "name": "North",
+   "load": 10296.0,
+   "import": 5011.3,
+   "export": 0.0,
+   "generation": {
+    "hydro": 2251.0,
+    "thermal": 2644.5,
+    "wind": 389.3,
+    "nuclear": 0.0,
+    "solar": 0.0,
+    "distributed": 0.0
+   }
+  }
+ },
+ "flows": [
+  {
+   "id": "internacional_sul",
+   "from": "INT",
+   "to": "S",
+   "mw": 3.4
+  },
+  {
+   "id": "sul_sudeste",
+   "from": "S",
+   "to": "SE",
+   "mw": 3923.9
+  },
+  {
+   "id": "sudeste_nordeste",
+   "from": "SE",
+   "to": "NE",
+   "mw": -5555.3
+  },
+  {
+   "id": "sudeste_norteFic",
+   "from": "SE",
+   "to": "IMP",
+   "mw": -39.2
+  },
+  {
+   "id": "norte_norteFic",
+   "from": "N",
+   "to": "IMP",
+   "mw": -5011.3
+  },
+  {
+   "id": "norteFic_nordeste",
+   "from": "IMP",
+   "to": "NE",
+   "mw": -5050.5
+  }
+ ],
+ "international": {
+  "argentina": -3.2,
+  "paraguai": 0.0,
+  "uruguai": -0.2
+ }
+}

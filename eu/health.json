@@ -1,0 +1,10 @@
+{
+ "fetched": "2026-10-11T01:19:25+00:00",
+ "entsoe_requests": {
+  "200": 258,
+  "no data": 8
+ },
+ "countries": 31,
+ "borders": 79,
+ "price_zones": 40
+}
