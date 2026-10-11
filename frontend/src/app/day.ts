@@ -8,6 +8,9 @@ import type { DaySeries, Highlight, Power } from "./types";
 /** Data keys of the 24 h replay for a region (app/data.ts). */
 export const dayIndexKey = (r: DayRegion) => (r === "us" ? "usDayIndex" : "dayIndex");
 export const dayFileKey = (r: DayRegion, date: string) => (r === "us" ? `usDay:${date}` : `day:${date}`);
+/** Output per plant through the replayed day: Europe (ENTSO-E) or the US (EPA CAMPD). */
+export const unitIndexKey = (r: DayRegion) => (r === "us" ? "usUnitIndex" : "unitIndex");
+export const unitOutKey = (r: DayRegion, date: string) => (r === "us" ? `usUnitOut:${date}` : `unitOut:${date}`);
 
 const CLOCKS = new Map<string, Intl.DateTimeFormat>();
 /** A day file's own clock: the market's (CET/CEST) for Europe, Eastern Time for the US. */

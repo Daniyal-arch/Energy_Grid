@@ -51,6 +51,11 @@ function GasDay() {
   return <>gas day {day ?? "…"}</>;
 }
 
+function PlantSource() {
+  const us = useApp((s) => s.dayRegion === "us");
+  return <div className={muted}>{us ? "fossil units 25 MW+ · EPA CAMPD, hourly" : "units of 100 MW+ · ENTSO-E, JRC"}</div>;
+}
+
 function LayerRow({ id }: { id: LayerId }) {
   switch (id) {
     case "prices":
@@ -83,7 +88,7 @@ function LayerRow({ id }: { id: LayerId }) {
             <span className="mr-1 inline-block h-2 w-2 rounded-full border border-slate-300/70 align-middle" /> capacity ·{" "}
             <span className="mr-1 inline-block h-2 w-2 rounded-full bg-slate-200 align-middle" /> output now
           </div>
-          <div className={muted}>units of 100 MW+ · ENTSO-E, JRC</div>
+          <PlantSource />
         </Row>
       );
     case "gasFlows":

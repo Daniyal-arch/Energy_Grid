@@ -186,7 +186,7 @@ function LayerLegend({ id }: { id: LayerId }) {
         <>
           {fuelSwatches(["nuclear", "coal", "gas", "hydro", "wind", "bio", "oil"], FUEL_COLOR, FUEL_LABEL)}
           <Note>
-            Ring: the plant's capacity (JRC, sum of its units); disc: its output at the clock (ENTSO-E, per unit of 100 MW and more). Grey dots: no value at this time. Germany, the Nordics, Austria and Switzerland publish about five days late; Italy, Denmark, Great Britain and Croatia publish none.
+            Ring: the plant's capacity (JRC, sum of its units); disc: its output at the clock (ENTSO-E, per unit of 100 MW and more). Grey dots: no value at this time. Germany, the Nordics, Austria and Switzerland publish about five days late; Italy, Denmark, Great Britain and Croatia publish none. US replay: EPA's fossil units over 25 MW, gross load per hour, ring = nameplate of their generators; EPA's newest complete quarter.
           </Note>
         </>
       );

@@ -63,7 +63,7 @@ import {
   lift,
   stopColor,
 } from "../app/colors";
-import { TOWER_LABEL_MW, TOWER_M_PER_MW, TOWER_RADIUS_M, NIGHT_BOUNDS } from "../app/day";
+import { TOWER_LABEL_MW, TOWER_M_PER_MW, TOWER_RADIUS_M, NIGHT_BOUNDS, unitOutKey } from "../app/day";
 import { ANCHOR, BEAM_MIN_MW, HEX_KM, SMALL, angularDistance, bbox, hexBins, pairs, unitVector } from "../app/geo";
 import type { ColourId, LayerId, PlantStatus, Selection, TimeMode } from "../app/store";
 import type {
@@ -585,11 +585,11 @@ export function buildLayers(fr: Frame): Layer[] {
   // ---------------------------------------------------------------- generation towers (24 h)
   // ---------------------------------------------------------------- prices: blocks, towers on top
   if (terrain) layers.push(...terrain.layers);
-  // ---------------------------------------------------------------- output per plant (24 h)
-  if (day && facingEurope && isOn("plantOutput")) layers.push(...plantOutputLayers(fr, dayK));
   // the 24 h replay faces its own region: Europe, or the US (its 13 regions as towers)
   const usDay = day?.region === "us";
   const facingDay = usDay ? angularDistance(fr.centre, [-96, 38]) < 60 : facingEurope;
+  // ---------------------------------------------------------------- output per plant (24 h)
+  if (day && facingDay && isOn("plantOutput")) layers.push(...plantOutputLayers(fr, dayK));
   const towers = day && (countries || usDay) && isOn("towers") && facingDay;
   if (towers) layers.push(...towerLayers(fr, day, dayK, countries, sel, terrain));
 
@@ -833,11 +833,11 @@ export interface PlantOutputRow {
   units: number;
 }
 
-/** What each large plant produced at the clock (ENTSO-E per unit, placed with the JRC
- *  database): a ring for its capacity, a disc for its output, both in the fuel's colour.
+/** What each large plant produced at the clock (Europe: ENTSO-E per unit, placed with the JRC
+ *  database; US: EPA CAMPD's fossil units, hourly): a ring for its capacity, a disc for its output, both in the fuel's colour.
  *  The disc glides between two 15-min values (drawing only); cards show the slot's value. */
 function plantOutputLayers(fr: Frame, dayK: number): Layer[] {
-  const file = fr.day ? (fr.files[`unitOut:${fr.day.date}`] as UnitOutputFile | undefined) : undefined;
+  const file = fr.day ? (fr.files[unitOutKey(fr.dayRegion, fr.day.date)] as UnitOutputFile | undefined) : undefined;
   if (!file) return [];
   const rows = memo("plantOutRows", [file], () =>
     file.plants.map((p, k) => ({ k, at: [p[0], p[1]] as [number, number], fuel: file.fuels[p[2]], iso: p[3], capacity: p[4], name: p[5], units: p[6] })),

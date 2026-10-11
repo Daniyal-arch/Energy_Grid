@@ -58,6 +58,21 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_eu_units.py --recent 8 --out store/eu/units || echo "unit output failed; keeping the last copies"
 
+      - name: US fossil plants hour by hour (EPA CAMPD; the newest complete quarter's last 7 days)
+        env:
+          # sent as the X-Api-Key header, never in a URL (api.data.gov key)
+          EPA_API_KEY: ${{ secrets.EPA_API_KEY }}
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+        run: |
+          pip install openpyxl tzfpy
+          if python scripts/build_us_units.py --recent 7 --out store/eu/usunits; then
+            # the US replay's day files for those dates (months back; kept by build_us_day's pruning)
+            missing=$(cd store/eu/usunits && for f in ????-??-??.json; do [ -f "../usday/$f" ] || echo "${f%.json}"; done)
+            [ -z "$missing" ] || python scripts/build_us_day.py $missing --out store/eu/usday || echo "US days for the plant files failed"
+          else
+            echo "EPA CAMPD failed; keeping the last copies"
+          fi
+
       - name: The US day by day (EIA-930 and hub prices; three days back, 30 kept)
         env:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}

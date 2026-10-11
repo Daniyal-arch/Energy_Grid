@@ -25,6 +25,7 @@ cheapest and dearest hub-hour of the day become captions, in USD ("usd").
 Writes frontend/public/data/eu/usday/<YYYY-MM-DD>.json and usday/index.json.
 
     uv run python scripts/build_us_day.py 2026-10-07
+    uv run python scripts/build_us_day.py 2026-06-29 2026-06-30   # several days, one window
     uv run python scripts/build_us_day.py --recent 30
     uv run python scripts/build_us_day.py --prices-only   # add hub prices to days without
 """
@@ -173,7 +174,7 @@ def write_index(out: Path) -> list[str]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("day", nargs="?", help="YYYY-MM-DD (Eastern Time)")
+    parser.add_argument("day", nargs="*", help="YYYY-MM-DD (Eastern Time), one or more")
     parser.add_argument("--recent", type=int, help="keep the last N complete days")
     parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument(
@@ -187,7 +188,7 @@ def main() -> None:
         return
     newest = datetime.now(TZ).date() - timedelta(days=LAG_DAYS)
     if args.day:
-        days = [date.fromisoformat(args.day)]
+        days = sorted(date.fromisoformat(d) for d in args.day)
     else:
         n = args.recent or 30
         have = {f.stem for f in args.out.glob("????-??-??.json")}
@@ -222,8 +223,10 @@ def main() -> None:
         )
     if args.recent:
         cutoff = (newest - timedelta(days=args.recent)).isoformat()
+        # days of the US plant-output files (build_us_units.py, months back) stay
+        units = args.out.parent / "usunits"
         for f in args.out.glob("????-??-??.json"):
-            if f.stem <= cutoff:
+            if f.stem <= cutoff and not (units / f.name).exists():
                 f.unlink()
     print(f"index: {len(write_index(args.out))} days", flush=True)
 

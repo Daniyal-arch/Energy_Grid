@@ -182,6 +182,10 @@ export interface UnitOutputFile {
   output: (number | null)[][];
   countries: Record<string, { units?: number; placed?: number }>;
   areas_without_data: string[];
+  /** the day's clock (US files: America/New_York) */
+  timezone?: string;
+  /** US files (EPA CAMPD): CO2 in tonnes per hour, one row per plant */
+  co2_t?: (number | null)[][];
 }
 
 /** Transfer capacity per country border, today and tomorrow (capacity.json). */
