@@ -115,6 +115,14 @@ jobs:
             python scripts/fetch_eu_ets.py --out store/eu || echo "EU ETS fetch failed; keeping the last copy"
           fi
 
+      - name: What consumers pay (Eurostat half-yearly, EIA monthly; Mondays)
+        env:
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+        run: |
+          if [ "$(date -u +%u)" = 1 ] || [ ! -f store/eu/retail.json ]; then
+            python scripts/fetch_retail_prices.py --out store/eu || echo "retail prices failed; keeping the last copy"
+          fi
+
       - name: Wind for the same days (Open-Meteo, one pass over the window)
         run: python scripts/fetch_wind.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/wind || echo "wind fetch failed"
 

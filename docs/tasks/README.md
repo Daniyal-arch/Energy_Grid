@@ -25,7 +25,7 @@ rules apply to every task.
 | 10 | [10-us-nodal-prices.md](10-us-nodal-prices.md) US prices at every node, markets' live queues (gridstatus) | ERCOT, PJM, ISO-NE optional |
 | 11 | [11-germany-mastr.md](11-germany-mastr.md) every generating unit in Germany (MaStR) | no |
 | 12 | [12-outages-water.md](12-outages-water.md) US outages (EAGLE-I), water stress (Aqueduct) | no |
-| 13 | [13-retail-prices.md](13-retail-prices.md) retail electricity and gas prices (Eurostat, EIA-861) | no |
+| 13 (done on main) | [13-retail-prices.md](13-retail-prices.md) retail electricity and gas prices (Eurostat, EIA-861) | no |
 
 Several sessions run at once and touch the same files (store, layers, panels, docs,
 workflows): before opening a pull request, merge `origin/main` into the branch and resolve

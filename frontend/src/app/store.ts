@@ -147,7 +147,8 @@ export type ColourId =
   | "tr_intensity"
   | "access"
   | "ir_solar"
-  | "ir_wind";
+  | "ir_wind"
+  | "rt_household";
 export interface ColourInfo {
   id: ColourId;
   label: string;
@@ -170,6 +171,7 @@ export const COLOURS: ColourInfo[] = [
   { id: "access", label: "Access to electricity", group: "World", modes: ["live", "years"] },
   { id: "ir_solar", label: "Solar PV installed", group: "Capacity (IRENA)", modes: ["live", "years"] },
   { id: "ir_wind", label: "Wind installed", group: "Capacity (IRENA)", modes: ["live", "years"] },
+  { id: "rt_household", label: "Household electricity price", group: "What consumers pay", modes: ["live", "years"] },
 ];
 export const isPriceColour = (c: ColourId) => c.startsWith("pr_");
 export const isYearColour = (c: ColourId) => c.startsWith("tr_");

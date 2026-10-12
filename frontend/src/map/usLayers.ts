@@ -22,6 +22,7 @@ import {
   type UsTurbinesFile,
 } from "../lib/us";
 import type { RGB } from "../lib/theme";
+import { RETAIL_STOPS, newestMonth, usCents, type RetailFile } from "../lib/retail";
 import type { Frame } from "./build";
 import { memo } from "./memo";
 
@@ -39,7 +40,7 @@ const LABELLED_PHONE = 6;
 const LABEL_GAP_DEG = 4;
 const ON_TOP = { depthCompare: "always", depthWriteEnabled: false } as const;
 /** Text the labels use (deck.gl draws its own glyph atlas). */
-const LABEL_CHARS = `${Array.from({ length: 95 }, (_, i) => String.fromCharCode(32 + i)).join("")}×·`;
+const LABEL_CHARS = `${Array.from({ length: 95 }, (_, i) => String.fromCharCode(32 + i)).join("")}×·¢`;
 
 export interface QueueShape {
   code: string;
@@ -123,7 +124,10 @@ export function usLayers(fr: Frame): Layer[] {
   // ------------------------------------------------------------ the queue: towers on shaded states
   const q = f.usQueue as UsQueueFile | undefined;
   const states = f.usStates as UsStatesFile | undefined;
+  const retail = f.retail as RetailFile | undefined;
   if (fr.layers.usQueue && q && states) out.unshift(...queueView(q, states, up, fr.isMobile ? LABELLED_PHONE : LABELLED));
+  // household electricity price per state (EIA, newest month), when the map is coloured by it
+  else if (fr.colour === "rt_household" && retail?.us && states) out.unshift(...retailView(retail, states, fr.zoom >= 3.6));
   // faint state lines under the plants, turbines and lines, for orientation
   else if (states && (fr.layers.plantsUS || fr.layers.turbinesUS || fr.layers.gridUS)) out.unshift(stateLines(states, [150, 162, 184, 55]));
   return out;
@@ -239,6 +243,47 @@ function queueView(q: UsQueueFile, states: UsStatesFile, plants: UsPlantsFile | 
       getBackgroundColor: [6, 9, 14, 210],
       backgroundPadding: [4, 2],
       updateTriggers: { getText: [plants] },
+      parameters: ON_TOP,
+    }),
+  ];
+}
+
+/** The states shaded by EIA's average residential price, newest month (cents/kWh). */
+function retailView(rf: RetailFile, states: UsStatesFile, labelled: boolean): Layer[] {
+  const us = rf.us!;
+  const shapes = memo("retailShapes", [states], () =>
+    states.states.flatMap((s) => s.polygons.map((rings) => ({ code: s.code, name: s.name, polygon: rings.map(pairs) }))),
+  );
+  const res = (code: string) => newestMonth(us.months, us.price[code]?.RES);
+  const labels = memo("retailLabels", [states, rf, labelled], () =>
+    labelled ? states.states.flatMap((s) => (res(s.code) ? [{ code: s.code, at: s.label, v: res(s.code)!.v }] : [])) : [],
+  );
+  return [
+    new SolidPolygonLayer<{ code: string; name: string; polygon: [number, number][][] }>({
+      id: "us-retail",
+      data: shapes,
+      getPolygon: (d) => d.polygon,
+      getFillColor: (d) => {
+        const n = res(d.code);
+        return [...((n && stopColor(RETAIL_STOPS, n.v)) || ([40, 43, 52] as RGB)), 235];
+      },
+      updateTriggers: { getFillColor: [rf] },
+      pickable: true,
+      autoHighlight: true,
+      highlightColor: [255, 255, 255, 30],
+      parameters: ON_TOP,
+    }),
+    stateLines(states, [8, 10, 14, 200]),
+    new TextLayer<{ code: string; at: [number, number]; v: number }>({
+      id: "us-retail-labels",
+      data: labels,
+      getPosition: (d) => d.at,
+      getText: (d) => `${d.code} ${usCents(d.v)}`,
+      getSize: 11,
+      getColor: [226, 232, 240, 230],
+      fontFamily: "Inter, system-ui, sans-serif",
+      fontWeight: 600,
+      characterSet: LABEL_CHARS,
       parameters: ON_TOP,
     }),
   ];

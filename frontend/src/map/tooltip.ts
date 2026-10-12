@@ -13,6 +13,7 @@ import { NEM_NAME, latest, type WorldStatsFile } from "../lib/world";
 import { PLANT_TYPE_LABEL, STATUS_LABEL, type WorldPlantsFile } from "../lib/worldPlants";
 import { endName, gwhd, latestOf, type GasFlowsFile } from "../lib/gasFlows";
 import { ETS_REGISTRY_NAME, mt, type EtsFile, type EtsRow } from "../lib/ets";
+import { FLAG_TEXT, euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../lib/retail";
 import { STATUS_TEXT, gwhdText, lngDay, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import type { GasArc } from "./build";
 import { CABLE_STYLE } from "../app/colors";
@@ -71,6 +72,15 @@ export function countryHtml(name: string, iso2: string | null, iso3: string | nu
     const m = irenaMetricById(s.colour.slice(3) as IrenaMetricId);
     const k = irenaK(irena, s.mode, fileOf<TransitionFile>("transition")?.years, s.yearK);
     return `<b>${name}</b><div>${m.label} ${irena.years[k]}: <b>${formatGw(irenaValue(irena, code ?? undefined, m, k))}</b></div>${SRC(m.note)}`;
+  }
+  if (s.colour === "rt_household") {
+    const rf = fileOf<RetailFile>("retail");
+    const row = iso2 ? rf?.eu.series.elec_household[iso2] : undefined;
+    const n = rf ? newestOf(rf, row) : null;
+    if (!rf || !n || !row) return `<b>${name}</b>${SRC("no household price at Eurostat")}`;
+    const flag = n.flag ? ` (${FLAG_TEXT[n.flag] ?? n.flag})` : "";
+    return `<b>${name}</b><div>Households pay <b>${euroCents(n.v)}/kWh</b>${flag}</div>
+      <div>without VAT ${euroCents(row.X_VAT[n.k])} · without taxes and levies ${euroCents(row.X_TAX[n.k])}</div>${SRC(`Eurostat nrg_pc_204, ${n.period}, band DC (2,500–4,999 kWh a year)`)}`;
   }
   if (s.colour === "access") {
     const ws = fileOf<WorldStatsFile>("worldStats");
@@ -204,6 +214,15 @@ function usHtml(id: string, object: unknown): string | null {
 }
 
 function tooltipHtml(id: string, object: unknown): string | null {
+  if (id === "us-retail") {
+    const d = object as { code: string; name: string };
+    const us = fileOf<RetailFile>("retail")?.us;
+    const n = us ? newestMonth(us.months, us.price[d.code]?.RES) : null;
+    if (!us || !n) return `<b>${d.name}</b>${SRC("no EIA retail price")}`;
+    const p = us.price[d.code];
+    return `<b>${d.name}</b><div>Households pay <b>${usCents(n.v)}/kWh</b> on average</div>
+      <div>businesses ${usCents(p.COM[n.k])} · industry ${usCents(p.IND[n.k])}</div>${SRC(`EIA retail sales (EIA-861M), ${n.month}`)}`;
+  }
   if (id.startsWith("gem-")) return gemHtml(id, object);
   if (id.startsWith("us-")) return usHtml(id, object);
   if (id.startsWith("fin-")) return financeHtml(id, object);

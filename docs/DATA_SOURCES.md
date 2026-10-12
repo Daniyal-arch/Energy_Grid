@@ -336,6 +336,37 @@ Rules:
   Voestalpine Linz 8,866,634 t, Versalis Ravenna 25,589 t equal in both.
 - Refresh: Mondays on `eu-days` (and whenever the file is missing).
 
+## What consumers pay (`scripts/fetch_retail_prices.py`, `retail.json`)
+
+| Series | Source | Band |
+|---|---|---|
+| electricity, households | Eurostat `nrg_pc_204` | DC, 2,500–4,999 kWh a year |
+| electricity, businesses | Eurostat `nrg_pc_205` | IC, 500–1,999 MWh a year |
+| gas, households | Eurostat `nrg_pc_202` (price per kWh, GCV) | D2, 20–199 GJ a year |
+| gas, businesses | Eurostat `nrg_pc_203` (price per kWh, GCV) | I3, 10,000–99,999 GJ a year |
+| electricity per US state and sector | EIA API v2 `electricity/retail-sales` (Forms EIA-861, EIA-861M; `EIA_API_KEY`) | average price = revenue ÷ sales |
+
+Eurostat (CC BY 4.0, no key): the newest eight half-years, EUR per kWh at Eurostat's precision
+(4 decimals; the app shows euro cents with 2, the same digits), three tax levels: `I_TAX` (all
+taxes and levies), `X_VAT` (without VAT and other recoverable taxes), `X_TAX` (without taxes
+and levies), and Eurostat's flag per value (p provisional, e estimated, b break, d definition
+differs…). Geo codes as the map's (EL → GR, UK → GB, EU27_2020 → EU; euro-area aggregates left
+out). The split bar on the country card is the differences of the three levels (energy and
+network = `X_TAX`; taxes and levies = `X_VAT` − `X_TAX`; VAT = `I_TAX` − `X_VAT`), computed. The
+card's wholesale comparison is the zone's 12-month day-ahead average (Prices tab) ÷ 10.
+
+EIA: the newest 25 months, cents per kWh with EIA's 2 decimals, sectors residential (RES),
+commercial (COM), industrial (IND), all (ALL); 50 states, DC and `US` (EIA's national figure);
+census divisions left out. Check (2026-10-12) against EIA's Electric Power Monthly, Table
+5.6.A, July 2026: Texas residential 15.88, commercial 8.47, industrial 7.07; California
+residential 33.61; US 18.31 ¢/kWh: all equal.
+
+Map: "Colour countries by → Household electricity price": Europe's countries by Eurostat's
+newest half-year, US states (outlines `us/states.json`) by EIA's newest month, one scale in
+cents per kWh (euro cents in Europe, US cents in the US; the key says so). Panels: the
+country Prices tab ("What consumers pay"), the Europe Prices tab (ranking), the US panel's
+"Retail prices" tab. Refresh: Mondays on `eu-days`.
+
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
 | File | Records | Source |

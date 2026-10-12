@@ -70,6 +70,7 @@ function wantedKeys(): string[] {
   if (s.colour === "offline") keys.push("outages");
   if (s.colour.startsWith("pr_")) keys.push("prices");
   if (s.colour === "access") keys.push("worldStats");
+  if (s.colour === "rt_household") keys.push("retail", "usStates");
   if (s.colour.startsWith("ir_")) keys.push("irena");
   if (s.mode === "years" || s.colour.startsWith("tr_")) keys.push("transition");
   if (s.mode === "day") {

@@ -28,7 +28,7 @@ export const GAS_SOURCES: Sources = [
     "ENTSOG Transparency Platform, physical flow per point and direction, daily (kWh/d, shown in GWh/d). A gas day runs 06:00–06:00 CET/CEST. Cross-border and LNG entry points; storage, production and distribution left out. Each border is the sum of one side's operators' reports, the importing side (both directions); pipe-in-pipe and double reports, physical points bundled in a VIP and one repeated point (Dornum GASPOOL) are left out. Sources are named by the neighbouring system, with ENTSOG's origin (Azerbaijan for Kipi and Kipoi, Russia for Strandzha 2). Newest complete gas day: every point of the day before has reported. Sources and LNG terminals are placed on the map for reading.",
   ],
   ["Gas storage", "GIE AGSI+, daily, fill as % of working gas volume."],
-  ["LNG", "GIE ALSI, daily: send-out into the grid and the terminals' declared send-out capacity (GWh/day), LNG in tanks."],
+  ["LNG", "GIE ALSI, daily: send-out into the grid and the terminals' declared send-out capacity (GWh/day), LNG in tanks; per country and, for the last 30 gas days, per terminal (GIE's status flag: confirmed or estimated)."],
   ["Gas network", "SciGRID_gas (2021): pipelines, LNG terminals and storage sites."],
 ];
 
@@ -46,6 +46,10 @@ export const PRICE_SOURCES = (period: string): Sources => [
   ],
   ["Period", `The twelve full months ${period}. Time of day: the average price per local hour (CET/CEST), per season and per month.`],
   ["Markers", "Zone markers in DK, IT, NO and SE are placed for reading, not at an official zone centre."],
+  [
+    "What consumers pay",
+    "Eurostat nrg_pc_204 / 205 / 202 / 203, half-yearly, EUR per kWh at Eurostat's precision, shown in euro cents: households band DC (2,500–4,999 kWh a year), businesses band IC (500–1,999 MWh), gas households band D2 (20–199 GJ), gas businesses band I3 (10,000–99,999 GJ). Three tax levels; the split bar is their differences (computed). Eurostat's flags (provisional, estimated…) are shown.",
+  ],
 ];
 
 export const YEAR_SOURCES: Sources = [
@@ -105,6 +109,10 @@ export const WORLD_SOURCES: Sources = [
 ];
 
 export const US_SOURCES: Sources = [
+  [
+    "Retail prices",
+    "EIA electricity retail sales (Forms EIA-861 and EIA-861M): average price per state and sector, monthly, US cents per kWh as published (revenue ÷ sales); US = EIA's national figure.",
+  ],
   [
     "Power plants",
     "EIA-860M, Preliminary Monthly Electric Generator Inventory (public domain): every generator of 1 MW and more with its plant's coordinates. Capacity is net summer capacity, EIA's measure. Grouped by fuel (EIA energy source code; pumped storage and batteries as storage) and status; summed per plant, fuel and status for the map. In the US this layer replaces GEM's plants while it is on.",

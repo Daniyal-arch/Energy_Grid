@@ -14,6 +14,7 @@ import { ZONE_POINT, priceMetricById, type PricesFile } from "../lib/prices";
 import { MONEY, usd, type FinanceFile, type FinanceFlow, type FinanceProject } from "../lib/finance";
 import { GEM_PIPES, GEM_POINTS, IDLE, type GemPipesFile, type GemPointsFile, type GemPoint } from "../lib/gem";
 import { ETS_COLOR, etsRadius, newestT, type EtsFile, type EtsRow } from "../lib/ets";
+import { RETAIL_STOPS, euroCents, newestOf, type RetailFile } from "../lib/retail";
 import { LNG_SEND, lngDay, lngRadius, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import { IRENA_STOPS, irenaK, irenaMetricById, irenaScale, irenaValue, formatGw, type IrenaFile, type IrenaMetricId } from "../lib/irena";
 import { regionArcs, regionDotLayers, regionFlowLayers } from "../lib/regionLayers";
@@ -195,6 +196,11 @@ export function countryColour(fr: Frame, iso: string): RGB {
       const o = f.outages as OutagesFile | undefined;
       return o ? (stopColor(OFFLINE_STOPS, (o.countries[iso]?.offline_mw ?? 0) / 1000) ?? NO_DATA) : NO_DATA;
     }
+    case "rt_household": {
+      const rf = f.retail as RetailFile | undefined;
+      const n = rf ? newestOf(rf, rf.eu.series.elec_household[iso]) : null;
+      return (n && stopColor(RETAIL_STOPS, n.v * 100)) || TR_NO_DATA;
+    }
     case "access": {
       const ws = f.worldStats as WorldStatsFile | undefined;
       const code = ISO3[iso];
@@ -275,7 +281,7 @@ export function buildLayers(fr: Frame): Layer[] {
   );
   // prices: each country a block as high as its price (map/priceTerrain.ts)
   const terrain = facingEurope && isOn("prices") && day?.region !== "us" ? priceTerrain(fr, dayK, shapes) : null;
-  const fillKey = [fr.colour, f.stats, f.outages, f.prices, f.transition, f.worldStats, f.irena, fr.mode, day, dayK, fr.yearK, sel, Math.round(sunLight(fr) * 20)];
+  const fillKey = [fr.colour, f.stats, f.outages, f.prices, f.transition, f.worldStats, f.irena, f.retail, fr.mode, day, dayK, fr.yearK, sel, Math.round(sunLight(fr) * 20)];
   if (facingEurope) {
     layers.push(
       new SolidPolygonLayer<Shape>({
@@ -1075,10 +1081,11 @@ function countryLabels(fr: Frame, countries: CountriesFile): LabelFeature[] {
   const ir = IR_METRIC[fr.colour];
   const irena = ir ? (fr.files.irena as IrenaFile | undefined) : undefined;
   const live = fr.colour === "price" ? "price" : fr.colour === "renewable" ? "renewable" : null;
+  const retail = fr.colour === "rt_household" ? (fr.files.retail as RetailFile | undefined) : undefined;
   const day = fr.day;
   const dayK = day ? Math.min(day.slots - 1, Math.floor(fr.daySlot)) : 0;
   const stats = live ? (fr.files.stats as StatsFile | undefined) : undefined;
-  const names = memo("lbl-names", [countries, detail, tr, transition, fr.yearK, pr, prices, ir, irena, fr.mode, live, day, dayK, stats], () =>
+  const names = memo("lbl-names", [countries, detail, tr, transition, fr.yearK, pr, prices, ir, irena, fr.mode, live, day, dayK, stats, retail], () =>
     countries.countries
       .filter((c) => detail || !SMALL.has(c.iso))
       .map((c) => {
@@ -1098,6 +1105,9 @@ function countryLabels(fr: Frame, countries: CountriesFile): LabelFeature[] {
           const k = irenaK(irena, fr.mode, (fr.files.transition as TransitionFile | undefined)?.years, fr.yearK);
           const v = irenaValue(irena, ISO3[c.iso], irenaMetricById(ir), k);
           sub = v != null ? formatGw(v) : "";
+        } else if (retail) {
+          const n = newestOf(retail, retail.eu.series.elec_household[c.iso]);
+          sub = n ? euroCents(n.v) : "";
         } else if (pr && prices) {
           const zones = Object.values(prices.zones).filter((z) => z.country === c.iso);
           if (zones.length === 1) sub = priceMetricById(pr).format(priceMetricById(pr).value(zones[0]));

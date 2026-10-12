@@ -8,6 +8,7 @@ import { FUEL_COLOR, FUEL_LABEL } from "../lib/energy";
 import { GAS_FLOW, GAS_TRANSIT, GAS_TRANSIT_LABEL_GWH, type GasFlowsFile } from "../lib/gasFlows";
 import { ETS_COLOR, mt, type EtsFile } from "../lib/ets";
 import { LNG_SEND, type LngTerminalsFile } from "../lib/lngTerminals";
+import { RETAIL_STOPS, RETAIL_TICKS } from "../lib/retail";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
@@ -109,6 +110,14 @@ export function ColourLegend({ colour }: { colour: ColourId }) {
     const m = IRENA_METRICS.find((x) => x.id === colour.slice(3))!;
     return <Scale gradient={gradientCss(IRENA_STOPS)} ticks={IRENA_TICKS} note={`${m.note}; the years mode shows each year, live the newest`} />;
   }
+  if (colour === "rt_household")
+    return (
+      <Scale
+        gradient={gradientCss(RETAIL_STOPS)}
+        ticks={RETAIL_TICKS}
+        note="What households pay per kWh, all taxes included. Europe: euro cents, Eurostat's newest half-year, band DC (2,500–4,999 kWh a year). US states: US cents, EIA's average residential price, newest month."
+      />
+    );
   if (colour === "access") return <Scale gradient={gradientCss(ACCESS_STOPS)} ticks={ACCESS_TICKS} note="newest year per country (World Bank)" />;
   if (colour.startsWith("pr_")) {
     const m = PRICE_METRICS.find((x) => x.id === colour.slice(3))!;

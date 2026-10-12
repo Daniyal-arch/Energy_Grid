@@ -105,6 +105,8 @@ const STATIC: Record<string, Loader> = {
   lngTerminals: archive("lng_terminals.json"),
   // EU ETS verified emissions per installation (scripts/fetch_eu_ets.py)
   ets: archive("ets.json"),
+  // retail electricity and gas prices (scripts/fetch_retail_prices.py, Eurostat + EIA)
+  retail: archive("retail.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)

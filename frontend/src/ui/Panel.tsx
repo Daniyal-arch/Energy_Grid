@@ -42,6 +42,8 @@ import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { actions, useApp } from "../app/store";
 import type { CountriesFile, DayFile, FlowsFile, GasFile, OutagesFile, PlantsFile, ReferenceFile, StatsFile, WorldFile, UnitOutputFile } from "../app/types";
 import { LayerStatsTab, LngTerminalsCard, useStatsLayers } from "./LayerStats";
+import { RetailCountryCard, RetailRankingCard, UsRetailCard } from "../components/RetailCards";
+import type { RetailFile } from "../lib/retail";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
 interface Dossier {
@@ -297,12 +299,14 @@ function WeekTab({ iso }: { iso: string }) {
 
 function PriceOverview({ metricId }: { metricId: PriceMetricId }) {
   const pf = useFile<PricesFile>("prices");
+  const retail = useFile<RetailFile>("retail");
   if (!pf) return <Empty>Loading twelve months of prices…</Empty>;
   const metric = priceMetricById(metricId);
   return (
     <>
       <Hint>Colour the map by a price figure in the Layers panel; click a zone for its year.</Hint>
       <ZoneRankingCard zones={pf.zones} metric={metric} selected="" onPick={(zone) => actions.select({ kind: "zone", id: zone }, "prices")} />
+      {retail && <RetailRankingCard f={retail} onPick={(iso) => actions.select({ kind: "country", iso2: iso, iso3: ISO3[iso] }, "prices")} />}
       <SourcesCard items={PRICE_SOURCES(periodLabel(pf))} />
     </>
   );
@@ -557,11 +561,15 @@ function CountryPanel({ iso }: { iso: string }) {
 
 function CountryPrices({ iso }: { iso: string }) {
   const pf = useFile<PricesFile>("prices");
+  const retail = useFile<RetailFile>("retail");
   if (!pf) return <Empty>Loading twelve months of prices…</Empty>;
   const zones = Object.keys(pf.zones).filter((z) => pf.zones[z].country === iso);
-  if (!zones.length) return <Empty>No day-ahead price at ENTSO-E for this country.</Empty>;
+  const wholesale = zones.length === 1 ? { eur_mwh: pf.zones[zones[0]].mean, period: periodLabel(pf) } : undefined;
+  const consumers = retail ? <RetailCountryCard f={retail} iso={iso} wholesale={wholesale} /> : null;
+  if (!zones.length) return consumers ?? <Empty>No day-ahead price at ENTSO-E for this country.</Empty>;
   return (
     <>
+      {consumers}
       {zones.length > 1 && (
         <div className="flex flex-wrap gap-1">
           {zones.map((z) => (
@@ -788,6 +796,7 @@ function UsPanel() {
   const turbines = useFile<UsTurbinesFile>("usTurbines");
   const us = useFile<UsFile>("us");
   const usPrices = useFile<UsPricesFile>("usPrices");
+  const retail = useFile<RetailFile>("retail");
   const pricesNow = usPrices ? hubPricesNow(usPrices) : null;
   const status = useApp((s) => s.plantStatus);
   const names = useStateNames();
@@ -818,6 +827,7 @@ function UsPanel() {
           <Empty>Loading EIA's generator inventory…</Empty>
         ),
     },
+    { id: "retail", label: "Retail prices", body: () => (retail ? <><UsRetailCard f={retail} />{sources}</> : <Empty>Loading EIA's retail prices…</Empty>) },
     { id: "pipeline", label: "Additions & retirements", body: () => (plants ? <><UsPipelineCard f={plants} />{sources}</> : <Empty>Loading EIA's generator inventory…</Empty>) },
     {
       id: "queue",
