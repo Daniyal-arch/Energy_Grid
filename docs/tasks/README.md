@@ -31,6 +31,12 @@ Several sessions run at once and touch the same files (store, layers, panels, do
 workflows): before opening a pull request, merge `origin/main` into the branch and resolve
 conflicts, keeping both sides.
 
+Keys a session does not hold (ERCOT, ISO-NE, Cloudflare, GEM) live as GitHub repo secrets:
+the session writes the workflow step and the script skips a market or upload whose key is
+missing. A new workflow can run before the merge with a `push:` trigger limited to the
+session's branch that commits its small outputs back to that branch (the session pulls them);
+remove that trigger before opening the PR.
+
 A session that finds a source closed, changed or behind a login stops, writes what it
 found in the PR description, and does not substitute an estimate.
 
