@@ -6,6 +6,8 @@ import { useState, type ReactNode } from "react";
 
 import { FUEL_COLOR, FUEL_LABEL } from "../lib/energy";
 import { GAS_FLOW, GAS_TRANSIT, GAS_TRANSIT_LABEL_GWH, type GasFlowsFile } from "../lib/gasFlows";
+import { ETS_COLOR, mt, type EtsFile } from "../lib/ets";
+import { LNG_SEND, type LngTerminalsFile } from "../lib/lngTerminals";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
@@ -135,6 +137,41 @@ function PriceKey() {
 }
 
 /** Gas flows: the newest complete gas day, sources outside Europe placed for reading. */
+function LngKey() {
+  const day = useDataStore((d) => (d.files.lngTerminals as LngTerminalsFile | undefined)?.date);
+  return (
+    <>
+      <Swatches>
+        <Swatch color={rgbCss(LNG_SEND)} label="send-out into the grid" />
+        <Swatch color={rgbCss(LNG_SEND)} kind="ring" label="declared send-out" />
+      </Swatches>
+      <Note>Gas day {day ?? "…"} (GWh/d); area follows the flow. Each EU terminal reporting to GIE ALSI; hover for the day's figures.</Note>
+    </>
+  );
+}
+
+function EtsKey() {
+  const ets = useDataStore((d) => d.files.ets as EtsFile | undefined);
+  const c = ets ? Object.values(ets.countries) : [];
+  const n = c.reduce((a, x) => a + x.n, 0);
+  const placed = c.reduce((a, x) => a + x.placed, 0);
+  const t = c.reduce((a, x) => a + x.t[x.t.length - 1], 0);
+  const tp = c.reduce((a, x) => a + x.t_placed, 0);
+  return (
+    <>
+      <Swatches>
+        {(ets?.groups ?? []).map((g, i) => (
+          <Swatch key={g} color={rgbCss(ETS_COLOR[i])} label={g.replace(" (power, heat, industry)", "")} />
+        ))}
+      </Swatches>
+      <Note>
+        Dot area = verified CO₂ in {ets?.newest ?? "…"}. Shown: {placed.toLocaleString("en-US")} of {n.toLocaleString("en-US")} installations ({mt(tp)} of {mt(t)}, sums
+        computed), the ones the EEA industrial register gives an ETS id for; the rest are in the panel only. Combustion includes power, heat and industrial boilers. EU Union Registry, {ets?.snapshot ?? "…"}.
+      </Note>
+    </>
+  );
+}
+
 function GasFlowKey() {
   const day = useDataStore((d) => (d.files.gasFlows as GasFlowsFile | undefined)?.gas_day);
   return (
@@ -181,6 +218,10 @@ function LayerLegend({ id }: { id: LayerId }) {
       );
     case "gasFlows":
       return <GasFlowKey />;
+    case "lngSendOut":
+      return <LngKey />;
+    case "ets":
+      return <EtsKey />;
     case "plantOutput":
       return (
         <>

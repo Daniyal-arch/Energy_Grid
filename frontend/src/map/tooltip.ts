@@ -12,6 +12,8 @@ import { ISO3, formatMetric, metricById, type TransitionFile } from "../lib/tran
 import { NEM_NAME, latest, type WorldStatsFile } from "../lib/world";
 import { PLANT_TYPE_LABEL, STATUS_LABEL, type WorldPlantsFile } from "../lib/worldPlants";
 import { endName, gwhd, latestOf, type GasFlowsFile } from "../lib/gasFlows";
+import { ETS_REGISTRY_NAME, mt, type EtsFile, type EtsRow } from "../lib/ets";
+import { STATUS_TEXT, gwhdText, lngDay, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import type { GasArc } from "./build";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
@@ -316,6 +318,30 @@ function tooltipHtml(id: string, object: unknown): string | null {
       const pts = p.points.filter((x) => x[3]).slice(0, 4).map((x) => `<div style="color:#8d94a1">${x[0]} ${gwhd(x[3])}</div>`).join("");
       const two = p.kind === "border" && latestOf(p.ab) && latestOf(p.ba) ? `<div>${gwhd(latestOf(p.ab))} ${p.a}→${p.b}, ${gwhd(latestOf(p.ba))} back</div>` : "";
       return `<b>${endName(a.from, g, cname, a.country)} → ${endName(a.to, g, cname, a.country)}</b> ${gwhd(a.gwh)}${two}${pts}${SRC(`net physical flow, gas day ${g.gas_day} · ENTSOG, sum of ${cname(p.read_from)}'s operators' reports`)}`;
+    }
+    case "eu-lng-capacity":
+    case "eu-lng-sendout": {
+      const t = object as LngTerminal;
+      const lf = fileOf<LngTerminalsFile>("lngTerminals");
+      if (!lf) return null;
+      const d = lngDay(t, lf.date);
+      const status = d?.[4] ? ` · ${STATUS_TEXT[d[4]] ?? d[4]}` : "";
+      return `<b>${t.name}</b><div>${t.operator} · ${t.type === "FSRU" ? "floating (FSRU)" : "onshore"}</div>
+        <div>Send-out <b>${gwhdText(d?.[1])}</b> of ${gwhdText(d?.[3])} declared</div>
+        ${d?.[2] != null ? `<div>LNG in tanks ${d[2].toLocaleString("en-US")} GWh</div>` : ""}${SRC(`gas day ${lf.date}${status} · GIE ALSI`)}`;
+    }
+    case "eu-ets": {
+      const r = object as EtsRow;
+      const ef = fileOf<EtsFile>("ets");
+      if (!ef) return null;
+      const yrs = r[4]
+        .map((t, i) => [ef.years[i], t] as const)
+        .filter(([, t]) => t != null)
+        .slice(-3)
+        .map(([y, t]) => `${y} ${mt(t!)}`)
+        .join(" · ");
+      const where = ETS_REGISTRY_NAME[r[0]] ?? r[0];
+      return `<b>${r[2]}</b><div>${ef.groups[r[3]]} · ${where}</div><div>Verified CO₂ <b>${yrs}</b></div>${SRC(`EU Union Registry, verified emissions (t CO₂e) · placed by its ETS id in the EEA industrial register`)}`;
     }
     case "eu-lng":
     case "eu-gas-storage": {

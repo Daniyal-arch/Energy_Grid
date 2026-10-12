@@ -47,6 +47,8 @@ function wantedKeys(): string[] {
   if (L.gridEU || L.hvdc || L.substations) keys.push("grid");
   if (L.plantsEU) keys.push("plants");
   if (L.gas) keys.push("gas");
+  if (L.lngSendOut) keys.push("lngTerminals");
+  if (L.ets) keys.push("ets");
   if (L.cables) keys.push("cables");
   if (L.plantsWorld) keys.push("worldPlants");
   // EIA wins over GEM in the US: GEM's points inside the states are left out

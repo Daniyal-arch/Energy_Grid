@@ -41,7 +41,7 @@ import { clockOf, dayFileKey, dayIndexKey, dayPower, unitOutKey, utc } from "../
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { actions, useApp } from "../app/store";
 import type { CountriesFile, DayFile, FlowsFile, GasFile, OutagesFile, PlantsFile, ReferenceFile, StatsFile, WorldFile, UnitOutputFile } from "../app/types";
-import { LayerStatsTab, useStatsLayers } from "./LayerStats";
+import { LayerStatsTab, LngTerminalsCard, useStatsLayers } from "./LayerStats";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
 interface Dossier {
@@ -263,6 +263,7 @@ function EuropePanel() {
           {gasFlows && <GasSourcesCard file={gasFlows} />}
           {dossier?.gas.EU && <GasCard gas={dossier.gas.EU} />}
           {dossier?.lng?.EU && <LngCard lng={dossier.lng.EU} />}
+          <LngTerminalsCard />
           {!dossier && <Empty>Loading GIE figures…</Empty>}
           <SourcesCard items={GAS_SOURCES} />
         </>
@@ -454,6 +455,7 @@ function CountryPanel({ iso }: { iso: string }) {
           )}
           {dossier?.gas[iso] && <GasCard gas={dossier.gas[iso]} />}
           {dossier?.lng?.[iso] && <LngCard lng={dossier.lng[iso]} />}
+          {dossier?.lng?.[iso] && <LngTerminalsCard iso2={iso} />}
           {(lng.length > 0 || storages.length > 0) && (
             <Card title="Gas infrastructure" note="SciGRID_gas · 2021" accent={[255, 150, 92]}>
               {lng.length > 0 && (

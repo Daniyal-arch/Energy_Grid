@@ -285,6 +285,57 @@ DE, ES, FI, FR, GR, HR, IT, LT, NL, PL, PT), last ~400 days, passthrough:
   capacity, GWh/day
 - `inventory.gwh`: LNG in tanks
 
+## LNG send-out per terminal (`scripts/fetch_alsi.py`, `lng_terminals.json`)
+
+GIE ALSI per facility (`/api/about?show=listing` lists the terminals; one request per terminal
+for the window), the last 30 gas days, daily on `eu-days`. Same key as AGSI+ (`AGSI_API_KEY`,
+`x-key` header). Passthrough at GIE's precision, per terminal and gas day: `sendOut` (GWh/d),
+`inventory.gwh` (LNG in tanks, GWh), `dtrs` (declared total reference send-out, GWh/d) and
+GIE's `status` flag (C confirmed, E estimated, N no data). The terminal's position is ALSI's own
+`longitude`/`latitude`. Gas day 06:00–06:00 CET (05:00–05:00 UTC in winter).
+
+Left out: terminals not in operation (ALSI start date in the future or end date in the past),
+the Spanish virtual balancing tank (TVB, country `ES*`: an account, not a place), and terminals
+with no send-out reported in the window (the British terminals have reported none since
+Brexit; Panigaglia in October 2026). Check (2026-10-10): the German terminals sum to
+231.5 GWh/d, ALSI's Germany total 231.6 GWh/d (rounding of the rows).
+
+Map: layer "LNG send-out" (disc = the newest gas day's send-out, ring = declared send-out; area
+follows GWh/d). Panels: "On the map" and the Gas & LNG tab list each terminal with its 30-day
+line (sum over the terminals listed, computed).
+
+## CO₂ per installation, EU ETS (`scripts/fetch_eu_ets.py`, `ets.json`)
+
+| What | Source |
+|---|---|
+| verified emissions per installation and year (t CO₂e), 2005– | Union Registry public extract `operators_yearly_activity_daily.csv.gz` (union-registry-data.ec.europa.eu, "Data download"; refreshed daily, no key) |
+| installation, registry (country), activity, permit number | Union Registry `operators_daily.csv.gz` |
+| position | EEA industrial sites register (EU Registry; CC BY 4.0) on Discodata SQL: `[IED].[latest].[ProductionInstallationETSIdentifier]` (the ETS id each country reported) and `[IED].[latest].[ProductionInstallation]` (`x_4326`, `y_4326`) |
+
+Rules:
+- Stationary installations only: aircraft operators (activity 10), maritime companies (50) and
+  the ETS2 fuel suppliers (70) are left out. Kept: an installation with verified emissions in
+  any of the five newest years; the newest year is the newest one most installations have
+  reported (verified emissions arrive by 31 March). Values passed through in whole tonnes.
+- Placing joins on official identifiers only: the reported ETS id is the registry's own id
+  (`AT000000000000001` = Austria, installation 1) or exactly the installation's permit number
+  in the same country. The newest EEA report wins. No placing by name or address: an
+  installation without a match is listed in the panel and counted, not drawn.
+- Coverage (snapshot 2026-10-12): 8,921 installations with 1,012.6 Mt in 2025; 2,234 placed
+  with 400.8 Mt. Countries whose EEA reports carry no ETS ids (Netherlands, Czechia, Italy
+  mostly, Nordics, Romania, Bulgaria, Hungary…) and most of Germany (its reports carry Land
+  permit numbers, not the registry's) stay off the map; `scripts/probe_eu_ets.py` prints the
+  share per country.
+- Activity groups (colour): combustion 1/20 (power, heat and industrial boilers alike: the
+  ETS does not separate them), refineries 2/21, iron and steel 3–5/22–25, aluminium and other
+  metals 26–28, cement and lime 6/29/30, glass, ceramics, minerals 7/8/31–34, pulp and paper
+  9/35/36, chemicals 37–44, other 45/46/99.
+- Check against the Commission's `verified_emissions_2025_en.xlsx` (extracted 2026-04-01):
+  7,270 installations equal, 61 differ (registry corrections after April; the extract is the
+  newer, e.g. Neurath 12,073,464 t now, 12,074,600 t in April). Bełchatów 25,103,854 t,
+  Voestalpine Linz 8,866,634 t, Versalis Ravenna 25,589 t equal in both.
+- Refresh: Mondays on `eu-days` (and whenever the file is missing).
+
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
 | File | Records | Source |

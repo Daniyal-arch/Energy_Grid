@@ -104,6 +104,17 @@ jobs:
       - name: Gas flows per gas day (ENTSOG, no key; newest complete gas day and 30 before)
         run: python scripts/fetch_entsog.py --out store/eu || echo "ENTSOG fetch failed; keeping yesterday's"
 
+      - name: LNG send-out per terminal (GIE ALSI, the last 30 gas days)
+        env:
+          AGSI_API_KEY: ${{ secrets.AGSI_API_KEY }}
+        run: python scripts/fetch_alsi.py --out store/eu || echo "ALSI fetch failed; keeping yesterday's"
+
+      - name: EU ETS verified CO2 per installation (Union Registry + EEA register; Mondays)
+        run: |
+          if [ "$(date -u +%u)" = 1 ] || [ ! -f store/eu/ets.json ]; then
+            python scripts/fetch_eu_ets.py --out store/eu || echo "EU ETS fetch failed; keeping the last copy"
+          fi
+
       - name: Wind for the same days (Open-Meteo, one pass over the window)
         run: python scripts/fetch_wind.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/wind || echo "wind fetch failed"
 

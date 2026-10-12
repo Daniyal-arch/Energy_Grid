@@ -20,7 +20,7 @@ rules apply to every task.
 | 5 (done) | [05-epa-unit-output.md](05-epa-unit-output.md) US fossil units hour by hour (EPA CAMPD) | `EPA_API_KEY` |
 | 6 | [06-climate-trace.md](06-climate-trace.md) emissions per facility worldwide (Climate TRACE) | no |
 | 7 | [07-world-hv-grid.md](07-world-hv-grid.md) the rest of the world's high-voltage grid (Overture, Actions) | no (Cloudflare stays in repo secrets) |
-| 8 | [08-eu-ets-alsi.md](08-eu-ets-alsi.md) EU CO₂ per installation, LNG send-out per terminal | `AGSI_API_KEY` (network secret, header `x-key`) |
+| 8 (done on main) | [08-eu-ets-alsi.md](08-eu-ets-alsi.md) EU CO₂ per installation, LNG send-out per terminal | `AGSI_API_KEY` (network secret, header `x-key`) |
 | 9 | [09-connect-here.md](09-connect-here.md) grid capacity and queues: GB TEC, NL capacity map, Spain nodes | no |
 | 10 | [10-us-nodal-prices.md](10-us-nodal-prices.md) US prices at every node, markets' live queues (gridstatus) | ERCOT, PJM, ISO-NE optional |
 | 11 | [11-germany-mastr.md](11-germany-mastr.md) every generating unit in Germany (MaStR) | no |

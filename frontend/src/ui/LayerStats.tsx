@@ -20,6 +20,8 @@ import { LAYERS, STATS_LAYERS, actions, useApp, type LayerId, type PlantStatus }
 import { dayIndexKey, unitOutKey } from "../app/day";
 import type { Cable, UnitOutputFile, WorldFile } from "../app/types";
 import { FUEL_COLOR } from "../lib/energy";
+import { ETS_COLOR, ETS_REGISTRY_NAME, etsIn, mt, newestT, type EtsFile } from "../lib/ets";
+import { LNG_SEND, gwhdText, lngDay, type LngTerminalsFile } from "../lib/lngTerminals";
 
 const muted = "text-[#8d94a1]";
 const CLASS_COLOR = ["rgb(120,222,160)", "rgb(255,196,96)", "rgb(160,170,190)", "rgb(130,134,146)"];
@@ -390,6 +392,108 @@ function PlantOutputCard({ iso3 }: { iso3?: string }) {
   );
 }
 
+const iso2Of = (iso3?: string) => (iso3 ? Object.entries(ISO3).find(([, v]) => v === iso3)?.[0] : undefined);
+
+/** EU ETS: verified CO2 of the installations in scope, the largest emitters and the activities. */
+function EtsCard({ iso3 }: { iso3?: string }) {
+  const f = useFile<EtsFile>("ets");
+  const iso2 = iso2Of(iso3);
+  if (!f) return <Card title="CO₂ per installation">Loading…</Card>;
+  if (iso3 && !iso2) return null;
+  const rows = iso2 ? f.rows.filter((r) => etsIn(iso2, r[0])) : f.rows;
+  if (!rows.length) return <Card title="CO₂ per installation">No installation in the EU ETS here.</Card>;
+  const k = f.years.length - 1;
+  const total = rows.reduce((a, r) => a + (r[4][k] ?? 0), 0);
+  const prev = rows.reduce((a, r) => a + (r[4][k - 1] ?? 0), 0);
+  const placed = rows.filter((r) => r[5] != null).length;
+  const byGroup = f.groups
+    .map((g, i) => ({ key: g, label: g.replace(" (power, heat, industry)", ""), value: rows.filter((r) => r[3] === i).reduce((a, r) => a + (r[4][k] ?? 0), 0) / 1e6, color: rgbCss(ETS_COLOR[i]) }))
+    .filter((r) => r.value > 0)
+    .sort((a, b) => b.value - a.value);
+  const top = rows.slice(0, 10); // the file is sorted by the newest year
+  const max = newestT(top[0]) || 1;
+  return (
+    <Card title="CO₂ per installation" note={`EU ETS, verified · ${f.newest}`}>
+      <div className="text-[22px] font-light text-slate-50">
+        {mt(total)}{" "}
+        <span className={`text-[11px] ${muted}`}>
+          from {rows.length.toLocaleString("en-US")} installations (sum, computed){prev > 0 ? ` · ${f.newest - 1}: ${mt(prev)}` : ""}
+        </span>
+      </div>
+      <Head>Largest emitters</Head>
+      <div className="space-y-1">
+        {top.map((r) => (
+          <div key={r[0] + r[1]} className="text-[11px]">
+            <div className="flex justify-between gap-2">
+              <span className="truncate text-slate-200">
+                {r[2]} <span className={muted}>{iso2 ? (ETS_REGISTRY_NAME[r[0]] ?? "") : r[0]}{r[5] == null ? " · not on the map" : ""}</span>
+              </span>
+              <span className="tabular-nums text-slate-100">{mt(newestT(r) ?? 0)}</span>
+            </div>
+            <div className="h-1 rounded bg-white/[0.06]">
+              <div className="h-1 rounded" style={{ width: `${(100 * (newestT(r) ?? 0)) / max}%`, background: rgbCss(ETS_COLOR[r[3]]) }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <Head>By activity, Mt</Head>
+      <Rows rows={byGroup} unit="Mt" />
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Verified emissions (t CO₂e) as the EU Union Registry lists them on {f.snapshot}; aircraft, shipping and the ETS2 fuel suppliers left out. {placed.toLocaleString("en-US")} of{" "}
+        {rows.length.toLocaleString("en-US")} installations are on the map: those the EEA industrial register gives an ETS id for (no placing by name or address).
+      </div>
+    </Card>
+  );
+}
+
+/** LNG send-out per terminal on the newest gas day, with each terminal's last 30 days. */
+export function LngTerminalsCard({ iso2 }: { iso2?: string }) {
+  const f = useFile<LngTerminalsFile>("lngTerminals");
+  if (!f) return <Card title="LNG terminals">Loading…</Card>;
+  const ts = f.terminals.filter((t) => !iso2 || t.country === iso2);
+  if (!ts.length) return iso2 ? null : <Card title="LNG terminals">No terminal data.</Card>;
+  const rows = ts
+    .map((t) => ({ t, d: lngDay(t, f.date) }))
+    .sort((a, b) => (b.d?.[1] ?? -1) - (a.d?.[1] ?? -1));
+  const total = rows.reduce((a, r) => a + (r.d?.[1] ?? 0), 0);
+  const top = Math.max(1, ...ts.flatMap((t) => t.series.map((s) => Math.max(s[1] ?? 0, s[3] ?? 0))));
+  return (
+    <Card title="LNG terminals" note={`GIE ALSI · gas day ${f.date}`} accent={LNG_SEND}>
+      <div className="text-[22px] font-light text-slate-50">
+        {gwhdText(total)} <span className={`text-[11px] ${muted}`}>sent out by {rows.length} terminals (sum, computed)</span>
+      </div>
+      <div className="mt-2 space-y-1.5">
+        {rows.map(({ t, d }) => (
+          <div key={t.eic} className="text-[11px]">
+            <div className="flex justify-between gap-2">
+              <span className="truncate text-slate-200">
+                {t.name.replace(/ LNG Terminal/, "")} {!iso2 && <span className={muted}>{t.country}</span>}
+              </span>
+              <span className="tabular-nums text-slate-100">
+                {gwhdText(d?.[1])}
+                <span className={muted}> / {d?.[3] != null ? Math.round(d[3]).toLocaleString("en-US") : "–"}</span>
+              </span>
+            </div>
+            <svg viewBox={`0 0 ${t.series.length - 1 || 1} 10`} preserveAspectRatio="none" className="block h-[14px] w-full">
+              <polyline
+                fill="none"
+                stroke={rgbCss(LNG_SEND)}
+                strokeWidth={1}
+                vectorEffect="non-scaling-stroke"
+                points={t.series.map((s, i) => (s[1] == null ? null : `${i},${10 - (10 * s[1]) / top}`)).filter(Boolean).join(" ")}
+              />
+            </svg>
+          </div>
+        ))}
+      </div>
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Send-out into the grid / declared send-out (GWh/d); the line is each terminal's last {f.terminals[0]?.series.length ?? 30} gas days on one scale. Gas days run 06:00–06:00 CET. Terminals that reported no
+        send-out are left out.
+      </div>
+    </Card>
+  );
+}
+
 export function LayerStatsTab({ iso3 }: { iso3?: string }) {
   const ids = useStatsLayers();
   const seen = new Set<string>();
@@ -412,6 +516,8 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "liveGrids") return iso3 ? null : <LiveGridsCards key={id} />;
         if (id === "dataCentres") return <DataCentresStats key={id} iso3={iso3} />;
         if (id === "cables") return iso3 ? null : <CablesCard key={id} />;
+        if (id === "ets") return <EtsCard key={id} iso3={iso3} />;
+        if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;
       })}
       <SourcesCard

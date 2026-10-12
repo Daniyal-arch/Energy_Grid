@@ -32,6 +32,8 @@ export type LayerId =
   | "methane"
   | "gas"
   | "gasFlows"
+  | "lngSendOut"
+  | "ets"
   | "plantOutput"
   | "financeCoal"
   | "financeGas"
@@ -88,9 +90,11 @@ export const LAYERS: LayerInfo[] = [
   { id: "methane", label: "Methane plumes", desc: "Leaks seen by satellites", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,90,200)" },
   { id: "plantOutput", label: "Plant output", desc: "What each large plant produces at the clock", group: "Power plants", coverage: "Europe, US", color: "rgb(255,214,140)", modes: ["day"] },
   { id: "gasFlows", label: "Gas flows", desc: "Gas crossing borders and entering Europe, per gas day", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(255,178,62)", modes: ["live"] },
+  { id: "lngSendOut", label: "LNG send-out", desc: "Gas each EU terminal sends into the grid, per day", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(120,180,255)" },
   { id: "gas", label: "Gas storage", desc: "Underground storage sites", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(255,150,92)" },
   { id: "financeCoal", label: "Who finances coal power", desc: "Money from lenders' countries to coal plants", group: "Money", coverage: "World", color: "rgb(232,204,128)" },
   { id: "financeGas", label: "Who finances gas", desc: "Money to gas plants and LNG terminals", group: "Money", coverage: "World", color: "rgb(255,170,60)" },
+  { id: "ets", label: "CO₂ per installation", desc: "Verified emissions under the EU ETS, per year", group: "Industry & data", coverage: "Europe", color: "rgb(236,128,92)" },
   { id: "steel", label: "Steel plants", desc: "Electric furnaces stand out", group: "Industry & data", coverage: "World", color: "rgb(120,200,255)" },
   { id: "cement", label: "Cement plants", desc: "Sized by capacity", group: "Industry & data", coverage: "World", color: "rgb(206,192,166)" },
   { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & data", coverage: "World", color: "rgb(230,160,255)" },
@@ -113,12 +117,14 @@ export const STATS_LAYERS = new Set<LayerId>([
   "gasPipes",
   "oilPipes",
   "lngTerminals",
+  "lngSendOut",
   "coalTerminals",
   "oilGasFields",
   "coalMines",
   "methane",
   "financeCoal",
   "financeGas",
+  "ets",
   "steel",
   "cement",
   "chemicals",

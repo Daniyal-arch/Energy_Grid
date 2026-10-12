@@ -101,6 +101,10 @@ const STATIC: Record<string, Loader> = {
   irena: archive("irena.json"),
   // ENTSOG gas flows per gas day (scripts/fetch_entsog.py, daily on eu-days)
   gasFlows: archive("gas_flows.json"),
+  // LNG send-out per terminal, last 30 gas days (scripts/fetch_alsi.py, GIE ALSI)
+  lngTerminals: archive("lng_terminals.json"),
+  // EU ETS verified emissions per installation (scripts/fetch_eu_ets.py)
+  ets: archive("ets.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)

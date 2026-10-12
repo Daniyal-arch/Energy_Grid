@@ -13,6 +13,8 @@ import { GAS_FLOW, GAS_IDLE_GWH, GAS_NODE_LABEL, GAS_TRANSIT, GAS_TRANSIT_LABEL_
 import { ZONE_POINT, priceMetricById, type PricesFile } from "../lib/prices";
 import { MONEY, usd, type FinanceFile, type FinanceFlow, type FinanceProject } from "../lib/finance";
 import { GEM_PIPES, GEM_POINTS, IDLE, type GemPipesFile, type GemPointsFile, type GemPoint } from "../lib/gem";
+import { ETS_COLOR, etsRadius, newestT, type EtsFile, type EtsRow } from "../lib/ets";
+import { LNG_SEND, lngDay, lngRadius, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import { IRENA_STOPS, irenaK, irenaMetricById, irenaScale, irenaValue, formatGw, type IrenaFile, type IrenaMetricId } from "../lib/irena";
 import { regionArcs, regionDotLayers, regionFlowLayers } from "../lib/regionLayers";
 import type { RGB } from "../lib/theme";
@@ -447,6 +449,62 @@ export function buildLayers(fr: Frame): Layer[] {
         lineWidthUnits: "pixels",
         getLineWidth: 1.2,
         updateTriggers: { getRadius: [fr.zoom >= GAS_DETAIL_ZOOM] },
+        pickable: true,
+        parameters: ON_TOP,
+      }),
+    );
+  }
+
+  // ---------------------------------------------------------------- LNG send-out per terminal (GIE ALSI, newest gas day)
+  const lng = f.lngTerminals as LngTerminalsFile | undefined;
+  if (facingEurope && lng && isOn("lngSendOut")) {
+    // the declared send-out as a thin ring, the day's send-out as the disc inside it
+    layers.push(
+      new ScatterplotLayer<LngTerminal>({
+        id: "eu-lng-capacity",
+        data: lng.terminals,
+        getPosition: (t) => [t.lon, t.lat],
+        getRadius: (t) => lngRadius(lngDay(t, lng.date)?.[3] ?? 0),
+        radiusUnits: "pixels",
+        filled: false,
+        stroked: true,
+        getLineColor: [...LNG_SEND, 150],
+        lineWidthUnits: "pixels",
+        getLineWidth: 1,
+        pickable: true,
+        parameters: ON_TOP,
+      }),
+      new ScatterplotLayer<LngTerminal>({
+        id: "eu-lng-sendout",
+        data: lng.terminals,
+        getPosition: (t) => [t.lon, t.lat],
+        getRadius: (t) => lngRadius(lngDay(t, lng.date)?.[1] ?? 0),
+        radiusUnits: "pixels",
+        getFillColor: [...LNG_SEND, 200],
+        pickable: true,
+        parameters: ON_TOP,
+      }),
+    );
+  }
+
+  // ---------------------------------------------------------------- EU ETS: verified CO2 per installation (placed by ETS id)
+  const ets = f.ets as EtsFile | undefined;
+  if (facingEurope && ets && isOn("ets")) {
+    const zoomStep = fr.zoom >= 6 ? 2 : fr.zoom >= 5 ? 1 : 0;
+    const placed = memo("etsPlaced", [ets], () => ets.rows.filter((r) => r[5] != null && (newestT(r) ?? 0) > 0));
+    layers.push(
+      new ScatterplotLayer<EtsRow>({
+        id: "eu-ets",
+        data: placed, // largest first, so smaller dots draw on top
+        getPosition: (r) => [r[5]!, r[6]!],
+        getRadius: (r) => etsRadius(newestT(r) ?? 0, fr.zoom),
+        radiusUnits: "pixels",
+        getFillColor: (r) => [...ETS_COLOR[r[3]], 165],
+        stroked: true,
+        getLineColor: [6, 7, 10, 200],
+        lineWidthUnits: "pixels",
+        getLineWidth: 0.6,
+        updateTriggers: { getRadius: [zoomStep] },
         pickable: true,
         parameters: ON_TOP,
       }),
