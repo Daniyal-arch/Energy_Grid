@@ -1,0 +1,113 @@
+name: MaStR
+
+# Every generating unit in Germany from the Marktstammdatenregister (Bundesnetzagentur,
+# dl-de/by-2-0; docs/DATA_SOURCES.md, "Germany: every unit"). Each job downloads the daily bulk
+# export (3.2 GB zip, ~66 GB of XML inside, never unpacked) and streams its part of it into the
+# lake (r2://infraatlas-raw/lake/mastr/<table>/snapshot=<date>/), writing a small summary. The
+# last job combines the summaries into frontend/public/data/eu/mastr/units_large.json and
+# municipalities.json (outlines: BKG VG5000), merges the lake's catalogue, drops snapshots
+# older than a year except the first of each year, and commits the map files.
+#
+# Monthly (the 2nd), by hand, and when this file or the script changes on main.
+# Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID (the lake upload).
+
+on:
+  schedule:
+    - cron: "23 5 2 * *"
+  workflow_dispatch:
+  push:
+    branches: [main, claude/germany-mastr]
+    paths: [.github/workflows/mastr.yml, scripts/build_mastr.py]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mastr-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  part:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [units, solar, storage, operators, connection, locations]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Download the newest export (3.2 GB)
+        run: |
+          pip install duckdb pyarrow httpx
+          url=$(curl -sf https://www.marktstammdatenregister.de/MaStR/Datendownload | grep -oE 'https://download\.marktstammdatenregister\.de/Gesamtdatenexport_[0-9]+_[0-9.]+\.zip' | head -1)
+          echo "$url"
+          test -n "$url"
+          sudo mkdir -p /mnt/mastr && sudo chown "$USER" /mnt/mastr
+          curl -sfL --retry 3 -o "/mnt/mastr/$(basename "$url")" "$url"
+          ls -la /mnt/mastr
+          echo "ZIP=/mnt/mastr/$(basename "$url")" >> "$GITHUB_ENV"
+
+      - name: Stream the part into the lake
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p part
+          python scripts/build_mastr.py --zip "$ZIP" --part ${{ matrix.part }} --lake /mnt/mastr/lake \
+            --tmp /mnt/mastr/tmp --out part/part-${{ matrix.part }}.json --upload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: part-${{ matrix.part }}
+          path: part/
+          retention-days: 5
+
+  combine:
+    needs: part
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: part-*
+          path: part
+          merge-multiple: true
+
+      - name: Map files, catalogue, old snapshots
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb shapely
+          curl -sfL --retry 3 -o vg5000.zip https://daten.gdz.bkg.bund.de/produkte/vg/vg5000_0101/aktuell/vg5000_01-01.utm32s.shape.ebenen.zip
+          ls -la part
+          python scripts/build_mastr.py --combine part/part-*.json --vg5000 vg5000.zip --lake lake-out --upload
+          python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json
+          cat = json.load(open("lake-out/mastr/_catalog.json"))
+          print("| table | rows | bytes |\n|---|---:|---:|")
+          for name, t in sorted(cat["tables"].items()):
+              print(f"| {name} | {t['rows']:,} | {t['bytes']:,} |")
+          PY
+
+      - name: Commit the map files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data/eu/mastr/
+          git diff --cached --quiet && exit 0
+          git commit -m "MaStR: every unit in Germany"
+          git pull --rebase origin ${{ github.ref_name }}
+          git push origin HEAD:${{ github.ref_name }}
