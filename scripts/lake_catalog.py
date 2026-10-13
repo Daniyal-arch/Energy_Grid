@@ -340,6 +340,64 @@ KNOWN = [
 ]  # fmt: skip
 
 
+def repair(con: duckdb.DuckDBPyConnection, cats: dict[str, dict], out: Path, upload: bool) -> None:
+    """Rebuild each dataset's file list, rows and bytes from the files on R2 (parallel jobs of
+    one dataset can overwrite each other's catalogue); upload the catalogues that changed."""
+    for ds, cat in cats.items():
+        found = con.execute(
+            f"""SELECT file_name, sum(row_group_num_rows) FILTER (WHERE column_id = 0)
+                FROM parquet_metadata('{R2}/{lake.PREFIX}/{ds}/**/*.parquet') GROUP BY 1"""
+        ).fetchall()
+        sizes = (
+            dict(
+                con.execute(
+                    f"SELECT filename, size FROM read_blob('{R2}/{lake.PREFIX}/{ds}/**/*.parquet')"
+                ).fetchall()
+            )
+            if found
+            else {}
+        )
+        prefix = f"{R2}/{lake.PREFIX}/{ds}/"
+        changed = False
+        for f, rows in found:
+            rel = f.removeprefix(prefix)
+            table = rel.split("/", 1)[0].removesuffix(".parquet")
+            t = cat.setdefault("tables", {}).get(table)
+            if t is None:
+                print(f"  {ds}: {rel} belongs to no table in the catalogue")
+                continue
+            stats = t.setdefault("file_stats", {})
+            entry = [int(rows or 0), int(sizes.get(f, 0))]
+            if stats.get(rel) != entry or rel not in t.get("files", []):
+                stats[rel] = entry
+                t["files"] = sorted({*t.get("files", []), rel})
+                changed = True
+        for t in cat.get("tables", {}).values():
+            stats = t.get("file_stats", {})
+            gone = [f for f in t.get("files", []) if f"{prefix}{f}" not in {x for x, _ in found}]
+            for f in gone:
+                t["files"].remove(f)
+                stats.pop(f, None)
+                changed = True
+            t["rows"] = sum(v[0] for v in stats.values())
+            t["bytes"] = sum(v[1] for v in stats.values())
+        if changed:
+            path = out / "catalogues" / f"{ds}.repaired.json"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(cat, indent=1, ensure_ascii=False), encoding="utf-8")
+            print(f"  {ds}: catalogue repaired from R2", flush=True)
+            if upload and not lake.wrangler(
+                "r2",
+                "object",
+                "put",
+                f"{lake.BUCKET}/{lake.PREFIX}/{ds}/_catalog.json",
+                "--file",
+                str(path),
+                "--remote",
+            ):
+                raise SystemExit(f"upload of {ds}/_catalog.json failed")
+
+
 def summary(cats: dict[str, dict]) -> dict:
     datasets = {}
     for name, c in sorted(cats.items()):
@@ -450,6 +508,8 @@ def main() -> None:
     con = duckdb.connect()
     have_s3 = r2_secret(con)
     cats = read_catalogues(con, have_s3, args.out / "catalogues")
+    if have_s3:
+        repair(con, cats, args.out, args.upload)
     cat = summary(cats)
     cat_path = args.out / "_catalog.json"
     print("| dataset | table | rows | bytes |\n|---|---|---:|---:|")
