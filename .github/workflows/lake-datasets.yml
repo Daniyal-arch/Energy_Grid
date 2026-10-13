@@ -35,13 +35,16 @@ jobs:
         env:
           DATASET: ${{ inputs.dataset || '' }}
           YEARS: ${{ inputs.years || '' }}
+          MESSAGE: ${{ github.event.head_commit.message || '' }}
         run: |
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import json, os
           ds, raw = os.environ["DATASET"].strip(), os.environ["YEARS"].strip()
-          if not ds:  # a push to the branch: every dataset once, the time series for recent days
-              runs = [{"dataset": d, "args": ""} for d in ["irena", "jrc", "euets", "connect", "osm", "eia860m", "lbnl", "gem"]]
-              runs += [{"dataset": "entsog", "args": "--recent 7"}, {"dataset": "eia930", "args": "--recent 3"}]
+          import re
+          if not ds:  # a push to the branch: the datasets the commit names ("[lake: irena,osm]"), else all
+              m = re.search(r"\[lake: ([a-z0-9, ]+)\]", os.environ["MESSAGE"])
+              names = [d.strip() for d in m.group(1).split(",")] if m else ["irena", "jrc", "euets", "connect", "osm", "eia860m", "lbnl", "gem", "entsog", "eia930"]
+              runs = [{"dataset": d, "args": {"entsog": "--recent 7", "eia930": "--recent 3"}.get(d, "")} for d in names]
           elif raw:
               years = []
               for part in raw.split(","):
