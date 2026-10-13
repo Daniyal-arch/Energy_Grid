@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       runs: ${{ steps.p.outputs.runs }}
+      parallel: ${{ steps.p.outputs.parallel }}
     steps:
       - id: p
         env:
@@ -41,10 +42,17 @@ jobs:
           import json, os
           ds, raw = os.environ["DATASET"].strip(), os.environ["YEARS"].strip()
           import re
-          if not ds:  # a push to the branch: the datasets the commit names ("[lake: irena,osm]"), else all
-              m = re.search(r"\[lake: ([a-z0-9, ]+)\]", os.environ["MESSAGE"])
-              names = [d.strip() for d in m.group(1).split(",")] if m else ["irena", "jrc", "euets", "connect", "osm", "eia860m", "lbnl", "gem", "entsog", "eia930"]
-              runs = [{"dataset": d, "args": {"entsog": "--recent 7", "eia930": "--recent 3"}.get(d, "")} for d in names]
+          if not ds:  # a push to the branch: the datasets its commit names, "[lake: irena, eia930 2015-2025]"
+              m = re.search(r"\[lake: ([a-z0-9, -]+)\]", os.environ["MESSAGE"])
+              items = [i.strip() for i in m.group(1).split(",")] if m else ["irena", "jrc", "euets", "connect", "osm", "eia860m", "lbnl", "gem", "entsog", "eia930"]
+              runs = []
+              for item in items:
+                  name, _, span = item.partition(" ")
+                  if span:
+                      a, _, b = span.partition("-")
+                      runs += [{"dataset": name, "args": f"--year {y}"} for y in range(int(a), int(b or a) + 1)]
+                  else:
+                      runs.append({"dataset": name, "args": {"entsog": "--recent 7", "eia930": "--recent 3"}.get(name, "")})
           elif raw:
               years = []
               for part in raw.split(","):
@@ -54,6 +62,8 @@ jobs:
           else:
               runs = [{"dataset": ds, "args": "--recent 7" if ds in ("entsog", "eia930") else ""}]
           print("runs=" + json.dumps(runs))
+          # years of one dataset share its catalogue: one at a time
+          print("parallel=" + ("1" if any("--year" in r["args"] for r in runs) else "3"))
           PY
 
   build:
@@ -62,7 +72,7 @@ jobs:
     timeout-minutes: 240
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: ${{ fromJson(needs.plan.outputs.parallel) }}
       matrix:
         run: ${{ fromJson(needs.plan.outputs.runs) }}
     steps:
