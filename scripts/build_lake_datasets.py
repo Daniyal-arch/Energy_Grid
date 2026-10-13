@@ -32,6 +32,7 @@ import csv
 import io
 import json
 import re
+import time
 import zipfile
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
@@ -466,7 +467,12 @@ def irena(args: argparse.Namespace) -> None:
                         ],
                         "response": {"format": "json-stat2"},
                     }
-                    r = client.post(url, json=q)
+                    for attempt in range(6):  # PxWeb allows ~10 queries per 10 s
+                        time.sleep(1.5)
+                        r = client.post(url, json=q)
+                        if r.status_code != 429:
+                            break
+                        time.sleep(15 * (attempt + 1))
                     r.raise_for_status()
                     rows += jsonstat_rows(r.json())
                 print(f"  {dtype} / {grid}: {len(rows):,} values so far", flush=True)
