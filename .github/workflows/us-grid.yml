@@ -64,6 +64,17 @@ jobs:
           [ "${{ inputs.force }}" = "true" ] && args="--force"
           python scripts/fetch_us_grid.py $args
 
+      - name: Lake (EIA-860M generators, LBNL queue requests, when released)
+        if: ${{ !cancelled() && steps.us.outputs.changed != '' }}
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb pycountry
+          case " ${{ steps.us.outputs.changed }} " in *" plants "*) python scripts/build_lake_datasets.py eia860m --lake lake-out --tmp /tmp/lake-tmp --upload ;; esac
+          case " ${{ steps.us.outputs.changed }} " in *" queue "*) python scripts/build_lake_datasets.py lbnl --lake lake-out --tmp /tmp/lake-tmp --upload ;; esac
+
       - name: Check against EIA's published national total
         if: ${{ !cancelled() }}
         continue-on-error: true

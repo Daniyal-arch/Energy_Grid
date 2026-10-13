@@ -98,6 +98,17 @@ jobs:
             python scripts/build_gem_layers.py
           fi
 
+      - name: Lake (every tracker as Parquet, private bucket only)
+        if: steps.gem.outputs.changed != ''
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb pycountry
+          python scripts/fetch_gem.py --pull-r2
+          python scripts/build_lake_datasets.py gem --lake lake-out --tmp /tmp/lake-tmp --upload
+
       - name: Commit to main
         if: steps.gem.outputs.changed != ''
         run: |
