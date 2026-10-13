@@ -258,3 +258,14 @@ def wrangler(*args: str) -> bool:
     env.setdefault("WRANGLER_SEND_METRICS", "false")
     cmd = [npx, "--yes", "--package=wrangler@4", "--", "wrangler", *args]
     return subprocess.run(cmd, env=env, check=False, stdin=subprocess.DEVNULL).returncode == 0
+
+
+def iso_codes(con: duckdb.DuckDBPyConnection) -> None:
+    """Table `iso_codes` (iso2, iso3, name) for the standard keys: ISO 3166-1 (pycountry),
+    plus Kosovo's user-assigned XK/XKX (ENTSO-E, Eurostat)."""
+    import pycountry
+
+    rows = [(c.alpha_2, c.alpha_3, c.name) for c in pycountry.countries]
+    rows.append(("XK", "XKX", "Kosovo"))
+    con.execute("CREATE OR REPLACE TABLE iso_codes (iso2 VARCHAR, iso3 VARCHAR, name VARCHAR)")
+    con.executemany("INSERT INTO iso_codes VALUES (?, ?, ?)", rows)
