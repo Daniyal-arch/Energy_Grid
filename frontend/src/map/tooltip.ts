@@ -14,6 +14,7 @@ import { PLANT_TYPE_LABEL, STATUS_LABEL, type WorldPlantsFile } from "../lib/wor
 import { endName, gwhd, latestOf, type GasFlowsFile } from "../lib/gasFlows";
 import { ETS_REGISTRY_NAME, mt, type EtsFile, type EtsRow } from "../lib/ets";
 import { FLAG_TEXT, euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../lib/retail";
+import { isBasin, subsectorLabel, type CtRow, type CtraceFile } from "../lib/ctrace";
 import { STATUS_TEXT, gwhdText, lngDay, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import type { GasArc } from "./build";
 import { CABLE_STYLE } from "../app/colors";
@@ -348,6 +349,14 @@ function tooltipHtml(id: string, object: unknown): string | null {
       return `<b>${t.name}</b><div>${t.operator} · ${t.type === "FSRU" ? "floating (FSRU)" : "onshore"}</div>
         <div>Send-out <b>${gwhdText(d?.[1])}</b> of ${gwhdText(d?.[3])} declared</div>
         ${d?.[2] != null ? `<div>LNG in tanks ${d[2].toLocaleString("en-US")} GWh</div>` : ""}${SRC(`gas day ${lf.date}${status} · GIE ALSI`)}`;
+    }
+    case "w-ctrace": {
+      const r = object as CtRow;
+      const ct = fileOf<CtraceFile>("ctrace");
+      if (!ct) return null;
+      const before = r[6] != null ? ` · ${ct.year - 1}: ${mt(r[6])}` : "";
+      return `<b>${r[3] || "Facility"}</b><div>${subsectorLabel(ct.subsectors[r[4]])} · ${r[2]}${r[7] ? ` · ${r[7]}` : ""}</div>
+        <div>CO₂e ${ct.year} <b>${mt(r[5])}</b>${before}</div>${isBasin(ct, r) ? `<div style="color:#8d94a1">a whole basin's production, placed at its centre</div>` : ""}${SRC("modelled by Climate TRACE (CO₂e, 100-year)")}`;
     }
     case "eu-ets": {
       const r = object as EtsRow;

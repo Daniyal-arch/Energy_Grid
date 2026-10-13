@@ -34,6 +34,7 @@ export type LayerId =
   | "gasFlows"
   | "lngSendOut"
   | "ets"
+  | "ctrace"
   | "plantOutput"
   | "financeCoal"
   | "financeGas"
@@ -95,6 +96,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "financeCoal", label: "Who finances coal power", desc: "Money from lenders' countries to coal plants", group: "Money", coverage: "World", color: "rgb(232,204,128)" },
   { id: "financeGas", label: "Who finances gas", desc: "Money to gas plants and LNG terminals", group: "Money", coverage: "World", color: "rgb(255,170,60)" },
   { id: "ets", label: "CO₂ per installation", desc: "Verified emissions under the EU ETS, per year", group: "Industry & data", coverage: "Europe", color: "rgb(236,128,92)" },
+  { id: "ctrace", label: "Emissions per facility", desc: "Modelled CO₂e of plants, mills and fields (Climate TRACE)", group: "Industry & data", coverage: "World", color: "rgb(255,196,96)" },
   { id: "steel", label: "Steel plants", desc: "Electric furnaces stand out", group: "Industry & data", coverage: "World", color: "rgb(120,200,255)" },
   { id: "cement", label: "Cement plants", desc: "Sized by capacity", group: "Industry & data", coverage: "World", color: "rgb(206,192,166)" },
   { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & data", coverage: "World", color: "rgb(230,160,255)" },
@@ -125,6 +127,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "financeCoal",
   "financeGas",
   "ets",
+  "ctrace",
   "steel",
   "cement",
   "chemicals",

@@ -9,6 +9,7 @@ import { GAS_FLOW, GAS_TRANSIT, GAS_TRANSIT_LABEL_GWH, type GasFlowsFile } from 
 import { ETS_COLOR, mt, type EtsFile } from "../lib/ets";
 import { LNG_SEND, type LngTerminalsFile } from "../lib/lngTerminals";
 import { RETAIL_STOPS, RETAIL_TICKS } from "../lib/retail";
+import { CT_COLOR, type CtraceFile } from "../lib/ctrace";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
@@ -159,6 +160,23 @@ function LngKey() {
   );
 }
 
+function CtraceKey() {
+  const ct = useDataStore((d) => d.files.ctrace as CtraceFile | undefined);
+  return (
+    <>
+      <Swatches>
+        {(ct?.groups ?? []).map((g, i) => (
+          <Swatch key={g} color={rgbCss(CT_COLOR[i])} label={g} />
+        ))}
+      </Swatches>
+      <Note>
+        Dot area = CO₂e in {ct?.year ?? "…"} (100-year GWP), facilities of {ct ? (ct.threshold_t / 1e6).toFixed(1) : "0.1"} Mt and more. Modelled by Climate TRACE from satellites
+        and other data, not reported; oil and gas production is one estimate per basin.
+      </Note>
+    </>
+  );
+}
+
 function EtsKey() {
   const ets = useDataStore((d) => d.files.ets as EtsFile | undefined);
   const c = ets ? Object.values(ets.countries) : [];
@@ -231,6 +249,8 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <LngKey />;
     case "ets":
       return <EtsKey />;
+    case "ctrace":
+      return <CtraceKey />;
     case "plantOutput":
       return (
         <>

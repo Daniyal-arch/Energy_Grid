@@ -367,6 +367,29 @@ cents per kWh (euro cents in Europe, US cents in the US; the key says so). Panel
 country Prices tab ("What consumers pay"), the Europe Prices tab (ranking), the US panel's
 "Retail prices" tab. Refresh: Mondays on `eu-days`.
 
+## Emissions per facility worldwide (`scripts/fetch_climate_trace.py`, `ctrace.json`)
+
+Climate TRACE API v6 (`api.climatetrace.org/v6/assets`, CC BY 4.0, no key;
+`scripts/probe_climate_trace.py`). Climate TRACE **models** each asset's emissions from
+satellite and other data: estimates, not reported figures; the layer's key, hover and card say
+"modelled by Climate TRACE". Passed through: `EmissionsSummary` CO₂e (100-year GWP, tonnes,
+rounded to whole tonnes), `Centroid` (lon, lat; 4 decimals), `Country` (ISO3), `Sector` (the
+subsector), `Owners` (the first two company names).
+
+- Sectors power, manufacturing, fossil-fuel operations, mineral extraction; assets of at least
+  100,000 t CO₂e in the newest complete year (the calendar year before the run: 2025 on
+  2026-10-13): 16,679 assets, 27.02 Gt CO₂e. The API lists assets largest first, so paging stops
+  under the threshold. The year before is joined by asset id (assets of 50,000 t and more).
+- The API has one figure per asset and year; no monthly series per asset.
+- Oil and gas production is modelled per basin ("Russia_Central Sub-basin - West Siberia"),
+  placed at the basin's centroid; the hover says so.
+- Colour groups: power and heat; steel and metals; cement and lime; chemicals and refining
+  (incl. oil and gas refining); oil and gas production and transport; coal and mining; other
+  industry.
+- Checks (2026-10-13): Vindhyachal 2024 36,247,000 t equals `/v6/assets/25451489`; Bełchatów
+  2025 24.4 Mt modelled against 25.1 Mt verified in the EU ETS (`ets.json`).
+- Refresh: on the 1st of each month on `eu-days` (and whenever the file is missing).
+
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
 | File | Records | Source |

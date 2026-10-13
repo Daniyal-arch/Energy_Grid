@@ -18,7 +18,7 @@ rules apply to every task.
 | 3 (done on main) | [03-entsoe-capacity.md](03-entsoe-capacity.md) cross-border capacity, forecasts, installed capacity | `ENTSOE_API_KEY` |
 | 4 (done) | [04-us-prices.md](04-us-prices.md) US day-ahead prices at one hub per market | none (`PJM_API_KEY` optional) |
 | 5 (done) | [05-epa-unit-output.md](05-epa-unit-output.md) US fossil units hour by hour (EPA CAMPD) | `EPA_API_KEY` |
-| 6 | [06-climate-trace.md](06-climate-trace.md) emissions per facility worldwide (Climate TRACE) | no |
+| 6 (done on main) | [06-climate-trace.md](06-climate-trace.md) emissions per facility worldwide (Climate TRACE) | no |
 | 7 | [07-world-hv-grid.md](07-world-hv-grid.md) the rest of the world's high-voltage grid (Overture, Actions) | no (Cloudflare stays in repo secrets) |
 | 8 (done on main) | [08-eu-ets-alsi.md](08-eu-ets-alsi.md) EU CO₂ per installation, LNG send-out per terminal | `AGSI_API_KEY` (network secret, header `x-key`) |
 | 9 | [09-connect-here.md](09-connect-here.md) grid capacity and queues: GB TEC, NL capacity map, Spain nodes | no |

@@ -15,6 +15,7 @@ import { MONEY, usd, type FinanceFile, type FinanceFlow, type FinanceProject } f
 import { GEM_PIPES, GEM_POINTS, IDLE, type GemPipesFile, type GemPointsFile, type GemPoint } from "../lib/gem";
 import { ETS_COLOR, etsRadius, newestT, type EtsFile, type EtsRow } from "../lib/ets";
 import { RETAIL_STOPS, euroCents, newestOf, type RetailFile } from "../lib/retail";
+import { CT_COLOR, ctRadius, type CtRow, type CtraceFile } from "../lib/ctrace";
 import { LNG_SEND, lngDay, lngRadius, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import { IRENA_STOPS, irenaK, irenaMetricById, irenaScale, irenaValue, formatGw, type IrenaFile, type IrenaMetricId } from "../lib/irena";
 import { regionArcs, regionDotLayers, regionFlowLayers } from "../lib/regionLayers";
@@ -630,6 +631,7 @@ export function buildLayers(fr: Frame): Layer[] {
   layers.push(...worldLayers(fr, near));
   layers.push(...usLayers(fr));
   layers.push(...gemLayers(fr));
+  layers.push(...ctraceLayers(fr));
   layers.push(...financeLayers(fr));
 
   // ---------------------------------------------------------------- wind particles
@@ -1336,6 +1338,32 @@ function worldLayers(fr: Frame, near: (p: [number, number]) => boolean): Layer[]
   return out;
 }
 
+
+/** Climate TRACE's modelled emissions per facility (world); the side facing the camera only. */
+function ctraceLayers(fr: Frame): Layer[] {
+  const ct = fr.layers.ctrace ? (fr.files.ctrace as CtraceFile | undefined) : undefined;
+  if (!ct) return [];
+  const facing = nearFilter(fr);
+  const near = memo("ctrace-near", [ct, fr.camKey], () => ct.rows.filter((r) => facing([r[0], r[1]])));
+  const zoomStep = fr.zoom >= 5 ? 2 : fr.zoom >= 4 ? 1 : 0;
+  return [
+    new ScatterplotLayer<CtRow>({
+      id: "w-ctrace",
+      data: near, // largest first, so smaller dots draw on top
+      getPosition: (r) => [r[0], r[1]],
+      getRadius: (r) => ctRadius(r[5], fr.zoom),
+      radiusUnits: "pixels",
+      getFillColor: (r) => [...CT_COLOR[ct.group_of[r[4]]], 150],
+      stroked: true,
+      getLineColor: [6, 7, 10, 190],
+      lineWidthUnits: "pixels",
+      getLineWidth: 0.5,
+      updateTriggers: { getRadius: [zoomStep] },
+      pickable: true,
+      parameters: ON_TOP,
+    }),
+  ];
+}
 
 /** Global Energy Monitor's pipelines and points; the side of the globe facing the camera only. */
 function gemLayers(fr: Frame): Layer[] {

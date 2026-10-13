@@ -123,6 +123,12 @@ jobs:
             python scripts/fetch_retail_prices.py --out store/eu || echo "retail prices failed; keeping the last copy"
           fi
 
+      - name: Emissions per facility worldwide (Climate TRACE; on the 1st of the month)
+        run: |
+          if [ "$(date -u +%d)" = 01 ] || [ ! -f store/eu/ctrace.json ]; then
+            python scripts/fetch_climate_trace.py --out store/eu || echo "Climate TRACE failed; keeping the last copy"
+          fi
+
       - name: Wind for the same days (Open-Meteo, one pass over the window)
         run: python scripts/fetch_wind.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/wind || echo "wind fetch failed"
 

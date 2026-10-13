@@ -22,6 +22,7 @@ import type { Cable, UnitOutputFile, WorldFile } from "../app/types";
 import { FUEL_COLOR } from "../lib/energy";
 import { ETS_COLOR, ETS_REGISTRY_NAME, etsIn, mt, newestT, type EtsFile } from "../lib/ets";
 import { LNG_SEND, gwhdText, lngDay, type LngTerminalsFile } from "../lib/lngTerminals";
+import { CT_COLOR, subsectorLabel, type CtraceFile } from "../lib/ctrace";
 
 const muted = "text-[#8d94a1]";
 const CLASS_COLOR = ["rgb(120,222,160)", "rgb(255,196,96)", "rgb(160,170,190)", "rgb(130,134,146)"];
@@ -446,6 +447,50 @@ function EtsCard({ iso3 }: { iso3?: string }) {
   );
 }
 
+/** Climate TRACE: modelled CO2e of the facilities in scope, the largest and the sum per group. */
+function CtraceCard({ iso3 }: { iso3?: string }) {
+  const f = useFile<CtraceFile>("ctrace");
+  if (!f) return <Card title="Emissions per facility">Loading…</Card>;
+  const rows = iso3 ? f.rows.filter((r) => r[2] === iso3) : f.rows;
+  if (!rows.length) return <Card title="Emissions per facility">No facility of {(f.threshold_t / 1e6).toFixed(1)} Mt or more here.</Card>;
+  const total = rows.reduce((a, r) => a + r[5], 0);
+  const byGroup = f.groups
+    .map((g, i) => ({ key: g, label: g, value: rows.filter((r) => f.group_of[r[4]] === i).reduce((a, r) => a + r[5], 0) / 1e6, color: rgbCss(CT_COLOR[i]) }))
+    .filter((r) => r.value > 0)
+    .sort((a, b) => b.value - a.value);
+  const top = rows.slice(0, 10);
+  const max = top[0]?.[5] || 1;
+  return (
+    <Card title="Emissions per facility" note={`Climate TRACE, modelled · ${f.year}`}>
+      <div className="text-[22px] font-light text-slate-50">
+        {mt(total)} <span className={`text-[11px] ${muted}`}>CO₂e from {rows.length.toLocaleString("en-US")} facilities (sum, computed)</span>
+      </div>
+      <Head>Largest emitters</Head>
+      <div className="space-y-1">
+        {top.map((r, i) => (
+          <div key={i} className="text-[11px]">
+            <div className="flex justify-between gap-2">
+              <span className="truncate text-slate-200">
+                {r[3] || subsectorLabel(f.subsectors[r[4]])} <span className={muted}>{iso3 ? subsectorLabel(f.subsectors[r[4]]) : r[2]}</span>
+              </span>
+              <span className="tabular-nums text-slate-100">{mt(r[5])}</span>
+            </div>
+            <div className="h-1 rounded bg-white/[0.06]">
+              <div className="h-1 rounded" style={{ width: `${(100 * r[5]) / max}%`, background: rgbCss(CT_COLOR[f.group_of[r[4]]]) }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <Head>By sector, Mt CO₂e</Head>
+      <Rows rows={byGroup} unit="Mt" />
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Climate TRACE models each asset's emissions (CO₂e, 100-year GWP) from satellites and other data; these are estimates, not reported figures. Facilities of{" "}
+        {(f.threshold_t / 1e6).toFixed(1)} Mt and more in power, manufacturing, fossil-fuel operations and mining; oil and gas production is one figure per basin.
+      </div>
+    </Card>
+  );
+}
+
 /** LNG send-out per terminal on the newest gas day, with each terminal's last 30 days. */
 export function LngTerminalsCard({ iso2 }: { iso2?: string }) {
   const f = useFile<LngTerminalsFile>("lngTerminals");
@@ -517,6 +562,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "dataCentres") return <DataCentresStats key={id} iso3={iso3} />;
         if (id === "cables") return iso3 ? null : <CablesCard key={id} />;
         if (id === "ets") return <EtsCard key={id} iso3={iso3} />;
+        if (id === "ctrace") return <CtraceCard key={id} iso3={iso3} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;
       })}

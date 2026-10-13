@@ -105,6 +105,8 @@ const STATIC: Record<string, Loader> = {
   lngTerminals: archive("lng_terminals.json"),
   // EU ETS verified emissions per installation (scripts/fetch_eu_ets.py)
   ets: archive("ets.json"),
+  // Climate TRACE modelled emissions per facility (scripts/fetch_climate_trace.py)
+  ctrace: archive("ctrace.json"),
   // retail electricity and gas prices (scripts/fetch_retail_prices.py, Eurostat + EIA)
   retail: archive("retail.json"),
   dayIndex: async (set) => {
