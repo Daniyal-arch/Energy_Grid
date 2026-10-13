@@ -1,0 +1,277 @@
+# Data lake: full-detail data for the agent
+
+The map files in `frontend/public/data/` keep only what the map draws (sums, thresholds,
+simplified outlines). The agent needs the full detail. This document says which data is kept
+in full as Parquet on R2, which is read live from the source's API, how the Parquet is written
+and indexed, and how big it gets. Sizes are estimates until each pipeline writes its measured
+size to the catalogue (below); update this file then.
+
+## 1. The rule: API or Parquet
+
+A dataset is **read live from its API** (no Parquet copy) when all of these hold, checked
+with a probe (`scripts/probe_*.py`, rule 2):
+
+1. **Filters on the server**: the API filters by the agent's dimensions (place, time, id), so
+   an answer never needs a full download.
+2. **Fast**: a typical agent question needs at most ~5 requests and ~5 s.
+3. **History**: the API serves the whole period the agent needs, not only the current state.
+4. **Limits**: one server key covers the agent's load (≥ 60 requests/min or a generous daily
+   quota), at no cost per request.
+5. **Reliable**: documented, versioned, and up (Energy-Charts, answering 503 since 2026-09-24,
+   fails this).
+6. **Licence** allows serving answers from it.
+
+Two special cases:
+- **Already in a public cloud bucket as Parquet or Zarr** (Overture, PUDL, ARCO-ERA5): query
+  in place; that counts as an API.
+- **Current-state APIs** (registers that show only today: NESO TEC, the Dutch capacity map,
+  REE's node file, MaStR): read today's state from the API, but keep **snapshots** as Parquet,
+  because the history exists nowhere else.
+
+Anything else (no API, slow or one-window-at-a-time APIs, bulk files only) is kept as Parquet.
+
+## 2. Where it lives
+
+- Bucket: `infraatlas-raw` (private; the GEM rule already keeps licensed raw files there),
+  prefix `lake/`. The agent reads with a read-only R2 token; open datasets can be copied to a
+  public bucket later if a public download is wanted.
+- Layout (Hive partitioning, lower-case names):
+  ```
+  lake/<dataset>/<table>/<partition>=<value>/part-<n>.parquet
+  lake/<dataset>/<table>.parquet                 (small tables, one file)
+  lake/<dataset>/_catalog.json                   (per dataset)
+  lake/_catalog.json                             (all datasets)
+  ```
+  e.g. `lake/eaglei/outages/year=2024/part-0.parquet`,
+  `lake/mastr/units_solar/snapshot=2026-10-01/land=BY/part-0.parquet`.
+- Written only by GitHub Actions (the same jobs that build the map files); a laptop never
+  holds the raw files. Each file ≤ 250 MB (wrangler's single upload limit is ~300 MB; larger
+  tables are partitioned further).
+- Writes are atomic per partition: a new file is uploaded, then the catalogue is updated.
+  Snapshots are never overwritten.
+
+## 3. How each file is written (the standard)
+
+Writer: DuckDB `COPY ... TO ... (FORMAT parquet)`, the same engine the agent reads with.
+
+| Setting | Value | Why |
+|---|---|---|
+| Format | Parquet, format version 2 | current standard; delta encodings for integers and timestamps |
+| Compression | zstd, level 9 | best size/speed for read-mostly data (written once, read many times) |
+| Row group | ~1,000,000 rows (≈ 32–128 MB uncompressed) | big enough for compression, small enough to skip; a remote reader fetches only the row groups it needs by HTTP range |
+| File size | 50–250 MB; small tables one file | few files = few requests |
+| Encoding | dictionary for strings and codes (DuckDB's default) | zone, county, type columns become small integers |
+| Statistics | min/max per row group for every column (default) | row-group skipping |
+| Bloom filters | on id columns (DuckDB writes them for dictionary-encoded columns) | point lookups ("unit 11WD7…", "county 48201") skip row groups without the id |
+| Key-value metadata | `source`, `licence`, `retrieved_at`, `script`, `source_version`, `rows` | every file says where it came from (hard rule 1) |
+
+Types:
+- Time: `TIMESTAMP WITH TIME ZONE` stored as UTC (`ts`, the interval's start), plus
+  `resolution_min` where it varies. Sources that publish local times without a zone keep that
+  column as published (`ts_local`) next to UTC when the zone is known.
+- Measurements: `FLOAT` (32-bit) when the source has ≤ 7 significant digits (MW to 0.1,
+  customers), else `DOUBLE`. Money and prices: `DECIMAL(p, s)` with the source's precision
+  (prices keep the source's precision, CLAUDE.md).
+- Codes: the source's own ids (EIC, FIPS, MaStR number, pfaf_id), never re-keyed.
+- Geometry: GeoParquet 1.1, WKB in `geometry`, CRS EPSG:4326, plus a `bbox` covering column
+  (`struct<xmin, ymin, xmax, ymax>`, declared in the GeoParquet metadata), rows sorted along a
+  Hilbert curve (`ST_Hilbert`) so nearby features share row groups.
+
+## 4. Indexing
+
+Parquet has no B-tree; reads are fast because whole parts of files are skipped. Four layers:
+
+1. **Partitions** (directories): the first filter of almost every question (year, snapshot,
+   country, market). DuckDB skips whole files by path.
+2. **Sort order = clustered index**: rows are sorted by the columns the agent filters on next
+   (e.g. `fips, ts` or `area, psr_type, ts`), so each row group covers a narrow range and the
+   min/max statistics skip the rest.
+3. **Bloom filters** on id columns, for "this one unit / county / node" lookups.
+4. **Dimension tables**: one small table per entity (areas, units, counties, nodes) with
+   names, codes and positions; the big fact tables carry only ids.
+
+The agent opens `lake/_catalog.json` (or a read-only `lake.duckdb` holding a view per table)
+and queries with DuckDB over `httpfs` against R2's S3 endpoint. A question such as "hours
+without power in Harris County in 2024" reads one year's file, the row groups whose `fips`
+range holds 48201, and two columns: a few MB, not 1.4 GB.
+
+## 5. Schemas
+
+Common columns: `ts` (UTC start), `resolution_min`. `*_id` columns are the source's ids.
+
+### EAGLE-I outages (`lake/eaglei/`), adding now
+
+| Table | Columns | Partition | Sort | Bloom |
+|---|---|---|---|---|
+| `outages` | `fips` VARCHAR(5), `ts` TIMESTAMP (as published), `customers_out` INTEGER | `year` | `fips, ts` | `fips` |
+| `counties` | `fips`, `county`, `state`, `mcc_customers` INTEGER (ORNL's modelled customers) | none | `fips` | |
+| `coverage` | EAGLE-I's `coverage_history.csv` and `DQI.csv` as published | none | | |
+
+### MaStR, every German unit (`lake/mastr/`), adding now
+
+| Table | Key columns | Partition | Sort | Bloom |
+|---|---|---|---|---|
+| `units_solar`, `units_wind`, `units_storage`, `units_combustion`, `units_biomass`, `units_hydro`, `units_nuclear`, `units_other` | `mastr_nr` (SEE…), `eeg_mastr_nr`, `status`, `gross_kw`, `net_kw`, `commissioned`, `decommissioned`, `ags` (municipality key), `postcode`, `lon`, `lat` (where public), `operator_nr`, `grid_operator_nr`, `voltage_level`, and the type's own columns (hub height, rotor diameter; panel orientation, usage; storage kWh…) | `snapshot`, and `land` (state) for solar | `ags, mastr_nr` | `mastr_nr` |
+| `operators`, `grid_connection_points`, `locations` | as published | `snapshot` | id | id |
+
+Snapshots: the newest, plus one per year (the others are dropped after a year).
+
+### WRI Aqueduct 4.0 (`lake/aqueduct/v4.0/`), adding now
+
+| Table | Columns | Sort |
+|---|---|---|
+| `baseline_annual` (GeoParquet) | `aq30_id`, `pfaf_id`, `gid_0`, `gid_1`, `name_0`, `name_1`, `area_km2`, then for each of the 13 indicators (`bws`, `bwd`, `iav`, `sev`, `gtd`, `rfr`, `cfr`, `drr`, `ucw`, `cep`, `udw`, `usa`, `rri`) `_raw` DOUBLE, `_score` FLOAT, `_cat` TINYINT, `_label`; the weighted scores; `geometry`, `bbox` | Hilbert |
+| `baseline_monthly` | `pfaf_id`, `month`, per indicator `_raw/_score/_cat` | `pfaf_id, month` |
+| `future_annual` | `pfaf_id`, `scenario`, `year`, per indicator | `pfaf_id, scenario, year` |
+
+### ENTSO-E history (`lake/entsoe/`), 2015 onward
+
+| Table | Columns | Partition | Sort | Bloom |
+|---|---|---|---|---|
+| `areas` | `area` (EIC), `code` (DE_LU), `country`, `kind` (BZN/CTA/CTY), `name` | | | |
+| `prices` (A44) | `ts`, `area`, `resolution_min`, `price` DECIMAL(9,2), `currency` | `year` | `area, ts` | |
+| `load` (A65) | `ts`, `area`, `resolution_min`, `actual_mw`, `day_ahead_mw` | `year` | `area, ts` | |
+| `generation` (A75) | `ts`, `area`, `psr_type`, `generation_mw`, `consumption_mw` | `year` | `area, psr_type, ts` | |
+| `forecast_wind_solar` (A69) | `ts`, `area`, `psr_type`, `forecast_mw` | `year` | `area, psr_type, ts` | |
+| `flows` (A11) | `ts`, `out_area`, `in_area`, `mw` | `year` | `out_area, in_area, ts` | |
+| `units` | `unit_eic`, `plant_eic`, `name`, `area`, `psr_type`, `capacity_mw`, `lon`, `lat` (JRC-PPDB) | | | |
+| `unit_output` (A73) | `ts`, `unit_eic`, `mw` | `year` | `unit_eic, ts` | `unit_eic` |
+| `capacity` (A68), `transfer_capacity` (A61/A31) | as published, per year | | | |
+| `outages` (A80/A78) | `mrid`, `revision`, `asset_eic`, `start`, `end`, `available_mw`, `nominal_mw`, `type`, `reason` | `year` of start | `asset_eic, start` | `asset_eic` |
+
+### Registers kept as snapshots (current-state APIs)
+
+| Table | Columns | Partition |
+|---|---|---|
+| `lake/neso_tec/projects` | the TEC register as published (project, customer, site, MW connected, MW change, cumulative MW, effective date, status, agreement, TO, plant type, project id, gate) | `snapshot` (twice weekly) |
+| `lake/nl_capacity/areas` | area id, name, operator, offtake and feed-in status, queues (MW), requests; geometry only when it changes | `snapshot` (monthly) |
+| `lake/ree_nodes/nodes` | every column of "Ficha Capacidades" with normalised names | `snapshot` (monthly) |
+| `lake/euets/installations`, `verified_emissions`, `eea_link` | registry extracts (all years 2005–, allocations, surrenders) and the EEA id/position link | `snapshot` (weekly) for installations |
+
+### Future (shapes fixed when built)
+
+- `lake/us_lmp/day_ahead` (task 10): `ts`, `node_id`, `lmp`, `congestion`, `loss` DECIMAL(9,2);
+  partition `market`, `year`, `month`; sort `node_id, ts`; bloom `node_id`; `nodes` dimension
+  with published positions. Real-time 5-minute prices: API only (recent), not stored.
+- GeoParquet for Global Renewables Watch, USPVDB, GRanD, EMODnet, TYNDP projects.
+- Rasters (Global Solar/Wind Atlas, population grids) are **Cloud-Optimized GeoTIFF**, the
+  raster standard, not Parquet: `lake/rasters/<name>/<version>.tif`.
+
+## 6. Every dataset: API or Parquet, and its size
+
+Sizes: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where noted.
+
+### On the map today
+
+| Dataset | Access | Kept as | Why | Size |
+|---|---|---|---|---|
+| ENTSO-E (prices, load, generation, flows, per unit, capacity, forecasts, outages) | API, key; one area and ≤ 1 year per request | Parquet, 2015– | history across zones and years is thousands of requests | ~1.2 GB, +0.12 GB/yr |
+| ENTSOG gas flows | API, no key; slow for many points | Parquet, 2015– | | ~0.05 GB |
+| GIE AGSI+ / ALSI | API, key, filters, full history | API | passes all six | 0 |
+| Ember | API, all countries in one request | API | | 0 |
+| IRENA capacity | yearly xlsx | Parquet | no API | ~0.005 GB |
+| World Bank WDI | API | API | | 0 |
+| GEM trackers (licensed) | downloads | Parquet, private | no API; licence: never public | ~0.1 GB |
+| OSM-derived files (Europe grid, cables, data centres) | Overpass (slow) | Parquet snapshots | | ~0.05 GB |
+| Overture power lines | public GeoParquet on S3 | query in place | already Parquet | 0 |
+| JRC-PPDB, powerplantmatching | downloads | Parquet | | ~0.01 GB |
+| EIA-930 hourly | API, key, 5,000 rows per request | Parquet, 2015– | history = thousands of requests; recent hours by API | ~0.1 GB |
+| EIA-860M | monthly xlsx | Parquet snapshots | | ~0.02 GB/yr |
+| LBNL queue | yearly xlsx | Parquet | | ~0.005 GB |
+| USWTDB turbines | API with filters | API | | 0 |
+| EPA CAMPD hourly per unit | API, key; national pulls slow | query in place (PUDL's EPA CEMS Parquet on public S3) | already Parquet | 0 |
+| ISO hub prices | ISO APIs | API (recent); history with task 10 | | 0 |
+| Open-Meteo, ECMWF open data | API / rolling files | API | | 0 |
+| Live grids (AEMO, ONS, Taipower, IESO) | live APIs | API | | 0 |
+
+### Added this sprint
+
+| Dataset | Access | Kept as | Why | Size |
+|---|---|---|---|---|
+| EU ETS registry | daily extract files, no query API | Parquet | | ~0.01 GB |
+| EEA industrial register | Discodata SQL API | API | SQL over HTTP, fast | 0 |
+| Climate TRACE | API with filters | API | | 0 |
+| NESO TEC register | CKAN SQL API, current only | API + snapshots | history nowhere else | ~0.02 GB/yr |
+| Dutch capacity map | ArcGIS query API, current only | API + snapshots | | ~0.01 GB/yr |
+| REE node capacities | monthly xlsx | Parquet snapshots | no API | ~0.005 GB/yr |
+| Eurostat retail prices | API | API | | 0 |
+| EIA retail (861M) | API | API | | 0 |
+
+### Adding now
+
+| Dataset | Access | Kept as | Why | Size |
+|---|---|---|---|---|
+| EAGLE-I outages | 12 CSVs, 11.6 GB, no API | Parquet | no API | ~0.8 GB, +0.1 GB/yr |
+| MaStR | bulk XML (~2.5 GB zip); SOAP API with registration and ~10,000 calls/day | Parquet snapshots | API far too limited | ~0.6 GB per snapshot |
+| WRI Aqueduct 4.0 | 262 MB zip, no API | GeoParquet | no API | ~0.15 GB |
+
+### Future (docs/DATASETS.md)
+
+| Dataset | Access | Kept as | Size |
+|---|---|---|---|
+| US nodal prices, day-ahead (task 10) | ISO APIs, small windows, rate limits | Parquet | ~0.8 GB/yr (3 years ~2.4 GB) |
+| US nodal prices, real-time 5-min | ISO APIs | API, recent only | 0 |
+| ISO live queues | APIs/files, current only | snapshots | ~0.01 GB/yr |
+| ENTSO-E imbalance (A85/A86) | API | Parquet with ENTSO-E | +0.05 GB/yr |
+| netztransparenz redispatch, curtailment | downloads | Parquet | ~0.3 GB |
+| SMARD, Energinet, Fingrid, Elia, RTE, REE REData | APIs with history | API | 0 |
+| Eurostat balances, EIA SEDS/STEO/AEO, OWID, EDGAR (country) | APIs | API | 0 |
+| Energy Institute review, EEA GHG, ACER, AURES, H₂ observatory | downloads | Parquet | ~0.05 GB |
+| EIA-923, eGRID history, FERC | PUDL on public S3 | in place | 0 |
+| GHGRP | Envirofacts API | API | 0 |
+| NREL AFDC, OpenEI URDB | APIs | API | 0 |
+| USPVDB, GRanD, EMODnet, TYNDP projects | downloads | GeoParquet | ~0.1 GB |
+| Global Renewables Watch | GeoPackage per quarter | GeoParquet | ~0.2 GB |
+| Global Solar / Wind Atlas | rasters | COG | ~1 GB at 1 km (~8 GB at 250 m) |
+| Population grid (GHSL) | raster | COG | ~0.3 GB at 1 km |
+| ERA5 | ARCO-ERA5 Zarr on Google Cloud | in place | 0 |
+| NASA Black Marble | NASA API | API | 0 |
+| JEPX, CENACE history | file downloads | Parquet | ~0.2 GB |
+| Other live markets (Grid-India, Eskom, CEN, EMI, KPX, AESO, EPİAŞ) | APIs | API | 0 |
+
+### Totals
+
+| Part | Size |
+|---|---|
+| Parquet, datasets on the map and added this sprint | ~1.6 GB |
+| Parquet, adding now (EAGLE-I, MaStR, Aqueduct) | ~1.6 GB |
+| **Lake today** | **~3.2 GB** |
+| Parquet, future datasets | ~3.5 GB |
+| Rasters (COG, 1 km) | ~1.3 GB |
+| Map tiles (PMTiles, public bucket) | ~0.3 GB |
+| **In about a year** | **~8 GB** (≈ 15 GB with 250 m rasters) |
+| Growth | ~1.5 GB a year (mostly nodal prices, MaStR's yearly snapshot, ENTSO-E) |
+
+Cost: R2 stores 10 GB free and charges nothing for downloads; beyond that $0.015 per GB a
+month (15 GB ≈ $0.08 a month). Reads: 10 M free requests a month.
+
+## 7. Catalogue
+
+`lake/<dataset>/_catalog.json`, written by each pipeline after a successful upload:
+
+```json
+{
+  "dataset": "eaglei",
+  "source": "EAGLE-I recorded electricity outages, ORNL (figshare 24237376)",
+  "licence": "CC BY 4.0",
+  "script": "scripts/build_us_outages.py",
+  "updated": "2026-10-13T10:00:00Z",
+  "tables": {
+    "outages": {
+      "path": "lake/eaglei/outages/year=*/part-*.parquet",
+      "partitions": ["year"], "sort": ["fips", "ts"], "bloom": ["fips"],
+      "rows": 0, "bytes": 0,
+      "columns": {"fips": "VARCHAR", "ts": "TIMESTAMP", "customers_out": "INTEGER"}
+    }
+  }
+}
+```
+
+`lake/_catalog.json` lists every dataset with its size; this file's estimates are replaced by
+those numbers.
+
+## 8. Upgrade path (not now)
+
+At tens of GB, or when several writers need transactions: move the tables to Apache Iceberg
+with Cloudflare R2 Data Catalog (Iceberg on the same bucket, readable by DuckDB, Spark and
+others). The file standard above stays the same; Iceberg adds the table metadata on top.

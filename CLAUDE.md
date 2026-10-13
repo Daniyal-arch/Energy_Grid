@@ -19,7 +19,8 @@ The earlier Germany atlas (backend, ingestion, agent) is archived in the git tag
 - `scripts/` — data fetch/build scripts and probes (Python).
 - `frontend/scripts/record-video.mjs` — video recorder (virtual clock, see docs/VIDEO.md).
 - `.github/workflows/eu-snapshot.yml` — refreshes live figures onto the `eu-data` branch.
-- `docs/` — DATA_SOURCES.md (every file and its source), VIDEO.md (recording + rules).
+- `docs/` — DATA_SOURCES.md (every file and its source), DATA_LAKE.md (full-detail Parquet on R2
+  for the agent: API-or-Parquet rule, file standard, schemas, sizes), VIDEO.md (recording + rules).
 
 ## Commands
 
