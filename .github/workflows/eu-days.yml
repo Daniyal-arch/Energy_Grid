@@ -129,6 +129,13 @@ jobs:
             python scripts/fetch_climate_trace.py --out store/eu || echo "Climate TRACE failed; keeping the last copy"
           fi
 
+      - name: Grid capacity GB, NL, ES (NESO TEC register, Dutch capacity map, REE nodes; Mondays)
+        run: |
+          pip install openpyxl shapely
+          if [ "$(date -u +%u)" = 1 ] || [ ! -f store/eu/connect.json ]; then
+            python scripts/fetch_connect_here.py --out store/eu || echo "grid capacity failed; keeping the last copy"
+          fi
+
       - name: Wind for the same days (Open-Meteo, one pass over the window)
         run: python scripts/fetch_wind.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/wind || echo "wind fetch failed"
 

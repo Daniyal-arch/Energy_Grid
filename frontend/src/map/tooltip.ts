@@ -15,6 +15,7 @@ import { endName, gwhd, latestOf, type GasFlowsFile } from "../lib/gasFlows";
 import { ETS_REGISTRY_NAME, mt, type EtsFile, type EtsRow } from "../lib/ets";
 import { FLAG_TEXT, euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../lib/retail";
 import { isBasin, subsectorLabel, type CtRow, type CtraceFile } from "../lib/ctrace";
+import { gwText as connectGw, type ConnectFile, type GbSite, type NlArea } from "../lib/connect";
 import { STATUS_TEXT, gwhdText, lngDay, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import type { GasArc } from "./build";
 import { CABLE_STYLE } from "../app/colors";
@@ -349,6 +350,29 @@ function tooltipHtml(id: string, object: unknown): string | null {
       return `<b>${t.name}</b><div>${t.operator} · ${t.type === "FSRU" ? "floating (FSRU)" : "onshore"}</div>
         <div>Send-out <b>${gwhdText(d?.[1])}</b> of ${gwhdText(d?.[3])} declared</div>
         ${d?.[2] != null ? `<div>LNG in tanks ${d[2].toLocaleString("en-US")} GWh</div>` : ""}${SRC(`gas day ${lf.date}${status} · GIE ALSI`)}`;
+    }
+    case "eu-connect-nl": {
+      const a = (object as { a: NlArea }).a;
+      const cf = fileOf<ConnectFile>("connect");
+      if (!cf) return null;
+      const st = cf.nl.status;
+      const q = (mw: number | null, n: number | null) => (mw ? ` · queue ${mw.toLocaleString("en-US", { maximumFractionDigits: 1 })} MW${n ? ` (${n} requests)` : ""}` : "");
+      return `<b>${a.name}</b><div>${a.operator ?? ""}</div>
+        <div>New demand: <b>${st[a.offtake] ?? "–"}</b>${q(a.queue_offtake_mw, a.requests_offtake)}</div>
+        <div>New generation: <b>${st[a.feedin] ?? "–"}</b>${q(a.queue_feedin_mw, a.requests_feedin)}</div>${SRC("Netbeheer Nederland, capaciteitskaart (regional operators)")}`;
+    }
+    case "eu-connect-gb": {
+      const d = object as { k: number; site: GbSite; mw: number; byType: number[] };
+      const cf = fileOf<ConnectFile>("connect");
+      if (!cf) return null;
+      const parts = d.byType
+        .map((mw, i) => [cf.gb.types[i], mw] as const)
+        .filter(([, mw]) => mw > 0)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([t, mw]) => `${t} ${connectGw(mw)}`)
+        .join(" · ");
+      return `<b>${d.site[0]}</b><div>${d.site[3]} · <b>${connectGw(d.mw)}</b> waiting to connect</div><div>${parts}</div>${SRC(`NESO TEC register, ${cf.gb.date} · placed at the GSP of that name (NESO lookup)`)}`;
     }
     case "w-ctrace": {
       const r = object as CtRow;

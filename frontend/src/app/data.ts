@@ -107,6 +107,8 @@ const STATIC: Record<string, Loader> = {
   ets: archive("ets.json"),
   // Climate TRACE modelled emissions per facility (scripts/fetch_climate_trace.py)
   ctrace: archive("ctrace.json"),
+  // where new demand or generation can connect: GB, NL, ES (scripts/fetch_connect_here.py)
+  connect: archive("connect.json"),
   // retail electricity and gas prices (scripts/fetch_retail_prices.py, Eurostat + EIA)
   retail: archive("retail.json"),
   dayIndex: async (set) => {

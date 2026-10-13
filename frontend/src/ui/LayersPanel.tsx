@@ -10,6 +10,7 @@ import { ETS_COLOR, mt, type EtsFile } from "../lib/ets";
 import { LNG_SEND, type LngTerminalsFile } from "../lib/lngTerminals";
 import { RETAIL_STOPS, RETAIL_TICKS } from "../lib/retail";
 import { CT_COLOR, type CtraceFile } from "../lib/ctrace";
+import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
@@ -160,6 +161,44 @@ function LngKey() {
   );
 }
 
+function ConnectKey() {
+  const cf = useDataStore((d) => d.files.connect as ConnectFile | undefined);
+  const side = useApp((s) => s.connectSide);
+  const gb = cf?.gb;
+  const total = gb ? gb.projects.reduce((a, p) => a + Math.max(0, p[2] - p[3]), 0) : 0;
+  const placed = gb ? gb.projects.reduce((a, p) => a + (gb.sites[p[1]][1] != null ? Math.max(0, p[2] - p[3]) : 0), 0) : 0;
+  return (
+    <>
+      <div className="mb-1 flex items-center gap-1.5">
+        <span className="text-[10px] text-slate-400">Netherlands:</span>
+        {(["offtake", "feedin"] as const).map((s) => (
+          <button
+            key={s}
+            onClick={() => actions.setConnectSide(s)}
+            className={`rounded-md border px-2 py-0.5 text-[10.5px] ${side === s ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-300 hover:bg-white/[0.07]"}`}
+          >
+            {s === "offtake" ? "new demand" : "new generation"}
+          </button>
+        ))}
+      </div>
+      <Swatches>
+        {(cf?.nl.status ?? ["available", "limited", "under study", "shortage"]).map((label, i) => (
+          <Swatch key={label} color={rgbCss(NL_COLOR[i])} label={label} />
+        ))}
+      </Swatches>
+      <Swatches>
+        {["Storage", "Solar", "Wind onshore", "Wind offshore", "Demand"].map((t) => (
+          <Swatch key={t} color={rgbCss(GB_TYPE_COLOR[t])} label={t.toLowerCase()} />
+        ))}
+      </Swatches>
+      <Note>
+        Netherlands: each supply area as the regional operators' capacity map shows it. Great Britain: MW waiting to connect at each site (TEC register, {gb?.date ?? "…"}), coloured by the largest
+        type; {gwText(placed)} of {gwText(total)} placed, at sites named after a GSP in NESO's lookup; the rest are in the panel. Spain publishes no positions: see the panel.
+      </Note>
+    </>
+  );
+}
+
 function CtraceKey() {
   const ct = useDataStore((d) => d.files.ctrace as CtraceFile | undefined);
   return (
@@ -251,6 +290,8 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <EtsKey />;
     case "ctrace":
       return <CtraceKey />;
+    case "connect":
+      return <ConnectKey />;
     case "plantOutput":
       return (
         <>

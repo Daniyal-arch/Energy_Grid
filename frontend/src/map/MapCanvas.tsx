@@ -50,6 +50,7 @@ function wantedKeys(): string[] {
   if (L.lngSendOut) keys.push("lngTerminals");
   if (L.ets) keys.push("ets");
   if (L.ctrace) keys.push("ctrace");
+  if (L.connect) keys.push("connect");
   if (L.cables) keys.push("cables");
   if (L.plantsWorld) keys.push("worldPlants");
   // EIA wins over GEM in the US: GEM's points inside the states are left out
@@ -522,6 +523,7 @@ export default function MapCanvas() {
         colour: s.colour,
         plantStatus: s.plantStatus,
         plantStyle: s.plantStyle,
+        connectSide: s.connectSide,
         selection: s.selection,
         files,
         zoom,

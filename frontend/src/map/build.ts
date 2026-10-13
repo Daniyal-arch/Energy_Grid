@@ -16,6 +16,7 @@ import { GEM_PIPES, GEM_POINTS, IDLE, type GemPipesFile, type GemPointsFile, typ
 import { ETS_COLOR, etsRadius, newestT, type EtsFile, type EtsRow } from "../lib/ets";
 import { RETAIL_STOPS, euroCents, newestOf, type RetailFile } from "../lib/retail";
 import { CT_COLOR, ctRadius, type CtRow, type CtraceFile } from "../lib/ctrace";
+import { GB_TYPE_COLOR, NL_COLOR, gbSiteTotals, type ConnectFile, type NlArea } from "../lib/connect";
 import { LNG_SEND, lngDay, lngRadius, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import { IRENA_STOPS, irenaK, irenaMetricById, irenaScale, irenaValue, formatGw, type IrenaFile, type IrenaMetricId } from "../lib/irena";
 import { regionArcs, regionDotLayers, regionFlowLayers } from "../lib/regionLayers";
@@ -102,6 +103,7 @@ export interface Frame {
   colour: ColourId;
   plantStatus: PlantStatus;
   plantStyle: "bars" | "beams";
+  connectSide: "offtake" | "feedin";
   selection: Selection | null;
   files: Record<string, unknown>;
   zoom: number;
@@ -456,6 +458,46 @@ export function buildLayers(fr: Frame): Layer[] {
         lineWidthUnits: "pixels",
         getLineWidth: 1.2,
         updateTriggers: { getRadius: [fr.zoom >= GAS_DETAIL_ZOOM] },
+        pickable: true,
+        parameters: ON_TOP,
+      }),
+    );
+  }
+
+  // ---------------------------------------------------------------- grid capacity: NL areas, GB connection sites
+  const connect = f.connect as ConnectFile | undefined;
+  if (facingEurope && connect && isOn("connect")) {
+    const side = fr.connectSide;
+    const areas = memo("nlAreas", [connect], () =>
+      connect.nl.areas.flatMap((a) => a.polygons.map((polygon) => ({ a, polygon }))),
+    );
+    const sites = memo("gbSites", [connect], () => gbSiteTotals(connect.gb));
+    layers.push(
+      new SolidPolygonLayer<{ a: NlArea; polygon: [number, number][][] }>({
+        id: "eu-connect-nl",
+        data: areas,
+        getPolygon: (d) => d.polygon,
+        getFillColor: (d) => [...NL_COLOR[Math.max(0, Math.min(3, side === "offtake" ? d.a.offtake : d.a.feedin))], 150],
+        updateTriggers: { getFillColor: [side] },
+        pickable: true,
+        autoHighlight: true,
+        highlightColor: [255, 255, 255, 40],
+        parameters: ON_TOP,
+      }),
+      new ScatterplotLayer<(typeof sites)[number]>({
+        id: "eu-connect-gb",
+        data: sites,
+        getPosition: (d) => [d.site[1]!, d.site[2]!],
+        getRadius: (d) => Math.min(16, 1.5 + Math.sqrt(d.mw) * 0.16),
+        radiusUnits: "pixels",
+        getFillColor: (d) => {
+          const top = d.byType.indexOf(Math.max(...d.byType));
+          return [...(GB_TYPE_COLOR[connect.gb.types[top]] ?? GB_TYPE_COLOR.Other), 170];
+        },
+        stroked: true,
+        getLineColor: [6, 7, 10, 200],
+        lineWidthUnits: "pixels",
+        getLineWidth: 0.6,
         pickable: true,
         parameters: ON_TOP,
       }),

@@ -390,6 +390,32 @@ subsector), `Owners` (the first two company names).
   2025 24.4 Mt modelled against 25.1 Mt verified in the EU ETS (`ets.json`).
 - Refresh: on the 1st of each month on `eu-days` (and whenever the file is missing).
 
+## Grid capacity: GB, NL, ES (`scripts/fetch_connect_here.py`, `connect.json`)
+
+| Country | Source | What |
+|---|---|---|
+| GB | NESO TEC register (CKAN resource `17becbab-…`, NESO Open Data Licence, twice weekly) | every project holding or seeking transmission entry capacity: site, MW connected, cumulative MW, plant type, status, effective date, TO, agreement |
+| GB positions | NESO "GSP - Gnode - Direct Connect - Region Lookup" (2018, `bbe2cc72-…`) | GSP latitude/longitude per region name |
+| NL | Netbeheer Nederland, landelijke capaciteitskaart, regional operators' supply areas, ArcGIS feature service `Capaciteitskaart_elektriciteitsnet_v2_afname` (Esri Nederland for Netbeheer Nederland; Esri NL terms of use) | per area: offtake (`afname`) and feed-in (`opwek`) status 0–3, queue MW (`wachtrij_*`), requests |
+| ES | Red Eléctrica, "Capacidad de acceso de demanda disponible y ocupada en los nudos de la red de transporte" (`<date>_GRT_demanda.xlsx`, monthly) | per node the access capacity available for new requests (MW): demand CEP with/without voltage-dip ride-through, demand not CEP, storage MPE/MGES; tender nodes |
+
+Rules:
+- GB: "waiting" = cumulative total capacity − MW connected per project (computed); a hybrid
+  counts under its first listed plant type. A site is placed only where its name, without
+  voltage and the words GSP/substation, equals a region name in NESO's lookup (the GSP's
+  position there); 2026-10-10: 210.1 of 740.5 GW cumulative capacity at placed sites. Most
+  large 400 kV sites and planned "connection nodes" have no published position: counted in the
+  card, not drawn. National Grid's own route-map shapefiles exclude commercial use; not used.
+- NL: the capacity map's own legend (its renderer expression): 0 capacity available without a
+  queue, 1 limited without a queue, 2 under study with a queue, 3 shortage with a queue; areas
+  named "0" (no colour yet) left out. Outlines simplified to ~150 m (shapely, 0.0015°).
+  2026-10-13: 923 area parts; offtake short in 435, feed-in short in 80. TenneT's high-voltage
+  layer (27 congestion areas) is not included yet.
+- ES: columns 85–89 of the sheet "Ficha Capacidades" (the "capacidad de acceso disponible para
+  solicitudes, criterio general RdT" block); the file has no coordinates, so Spain is a card
+  only. Nodes sharing a zone share capacity, so the card does not sum them.
+- Refresh: Mondays on `eu-days`.
+
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
 | File | Records | Source |

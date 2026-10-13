@@ -35,6 +35,7 @@ export type LayerId =
   | "lngSendOut"
   | "ets"
   | "ctrace"
+  | "connect"
   | "plantOutput"
   | "financeCoal"
   | "financeGas"
@@ -75,6 +76,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "substations", label: "Substations", desc: "220 kV and more, shown zoomed in", group: "Power grid", coverage: "Europe", color: "rgb(226,232,240)" },
   { id: "gridWorld", label: "High-voltage lines", desc: "220 kV and more, mapped in OpenStreetMap", group: "Power grid", coverage: "World", color: "rgb(160,210,255)" },
   { id: "gridUS", label: "US transmission lines", desc: "100–765 kV by voltage, mapped in OpenStreetMap", group: "Power grid", coverage: "US", color: "rgb(236,178,120)" },
+  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Power grid", coverage: "GB, NL, ES", color: "rgb(206,138,72)" },
   { id: "cables", label: "Undersea power cables", desc: "HVDC and AC cables at sea", group: "Power grid", coverage: "World", color: "rgb(110,190,255)" },
   { id: "predicted", label: "Predicted local grid", desc: "Estimated from night lights (Gridfinder)", group: "Power grid", coverage: "World", color: "rgb(255,190,110)" },
   { id: "plantsEU", label: "Power plants", desc: "20 MW and more, by fuel", group: "Power plants", coverage: "Europe", color: "rgb(255,128,72)" },
@@ -128,6 +130,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "financeGas",
   "ets",
   "ctrace",
+  "connect",
   "steel",
   "cement",
   "chemicals",
@@ -400,6 +403,8 @@ interface AppState {
   colour: ColourId;
   plantStatus: PlantStatus;
   plantStyle: "bars" | "beams";
+  /** the Grid capacity layer's Dutch areas: room for new demand or for new generation */
+  connectSide: "offtake" | "feedin";
   selection: Selection | null;
   tab: string;
   story: string | null;
@@ -431,6 +436,7 @@ export const useApp = create<AppState>(() => ({
   colour: "renewable",
   plantStatus: "operating",
   plantStyle: "bars",
+  connectSide: "offtake",
   selection: null,
   tab: "now",
   story: "europe-live",
@@ -477,6 +483,9 @@ export const actions = {
   },
   setPlantStyle(plantStyle: "bars" | "beams") {
     useApp.setState({ plantStyle });
+  },
+  setConnectSide(connectSide: "offtake" | "feedin") {
+    useApp.setState({ connectSide });
   },
   /** Jump the 24 h clock to a slot (pauses at the end of the day). */
   seekDay(slot: number) {

@@ -23,6 +23,7 @@ import { FUEL_COLOR } from "../lib/energy";
 import { ETS_COLOR, ETS_REGISTRY_NAME, etsIn, mt, newestT, type EtsFile } from "../lib/ets";
 import { LNG_SEND, gwhdText, lngDay, type LngTerminalsFile } from "../lib/lngTerminals";
 import { CT_COLOR, subsectorLabel, type CtraceFile } from "../lib/ctrace";
+import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 
 const muted = "text-[#8d94a1]";
 const CLASS_COLOR = ["rgb(120,222,160)", "rgb(255,196,96)", "rgb(160,170,190)", "rgb(130,134,146)"];
@@ -447,6 +448,126 @@ function EtsCard({ iso3 }: { iso3?: string }) {
   );
 }
 
+/** Grid capacity: GB's TEC register, the Dutch capacity map, Spain's node capacities. */
+function ConnectCards({ iso3 }: { iso3?: string }) {
+  const f = useFile<ConnectFile>("connect");
+  if (!f) return <Card title="Connecting to the grid">Loading…</Card>;
+  const show = (code: string) => !iso3 || iso3 === code;
+  const any = show("GBR") || show("NLD") || show("ESP");
+  if (!any) return null;
+  return (
+    <>
+      {show("GBR") && <GbConnectCard f={f} />}
+      {show("NLD") && <NlConnectCard f={f} />}
+      {show("ESP") && <EsConnectCard f={f} />}
+    </>
+  );
+}
+
+function GbConnectCard({ f }: { f: ConnectFile }) {
+  const g = f.gb;
+  const waiting = (p: (typeof g.projects)[number]) => Math.max(0, p[2] - p[3]);
+  const total = g.projects.reduce((a, p) => a + waiting(p), 0);
+  const connected = g.projects.reduce((a, p) => a + p[3], 0);
+  const byType = g.types
+    .map((t, i) => ({ key: t, label: t, value: g.projects.filter((p) => p[4] === i).reduce((a, p) => a + waiting(p), 0) / 1000, color: rgbCss(GB_TYPE_COLOR[t] ?? GB_TYPE_COLOR.Other) }))
+    .filter((r) => r.value > 0)
+    .sort((a, b) => b.value - a.value);
+  const byStatus = g.statuses
+    .map((st, i) => ({ key: st, label: st, value: g.projects.filter((p) => p[5] === i).reduce((a, p) => a + waiting(p), 0) / 1000 }))
+    .filter((r) => r.value > 0)
+    .sort((a, b) => b.value - a.value);
+  const years = new Map<string, number>();
+  for (const p of g.projects) if (p[6] && waiting(p) > 0) years.set(p[6].slice(0, 4), (years.get(p[6].slice(0, 4)) ?? 0) + waiting(p));
+  const ys = [...years.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  const top = Math.max(1, ...ys.map(([, v]) => v));
+  return (
+    <Card title="Connecting to the grid · Great Britain" note={`NESO TEC register · ${g.date}`}>
+      <div className="text-[22px] font-light text-slate-50">
+        {gwText(total)} <span className={`text-[11px] ${muted}`}>waiting to connect to the transmission grid; {gwText(connected)} of these projects already connected (sums, computed)</span>
+      </div>
+      <Head>Waiting, by type (first listed), GW</Head>
+      <Rows rows={byType} unit="GW" />
+      <Head>By status, GW</Head>
+      <Rows rows={byStatus} unit="GW" />
+      <Head>By the year the capacity takes effect</Head>
+      <div className="flex h-14 items-end gap-[2px]">
+        {ys.map(([y, v]) => (
+          <div key={y} className="flex-1" title={`${y}: ${gwText(v)}`}>
+            <div className="rounded-t-sm bg-[rgb(206,138,72)]" style={{ height: `${(100 * v) / top}%` }} />
+          </div>
+        ))}
+      </div>
+      <div className={`flex justify-between text-[9.5px] ${muted}`}>
+        <span>{ys[0]?.[0]}</span>
+        <span>{ys[ys.length - 1]?.[0]}</span>
+      </div>
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Each project's cumulative capacity minus what is connected; a hybrid counts under its first listed type. Requests, not plants being built. Sites are placed only where named after a GSP in
+        NESO's lookup.
+      </div>
+    </Card>
+  );
+}
+
+function NlConnectCard({ f }: { f: ConnectFile }) {
+  const areas = f.nl.areas.filter((a, i, all) => all.findIndex((b) => b.id === a.id) === i); // multi-part areas once
+  const count = (side: "offtake" | "feedin", k: number) => areas.filter((a) => a[side] === k).length;
+  const q = (side: "queue_offtake_mw" | "queue_feedin_mw") => areas.reduce((a, x) => a + (x[side] ?? 0), 0);
+  return (
+    <Card title="Connecting to the grid · Netherlands" note="Netbeheer Nederland capaciteitskaart">
+      {(["offtake", "feedin"] as const).map((side) => (
+        <div key={side} className="mb-2">
+          <div className="text-[11px] text-slate-200">{side === "offtake" ? "New demand" : "New generation"}</div>
+          <div className="mt-0.5 flex h-[8px] overflow-hidden rounded-sm">
+            {[0, 1, 2, 3].map((k) => (
+              <div key={k} title={`${f.nl.status[k]}: ${count(side, k)} areas`} style={{ width: `${(100 * count(side, k)) / areas.length}%`, background: rgbCss(NL_COLOR[k]) }} />
+            ))}
+          </div>
+          <div className={`text-[10px] ${muted}`}>
+            {count(side, 3)} of {areas.length} areas short of capacity · queue {gwText(q(side === "offtake" ? "queue_offtake_mw" : "queue_feedin_mw"))} (sum over the areas, computed)
+          </div>
+        </div>
+      ))}
+      <div className={`text-[10px] leading-snug ${muted}`}>The regional operators' supply areas (Liander, Stedin, Enexis and others); TenneT's own high-voltage map is not included.</div>
+    </Card>
+  );
+}
+
+function EsConnectCard({ f }: { f: ConnectFile }) {
+  const nodes = f.es.nodes.filter((n) => n[5] != null);
+  const free = nodes.filter((n) => (n[5] ?? 0) > 0);
+  const top = [...free].sort((a, b) => (b[5] ?? 0) - (a[5] ?? 0)).slice(0, 10);
+  const max = top[0]?.[5] || 1;
+  return (
+    <Card title="Connecting to the grid · Spain" note={`Red Eléctrica · ${f.es.date}`}>
+      <div className="text-[22px] font-light text-slate-50">
+        {free.length} <span className={`text-[11px] ${muted}`}>of {nodes.length} transmission nodes have room for new demand (count, computed)</span>
+      </div>
+      <Head>Most room for new demand, MW</Head>
+      <div className="space-y-1">
+        {top.map((n) => (
+          <div key={n[0]} className="text-[11px]">
+            <div className="flex justify-between gap-2">
+              <span className="truncate text-slate-200">
+                {n[0]} <span className={muted}>{n[2]}</span>
+              </span>
+              <span className="tabular-nums text-slate-100">{Math.round(n[5] ?? 0).toLocaleString("en-US")} MW</span>
+            </div>
+            <div className="h-1 rounded bg-white/[0.06]">
+              <div className="h-1 rounded bg-[rgb(52,120,108)]" style={{ width: `${(100 * (n[5] ?? 0)) / max}%` }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Access capacity available for new requests at the node for demand without a power-electronics interface (REE's "no CEP" column); nodes sharing a zone share it, so the values do not add up.
+        REE publishes no positions: the nodes are not drawn. {f.es.nodes.filter((n) => n[8]).length} nodes go to a capacity tender.
+      </div>
+    </Card>
+  );
+}
+
 /** Climate TRACE: modelled CO2e of the facilities in scope, the largest and the sum per group. */
 function CtraceCard({ iso3 }: { iso3?: string }) {
   const f = useFile<CtraceFile>("ctrace");
@@ -563,6 +684,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "cables") return iso3 ? null : <CablesCard key={id} />;
         if (id === "ets") return <EtsCard key={id} iso3={iso3} />;
         if (id === "ctrace") return <CtraceCard key={id} iso3={iso3} />;
+        if (id === "connect") return <ConnectCards key={id} iso3={iso3} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;
       })}
