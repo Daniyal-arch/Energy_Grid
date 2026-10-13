@@ -134,7 +134,7 @@ Common columns: `ts` (UTC start), `resolution_min`. `*_id` columns are the sourc
 |---|---|---|---|---|
 | `outages` | `fips` VARCHAR(5), `ts` TIMESTAMP (as published), `customers_out` INTEGER | `year` | `fips, ts` | `fips` |
 | `counties` | `fips`, `county`, `state`, `mcc_customers` INTEGER (ORNL's modelled customers) | none | `fips` | |
-| `coverage` | EAGLE-I's `coverage_history.csv` and `DQI.csv` as published | none | | |
+| `coverage`, `dqi` | EAGLE-I's `coverage_history.csv` and `DQI.csv` as published | none | | |
 
 ### MaStR, every German unit (`lake/mastr/`), adding now
 
@@ -145,11 +145,12 @@ Common columns: `ts` (UTC start), `resolution_min`. `*_id` columns are the sourc
 
 Snapshots: the newest, plus one per year (the others are dropped after a year).
 
-### WRI Aqueduct 4.0 (`lake/aqueduct/v4.0/`), adding now
+### WRI Aqueduct 4.0 (`lake/aqueduct/`, `source_version` 4.0), adding now
 
 | Table | Columns | Sort |
 |---|---|---|
-| `baseline_annual` (GeoParquet) | `aq30_id`, `pfaf_id`, `gid_0`, `gid_1`, `name_0`, `name_1`, `area_km2`, then for each of the 13 indicators (`bws`, `bwd`, `iav`, `sev`, `gtd`, `rfr`, `cfr`, `drr`, `ucw`, `cep`, `udw`, `usa`, `rri`) `_raw` DOUBLE, `_score` FLOAT, `_cat` TINYINT, `_label`; the weighted scores; `geometry`, `bbox` | Hilbert |
+| `baseline_annual` (GeoParquet) | `aq30_id`, `pfaf_id`, `gid_0`, `gid_1`, `name_0`, `name_1`, `area_km2`, then for each of the 13 indicators (`bws`, `bwd`, `iav`, `sev`, `gtd`, `rfr`, `cfr`, `drr`, `ucw`, `cep`, `udw`, `usa`, `rri`) `_raw` DOUBLE, `_score` FLOAT, `_cat` SMALLINT (WRI's no-data -9999), `_label`; the weighted scores; `geometry`, `bbox` | Hilbert |
+| `basins` (GeoParquet) | `pfaf_id`, `iso2`, `iso3`, `admin1` (the country and province holding most of the basin), `geometry`, `bbox` | Hilbert |
 | `baseline_monthly` | `pfaf_id`, `month`, per indicator `_raw/_score/_cat` | `pfaf_id, month` |
 | `future_annual` | `pfaf_id`, `scenario`, `year`, per indicator | `pfaf_id, scenario, year` |
 

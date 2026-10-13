@@ -246,7 +246,7 @@ function riskHtml(id: string, object: unknown): string | null {
         return `<div style="display:flex;justify-content:space-between;gap:16px"><span>${f.indicators[ind].name}</span><span>${label}</span></div>`;
       })
       .join("");
-    return `<b>River basin ${b.id}</b>${rows}${SRC(`WRI Aqueduct ${f.version}, baseline; where a basin's parts differ, the highest`)}`;
+    return `<b>River basin ${b.id}</b>${rows}${SRC(`WRI Aqueduct ${f.version}, baseline, WRI's categories${Object.values(f.mixed).some((n) => n > 0) ? "; where a basin's parts differ, the highest" : ""}`)}`;
   }
   return null;
 }
