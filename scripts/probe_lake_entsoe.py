@@ -40,6 +40,12 @@ def timed(client: httpx.Client, label: str, params: dict[str, str], tag: str = "
 
 def main() -> None:
     client = httpx.Client(timeout=300)
+    if os.environ.get("PROBE_FROM", "1") == "1":
+        first(client)
+    rest(client)
+
+
+def first(client: httpx.Client) -> None:
     de_lu = entsoe.ZONE_EIC["DE-LU"]
     timed(
         client,
@@ -101,6 +107,27 @@ def main() -> None:
                 "periodStart": "202309010000",
                 "periodEnd": end,
             },
+        )
+
+
+def rest(client: httpx.Client) -> None:
+    tennet = "10YDE-EON------1"
+    de_lu = entsoe.ZONE_EIC["DE-LU"]
+    root = entsoe.request(
+        client,
+        {
+            "documentType": "A71",
+            "processType": "A33",
+            "in_Domain": tennet,
+            "periodStart": "202301010000",
+            "periodEnd": "202301020000",
+        },
+    )
+    if root is not None:
+        print(
+            "A71 document head:",
+            entsoe.ET.tostring(root)[:1500].decode(errors="replace"),
+            flush=True,
         )
     timed(
         client,

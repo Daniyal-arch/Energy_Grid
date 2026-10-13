@@ -50,7 +50,8 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: |
           pip install httpx python-dotenv
-          python scripts/probe_lake_entsoe.py | tee probe.txt
+          set -o pipefail
+          PROBE_FROM=2 python scripts/probe_lake_entsoe.py | tee probe.txt
           { echo '```'; cat probe.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
   plan:

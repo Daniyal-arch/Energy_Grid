@@ -549,6 +549,9 @@ def points_of(
     if root is None:
         return []
     ns = {"n": root.tag.split("}")[0].strip("{")}
+    # a Period without its own interval (A71) takes the document's
+    doc_start = root.findtext("n:time_Period.timeInterval/n:start", default="", namespaces=ns)
+    doc_end = root.findtext("n:time_Period.timeInterval/n:end", default="", namespaces=ns)
     out = []
     for ts in root.findall("n:TimeSeries", ns):
         meta = {
@@ -568,12 +571,12 @@ def points_of(
         for period in ts.findall("n:Period", ns):
             res = period.findtext("n:resolution", default="", namespaces=ns) or ""
             minutes = resolution_minutes(res)
-            t0 = datetime.fromtimestamp(
-                _ts(period.findtext("n:timeInterval/n:start", namespaces=ns) or ""), tz=UTC
-            )
-            t1 = datetime.fromtimestamp(
-                _ts(period.findtext("n:timeInterval/n:end", namespaces=ns) or ""), tz=UTC
-            )
+            start = period.findtext("n:timeInterval/n:start", namespaces=ns) or doc_start
+            end = period.findtext("n:timeInterval/n:end", namespaces=ns) or doc_end
+            if not start or not end:
+                continue
+            t0 = datetime.fromtimestamp(_ts(start), tz=UTC)
+            t1 = datetime.fromtimestamp(_ts(end), tz=UTC)
             points = sorted(
                 (
                     int(p.findtext("n:position", namespaces=ns) or 0),
