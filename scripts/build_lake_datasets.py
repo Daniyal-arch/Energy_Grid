@@ -817,7 +817,9 @@ def connect(args: argparse.Namespace) -> None:
                 "where": "1=1",
                 "outFields": "*",
                 "f": "geojson",
-                "outSR": "4326",
+                "outSR": 4326,
+                "geometryPrecision": 4,
+                "resultRecordCount": 1000,
                 "resultOffset": offset,
             },
         ).json()
