@@ -1,0 +1,85 @@
+name: Lake datasets
+
+# The lake for the datasets the map already uses (scripts/build_lake_datasets.py,
+# docs/DATA_LAKE.md sections 6 and 7). The daily and weekly refreshes run as lake steps in the
+# workflows that already fetch each dataset (eu-days.yml, us-grid.yml, gem.yml); this workflow
+# runs backfills and one-off builds by hand: Actions > Lake datasets > Run workflow with a
+# dataset and, for entsog and eia930, the years ("2015-2025" or "2019,2020").
+# Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, EIA_API_KEY (eia930).
+
+on:
+  workflow_dispatch:
+    inputs:
+      dataset:
+        description: "entsog, eia930, eia860m, lbnl, irena, jrc, gem, osm, euets, connect"
+        type: string
+        required: true
+      years:
+        description: 'entsog / eia930 backfill: "2015-2025" or "2019,2020" (empty: the recent days)'
+        type: string
+        default: ""
+  push:
+    branches: [claude/lake-integrated]
+    paths: [.github/workflows/lake-datasets.yml, scripts/build_lake_datasets.py]
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      runs: ${{ steps.p.outputs.runs }}
+    steps:
+      - id: p
+        env:
+          DATASET: ${{ inputs.dataset || '' }}
+          YEARS: ${{ inputs.years || '' }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          ds, raw = os.environ["DATASET"].strip(), os.environ["YEARS"].strip()
+          if not ds:  # a push to the branch: every dataset once, the time series for recent days
+              runs = [{"dataset": d, "args": ""} for d in ["irena", "jrc", "euets", "connect", "osm", "eia860m", "lbnl", "gem"]]
+              runs += [{"dataset": "entsog", "args": "--recent 7"}, {"dataset": "eia930", "args": "--recent 3"}]
+          elif raw:
+              years = []
+              for part in raw.split(","):
+                  a, _, b = part.strip().partition("-")
+                  years += list(range(int(a), int(b or a) + 1))
+              runs = [{"dataset": ds, "args": f"--year {y}"} for y in years]
+          else:
+              runs = [{"dataset": ds, "args": "--recent 7" if ds in ("entsog", "eia930") else ""}]
+          print("runs=" + json.dumps(runs))
+          PY
+
+  build:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        run: ${{ fromJson(needs.plan.outputs.runs) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: ${{ matrix.run.dataset }} ${{ matrix.run.args }}
+        env:
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb httpx openpyxl python-dotenv pycountry shapely
+          if [ "${{ matrix.run.dataset }}" = gem ]; then python scripts/fetch_gem.py --pull-r2; fi
+          if [ "${{ matrix.run.dataset }}" = osm ]; then
+            curl -sfL -o /tmp/cables.json https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/cables.json || true
+            curl -sfL -o /tmp/datacentres.json https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/datacentres.json || true
+            mkdir -p store && cp /tmp/cables.json /tmp/datacentres.json store/ 2>/dev/null || true
+            extra="--store store"
+          fi
+          set -o pipefail
+          python scripts/build_lake_datasets.py ${{ matrix.run.dataset }} ${{ matrix.run.args }} $extra --lake lake-out --tmp /tmp/lake-tmp --upload 2>&1 | tail -n 60
