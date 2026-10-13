@@ -118,3 +118,15 @@ def test_merge_catalogs_sums_parallel_jobs() -> None:
     assert m["tables"]["lines"]["rows"] == 5 and m["tables"]["lines"]["bytes"] == 15
     assert m["tables"]["lines"]["files"] == ["lines/a.parquet", "lines/b.parquet"]
     assert m["updated"] == "2026-10-13T09:05:00+00:00"
+
+
+def test_merge_does_not_widen_the_upload(tmp_path: Path) -> None:
+    con = duckdb.connect()
+    old = lake.Lake("test", tmp_path, source="s", licence="l", script="t")
+    old.write(con, "rows", "SELECT 1 AS i", sort=["i"], partition={"year": "2025"})
+    old.finish()
+    new = lake.Lake("test", tmp_path, source="s", licence="l", script="t")
+    new.write(con, "rows", "SELECT 2 AS i", sort=["i"], partition={"year": "2026"})
+    cat = json.loads(new.finish().read_text(encoding="utf-8"))
+    assert len(cat["tables"]["rows"]["files"]) == 2
+    assert new.tables["rows"].files == ["rows/year=2026/part-0.parquet"]
