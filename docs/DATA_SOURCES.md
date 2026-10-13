@@ -440,8 +440,7 @@ standard keys `iso2`, `iso3`, `admin1` where the source names a country or state
 table, schema = dataset, and the topic views `plants`, `prices`, `outages`, `emissions`,
 `grid_capacity`, `water_risk` with a `source` column) are written daily by
 `.github/workflows/lake-catalog.yml`. A topic view passes each source's own values under common
-column names (e.g. `outages.value` is EAGLE-I's customers out, or ENTSO-E's nominal minus
-available MW, with `unit` saying which); nothing is converted between sources.
+column names (e.g. `outages.value` is EAGLE-I's customers out, or ENTSO-E's available MW during the outage, with `unit` saying which); nothing is converted between sources.
 
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
