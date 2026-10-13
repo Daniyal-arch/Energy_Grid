@@ -42,7 +42,9 @@ jobs:
       - name: Lines from 220 kV in the band (OpenStreetMap through Overture Maps)
         run: |
           pip install duckdb httpx shapely
-          python scripts/fetch_world_hv_overture.py --band ${{ matrix.band }} --out hv-${{ matrix.band }}.geojsons
+          # on failure the error's tail becomes a public annotation (logs need a sign-in)
+          python scripts/fetch_world_hv_overture.py --band ${{ matrix.band }} --out hv-${{ matrix.band }}.geojsons 2> err.txt             || { echo "::error title=band ${{ matrix.band }}::$(tail -c 3000 err.txt | tr '
+' '|')"; exit 1; }
 
       - uses: actions/upload-artifact@v4
         with:
