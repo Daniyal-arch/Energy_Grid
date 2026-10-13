@@ -130,7 +130,7 @@ TOPICS: dict[str, dict] = {
             (
                 "GEM",
                 "gem",
-                "*",
+                "integrated_power_*",
                 {
                     "id": ["gem_unit_phase_id", "gem_unit_id", "gem_location_id"],
                     "name": ["plant_project_name", "project_name", "plant_name", "unit_name"],
@@ -484,7 +484,7 @@ def build_duckdb(path: Path, cats: dict[str, dict]) -> dict[str, list[str]]:
             ]
             for t in names:
                 have = tables[(ds, t)]
-                if pattern == "*" and pick(have, cols.get("capacity_mw", ["NULL"])) == "NULL":
+                if pattern.endswith("*") and pick(have, cols.get("capacity_mw", ["NULL"])) == "NULL":
                     continue  # a GEM sheet without capacities is not a plant list
                 sel = [f"'{source}' AS source", f"'{ds}.{t}' AS source_table"]
                 for col in spec["columns"]:
