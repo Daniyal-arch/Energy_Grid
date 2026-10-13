@@ -433,8 +433,10 @@ Rules (computed, labelled on the map and in the panel):
   / 1000) summed per municipality (`Gemeindeschluessel`) and technology (the XML file a unit
   comes from: solar, wind, storage, biomass, hydro, combustion, nuclear, other = geothermal,
   mine gas, pressure relief).
-- Units without a municipality key (offshore wind) are counted in `no_ags`; offshore wind in
-  `offshore` (`WindAnLandOderAufSee` = "Windkraft auf See").
+- Units without a municipality key are counted in `no_ags`, not drawn: offshore wind
+  (`offshore`, `WindAnLandOderAufSee` = "Windenergie auf See") and the large thermal units,
+  which the public export lists with their Land only (no municipality, postcode or
+  coordinates; 2026-10-13: 70.5 GW of combustion units in operation, e.g. Boxberg, Lünen).
 - Large units: in operation, ≥ 1 MW gross, with coordinates (MaStR publishes them only for
   larger units); drawn from zoom 6.
 - New units per month: units whose commissioning date (`Inbetriebnahmedatum`) falls in each of
