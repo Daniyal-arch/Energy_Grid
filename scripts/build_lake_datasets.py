@@ -416,6 +416,28 @@ def lbnl(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------- IRENA
 
 
+def jsonstat_rows(d: dict) -> list[dict]:
+    """json-stat2 values as rows: every dimension's code and label, then the value."""
+    ids, sizes, values = d["id"], d["size"], d["value"]
+    cats = {k: list(d["dimension"][k]["category"]["index"]) for k in ids}
+    labels = {k: d["dimension"][k]["category"].get("label", {}) for k in ids}
+    strides = [1] * len(sizes)
+    for k in range(len(sizes) - 2, -1, -1):
+        strides[k] = strides[k + 1] * sizes[k + 1]
+    rows = []
+    for pos, v in enumerate(values):
+        if v is None:
+            continue
+        row: dict[str, Any] = {}
+        for k, dim in enumerate(ids):
+            code = cats[dim][(pos // strides[k]) % sizes[k]]
+            row[dim] = code
+            row[f"{dim} label"] = labels[dim].get(code, code)
+        row["value"] = v
+        rows.append(row)
+    return rows
+
+
 def irena(args: argparse.Namespace) -> None:
     import fetch_irena as fi
 
@@ -427,40 +449,27 @@ def irena(args: argparse.Namespace) -> None:
         meta = {v["code"]: v for v in client.get(url).json()["variables"]}
         countries = meta["Country/area"]["values"]
         rows = []
-        for i in range(0, len(countries), fi.BATCH):
-            q = {
-                "query": [
-                    {
-                        "code": "Country/area",
-                        "selection": {"filter": "item", "values": countries[i : i + fi.BATCH]},
+        # one query per data type and grid connection, countries in batches (pxweb refuses
+        # larger answers with 403)
+        for dtype in meta["Data Type"]["values"]:
+            for grid in meta["Grid connection"]["values"]:
+                for i in range(0, len(countries), fi.BATCH):
+                    sel = [
+                        ("Country/area", countries[i : i + fi.BATCH]),
+                        ("Data Type", [dtype]),
+                        ("Grid connection", [grid]),
+                    ]
+                    q = {
+                        "query": [
+                            {"code": c, "selection": {"filter": "item", "values": v}}
+                            for c, v in sel
+                        ],
+                        "response": {"format": "json-stat2"},
                     }
-                ],
-                "response": {"format": "json-stat2"},
-            }
-            r = client.post(url, json=q)
-            r.raise_for_status()
-            d = r.json()
-            ids, sizes, values = d["id"], d["size"], d["value"]
-            cats = {k: list(d["dimension"][k]["category"]["index"]) for k in ids}
-            labels = {k: d["dimension"][k]["category"].get("label", {}) for k in ids}
-            strides = [1] * len(sizes)
-            for k in range(len(sizes) - 2, -1, -1):
-                strides[k] = strides[k + 1] * sizes[k + 1]
-            for pos, v in enumerate(values):
-                if v is None:
-                    continue
-                row: dict[str, Any] = {}
-                for k, dim in enumerate(ids):
-                    j = (pos // strides[k]) % sizes[k]
-                    code = cats[dim][j]
-                    row[dim] = code
-                    row[f"{dim} label"] = labels[dim].get(code, code)
-                row["value"] = v
-                rows.append(row)
-            print(
-                f"  countries {i + 1}-{i + len(q['query'][0]['selection']['values'])}: {len(rows):,} values",
-                flush=True,
-            )
+                    r = client.post(url, json=q)
+                    r.raise_for_status()
+                    rows += jsonstat_rows(r.json())
+                print(f"  {dtype} / {grid}: {len(rows):,} values so far", flush=True)
     release = re.sub(r"_PX\.px$", "", table)
     lk = lake_for(
         "irena",
@@ -625,6 +634,9 @@ def gem(args: argparse.Namespace) -> None:
 # ---------------------------------------------------------------- OSM-derived snapshots
 
 
+GEOM_SQL = "TRY(ST_GeomFromText(trim(CAST(t.geometry AS VARCHAR), '''''' || '\"')))"
+
+
 def osm(args: argparse.Namespace) -> None:
     import fetch_eu_energy as fe
 
@@ -645,7 +657,7 @@ def osm(args: argparse.Namespace) -> None:
         rows = list(csv.DictReader(io.StringIO(text)))
         names = load_rows(con, "t", rows, args.tmp)
         geom = (
-            "ST_GeomFromText(t.geometry)"
+            GEOM_SQL
             if "geometry" in names
             else ("ST_Point(t.x, t.y)" if "x" in names and "y" in names else None)
         )
