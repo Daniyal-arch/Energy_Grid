@@ -18,6 +18,7 @@ import { isBasin, subsectorLabel, type CtRow, type CtraceFile } from "../lib/ctr
 import { gwText as connectGw, type ConnectFile, type GbSite, type NlArea } from "../lib/connect";
 import { STATUS_TEXT, gwhdText, lngDay, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import type { GasArc } from "./build";
+import { MASTR_LABEL, mwText, type MastrMuniFile, type MastrUnitsFile } from "../lib/mastr";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
@@ -215,7 +216,30 @@ function usHtml(id: string, object: unknown): string | null {
   return null;
 }
 
+function mastrHtml(id: string, object: unknown): string | null {
+  if (id === "de-mastr-muni") {
+    const f = fileOf<MastrMuniFile>("mastrMuni");
+    const g = f?.gemeinden[(object as { k: number }).k];
+    if (!f || !g) return null;
+    const rows = f.techs
+      .map((t, i) => [t, g.mw[i], g.n[i]] as [string, number, number])
+      .filter(([, mw]) => mw > 0)
+      .sort((a, b) => b[1] - a[1])
+      .map(([t, mw, n]) => `<div style="display:flex;justify-content:space-between;gap:16px"><span>${MASTR_LABEL[t] ?? t}</span><span>${mwText(mw)} · ${n.toLocaleString("en-US")}</span></div>`)
+      .join("");
+    return `<b>${g.name ?? g.ags}</b><div style="color:#8d94a1">AGS ${g.ags} · units in operation, gross MW</div>${rows}${SRC(`Marktstammdatenregister ${f.snapshot}, sums per municipality (computed)`)}`;
+  }
+  if (id === "de-mastr-units") {
+    const f = fileOf<MastrUnitsFile>("mastrUnits");
+    const u = object as MastrUnitsFile["units"][number];
+    if (!f) return null;
+    return `<b>${MASTR_LABEL[f.techs[u[2]]] ?? f.techs[u[2]]}</b><div>${mwText(u[3])} gross${u[4] ? ` · in operation since ${u[4]}` : ""}</div>${SRC(`Marktstammdatenregister ${f.snapshot}`)}`;
+  }
+  return null;
+}
+
 function tooltipHtml(id: string, object: unknown): string | null {
+  if (id.startsWith("de-mastr-")) return mastrHtml(id, object);
   if (id === "us-retail") {
     const d = object as { code: string; name: string };
     const us = fileOf<RetailFile>("retail")?.us;
