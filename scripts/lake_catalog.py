@@ -302,7 +302,7 @@ def r2_secret(con: duckdb.DuckDBPyConnection) -> bool:
         return False
     con.execute("INSTALL httpfs; LOAD httpfs")
     con.execute(
-        f"CREATE TEMP SECRET lake (TYPE r2, KEY_ID '{key}', SECRET '{secret}', ACCOUNT_ID '{account}')"
+        f"CREATE OR REPLACE SECRET lake (TYPE r2, KEY_ID '{key}', SECRET '{secret}', ACCOUNT_ID '{account}')"
     )
     return True
 
