@@ -74,7 +74,7 @@ the country is the first sort column, and min/max statistics do the skipping.
 | one country | EAGLE-I (US), MaStR (DE), NESO (GB) | year or snapshot (MaStR solar also by Land) | the entity id, then time |
 | many countries, medium | ENTSO-E, Eurostat, GEM | year | `area`/`iso2`, then time or id |
 | world, small (< 1 GB) | Aqueduct, Global Renewables Watch | none or a few files | `iso3`, then Hilbert |
-| world, large | Overture power extract, US nodal prices | continent or market, then year | `iso3`/node, then Hilbert or time |
+| world, large | Overture power extract, US nodal prices | release or market, then year (one file per band or month) | `iso3`/node, then Hilbert or time |
 
 ## 4. How each file is written (the standard)
 
@@ -172,8 +172,8 @@ Snapshots: the newest, plus one per year (the others are dropped after a year).
 
 | Table | Columns | Partition | Sort |
 |---|---|---|---|
-| `lines` (GeoParquet) | `id` (Overture), `class` (power_line/cable/minor_line), `kv` (highest voltage, from OSM's tag), `voltage` (the tag as published), `circuits`, `cables`, `frequency`, `operator`, `name`, `dc`, `cable`, `iso3`, `geometry`, `bbox` | `continent`, `release` | `iso3`, Hilbert |
-| `substations`, `plants` (GeoParquet) | `id`, `class`, `kv`, `voltage`, `operator`, `name`, source tags kept as a map, `iso3`, `geometry`, `bbox` | `continent`, `release` | `iso3`, Hilbert |
+| `lines` (GeoParquet) | `id` (Overture), `class` (power_line/cable/minor_line), `kv` (highest voltage, from OSM's tag), `voltage` (the tag as published), `circuits`, `cables`, `frequency`, `operator`, `name`, `dc`, `cable`, `iso3`, `geometry`, `bbox` | `release` (one file per longitude band) | `iso3`, Hilbert |
+| `sites` (GeoParquet: substations, plants, converters…) | `id`, `class`, `kv`, `voltage`, `operator`, `name`, the OSM tags as a map, `iso3`, `geometry`, `bbox` | `release` (one file per longitude band) | `iso3`, Hilbert |
 
 Lines from 60 kV (and all cables and substations); no towers, poles or single generators.
 Each monthly release is kept until the next; one per year is kept for good. The world map
