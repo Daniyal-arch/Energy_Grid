@@ -206,6 +206,7 @@ def build_part(zip_path: Path, part: str, root: Path, upload: bool, tmp: Path) -
     # a database file, so the solar table (millions of rows, ~60 columns) spills to disk
     con = duckdb.connect(str(tmp / f"{part}.duckdb"))
     con.execute(f"SET temp_directory = {lake._quote(str(tmp / 'spill'))}")
+    con.execute("SET memory_limit = '4GB'")  # three parts run side by side on one runner
     register_catalog(con, values)
     lk = lake_of(root, snapshot)
     chunks = to_parquet(z, PARTS[part], tmp)
