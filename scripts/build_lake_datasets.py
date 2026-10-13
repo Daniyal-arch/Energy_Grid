@@ -153,19 +153,31 @@ def entsog(args: argparse.Namespace) -> None:
             last = min(
                 end, (m.replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(days=1)
             )
-            got = fe.get(
-                client,
-                "operationaldatas",
-                indicator="Physical Flow",
-                periodType="day",
-                timezone="CET",
-                **{"from": m.isoformat(), "to": last.isoformat()},
-            )["operationaldatas"]
+            try:
+                got = fe.get(
+                    client,
+                    "operationaldatas",
+                    indicator="Physical Flow",
+                    periodType="day",
+                    timezone="CET",
+                    **{"from": m.isoformat(), "to": last.isoformat()},
+                )["operationaldatas"]
+            except RuntimeError:
+                # the API keeps about five years; older months are in ENTSOG's TP Archives
+                # (files, not served by the API): recorded, not filled
+                print(
+                    f"  {m}..{last}: not served by the API (ENTSOG archives data over ~5 years)",
+                    flush=True,
+                )
+                got = []
             rows += got
             print(f"  {m}..{last}: {len(got):,} rows", flush=True)
             m = last + timedelta(days=1)
         points = fe.get(client, "connectionpoints")["connectionpoints"]
         opd = fe.get(client, "operatorpointdirections")["operatorpointdirections"]
+    if not rows:
+        print(f"  {start}..{end}: no flows served; nothing written", flush=True)
+        return
     load_rows(con, "raw", rows, args.tmp)
     cols = {r[0] for r in con.execute("DESCRIBE raw").fetchall()}
     day = "periodfrom" if "periodfrom" in cols else "period_from"
