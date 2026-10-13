@@ -581,16 +581,16 @@ def gem(args: argparse.Namespace) -> None:
         "GEM licence (CC BY 4.0 for non-commercial use; see each tracker)",
         "scripts/build_lake_datasets.py",
     )
-    for path in sorted(folder.glob("*.xlsx")):
-        tracker = snake(path.stem.split("_")[0] if "_" in path.stem else path.stem)
-        release = next(
-            (
-                str(v.get("release") or v)
-                for k, v in releases.items()
-                if snake(k) in snake(path.stem)
-            ),
-            path.stem,
-        )
+    files = [
+        (snake(t), info.get("updated") or "", folder / t / f)
+        for t, info in releases.items()
+        for f in info.get("files", [])
+        if f.endswith(".xlsx")
+    ]
+    for tracker, release, path in files:
+        if not path.exists():
+            print(f"  {path}: not pulled from R2")
+            continue
         wb = openpyxl.load_workbook(path, read_only=True)
         for sheet in wb.sheetnames:
             ws = wb[sheet]
