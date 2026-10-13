@@ -1,17 +1,21 @@
 name: World high-voltage lines
 
-# Builds the grid layer for the world: every power line of 220 kV and more mapped in
-# OpenStreetMap (scripts/fetch_world_hv.py, Overpass, 10° boxes). Eight regions are fetched
-# in parallel jobs (each with its own time limit), merged (a line in two regions is kept
-# once), cut into vector tiles with tippecanoe (zoom 0-9; 500 kV+ from zoom 0, 300 kV+ from
-# 1, the rest from 3) and uploaded to the R2 bucket infraatlas-data as grid/world-hv.pmtiles.
-# Re-run by hand to refresh (Actions > World high-voltage lines > Run workflow). Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+# Builds the grid layer for the world: every power line and cable of 220 kV and more mapped in
+# OpenStreetMap, read through Overture Maps (scripts/fetch_world_hv_overture.py, DuckDB over
+# Overture's public GeoParquet; Overpass, the earlier source, timed out for North America,
+# Asia, Africa, South America and the north). Eight longitude bands are read in parallel jobs
+# (each line belongs to the band holding its west edge, so no line twice), cut into vector
+# tiles with tippecanoe (zoom 0-9; 500 kV+ from zoom 0, 300 kV+ from 1, the rest from 3) and
+# uploaded to the R2 bucket infraatlas-data as grid/world-hv.pmtiles, with a summary of lines
+# and km per region (grid/world-hv-summary.json). Re-run by hand to refresh (Actions > World
+# high-voltage lines > Run workflow), and when this file or the script changes.
+# Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [.github/workflows/world-hv.yml]
+    paths: [.github/workflows/world-hv.yml, scripts/fetch_world_hv_overture.py]
 
 permissions:
   contents: read
@@ -21,13 +25,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  region:
+  band:
     runs-on: ubuntu-latest
-    timeout-minutes: 340
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
-        region: [na, sa, eu, af, mea, north, asia, oc]
+        band: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
       - uses: actions/checkout@v5
 
@@ -35,20 +39,19 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch the region's lines from OpenStreetMap
+      - name: Lines from 220 kV in the band (OpenStreetMap through Overture Maps)
         run: |
-          pip install httpx
-          python scripts/fetch_world_hv.py --region ${{ matrix.region }} --out hv-${{ matrix.region }}.geojsons
+          pip install duckdb httpx shapely
+          python scripts/fetch_world_hv_overture.py --band ${{ matrix.band }} --out hv-${{ matrix.band }}.geojsons
 
       - uses: actions/upload-artifact@v4
         with:
-          name: hv-${{ matrix.region }}
-          path: hv-${{ matrix.region }}.geojsons
+          name: hv-${{ matrix.band }}
+          path: hv-${{ matrix.band }}.*
           retention-days: 3
 
   tiles:
-    needs: region
-    if: ${{ !cancelled() }}
+    needs: band
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -57,11 +60,24 @@ jobs:
           pattern: hv-*
           merge-multiple: true
 
-      - name: Merge the regions (each line once)
+      - name: Join the bands and their summaries
         run: |
-          ls -la hv-*.geojsons
-          cat hv-*.geojsons | sort -u > hv.geojsons
+          ls -la hv-*
+          cat hv-*.geojsons > hv.geojsons
           wc -l hv.geojsons
+          python3 - <<'EOF'
+          import glob, json
+          from collections import Counter
+          parts = [json.load(open(p)) for p in sorted(glob.glob("hv-*.summary.json"))]
+          total = {"release": parts[0]["release"], "bands": parts}
+          for key in ("lines", "km", "by_voltage", "left_out"):
+              c = Counter()
+              for p in parts:
+                  c.update(p[key])
+              total[key] = dict(c.most_common())
+          json.dump(total, open("world-hv-summary.json", "w"), indent=1)
+          print(json.dumps({k: total[k] for k in ("release", "lines", "km", "by_voltage", "left_out")}, indent=1))
+          EOF
 
       - name: Build tippecanoe
         run: |
@@ -75,7 +91,7 @@ jobs:
         run: |
           tippecanoe -o world-hv.pmtiles -l hv -Z0 -z9 --simplification=6 \
             --no-feature-limit --no-tile-size-limit \
-            --attribution='© OpenStreetMap contributors (ODbL)' --force hv.geojsons
+            --attribution='© OpenStreetMap contributors (ODbL), via Overture Maps' --force hv.geojsons
           ls -la world-hv.pmtiles
 
       - name: Upload to R2
@@ -85,3 +101,5 @@ jobs:
         run: |
           npx --yes wrangler@4 r2 object put infraatlas-data/grid/world-hv.pmtiles \
             --file world-hv.pmtiles --content-type application/vnd.pmtiles --remote
+          npx --yes wrangler@4 r2 object put infraatlas-data/grid/world-hv-summary.json \
+            --file world-hv-summary.json --content-type application/json --remote
