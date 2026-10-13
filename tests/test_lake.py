@@ -52,6 +52,59 @@ def test_write_sorts_partitions_and_catalogues(tmp_path: Path, monkeypatch) -> N
     assert t["files"][0] == "rows/year=2024/part-0.parquet"
 
 
+def test_partial_runs_merge_into_one_catalogue(tmp_path: Path) -> None:
+    con = duckdb.connect()
+    parts = []
+    for year in (2023, 2024):
+        root = tmp_path / str(year)
+        lk = lake.Lake("test", root, source="unit test", licence="CC0", script="tests")
+        lk.write(
+            con,
+            "rows",
+            f"SELECT {year} AS y, i FROM range({year - 2020}) r(i)",
+            sort=["i"],
+            partition={"year": str(year)},
+        )
+        parts.append(lk.finish())
+    final = lake.Lake("test", tmp_path / "all", source="unit test", licence="CC0", script="tests")
+    final.write(con, "dim", "SELECT 1 AS id", sort=["id"])
+    cat = json.loads(final.finish(partials=parts).read_text(encoding="utf-8"))
+    rows = cat["tables"]["rows"]
+    assert rows["files"] == ["rows/year=2023/part-0.parquet", "rows/year=2024/part-0.parquet"]
+    assert rows["rows"] == 3 + 4
+    assert rows["bytes"] == sum(v[1] for v in rows["file_stats"].values())
+    assert cat["tables"]["dim"]["rows"] == 1
+    # a re-run of one year replaces that year's entry
+    again = lake.Lake("test", tmp_path / "all", source="unit test", licence="CC0", script="tests")
+    again.write(con, "rows", "SELECT 2024 AS y, 1 AS i", sort=["i"], partition={"year": "2024"})
+    cat = json.loads(again.finish().read_text(encoding="utf-8"))
+    assert cat["tables"]["rows"]["rows"] == 3 + 1
+
+
+def test_geoparquet_with_bbox_covering(tmp_path: Path) -> None:
+    con = duckdb.connect()
+    con.execute("INSTALL spatial; LOAD spatial")
+    lk = lake.Lake("test", tmp_path, source="unit test", licence="CC0", script="tests")
+    (path,) = lk.write(
+        con,
+        "shapes",
+        "SELECT i AS id, ST_Buffer(ST_Point(i, i), 0.5) AS geometry FROM range(5) r(i)",
+        sort=["id"],
+        geometry="geometry",
+    )
+    kv = dict(
+        con.execute(
+            f"SELECT key::VARCHAR, decode(value) FROM parquet_kv_metadata('{path}')"
+        ).fetchall()
+    )
+    geo = json.loads(kv["geo"])
+    assert geo["version"] == "1.1.0"
+    assert geo["columns"]["geometry"]["geometry_types"] == ["Polygon"]
+    assert geo["columns"]["geometry"]["covering"]["bbox"]["xmin"] == ["bbox", "xmin"]
+    xmin = con.execute(f"SELECT bbox.xmin FROM '{path}' WHERE id = 2").fetchone()[0]
+    assert abs(xmin - 1.5) < 1e-9
+
+
 def test_merge_catalogs_sums_parallel_jobs() -> None:
     a = {
         "updated": "2026-10-13T09:00:00+00:00",
