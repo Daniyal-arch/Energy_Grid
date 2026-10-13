@@ -52,3 +52,123 @@ jobs:
           pip install httpx python-dotenv
           python scripts/probe_lake_entsoe.py | tee probe.txt
           { echo '```'; cat probe.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      years: ${{ steps.p.outputs.years }}
+    steps:
+      - id: p
+        name: Which years
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          event, raw, ref = os.environ["EVENT"], os.environ["YEARS"].strip(), os.environ["REF"]
+          years = []
+          if raw:
+              for part in raw.split(","):
+                  a, _, b = part.strip().partition("-")
+                  years += list(range(int(a), int(b or a) + 1))
+          elif event == "push" and ref != "main":
+              years = [2024]  # the test year of a branch
+          print("years=" + json.dumps(years))
+          PY
+        env:
+          EVENT: ${{ github.event_name }}
+          YEARS: ${{ inputs.years || '' }}
+          REF: ${{ github.ref_name }}
+
+  year:
+    needs: plan
+    if: ${{ needs.plan.outputs.years != '[]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        year: ${{ fromJson(needs.plan.outputs.years) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Fetch the year, write and upload its files
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb httpx python-dotenv pycountry
+          python scripts/build_lake_entsoe.py --year ${{ matrix.year }} --lake lake-out --tmp /tmp/entsoe --upload
+          mkdir -p part && cp lake-out/entsoe/_catalog.json part/catalog-${{ matrix.year }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: entsoe-catalog-${{ matrix.year }}
+          path: part/
+          retention-days: 5
+
+  dims:
+    needs: plan
+    if: ${{ needs.plan.outputs.years != '[]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Areas and units
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb httpx python-dotenv pycountry
+          python scripts/build_lake_entsoe.py --dims --lake lake-out --tmp /tmp/entsoe --upload
+          mkdir -p part && cp lake-out/entsoe/_catalog.json part/catalog-dims.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: entsoe-catalog-dims
+          path: part/
+          retention-days: 5
+
+  merge:
+    needs: [plan, year, dims]
+    if: ${{ !cancelled() && needs.plan.outputs.years != '[]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: entsoe-catalog-*
+          path: part
+          merge-multiple: true
+      - name: One catalogue
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb httpx python-dotenv pycountry
+          python scripts/build_lake_entsoe.py --merge part/catalog-*.json --lake lake-out --upload | tee -a "$GITHUB_STEP_SUMMARY"
+
+  recent:
+    if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.years == '') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: The last three days again, the year's files rewritten
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb httpx python-dotenv pycountry
+          python scripts/build_lake_entsoe.py --recent 3 --lake lake-out --tmp /tmp/entsoe --upload

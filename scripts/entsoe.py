@@ -586,11 +586,10 @@ def points_of(
                 if variable:
                     if i + 1 < len(points):
                         last = points[i + 1][0] - 1
-                    else:  # to the end of the period
+                    else:  # to the end of the period: the last k whose start is before t1
                         last = pos
                         while _step(t0, res, last) < t1:
                             last += 1
-                        last -= 1
                 for k in range(pos, last + 1):
                     rows.append((_step(t0, res, k - 1), minutes, value))
         out.append((meta, rows))
