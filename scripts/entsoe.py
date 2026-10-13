@@ -32,12 +32,13 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 import xml.etree.ElementTree as ET
 from collections import Counter
 from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from functools import cache
 from pathlib import Path
 
@@ -516,3 +517,81 @@ BORDERS: list[tuple[str, str]] = [
     ("PL", "SE"), ("PL", "SK"), ("PL", "UA"), ("RO", "RS"), ("RO", "UA"), ("RS", "XK"),
     ("SK", "UA"),
 ]  # fmt: skip
+
+
+def resolution_minutes(text: str) -> int | None:
+    """An ISO 8601 resolution (PT15M, PT1H, P1D, P7D, P1M, P1Y) in minutes; months and years
+    as 43200 and 525600 only to label them (their points are placed by calendar)."""
+    m = re.fullmatch(r"PT(\d+)M|PT(\d+)H|P(\d+)D|P(\d+)M|P(\d+)Y", text or "")
+    if not m:
+        return None
+    mins, hours, days, months, years = (int(g) if g else 0 for g in m.groups())
+    return mins or hours * 60 or days * 1440 or months * 43200 or years * 525600
+
+
+def _step(t0: datetime, res: str, k: int) -> datetime:
+    """The start of point k (0-based) of a period starting at t0."""
+    if res.startswith("P") and res.endswith("Y") and "T" not in res:
+        return t0.replace(year=t0.year + k * int(res[1:-1]))
+    if res.startswith("P") and res.endswith("M") and "T" not in res:
+        n = t0.month - 1 + k * int(res[1:-1])
+        return t0.replace(year=t0.year + n // 12, month=n % 12 + 1)
+    return t0 + timedelta(minutes=k * (resolution_minutes(res) or 0))
+
+
+def points_of(
+    root: ET.Element | None, value_tag: str
+) -> list[tuple[dict, list[tuple[datetime, int | None, float]]]]:
+    """Every TimeSeries at the resolution ENTSO-E publishes (no grid, no resampling): its
+    metadata (as `series_of`) and (start UTC, resolution in minutes, value) per point. A03
+    curves leave out points equal to the one before; they are written out (a value holds
+    until the next point, the last one to the end of the period)."""
+    if root is None:
+        return []
+    ns = {"n": root.tag.split("}")[0].strip("{")}
+    out = []
+    for ts in root.findall("n:TimeSeries", ns):
+        meta = {
+            child.tag.split("}")[1]: (child.text or "").strip()
+            for child in ts
+            if not len(child) and child.text and child.text.strip()
+        }
+        psr = ts.find("n:MktPSRType/n:psrType", ns)
+        if psr is not None:
+            meta["psrType"] = psr.text or ""
+        res_el = ts.find("n:MktPSRType/n:PowerSystemResources", ns)
+        if res_el is not None:
+            meta["unit"] = res_el.findtext("n:mRID", default="", namespaces=ns)
+            meta["unit_name"] = res_el.findtext("n:name", default="", namespaces=ns)
+        variable = ts.findtext("n:curveType", default="A01", namespaces=ns) == "A03"
+        rows: list[tuple[datetime, int | None, float]] = []
+        for period in ts.findall("n:Period", ns):
+            res = period.findtext("n:resolution", default="", namespaces=ns) or ""
+            minutes = resolution_minutes(res)
+            t0 = datetime.fromtimestamp(
+                _ts(period.findtext("n:timeInterval/n:start", namespaces=ns) or ""), tz=UTC
+            )
+            t1 = datetime.fromtimestamp(
+                _ts(period.findtext("n:timeInterval/n:end", namespaces=ns) or ""), tz=UTC
+            )
+            points = sorted(
+                (
+                    int(p.findtext("n:position", namespaces=ns) or 0),
+                    float(p.findtext(f"n:{value_tag}", namespaces=ns) or 0),
+                )
+                for p in period.findall("n:Point", ns)
+            )
+            for i, (pos, value) in enumerate(points):
+                last = pos
+                if variable:
+                    if i + 1 < len(points):
+                        last = points[i + 1][0] - 1
+                    else:  # to the end of the period
+                        last = pos
+                        while _step(t0, res, last) < t1:
+                            last += 1
+                        last -= 1
+                for k in range(pos, last + 1):
+                    rows.append((_step(t0, res, k - 1), minutes, value))
+        out.append((meta, rows))
+    return out
