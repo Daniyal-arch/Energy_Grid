@@ -87,11 +87,11 @@ def region_of(x: float, y: float) -> str:
 
 
 def lines_of(geom: shapely.Geometry) -> list:
-    if geom.geom_type == "LineString":
-        return [list(geom.coords)]
-    if geom.geom_type == "MultiLineString":
-        return [list(g.coords) for g in geom.geoms]
-    return []
+    """The line's parts with at least two points (rounding can leave empty parts)."""
+    if geom.is_empty:
+        return []
+    parts = [geom] if geom.geom_type == "LineString" else list(getattr(geom, "geoms", []))
+    return [list(g.coords) for g in parts if g.geom_type == "LineString" and len(g.coords) >= 2]
 
 
 def main() -> None:
