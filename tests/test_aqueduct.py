@@ -44,7 +44,8 @@ def _layers(con: duckdb.DuckDBPyConnection) -> None:
     )
     con.execute(
         """CREATE TABLE future AS SELECT 1 AS fid, pfaf_id, 2.5 AS bau30_ws_x_r,
-                   0.5 AS bau30_ws_x_s, 1.0 AS bau30_ws_x_c, 'Low-medium' AS bau30_ws_x_l, 9.0 AS bau30_ba_x_r,
+                   0.5 AS bau30_ws_x_s, 1.0 AS bau30_ws_x_c, 'Low-medium' AS bau30_ws_x_l,
+                   9.0 AS bau30_ba_x_r,
                    '< 1 cm' AS bau30_ba_x_l, ST_GeomFromText('POINT(0 0)') AS geom
             FROM (VALUES (111), (222)) t(pfaf_id)"""
     )
