@@ -39,6 +39,14 @@ export function MastrCountryCard({ entsoeGw }: { entsoeGw?: Record<string, numbe
           </div>
         ))}
         {f.offshore.wind && <div className={`text-[10px] ${muted}`}>of the wind: {mwText(f.offshore.wind[1])} at sea ({f.offshore.wind[0]} turbines)</div>}
+        {(() => {
+          const away = f.techs.reduce((a, t) => a + (f.no_ags[t]?.[1] ?? 0), 0) - (f.offshore.wind?.[1] ?? 0);
+          return away > 0 ? (
+            <div className={`text-[10px] ${muted}`}>
+              {mwText(away)} of these units publish no municipality (mostly large thermal units, which list only their Land): counted here, not on the map.
+            </div>
+          ) : null;
+        })()}
         <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
           Gross capacity as registered (kW summed). The register lists wind per turbine and solar down to balcony panels, so sums differ from ENTSO-E's, which each grid operator reports by type.
         </div>

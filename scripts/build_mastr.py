@@ -50,6 +50,8 @@ SOURCE = "Marktstammdatenregister (Bundesnetzagentur), Gesamtdatenexport"
 LICENCE = "dl-de/by-2-0"
 PAGE = "https://www.marktstammdatenregister.de/MaStR/Datendownload"
 LARGE_KW = 1000
+# WindAnLandOderAufSee's names in Katalogwerte (code 889 in 2026)
+OFFSHORE = {"Windenergie auf See", "Windkraft auf See"}
 ADDITION_MONTHS = 24
 CHUNK = 400_000
 # XML file stem -> (lake table, technology on the map)
@@ -291,8 +293,7 @@ def summarise(con: duckdb.DuckDBPyConnection, tech: str, values: dict[str, str])
     ).fetchone()
     offshore = [0, 0.0]
     if tech == "wind":
-        # WindAnLandOderAufSee: the code's name ("Windkraft auf See")
-        sea = [k for k, v in values.items() if v == "Windkraft auf See"]
+        sea = [k for k, v in values.items() if v.strip() in OFFSHORE]
         if sea:
             offshore = list(
                 con.execute(
@@ -331,8 +332,7 @@ def outlines(con: duckdb.DuckDBPyConnection, vg5000: Path) -> list[dict]:
     con.execute("INSTALL spatial; LOAD spatial")
     rows = con.execute(
         f"""SELECT AGS, GEN, ST_AsWKB(ST_Transform(geom, 'EPSG:25832', 'EPSG:4326', always_xy := true))
-            FROM ST_Read('/vsizip/{vg5000}/vg5000_ebenen_0101/VG5000_GEM.shp')
-            WHERE GF = 4"""
+            FROM ST_Read('/vsizip/{vg5000}/vg5000_ebenen_0101/VG5000_GEM.shp')"""
     ).fetchall()
     out: dict[str, dict] = {}
     for ags, name, wkb in rows:

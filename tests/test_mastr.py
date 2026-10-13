@@ -18,7 +18,7 @@ CODES = [
     (1405, "Hessen"),
     (1409, "Nordrhein-Westfalen"),
     (888, "Windkraft an Land"),
-    (889, "Windkraft auf See"),
+    (889, "Windenergie auf See"),
 ]
 KAT = (
     "<?xml version='1.0' encoding='UTF-16'?><Katalogwerte>"
