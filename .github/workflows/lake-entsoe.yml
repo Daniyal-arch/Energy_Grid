@@ -37,7 +37,7 @@ concurrency:
 
 jobs:
   probe:
-    if: ${{ inputs.probe || (github.event_name == 'push' && github.ref_name != 'main') }}
+    if: ${{ inputs.probe }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -101,7 +101,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           pip install duckdb httpx python-dotenv pycountry
-          python scripts/build_lake_entsoe.py --year ${{ matrix.year }} --lake lake-out --tmp /tmp/entsoe --upload
+          python scripts/build_lake_entsoe.py --year ${{ matrix.year }} --workers 10 --lake lake-out --tmp /tmp/entsoe --upload
           mkdir -p part && cp lake-out/entsoe/_catalog.json part/catalog-${{ matrix.year }}.json
       - uses: actions/upload-artifact@v4
         with:
@@ -172,4 +172,4 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           pip install duckdb httpx python-dotenv pycountry
-          python scripts/build_lake_entsoe.py --recent 3 --lake lake-out --tmp /tmp/entsoe --upload
+          python scripts/build_lake_entsoe.py --recent 3 --workers 8 --lake lake-out --tmp /tmp/entsoe --upload

@@ -66,3 +66,17 @@ def test_write_tables_types_and_year(tmp_path: Path) -> None:
     # the 23:00 quarter-hour of 2024 is left to the 2024 file
     got = con.execute(f"SELECT count(*), min(price), any_value(iso3) FROM '{f}'").fetchone()
     assert got[0] == 8 - 4 + 1 and float(got[1]) == -1.25 and got[2] == "DEU"
+
+
+def test_a71_units() -> None:
+    xml = (
+        '<GL_MarketDocument xmlns="urn:x"><TimeSeries>'
+        "<registeredResource.mRID>11W-UNIT</registeredResource.mRID>"
+        "<registeredResource.name>Windpark</registeredResource.name>"
+        "<MktPSRType><psrType>B18</psrType></MktPSRType>"
+        "<Period><resolution>P1Y</resolution><Point><position>1</position>"
+        "<quantity>332</quantity></Point></Period></TimeSeries></GL_MarketDocument>"
+    )
+    assert ble.a71_units(ET.fromstring(xml), "DE-TenneT") == [
+        ("11W-UNIT", "Windpark", "DE-TenneT", "B18", 332.0)
+    ]

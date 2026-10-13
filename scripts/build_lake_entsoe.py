@@ -654,6 +654,30 @@ def run_recent(days: int, root: Path, tmp: Path, workers: int, upload: bool) -> 
     return path
 
 
+def a71_units(root: ET_Element | None, area: str) -> list[tuple]:
+    """A71 (installed capacity per production unit): unit EIC, name, area, type and the
+    first capacity point of each TimeSeries, wherever the document puts its Point."""
+    if root is None:
+        return []
+    ns = {"n": root.tag.split("}")[0].strip("{")}
+    out = []
+    for ts in root.findall("n:TimeSeries", ns):
+        uid = ts.findtext("n:registeredResource.mRID", namespaces=ns)
+        if not uid:
+            continue
+        q = ts.find(".//n:Point/n:quantity", ns)
+        out.append(
+            (
+                uid,
+                ts.findtext("n:registeredResource.name", namespaces=ns),
+                area,
+                ts.findtext("n:MktPSRType/n:psrType", namespaces=ns),
+                float(q.text) if q is not None and q.text else None,
+            )
+        )
+    return out
+
+
 def build_dims(root: Path, tmp: Path, upload: bool) -> Path:
     """areas, and units: A71 (installed capacity per production unit) per area for the
     current year, positions from JRC-PPDB (build_eu_units.jrc_units) where it names the unit."""
@@ -684,18 +708,7 @@ def build_dims(root: Path, tmp: Path, upload: bool) -> Path:
         root = entsoe.request(
             client, {"documentType": "A71", "processType": "A33", "in_Domain": eic, **w[0]}
         )
-        for meta, pts in entsoe.points_of(root, "quantity"):
-            uid = meta.get("registeredResource.mRID") or meta.get("unit")
-            if uid:
-                units.append(
-                    (
-                        uid,
-                        meta.get("registeredResource.name") or meta.get("unit_name"),
-                        area,
-                        meta.get("psrType"),
-                        pts[0][2] if pts else None,
-                    )
-                )
+        units += a71_units(root, area)
     jrc = build_eu_units.jrc_units()
     con.execute(
         "CREATE TABLE u (unit_eic VARCHAR, name VARCHAR, area VARCHAR, psr_type VARCHAR, capacity_mw FLOAT)"
