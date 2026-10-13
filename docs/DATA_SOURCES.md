@@ -437,6 +437,10 @@ Rules (all computed, labelled on the map):
   counties), gaps up to 60 min; peak, start, end (+ one interval). Top 50 over all years.
   Events across New Year are split (one job per year).
 - Newest month: national customers out at each timestamp of the newest month.
+- Values as EAGLE-I publishes them, never smoothed: the files hold single-interval spikes
+  (e.g. New York, 1.2 M customers at 2018-07-10 20:00 for one 15-min step) and peaks above the
+  utilities' own reports (Florida, Irma, 2017: 9.7 M), which show up as events. 2018 had no
+  county reported twice at one time (checked in the year job, logged for every year).
 
 Lake: `lake/eaglei/` (docs/DATA_LAKE.md section 6): `outages` (every row as published, per
 year), `counties` (names and MCC), `coverage` (`coverage_history.csv`) and `dqi` (`DQI.csv`),

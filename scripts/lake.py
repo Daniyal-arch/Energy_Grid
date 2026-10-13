@@ -96,12 +96,15 @@ class Lake:
         bloom: list[str] | None = None,
         partition: dict[str, str] | None = None,
         geometry: str | None = None,
+        stem: str = "part",
     ) -> list[Path]:
         """Write the query's rows, sorted, as one partition of `table` (or the whole table).
 
         `sort` may hold expressions (e.g. `ST_Hilbert(geometry, ...)` for spatial tables).
         `geometry` names a GEOMETRY column (EPSG:4326 lon/lat, DuckDB spatial loaded): the file
-        becomes GeoParquet 1.1 (WKB) with a `bbox` covering column. Returns the files written.
+        becomes GeoParquet 1.1 (WKB) with a `bbox` covering column. `stem` names the files
+        (`<stem>-0.parquet`): parallel jobs writing into one partition each use their own stem.
+        Returns the files written.
         """
         partition = partition or {}
         if geometry:
@@ -148,7 +151,7 @@ class Lake:
         files: list[Path] = []
         parts = max(1, -(-n // MAX_ROWS_PER_FILE))
         for i in range(parts):
-            path = folder / f"part-{i}.parquet"
+            path = folder / f"{stem}-{i}.parquet"
             window = (
                 f"LIMIT {MAX_ROWS_PER_FILE} OFFSET {i * MAX_ROWS_PER_FILE}" if parts > 1 else ""
             )
@@ -179,7 +182,7 @@ class Lake:
                 name: {
                     "path": f"{PREFIX}/{self.dataset}/{name}/"
                     + "".join(f"{p}=*/" for p in t.partitions)
-                    + "part-*.parquet",
+                    + "*.parquet",
                     "partitions": t.partitions,
                     "sort": t.sort,
                     "bloom": t.bloom,
@@ -238,13 +241,30 @@ class Lake:
         """Upload this run's files, then the catalogue, to r2://infraatlas-raw/lake/<dataset>/.
 
         Parallel jobs upload their files with `catalog=False` and hand their partial catalogue
-        to one last job, which merges them (`finish(partials)`) and uploads the catalogue."""
+        to one last job, which merges them (`finish(partials)`, or `merge_catalogs()`) and
+        uploads the catalogue."""
         files = [] if catalog_only else [f for t in self.tables.values() for f in t.files]
         for rel in [*files, *(["_catalog.json"] if catalog else [])]:
             key = f"{BUCKET}/{PREFIX}/{self.dataset}/{rel}"
             print(f"  r2://{key}", flush=True)
             if not wrangler("r2", "object", "put", key, "--file", str(self.dir / rel), "--remote"):
                 raise SystemExit(f"upload of {rel} to R2 failed")
+
+
+def merge_catalogs(parts: list[dict]) -> dict:
+    """One catalogue from parallel jobs' catalogues of the same dataset (rows, bytes, files summed)."""
+    out = json.loads(json.dumps(parts[0]))
+    for part in parts[1:]:
+        out["updated"] = max(out["updated"], part["updated"])
+        for name, t in part["tables"].items():
+            if name not in out["tables"]:
+                out["tables"][name] = t
+                continue
+            o = out["tables"][name]
+            o["rows"] += t["rows"]
+            o["bytes"] += t["bytes"]
+            o["files"] = sorted(set(o["files"]) | set(t["files"]))
+    return out
 
 
 def wrangler(*args: str) -> bool:

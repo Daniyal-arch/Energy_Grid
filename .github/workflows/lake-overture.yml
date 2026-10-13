@@ -1,0 +1,82 @@
+name: Lake - Overture power extract
+
+# The lake's copy of the world's power infrastructure from Overture Maps (OpenStreetMap, ODbL):
+# lines from 60 kV, all cables, and power sites, as GeoParquet in the private R2 bucket
+# infraatlas-raw under lake/overture_power/ (scripts/build_lake_overture.py, docs/DATA_LAKE.md).
+# Eight longitude bands in parallel, then one job merges their catalogues. Monthly (Overture
+# releases monthly), by hand, and when this file or the script changes.
+# Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+
+on:
+  schedule:
+    - cron: "17 5 2 * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/lake-overture.yml, scripts/build_lake_overture.py, scripts/lake.py]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lake-overture
+  cancel-in-progress: true
+
+jobs:
+  band:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        band: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Extract the band and upload its Parquet
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb httpx shapely
+          # on failure the error's tail becomes a public annotation (logs need a sign-in)
+          if ! python scripts/build_lake_overture.py --band ${{ matrix.band }} --out lake-out 2> err.txt; then
+            echo "::error title=band ${{ matrix.band }}::$(tail -c 3000 err.txt | tr '\n' '|')"
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalog-${{ matrix.band }}
+          path: lake-out/overture_power/*.band${{ matrix.band }}.json
+          retention-days: 3
+
+  catalog:
+    needs: band
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: catalog-*
+          merge-multiple: true
+          path: lake-out/overture_power
+
+      - name: Merge the bands' catalogues and upload
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb httpx shapely
+          python scripts/build_lake_overture.py --merge --out lake-out
+          echo "::notice title=overture_power::$(python3 -c "import json; c=json.load(open('lake-out/overture_power/_catalog.json')); print({k: (t['rows'], t['bytes']) for k, t in c['tables'].items()})")"
