@@ -74,7 +74,7 @@ def load_rows(con: duckdb.DuckDBPyConnection, name: str, rows: list[dict], tmp: 
             w.writerow(["" if r.get(c) is None else r.get(c) for c in cols])
     con.execute(
         f"CREATE OR REPLACE TABLE {name} AS SELECT * FROM read_csv('{path}', header = true, "
-        "sample_size = -1, quote = '\"', escape = '\"')"
+        "sample_size = -1, max_line_size = 200000000, quote = '\"', escape = '\"')"
     )
     return names
 
