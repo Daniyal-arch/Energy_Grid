@@ -43,8 +43,10 @@ jobs:
         run: |
           pip install duckdb httpx shapely
           # on failure the error's tail becomes a public annotation (logs need a sign-in)
-          python scripts/fetch_world_hv_overture.py --band ${{ matrix.band }} --out hv-${{ matrix.band }}.geojsons 2> err.txt             || { echo "::error title=band ${{ matrix.band }}::$(tail -c 3000 err.txt | tr '
-' '|')"; exit 1; }
+          if ! python scripts/fetch_world_hv_overture.py --band ${{ matrix.band }} --out hv-${{ matrix.band }}.geojsons 2> err.txt; then
+            echo "::error title=band ${{ matrix.band }}::$(tail -c 3000 err.txt | tr '\n' '|')"
+            exit 1
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
