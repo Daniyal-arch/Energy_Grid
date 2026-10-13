@@ -89,11 +89,13 @@ class Lake:
         sort: list[str],
         bloom: list[str] | None = None,
         partition: dict[str, str] | None = None,
+        stem: str = "part",
     ) -> list[Path]:
         """Write the query's rows, sorted, as one partition of `table` (or the whole table).
 
         `sort` may hold expressions (e.g. `ST_Hilbert(geometry, ...)` for spatial tables).
-        Returns the files written.
+        `stem` names the files (`<stem>-0.parquet`): parallel jobs writing into one partition
+        each use their own stem. Returns the files written.
         """
         partition = partition or {}
         info = self.tables.setdefault(table, TableInfo(list(partition), sort, bloom or []))
@@ -110,7 +112,7 @@ class Lake:
         files: list[Path] = []
         parts = max(1, -(-n // MAX_ROWS_PER_FILE))
         for i in range(parts):
-            path = folder / f"part-{i}.parquet"
+            path = folder / f"{stem}-{i}.parquet"
             window = (
                 f"LIMIT {MAX_ROWS_PER_FILE} OFFSET {i * MAX_ROWS_PER_FILE}" if parts > 1 else ""
             )
@@ -138,7 +140,7 @@ class Lake:
                 name: {
                     "path": f"{PREFIX}/{self.dataset}/{name}/"
                     + "".join(f"{p}=*/" for p in t.partitions)
-                    + "part-*.parquet",
+                    + "*.parquet",
                     "partitions": t.partitions,
                     "sort": t.sort,
                     "bloom": t.bloom,
@@ -167,14 +169,33 @@ class Lake:
         path.write_text(json.dumps(cat, indent=1, ensure_ascii=False), encoding="utf-8")
         return path
 
-    def upload(self, *, catalog_only: bool = False) -> None:
-        """Upload this run's files, then the catalogue, to r2://infraatlas-raw/lake/<dataset>/."""
+    def upload(self, *, catalog_only: bool = False, catalog: bool = True) -> None:
+        """Upload this run's files, then the catalogue, to r2://infraatlas-raw/lake/<dataset>/.
+
+        Parallel jobs pass `catalog=False` and a last job uploads `merge_catalogs()`'s result.
+        """
         files = [] if catalog_only else [f for t in self.tables.values() for f in t.files]
-        for rel in [*files, "_catalog.json"]:
+        for rel in [*files, *(["_catalog.json"] if catalog else [])]:
             key = f"{BUCKET}/{PREFIX}/{self.dataset}/{rel}"
             print(f"  r2://{key}", flush=True)
             if not wrangler("r2", "object", "put", key, "--file", str(self.dir / rel), "--remote"):
                 raise SystemExit(f"upload of {rel} to R2 failed")
+
+
+def merge_catalogs(parts: list[dict]) -> dict:
+    """One catalogue from parallel jobs' catalogues of the same dataset (rows, bytes, files summed)."""
+    out = json.loads(json.dumps(parts[0]))
+    for part in parts[1:]:
+        out["updated"] = max(out["updated"], part["updated"])
+        for name, t in part["tables"].items():
+            if name not in out["tables"]:
+                out["tables"][name] = t
+                continue
+            o = out["tables"][name]
+            o["rows"] += t["rows"]
+            o["bytes"] += t["bytes"]
+            o["files"] = sorted(set(o["files"]) | set(t["files"]))
+    return out
 
 
 def wrangler(*args: str) -> bool:

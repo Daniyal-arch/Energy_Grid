@@ -48,5 +48,20 @@ def test_write_sorts_partitions_and_catalogues(tmp_path: Path, monkeypatch) -> N
     cat = json.loads(lk.finish().read_text(encoding="utf-8"))
     t = cat["tables"]["rows"]
     assert t["rows"] == 100000 and t["partitions"] == ["year"]
-    assert t["path"] == "lake/test/rows/year=*/part-*.parquet"
+    assert t["path"] == "lake/test/rows/year=*/*.parquet"
     assert t["files"][0] == "rows/year=2024/part-0.parquet"
+
+
+def test_merge_catalogs_sums_parallel_jobs() -> None:
+    a = {
+        "updated": "2026-10-13T09:00:00+00:00",
+        "tables": {"lines": {"rows": 2, "bytes": 10, "files": ["lines/a.parquet"]}},
+    }
+    b = {
+        "updated": "2026-10-13T09:05:00+00:00",
+        "tables": {"lines": {"rows": 3, "bytes": 5, "files": ["lines/b.parquet"]}},
+    }
+    m = lake.merge_catalogs([a, b])
+    assert m["tables"]["lines"]["rows"] == 5 and m["tables"]["lines"]["bytes"] == 15
+    assert m["tables"]["lines"]["files"] == ["lines/a.parquet", "lines/b.parquet"]
+    assert m["updated"] == "2026-10-13T09:05:00+00:00"
