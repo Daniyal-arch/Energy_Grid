@@ -269,3 +269,12 @@ def iso_codes(con: duckdb.DuckDBPyConnection) -> None:
     rows.append(("XK", "XKX", "Kosovo"))
     con.execute("CREATE OR REPLACE TABLE iso_codes (iso2 VARCHAR, iso3 VARCHAR, name VARCHAR)")
     con.executemany("INSERT INTO iso_codes VALUES (?, ?, ?)", rows)
+
+
+def hilbert(geometry: str = "geometry") -> str:
+    """Sort expression along a Hilbert curve over the whole globe (empty geometries last)."""
+    box = "{'min_x': -180, 'min_y': -90, 'max_x': 180, 'max_y': 90}::BOX_2D"
+    return (
+        f"CASE WHEN {geometry} IS NULL OR ST_IsEmpty({geometry}) THEN NULL "
+        f"ELSE ST_Hilbert({geometry}, {box}) END NULLS LAST"
+    )

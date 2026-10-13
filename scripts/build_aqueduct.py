@@ -140,9 +140,7 @@ def write_lake(con: duckdb.DuckDBPyConnection, root: Path, upload: bool) -> Path
         f"""SELECT {", ".join(typed(c) for c in keep)},
                    {iso2} AS iso2, a.gid_0 AS iso3, a.name_1 AS admin1, a."{g}" AS geometry
             FROM annual a LEFT JOIN iso_codes i ON i.iso3 = a.gid_0""",
-        sort=[
-            "ST_Hilbert(geometry, {'min_x': -180, 'min_y': -90, 'max_x': 180, 'max_y': 90}::BOX_2D)"
-        ],
+        sort=[lake.hilbert()],
         bloom=["pfaf_id", "aq30_id"],
         geometry="geometry",
     )
@@ -154,9 +152,7 @@ def write_lake(con: duckdb.DuckDBPyConnection, root: Path, upload: bool) -> Path
         f"""SELECT m.pfaf_id, {keys}, m."{gm}" AS geometry
             FROM monthly m LEFT JOIN basin_iso b USING (pfaf_id)
             LEFT JOIN iso_codes i ON i.iso3 = b.iso3""",
-        sort=[
-            "ST_Hilbert(geometry, {'min_x': -180, 'min_y': -90, 'max_x': 180, 'max_y': 90}::BOX_2D)"
-        ],
+        sort=[lake.hilbert()],
         bloom=["pfaf_id"],
         geometry="geometry",
     )

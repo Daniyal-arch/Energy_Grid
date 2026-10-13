@@ -113,6 +113,14 @@ def step_minutes(con: duckdb.DuckDBPyConnection) -> int:
 
 def year_part(con: duckdb.DuckDBPyConnection, year: int) -> dict:
     step = step_minutes(con)
+    rows, dup, same = con.execute(
+        """SELECT sum(n), sum(n) FILTER (WHERE n > 1), count(*) FILTER (WHERE n > 1 AND v = 1)
+           FROM (SELECT fips, ts, count(*) AS n, count(DISTINCT out) AS v FROM raw GROUP BY ALL)"""
+    ).fetchone()  # type: ignore[misc]
+    # a county reported twice at one time would count twice in the sums: say so
+    print(
+        f"  {rows:,} rows; {dup or 0:,} in repeated (county, time) pairs, {same or 0:,} pairs identical"
+    )
     hours = step / 60
     counties = con.execute(
         f"SELECT fips, any_value(county), any_value(state), sum(out) * {hours} FROM raw GROUP BY fips"
