@@ -416,6 +416,39 @@ Rules:
   only. Nodes sharing a zone share capacity, so the card does not sum them.
 - Refresh: Mondays on `eu-days`.
 
+## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
+
+Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2
+(private bucket `infraatlas-raw`, docs/DATA_LAKE.md section 6), 2015 to yesterday, one ordered
+file per table and year. Source: ENTSO-E Transparency Platform API (`ENTSOE_API_KEY`, a repo
+secret; `.github/workflows/lake-entsoe.yml`).
+
+| Table | Document | Per | Notes |
+|---|---|---|---|
+| `prices` | A44 day-ahead | bidding zone (+ DE-AT-LU to 2018, IE-SEM) | every series kept; `sequence` = ENTSO-E's classification sequence (EXAA, intraday auctions), `currency` as published |
+| `load` | A65 actual (A16) and day-ahead (A01) | country | one row per timestamp and resolution |
+| `generation` | A75 actual (A16) | country, production type | `consumption_mw`: the outBiddingZone series (pumps, batteries charging) |
+| `forecast_wind_solar` | A69 day-ahead (A01) | country, production type | |
+| `flows` | A11 | border direction (`entsoe.BORDERS`) | measured, each direction its own rows |
+| `unit_output` | A73 actual (A16) | unit (EIC); countries, Germany per control area | one request per area and day (the API answers nothing for longer windows) |
+| `capacity` | A68 installed (A33) | country, production type | per year |
+| `transfer_capacity` | A61 forecast (contract A01) and A31 offered (auction A01) | zone border direction (`fetch_eu_capacity.zone_pairs`) | both documents as published, `doc` says which |
+| `outages` | A80 generation units | bidding zone | every revision, one row per point of the available-capacity curve; partition = year of the outage's start |
+| `areas`, `units` | code lists; A71 per area | | units' positions from JRC-PPDB where it names the EIC code |
+
+Rules: values as published at the resolution ENTSO-E publishes (`resolution_min`), no 15-min
+grid and no resampling; A03 curves (which leave out points equal to the one before) are written
+out point by point (`entsoe.points_of`). Times are UTC interval starts. A year's file holds
+the points whose start falls in that year (UTC). Prices `DECIMAL(9,2)`, MW as `FLOAT`.
+`--recent 3` (daily) fetches the last three days again and rewrites the current year's files.
+
+Probe (`scripts/probe_lake_entsoe.py`, run in Actions 2026-10-13): A44 answers a whole year in
+one request (DE-LU 2019: 43,188 points, 6 s); A75 for Germany a year in 103 s, a quarter in
+16 s (the builder asks quarters); A73 answers one day per request (7 or 31 days: nothing); A80
+pages of 200 documents (`offset`; DE-LU January 2023: 798 documents); requests take ~2 s each
+(4 at a time: 30 a minute, 8: 67 a minute; ENTSO-E's limit is 400 a minute per key), so a
+year runs with 10 at a time.
+
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
 | File | Records | Source |
