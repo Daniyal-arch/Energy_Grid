@@ -11,12 +11,16 @@ import lake_catalog as lc  # noqa: E402
 
 
 def test_summary_sums_tables() -> None:
+    out = {"path": "lake/eaglei/outages/year=*/*.parquet", "rows": 10, "bytes": 100, "columns": {}}
+    cty = {"path": "lake/eaglei/counties/*.parquet", "rows": 2, "bytes": 5, "columns": {}}
     cats = {
-        "eaglei": {"source": "s", "licence": "l", "updated": "u", "tables": {
-            "outages": {"path": "lake/eaglei/outages/year=*/*.parquet", "rows": 10, "bytes": 100, "columns": {}},
-            "counties": {"path": "lake/eaglei/counties/*.parquet", "rows": 2, "bytes": 5, "columns": {}},
-        }},
-    }  # fmt: skip
+        "eaglei": {
+            "source": "s",
+            "licence": "l",
+            "updated": "u",
+            "tables": {"outages": out, "counties": cty},
+        }
+    }
     s = lc.summary(cats)
     assert s["rows"] == 12 and s["bytes"] == 105
     assert s["datasets"]["eaglei"]["tables"]["outages"]["rows"] == 10
