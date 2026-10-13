@@ -18,6 +18,7 @@ import { isBasin, subsectorLabel, type CtRow, type CtraceFile } from "../lib/ctr
 import { gwText as connectGw, type ConnectFile, type GbSite, type NlArea } from "../lib/connect";
 import { STATUS_TEXT, gwhdText, lngDay, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import type { GasArc } from "./build";
+import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
@@ -215,7 +216,43 @@ function usHtml(id: string, object: unknown): string | null {
   return null;
 }
 
+function riskHtml(id: string, object: unknown): string | null {
+  if (id === "us-outages") {
+    const code = (object as { code: string }).code;
+    const f = fileOf<UsOutagesFile>("usOutages");
+    const cty = fileOf<UsCountiesFile>("usCounties")?.counties.find((c) => c.code === code);
+    if (!f) return null;
+    const { year, k } = newestYear(f);
+    const name = f.names[code] ?? (cty ? `${cty.name}, ${cty.state}` : code);
+    const ch = f.counties[code]?.[k];
+    const n = f.customers[code];
+    const per = ch != null && n ? `<div><b>${(ch / n).toFixed(1)} h</b> per customer <span style="color:#8d94a1">(÷ ${n.toLocaleString("en-US")} customers, ORNL's model, computed)</span></div>` : "";
+    const years = f.years
+      .map((y, i) => [y, f.counties[code]?.[i]] as [number, number | null | undefined])
+      .filter(([, v]) => v != null)
+      .slice(-4)
+      .map(([y, v]) => `${y}: ${hoursText(v!)}`)
+      .join(" · ");
+    return `<b>${name}</b><div><b>${ch != null ? hoursText(ch) : "0"}</b> customer-hours without power in ${year}</div>${per}${years ? `<div style="color:#8d94a1">${years}</div>` : ""}${SRC("EAGLE-I (ORNL): customers out every 15 min, summed × ¼ h (computed); customers are utility meters, not people")}`;
+  }
+  if (id === "w-water") {
+    const f = fileOf<WaterFile>("water");
+    const b = f?.basins[(object as { k: number }).k];
+    if (!f || !b) return null;
+    const rows = f.order
+      .map((ind, i) => {
+        const cat = b.c[i];
+        const label = cat == null ? "no data" : (f.indicators[ind].labels[String(cat)] ?? String(cat));
+        return `<div style="display:flex;justify-content:space-between;gap:16px"><span>${f.indicators[ind].name}</span><span>${label}</span></div>`;
+      })
+      .join("");
+    return `<b>River basin ${b.id}</b>${rows}${SRC(`WRI Aqueduct ${f.version}, baseline; where a basin's parts differ, the highest`)}`;
+  }
+  return null;
+}
+
 function tooltipHtml(id: string, object: unknown): string | null {
+  if (id === "us-outages" || id === "w-water") return riskHtml(id, object);
   if (id === "us-retail") {
     const d = object as { code: string; name: string };
     const us = fileOf<RetailFile>("retail")?.us;

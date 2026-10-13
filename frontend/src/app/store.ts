@@ -4,6 +4,8 @@
 
 import { create } from "zustand";
 
+import type { WaterIndicator } from "../lib/risk";
+
 export type TimeMode = "live" | "day" | "years";
 
 export type LayerId =
@@ -44,6 +46,8 @@ export type LayerId =
   | "chemicals"
   | "ironOre"
   | "dataCentres"
+  | "usOutages"
+  | "water"
   | "wind"
   | "sun"
   | "night";
@@ -104,6 +108,8 @@ export const LAYERS: LayerInfo[] = [
   { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & data", coverage: "World", color: "rgb(230,160,255)" },
   { id: "ironOre", label: "Iron ore mines", desc: "Sized by production", group: "Industry & data", coverage: "World", color: "rgb(206,112,88)" },
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & data", coverage: "World", color: "rgb(196,150,255)" },
+  { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Industry & data", coverage: "World", color: "rgb(255,153,0)" },
+  { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Power grid", coverage: "US", color: "rgb(230,120,80)" },
   { id: "wind", label: "Wind", desc: "Moving wind at turbine height", group: "Weather", coverage: "World", color: "rgb(220,240,255)", modes: ["live", "day"] },
   { id: "sun", label: "Sunshine", desc: "Solar radiation reaching the ground", group: "Weather", coverage: "World", color: "rgb(255,214,72)", modes: ["live", "day"] },
   { id: "night", label: "Night", desc: "Where it is dark at that moment", group: "Weather", coverage: "World", color: "rgb(90,110,160)", modes: ["day"] },
@@ -136,6 +142,8 @@ export const STATS_LAYERS = new Set<LayerId>([
   "chemicals",
   "ironOre",
   "dataCentres",
+  "usOutages",
+  "water",
 ]);
 
 export type ColourId =
@@ -380,6 +388,17 @@ export const STORIES: Story[] = [
     region: "us",
   },
   {
+    id: "us-outages",
+    group: "United States",
+    label: "US outages",
+    blurb: "Customer-hours without power per county; the biggest storms",
+    mode: "live",
+    colour: "none",
+    layers: ["usOutages", "gridUS"],
+    camera: "us",
+    region: "us",
+  },
+  {
     id: "heavy-industry",
     group: "World",
     label: "Heavy industry",
@@ -405,6 +424,8 @@ interface AppState {
   plantStyle: "bars" | "beams";
   /** the Grid capacity layer's Dutch areas: room for new demand or for new generation */
   connectSide: "offtake" | "feedin";
+  /** the Water stress layer's indicator (WRI Aqueduct) */
+  waterIndicator: WaterIndicator;
   selection: Selection | null;
   tab: string;
   story: string | null;
@@ -437,6 +458,7 @@ export const useApp = create<AppState>(() => ({
   plantStatus: "operating",
   plantStyle: "bars",
   connectSide: "offtake",
+  waterIndicator: "bws",
   selection: null,
   tab: "now",
   story: "europe-live",
@@ -486,6 +508,9 @@ export const actions = {
   },
   setConnectSide(connectSide: "offtake" | "feedin") {
     useApp.setState({ connectSide });
+  },
+  setWaterIndicator(waterIndicator: WaterIndicator) {
+    useApp.setState({ waterIndicator });
   },
   /** Jump the 24 h clock to a slot (pauses at the end of the day). */
   seekDay(slot: number) {
