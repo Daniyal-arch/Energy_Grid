@@ -1,0 +1,92 @@
+name: Lake catalogue
+
+# The lake's catalogue and DuckDB file (scripts/lake_catalog.py, docs/DATA_LAKE.md): reads
+# every lake/<dataset>/_catalog.json on R2, writes lake/_catalog.json (datasets, tables, rows,
+# bytes) and lake/lake.duckdb (a view per table, the topic views). Daily after the other lake
+# jobs, by hand, and when this file or the script changes on main. The `pudl` job times
+# agent-like queries against PUDL's public Parquet (scripts/probe_pudl.py), by hand.
+# R2 is read over its S3 API with credentials derived from CLOUDFLARE_API_TOKEN (Cloudflare:
+# key id = the token's id, secret = SHA-256 of the token), masked in the log, never stored.
+
+on:
+  schedule:
+    - cron: "47 9 * * *"
+  workflow_dispatch:
+    inputs:
+      pudl:
+        description: "Time the PUDL queries too"
+        type: boolean
+        default: false
+  push:
+    branches: [main, claude/lake-integrated]
+    paths: [.github/workflows/lake-catalog.yml, scripts/lake_catalog.py, scripts/probe_pudl.py]
+
+permissions:
+  contents: read
+
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: R2 S3 credentials from the API token (masked)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          verify() { curl -sf -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$1" | python3 -c 'import json,sys; print(json.load(sys.stdin)["result"]["id"])'; }
+          id=$(verify https://api.cloudflare.com/client/v4/user/tokens/verify || verify "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/tokens/verify" || true)
+          if [ -z "$id" ]; then echo "::warning::token id not found: lake.duckdb is skipped"; exit 0; fi
+          secret=$(printf %s "$CLOUDFLARE_API_TOKEN" | sha256sum | cut -d' ' -f1)
+          echo "::add-mask::$id"
+          echo "::add-mask::$secret"
+          { echo "R2_ACCESS_KEY_ID=$id"; echo "R2_SECRET_ACCESS_KEY=$secret"; } >> "$GITHUB_ENV"
+      - name: Catalogue and lake.duckdb
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb
+          set -o pipefail
+          python scripts/lake_catalog.py --out lake-out --upload | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: A query through lake.duckdb (one topic view)
+        if: ${{ env.R2_ACCESS_KEY_ID != '' }}
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import os, time, duckdb
+          con = duckdb.connect()
+          con.execute("INSTALL httpfs; LOAD httpfs")
+          con.execute(f"CREATE SECRET (TYPE r2, KEY_ID '{os.environ['R2_ACCESS_KEY_ID']}', SECRET '{os.environ['R2_SECRET_ACCESS_KEY']}', ACCOUNT_ID '{os.environ['CLOUDFLARE_ACCOUNT_ID']}')")
+          con.execute("ATTACH 'lake-out/lake.duckdb' AS lake (READ_ONLY)")
+          for sql in [
+              "SELECT source, count(*) FROM lake.main.water_risk GROUP BY 1",
+              "SELECT source, area, sum(value) * 0.25 AS customer_hours FROM lake.main.outages WHERE source = 'EAGLE-I' AND area = '48201' AND start >= '2024-01-01' AND start < '2025-01-01' GROUP BY 1, 2",
+          ]:
+              t = time.time()
+              try:
+                  rows = con.execute(sql).fetchall()
+                  print(f"`{sql}` -> {rows} ({time.time() - t:.1f} s)\n")
+              except duckdb.Error as e:
+                  print(f"`{sql}` failed: {str(e)[:200]}\n")
+          PY
+
+  pudl:
+    if: ${{ inputs.pudl || github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Time three queries against PUDL in place
+        run: |
+          pip install duckdb httpx
+          set -o pipefail
+          python scripts/probe_pudl.py | tee -a "$GITHUB_STEP_SUMMARY"
