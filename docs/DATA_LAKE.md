@@ -32,6 +32,22 @@ Two special cases:
 
 Anything else (no API, slow or one-window-at-a-time APIs, bulk files only) is kept as Parquet.
 
+**PUDL in place, measured** (`scripts/probe_pudl.py` on a GitHub runner, 2026-10-13; DuckDB
+over HTTPS range requests, `stable/` release; cold = first query, warm = DuckDB's metadata
+cache filled):
+
+| Question | File | Cold | Warm |
+|---|---|---:|---:|
+| EPA CEMS hourly, one plant (Barry, 3) in July 2023 | `core_epacems__hourly_emissions.parquet`, 4.88 GB, 10,180 row groups of 100,000 rows | 1.7 s | 0.6 s |
+| EPA CEMS hourly, one state (TX) in 2023 | same | **24.3 s** | 0.7 s |
+| EIA-923 monthly generation, one plant, every month | `core_eia923__monthly_generation.parquet`, one row group | 1.4 s | 0.3 s |
+
+The state-year question fails rule 2 cold: the file is sorted by neither state nor year, so
+DuckDB reads the footers of all 10,180 row groups before it can skip. Proposal (not built):
+an extract `lake/pudl_cems/hourly/year=Y/` sorted by `state, plant_id_eia,
+operating_datetime_utc` (~0.5 GB a year), refreshed with PUDL's releases; until then plant and
+plant-month questions go to PUDL in place, state and national ones need the extract.
+
 ## 2. Where it lives
 
 - Bucket: `infraatlas-raw` (private; the GEM rule already keeps licensed raw files there),
@@ -120,7 +136,22 @@ Parquet has no B-tree; reads are fast because whole parts of files are skipped. 
    names, codes and positions; the big fact tables carry only ids.
 
 The agent opens `lake/_catalog.json` (or a read-only `lake.duckdb` holding a view per table)
-and queries with DuckDB over `httpfs` against R2's S3 endpoint. A question such as "hours
+and queries with DuckDB over `httpfs` against R2's S3 endpoint.
+
+`lake/lake.duckdb` (`scripts/lake_catalog.py`, daily, `.github/workflows/lake-catalog.yml`):
+one schema per dataset with a view per table (`eaglei.outages`, `entsoe.prices`, …) and the
+topic views of section 3 in `main`. DuckDB binds a view when it creates it, so the file is
+built where R2 is readable; the workflow derives S3 credentials from the Cloudflare API token
+(key id = the token's id, secret = SHA-256 of the token; masked, never written to the file).
+The agent attaches it and brings its own read-only R2 secret:
+
+```sql
+ATTACH 'lake.duckdb' AS lake (READ_ONLY);
+CREATE SECRET (TYPE r2, KEY_ID '…', SECRET '…', ACCOUNT_ID '…');
+SELECT sum(value) * 0.25 FROM lake.main.outages
+WHERE source = 'EAGLE-I' AND area = '48201' AND start >= '2024-01-01' AND start < '2025-01-01';
+-- 176,042,304.25 customer-hours (as the map's file), 5.4 s from a GitHub runner
+``` A question such as "hours
 without power in Harris County in 2024" reads one year's file, the row groups whose `fips`
 range holds 48201, and two columns: a few MB, not 1.4 GB.
 
