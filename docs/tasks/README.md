@@ -26,10 +26,15 @@ rules apply to every task.
 | 11 | [11-germany-mastr.md](11-germany-mastr.md) every generating unit in Germany (MaStR) | no |
 | 12 | [12-outages-water.md](12-outages-water.md) US outages (EAGLE-I), water stress (Aqueduct) | no |
 | 13 (done on main) | [13-retail-prices.md](13-retail-prices.md) retail electricity and gas prices (Eurostat, EIA-861) | no |
+| 14 | [14-lake-entsoe.md](14-lake-entsoe.md) ENTSO-E history 2015– in the lake (Parquet on R2) | `ENTSOE_API_KEY` (repo secret; runs in Actions) |
+| 15 | [15-lake-integrated.md](15-lake-integrated.md) the lake for the datasets already on the map, catalogue, topic views, PUDL timings | no (Cloudflare stays in repo secrets) |
 
 Several sessions run at once and touch the same files (store, layers, panels, docs,
 workflows): before opening a pull request, merge `origin/main` into the branch and resolve
 conflicts, keeping both sides.
+
+Full detail goes to the lake (docs/DATA_LAKE.md) through `scripts/lake.py`; sessions write the
+code, GitHub Actions downloads, builds and uploads.
 
 Keys a session does not hold (ERCOT, ISO-NE, Cloudflare, GEM) live as GitHub repo secrets:
 the session writes the workflow step and the script skips a market or upload whose key is
