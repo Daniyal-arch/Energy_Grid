@@ -189,8 +189,9 @@ class Lake:
                     "rows": t.rows,
                     "bytes": t.bytes,
                     "columns": t.columns,
-                    "files": t.files,
-                    "file_stats": t.file_stats,
+                    # copies: merging older catalogues must not add to this run's uploads
+                    "files": list(t.files),
+                    "file_stats": dict(t.file_stats),
                 }
                 for name, t in self.tables.items()
             },
