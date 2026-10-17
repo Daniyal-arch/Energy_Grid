@@ -1,0 +1,92 @@
+{
+ "source": "AEMO NEM summary (5-minute dispatch), visualisations.aemo.com.au",
+ "fetched": "2026-10-17T20:25:48+00:00",
+ "settlement": "2026-10-18T06:25:00+10:00",
+ "regions": {
+  "NSW1": {
+   "price": 45.0,
+   "demand": 6243.1,
+   "net_interchange": -1192.4,
+   "scheduled": 2571.0,
+   "semi_scheduled": 2450.2
+  },
+  "QLD1": {
+   "price": 40.7,
+   "demand": 5358.1,
+   "net_interchange": 602.1,
+   "scheduled": 3996.5,
+   "semi_scheduled": 1947.6
+  },
+  "SA1": {
+   "price": 2.0,
+   "demand": 1173.9,
+   "net_interchange": 399.9,
+   "scheduled": 93.0,
+   "semi_scheduled": 1459.1
+  },
+  "TAS1": {
+   "price": 0.2,
+   "demand": 966.0,
+   "net_interchange": -432.8,
+   "scheduled": 454.3,
+   "semi_scheduled": 78.9
+  },
+  "VIC1": {
+   "price": -0.6,
+   "demand": 4291.1,
+   "net_interchange": 743.8,
+   "scheduled": 3175.0,
+   "semi_scheduled": 1806.6
+  }
+ },
+ "interconnectors": [
+  {
+   "id": "N-Q-MNSP1",
+   "from": "NSW1",
+   "to": "QLD1",
+   "mw": -25.0,
+   "export_limit": 43.0,
+   "import_limit": -117.0
+  },
+  {
+   "id": "NSW1-QLD1",
+   "from": "NSW1",
+   "to": "QLD1",
+   "mw": -561.0,
+   "export_limit": 813.0,
+   "import_limit": -783.8
+  },
+  {
+   "id": "VIC1-NSW1",
+   "from": "VIC1",
+   "to": "NSW1",
+   "mw": 575.0,
+   "export_limit": 575.0,
+   "import_limit": -520.9
+  },
+  {
+   "id": "V-SA",
+   "from": "VIC1",
+   "to": "SA1",
+   "mw": -479.0,
+   "export_limit": -43.3,
+   "import_limit": -535.8
+  },
+  {
+   "id": "V-S-MNSP1",
+   "from": "VIC1",
+   "to": "SA1",
+   "mw": 161.8,
+   "export_limit": 161.8,
+   "import_limit": 161.8
+  },
+  {
+   "id": "T-V-MNSP1",
+   "from": "TAS1",
+   "to": "VIC1",
+   "mw": -432.8,
+   "export_limit": -223.6,
+   "import_limit": -432.8
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+ "fetched": "2026-10-17T20:33:03+00:00",
+ "entsoe_requests": {
+  "200": 229,
+  "HTTP 429": 213,
+  "gave up": 36,
+  "no data": 1,
+  "HTTP 599": 2
+ },
+ "countries": 25,
+ "borders": 66,
+ "price_zones": 43
+}
