@@ -157,16 +157,20 @@ Snapshots: the newest, plus one per year (the others are dropped after a year).
 
 | Table | Columns | Partition | Sort | Bloom |
 |---|---|---|---|---|
-| `areas` | `area` (EIC), `code` (DE_LU), `country`, `kind` (BZN/CTA/CTY), `name` | | | |
-| `prices` (A44) | `ts`, `area`, `resolution_min`, `price` DECIMAL(9,2), `currency` | `year` | `area, ts` | |
-| `load` (A65) | `ts`, `area`, `resolution_min`, `actual_mw`, `day_ahead_mw` | `year` | `area, ts` | |
-| `generation` (A75) | `ts`, `area`, `psr_type`, `generation_mw`, `consumption_mw` | `year` | `area, psr_type, ts` | |
-| `forecast_wind_solar` (A69) | `ts`, `area`, `psr_type`, `forecast_mw` | `year` | `area, psr_type, ts` | |
-| `flows` (A11) | `ts`, `out_area`, `in_area`, `mw` | `year` | `out_area, in_area, ts` | |
-| `units` | `unit_eic`, `plant_eic`, `name`, `area`, `psr_type`, `capacity_mw`, `lon`, `lat` (JRC-PPDB) | | | |
-| `unit_output` (A73) | `ts`, `unit_eic`, `mw` | `year` | `unit_eic, ts` | `unit_eic` |
-| `capacity` (A68), `transfer_capacity` (A61/A31) | as published, per year | | | |
-| `outages` (A80/A78) | `mrid`, `revision`, `asset_eic`, `start`, `end`, `available_mw`, `nominal_mw`, `type`, `reason` | `year` of start | `asset_eic, start` | `asset_eic` |
+| `areas` | `area` (EIC), `code` (DE-LU), `kind` (BZN/CTY/CTA), `name`, `country`, `iso2`, `iso3` | | `code, kind` | |
+| `prices` (A44) | `ts`, `area`, `area_eic`, `resolution_min`, `price` DECIMAL(9,2), `currency`, `sequence` (classification sequence: EXAA, intraday auctions) | `year` | `area, ts` | |
+| `load` (A65) | `ts`, `area`, `resolution_min`, `actual_mw` (A16), `day_ahead_mw` (A01) | `year` | `area, ts` | |
+| `generation` (A75) | `ts`, `area`, `psr_type`, `resolution_min`, `generation_mw`, `consumption_mw` | `year` | `area, psr_type, ts` | |
+| `forecast_wind_solar` (A69) | `ts`, `area`, `psr_type`, `resolution_min`, `forecast_mw` | `year` | `area, psr_type, ts` | |
+| `flows` (A11) | `ts`, `out_area`, `in_area`, `resolution_min`, `mw` | `year` | `out_area, in_area, ts` | |
+| `units` | `unit_eic`, `plant_eic`, `name`, `area`, `psr_type`, `capacity_mw` (A71), `lon`, `lat` (JRC-PPDB) | | `unit_eic` | `unit_eic` |
+| `unit_output` (A73) | `ts`, `unit_eic`, `area`, `resolution_min`, `mw` | `year` | `unit_eic, ts` | `unit_eic` |
+| `capacity` (A68) | `ts`, `area`, `psr_type`, `capacity_mw` | `year` | `area, psr_type, ts` | |
+| `transfer_capacity` (A61, A31) | `ts`, `out_zone`, `in_zone`, `doc`, `resolution_min`, `mw` | `year` | `out_zone, in_zone, ts` | |
+| `outages` (A80) | `mrid`, `revision`, `doc_status`, `zone`, `asset_eic`, `asset_name`, `plant_eic`, `plant_name`, `psr_type`, `type`, `reason`, `reason_text`, `start`, `end`, `point_start`, `resolution_min`, `available_mw`, `nominal_mw` (one row per point of the available-capacity curve, every revision) | `year` of start | `asset_eic, start, revision` | `asset_eic` |
+
+Every table also carries `iso2`, `iso3` (from the area code) and `admin1` (NULL). A78
+(transmission unavailability) is not built yet: it is asked per border and was not probed.
 
 ### Overture power extract (`lake/overture_power/`), with task 07
 
