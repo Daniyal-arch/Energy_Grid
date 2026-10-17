@@ -551,40 +551,66 @@ def write_tables(
     year: int,
     replace: tuple[datetime, datetime] | None = None,
     old: dict[str, list[Path]] | None = None,
-) -> None:
+) -> list[str]:
+    """Write each table's year file; a table that fails is reported and the others still
+    written (a year's fetch takes hours). Returns the tables that failed."""
     lake.iso_codes(con)
+    failed = []
     for table, n in sink.rows.items():
-        cols = COLUMNS[table]
-        path = sink.tmp / f"{table}.csv"
-        types = "{" + ", ".join(f"'{c}': '{t}'" for c, t in cols.items()) + "}"
-        src = f"read_csv('{path}', header = false, columns = {types})"
-        tcol = TS_COL.get(table, "ts")
-        key = {
-            "flows": "out_area",
-            "transfer_capacity": "out_zone",
-            "outages": "zone",
-            "unit_output": "area",
-        }.get(table, "area")
-        query = f"SELECT DISTINCT * FROM {src} WHERE year(\"{tcol}\" AT TIME ZONE 'UTC') = {year}"
-        if replace and old and old.get(table):
-            files = ", ".join(f"'{p}'" for p in old[table])
-            keep = ", ".join(f'"{c}"' for c in cols)
-            if table == "outages":  # every revision: the new documents replace the same ones
-                cond = "(mrid, revision) NOT IN (SELECT mrid, revision FROM new_rows)"
-            else:
-                cond = f"NOT (\"{tcol}\" >= '{replace[0].isoformat()}' AND \"{tcol}\" < '{replace[1].isoformat()}')"
-            con.execute(f"CREATE OR REPLACE TEMP TABLE new_rows AS {query}")
-            query = f"SELECT {keep} FROM read_parquet([{files}]) WHERE {cond} UNION ALL SELECT * FROM new_rows"
-        lk.write(
-            con,
-            table,
-            f"""SELECT r.*, {iso_of("r." + key)} AS iso2, i.iso3, NULL::VARCHAR AS admin1
-                FROM ({query}) r LEFT JOIN iso_codes i ON i.iso2 = {iso_of("r." + key)}""",
-            sort=SORT[table],
-            bloom=BLOOM.get(table, []),
-            partition={"year": str(year)},
-        )
-        print(f"  {table}: {n:,} rows fetched", flush=True)
+        try:
+            write_table(con, lk, sink, table, n, year, replace, old)
+        except duckdb.Error as e:
+            print(f"  {table}: NOT WRITTEN: {str(e)[:500]}", flush=True)
+            failed.append(table)
+    return failed
+
+
+def write_table(
+    con: duckdb.DuckDBPyConnection,
+    lk: lake.Lake,
+    sink: Sink,
+    table: str,
+    n: int,
+    year: int,
+    replace: tuple[datetime, datetime] | None,
+    old: dict[str, list[Path]] | None,
+) -> None:
+    cols = COLUMNS[table]
+    path = sink.tmp / f"{table}.csv"
+    types = "{" + ", ".join(f"'{c}': '{t}'" for c, t in cols.items()) + "}"
+    # Python's csv module doubles quotes inside values (outage reasons hold quotes and line
+    # breaks): say so, rather than leave it to DuckDB's sniffer
+    src = (
+        f"read_csv('{path}', header = false, columns = {types}, delim = ',', "
+        "quote = '\"', escape = '\"', new_line = '\\r\\n', max_line_size = 100000000)"
+    )
+    tcol = TS_COL.get(table, "ts")
+    key = {
+        "flows": "out_area",
+        "transfer_capacity": "out_zone",
+        "outages": "zone",
+        "unit_output": "area",
+    }.get(table, "area")
+    query = f"SELECT DISTINCT * FROM {src} WHERE year(\"{tcol}\" AT TIME ZONE 'UTC') = {year}"
+    if replace and old and old.get(table):
+        files = ", ".join(f"'{p}'" for p in old[table])
+        keep = ", ".join(f'"{c}"' for c in cols)
+        if table == "outages":  # every revision: the new documents replace the same ones
+            cond = "(mrid, revision) NOT IN (SELECT mrid, revision FROM new_rows)"
+        else:
+            cond = f"NOT (\"{tcol}\" >= '{replace[0].isoformat()}' AND \"{tcol}\" < '{replace[1].isoformat()}')"
+        con.execute(f"CREATE OR REPLACE TEMP TABLE new_rows AS {query}")
+        query = f"SELECT {keep} FROM read_parquet([{files}]) WHERE {cond} UNION ALL SELECT * FROM new_rows"
+    lk.write(
+        con,
+        table,
+        f"""SELECT r.*, {iso_of("r." + key)} AS iso2, i.iso3, NULL::VARCHAR AS admin1
+            FROM ({query}) r LEFT JOIN iso_codes i ON i.iso2 = {iso_of("r." + key)}""",
+        sort=SORT[table],
+        bloom=BLOOM.get(table, []),
+        partition={"year": str(year)},
+    )
+    print(f"  {table}: {n:,} rows fetched", flush=True)
 
 
 def lake_of(root: Path) -> lake.Lake:
@@ -606,12 +632,14 @@ def run_year(
     sink.close()
     con = duckdb.connect(str(tmp / "lake.duckdb"))
     lk = lake_of(root)
-    write_tables(con, lk, sink, year)
+    failed_tables = write_tables(con, lk, sink, year)
     (tmp / "units_seen.json").write_text(json.dumps(units), encoding="utf-8")
     print(f"{year}: failed jobs {failed}; outcomes {dict(entsoe.OUTCOMES)}", flush=True)
     path = lk.finish()
     if upload:
         lk.upload(catalog=False)
+    if failed_tables:
+        raise SystemExit(f"{year}: tables not written: {failed_tables}")
     return path
 
 
@@ -647,10 +675,12 @@ def run_recent(days: int, root: Path, tmp: Path, workers: int, upload: bool) -> 
     collect(list(jobs_for(client, tables, start, end, units)), sink, workers)
     sink.close()
     con = duckdb.connect(str(tmp / "lake.duckdb"))
-    write_tables(con, lk, sink, year, (start, end), old)
+    failed_tables = write_tables(con, lk, sink, year, (start, end), old)
     path = lk.finish()
     if upload:
         lk.upload()
+    if failed_tables:
+        raise SystemExit(f"tables not written: {failed_tables}")
     return path
 
 

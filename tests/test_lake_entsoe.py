@@ -80,3 +80,17 @@ def test_a71_units() -> None:
     assert ble.a71_units(ET.fromstring(xml), "DE-TenneT") == [
         ("11W-UNIT", "Windpark", "DE-TenneT", "B18", 332.0)
     ]
+
+
+def test_outage_reason_with_quotes_and_line_breaks(tmp_path: Path) -> None:
+    (row,) = ble.outage_rows("FR", [_doc("entsoe_a80.xml")])
+    row = (*row[:11], 'Arrêt "programmé",\nlong line', *row[12:])
+    sink = ble.Sink(tmp_path / "tmp")
+    sink.add("outages", [row])
+    sink.close()
+    con = duckdb.connect()
+    lk = ble.lake_of(tmp_path / "lake")
+    assert ble.write_tables(con, lk, sink, 2025) == []
+    f = tmp_path / "lake" / "entsoe" / lk.catalog()["tables"]["outages"]["files"][0]
+    got = con.execute(f"SELECT reason_text, revision FROM '{f}'").fetchone()
+    assert got == ('Arrêt "programmé",\nlong line', 3)
