@@ -3,6 +3,7 @@
 // SITE_RADIUS_KM are computed in lib/site.ts. A card with nothing for the place stays away.
 
 import { useEffect, useMemo, type ReactNode } from "react";
+import { create } from "zustand";
 
 import { useFile } from "../app/data";
 import type { CountriesFile, GridFile, PlantsFile, WorldFile } from "../app/types";
@@ -11,7 +12,7 @@ import { FUEL_LABEL, power } from "../lib/energy";
 import type { PricesFile } from "../lib/prices";
 import { euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../lib/retail";
 import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type WaterFile } from "../lib/risk";
-import { SITE_RADIUS_KM, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, searchSiteLines, siteKey, useSiteLines, type LineSearch, type LonLat } from "../lib/site";
+import { SITE_RADIUS_KM, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, searchSiteLines, siteKey, useSiteLines, type LineSearch, type LonLat, type NearLine } from "../lib/site";
 import { ISO3, type TransitionFile } from "../lib/transition";
 import { US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFile, type UsQueuesLiveFile, type UsState, type UsStatesFile } from "../lib/us";
 import type { DataCentresFile } from "../lib/world";
@@ -68,6 +69,71 @@ function Row({ k, v, sub }: { k: ReactNode; v: ReactNode; sub?: ReactNode }) {
 const Note = ({ children }: { children: ReactNode }) => <p className={`mt-2 text-[10px] leading-snug ${muted}`}>{children}</p>;
 const Loading = ({ what }: { what: string }) => <p className={`text-[11px] ${muted}`}>Reading {what}…</p>;
 const sum = (v: number[]) => v.reduce((a, b) => a + b, 0);
+const round = (v: number, d: number) => Number(v.toFixed(d));
+
+// ---------------------------------------------------------------- the report behind the cards (CSV download)
+
+/** [item, value, unit, note, source]: one figure as a card shows it, unformatted. */
+export type ReportRow = [string, string | number | null, string, string, string];
+const SECTIONS = ["Grid", "Room to connect", "Power plants", "Prices", "Risk", "Around it"] as const;
+type Section = (typeof SECTIONS)[number];
+const useSiteReport = create<{ key: string; sections: Partial<Record<Section, ReportRow[]>> }>(() => ({ key: "", sections: {} }));
+
+/** A card hands its figures to the report (kept per site). */
+function useReport(site: LonLat, section: Section, rows: (ReportRow | null | false | undefined)[]) {
+  const key = siteKey(site);
+  const json = JSON.stringify(rows.filter(Boolean));
+  useEffect(() => {
+    const clean = JSON.parse(json) as ReportRow[];
+    useSiteReport.setState((s) => ({ key, sections: { ...(s.key === key ? s.sections : {}), [section]: clean } }));
+  }, [key, section, json]);
+}
+
+const csvCell = (v: unknown) => {
+  const t = v == null ? "" : String(v);
+  return /[",\n]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t;
+};
+
+function SiteDownload({ place }: { place: Place }) {
+  const key = siteKey(place.site);
+  const report = useSiteReport();
+  const rows = report.key === key ? SECTIONS.flatMap((sec) => (report.sections[sec] ?? []).map((r) => [sec, ...r])) : [];
+  const download = () => {
+    const [lon, lat] = place.site;
+    const head = [
+      ["section", "item", "value", "unit", "note", "source"],
+      ["Site", "Latitude", lat, "degrees", "", ""],
+      ["Site", "Longitude", lon, "degrees", "", ""],
+      ["Site", "Place", place.name ?? "", "", "", "the map's outlines"],
+      ["Site", "Link", window.location.href, "", "", "InfraAtlas"],
+      ["Site", "Downloaded", new Date().toISOString().slice(0, 19) + "Z", "UTC", "", ""],
+    ];
+    const text = [...head, ...rows].map((r) => r.map(csvCell).join(",")).join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(["\ufeff" + text], { type: "text/csv;charset=utf-8" }));
+    a.download = `infraatlas-site-${lat.toFixed(4)}_${lon.toFixed(4)}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  return (
+    <button
+      onClick={download}
+      disabled={!rows.length}
+      className="w-full rounded-lg border border-white/10 px-3 py-1.5 text-[11px] text-slate-300 hover:bg-white/[0.07] disabled:opacity-40"
+    >
+      Download these figures (CSV, {rows.length} rows with their sources)
+    </button>
+  );
+}
+
+const OSM_US = "OpenStreetMap via Overture Maps (grid/us-lines.pmtiles)";
+const OSM_WORLD = "OpenStreetMap via Overture Maps (grid/world-hv.pmtiles)";
+function lineReport(label: string, s: LineSearch | null | undefined, pick: (s: LineSearch) => NearLine | null, source: string): ReportRow | null {
+  if (!s) return null;
+  const l = pick(s);
+  if (!l) return [label, null, "km", `none within ${round(s.radiusKm, 1)} km (the tiles read)`, source];
+  return [label, round(l.km, 2), "km", [l.kv != null ? `${l.kv} kV` : "voltage not tagged", l.dc ? "DC" : "", l.name ?? ""].filter(Boolean).join("; "), source];
+}
 
 /** Records within the radius, nearest first. */
 function within<T>(rows: T[] | undefined, at: (r: T) => LonLat, site: LonLat): { row: T; d: number }[] {
@@ -112,6 +178,14 @@ export function SiteGridCard({ place }: { place: Place }) {
   const us = useSiteLines((s) => (s.us.key === key ? s.us : null));
   const grid = useFile<GridFile>(place.europe ? "grid" : null);
   const subs = useMemo(() => within(grid?.substations, (s) => [s[1], s[2]], site), [grid, site]);
+  const pypsa = "PyPSA-Eur network from OpenStreetMap (grid.json)";
+  useReport(site, "Grid", [
+    inUs && lineReport("Nearest line, 100 kV or more", us?.result, (s) => s.nearest, OSM_US),
+    lineReport("Nearest line, 220 kV or more", world?.result, (s) => s.nearest, OSM_WORLD),
+    lineReport("Nearest line, 345 kV or more", world?.result, (s) => s.ehv, OSM_WORLD),
+    place.europe && !!grid && ["Nearest substation, 220 kV or more", subs[0] ? round(subs[0].d, 2) : null, "km", subs[0] ? `${subs[0].row[0]} kV` : `none within ${R} km`, pypsa],
+    place.europe && !!grid && [`Substations within ${R} km`, subs.length, "count", "220 kV and more", pypsa],
+  ]);
   return (
     <Card title="Grid" note={`straight-line distance`} accent={[236, 178, 120]}>
       {inUs && lineRow("Nearest line, 100 kV or more", us?.result ?? null, !!us?.failed, (s) => s.nearest)}
@@ -148,6 +222,44 @@ export function SiteCapacityCard({ place }: { place: Place }) {
     [connect, place.iso2, site],
   );
   const code = place.state?.code;
+  const st = code ? queue?.states[code] : undefined;
+  // a hybrid counts under each of its types with its full capacity: types, not a total
+  const mine = code
+    ? Object.entries(live?.markets ?? {})
+        .map(([m, v]) => ({ m, types: Object.entries(v.by_state?.[code] ?? {}).sort((a, b) => b[1] - a[1]) }))
+        .filter((x) => x.types.length > 0)
+        .sort((a, b) => b.types[0][1] - a.types[0][1])
+    : [];
+  const types = st && queue ? queue.types.map((t, i) => ({ t, mw: st.active[i] })).filter((x) => x.mw > 0).sort((a, b) => b.mw - a.mw) : [];
+  const tec = connect ? `NESO TEC register, ${connect.gb.date}` : "";
+  const nlSrc = "Netbeheer Nederland capacity map (connect.json)";
+  const lbnl = queue ? `LBNL Queued Up, through ${queue.through}` : "";
+  useReport(site, "Room to connect", [
+    ...(nl && connect
+      ? ([
+          ["Capacity-map area", nl.name, "", nl.operator ?? "", nlSrc],
+          ["New demand", connect.nl.status[nl.offtake], "", "", nlSrc],
+          ["New generation", connect.nl.status[nl.feedin], "", "", nlSrc],
+          ["Queue, new demand", nl.queue_offtake_mw, "MW", "", nlSrc],
+          ["Queue, new generation", nl.queue_feedin_mw, "MW", "", nlSrc],
+        ] as ReportRow[])
+      : []),
+    ...(place.iso2 === "GB" && connect
+      ? ([
+          [`TEC waiting within ${R} km`, round(sum(gb.map((g) => g.row.mw)), 1), "MW", `${gb.length} sites`, tec],
+          ...gb.slice(0, 20).map((g) => [g.row.site[0], round(g.row.mw, 1), "MW", `${round(g.d, 2)} km; ${g.row.site[3]}`, tec]),
+        ] as ReportRow[])
+      : []),
+    ...(st
+      ? ([
+          [`Active requests in ${place.state?.name}`, round(sum(st.active), 1), "MW", `${st.active_n} projects`, lbnl],
+          ...types.map((x) => [`Active requests, ${x.t}`, round(x.mw, 1), "MW", "", lbnl]),
+        ] as ReportRow[])
+      : []),
+    ...mine.flatMap((x) =>
+      x.types.map(([t, mw]) => [`${x.m}'s own queue, active, ${t}`, round(mw, 1), "MW", "a hybrid counts under each of its types", `${x.m} via gridstatus, ${live?.fetched.slice(0, 10)}`] as ReportRow),
+    ),
+  ]);
   if (((place.iso2 === "GB" || place.iso2 === "NL") && !connect) || (code && !queue))
     return (
       <Card title="Room to connect" accent={[206, 138, 72]}>
@@ -184,13 +296,6 @@ export function SiteCapacityCard({ place }: { place: Place }) {
     );
   }
   if (code && queue) {
-    const st = queue.states[code];
-    // a hybrid counts under each of its types with its full capacity: types, not a total
-    const mine = Object.entries(live?.markets ?? {})
-      .map(([m, v]) => ({ m, types: Object.entries(v.by_state?.[code] ?? {}).sort((a, b) => b[1] - a[1]) }))
-      .filter((x) => x.types.length > 0)
-      .sort((a, b) => b.types[0][1] - a.types[0][1]);
-    const types = st ? queue.types.map((t, i) => ({ t, mw: st.active[i] })).filter((x) => x.mw > 0).sort((a, b) => b.mw - a.mw) : [];
     return (
       <Card title="Waiting to connect" note={`in ${place.state?.name}`} accent={[206, 138, 72]}>
         {st ? (
@@ -271,6 +376,29 @@ export function SitePlantsCard({ place }: { place: Place }) {
     }
     return { operating: of("operating"), construction: of("construction"), planned: of("planned"), source: "Global Energy Monitor's Integrated Power Tracker (its own size thresholds per type)" };
   }, [us, usp, gem, eu, place.europe, site]);
+  const plantRows = (status: string, rows: NearPlant[]): ReportRow[] => {
+    const byType = new Map<string, number>();
+    for (const r of rows) byType.set(r.type, (byType.get(r.type) ?? 0) + r.mw);
+    return [
+      [`${status} within ${R} km`, round(sum(rows.map((r) => r.mw)), 1), "MW", `${rows.length} map points`, data?.source ?? ""],
+      ...[...byType.entries()].sort((a, b) => b[1] - a[1]).map(([t, mw]) => [`${status}, ${t}`, round(mw, 1), "MW", "", data?.source ?? ""] as ReportRow),
+    ];
+  };
+  useReport(
+    site,
+    "Power plants",
+    data
+      ? [
+          ...plantRows("Operating", data.operating),
+          ...plantRows("Under construction", data.construction),
+          ...plantRows("Planned", data.planned),
+          ...[...data.operating]
+            .sort((a, b) => b.mw - a.mw || a.d - b.d)
+            .slice(0, 15)
+            .map((p) => [p.name ?? p.type, round(p.mw, 1), "MW", `${p.type}; ${round(p.d, 2)} km; operating`, data.source] as ReportRow),
+        ]
+      : [],
+  );
   return (
     <Card title="Power plants" note={`within ${R} km`} accent={[255, 128, 72]}>
       {!data ? (
@@ -300,7 +428,6 @@ export function SitePlantsCard({ place }: { place: Place }) {
 export function SitePricesCard({ place }: { place: Place }) {
   const prices = useFile<PricesFile>(place.europe ? "prices" : null);
   const retail = useFile<RetailFile>(place.europe || place.state ? "retail" : null);
-  if (!place.europe && !place.state) return null;
   const iso2 = place.iso2;
   const zones = iso2 && prices ? Object.entries(prices.zones).filter(([, z]) => z.country === iso2) : [];
   const business = iso2 && retail ? newestOf(retail, retail.eu.series.elec_business[iso2]) : null;
@@ -308,6 +435,23 @@ export function SitePricesCard({ place }: { place: Place }) {
   const usRow = place.state && retail?.us ? retail.us.price[place.state.code] : undefined;
   const months = retail?.us?.months ?? [];
   const us = usRow ? { ind: newestMonth(months, usRow.IND), com: newestMonth(months, usRow.COM), res: newestMonth(months, usRow.RES) } : null;
+  const period = prices ? `${prices.period[0]} to ${prices.period[1]}` : "";
+  const flagged = (r: { period: string; flag: string | null }) => r.period + (r.flag ? ` (${r.flag})` : "");
+  useReport(place.site, "Prices", [
+    ...zones.flatMap(
+      ([id, z]) =>
+        [
+          [`Day-ahead ${id}, 12-month average`, z.mean, "EUR/MWh", period, "ENTSO-E day-ahead (prices.json)"],
+          [`Day-ahead ${id}, hours below zero`, z.negative_hours, "hours", period, "ENTSO-E day-ahead (prices.json)"],
+        ] as ReportRow[],
+    ),
+    business && ["Electricity, businesses (band IC), all taxes", business.v, "EUR/kWh", flagged(business), "Eurostat (retail.json)"],
+    household && ["Electricity, households (band DC), all taxes", household.v, "EUR/kWh", flagged(household), "Eurostat (retail.json)"],
+    us?.ind && ["Retail price, industrial", us.ind.v, "US cents/kWh", us.ind.month, "EIA (retail.json)"],
+    us?.com && ["Retail price, commercial", us.com.v, "US cents/kWh", us.com.month, "EIA (retail.json)"],
+    us?.res && ["Retail price, residential", us.res.v, "US cents/kWh", us.res.month, "EIA (retail.json)"],
+  ]);
+  if (!place.europe && !place.state) return null;
   if (!retail)
     return (
       <Card title="Prices" accent={[255, 196, 90]}>
@@ -360,6 +504,22 @@ export function SiteRiskCard({ place }: { place: Place }) {
   const county = useMemo(() => counties?.counties.find((c) => inFlatPolygons(site, c.polygons)) ?? null, [counties, site]);
   const ny = outages ? newestYear(outages) : null;
   const hours = county && outages && ny ? outages.counties[county.code]?.[ny.k] : null;
+  useReport(site, "Risk", [
+    ...(water && basin
+      ? water.order.map(
+          (ind, i) =>
+            [
+              water.indicators[ind]?.name ?? ind,
+              water.indicators[ind]?.labels[String(basin.c[i] ?? -9999)] ?? "No Data",
+              "WRI category",
+              `category ${basin.c[i] ?? "none"}; HydroBASINS ${basin.id}`,
+              "WRI Aqueduct 4.0, baseline",
+            ] as ReportRow,
+        )
+      : []),
+    !!county && !!ny && [`Customer-hours without power, ${ny.year}`, hours ?? null, "customer-hours", county.name, "ORNL EAGLE-I (sum over the year, computed)"],
+    !!county && !!outages && outages.customers[county.code] != null && ["Customers in the county", outages.customers[county.code], "customers", county.name, "ORNL modelled customers"],
+  ]);
   return (
     <Card title="Risk" accent={[255, 153, 0]}>
       {!water ? (
@@ -396,6 +556,13 @@ export function SiteCountryCard({ place }: { place: Place }) {
   const near = useMemo(() => within(dc?.points, (p) => [p[0], p[1]], place.site), [dc, place.site]);
   const e = place.iso3 ? t?.entities[place.iso3] : undefined;
   const k = e && t ? [...t.years.keys()].reverse().find((i) => e.renewables[i] != null) : undefined;
+  const osm = "OpenStreetMap (datacentres.json)";
+  useReport(place.site, "Around it", [
+    !!e && !!t && k != null && [`Renewable share of generation, ${place.iso2 ?? place.iso3}`, e.renewables[k], "%", t.years[k], "Ember yearly electricity data"],
+    !!e && !!t && k != null && e.intensity[k] != null && ["Carbon intensity of generation", e.intensity[k], "gCO2/kWh", t.years[k], "Ember yearly electricity data"],
+    !!dc && [`Data centres within ${R} km`, near.length, "count", "mapped sites", osm],
+    ...(dc ? near.slice(0, 10).map((n) => [n.row[2] ?? n.row[3] ?? "unnamed", round(n.d, 2), "km", n.row[3] ?? "", osm] as ReportRow) : []),
+  ]);
   return (
     <Card title="Around it" accent={[150, 160, 180]}>
       {e && t && k != null && (
@@ -427,6 +594,7 @@ export function SiteCards({ place }: { place: Place }) {
       <SitePricesCard place={place} />
       <SiteRiskCard place={place} />
       <SiteCountryCard place={place} />
+      <SiteDownload place={place} />
       <p className={`px-1 text-[10px] leading-snug ${muted}`}>
         A first screen from public data, not a connection study. Right-click another place (or use Check a site) to compare; the link in the address bar opens this site.
       </p>
