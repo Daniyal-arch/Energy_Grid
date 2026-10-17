@@ -18,6 +18,7 @@ import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
 import { rgbCss, type RGB } from "../lib/theme";
+import { OFFSHORE_LABEL, OFFSHORE_STYLE, type OffshoreWindFile } from "../lib/offshoreWind";
 import { METRICS, metricGradient } from "../lib/transition";
 import { ACCESS_STOPS, ACCESS_TICKS, BR_COLOR, DC_COLOR, ON_COLOR, TW_COLOR, US_COLOR } from "../lib/world";
 import { HV_STEPS, PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, STATUS_LABEL } from "../lib/worldPlants";
@@ -285,6 +286,20 @@ function MastrKey() {
   );
 }
 
+function OffshoreKey() {
+  const f = useDataStore((d) => d.files.offshoreWind as OffshoreWindFile | undefined);
+  return (
+    <>
+      <Swatches>
+        {(f?.statuses ?? Object.keys(OFFSHORE_STYLE)).map((s) => (
+          <Swatch key={s} color={rgbCss(OFFSHORE_STYLE[s]?.[0] ?? [120, 128, 140])} label={OFFSHORE_LABEL[s] ?? s} />
+        ))}
+      </Swatches>
+      <Note>Farm areas as EMODnet Human Activities publishes them (CETMAR, yearly, CC BY 4.0); rings: farms published as a point only. Planned areas are zones, not projects.</Note>
+    </>
+  );
+}
+
 function CtraceKey() {
   const ct = useDataStore((d) => d.files.ctrace as CtraceFile | undefined);
   return (
@@ -386,6 +401,8 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <WaterKey />;
     case "mastrDE":
       return <MastrKey />;
+    case "offshoreWind":
+      return <OffshoreKey />;
     case "plantOutput":
       return (
         <>

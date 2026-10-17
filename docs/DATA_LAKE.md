@@ -229,7 +229,7 @@ tiles (`grid/world-hv.pmtiles`) are cut from the same extract.
 - `lake/us_lmp/day_ahead` (task 10): `ts`, `node_id`, `lmp`, `congestion`, `loss` DECIMAL(9,2);
   partition `market`, `year`, `month`; sort `node_id, ts`; bloom `node_id`; `nodes` dimension
   with published positions. Real-time 5-minute prices: API only (recent), not stored.
-- GeoParquet for Global Renewables Watch, USPVDB, GRanD, EMODnet, TYNDP projects.
+- GeoParquet for Global Renewables Watch, USPVDB, GRanD, TYNDP projects (EMODnet answers by WFS: API).
 - Rasters (Global Solar/Wind Atlas, population grids) are **Cloud-Optimized GeoTIFF**, the
   raster standard, not Parquet: `lake/rasters/<name>/<version>.tif`.
 
@@ -325,7 +325,8 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | EIA-923, eGRID history, FERC | PUDL on public S3 | in place | 0 |
 | GHGRP | Envirofacts API | API | 0 |
 | NREL AFDC, OpenEI URDB | APIs | API | 0 |
-| USPVDB, GRanD, EMODnet, TYNDP projects | downloads | GeoParquet | ~0.1 GB |
+| EMODnet wind farms | WFS, no key, the whole layer in seconds | API (on the map since 2026-10-17) | 0 |
+| USPVDB, GRanD, TYNDP projects | downloads | GeoParquet | ~0.1 GB |
 | Global Renewables Watch | GeoPackage per quarter | GeoParquet | ~0.2 GB |
 | Global Solar / Wind Atlas | rasters | COG | ~1 GB at 1 km (~8 GB at 250 m) |
 | Population grid (GHSL) | raster | COG | ~0.3 GB at 1 km |

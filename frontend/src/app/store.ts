@@ -51,6 +51,7 @@ export type LayerId =
   | "usOutages"
   | "water"
   | "mastrDE"
+  | "offshoreWind"
   | "wind"
   | "sun"
   | "night";
@@ -91,6 +92,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "plantsWorld", label: "Power plants worldwide", desc: "Operating, building, planned or retired", group: "Power plants", coverage: "World", color: "rgb(255,214,72)" },
   { id: "plantsUS", label: "US power plants", desc: "Every generator of 1 MW and more (EIA)", group: "Power plants", coverage: "US", color: "rgb(255,128,72)" },
   { id: "mastrDE", label: "Germany: every unit", desc: "MW per municipality of solar, wind or storage; units of 1 MW and more (Marktstammdatenregister)", group: "Power plants", coverage: "DE", color: "rgb(255,214,72)" },
+  { id: "offshoreWind", label: "Offshore wind farms", desc: "Areas at sea: operating, building, approved, planned (EMODnet)", group: "Power plants", coverage: "Europe", color: "rgb(96,190,255)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Power plants", coverage: "US", color: "rgb(196,196,214)", story: "us-queue" },
   { id: "gasPipes", label: "Gas pipelines", desc: "Operating, under construction, proposed", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,196,96)" },
@@ -151,6 +153,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "usOutages",
   "water",
   "mastrDE",
+  "offshoreWind",
 ]);
 
 export type ColourId =

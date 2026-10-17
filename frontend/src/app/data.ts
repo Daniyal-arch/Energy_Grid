@@ -118,6 +118,8 @@ const STATIC: Record<string, Loader> = {
   usCounties: bundledUs("counties.json"),
   // water risk per river basin (scripts/build_aqueduct.py, WRI Aqueduct 4.0)
   water: bundled("water.json"),
+  // offshore wind farms in European seas (scripts/fetch_emodnet_wind.py, EMODnet)
+  offshoreWind: bundled("offshore_wind.json"),
   // every unit in Germany (scripts/build_mastr.py, Marktstammdatenregister)
   mastrUnits: bundled("mastr/units_large.json"),
   mastrMuni: bundled("mastr/municipalities.json"),

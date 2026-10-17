@@ -21,6 +21,7 @@ import { STATUS_TEXT, gwhdText, lngDay, type LngTerminal, type LngTerminalsFile 
 import type { GasArc } from "./build";
 import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { MASTR_LABEL, mwText, type MastrMuniFile, type MastrUnitsFile } from "../lib/mastr";
+import { OFFSHORE_LABEL, offshoreStatus, type OffshoreWindFile } from "../lib/offshoreWind";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
@@ -278,6 +279,19 @@ function mastrHtml(id: string, object: unknown): string | null {
 function tooltipHtml(id: string, object: unknown): string | null {
   if (id === "us-outages" || id === "w-water") return riskHtml(id, object);
   if (id.startsWith("de-mastr-")) return mastrHtml(id, object);
+  if (id === "eu-offshore-wind" || id === "eu-offshore-wind-points") {
+    const f = fileOf<OffshoreWindFile>("offshoreWind");
+    const k = typeof object === "number" ? object : (object as { k: number }).k;
+    const farm = f?.farms[k];
+    if (!f || !farm) return null;
+    const status = offshoreStatus(f, farm);
+    const facts = [
+      farm.mw != null ? `<b>${farm.mw.toLocaleString("en-US")} MW</b>` : "capacity not given",
+      farm.turbines != null ? `${farm.turbines} turbines` : "",
+      farm.year != null ? (status === "Production" || status === "Dismantled" ? `since ${farm.year}` : `year ${farm.year}`) : "",
+    ].filter(Boolean);
+    return `<b>${farm.name ?? "Unnamed farm"}</b><div>${farm.country ?? ""} · ${OFFSHORE_LABEL[status] ?? status}</div><div>${facts.join(" · ")}</div>${farm.coast_km != null ? `<div style="color:#8d94a1">${farm.coast_km} km from the coast</div>` : ""}${SRC(`EMODnet Human Activities (CETMAR), ${farm.polygons ? "farm area" : "point record, no area published"}`)}`;
+  }
   if (id === "us-retail") {
     const d = object as { code: string; name: string };
     const us = fileOf<RetailFile>("retail")?.us;

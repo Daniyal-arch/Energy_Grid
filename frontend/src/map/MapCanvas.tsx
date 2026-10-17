@@ -54,6 +54,7 @@ function wantedKeys(): string[] {
   if (L.connect) keys.push("connect");
   if (L.usOutages) keys.push("usOutages", "usCounties");
   if (L.water) keys.push("water");
+  if (L.offshoreWind) keys.push("offshoreWind");
   if (L.mastrDE) keys.push("mastrMuni", "mastrUnits");
   if (L.cables) keys.push("cables");
   if (L.plantsWorld) keys.push("worldPlants");

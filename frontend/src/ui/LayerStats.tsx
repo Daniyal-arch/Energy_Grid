@@ -26,6 +26,7 @@ import { ETS_COLOR, ETS_REGISTRY_NAME, etsIn, mt, newestT, type EtsFile } from "
 import { LNG_SEND, gwhdText, lngDay, type LngTerminalsFile } from "../lib/lngTerminals";
 import { CT_COLOR, subsectorLabel, type CtraceFile } from "../lib/ctrace";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
+import { OFFSHORE_LABEL, OFFSHORE_STYLE, offshoreStatus, type OffshoreWindFile } from "../lib/offshoreWind";
 
 const muted = "text-[#8d94a1]";
 const CLASS_COLOR = ["rgb(120,222,160)", "rgb(255,196,96)", "rgb(160,170,190)", "rgb(130,134,146)"];
@@ -571,6 +572,37 @@ function EsConnectCard({ f }: { f: ConnectFile }) {
 }
 
 /** Climate TRACE: modelled CO2e of the facilities in scope, the largest and the sum per group. */
+function OffshoreWindCard({ iso3 }: { iso3?: string }) {
+  const f = useFile<OffshoreWindFile>("offshoreWind");
+  if (!f) return <Card title="Offshore wind farms">Loading…</Card>;
+  const farms = iso3 ? f.farms.filter((x) => x.iso3 === iso3) : f.farms;
+  const areas = farms.filter((x) => x.polygons);
+  if (!farms.length) return <Card title="Offshore wind farms">No farm listed here by EMODnet.</Card>;
+  const rows = f.statuses
+    .map((s) => ({ key: s, label: OFFSHORE_LABEL[s] ?? s, value: areas.filter((x) => offshoreStatus(f, x) === s).length, color: rgbCss(OFFSHORE_STYLE[s]?.[0] ?? [120, 128, 140]) }))
+    .filter((r) => r.value > 0);
+  const byCountry = new Map<string, number>();
+  for (const x of areas) if (offshoreStatus(f, x) === "Production") byCountry.set(x.country ?? "?", (byCountry.get(x.country ?? "?") ?? 0) + 1);
+  const countries = [...byCountry.entries()].sort((a, b) => b[1] - a[1]);
+  const pts = farms.length - areas.length;
+  return (
+    <Card title="Offshore wind farms" note="EMODnet Human Activities">
+      <Rows rows={rows} unit="areas" />
+      {!iso3 && countries.length > 0 && (
+        <>
+          <Head>Operating areas by country</Head>
+          <div className="text-[11px] text-slate-300">{countries.slice(0, 8).map(([c, n]) => `${c} ${n}`).join(" · ")}</div>
+        </>
+      )}
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Farm areas counted as published. Capacity is shown per farm on hover and not summed: EMODnet lists some farms once per phase with the whole farm&apos;s MW (Hornsea
+        Project 2 four times at 1,386 MW). {pts > 0 ? `${pts} more farms are published as points only (mostly planned), drawn as rings and not counted here. ` : ""}Planned
+        areas include zones offered for tender. CETMAR for EMODnet, CC BY 4.0.
+      </div>
+    </Card>
+  );
+}
+
 function CtraceCard({ iso3 }: { iso3?: string }) {
   const f = useFile<CtraceFile>("ctrace");
   if (!f) return <Card title="Emissions per facility">Loading…</Card>;
@@ -690,6 +722,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "usOutages") return iso3 && iso3 !== "USA" ? null : <UsOutagesCard key={id} />;
         if (id === "water") return <WaterCard key={id} iso3={iso3} />;
         if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
+        if (id === "offshoreWind") return <OffshoreWindCard key={id} iso3={iso3} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;
       })}

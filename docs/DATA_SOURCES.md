@@ -629,6 +629,24 @@ the same site.
 | Renewable share, carbon intensity | `transition.json` (Ember) | newest year with a value |
 | Data centres within 50 km | `datacentres.json` (OpenStreetMap) | count and distance |
 
+## Offshore wind farms (`scripts/fetch_emodnet_wind.py`, `offshore_wind.json`)
+
+| What | Source |
+|---|---|
+| Offshore wind farms in European seas: name, country, status, MW, turbines, year, distance to the coast | EMODnet Human Activities, "Wind farms" (data originator CETMAR, updated yearly; CC BY 4.0 per the EMODnet catalogue record 8201070b-4b0b-4d54-8910-abcea5dce57f), WFS `ows.emodnet-humanactivities.eu/wfs`, layers `emodnet:windfarmspoly` (600 areas) and `emodnet:windfarms` (631 points), no key. Probe: `scripts/probe_emodnet.py` |
+
+- Passthrough: every field above as published (distance to the coast converted from m to km,
+  0.1 km); statuses Production (shown as Operating), Construction, Approved, Planned, Test site,
+  Dismantled.
+- Computed: areas simplified (shapely, 0.002°, 4 decimals); a label point inside each area; a
+  point record is kept only when no area lies within 0.01° (about 1 km) of it (492 of 631 kept,
+  mostly planned in the Mediterranean and the Atlantic); ISO alpha-3 of the country (pycountry).
+- The panel counts areas per status and does not sum capacity: the source lists some farms once
+  per phase with the whole farm's MW (Hornsea Project 2: four areas at 1,386 MW) and its point
+  list repeats some farms (Fryslân twice). Planned areas include zones offered for tender.
+- Refresh: by hand (`uv run python scripts/fetch_emodnet_wind.py`), EMODnet updates yearly.
+  Lake: none (API rule: the WFS answers the whole layer in seconds and filters server-side).
+
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
 | File | Records | Source |

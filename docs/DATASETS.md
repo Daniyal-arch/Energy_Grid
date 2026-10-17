@@ -43,7 +43,7 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 | Denmark Energinet Energi Data Service | 5-min production, CO₂, prices | API, no key | CC BY 4.0 | | candidate |
 | Finland Fingrid open data | 3-min data | API (free `FINGRID_API_KEY`) | CC BY 4.0 | | candidate |
 | Belgium Elia open data | 15-min load, solar/wind incl. forecasts, balancing | API | Elia open data | | candidate |
-| EMODnet human activities | offshore wind farms (polygons, status), cables, pipelines | WFS/download | CC BY 4.0 | offshore layer | candidate |
+| EMODnet human activities | offshore wind farms (polygons, status), cables, pipelines | WFS/download | CC BY 4.0 | offshore layer | wind farms on the map (2026-10-17); cables, pipelines candidate |
 | EU ETS / EEA industrial emissions; GIE ALSI | CO₂ per installation; LNG per terminal | | | | wave 2 (08) |
 | EV charging: national registers (DE Ladesäulenregister), EAFO | charge points with power | download | varies | demand-side layer | candidate |
 
