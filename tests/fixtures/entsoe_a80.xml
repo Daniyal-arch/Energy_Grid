@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Unavailability_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-6:outagedocument:3:0">
+  <mRID>OUT-1</mRID>
+  <revisionNumber>3</revisionNumber>
+  <docStatus><value>A05</value></docStatus>
+  <TimeSeries>
+    <mRID>1</mRID>
+    <businessType>A53</businessType>
+    <start_DateAndOrTime.date>2025-03-01</start_DateAndOrTime.date>
+    <start_DateAndOrTime.time>06:00:00Z</start_DateAndOrTime.time>
+    <end_DateAndOrTime.date>2025-03-02</end_DateAndOrTime.date>
+    <end_DateAndOrTime.time>06:00:00Z</end_DateAndOrTime.time>
+    <production_RegisteredResource.mRID>PLANT-EIC</production_RegisteredResource.mRID>
+    <production_RegisteredResource.name>Plant</production_RegisteredResource.name>
+    <production_RegisteredResource.pSRType.psrType>B14</production_RegisteredResource.pSRType.psrType>
+    <production_RegisteredResource.pSRType.powerSystemResources.mRID>UNIT-EIC</production_RegisteredResource.pSRType.powerSystemResources.mRID>
+    <production_RegisteredResource.pSRType.powerSystemResources.name>Unit 1</production_RegisteredResource.pSRType.powerSystemResources.name>
+    <production_RegisteredResource.pSRType.powerSystemResources.nominalP>1300</production_RegisteredResource.pSRType.powerSystemResources.nominalP>
+    <Available_Period>
+      <timeInterval><start>2025-03-01T06:00Z</start><end>2025-03-02T06:00Z</end></timeInterval>
+      <resolution>PT1M</resolution>
+      <Point><position>1</position><quantity>0</quantity></Point>
+    </Available_Period>
+  </TimeSeries>
+  <Reason><code>B18</code><text>planned maintenance</text></Reason>
+</Unavailability_MarketDocument>
