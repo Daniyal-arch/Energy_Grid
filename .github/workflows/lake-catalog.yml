@@ -18,7 +18,7 @@ on:
         type: boolean
         default: false
   push:
-    branches: [main, claude/lake-integrated]
+    branches: [main]
     paths: [.github/workflows/lake-catalog.yml, scripts/lake_catalog.py, scripts/probe_pudl.py]
 
 permissions:
