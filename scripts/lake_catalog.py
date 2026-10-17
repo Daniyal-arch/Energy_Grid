@@ -517,6 +517,9 @@ def main() -> None:
         for t, v in d["tables"].items():
             print(f"| {ds} | {t} | {v['rows']:,} | {v['bytes']:,} |")
     print(f"| **all** | | **{cat['rows']:,}** | **{cat['bytes']:,}** |")
+    print("\n| dataset | tables | rows | bytes |\n|---|---:|---:|---:|")
+    for ds, d in cat["datasets"].items():
+        print(f"| {ds} | {len(d['tables'])} | {d['rows']:,} | {d['bytes']:,} |")
     db = args.out / "lake.duckdb"
     if have_s3:
         cat["topics"] = build_duckdb(db, cats)
