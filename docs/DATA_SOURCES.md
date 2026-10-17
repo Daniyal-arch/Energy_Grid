@@ -475,6 +475,55 @@ table, schema = dataset, and the topic views `plants`, `prices`, `outages`, `emi
 `.github/workflows/lake-catalog.yml`. A topic view passes each source's own values under common
 column names (e.g. `outages.value` is EAGLE-I's customers out, or ENTSO-E's available MW during the outage, with `unit` saying which); nothing is converted between sources.
 
+## US outages (`scripts/build_us_outages.py`, `us_outages.json`, `us/counties.json`)
+
+| What | Source |
+|---|---|
+| Customers without power per county every 15 minutes, 2014 (from 1 Nov) to 2025 | EAGLE-I recorded electricity outages, Oak Ridge National Laboratory, figshare article 24237376 (CC BY 4.0), one CSV per year (0.08–1.4 GB; the 2023 file names its count column `sum`, 2024 adds `total_customers`) |
+| Customers per county | EAGLE-I's `MCC.csv` (ORNL's modelled customer count per county) |
+| County outlines | US Census Bureau cartographic boundary file, counties 1:20m, 2020 (public domain): Connecticut's eight old counties, as EAGLE-I and MCC use |
+
+Built in GitHub Actions (`.github/workflows/us-outages.yml`, one job per year, by hand and when
+the script changes). "Customers" are utility meters, not people; EAGLE-I lists a county only
+while customers are out there, so a missing row is zero.
+
+Rules (all computed, labelled on the map):
+- Customer-hours per county and year = sum of customers out × the interval (15 min).
+- Hours per customer (hover) = customer-hours ÷ MCC customers.
+- National peak per day = largest sum over counties at one timestamp; the state with the most
+  customers out at that moment.
+- Event = a run of timestamps in one state with ≥ 10,000 customers out (sum over its
+  counties), gaps up to 60 min; peak, start, end (+ one interval). Top 50 over all years.
+  Events across New Year are split (one job per year).
+- Newest month: national customers out at each timestamp of the newest month.
+- Values as EAGLE-I publishes them, never smoothed: the files hold single-interval spikes
+  (e.g. New York, 1.2 M customers at 2018-07-10 20:00 for one 15-min step) and peaks above the
+  utilities' own reports (Florida, Irma, 2017: 9.7 M), which show up as events. 2018 had no
+  county reported twice at one time (checked in the year job, logged for every year).
+
+Lake: `lake/eaglei/` (docs/DATA_LAKE.md section 6): `outages` (every row as published, per
+year), `counties` (names and MCC), `coverage` (`coverage_history.csv`) and `dqi` (`DQI.csv`),
+as published.
+
+## Water risk (`scripts/build_aqueduct.py`, `water.json`)
+
+| What | Source |
+|---|---|
+| Baseline water stress, riverine and coastal flood risk, drought risk per river basin | WRI Aqueduct 4.0 water risk atlas (World Resources Institute, CC BY 4.0), `aqueduct-4-0-water-risk-data.zip` (262 MB, release 2023-07-05); data dictionary github.com/wri/Aqueduct40 |
+
+Built in GitHub Actions (`.github/workflows/water-risk.yml`). The map shows WRI's own category
+(`*_cat`) and label (`*_label`) per HydroBASINS level-6 basin (`pfaf_id`, 16,395 basins; the
+outlines from the GDB layer `baseline_monthly`, simplified with shapely until the file stays
+under 5 MB: 0.06°, 2 decimals; 16,052 basins keep an outline). The categories come from the
+`baseline_annual` units (basin × province × aquifer); where a basin's units differ the map
+takes the highest: none do for these four indicators (2026-10-13). For site screening.
+
+Lake: `lake/aqueduct/` (source_version 4.0): `baseline_annual` (GeoParquet, every column as
+published, 68,506 units), `basins` (GeoParquet outlines), `baseline_monthly` (one row per basin
+and month), `future_annual` (one row per basin, scenario bau/opt/pes and year 2030/2050/2080).
+Basin tables carry the country and province holding most of the basin's area (sum of
+`area_km2`, computed) as `iso3`/`admin1`.
+
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
 | File | Records | Source |

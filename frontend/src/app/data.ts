@@ -111,6 +111,11 @@ const STATIC: Record<string, Loader> = {
   connect: archive("connect.json"),
   // retail electricity and gas prices (scripts/fetch_retail_prices.py, Eurostat + EIA)
   retail: archive("retail.json"),
+  // US outages per county (scripts/build_us_outages.py, EAGLE-I) and their outlines
+  usOutages: bundled("us_outages.json"),
+  usCounties: bundledUs("counties.json"),
+  // water risk per river basin (scripts/build_aqueduct.py, WRI Aqueduct 4.0)
+  water: bundled("water.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)
