@@ -230,14 +230,43 @@ tiles (`grid/world-hv.pmtiles`) are cut from the same extract.
 
 ## 7. Every dataset: API or Parquet, and its size
 
-Sizes: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where noted.
+### Measured (`lake/_catalog.json`, 2026-10-17)
+
+Written by `scripts/lake_catalog.py`; these replace the estimates below where a dataset is
+built. Parquet, zstd level 9, on R2.
+
+| Dataset (`lake/…`) | Tables | Rows | Size | Estimate was |
+|---|---:|---:|---:|---|
+| `mastr` (one snapshot, 2026-10-13) | 12 | 28,165,719 | 1.31 GB | ~0.6 GB per snapshot |
+| `eaglei` (2014–2025) | 4 | 249,320,127 | 0.25 GB | ~0.8 GB |
+| `aqueduct` | 4 | 429,196 | 0.22 GB | ~0.15 GB |
+| `eia930` (2015-07 → today) | 4 | 22,445,487 | 0.05 GB | ~0.1 GB |
+| `gem` (private) | 54 | 895,568 | 0.03 GB | ~0.1 GB |
+| `nl_capacity` (one snapshot) | 1 | 924 | 0.012 GB | ~0.01 GB/yr |
+| `entsog` (2021-10 → today, see below) | 3 | 2,093,461 | 0.011 GB | ~0.05 GB |
+| `power_plants_eu` (JRC-PPDB, powerplantmatching) | 3 | 316,535 | 0.009 GB | ~0.01 GB |
+| `osm` (one snapshot) | 5 | 22,549 | 0.008 GB | ~0.05 GB |
+| `euets` | 3 | 672,978 | 0.007 GB | ~0.01 GB |
+| `lbnl_queue`, `eia860m`, `irena`, `neso_tec`, `ree_nodes` | 6 | 274,317 | 0.003 GB | ~0.04 GB |
+| `entsoe` (task 14; backfill running) | | | | ~1.2 GB |
+| **All built** | **99** | **304.6 M** | **1.91 GB** | |
+
+MaStR is twice the estimate (every column of every unit, 6.6 M solar rows); EAGLE-I a third
+of it (sorted by county and time, its 249 M rows compress to ~1 byte each).
+
+**ENTSOG keeps about five years in its API** (2026-10-13): older months answer 404 "Data on
+the TP is archived on a rolling basis … check the TP Archives in the Help Section". The lake
+holds what the API serves (from 2021-10); the years before are in ENTSOG's archive files,
+not fetched (a source change: the brief expected 2015–).
+
+Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where noted.
 
 ### On the map today
 
 | Dataset | Access | Kept as | Why | Size |
 |---|---|---|---|---|
 | ENTSO-E (prices, load, generation, flows, per unit, capacity, forecasts, outages) | API, key; one area and ≤ 1 year per request | Parquet, 2015– | history across zones and years is thousands of requests | ~1.2 GB, +0.12 GB/yr |
-| ENTSOG gas flows | API, no key; slow for many points | Parquet, 2015– | | ~0.05 GB |
+| ENTSOG gas flows | API, no key; slow for many points; ~5 years served | Parquet, 2021-10– (older: ENTSOG archive files) | | 0.011 GB measured |
 | GIE AGSI+ / ALSI | API, key, filters, full history | API | passes all six | 0 |
 | Ember | API, all countries in one request | API | | 0 |
 | IRENA capacity | yearly xlsx | Parquet | no API | ~0.005 GB |
