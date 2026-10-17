@@ -71,13 +71,19 @@ jobs:
                   a, _, b = part.strip().partition("-")
                   years += list(range(int(a), int(b or a) + 1))
           elif event == "push" and ref != "main":
-              years = [2024]  # the test year of a branch
+              # a branch push runs the years its commit names: "[years: 2015-2026]"
+              import re
+              m = re.search(r"\[years: ([0-9, -]+)\]", os.environ["MESSAGE"])
+              for part in (m.group(1).split(",") if m else []):
+                  a, _, b = part.strip().partition("-")
+                  years += list(range(int(a), int(b or a) + 1))
           print("years=" + json.dumps(years))
           PY
         env:
           EVENT: ${{ github.event_name }}
           YEARS: ${{ inputs.years || '' }}
           REF: ${{ github.ref_name }}
+          MESSAGE: ${{ github.event.head_commit.message || '' }}
 
   year:
     needs: plan
