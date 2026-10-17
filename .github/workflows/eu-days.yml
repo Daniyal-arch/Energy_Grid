@@ -86,6 +86,14 @@ jobs:
           python scripts/fetch_us_prices.py --out store/eu || echo "US prices failed; keeping the last copy"
           python scripts/build_us_day.py --prices-only --out store/eu/usday || echo "US day prices failed"
 
+      - name: US prices at every node (six markets, CAISO nodes placed; missing days newest first, 8 a run, 30 kept)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install gridstatus duckdb pycountry
+          python scripts/fetch_us_nodes.py --recent 30 --max 8 --out store/eu/us_nodes --lake lake-out --upload || echo "US node prices failed; keeping the last copies"
+
       - name: Twelve months of prices per zone (Prices tab)
         env:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
@@ -138,6 +146,21 @@ jobs:
 
       - name: Wind for the same days (Open-Meteo, one pass over the window)
         run: python scripts/fetch_wind.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/wind || echo "wind fetch failed"
+
+      - name: Lake (scripts/build_lake_datasets.py; never blocks the map's files)
+        continue-on-error: true
+        env:
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb openpyxl pycountry shapely
+          run() { python scripts/build_lake_datasets.py "$@" --lake lake-out --tmp /tmp/lake-tmp --upload || echo "lake $1 failed"; }
+          run entsog --recent 7
+          run eia930 --recent 3
+          run irena
+          if [ "$(date -u +%u)" = 1 ]; then run euets; run connect; fi
+          if [ "$(date -u +%d)" = 01 ]; then run osm --store store/eu; fi
 
       - name: Publish
         env:

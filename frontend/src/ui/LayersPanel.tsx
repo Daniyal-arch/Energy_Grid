@@ -10,7 +10,10 @@ import { ETS_COLOR, mt, type EtsFile } from "../lib/ets";
 import { LNG_SEND, type LngTerminalsFile } from "../lib/lngTerminals";
 import { RETAIL_STOPS, RETAIL_TICKS } from "../lib/retail";
 import { CT_COLOR, type CtraceFile } from "../lib/ctrace";
+import { OUTAGE_STOPS, OUTAGE_TICKS, WATER_COLOR, WATER_INDICATORS, newestYear, type UsOutagesFile, type WaterFile } from "../lib/risk";
+import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, type MastrMuniFile } from "../lib/mastr";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
+import type { UsNodesFile } from "../lib/usNodes";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
@@ -161,6 +164,21 @@ function LngKey() {
   );
 }
 
+function UsNodesKey() {
+  const files = useDataStore((d) => d.files);
+  const day = currentDay();
+  const f = day?.region === "us" ? (files[`usNodes:${day.date}`] as UsNodesFile | undefined) : undefined;
+  const r = f?.range;
+  const ca = f?.markets.CAISO;
+  return (
+    <Scale
+      gradient={rampCss}
+      ticks={r ? [`$${Math.round(r[0])}`, `$${Math.round((r[0] + r[1]) / 2)}`, `$${Math.round(r[1])}/MWh`] : ["cheapest", "", "dearest"]}
+      note={`Day-ahead price at the clock's hour; colour from the day's 2nd to 98th percentile (computed), below zero in cyan. CAISO's nodes placed by CAISO's price map${ca ? ` (${ca.placed.toLocaleString("en-US")} of ${ca.nodes.toLocaleString("en-US")})` : ""}, California and the Western utilities in its market. ERCOT, MISO, SPP, NYISO and ISO-NE publish no node positions: their spread is in the panel.`}
+    />
+  );
+}
+
 function ConnectKey() {
   const cf = useDataStore((d) => d.files.connect as ConnectFile | undefined);
   const side = useApp((s) => s.connectSide);
@@ -195,6 +213,74 @@ function ConnectKey() {
         Netherlands: each supply area as the regional operators' capacity map shows it. Great Britain: MW waiting to connect at each site (TEC register, {gb?.date ?? "…"}), coloured by the largest
         type; {gwText(placed)} of {gwText(total)} placed, at sites named after a GSP in NESO's lookup; the rest are in the panel. Spain publishes no positions: see the panel.
       </Note>
+    </>
+  );
+}
+
+function OutagesKey() {
+  const f = useDataStore((d) => d.files.usOutages as UsOutagesFile | undefined);
+  return (
+    <Scale
+      gradient={gradientCss(OUTAGE_STOPS)}
+      ticks={OUTAGE_TICKS}
+      note={`Each county by the customer-hours its customers spent without power in ${f ? newestYear(f).year : "…"} (EAGLE-I, ORNL: customers out every 15 minutes × ¼ h, summed). Customers are utility meters, not people. Hover for hours per customer.`}
+    />
+  );
+}
+
+function WaterKey() {
+  const f = useDataStore((d) => d.files.water as WaterFile | undefined);
+  const ind = useApp((s) => s.waterIndicator);
+  const labels = f?.indicators[ind]?.labels ?? {};
+  return (
+    <>
+      <div className="mb-1 flex flex-wrap items-center gap-1">
+        {WATER_INDICATORS.map((w) => (
+          <button
+            key={w.id}
+            onClick={() => actions.setWaterIndicator(w.id)}
+            className={`rounded-md border px-2 py-0.5 text-[10.5px] ${ind === w.id ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-300 hover:bg-white/[0.07]"}`}
+          >
+            {w.short}
+          </button>
+        ))}
+      </div>
+      <Swatches>
+        {Object.entries(labels)
+          .filter(([c]) => Number(c) >= -1)
+          .map(([c, label]) => (
+            <Swatch key={c} color={rgbCss(WATER_COLOR[c] ?? [90, 90, 90])} label={label} />
+          ))}
+      </Swatches>
+      <Note>
+        WRI Aqueduct 4.0, baseline, with WRI's own categories, per river basin (HydroBASINS level 6). Where WRI rates a basin's parts differently (by province or aquifer), the highest is shown
+        {f && f.mixed[ind] ? ` (${f.mixed[ind].toLocaleString("en-US")} basins)` : ""}. For site screening, not engineering.
+      </Note>
+    </>
+  );
+}
+
+function MastrKey() {
+  const f = useDataStore((d) => d.files.mastrMuni as MastrMuniFile | undefined);
+  const tech = useApp((s) => s.mastrTech);
+  return (
+    <>
+      <div className="mb-1 flex flex-wrap items-center gap-1">
+        {MASTR_TECHS.map((t) => (
+          <button
+            key={t}
+            onClick={() => actions.setMastrTech(t)}
+            className={`rounded-md border px-2 py-0.5 text-[10.5px] ${tech === t ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-300 hover:bg-white/[0.07]"}`}
+          >
+            {MASTR_LABEL[t].toLowerCase()}
+          </button>
+        ))}
+      </div>
+      <Scale
+        gradient={gradientCss(MASTR_STOPS)}
+        ticks={MASTR_TICKS}
+        note={`Each municipality by the gross MW of its ${MASTR_LABEL[tech].toLowerCase()} units in operation (sum, computed). From zoom ${MASTR_UNIT_ZOOM}: every unit of 1 MW and more with a published position, coloured by type. Marktstammdatenregister ${f?.snapshot ?? "…"}.`}
+      />
     </>
   );
 }
@@ -292,6 +378,14 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <CtraceKey />;
     case "connect":
       return <ConnectKey />;
+    case "usNodePrices":
+      return <UsNodesKey />;
+    case "usOutages":
+      return <OutagesKey />;
+    case "water":
+      return <WaterKey />;
+    case "mastrDE":
+      return <MastrKey />;
     case "plantOutput":
       return (
         <>

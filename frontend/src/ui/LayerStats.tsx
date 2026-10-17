@@ -5,6 +5,8 @@ import { useMemo, type ReactNode } from "react";
 
 import { Card, SourcesCard } from "../components/CountryCards";
 import { FinanceCountryCard, FinanceWorldCard } from "../components/FinanceCards";
+import { UsOutagesCard, WaterCard } from "../components/RiskCards";
+import { MastrCountryCard } from "../components/MastrCards";
 import { BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard } from "../components/WorldCards";
 import { UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
 import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
@@ -685,6 +687,9 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "ets") return <EtsCard key={id} iso3={iso3} />;
         if (id === "ctrace") return <CtraceCard key={id} iso3={iso3} />;
         if (id === "connect") return <ConnectCards key={id} iso3={iso3} />;
+        if (id === "usOutages") return iso3 && iso3 !== "USA" ? null : <UsOutagesCard key={id} />;
+        if (id === "water") return <WaterCard key={id} iso3={iso3} />;
+        if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;
       })}

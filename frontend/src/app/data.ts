@@ -77,6 +77,8 @@ const STATIC: Record<string, Loader> = {
   // the US grid pack (scripts/fetch_us_grid.py; .github/workflows/us-grid.yml refreshes it on main)
   usPlants: bundledUs("plants.json"),
   usQueue: bundledUs("queue.json"),
+  // the markets' own queues, weekly (scripts/fetch_us_queues.py)
+  usQueuesLive: bundledUs("queues_live.json"),
   usTurbines: bundledUs("turbines.json"),
   usStates: bundledUs("states.json"),
   flows: snapshot("flows.json"),
@@ -111,6 +113,14 @@ const STATIC: Record<string, Loader> = {
   connect: archive("connect.json"),
   // retail electricity and gas prices (scripts/fetch_retail_prices.py, Eurostat + EIA)
   retail: archive("retail.json"),
+  // US outages per county (scripts/build_us_outages.py, EAGLE-I) and their outlines
+  usOutages: bundled("us_outages.json"),
+  usCounties: bundledUs("counties.json"),
+  // water risk per river basin (scripts/build_aqueduct.py, WRI Aqueduct 4.0)
+  water: bundled("water.json"),
+  // every unit in Germany (scripts/build_mastr.py, Marktstammdatenregister)
+  mastrUnits: bundled("mastr/units_large.json"),
+  mastrMuni: bundled("mastr/municipalities.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)
@@ -192,6 +202,8 @@ function loaderFor(key: string): Loader | null {
         const ok = res.flatMap((x) => (x.status === "fulfilled" ? [x.value] : []));
         set(ok.sort((a, b) => b.days.length - a.days.length)[0] ?? null);
       });
+  // US node prices for one day (scripts/fetch_us_nodes.py, daily on eu-days)
+  if (kind === "usNodes") return archiveFirst(`${ARCHIVE_REMOTE}/us_nodes/${arg}.json`, `/data/eu/us_nodes/${arg}.json`);
   if (kind === "usDay") {
     const idx = useDataStore.getState().files.usDayIndex as { remote: string[]; local: string[] } | undefined;
     const remote = !(RECORDING && idx?.local.includes(arg)) && (idx?.remote.includes(arg) ?? true);

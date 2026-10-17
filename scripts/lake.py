@@ -41,6 +41,8 @@ ACCOUNT_ID = (
     "a8ebfc5ad3d6228569de28c66a5f6367"  # the Cloudflare account (not a secret), as fetch_gem.py
 )
 MAX_ROWS_PER_FILE = 25_000_000
+# wrangler uploads at most 300 MiB per file; bigger files are split again by size
+MAX_BYTES_PER_FILE = 250_000_000
 COPY_OPTIONS = "FORMAT parquet, COMPRESSION zstd, COMPRESSION_LEVEL 9, ROW_GROUP_SIZE 1000000, PARQUET_VERSION V2"
 
 
@@ -149,17 +151,27 @@ class Lake:
         kv = ", ".join(f'"{k}": {_quote(str(v))}' for k, v in meta.items())
         order = ", ".join(sort)
         files: list[Path] = []
-        parts = max(1, -(-n // MAX_ROWS_PER_FILE))
-        for i in range(parts):
-            path = folder / f"{stem}-{i}.parquet"
-            window = (
-                f"LIMIT {MAX_ROWS_PER_FILE} OFFSET {i * MAX_ROWS_PER_FILE}" if parts > 1 else ""
-            )
-            con.execute(
-                f"COPY (SELECT * FROM _lake_rows ORDER BY {order} {window}) TO {_quote(str(path))} "
-                f"({COPY_OPTIONS}{geo_option}, KV_METADATA {{{kv}}})"
-            )
-            files.append(path)
+        per_file = MAX_ROWS_PER_FILE
+        for _attempt in range(4):
+            files = []
+            parts = max(1, -(-n // per_file))
+            for i in range(parts):
+                path = folder / f"{stem}-{i}.parquet"
+                window = f"LIMIT {per_file} OFFSET {i * per_file}" if parts > 1 else ""
+                con.execute(
+                    f"COPY (SELECT * FROM _lake_rows ORDER BY {order} {window}) "
+                    f"TO {_quote(str(path))} ({COPY_OPTIONS}{geo_option}, KV_METADATA {{{kv}}})"
+                )
+                files.append(path)
+            sizes = [p.stat().st_size for p in files]
+            if max(sizes) <= MAX_BYTES_PER_FILE or per_file <= 1:
+                break
+            # too big for one upload: split again by size (wide rows, e.g. geometries)
+            for p in files:
+                p.unlink()
+            want = -(-sum(sizes) // int(MAX_BYTES_PER_FILE * 0.8))
+            per_file = max(1, -(-n // want))
+        for path in files:
             rel = path.relative_to(self.dir).as_posix()
             rows = con.execute(f"SELECT count(*) FROM {_quote(str(path))}").fetchone()[0]  # type: ignore[index]
             info.files.append(rel)

@@ -4,6 +4,9 @@
 
 import { create } from "zustand";
 
+import type { WaterIndicator } from "../lib/risk";
+import type { MastrTech } from "../lib/mastr";
+
 export type TimeMode = "live" | "day" | "years";
 
 export type LayerId =
@@ -36,6 +39,7 @@ export type LayerId =
   | "ets"
   | "ctrace"
   | "connect"
+  | "usNodePrices"
   | "plantOutput"
   | "financeCoal"
   | "financeGas"
@@ -44,6 +48,9 @@ export type LayerId =
   | "chemicals"
   | "ironOre"
   | "dataCentres"
+  | "usOutages"
+  | "water"
+  | "mastrDE"
   | "wind"
   | "sun"
   | "night";
@@ -70,6 +77,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "flows", label: "Cross-border flows", desc: "Power moving between countries now", group: "Electricity now", coverage: "Europe", color: "rgb(120,222,255)", modes: ["live", "day"] },
   { id: "prices", label: "Prices", desc: "Each country rises by its day-ahead price; generation towers stand on top", group: "Electricity now", coverage: "Europe", color: "rgb(255,196,90)", modes: ["live", "day"] },
   { id: "liveGrids", label: "Live grids", desc: "US, Brazil, Australia, Taiwan, Ontario now", group: "Electricity now", coverage: "World", color: "rgb(255,196,120)", modes: ["live"] },
+  { id: "usNodePrices", label: "Node prices", desc: "Day-ahead price at each placed node, hour by hour", group: "Electricity now", coverage: "US West", color: "rgb(255,196,90)", modes: ["day"] },
   { id: "towers", label: "Generation towers", desc: "Each country's (or US region's) output by source", group: "Electricity now", coverage: "Europe, US", color: "rgb(255,214,72)", modes: ["day"] },
   { id: "gridEU", label: "Transmission lines", desc: "220–750 kV, by voltage", group: "Power grid", coverage: "Europe", color: "rgb(236,178,120)" },
   { id: "hvdc", label: "HVDC links", desc: "Direct-current links between grids", group: "Power grid", coverage: "Europe", color: "rgb(178,146,255)" },
@@ -82,6 +90,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "plantsEU", label: "Power plants", desc: "20 MW and more, by fuel", group: "Power plants", coverage: "Europe", color: "rgb(255,128,72)" },
   { id: "plantsWorld", label: "Power plants worldwide", desc: "Operating, building, planned or retired", group: "Power plants", coverage: "World", color: "rgb(255,214,72)" },
   { id: "plantsUS", label: "US power plants", desc: "Every generator of 1 MW and more (EIA)", group: "Power plants", coverage: "US", color: "rgb(255,128,72)" },
+  { id: "mastrDE", label: "Germany: every unit", desc: "MW per municipality of solar, wind or storage; units of 1 MW and more (Marktstammdatenregister)", group: "Power plants", coverage: "DE", color: "rgb(255,214,72)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Power plants", coverage: "US", color: "rgb(196,196,214)", story: "us-queue" },
   { id: "gasPipes", label: "Gas pipelines", desc: "Operating, under construction, proposed", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,196,96)" },
@@ -104,6 +113,8 @@ export const LAYERS: LayerInfo[] = [
   { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & data", coverage: "World", color: "rgb(230,160,255)" },
   { id: "ironOre", label: "Iron ore mines", desc: "Sized by production", group: "Industry & data", coverage: "World", color: "rgb(206,112,88)" },
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & data", coverage: "World", color: "rgb(196,150,255)" },
+  { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Industry & data", coverage: "World", color: "rgb(255,153,0)" },
+  { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Power grid", coverage: "US", color: "rgb(230,120,80)" },
   { id: "wind", label: "Wind", desc: "Moving wind at turbine height", group: "Weather", coverage: "World", color: "rgb(220,240,255)", modes: ["live", "day"] },
   { id: "sun", label: "Sunshine", desc: "Solar radiation reaching the ground", group: "Weather", coverage: "World", color: "rgb(255,214,72)", modes: ["live", "day"] },
   { id: "night", label: "Night", desc: "Where it is dark at that moment", group: "Weather", coverage: "World", color: "rgb(90,110,160)", modes: ["day"] },
@@ -131,11 +142,15 @@ export const STATS_LAYERS = new Set<LayerId>([
   "ets",
   "ctrace",
   "connect",
+  "usNodePrices",
   "steel",
   "cement",
   "chemicals",
   "ironOre",
   "dataCentres",
+  "usOutages",
+  "water",
+  "mastrDE",
 ]);
 
 export type ColourId =
@@ -339,7 +354,7 @@ export const STORIES: Story[] = [
     blurb: "24 hours of demand, generation and flows between the 13 regions",
     mode: "day",
     colour: "none",
-    layers: ["towers", "flows"],
+    layers: ["towers", "flows", "usNodePrices"],
     camera: "usDay",
     region: "us",
     dayRegion: "us",
@@ -380,6 +395,17 @@ export const STORIES: Story[] = [
     region: "us",
   },
   {
+    id: "us-outages",
+    group: "United States",
+    label: "US outages",
+    blurb: "Customer-hours without power per county; the biggest storms",
+    mode: "live",
+    colour: "none",
+    layers: ["usOutages", "gridUS"],
+    camera: "us",
+    region: "us",
+  },
+  {
     id: "heavy-industry",
     group: "World",
     label: "Heavy industry",
@@ -405,6 +431,10 @@ interface AppState {
   plantStyle: "bars" | "beams";
   /** the Grid capacity layer's Dutch areas: room for new demand or for new generation */
   connectSide: "offtake" | "feedin";
+  /** the Water stress layer's indicator (WRI Aqueduct) */
+  waterIndicator: WaterIndicator;
+  /** the Germany layer's technology (Marktstammdatenregister) */
+  mastrTech: MastrTech;
   selection: Selection | null;
   tab: string;
   story: string | null;
@@ -437,6 +467,8 @@ export const useApp = create<AppState>(() => ({
   plantStatus: "operating",
   plantStyle: "bars",
   connectSide: "offtake",
+  waterIndicator: "bws",
+  mastrTech: "solar",
   selection: null,
   tab: "now",
   story: "europe-live",
@@ -486,6 +518,12 @@ export const actions = {
   },
   setConnectSide(connectSide: "offtake" | "feedin") {
     useApp.setState({ connectSide });
+  },
+  setWaterIndicator(waterIndicator: WaterIndicator) {
+    useApp.setState({ waterIndicator });
+  },
+  setMastrTech(mastrTech: MastrTech) {
+    useApp.setState({ mastrTech });
   },
   /** Jump the 24 h clock to a slot (pauses at the end of the day). */
   seekDay(slot: number) {

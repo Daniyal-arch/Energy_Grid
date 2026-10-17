@@ -1,0 +1,115 @@
+name: MaStR
+
+# Every generating unit in Germany from the Marktstammdatenregister (Bundesnetzagentur,
+# dl-de/by-2-0; docs/DATA_SOURCES.md, "Germany: every unit"). Downloads the daily bulk export
+# once (3.2 GB zip, ~66 GB of XML inside, never unpacked; the server resets parallel
+# downloads, so one job), streams its parts into the lake in parallel processes
+# (r2://infraatlas-raw/lake/mastr/<table>/snapshot=<date>/), then combines their summaries into
+# frontend/public/data/eu/mastr/units_large.json and municipalities.json (outlines: BKG
+# VG5000), merges the lake's catalogue, drops snapshots older than a year except the first of
+# each year, and commits the map files.
+#
+# Monthly (the 2nd), by hand, and when this file or the script changes on main.
+# Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID (the lake upload).
+
+on:
+  schedule:
+    - cron: "23 5 2 * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/mastr.yml, scripts/build_mastr.py]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mastr-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Download the newest export (3.2 GB)
+        run: |
+          pip install duckdb shapely
+          url=$(curl -sf --retry 3 https://www.marktstammdatenregister.de/MaStR/Datendownload | grep -oE 'https://download\.marktstammdatenregister\.de/Gesamtdatenexport_[0-9]+_[0-9.]+\.zip' | head -1)
+          echo "$url"
+          test -n "$url"
+          sudo mkdir -p /mnt/mastr && sudo chown "$USER" /mnt/mastr
+          df -h /mnt /
+          zip="/mnt/mastr/$(basename "$url")"
+          # resume after a reset connection
+          for i in 1 2 3 4 5 6; do
+            curl -sfL -C - -o "$zip" "$url" && break
+            echo "download interrupted ($i), resuming"; sleep $((i * 20))
+          done
+          python -c "import zipfile, sys; zipfile.ZipFile(sys.argv[1]).namelist()" "$zip"
+          ls -la /mnt/mastr
+          echo "ZIP=$zip" >> "$GITHUB_ENV"
+
+      - name: Stream the parts into the lake (parallel processes)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p part
+          run() {
+            rc=0
+            python scripts/build_mastr.py --zip "$ZIP" --part "$1" --lake "/mnt/mastr/lake-$1" \
+              --tmp "/mnt/mastr/tmp-$1" --out "part/part-$1.json" --upload > "part/log-$1.txt" 2>&1 || rc=$?
+            echo "$1: exit $rc" | tee -a part/status.txt
+          }
+          # solar (23 GB of XML) alone; the rest two chains next to it (4 cores)
+          run solar &
+          (run units; run storage) &
+          (run connection; run locations; run operators) &
+          wait
+          for f in part/log-*.txt; do echo "=== $f"; tail -n 25 "$f"; done
+          test "$(grep -c 'exit 0' part/status.txt)" = 6
+
+      - name: Map files, catalogue, old snapshots
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          curl -sfL --retry 3 -o vg5000.zip https://daten.gdz.bkg.bund.de/produkte/vg/vg5000_0101/aktuell/vg5000_01-01.utm32s.shape.ebenen.zip
+          python scripts/build_mastr.py --combine part/part-*.json --vg5000 vg5000.zip --lake lake-out --upload | tee combine.txt
+          {
+            echo '```'; cat combine.txt; echo '```'
+            python - <<'PY'
+          import json
+          cat = json.load(open("lake-out/mastr/_catalog.json"))
+          print("| table | rows | bytes |\n|---|---:|---:|")
+          for name, t in sorted(cat["tables"].items()):
+              print(f"| {name} | {t['rows']:,} | {t['bytes']:,} |")
+          PY
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: mastr-logs
+          path: |
+            part/*.txt
+            combine.txt
+            lake-out/mastr/_catalog.json
+          retention-days: 14
+
+      - name: Commit the map files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data/eu/mastr/
+          git diff --cached --quiet && exit 0
+          git commit -m "MaStR: every unit in Germany"
+          git pull --rebase origin ${{ github.ref_name }}
+          git push origin HEAD:${{ github.ref_name }}

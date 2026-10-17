@@ -1,0 +1,57 @@
+name: US live queues
+
+# The US markets' own interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE; NYISO and PJM
+# listed as missing), read with gridstatus (scripts/fetch_us_queues.py): the summary for the
+# US panel's Queue tab is committed to main (frontend/public/data/us/queues_live.json) and every
+# market's full table goes to the lake (r2://infraatlas-raw/lake/iso_queues/, one snapshot a
+# week). Runs in Actions: ERCOT blocks many non-US addresses. Weekly, by hand, and when this
+# file or the script changes. Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID (lake).
+
+on:
+  schedule:
+    - cron: "41 6 * * 2"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/us-queues.yml, scripts/fetch_us_queues.py]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: us-queues
+  cancel-in-progress: true
+
+jobs:
+  queues:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Queues, summary and lake
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install gridstatus duckdb pycountry
+          # errors become public annotations (job logs need a sign-in)
+          if ! python scripts/fetch_us_queues.py --lake lake-out --upload 2> err.txt; then
+            echo "::error title=queues::$(tail -c 3000 err.txt | tr '\n' '|')"
+            exit 1
+          fi
+          python3 -c "import json; d=json.load(open('frontend/public/data/us/queues_live.json')); print('::notice title=queues::' + json.dumps({k: (v.get('active'), v.get('active_mw'), v.get('error') or v.get('missing')) for k, v in d['markets'].items()}))"
+
+      - name: Commit to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data/us/queues_live.json
+          git diff --cached --quiet && exit 0
+          git commit -m "US live queues: $(date -u +%Y-%m-%d)"
+          git pull --rebase origin main
+          git push origin HEAD:main
