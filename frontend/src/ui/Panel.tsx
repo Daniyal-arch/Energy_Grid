@@ -44,6 +44,7 @@ import type { CountriesFile, DayFile, FlowsFile, GasFile, OutagesFile, PlantsFil
 import { LayerStatsTab, LngTerminalsCard, useStatsLayers } from "./LayerStats";
 import { RetailCountryCard, RetailRankingCard, UsRetailCard } from "../components/RetailCards";
 import type { RetailFile } from "../lib/retail";
+import { MastrCountryCard } from "../components/MastrCards";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
 interface Dossier {
@@ -533,6 +534,7 @@ function CountryPanel({ iso }: { iso: string }) {
               </div>
             </Card>
           )}
+          {iso === "DE" && <MastrCountryCard entsoeGw={capacity?.source === "ENTSO-E A68" ? capacity.gw : undefined} />}
           {irena && <IrenaCountryCard f={irena} iso3={ISO3[iso]} year={yearLabel} />}
           {reservoir && (
             <Card title="Hydro reservoirs" note={`ENTSO-E · week of ${reservoir.week}`} accent={[84, 156, 255]}>
