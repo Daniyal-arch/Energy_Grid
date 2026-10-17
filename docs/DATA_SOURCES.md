@@ -629,6 +629,20 @@ the same site.
 | Renewable share, carbon intensity | `transition.json` (Ember) | newest year with a value |
 | Data centres within 50 km | `datacentres.json` (OpenStreetMap) | count and distance |
 
+## Country report (computed in the app: `frontend/src/components/CountryReport.tsx`)
+
+"Report" in a country's panel (or `?report=DE`, `?report=BRA`) opens one printable page of the
+country's figures from the files above, each section naming its source; "CSV" downloads the
+same rows (section, item, value, unit, note, source). Sections appear where the files hold data:
+generation in Ember's newest year (shares of the total computed; renewable, wind and solar, coal
+shares and carbon intensity as published, and the same ten years earlier), now (ENTSO-E, the
+snapshot), twelve months of day-ahead prices per zone (`prices.json`), what consumers pay
+(Eurostat; EIA's US average), installed capacity (ENTSO-E A68, IRENA), power plants by status
+(GEM sums), US generators, queue and solar arrays (EIA-860M, LBNL, USPVDB sums), emissions (EU
+ETS sum, Climate TRACE count, sum and largest five), substations by voltage (PyPSA-Eur counts),
+gas storage (GIE AGSI+), offshore wind farm areas (EMODnet counts), access (World Bank) and data
+centres mapped (OpenStreetMap). Printing hides the map.
+
 ## Offshore wind farms (`scripts/fetch_emodnet_wind.py`, `offshore_wind.json`)
 
 | What | Source |

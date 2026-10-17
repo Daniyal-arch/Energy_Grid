@@ -12,6 +12,7 @@ import MapLegend from "./MapLegend";
 import MapOptions from "./MapOptions";
 import Panel from "./Panel";
 import Search from "./Search";
+import CountryReport from "../components/CountryReport";
 import TimeBar, { TimeControl } from "./TimeBar";
 import { CREDITS } from "./sources";
 
@@ -245,15 +246,19 @@ export default function App() {
   useEffect(
     () =>
       useApp.subscribe((s, prev) => {
-        if (s.story !== prev.story || s.mode !== prev.mode || s.colour !== prev.colour || s.layers !== prev.layers || s.selection !== prev.selection || s.tab !== prev.tab || s.day !== prev.day || s.plantStatus !== prev.plantStatus || s.plantStyle !== prev.plantStyle || s.layersPanel !== prev.layersPanel)
+        if (s.story !== prev.story || s.mode !== prev.mode || s.colour !== prev.colour || s.layers !== prev.layers || s.selection !== prev.selection || s.tab !== prev.tab || s.day !== prev.day || s.plantStatus !== prev.plantStatus || s.plantStyle !== prev.plantStyle || s.layersPanel !== prev.layersPanel || s.report !== prev.report)
           writeUrl();
       }),
     [],
   );
+  const report = useApp((s) => s.report);
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#05070b]">
-      <MapCanvas />
-      {narrow ? <Phone /> : <Desktop />}
+    <div className="relative h-full w-full overflow-hidden bg-[#05070b] print:h-auto print:overflow-visible print:bg-white">
+      <div className="contents print:hidden">
+        <MapCanvas />
+        {narrow ? <Phone /> : <Desktop />}
+      </div>
+      {report && <CountryReport code={report} />}
     </div>
   );
 }

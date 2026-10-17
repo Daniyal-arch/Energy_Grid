@@ -457,6 +457,8 @@ interface AppState {
   dayRegion: DayRegion;
   /** "Check a site" is armed: the next click on the map picks the place */
   picking: boolean;
+  /** the country report open over the map (ISO alpha-2 in Europe, else alpha-3) */
+  report: string | null;
 }
 
 /** Positions between the integer steps (24 h slot, year), advanced by the map's render loop
@@ -488,6 +490,7 @@ export const useApp = create<AppState>(() => ({
   layersPanel: true,
   dayRegion: "eu",
   picking: false,
+  report: null,
 }));
 
 export const actions = {
@@ -559,6 +562,9 @@ export const actions = {
   /** Arm (or disarm) "Check a site": the next click on the map picks the place. */
   setPicking(picking: boolean) {
     useApp.setState({ picking });
+  },
+  openReport(report: string | null) {
+    useApp.setState({ report });
   },
   checkSite(lon: number, lat: number) {
     actions.select({ kind: "site", lon: Number(lon.toFixed(4)), lat: Number(lat.toFixed(4)) }, "site");
@@ -639,6 +645,8 @@ export function readUrl(): void {
   if (year && Number.isFinite(Number(year))) yearFromUrl = year;
   const tab = p.get("tab");
   if (tab) patch.tab = tab;
+  const report = p.get("report");
+  if (report && /^[A-Za-z]{2,3}$/.test(report)) patch.report = report.toUpperCase();
   if (p.get("style") === "beams") patch.plantStyle = "beams";
   if (p.get("panel") === "closed") patch.layersPanel = false;
   const cam = p.get("cam");
@@ -666,6 +674,7 @@ export function writeUrl(camera?: Camera): void {
   if ((s.layers.plantsWorld || s.layers.plantsUS) && s.plantStatus !== "operating") p.set("status", s.plantStatus);
   if (s.plantStyle === "beams") p.set("style", "beams");
   if (!s.layersPanel) p.set("panel", "closed");
+  if (s.report) p.set("report", s.report);
   const sel = s.selection;
   if (sel?.kind === "country") p.set("sel", `country:${sel.iso2 ?? sel.iso3}`);
   if (sel?.kind === "zone") p.set("sel", `zone:${sel.id}`);

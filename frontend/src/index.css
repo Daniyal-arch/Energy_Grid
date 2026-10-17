@@ -178,3 +178,16 @@ body {
   overflow-x: auto;
   max-width: 100%;
 }
+
+/* the country report prints as a plain document: the map and its panels stay off paper */
+@media print {
+  html,
+  body,
+  #root {
+    height: auto;
+    background: #fff;
+  }
+  .report {
+    position: static;
+  }
+}

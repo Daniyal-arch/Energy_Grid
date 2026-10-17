@@ -58,7 +58,7 @@ The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
 2. **Cloud wave 2** (briefs in `docs/tasks/`): Climate TRACE emissions per facility
    (worldwide), the rest of the world high-voltage grid from Overture in Actions, EU CO₂ per
    installation (EU ETS) with LNG send-out per terminal (GIE ALSI, `AGSI_API_KEY`).
-3. **Product:** downloads (CSV of what a view shows), a country report page, then the agent.
+3. **Product:** ✅ "Check a site" (right-click; CSV), ✅ country report page (print, CSV); next the agent, then alerts.
 4. **Videos:** "A day in the US", gas flows into Europe, plants through a day.
 
 The full catalogue of candidate datasets (Europe, US, world; broad and granular; access and

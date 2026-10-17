@@ -47,6 +47,7 @@ import type { RetailFile } from "../lib/retail";
 import type { UsNodesFile } from "../lib/usNodes";
 import { MastrCountryCard } from "../components/MastrCards";
 import { SiteCards, usePlace } from "../components/SiteCards";
+import { ReportButton } from "../components/CountryReport";
 import type { LonLat } from "../lib/site";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
@@ -132,7 +133,7 @@ export default function Panel() {
 const withStats = (tabs: Tab[], on: boolean, iso3?: string): Tab[] =>
   on ? [{ id: "layers", label: "On the map", body: () => <LayerStatsTab iso3={iso3} /> }, ...tabs] : tabs;
 
-function Frame({ title, sub, tabs, close = true }: { title: string; sub?: ReactNode; tabs: Tab[]; close?: boolean }) {
+function Frame({ title, sub, tabs, close = true, action }: { title: string; sub?: ReactNode; tabs: Tab[]; close?: boolean; action?: ReactNode }) {
   const tab = useApp((s) => s.tab);
   const current = tabs.find((t) => t.id === tab) ?? tabs[0];
   return (
@@ -142,6 +143,7 @@ function Frame({ title, sub, tabs, close = true }: { title: string; sub?: ReactN
           <h2 className="truncate text-[17px] font-light tracking-wide text-slate-100">{title}</h2>
           {sub && <div className={`mt-0.5 text-[10.5px] ${muted}`}>{sub}</div>}
         </div>
+        {action}
         {close && (
           <button
             onClick={() => actions.select(null)}
@@ -577,7 +579,7 @@ function CountryPanel({ iso }: { iso: string }) {
       ),
     },
   ];
-  return <Frame title={name} sub={mode === "day" && day ? `${day.date} · ${timeOf(ts(k))}` : undefined} tabs={withStats(tabs, statsOn, ISO3[iso])} />;
+  return <Frame title={name} sub={mode === "day" && day ? `${day.date} · ${timeOf(ts(k))}` : undefined} tabs={withStats(tabs, statsOn, ISO3[iso])} action={<ReportButton code={iso} />} />;
 }
 
 function CountryPrices({ iso }: { iso: string }) {
@@ -944,7 +946,7 @@ function WorldCountryPanel({ code }: { code: string }) {
     { id: "finance", label: "Finance", body: () => <FinanceTab iso3={code} /> },
     { id: "years", label: "25 years", body: () => <YearsTab code={code} scope="one" /> },
   ];
-  return <Frame title={name} tabs={withStats(tabs, statsOn, code)} />;
+  return <Frame title={name} tabs={withStats(tabs, statsOn, code)} action={<ReportButton code={code} />} />;
 }
 
 function RegionPanel({ grid, id }: { grid: "us" | "br" | "au" | "tw" | "on"; id: string }) {
