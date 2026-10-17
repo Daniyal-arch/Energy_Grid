@@ -32,5 +32,15 @@ jobs:
           pip install gridstatus httpx
 
       # GitHub keeps at most 10 notices per step: one section per step
-      - name: CAISO node prices placed on CAISO's price map
-        run: python scripts/probe_us_nodes.py caiso
+      - name: Node prices for one day (scripts/fetch_us_nodes.py, no upload)
+        run: |
+          pip install duckdb pycountry
+          if ! python scripts/fetch_us_nodes.py 2026-10-15 --out nodes-test --lake lake-test > out.txt 2> err.txt; then
+            echo "::error title=nodes::$(tail -c 3000 err.txt | tr '
+' '|')"
+            exit 1
+          fi
+          echo "::notice title=nodes::$(tail -c 1500 out.txt | tr '
+' '|')"
+          python3 -c "import json; d=json.load(open('nodes-test/2026-10-15.json')); print('::notice title=nodes file::' + json.dumps({'slots': d['slots'], 'placed': len(d['nodes']), 'range': d['range'], 'markets': {k: (v['nodes'], v['placed'], v['hours'][12]) for k, v in d['markets'].items()}}))"
+          python3 -c "import json; c=json.load(open('lake-test/us_lmp/_catalog.json')); print('::notice title=nodes lake::' + json.dumps({k: (t['rows'], t['bytes'], len(t['files'])) for k, t in c['tables'].items()}))"
