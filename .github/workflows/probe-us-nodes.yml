@@ -1,0 +1,33 @@
+name: Probe - US nodes and queues
+
+# Rule 2 for docs/tasks/10: which US markets serve day-ahead prices at every node, their live
+# interconnection queues, and published node positions (scripts/probe_us_nodes.py). Runs in
+# Actions because ERCOT blocks many non-US addresses; results are public ::notice annotations.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/probe-us-nodes.yml, scripts/probe_us_nodes.py]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Probe
+        env:
+          ISONE_API_USERNAME: ${{ secrets.ISONE_API_USERNAME }}
+          ISONE_API_PASSWORD: ${{ secrets.ISONE_API_PASSWORD }}
+        run: |
+          pip install gridstatus httpx
+          python scripts/probe_us_nodes.py
