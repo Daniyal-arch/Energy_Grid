@@ -247,9 +247,9 @@ built. Parquet, zstd level 9, on R2.
 | `power_plants_eu` (JRC-PPDB, powerplantmatching) | 3 | 316,535 | 0.009 GB | ~0.01 GB |
 | `osm` (one snapshot) | 5 | 22,549 | 0.008 GB | ~0.05 GB |
 | `euets` | 3 | 672,978 | 0.007 GB | ~0.01 GB |
-| `lbnl_queue`, `eia860m`, `irena`, `neso_tec`, `ree_nodes` | 6 | 274,317 | 0.003 GB | ~0.04 GB |
-| `entsoe` (task 14; backfill running) | | | | ~1.2 GB |
-| **All built** | **99** | **304.6 M** | **1.91 GB** | |
+| `lbnl_queue`, `eia860m`, `irena`, `neso_tec`, `ree_nodes` | 6 | 271,317 | 0.003 GB | ~0.04 GB |
+| `entsoe` (task 14: `areas`, `units` so far; years backfilling) | 2 | 1,875 | 0.00003 GB | ~1.2 GB |
+| **All built** | **101** | **304.6 M** | **1.91 GB** | |
 
 MaStR is twice the estimate (every column of every unit, 6.6 M solar rows); EAGLE-I a third
 of it (sorted by county and time, its 249 M rows compress to ~1 byte each).
