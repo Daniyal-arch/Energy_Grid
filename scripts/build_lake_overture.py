@@ -37,7 +37,8 @@ WORLD = ROOT / "frontend" / "public" / "data" / "eu" / "world.json"
 DATASET = "overture_power"
 SOURCE = "Overture Maps, base/infrastructure, subtype power (OpenStreetMap contributors, ODbL)"
 LINE_CLASSES = ("power_line", "minor_line", "cable")
-SKIP = ("tower", "pole", "portal", "insulator", "catenary_mast", "generator")
+# classes left out, by pattern (Overture names them e.g. "power_tower"): points by the million
+SKIP_RE = "tower|pole|portal|insulator|catenary|mast|generator"
 MIN_KV = 60
 
 
@@ -54,7 +55,6 @@ def band(n: int, out: Path, release: str | None) -> None:
     )
     iso_codes(con)
     t = time.time()
-    skip = ", ".join(f"'{c}'" for c in SKIP)
     con.execute(
         f"""
         CREATE TABLE feats AS
@@ -65,13 +65,15 @@ def band(n: int, out: Path, release: str | None) -> None:
                coalesce(list_contains(string_split(source_tags['frequency'], ';'), '0'), false) AS dc,
                class = 'cable' AS cable, source_tags AS tags, geometry
         FROM read_parquet('{path}', hive_partitioning=1)
-        WHERE bbox.xmin >= {w} AND bbox.xmin < {e} AND subtype = 'power' AND class NOT IN ({skip})
+        WHERE bbox.xmin >= {w} AND bbox.xmin < {e} AND subtype = 'power' AND NOT regexp_matches(class, '{SKIP_RE}')
         """
     )
     classes = dict(
         con.execute("SELECT class, count(*) FROM feats GROUP BY 1 ORDER BY 2 DESC").fetchall()
     )
     print(f"band {n} ({w}..{e}), {release}: read in {time.time() - t:.0f} s, {classes}", flush=True)
+    # the class counts as a public annotation (job logs need a sign-in)
+    print(f"::notice title=band {n} classes::{json.dumps(classes)}", flush=True)
     with_country = """
         SELECT f.*, i.iso2, c.iso3 FROM feats f
         LEFT JOIN countries c ON ST_Intersects(c.geom, ST_Centroid(f.geometry))

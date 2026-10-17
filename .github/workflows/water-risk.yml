@@ -35,7 +35,12 @@ jobs:
       - name: Download Aqueduct 4.0 (262 MB)
         run: |
           pip install duckdb shapely pycountry
-          curl -sfL --retry 3 -o aqueduct.zip https://files.wri.org/aqueduct/aqueduct-4-0-water-risk-data.zip
+          # errors become public annotations (job logs need a sign-in)
+          if ! curl -sSfL --retry 5 --retry-delay 30 -o aqueduct.zip https://files.wri.org/aqueduct/aqueduct-4-0-water-risk-data.zip 2> err.txt; then
+            echo "::error title=download::$(tail -c 1500 err.txt | tr '
+' '|')"
+            exit 1
+          fi
           ls -la aqueduct.zip
 
       - name: Map file and lake tables
@@ -43,7 +48,11 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          python scripts/build_aqueduct.py --zip aqueduct.zip --lake lake-out --upload
+          if ! python scripts/build_aqueduct.py --zip aqueduct.zip --lake lake-out --upload 2> err.txt; then
+            echo "::error title=build::$(tail -c 3000 err.txt | tr '
+' '|')"
+            exit 1
+          fi
           python - <<'PY'
           import json
           cat = json.load(open("lake-out/aqueduct/_catalog.json"))
