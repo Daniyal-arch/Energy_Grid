@@ -32,11 +32,5 @@ jobs:
           pip install gridstatus httpx
 
       # GitHub keeps at most 10 notices per step: one section per step
-      - name: ERCOT prices at every node
-        run: python scripts/probe_us_nodes.py lmp
-
-      - name: Live queues
-        run: python scripts/probe_us_nodes.py queue
-
-      - name: Node positions
-        run: python scripts/probe_us_nodes.py pos
+      - name: CAISO node prices placed on CAISO's price map
+        run: python scripts/probe_us_nodes.py caiso

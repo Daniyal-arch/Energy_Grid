@@ -136,11 +136,40 @@ def positions(gs) -> None:  # noqa: ANN001 - the gridstatus module
         attempt(title, lambda url=url: get_any(url))
 
 
+def caiso_join(gs) -> None:  # noqa: ANN001 - the gridstatus module
+    """CAISO day-ahead prices at every node, placed by exact node name on CAISO's price map."""
+    import collections
+
+    m = httpx.get(
+        "https://wwwmobile.caiso.com/Web.Service.Chart/api/v3/ChartService/PriceContourMap1",
+        timeout=120,
+    ).json()["l"][2]["m"]
+    pos = {x["n"]: x for x in m}
+    for loc in ("ALL", "ALL_AP_NODES"):
+
+        def one(loc: str = loc) -> dict:
+            df = gs.CAISO().get_lmp(DAY, market="DAY_AHEAD_HOURLY", locations=loc)
+            locs = set(df["Location"])
+            hit = locs & set(pos)
+            return {
+                "rows": len(df),
+                "locations": len(locs),
+                "placed": len(hit),
+                "unplaced_sample": sorted(locs - set(pos))[:10],
+                "types": df["Location Type"].value_counts().to_dict(),
+                "areas_placed": dict(collections.Counter(pos[n]["a"] for n in hit).most_common(15)),
+                "map_nodes": len(pos),
+                "map_areas": dict(collections.Counter(x["a"] for x in m).most_common(20)),
+            }
+
+        attempt(f"caiso join {loc}", one)
+
+
 def main() -> None:
     import gridstatus
 
     section = sys.argv[1] if len(sys.argv) > 1 else "pos"
-    {"lmp": lmp, "queue": queues, "pos": positions}[section](gridstatus)
+    {"lmp": lmp, "queue": queues, "pos": positions, "caiso": caiso_join}[section](gridstatus)
 
 
 if __name__ == "__main__":
