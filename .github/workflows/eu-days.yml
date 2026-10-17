@@ -28,7 +28,9 @@ concurrency:
 jobs:
   archive:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    # each data step has its own budget and never stops the others: a slow source on a bad day
+    # (ENTSO-E per unit took over 100 minutes on 2026-10-17) cannot keep the day's files from Publish
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v5
 
@@ -49,16 +51,22 @@ jobs:
           mkdir -p store/eu/day
 
       - name: Build missing days
+        timeout-minutes: 35
+        continue-on-error: true
         env:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_eu_day.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/day
 
       - name: Output per plant (ENTSO-E per unit; the last 8 days, so late publishers fill in)
+        timeout-minutes: 30
+        continue-on-error: true
         env:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_eu_units.py --recent 8 --out store/eu/units || echo "unit output failed; keeping the last copies"
 
       - name: US fossil plants hour by hour (EPA CAMPD; the newest complete quarter's last 7 days)
+        timeout-minutes: 15
+        continue-on-error: true
         env:
           # sent as the X-Api-Key header, never in a URL (api.data.gov key)
           EPA_API_KEY: ${{ secrets.EPA_API_KEY }}
@@ -74,12 +82,16 @@ jobs:
           fi
 
       - name: The US day by day (EIA-930 and hub prices; three days back, 30 kept)
+        timeout-minutes: 10
+        continue-on-error: true
         env:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
           PJM_API_KEY: ${{ secrets.PJM_API_KEY }}
         run: python scripts/build_us_day.py --recent 30 --out store/eu/usday || echo "US days failed; keeping the last copies"
 
       - name: US day-ahead prices at one hub per market (today and tomorrow; hub prices into days built without)
+        timeout-minutes: 5
+        continue-on-error: true
         env:
           PJM_API_KEY: ${{ secrets.PJM_API_KEY }}
         run: |
@@ -87,6 +99,8 @@ jobs:
           python scripts/build_us_day.py --prices-only --out store/eu/usday || echo "US day prices failed"
 
       - name: US prices at every node (six markets, CAISO nodes placed; missing days newest first, 8 a run, 30 kept)
+        timeout-minutes: 25
+        continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -95,11 +109,15 @@ jobs:
           python scripts/fetch_us_nodes.py --recent 30 --max 8 --out store/eu/us_nodes --lake lake-out --upload || echo "US node prices failed; keeping the last copies"
 
       - name: Twelve months of prices per zone (Prices tab)
+        timeout-minutes: 15
+        continue-on-error: true
         env:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_prices.py --out store/eu || echo "prices failed; keeping yesterday's"
 
       - name: World figures (World Bank access, OpenStreetMap data centres)
+        timeout-minutes: 10
+        continue-on-error: true
         run: |
           pip install shapely
           curl -sL -o data_gisco.geojson https://gisco-services.ec.europa.eu/distribution/v2/countries/geojson/CNTR_RG_20M_2024_4326.geojson || true
@@ -110,20 +128,28 @@ jobs:
           python scripts/fetch_irena.py --out store/eu || echo "IRENA fetch failed; keeping the last copy"
 
       - name: Gas flows per gas day (ENTSOG, no key; newest complete gas day and 30 before)
+        timeout-minutes: 10
+        continue-on-error: true
         run: python scripts/fetch_entsog.py --out store/eu || echo "ENTSOG fetch failed; keeping yesterday's"
 
       - name: LNG send-out per terminal (GIE ALSI, the last 30 gas days)
+        timeout-minutes: 5
+        continue-on-error: true
         env:
           AGSI_API_KEY: ${{ secrets.AGSI_API_KEY }}
         run: python scripts/fetch_alsi.py --out store/eu || echo "ALSI fetch failed; keeping yesterday's"
 
       - name: EU ETS verified CO2 per installation (Union Registry + EEA register; Mondays)
+        timeout-minutes: 10
+        continue-on-error: true
         run: |
           if [ "$(date -u +%u)" = 1 ] || [ ! -f store/eu/ets.json ]; then
             python scripts/fetch_eu_ets.py --out store/eu || echo "EU ETS fetch failed; keeping the last copy"
           fi
 
       - name: What consumers pay (Eurostat half-yearly, EIA monthly; Mondays)
+        timeout-minutes: 5
+        continue-on-error: true
         env:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
         run: |
@@ -132,12 +158,16 @@ jobs:
           fi
 
       - name: Emissions per facility worldwide (Climate TRACE; on the 1st of the month)
+        timeout-minutes: 10
+        continue-on-error: true
         run: |
           if [ "$(date -u +%d)" = 01 ] || [ ! -f store/eu/ctrace.json ]; then
             python scripts/fetch_climate_trace.py --out store/eu || echo "Climate TRACE failed; keeping the last copy"
           fi
 
       - name: Grid capacity GB, NL, ES (NESO TEC register, Dutch capacity map, REE nodes; Mondays)
+        timeout-minutes: 10
+        continue-on-error: true
         run: |
           pip install openpyxl shapely
           if [ "$(date -u +%u)" = 1 ] || [ ! -f store/eu/connect.json ]; then
@@ -145,9 +175,12 @@ jobs:
           fi
 
       - name: Wind for the same days (Open-Meteo, one pass over the window)
+        timeout-minutes: 10
+        continue-on-error: true
         run: python scripts/fetch_wind.py --recent "${{ github.event.inputs.days || '30' }}" --out store/eu/wind || echo "wind fetch failed"
 
       - name: Lake (scripts/build_lake_datasets.py; never blocks the map's files)
+        timeout-minutes: 20
         continue-on-error: true
         env:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
@@ -163,6 +196,7 @@ jobs:
           if [ "$(date -u +%d)" = 01 ]; then run osm --store store/eu; fi
 
       - name: Publish
+        if: ${{ !cancelled() }}
         env:
           REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: |
