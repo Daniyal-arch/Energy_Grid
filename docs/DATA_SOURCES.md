@@ -449,6 +449,32 @@ pages of 200 documents (`offset`; DE-LU January 2023: 798 documents); requests t
 (4 at a time: 30 a minute, 8: 67 a minute; ENTSO-E's limit is 400 a minute per key), so a
 year runs with 10 at a time.
 
+## Lake: the map's datasets in full (`scripts/build_lake_datasets.py`, `scripts/lake_catalog.py`)
+
+Not drawn on the map: full detail for the agent as Parquet on R2 (private bucket
+`infraatlas-raw`, prefix `lake/`; docs/DATA_LAKE.md). Each dataset keeps the source's own
+columns (names lower-cased, other characters to `_`; types as DuckDB reads them) plus the
+standard keys `iso2`, `iso3`, `admin1` where the source names a country or state.
+
+| Dataset (`lake/…`) | Source | Tables | Refresh |
+|---|---|---|---|
+| `entsog` | ENTSOG Transparency `operationaldatas`, indicator Physical Flow, period day (gas day 06:00–06:00 CET), every point, direction and operator, kWh/d as published | `flows` (year), `points`, `operator_point_directions` | daily, last 7 days rewrite the year (`eu-days.yml`); backfill by year |
+| `eia930` | EIA-930 API v2 `electricity/rto`: `region-data` (demand, forecast, generation, interchange), `fuel-type-data`, `interchange-data`, hourly UTC | `demand`, `generation_by_fuel`, `interchange` (year), `bas` | daily, last 3 days (`eu-days.yml`); backfill 2015– |
+| `eia860m` | EIA-860M workbook, every sheet (Operating, Planned, Retired, …) as published, `sheet` names it | `generators` (snapshot = release month) | with each release (`us-grid.yml`) |
+| `lbnl_queue` | LBNL Queued Up, the complete data sheet | `requests` (release) | with each release (`us-grid.yml`) |
+| `irena` | IRENASTAT PxWeb, Country ELECSTAT table: every country, technology, data type (capacity MW, generation GWh), grid connection, year, with IRENA's codes and labels | `capacity`, `generation` (release) | daily check, partition per release (`eu-days.yml`) |
+| `power_plants_eu` | JRC-PPDB-OPEN 1.0 (units, performance), powerplantmatching `powerplants.csv` | `jrc_units`, `jrc_performance`, `ppm_plants` | by hand (`lake-datasets.yml`) |
+| `gem` | Global Energy Monitor trackers (the private R2 copies), every data sheet | one table per tracker and sheet (release) | with each release (`gem.yml`); never public |
+| `osm` | PyPSA-Eur (Zenodo 18619025) lines, buses, links; undersea cables and data centres as the map's fetchers read them from OpenStreetMap (ODbL) | `eu_lines`, `eu_buses`, `eu_links`, `cables`, `datacentres` (GeoParquet, snapshot) | monthly (`eu-days.yml`) |
+| `euets` | EU Union Registry public extracts (operators, yearly activity), EEA industrial register ETS identifiers and positions | `installations` (snapshot), `verified_emissions`, `eea_link` | Mondays (`eu-days.yml`) |
+| `neso_tec`, `nl_capacity`, `ree_nodes` | NESO TEC register CSV; Netbeheer Nederland capacity map (every attribute and the area outline); REE "Ficha Capacidades" | `projects`, `areas` (GeoParquet), `nodes` (snapshot) | Mondays (`eu-days.yml`) |
+
+`lake/_catalog.json` (every dataset, table, rows, bytes) and `lake/lake.duckdb` (one view per
+table, schema = dataset, and the topic views `plants`, `prices`, `outages`, `emissions`,
+`grid_capacity`, `water_risk` with a `source` column) are written daily by
+`.github/workflows/lake-catalog.yml`. A topic view passes each source's own values under common
+column names (e.g. `outages.value` is EAGLE-I's customers out, or ENTSO-E's available MW during the outage, with `unit` saying which); nothing is converted between sources.
+
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
 | File | Records | Source |

@@ -32,6 +32,22 @@ Two special cases:
 
 Anything else (no API, slow or one-window-at-a-time APIs, bulk files only) is kept as Parquet.
 
+**PUDL in place, measured** (`scripts/probe_pudl.py` on a GitHub runner, 2026-10-13; DuckDB
+over HTTPS range requests, `stable/` release; cold = first query, warm = DuckDB's metadata
+cache filled):
+
+| Question | File | Cold | Warm |
+|---|---|---:|---:|
+| EPA CEMS hourly, one plant (Barry, 3) in July 2023 | `core_epacems__hourly_emissions.parquet`, 4.88 GB, 10,180 row groups of 100,000 rows | 1.7 s | 0.6 s |
+| EPA CEMS hourly, one state (TX) in 2023 | same | **24.3 s** | 0.7 s |
+| EIA-923 monthly generation, one plant, every month | `core_eia923__monthly_generation.parquet`, one row group | 1.4 s | 0.3 s |
+
+The state-year question fails rule 2 cold: the file is sorted by neither state nor year, so
+DuckDB reads the footers of all 10,180 row groups before it can skip. Proposal (not built):
+an extract `lake/pudl_cems/hourly/year=Y/` sorted by `state, plant_id_eia,
+operating_datetime_utc` (~0.5 GB a year), refreshed with PUDL's releases; until then plant and
+plant-month questions go to PUDL in place, state and national ones need the extract.
+
 ## 2. Where it lives
 
 - Bucket: `infraatlas-raw` (private; the GEM rule already keeps licensed raw files there),
@@ -120,7 +136,22 @@ Parquet has no B-tree; reads are fast because whole parts of files are skipped. 
    names, codes and positions; the big fact tables carry only ids.
 
 The agent opens `lake/_catalog.json` (or a read-only `lake.duckdb` holding a view per table)
-and queries with DuckDB over `httpfs` against R2's S3 endpoint. A question such as "hours
+and queries with DuckDB over `httpfs` against R2's S3 endpoint.
+
+`lake/lake.duckdb` (`scripts/lake_catalog.py`, daily, `.github/workflows/lake-catalog.yml`):
+one schema per dataset with a view per table (`eaglei.outages`, `entsoe.prices`, …) and the
+topic views of section 3 in `main`. DuckDB binds a view when it creates it, so the file is
+built where R2 is readable; the workflow derives S3 credentials from the Cloudflare API token
+(key id = the token's id, secret = SHA-256 of the token; masked, never written to the file).
+The agent attaches it and brings its own read-only R2 secret:
+
+```sql
+ATTACH 'lake.duckdb' AS lake (READ_ONLY);
+CREATE SECRET (TYPE r2, KEY_ID '…', SECRET '…', ACCOUNT_ID '…');
+SELECT sum(value) * 0.25 FROM lake.main.outages
+WHERE source = 'EAGLE-I' AND area = '48201' AND start >= '2024-01-01' AND start < '2025-01-01';
+-- 176,042,304.25 customer-hours (as the map's file), 5.4 s from a GitHub runner
+``` A question such as "hours
 without power in Harris County in 2024" reads one year's file, the row groups whose `fips`
 range holds 48201, and two columns: a few MB, not 1.4 GB.
 
@@ -203,14 +234,43 @@ tiles (`grid/world-hv.pmtiles`) are cut from the same extract.
 
 ## 7. Every dataset: API or Parquet, and its size
 
-Sizes: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where noted.
+### Measured (`lake/_catalog.json`, 2026-10-17)
+
+Written by `scripts/lake_catalog.py`; these replace the estimates below where a dataset is
+built. Parquet, zstd level 9, on R2.
+
+| Dataset (`lake/…`) | Tables | Rows | Size | Estimate was |
+|---|---:|---:|---:|---|
+| `mastr` (one snapshot, 2026-10-13) | 12 | 28,165,719 | 1.31 GB | ~0.6 GB per snapshot |
+| `eaglei` (2014–2025) | 4 | 249,320,127 | 0.25 GB | ~0.8 GB |
+| `aqueduct` | 4 | 429,196 | 0.22 GB | ~0.15 GB |
+| `eia930` (2015-07 → today) | 4 | 22,445,487 | 0.05 GB | ~0.1 GB |
+| `gem` (private) | 54 | 895,568 | 0.03 GB | ~0.1 GB |
+| `nl_capacity` (one snapshot) | 1 | 924 | 0.012 GB | ~0.01 GB/yr |
+| `entsog` (2021-10 → today, see below) | 3 | 2,093,461 | 0.011 GB | ~0.05 GB |
+| `power_plants_eu` (JRC-PPDB, powerplantmatching) | 3 | 316,535 | 0.009 GB | ~0.01 GB |
+| `osm` (one snapshot) | 5 | 22,549 | 0.008 GB | ~0.05 GB |
+| `euets` | 3 | 672,978 | 0.007 GB | ~0.01 GB |
+| `lbnl_queue`, `eia860m`, `irena`, `neso_tec`, `ree_nodes` | 6 | 271,317 | 0.003 GB | ~0.04 GB |
+| `entsoe` (task 14: `areas`, `units` so far; years backfilling) | 2 | 1,875 | 0.00003 GB | ~1.2 GB |
+| **All built** | **101** | **304.6 M** | **1.91 GB** | |
+
+MaStR is twice the estimate (every column of every unit, 6.6 M solar rows); EAGLE-I a third
+of it (sorted by county and time, its 249 M rows compress to ~1 byte each).
+
+**ENTSOG keeps about five years in its API** (2026-10-13): older months answer 404 "Data on
+the TP is archived on a rolling basis … check the TP Archives in the Help Section". The lake
+holds what the API serves (from 2021-10); the years before are in ENTSOG's archive files,
+not fetched (a source change: the brief expected 2015–).
+
+Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where noted.
 
 ### On the map today
 
 | Dataset | Access | Kept as | Why | Size |
 |---|---|---|---|---|
 | ENTSO-E (prices, load, generation, flows, per unit, capacity, forecasts, outages) | API, key; one area and ≤ 1 year per request | Parquet, 2015– | history across zones and years is thousands of requests | ~1.2 GB, +0.12 GB/yr |
-| ENTSOG gas flows | API, no key; slow for many points | Parquet, 2015– | | ~0.05 GB |
+| ENTSOG gas flows | API, no key; slow for many points; ~5 years served | Parquet, 2021-10– (older: ENTSOG archive files) | | 0.011 GB measured |
 | GIE AGSI+ / ALSI | API, key, filters, full history | API | passes all six | 0 |
 | Ember | API, all countries in one request | API | | 0 |
 | IRENA capacity | yearly xlsx | Parquet | no API | ~0.005 GB |
