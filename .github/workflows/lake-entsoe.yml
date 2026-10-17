@@ -9,6 +9,8 @@ name: Lake ENTSO-E
 # job per year, a few at a time (ENTSO-E allows 400 requests a minute per key, shared with the
 # map's own workflows). Daily after eu-days: the last three days of the current year are
 # fetched again and that year's files rewritten. A last job merges the catalogue.
+# On a branch (before the workflow is on main, where Run workflow appears) a push runs the
+# years and tables its commit message names: "[years: 2015-2023]" "[tables: capacity]".
 # Needs ENTSOE_API_KEY, CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID.
 
 on:
