@@ -58,12 +58,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       years: ${{ steps.p.outputs.years }}
+      tables: ${{ steps.p.outputs.tables }}
     steps:
       - id: p
         name: Which years
         run: |
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
-          import json, os
+          import json, os, re
           event, raw, ref = os.environ["EVENT"], os.environ["YEARS"].strip(), os.environ["REF"]
           years = []
           if raw:
@@ -78,6 +79,9 @@ jobs:
                   a, _, b = part.strip().partition("-")
                   years += list(range(int(a), int(b or a) + 1))
           print("years=" + json.dumps(years))
+          # "[tables: capacity,outages]" in a branch commit: only those tables
+          t = re.search(r"\[tables: ([a-z_, ]+)\]", os.environ.get("MESSAGE", "")) if event == "push" else None
+          print("tables=" + (",".join(x.strip() for x in t.group(1).split(",")) if t else ""))
           PY
         env:
           EVENT: ${{ github.event_name }}
@@ -107,7 +111,8 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           pip install duckdb httpx python-dotenv pycountry
-          python scripts/build_lake_entsoe.py --year ${{ matrix.year }} --workers 10 --lake lake-out --tmp /tmp/entsoe --upload
+          tables="${{ needs.plan.outputs.tables }}"
+          python scripts/build_lake_entsoe.py --year ${{ matrix.year }} ${tables:+--tables $tables} --workers 10 --lake lake-out --tmp /tmp/entsoe --upload
           mkdir -p part && cp lake-out/entsoe/_catalog.json part/catalog-${{ matrix.year }}.json
       - uses: actions/upload-artifact@v4
         with:
