@@ -109,7 +109,7 @@ Credentials go in `.env` and `.env.example` (and the repo secrets for workflows)
    1 MW or more, with location).
 3. ✅ **Transmission lines** as vector tiles on R2: OpenStreetMap from 100 kV through
    Overture (HIFLD's layer is no longer public since 2025).
-4. ✅ **Wind turbines** (USWTDB: every turbine). Still to do: solar farm outlines (USPVDB).
+4. ✅ **Wind turbines** (USWTDB: every turbine) and ✅ **solar farm outlines** (USPVDB).
 5. **Hourly CO₂ per power plant** (EPA CAMPD API; `EPA_API_KEY`).
 6. **EV chargers** (NREL AFDC station locator; `NREL_API_KEY`).
 7. **Power outages per county** (ORNL EAGLE-I, every 15 min, yearly releases).
@@ -124,7 +124,7 @@ Credentials go in `.env` and `.env.example` (and the repo secrets for workflows)
 3. **Finland every 3 minutes** (Fingrid open data; `FINGRID_API_KEY`).
 4. **Great Britain** (NESO data portal: carbon-intensity forecast, the grid connection
    queue).
-5. **Offshore wind farms and sea cables** (EMODnet Human Activities).
+5. ✅ **Offshore wind farms** (EMODnet Human Activities); sea cables still to do.
 6. **More ENTSO-E series:** imbalance prices, day-ahead wind and solar forecasts,
    cross-border capacities, installed capacity per unit (replaces Energy-Charts).
 7. **Retail electricity prices** (Eurostat, households and industry) and **emissions

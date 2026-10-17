@@ -403,6 +403,12 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <MastrKey />;
     case "offshoreWind":
       return <OffshoreKey />;
+    case "solarUS":
+      return (
+        <Note>
+          Dot area = AC capacity; from zoom 7.5 the array&apos;s outline, digitised from aerial imagery (simplified to about 30 m). Ground-mounted PV of 1 MW (DC) and more. USPVDB (USGS, LBNL).
+        </Note>
+      );
     case "plantOutput":
       return (
         <>

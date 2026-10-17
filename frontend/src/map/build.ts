@@ -102,6 +102,7 @@ import type { WaterIndicator } from "../lib/risk";
 import { mastrLayers } from "./mastrLayers";
 import { siteLayers } from "./siteLayers";
 import { offshoreLayers } from "./offshoreLayers";
+import { usSolarLayers } from "./usSolarLayers";
 import type { MastrTech } from "../lib/mastr";
 
 export interface Frame {
@@ -705,6 +706,7 @@ export function buildLayers(fr: Frame): Layer[] {
   layers.push(...riskLayers(fr));
   layers.push(...mastrLayers(fr));
   layers.push(...offshoreLayers(fr));
+  layers.push(...usSolarLayers(fr));
   layers.push(...worldLayers(fr, near));
   layers.push(...usLayers(fr));
   layers.push(...gemLayers(fr));

@@ -15,6 +15,7 @@ import { rgbCss } from "../lib/theme";
 import { EUROPE_ISO3, ISO3, metricById, metricColor, type MetricId, type TransitionFile } from "../lib/transition";
 import { WindField, WindParticles, type WindFile } from "../lib/windParticles";
 import { useSiteLines } from "../lib/site";
+import { SOLAR_OUTLINE_ZOOM } from "../lib/usSolar";
 import { ACCESS_STOPS, latest, type WorldStatsFile } from "../lib/world";
 import { US_CENTRE } from "../lib/us";
 import { TR_NO_DATA, stopColor } from "../app/colors";
@@ -41,7 +42,7 @@ function globeBox(c: maplibregl.LngLat, zoom: number): [number, number, number, 
 }
 
 /** Files the map needs for what is switched on (panels load their own). */
-function wantedKeys(): string[] {
+function wantedKeys(zoom: number): string[] {
   const s = useApp.getState();
   const L = s.layers;
   const keys = ["countries"];
@@ -61,6 +62,7 @@ function wantedKeys(): string[] {
   // EIA wins over GEM in the US: GEM's points inside the states are left out
   if (L.plantsUS) keys.push("usPlants");
   if (L.turbinesUS) keys.push("usTurbines");
+  if (L.solarUS) keys.push("usSolar", ...(zoom >= SOLAR_OUTLINE_ZOOM ? ["usSolarOutlines"] : []));
   // the queue is shaded against the plants each state runs today
   if (L.usQueue) keys.push("usQueue", "usPlants");
   if (L.plantsUS || L.turbinesUS || L.gridUS || L.usQueue) keys.push("usStates");
@@ -458,7 +460,7 @@ export default function MapCanvas() {
       const files = useDataStore.getState().files;
       if (dirty) applyProjection();
 
-      const wanted = wantedKeys();
+      const wanted = wantedKeys(map.getZoom());
       const wk = wanted.join(",");
       if (wk !== wantedKey) {
         wantedKey = wk;

@@ -27,6 +27,7 @@ import { LNG_SEND, gwhdText, lngDay, type LngTerminalsFile } from "../lib/lngTer
 import { CT_COLOR, subsectorLabel, type CtraceFile } from "../lib/ctrace";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 import { OFFSHORE_LABEL, OFFSHORE_STYLE, offshoreStatus, type OffshoreWindFile } from "../lib/offshoreWind";
+import { solarCat, type UsSolarFile } from "../lib/usSolar";
 
 const muted = "text-[#8d94a1]";
 const CLASS_COLOR = ["rgb(120,222,160)", "rgb(255,196,96)", "rgb(160,170,190)", "rgb(130,134,146)"];
@@ -572,6 +573,52 @@ function EsConnectCard({ f }: { f: ConnectFile }) {
 }
 
 /** Climate TRACE: modelled CO2e of the facilities in scope, the largest and the sum per group. */
+function UsSolarCard() {
+  const f = useFile<UsSolarFile>("usSolar");
+  const names = useStateNames();
+  const data = useMemo(() => {
+    if (!f) return null;
+    const byState = new Map<string, number>();
+    const byAxis = new Map<string, number>();
+    let total = 0;
+    for (const s of f.sites) {
+      const mw = s[2] ?? 0;
+      total += mw;
+      if (s[6]) byState.set(s[6], (byState.get(s[6]) ?? 0) + mw);
+      const axis = solarCat(f, "p_axis", s[8]) ?? "not given";
+      byAxis.set(axis, (byAxis.get(axis) ?? 0) + mw);
+    }
+    const largest = [...f.sites].sort((a, b) => (b[2] ?? 0) - (a[2] ?? 0)).slice(0, 6);
+    return { total, byState: [...byState.entries()].sort((a, b) => b[1] - a[1]), byAxis: [...byAxis.entries()].sort((a, b) => b[1] - a[1]), largest };
+  }, [f]);
+  if (!f || !data) return <Card title="US solar farms">Loading…</Card>;
+  const sun = rgbCss(FUEL_COLOR.solar);
+  return (
+    <Card title="US solar farms" note={`USPVDB ${f.release}`}>
+      <div className="text-[22px] font-light text-slate-50">
+        {(data.total / 1000).toFixed(1)} GW <span className={`text-[11px] ${muted}`}>AC in {f.sites.length.toLocaleString("en-US")} arrays (sum, computed)</span>
+      </div>
+      <Head>By state</Head>
+      <Rows rows={data.byState.slice(0, 8).map(([code, mw]) => ({ key: code, label: names(code), value: mw / 1000, color: sun }))} unit="GW" />
+      <Head>By tracking</Head>
+      <div className="text-[11px] text-slate-300">{data.byAxis.slice(0, 3).map(([a, mw]) => `${a} ${Math.round((100 * mw) / data.total)} %`).join(" · ")}</div>
+      <Head>Largest</Head>
+      {data.largest.map((s, i) => (
+        <div key={i} className="flex justify-between gap-2 text-[11px]">
+          <span className="truncate text-slate-200">
+            {s[5] ?? "Unnamed"} <span className={muted}>{s[6]}</span>
+          </span>
+          <span className="tabular-nums text-slate-100">{s[2] != null ? `${s[2].toLocaleString("en-US")} MW` : "–"}</span>
+        </div>
+      ))}
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Ground-mounted PV of 1 MW (DC) and more, mapped from aerial imagery; AC capacity as published, sums and shares computed. Its own count, not EIA&apos;s: the US power
+        plants layer lists generators.
+      </div>
+    </Card>
+  );
+}
+
 function OffshoreWindCard({ iso3 }: { iso3?: string }) {
   const f = useFile<OffshoreWindFile>("offshoreWind");
   if (!f) return <Card title="Offshore wind farms">Loading…</Card>;
@@ -723,6 +770,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "water") return <WaterCard key={id} iso3={iso3} />;
         if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
         if (id === "offshoreWind") return <OffshoreWindCard key={id} iso3={iso3} />;
+        if (id === "solarUS") return iso3 && iso3 !== "USA" ? null : <UsSolarCard key={id} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;
       })}

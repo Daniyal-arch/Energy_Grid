@@ -80,6 +80,9 @@ const STATIC: Record<string, Loader> = {
   // the markets' own queues, weekly (scripts/fetch_us_queues.py)
   usQueuesLive: bundledUs("queues_live.json"),
   usTurbines: bundledUs("turbines.json"),
+  // every large solar array (scripts/fetch_uspvdb.py, USPVDB); outlines only when zoomed in
+  usSolar: bundledUs("solar.json"),
+  usSolarOutlines: bundledUs("solar_outlines.json"),
   usStates: bundledUs("states.json"),
   flows: snapshot("flows.json"),
   stats: snapshot("stats.json"),

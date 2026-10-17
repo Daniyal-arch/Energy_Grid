@@ -22,6 +22,7 @@ import type { GasArc } from "./build";
 import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { MASTR_LABEL, mwText, type MastrMuniFile, type MastrUnitsFile } from "../lib/mastr";
 import { OFFSHORE_LABEL, offshoreStatus, type OffshoreWindFile } from "../lib/offshoreWind";
+import { solarCat, type UsSolarFile } from "../lib/usSolar";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
@@ -279,6 +280,19 @@ function mastrHtml(id: string, object: unknown): string | null {
 function tooltipHtml(id: string, object: unknown): string | null {
   if (id === "us-outages" || id === "w-water") return riskHtml(id, object);
   if (id.startsWith("de-mastr-")) return mastrHtml(id, object);
+  if (id === "us-solar" || id === "us-solar-areas") {
+    const f = fileOf<UsSolarFile>("usSolar");
+    const k = typeof object === "number" ? object : (object as { k: number }).k;
+    const s = f?.sites[k];
+    if (!f || !s) return null;
+    const axis = solarCat(f, "p_axis", s[8]);
+    const sys = solarCat(f, "p_sys_type", s[9]);
+    const site = solarCat(f, "p_type", s[10]);
+    const agri = solarCat(f, "p_agrivolt", s[11]);
+    const mw = (v: number | null) => (v == null ? "–" : `${v.toLocaleString("en-US")} MW`);
+    const facts = [axis, sys && sys !== "ground" ? sys : "", site && site !== "greenfield" ? site : "", agri && agri !== "non-agrivoltaic" ? `agrivoltaic (${agri})` : "", s[13] ? `battery: ${s[13]}` : ""].filter(Boolean);
+    return `<b>${s[5] ?? "Unnamed array"}</b><div>${s[7] ? `${s[7]}, ` : ""}${s[6] ?? ""}${s[4] ? ` · since ${s[4]}` : ""}</div><div><b>${mw(s[2])}</b> AC · ${mw(s[3])} DC</div>${facts.length ? `<div style="color:#8d94a1">${facts.join(" · ")}</div>` : ""}${SRC(`USPVDB ${f.release} (USGS, LBNL)${s[15] ? `, outline from imagery of ${String(s[15]).slice(0, 4)}` : ""}`)}`;
+  }
   if (id === "eu-offshore-wind" || id === "eu-offshore-wind-points") {
     const f = fileOf<OffshoreWindFile>("offshoreWind");
     const k = typeof object === "number" ? object : (object as { k: number }).k;

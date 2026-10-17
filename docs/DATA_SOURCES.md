@@ -830,6 +830,22 @@ Power; public domain), the CSV download on https://energy.usgs.gov/uswtdb/data/ 
 | `project`, `projects[]` = [name, state, year, turbines, MW] | `p_name`, `t_state`, `p_year`, `p_tnum`, `p_cap`, listed once per project name and state |
 | `mw`, `states` | sums of `t_cap` over the turbines that have one (computed): nationally and per `t_state` with the turbine count |
 
+### `us/solar.json`, `us/solar_outlines.json`: USPVDB
+
+The U.S. Large-Scale Solar Photovoltaic Database (USGS and LBNL, public domain), release v4.0
+(2026-04-14): 6,611 ground-mounted PV facilities of 1 MW (DC) and more, digitised from aerial
+imagery, 131.6 GW AC in all. GeoJSON zip (~10 MB) from energy.usgs.gov/uspvdb/data/
+(`scripts/fetch_uspvdb.py`, probe `scripts/probe_uspvdb.py`).
+
+- Passthrough per facility: name, state, county, year, AC and DC capacity (MW), tracking axis,
+  system type, site type (greenfield, landfill, ...), agrivoltaic, battery, EIA plant id, image
+  date, the published centre point.
+- Computed: outlines simplified (shapely, 0.0003°, about 30 m; 4 decimals) in a second file the
+  map loads only from zoom 7.5; the panel's sums per state and shares by tracking.
+- Its own count, not EIA-860M's: USPVDB maps arrays, EIA lists generators.
+- Refresh: the monthly `us-grid.yml` run rebuilds both files when the data page names a new
+  release.
+
 ### `us/states.json`: outlines
 
 U.S. Census Bureau cartographic boundary file, states 1:20,000,000, 2024 (`cb_2024_us_state_20m`,

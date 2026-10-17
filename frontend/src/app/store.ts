@@ -25,6 +25,7 @@ export type LayerId =
   | "plantsWorld"
   | "plantsUS"
   | "turbinesUS"
+  | "solarUS"
   | "usQueue"
   | "gasPipes"
   | "oilPipes"
@@ -94,6 +95,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "mastrDE", label: "Germany: every unit", desc: "MW per municipality of solar, wind or storage; units of 1 MW and more (Marktstammdatenregister)", group: "Power plants", coverage: "DE", color: "rgb(255,214,72)" },
   { id: "offshoreWind", label: "Offshore wind farms", desc: "Areas at sea: operating, building, approved, planned (EMODnet)", group: "Power plants", coverage: "Europe", color: "rgb(96,190,255)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
+  { id: "solarUS", label: "US solar farms", desc: "Every array of 1 MW and more; outlines zoomed in (USPVDB)", group: "Power plants", coverage: "US", color: "rgb(255,214,72)" },
   { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Power plants", coverage: "US", color: "rgb(196,196,214)", story: "us-queue" },
   { id: "gasPipes", label: "Gas pipelines", desc: "Operating, under construction, proposed", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,196,96)" },
   { id: "oilPipes", label: "Oil pipelines", desc: "Crude oil and NGL", group: "Gas, oil & coal", coverage: "World", color: "rgb(222,110,82)" },
@@ -129,6 +131,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "plantsWorld",
   "plantsUS",
   "turbinesUS",
+  "solarUS",
   "usQueue",
   "cables",
   "gasPipes",

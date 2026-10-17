@@ -64,6 +64,12 @@ jobs:
           [ "${{ inputs.force }}" = "true" ] && args="--force"
           python scripts/fetch_us_grid.py $args
 
+      - name: Solar arrays (USPVDB, only when a new release is named on its page)
+        id: pv
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: python scripts/fetch_uspvdb.py
+
       - name: Lake (EIA-860M generators, LBNL queue requests, when released)
         if: ${{ !cancelled() && steps.us.outputs.changed != '' }}
         continue-on-error: true
@@ -81,13 +87,13 @@ jobs:
         run: python scripts/check_us_totals.py
 
       - name: Commit to main
-        if: ${{ !cancelled() && steps.us.outputs.changed != '' }}
+        if: ${{ !cancelled() && (steps.us.outputs.changed != '' || steps.pv.outputs.changed != '') }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add frontend/public/data/us/
           git diff --cached --quiet && exit 0
-          git commit -m "US grid: new release of ${{ steps.us.outputs.changed }}"
+          git commit -m "US grid: new release of ${{ steps.us.outputs.changed }} ${{ steps.pv.outputs.changed }}"
           git pull --rebase origin main
           git push origin HEAD:main
 

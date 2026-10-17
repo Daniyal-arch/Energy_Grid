@@ -326,7 +326,8 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | GHGRP | Envirofacts API | API | 0 |
 | NREL AFDC, OpenEI URDB | APIs | API | 0 |
 | EMODnet wind farms | WFS, no key, the whole layer in seconds | API (on the map since 2026-10-17) | 0 |
-| USPVDB, GRanD, TYNDP projects | downloads | GeoParquet | ~0.1 GB |
+| USPVDB | download (~10 MB zip), quarterly | on the map as JSON (2026-10-17); GeoParquet later | ~0.01 GB |
+| GRanD, TYNDP projects | downloads | GeoParquet | ~0.1 GB |
 | Global Renewables Watch | GeoPackage per quarter | GeoParquet | ~0.2 GB |
 | Global Solar / Wind Atlas | rasters | COG | ~1 GB at 1 km (~8 GB at 250 m) |
 | Population grid (GHSL) | raster | COG | ~0.3 GB at 1 km |
