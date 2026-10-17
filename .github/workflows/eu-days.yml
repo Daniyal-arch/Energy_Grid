@@ -86,6 +86,14 @@ jobs:
           python scripts/fetch_us_prices.py --out store/eu || echo "US prices failed; keeping the last copy"
           python scripts/build_us_day.py --prices-only --out store/eu/usday || echo "US day prices failed"
 
+      - name: US prices at every node (six markets, CAISO nodes placed; missing days newest first, 8 a run, 30 kept)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install gridstatus duckdb pycountry
+          python scripts/fetch_us_nodes.py --recent 30 --max 8 --out store/eu/us_nodes --lake lake-out --upload || echo "US node prices failed; keeping the last copies"
+
       - name: Twelve months of prices per zone (Prices tab)
         env:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}

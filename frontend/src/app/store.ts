@@ -39,6 +39,7 @@ export type LayerId =
   | "ets"
   | "ctrace"
   | "connect"
+  | "usNodePrices"
   | "plantOutput"
   | "financeCoal"
   | "financeGas"
@@ -76,6 +77,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "flows", label: "Cross-border flows", desc: "Power moving between countries now", group: "Electricity now", coverage: "Europe", color: "rgb(120,222,255)", modes: ["live", "day"] },
   { id: "prices", label: "Prices", desc: "Each country rises by its day-ahead price; generation towers stand on top", group: "Electricity now", coverage: "Europe", color: "rgb(255,196,90)", modes: ["live", "day"] },
   { id: "liveGrids", label: "Live grids", desc: "US, Brazil, Australia, Taiwan, Ontario now", group: "Electricity now", coverage: "World", color: "rgb(255,196,120)", modes: ["live"] },
+  { id: "usNodePrices", label: "Node prices", desc: "Day-ahead price at each placed node, hour by hour", group: "Electricity now", coverage: "US West", color: "rgb(255,196,90)", modes: ["day"] },
   { id: "towers", label: "Generation towers", desc: "Each country's (or US region's) output by source", group: "Electricity now", coverage: "Europe, US", color: "rgb(255,214,72)", modes: ["day"] },
   { id: "gridEU", label: "Transmission lines", desc: "220–750 kV, by voltage", group: "Power grid", coverage: "Europe", color: "rgb(236,178,120)" },
   { id: "hvdc", label: "HVDC links", desc: "Direct-current links between grids", group: "Power grid", coverage: "Europe", color: "rgb(178,146,255)" },
@@ -140,6 +142,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "ets",
   "ctrace",
   "connect",
+  "usNodePrices",
   "steel",
   "cement",
   "chemicals",
@@ -351,7 +354,7 @@ export const STORIES: Story[] = [
     blurb: "24 hours of demand, generation and flows between the 13 regions",
     mode: "day",
     colour: "none",
-    layers: ["towers", "flows"],
+    layers: ["towers", "flows", "usNodePrices"],
     camera: "usDay",
     region: "us",
     dayRegion: "us",

@@ -17,6 +17,7 @@ import { ETS_COLOR, etsRadius, newestT, type EtsFile, type EtsRow } from "../lib
 import { RETAIL_STOPS, euroCents, newestOf, type RetailFile } from "../lib/retail";
 import { CT_COLOR, ctRadius, type CtRow, type CtraceFile } from "../lib/ctrace";
 import { GB_TYPE_COLOR, NL_COLOR, gbSiteTotals, type ConnectFile, type NlArea } from "../lib/connect";
+import type { UsNodesFile } from "../lib/usNodes";
 import { LNG_SEND, lngDay, lngRadius, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import { IRENA_STOPS, irenaK, irenaMetricById, irenaScale, irenaValue, formatGw, type IrenaFile, type IrenaMetricId } from "../lib/irena";
 import { regionArcs, regionDotLayers, regionFlowLayers } from "../lib/regionLayers";
@@ -94,7 +95,7 @@ import type {
   UnitOutputFile,
 } from "../app/types";
 import { memo, NONE } from "./memo";
-import { priceTerrain, type Terrain } from "./priceTerrain";
+import { priceTerrain, rampColour, type Terrain } from "./priceTerrain";
 import { usLayers } from "./usLayers";
 import { riskLayers } from "./riskLayers";
 import type { WaterIndicator } from "../lib/risk";
@@ -464,6 +465,29 @@ export function buildLayers(fr: Frame): Layer[] {
         lineWidthUnits: "pixels",
         getLineWidth: 1.2,
         updateTriggers: { getRadius: [fr.zoom >= GAS_DETAIL_ZOOM] },
+        pickable: true,
+        parameters: ON_TOP,
+      }),
+    );
+  }
+
+  // ---------------------------------------------------------------- US node prices at the clock (A day in the US)
+  const usNodes = day?.region === "us" && isOn("usNodePrices") ? (f[`usNodes:${day.date}`] as UsNodesFile | undefined) : undefined;
+  if (usNodes && usNodes.nodes.length) {
+    const k = Math.min(usNodes.slots - 1, dayK);
+    const idx = memo("usNodeIdx", [usNodes], () => usNodes.nodes.map((_, i) => i));
+    layers.push(
+      new ScatterplotLayer<number>({
+        id: "us-node-prices",
+        data: idx,
+        getPosition: (i) => [usNodes.nodes[i][0], usNodes.nodes[i][1]],
+        getRadius: fr.zoom >= 6 ? 3 : fr.zoom >= 4.5 ? 2 : 1.4,
+        radiusUnits: "pixels",
+        getFillColor: (i) => {
+          const p = usNodes.prices[i][k];
+          return p == null ? [0, 0, 0, 0] : [...rampColour(usNodes.range, p), 220];
+        },
+        updateTriggers: { getFillColor: [k, usNodes], getRadius: [fr.zoom >= 6, fr.zoom >= 4.5] },
         pickable: true,
         parameters: ON_TOP,
       }),

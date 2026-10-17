@@ -202,6 +202,8 @@ function loaderFor(key: string): Loader | null {
         const ok = res.flatMap((x) => (x.status === "fulfilled" ? [x.value] : []));
         set(ok.sort((a, b) => b.days.length - a.days.length)[0] ?? null);
       });
+  // US node prices for one day (scripts/fetch_us_nodes.py, daily on eu-days)
+  if (kind === "usNodes") return archiveFirst(`${ARCHIVE_REMOTE}/us_nodes/${arg}.json`, `/data/eu/us_nodes/${arg}.json`);
   if (kind === "usDay") {
     const idx = useDataStore.getState().files.usDayIndex as { remote: string[]; local: string[] } | undefined;
     const remote = !(RECORDING && idx?.local.includes(arg)) && (idx?.remote.includes(arg) ?? true);

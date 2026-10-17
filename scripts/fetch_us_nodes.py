@@ -23,7 +23,7 @@ Writes frontend/public/data/eu/us_nodes/<date>.json (+ index.json, the newest 30
 with --lake, every price to the lake (lake/us_lmp/day_ahead, partitions market, year, month).
 
     python scripts/fetch_us_nodes.py 2026-10-15 [--out DIR] [--lake lake-out --upload]
-    python scripts/fetch_us_nodes.py --recent 3
+    python scripts/fetch_us_nodes.py --recent 30 --max 8   (the missing days, newest first)
 """
 
 from __future__ import annotations
@@ -220,6 +220,9 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument("--lake", type=Path)
     parser.add_argument("--upload", action="store_true")
+    parser.add_argument(
+        "--max", type=int, default=8, help="at most this many days per run, newest first"
+    )
     args = parser.parse_args()
     today = datetime.now(ET).date()
     days = [date.fromisoformat(d) for d in args.days]
@@ -229,6 +232,8 @@ def main() -> None:
             for i in range(args.recent, 0, -1)
             if not (args.out / f"{today - timedelta(days=i)}.json").exists()
         ]
+    # newest first, a few per run: a daily run fills the window over several days
+    days = sorted(set(days), reverse=True)[: args.max]
     positions = caiso_positions()
     fetched = datetime.now(UTC).isoformat(timespec="seconds")
     args.out.mkdir(parents=True, exist_ok=True)

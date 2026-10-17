@@ -558,6 +558,35 @@ standard columns, partition `snapshot` (and `land` for solar), sorted by `ags, m
 `operators`, `grid_connection_points`, `locations`, `catalog_values`. Snapshots kept: the
 newest, the first of each year, and every one younger than a year.
 
+## US prices at every node (`scripts/fetch_us_nodes.py`, `us_nodes/<date>.json`)
+
+Day-ahead prices at every location of six markets, read with `gridstatus` (MIT) from the
+markets' public files, no key: CAISO (all nodes, `locations="ALL"`, incl. the Western utilities
+in its market), ERCOT (settlement point prices), MISO, SPP, NYISO (generator nodes), ISO-NE.
+PJM is skipped while `PJM_API_KEY` is missing. Runs in GitHub Actions (ERCOT blocks many non-US
+addresses); probe `scripts/probe_us_nodes.py`, `.github/workflows/probe-us-nodes.yml`.
+
+- **Hours:** the file's day is an Eastern-Time day, the US replay's clock. Each market's interval
+  starts (with their own time zone) are put on that day's UTC hours, so a western market's first
+  hours come from its previous market day. 23/25-hour days at the DST changes.
+- **Values:** USD/MWh as each market publishes them (CAISO 5 decimals, the others 2-4).
+- **Positions:** only CAISO publishes node coordinates, in its price contour map
+  (`wwwmobile.caiso.com/.../PriceContourMap1`: node name, latitude, longitude, balancing area). A
+  node is placed when its name equals a map node's name exactly: 2026-10-15, 6,442 of CAISO's
+  9,731 priced locations (California 4,177; PacifiCorp East 839, West 476; Portland General 397;
+  Bonneville, NV Energy, LADWP, PNM and others). CAISO's aggregated "APnodes" (`…-APND`) are
+  not on the map; no other market publishes node positions, so their nodes are counted, not placed.
+- **Computed:** per market and hour the minimum, 10th percentile, median, 90th percentile and
+  maximum over its priced locations; the map's colour range, the 2nd to 98th percentile of the
+  placed nodes' prices over the day.
+- **Check (2026-10-15, 12:00 ET):** medians CAISO $25.03, ERCOT $38.76, MISO $57.36, SPP $23.53,
+  NYISO $32.36, ISO-NE $28.12; locations CAISO 9,731, ERCOT 1,130, MISO 2,628, SPP 1,620,
+  NYISO 748, ISO-NE 1,207.
+- **Lake:** every price, `lake/us_lmp/day_ahead` (ts UTC, market, node, node type, LMP and its
+  energy, congestion, loss components where published; partitions market, year, month; one
+  file per day): ~409,000 rows, 2.7 MB a day.
+- **Refresh:** daily on `eu-days` (the missing days of the last 30, newest first, 8 a run).
+
 ## US live queues (`scripts/fetch_us_queues.py`, `us/queues_live.json`)
 
 Each market's own interconnection queue, read with the open-source `gridstatus` library (MIT)

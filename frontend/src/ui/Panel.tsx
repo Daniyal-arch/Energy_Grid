@@ -27,7 +27,7 @@ import type { FinanceFile } from "../lib/finance";
 import { AggregateCard, RankingCard, type RankRow } from "../components/TransitionCards";
 import type { IrenaFile } from "../lib/irena";
 import { AccessCard, BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard, WorldCountryCard } from "../components/WorldCards";
-import { UsCapacityCard, UsHubPricesCard, UsLiveQueuesCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
+import { UsCapacityCard, UsHubPricesCard, UsLiveQueuesCard, UsNodeSpreadCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
 import { hubPrices, hubPricesNow, type UsPlantsFile, type UsPricesFile, type UsQueueFile, type UsQueuesLiveFile, type UsTurbinesFile } from "../lib/us";
 import { FUEL_COLOR, FUEL_LABEL, STACK_ORDER, gw, power } from "../lib/energy";
 import { priceMetricById, type PriceMetricId, type PricesFile } from "../lib/prices";
@@ -44,6 +44,7 @@ import type { CountriesFile, DayFile, FlowsFile, GasFile, OutagesFile, PlantsFil
 import { LayerStatsTab, LngTerminalsCard, useStatsLayers } from "./LayerStats";
 import { RetailCountryCard, RetailRankingCard, UsRetailCard } from "../components/RetailCards";
 import type { RetailFile } from "../lib/retail";
+import type { UsNodesFile } from "../lib/usNodes";
 import { MastrCountryCard } from "../components/MastrCards";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
@@ -703,6 +704,7 @@ function WorldPanel() {
 /** The US replay at the clock: the Lower 48 (EIA's own total) and the largest regions. */
 function UsDayNow({ day, k, ts, timeOf }: { day: DayFile; k: number; ts: (i: number) => string; timeOf: (iso: string) => string }) {
   const us = dayPower(day.eu, k, ts(k)) ?? null;
+  const nodes = useFile<UsNodesFile>(`usNodes:${day.date}`);
   const hubs = hubPrices(day.prices, k);
   const ranking = Object.entries(day.countries)
     .map(([id, c]) => {
@@ -719,6 +721,7 @@ function UsDayNow({ day, k, ts, timeOf }: { day: DayFile; k: number; ts: (i: num
         <Empty>EIA has no Lower-48 figure for {timeOf(ts(k))} yet.</Empty>
       )}
       {hubs.length > 0 && <UsHubPricesCard rows={hubs} time={timeOf(ts(k))} regionName={(id) => day.names?.[id] ?? id} />}
+      {nodes && <UsNodeSpreadCard f={nodes} k={k} time={timeOf(ts(k))} />}
       {ranking.length > 0 && (
         <Card title="Regions this hour" note="EIA-930">
           <div className="space-y-1">

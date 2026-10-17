@@ -84,6 +84,7 @@ function wantedKeys(): string[] {
     // the US replay has no weather layers
     if (date) keys.push(dayFileKey(s.dayRegion, date), ...(s.dayRegion === "eu" ? [`dayWind:${date}`] : []));
     if (L.plantOutput) keys.push(unitIndexKey(s.dayRegion), ...(date ? [unitOutKey(s.dayRegion, date)] : []));
+    if (L.usNodePrices && s.dayRegion === "us" && date) keys.push(`usNodes:${date}`);
   }
   const iso = selectedIso2(s.selection);
   if (iso && L.plantsEU && s.mode === "live") keys.push("plants", `units:${iso}`);

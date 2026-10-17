@@ -6,6 +6,7 @@ import { useMemo, type ReactNode } from "react";
 import { rgbCss, type RGB } from "../lib/theme";
 import { US_TYPE_COLOR, US_TYPE_LABEL, US_TYPE_ORDER, gwText, queueColor, usd, type HubPrice, type UsPlantsFile, type UsQueueFile, type UsQueuesLiveFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
 import { useFile } from "../app/data";
+import { usdMwh, type UsNodesFile } from "../lib/usNodes";
 import { Card } from "./CountryCards";
 import { PlantsCard } from "./WorldCards";
 
@@ -317,6 +318,43 @@ export function UsLiveQueuesCard({ f }: { f: UsQueuesLiveFile }) {
         Each market's interconnection queue as it publishes it today (read with the open-source gridstatus library): requests whose status is "active", capacity summed (computed). Types mapped onto LBNL's names; a
         hybrid counts under each of its types, so a bar can be longer than the total.
         {off.length ? ` Not included: ${off.map(([n, m]) => `${n} (${m.missing ?? "the download failed"})`).join(", ")}.` : ""}
+      </Note>
+    </Card>
+  );
+}
+
+/** Every market's day-ahead prices this hour: the spread over its priced locations. */
+export function UsNodeSpreadCard({ f, k, time }: { f: UsNodesFile; k: number; time: string }) {
+  const rows = Object.entries(f.markets)
+    .map(([m, v]) => ({ m, v, h: v.hours[Math.min(v.hours.length - 1, k)] }))
+    .filter((r) => r.h);
+  if (!rows.length) return null;
+  const lo = Math.min(0, ...rows.map((r) => r.h![1]));
+  const hi = Math.max(1, ...rows.map((r) => r.h![3]));
+  const x = (v: number) => `${(100 * (Math.max(lo, Math.min(hi, v)) - lo)) / (hi - lo)}%`;
+  return (
+    <Card title="Prices at every node" note={`day-ahead · ${time}`} accent={[255, 196, 90]}>
+      <div className="space-y-1.5">
+        {rows.map(({ m, v, h }) => (
+          <div key={m} className="text-[11px] tabular-nums">
+            <div className="flex justify-between gap-2">
+              <span className="text-slate-200">
+                {m} <span className={muted}>{v.nodes.toLocaleString("en-US")} locations</span>
+              </span>
+              <span className="text-slate-100">
+                {usdMwh(h![2])} <span className={muted}>({usdMwh(h![0])} to {usdMwh(h![4])})</span>
+              </span>
+            </div>
+            <div className="relative h-[7px] rounded-sm bg-white/[0.05]">
+              <span className="absolute inset-y-0 rounded-sm bg-[rgb(255,196,90)]/40" style={{ left: x(h![1]), width: `calc(${x(h![3])} - ${x(h![1])})` }} />
+              <span className="absolute inset-y-[-2px] w-[2px] bg-[rgb(255,196,90)]" style={{ left: x(h![2]) }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <Note>
+        Median (line) and the middle 80 % (bar, 10th to 90th percentile) of each market's day-ahead prices this hour over every location it prices (computed, USD/MWh); in brackets the cheapest and dearest location. The bars clip at
+        the shared scale's ends. Markets' own files via gridstatus; PJM needs a key.
       </Note>
     </Card>
   );

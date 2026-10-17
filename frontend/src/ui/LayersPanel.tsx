@@ -13,6 +13,7 @@ import { CT_COLOR, type CtraceFile } from "../lib/ctrace";
 import { OUTAGE_STOPS, OUTAGE_TICKS, WATER_COLOR, WATER_INDICATORS, newestYear, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, type MastrMuniFile } from "../lib/mastr";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
+import type { UsNodesFile } from "../lib/usNodes";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
 import { SUN_MAX_WM2 } from "../lib/sunLayer";
@@ -160,6 +161,21 @@ function LngKey() {
       </Swatches>
       <Note>Gas day {day ?? "…"} (GWh/d); area follows the flow. Each EU terminal reporting to GIE ALSI; hover for the day's figures.</Note>
     </>
+  );
+}
+
+function UsNodesKey() {
+  const files = useDataStore((d) => d.files);
+  const day = currentDay();
+  const f = day?.region === "us" ? (files[`usNodes:${day.date}`] as UsNodesFile | undefined) : undefined;
+  const r = f?.range;
+  const ca = f?.markets.CAISO;
+  return (
+    <Scale
+      gradient={rampCss}
+      ticks={r ? [`$${Math.round(r[0])}`, `$${Math.round((r[0] + r[1]) / 2)}`, `$${Math.round(r[1])}/MWh`] : ["cheapest", "", "dearest"]}
+      note={`Day-ahead price at the clock's hour; colour from the day's 2nd to 98th percentile (computed), below zero in cyan. CAISO's nodes placed by CAISO's price map${ca ? ` (${ca.placed.toLocaleString("en-US")} of ${ca.nodes.toLocaleString("en-US")})` : ""}, California and the Western utilities in its market. ERCOT, MISO, SPP, NYISO and ISO-NE publish no node positions: their spread is in the panel.`}
+    />
   );
 }
 
@@ -362,6 +378,8 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <CtraceKey />;
     case "connect":
       return <ConnectKey />;
+    case "usNodePrices":
+      return <UsNodesKey />;
     case "usOutages":
       return <OutagesKey />;
     case "water":

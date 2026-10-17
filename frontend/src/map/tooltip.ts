@@ -16,6 +16,7 @@ import { ETS_REGISTRY_NAME, mt, type EtsFile, type EtsRow } from "../lib/ets";
 import { FLAG_TEXT, euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../lib/retail";
 import { isBasin, subsectorLabel, type CtRow, type CtraceFile } from "../lib/ctrace";
 import { gwText as connectGw, type ConnectFile, type GbSite, type NlArea } from "../lib/connect";
+import { usdMwh, type UsNodesFile } from "../lib/usNodes";
 import { STATUS_TEXT, gwhdText, lngDay, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import type { GasArc } from "./build";
 import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type WaterFile } from "../lib/risk";
@@ -411,6 +412,19 @@ function tooltipHtml(id: string, object: unknown): string | null {
       return `<b>${t.name}</b><div>${t.operator} · ${t.type === "FSRU" ? "floating (FSRU)" : "onshore"}</div>
         <div>Send-out <b>${gwhdText(d?.[1])}</b> of ${gwhdText(d?.[3])} declared</div>
         ${d?.[2] != null ? `<div>LNG in tanks ${d[2].toLocaleString("en-US")} GWh</div>` : ""}${SRC(`gas day ${lf.date}${status} · GIE ALSI`)}`;
+    }
+    case "us-node-prices": {
+      const i = object as number;
+      const day = currentDay();
+      const f = day ? fileOf<UsNodesFile>(`usNodes:${day.date}`) : undefined;
+      if (!f) return null;
+      const k = Math.min(f.slots - 1, Math.floor(motion.daySlot));
+      const [, , name, area] = f.nodes[i];
+      const vals = f.prices[i].filter((v): v is number => v != null);
+      const hour = clockOf(f.timezone)(new Date(Date.parse(f.start) + k * f.step_s * 1000).toISOString());
+      return `<b>${name}</b><div>${area} · CAISO day-ahead market</div>
+        <div>${hour}: <b>${usdMwh(f.prices[i][k])}/MWh</b></div>
+        ${vals.length ? `<div style="color:#8d94a1">day: ${usdMwh(Math.min(...vals))} to ${usdMwh(Math.max(...vals))}</div>` : ""}${SRC(`CAISO day-ahead LMP, ${f.date}; position from CAISO's price map`)}`;
     }
     case "eu-connect-nl": {
       const a = (object as { a: NlArea }).a;
