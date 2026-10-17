@@ -25,7 +25,9 @@ SPP_MAP = (
 
 def notice(title: str, payload: dict) -> None:
     # the title goes inside the message too: the annotations listing drops it
-    text = json.dumps({"t": title, **payload}, default=str)[:3500].replace("\n", " ")
+    text = json.dumps({"t": title, **payload}, default=str)[:1800]
+    # workflow-command escaping, else a message with "%" or a line break is dropped
+    text = text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
     print(f"::notice title={title}::{text}", flush=True)
 
 
@@ -145,24 +147,36 @@ def caiso_join(gs) -> None:  # noqa: ANN001 - the gridstatus module
         timeout=120,
     ).json()["l"][2]["m"]
     pos = {x["n"]: x for x in m}
-    for loc in ("ALL", "ALL_AP_NODES"):
 
-        def one(loc: str = loc) -> dict:
-            df = gs.CAISO().get_lmp(DAY, market="DAY_AHEAD_HOURLY", locations=loc)
-            locs = set(df["Location"])
-            hit = locs & set(pos)
-            return {
-                "rows": len(df),
-                "locations": len(locs),
-                "placed": len(hit),
-                "unplaced_sample": sorted(locs - set(pos))[:10],
-                "types": df["Location Type"].value_counts().to_dict(),
-                "areas_placed": dict(collections.Counter(pos[n]["a"] for n in hit).most_common(15)),
-                "map_nodes": len(pos),
-                "map_areas": dict(collections.Counter(x["a"] for x in m).most_common(20)),
-            }
+    def all_pnodes() -> dict:
+        df = gs.CAISO().get_lmp(DAY, market="DAY_AHEAD_HOURLY", locations="ALL")
+        locs = set(df["Location"])
+        hit = locs & set(pos)
+        return {
+            "rows": len(df),
+            "locations": len(locs),
+            "placed": len(hit),
+            "types": df["Location Type"].value_counts().head(6).to_dict(),
+            "areas_placed": dict(collections.Counter(pos[n]["a"] for n in hit).most_common(12)),
+            "unplaced": sorted(locs - set(pos))[:6],
+        }
 
-        attempt(f"caiso join {loc}", one)
+    def apnode_map() -> dict:
+        pm = gs.CAISO().get_pnodes()
+        ap, pn = "Aggregate PNode ID", "PNode ID"
+        on_map = pm[pm[pn].isin(set(pos))]
+        return {
+            "rows": len(pm),
+            "columns": list(map(str, pm.columns))[:12],
+            "apnodes": int(pm[ap].nunique()),
+            "pnodes": int(pm[pn].nunique()),
+            "pnodes_on_map": int(on_map[pn].nunique()),
+            "apnodes_with_a_pnode_on_map": int(on_map[ap].nunique()),
+            "sample": pm.head(2).astype(str).to_dict("records"),
+        }
+
+    attempt("caiso ALL pnodes", all_pnodes)
+    attempt("caiso APnode map", apnode_map)
 
 
 def main() -> None:
