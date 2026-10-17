@@ -416,6 +416,39 @@ Rules:
   only. Nodes sharing a zone share capacity, so the card does not sum them.
 - Refresh: Mondays on `eu-days`.
 
+## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
+
+Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2
+(private bucket `infraatlas-raw`, docs/DATA_LAKE.md section 6), 2015 to yesterday, one ordered
+file per table and year. Source: ENTSO-E Transparency Platform API (`ENTSOE_API_KEY`, a repo
+secret; `.github/workflows/lake-entsoe.yml`).
+
+| Table | Document | Per | Notes |
+|---|---|---|---|
+| `prices` | A44 day-ahead | bidding zone (+ DE-AT-LU to 2018, IE-SEM) | every series kept; `sequence` = ENTSO-E's classification sequence (EXAA, intraday auctions), `currency` as published |
+| `load` | A65 actual (A16) and day-ahead (A01) | country | one row per timestamp and resolution |
+| `generation` | A75 actual (A16) | country, production type | `consumption_mw`: the outBiddingZone series (pumps, batteries charging) |
+| `forecast_wind_solar` | A69 day-ahead (A01) | country, production type | |
+| `flows` | A11 | border direction (`entsoe.BORDERS`) | measured, each direction its own rows |
+| `unit_output` | A73 actual (A16) | unit (EIC); countries, Germany per control area | one request per area and day (the API answers nothing for longer windows) |
+| `capacity` | A68 installed (A33) | country, production type | per year |
+| `transfer_capacity` | A61 forecast (contract A01) and A31 offered (auction A01) | zone border direction (`fetch_eu_capacity.zone_pairs`) | both documents as published, `doc` says which |
+| `outages` | A80 generation units | bidding zone | every revision, one row per point of the available-capacity curve; partition = year of the outage's start |
+| `areas`, `units` | code lists; A71 per area | | units' positions from JRC-PPDB where it names the EIC code |
+
+Rules: values as published at the resolution ENTSO-E publishes (`resolution_min`), no 15-min
+grid and no resampling; A03 curves (which leave out points equal to the one before) are written
+out point by point (`entsoe.points_of`). Times are UTC interval starts. A year's file holds
+the points whose start falls in that year (UTC). Prices `DECIMAL(9,2)`, MW as `FLOAT`.
+`--recent 3` (daily) fetches the last three days again and rewrites the current year's files.
+
+Probe (`scripts/probe_lake_entsoe.py`, run in Actions 2026-10-13): A44 answers a whole year in
+one request (DE-LU 2019: 43,188 points, 6 s); A75 for Germany a year in 103 s, a quarter in
+16 s (the builder asks quarters); A73 answers one day per request (7 or 31 days: nothing); A80
+pages of 200 documents (`offset`; DE-LU January 2023: 798 documents); requests take ~2 s each
+(4 at a time: 30 a minute, 8: 67 a minute; ENTSO-E's limit is 400 a minute per key), so a
+year runs with 10 at a time.
+
 ## Lake: the map's datasets in full (`scripts/build_lake_datasets.py`, `scripts/lake_catalog.py`)
 
 Not drawn on the map: full detail for the agent as Parquet on R2 (private bucket
@@ -441,6 +474,137 @@ table, schema = dataset, and the topic views `plants`, `prices`, `outages`, `emi
 `grid_capacity`, `water_risk` with a `source` column) are written daily by
 `.github/workflows/lake-catalog.yml`. A topic view passes each source's own values under common
 column names (e.g. `outages.value` is EAGLE-I's customers out, or ENTSO-E's available MW during the outage, with `unit` saying which); nothing is converted between sources.
+
+## US outages (`scripts/build_us_outages.py`, `us_outages.json`, `us/counties.json`)
+
+| What | Source |
+|---|---|
+| Customers without power per county every 15 minutes, 2014 (from 1 Nov) to 2025 | EAGLE-I recorded electricity outages, Oak Ridge National Laboratory, figshare article 24237376 (CC BY 4.0), one CSV per year (0.08–1.4 GB; the 2023 file names its count column `sum`, 2024 adds `total_customers`) |
+| Customers per county | EAGLE-I's `MCC.csv` (ORNL's modelled customer count per county) |
+| County outlines | US Census Bureau cartographic boundary file, counties 1:20m, 2020 (public domain): Connecticut's eight old counties, as EAGLE-I and MCC use |
+
+Built in GitHub Actions (`.github/workflows/us-outages.yml`, one job per year, by hand and when
+the script changes). "Customers" are utility meters, not people; EAGLE-I lists a county only
+while customers are out there, so a missing row is zero.
+
+Rules (all computed, labelled on the map):
+- Customer-hours per county and year = sum of customers out × the interval (15 min).
+- Hours per customer (hover) = customer-hours ÷ MCC customers.
+- National peak per day = largest sum over counties at one timestamp; the state with the most
+  customers out at that moment.
+- Event = a run of timestamps in one state with ≥ 10,000 customers out (sum over its
+  counties), gaps up to 60 min; peak, start, end (+ one interval). Top 50 over all years.
+  Events across New Year are split (one job per year).
+- Newest month: national customers out at each timestamp of the newest month.
+- Values as EAGLE-I publishes them, never smoothed: the files hold single-interval spikes
+  (e.g. New York, 1.2 M customers at 2018-07-10 20:00 for one 15-min step) and peaks above the
+  utilities' own reports (Florida, Irma, 2017: 9.7 M), which show up as events. 2018 had no
+  county reported twice at one time (checked in the year job, logged for every year).
+
+Lake: `lake/eaglei/` (docs/DATA_LAKE.md section 6): `outages` (every row as published, per
+year), `counties` (names and MCC), `coverage` (`coverage_history.csv`) and `dqi` (`DQI.csv`),
+as published.
+
+## Water risk (`scripts/build_aqueduct.py`, `water.json`)
+
+| What | Source |
+|---|---|
+| Baseline water stress, riverine and coastal flood risk, drought risk per river basin | WRI Aqueduct 4.0 water risk atlas (World Resources Institute, CC BY 4.0), `aqueduct-4-0-water-risk-data.zip` (262 MB, release 2023-07-05); data dictionary github.com/wri/Aqueduct40 |
+
+Built in GitHub Actions (`.github/workflows/water-risk.yml`). The map shows WRI's own category
+(`*_cat`) and label (`*_label`) per HydroBASINS level-6 basin (`pfaf_id`, 16,395 basins; the
+outlines from the GDB layer `baseline_monthly`, simplified with shapely until the file stays
+under 5 MB: 0.06°, 2 decimals; 16,052 basins keep an outline). The categories come from the
+`baseline_annual` units (basin × province × aquifer); where a basin's units differ the map
+takes the highest: none do for these four indicators (2026-10-13). For site screening.
+
+Lake: `lake/aqueduct/` (source_version 4.0): `baseline_annual` (GeoParquet, every column as
+published, 68,506 units), `basins` (GeoParquet outlines), `baseline_monthly` (one row per basin
+and month), `future_annual` (one row per basin, scenario bau/opt/pes and year 2030/2050/2080).
+Basin tables carry the country and province holding most of the basin's area (sum of
+`area_km2`, computed) as `iso3`/`admin1`.
+
+## Germany: every unit (`scripts/build_mastr.py`, `mastr/units_large.json`, `mastr/municipalities.json`)
+
+| What | Source |
+|---|---|
+| Every generating and storage unit in Germany | Marktstammdatenregister (Bundesnetzagentur), daily bulk export `Gesamtdatenexport_<date>_<version>.zip` (3.2 GB, ~66 GB of UTF-16 XML), Datenlizenz Deutschland – Namensnennung 2.0 (dl-de/by-2-0, named on the download page) |
+| Municipality outlines | BKG VG5000, municipalities (`VG5000_GEM`, GF = 4: land areas), UTM 32N → lon/lat, simplified ~200 m; dl-de/by-2-0 |
+
+Built in GitHub Actions (`.github/workflows/mastr.yml`, monthly): one download (the server
+resets parallel downloads and serves ~1 MB/s, so ~55 min), then six parts streamed from the zip
+(never unpacked) in parallel processes. Codes (status, Land, energy carrier, …) are named from
+the export's own `Katalogwerte`.
+
+Rules (computed, labelled on the map and in the panel):
+- Units counted: status "In Betrieb" (in operation); MW = gross capacity (`Bruttoleistung`, kW
+  / 1000) summed per municipality (`Gemeindeschluessel`) and technology (the XML file a unit
+  comes from: solar, wind, storage, biomass, hydro, combustion, nuclear, other = geothermal,
+  mine gas, pressure relief).
+- Units without a municipality key are counted in `no_ags`, not drawn: offshore wind
+  (`offshore`, `WindAnLandOderAufSee` = "Windenergie auf See") and the large thermal units,
+  which the public export lists with their Land only (no municipality, postcode or
+  coordinates; 2026-10-13: 70.5 GW of combustion units in operation, e.g. Boxberg, Lünen).
+- Large units: in operation, ≥ 1 MW gross, with coordinates (MaStR publishes them only for
+  larger units); drawn from zoom 6.
+- New units per month: units whose commissioning date (`Inbetriebnahmedatum`) falls in each of
+  the last 24 months, any status but "In Planung", gross MW summed. Units are registered up to
+  a month late, so the newest months still grow.
+- The register lists wind per turbine and solar down to balcony panels; its sums are not
+  ENTSO-E's A68 figures (grid operators' figures per type), which the panel shows beside them.
+
+Lake: `lake/mastr/` (docs/DATA_LAKE.md section 6), every column as published plus the
+standard columns, partition `snapshot` (and `land` for solar), sorted by `ags, mastr_nr`;
+`operators`, `grid_connection_points`, `locations`, `catalog_values`. Snapshots kept: the
+newest, the first of each year, and every one younger than a year.
+
+## US prices at every node (`scripts/fetch_us_nodes.py`, `us_nodes/<date>.json`)
+
+Day-ahead prices at every location of six markets, read with `gridstatus` (MIT) from the
+markets' public files, no key: CAISO (all nodes, `locations="ALL"`, incl. the Western utilities
+in its market), ERCOT (settlement point prices), MISO, SPP, NYISO (generator nodes), ISO-NE.
+PJM is skipped while `PJM_API_KEY` is missing. Runs in GitHub Actions (ERCOT blocks many non-US
+addresses); probe `scripts/probe_us_nodes.py`, `.github/workflows/probe-us-nodes.yml`.
+
+- **Hours:** the file's day is an Eastern-Time day, the US replay's clock. Each market's interval
+  starts (with their own time zone) are put on that day's UTC hours, so a western market's first
+  hours come from its previous market day. 23/25-hour days at the DST changes.
+- **Values:** USD/MWh as each market publishes them (CAISO 5 decimals, the others 2-4).
+- **Positions:** only CAISO publishes node coordinates, in its price contour map
+  (`wwwmobile.caiso.com/.../PriceContourMap1`: node name, latitude, longitude, balancing area). A
+  node is placed when its name equals a map node's name exactly: 2026-10-15, 6,442 of CAISO's
+  9,731 priced locations (California 4,177; PacifiCorp East 839, West 476; Portland General 397;
+  Bonneville, NV Energy, LADWP, PNM and others). CAISO's aggregated "APnodes" (`…-APND`) are
+  not on the map; no other market publishes node positions, so their nodes are counted, not placed.
+- **Computed:** per market and hour the minimum, 10th percentile, median, 90th percentile and
+  maximum over its priced locations; the map's colour range, the 2nd to 98th percentile of the
+  placed nodes' prices over the day.
+- **Check (2026-10-15, 12:00 ET):** medians CAISO $25.03, ERCOT $38.76, MISO $57.36, SPP $23.53,
+  NYISO $32.36, ISO-NE $28.12; locations CAISO 9,731, ERCOT 1,130, MISO 2,628, SPP 1,620,
+  NYISO 748, ISO-NE 1,207.
+- **Lake:** every price, `lake/us_lmp/day_ahead` (ts UTC, market, node, node type, LMP and its
+  energy, congestion, loss components where published; partitions market, year, month; one
+  file per day): ~409,000 rows, 2.7 MB a day.
+- **Refresh:** daily on `eu-days` (the missing days of the last 30, newest first, 8 a run).
+
+## US live queues (`scripts/fetch_us_queues.py`, `us/queues_live.json`)
+
+Each market's own interconnection queue, read with the open-source `gridstatus` library (MIT)
+from the markets' public files (`scripts/probe_us_nodes.py`, run in Actions because ERCOT blocks
+many non-US addresses): CAISO, ERCOT, MISO, SPP, ISO-NE. Missing, and listed as such in the
+panel: NYISO (its site answers automated downloads with a bot check, HTTP 202) and PJM (needs
+`PJM_API_KEY`; PJM's DNS failed on 2026-10-17).
+
+- Passthrough per request: queue id, state, generation type, capacity (MW), queue date, status.
+- Computed: requests whose status is "active" (any case) summed per state and per type. Types
+  are mapped onto LBNL's names (`TYPE_RULES`); a hybrid ("Photovoltaic + Storage", "SUN BAT",
+  "Hybrid - Solar/Storage") counts under each of its types with its full capacity, LBNL's own
+  rule, so type sums exceed the request total. State names are turned into postal codes.
+- Probe (2026-10-17): CAISO 2,278 requests (261 active), ERCOT 1,758 (1,169), MISO 3,938 (1,137),
+  SPP 3,078 (216), ISO-NE 1,751 (56).
+- Lake: every market's full table, all columns as published (text), `lake/iso_queues/requests`,
+  partitions `snapshot` and `market`.
+- Refresh: weekly (`.github/workflows/us-queues.yml`, committed to main).
 
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 

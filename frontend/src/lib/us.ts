@@ -219,3 +219,22 @@ export function hubPricesNow(f: UsPricesFile, now: number = Date.now()): { rows:
 
 /** "$45.20" with the source's two decimals; a minus before the sign. */
 export const usd = (v: number) => `${v < 0 ? "−" : ""}$${Math.abs(v).toFixed(2)}`;
+
+/** The markets' own queues (scripts/fetch_us_queues.py): active requests per state and type, MW. */
+export interface UsQueuesLiveFile {
+  fetched: string;
+  source: string;
+  markets: Record<
+    string,
+    {
+      requests?: number;
+      active?: number;
+      active_mw?: number;
+      by_type?: Record<string, number>;
+      by_state?: Record<string, Record<string, number>>;
+      statuses?: Record<string, number>;
+      error?: string;
+      missing?: string;
+    }
+  >;
+}

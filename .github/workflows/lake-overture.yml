@@ -42,7 +42,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          pip install duckdb httpx shapely
+          pip install duckdb httpx shapely pycountry
           # on failure the error's tail becomes a public annotation (logs need a sign-in)
           if ! python scripts/build_lake_overture.py --band ${{ matrix.band }} --out lake-out 2> err.txt; then
             echo "::error title=band ${{ matrix.band }}::$(tail -c 3000 err.txt | tr '\n' '|')"
@@ -77,6 +77,6 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          pip install duckdb httpx shapely
+          pip install duckdb httpx shapely pycountry
           python scripts/build_lake_overture.py --merge --out lake-out
           echo "::notice title=overture_power::$(python3 -c "import json; c=json.load(open('lake-out/overture_power/_catalog.json')); print({k: (t['rows'], t['bytes']) for k, t in c['tables'].items()})")"

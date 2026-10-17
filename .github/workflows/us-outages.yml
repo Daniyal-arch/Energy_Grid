@@ -1,0 +1,126 @@
+name: US outages
+
+# US power outages per county from EAGLE-I (ORNL, figshare article 24237376, CC BY 4.0;
+# docs/DATA_SOURCES.md, "US outages"). One job per year reads that year's CSV (0.08-1.4 GB)
+# with DuckDB (scripts/build_us_outages.py --year): customer-hours per county, the national
+# peak per day, the largest events, the newest month's national series, and the year's rows
+# as Parquet in the lake (r2://infraatlas-raw/lake/eaglei/outages/year=Y/). A last job combines
+# the years into frontend/public/data/eu/us_outages.json and us/counties.json (Census 1:20m,
+# 2020), writes the small lake tables (counties, coverage, dqi) and the lake's catalogue, and
+# commits the map files to the branch it runs on.
+#
+# Runs by hand (Actions > US outages > Run workflow) and when this file or the script
+# changes on main. EAGLE-I publishes a new year about once a year.
+# Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID (the lake upload).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/us-outages.yml, scripts/build_us_outages.py]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: us-outages-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  year:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        year: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Download the year's CSV (figshare)
+        run: |
+          pip install duckdb
+          url=$(curl -sf https://api.figshare.com/v2/articles/24237376 | python -c "import json,sys; print(next(f['download_url'] for f in json.load(sys.stdin)['files'] if f['name'] == 'eaglei_outages_${{ matrix.year }}.csv'))")
+          curl -sfL --retry 3 -o eaglei.csv "$url"
+          ls -la eaglei.csv
+          head -3 eaglei.csv
+
+      - name: Build the year and upload its lake partition
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p part
+          python scripts/build_us_outages.py --year ${{ matrix.year }} --csv eaglei.csv \
+            --out part/part-${{ matrix.year }}.json --lake lake-out --upload
+          cp lake-out/eaglei/_catalog.json part/catalog-${{ matrix.year }}.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: part-${{ matrix.year }}
+          path: part/
+          retention-days: 5
+
+  combine:
+    needs: year
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: part-*
+          path: part
+          merge-multiple: true
+
+      - name: EAGLE-I's small files and the county outlines
+        run: |
+          pip install duckdb shapely
+          for name in MCC.csv coverage_history.csv DQI.csv; do
+            url=$(curl -sf https://api.figshare.com/v2/articles/24237376 | python -c "import json,sys; print(next(f['download_url'] for f in json.load(sys.stdin)['files'] if f['name'] == '$name'))")
+            curl -sfL --retry 3 -o "$name" "$url"
+          done
+          curl -sfL --retry 3 -o cb_2020_us_county_20m.zip https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_county_20m.zip
+          ls -la part *.csv *.zip
+
+      - name: Combine, write the small lake tables and the catalogue
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python scripts/build_us_outages.py --combine part/part-*.json --mcc MCC.csv \
+            --counties cb_2020_us_county_20m.zip --coverage coverage_history.csv --dqi DQI.csv \
+            --lake lake-out --partials part/catalog-*.json --upload
+          python - <<'EOF'
+          import json
+          cat = json.load(open("lake-out/eaglei/_catalog.json"))
+          print("| table | rows | bytes |\n|---|---:|---:|")
+          for name, t in sorted(cat["tables"].items()):
+              print(f"| {name} | {t['rows']:,} | {t['bytes']:,} |")
+          EOF
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eaglei-catalog
+          path: lake-out/eaglei/_catalog.json
+          retention-days: 30
+
+      - name: Commit the map files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/data/eu/us_outages.json frontend/public/data/us/counties.json
+          git diff --cached --quiet && exit 0
+          git commit -m "US outages: EAGLE-I per county"
+          git pull --rebase origin ${{ github.ref_name }}
+          git push origin HEAD:${{ github.ref_name }}

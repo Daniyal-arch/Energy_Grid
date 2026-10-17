@@ -130,3 +130,20 @@ def test_merge_does_not_widen_the_upload(tmp_path: Path) -> None:
     cat = json.loads(new.finish().read_text(encoding="utf-8"))
     assert len(cat["tables"]["rows"]["files"]) == 2
     assert new.tables["rows"].files == ["rows/year=2026/part-0.parquet"]
+
+
+def test_write_splits_files_over_the_byte_limit(tmp_path: Path, monkeypatch) -> None:
+    con = duckdb.connect()
+    con.execute(
+        "CREATE TABLE t AS SELECT i AS id, md5(i::VARCHAR) || md5((i * 7)::VARCHAR) AS s "
+        "FROM range(200000) r(i)"
+    )
+    lk = lake.Lake("test", tmp_path, source="unit test", licence="CC0", script="tests")
+    whole = lk.write(con, "one", "SELECT * FROM t", sort=["id"])
+    assert len(whole) == 1
+    monkeypatch.setattr(lake, "MAX_BYTES_PER_FILE", whole[0].stat().st_size // 3)
+    files = lk.write(con, "split", "SELECT * FROM t", sort=["id"])
+    assert len(files) >= 3
+    assert all(f.stat().st_size <= lake.MAX_BYTES_PER_FILE for f in files)
+    total = sum(con.execute(f"SELECT count(*) FROM '{f}'").fetchone()[0] for f in files)
+    assert total == 200000

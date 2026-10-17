@@ -1,0 +1,44 @@
+name: Probe - US nodes and queues
+
+# Rule 2 for docs/tasks/10: which US markets serve day-ahead prices at every node, their live
+# interconnection queues, and published node positions (scripts/probe_us_nodes.py). Runs in
+# Actions because ERCOT blocks many non-US addresses; results are public ::notice annotations.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/probe-us-nodes.yml, scripts/probe_us_nodes.py]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Probe
+        env:
+          ISONE_API_USERNAME: ${{ secrets.ISONE_API_USERNAME }}
+          ISONE_API_PASSWORD: ${{ secrets.ISONE_API_PASSWORD }}
+        run: |
+          pip install gridstatus httpx
+
+      # GitHub keeps at most 10 notices per step: one section per step
+      - name: Node prices for one day (scripts/fetch_us_nodes.py, no upload)
+        run: |
+          pip install duckdb pycountry
+          if ! python scripts/fetch_us_nodes.py 2026-10-15 --out nodes-test --lake lake-test > out.txt 2> err.txt; then
+            echo "::error title=nodes::$(tail -c 3000 err.txt | tr '\n' '|')"
+            exit 1
+          fi
+          echo "::notice title=nodes::$(tail -c 1500 out.txt | tr '\n' '|')"
+          python3 -c "import json; d=json.load(open('nodes-test/2026-10-15.json')); print('::notice title=nodes file::' + json.dumps({'slots': d['slots'], 'placed': len(d['nodes']), 'range': d['range'], 'markets': {k: (v['nodes'], v['placed'], v['hours'][12]) for k, v in d['markets'].items()}}))"
+          python3 -c "import json; c=json.load(open('lake-test/us_lmp/_catalog.json')); print('::notice title=nodes lake::' + json.dumps({k: (t['rows'], t['bytes'], len(t['files'])) for k, t in c['tables'].items()}))"

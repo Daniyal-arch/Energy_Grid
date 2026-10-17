@@ -165,7 +165,7 @@ Common columns: `ts` (UTC start), `resolution_min`. `*_id` columns are the sourc
 |---|---|---|---|---|
 | `outages` | `fips` VARCHAR(5), `ts` TIMESTAMP (as published), `customers_out` INTEGER | `year` | `fips, ts` | `fips` |
 | `counties` | `fips`, `county`, `state`, `mcc_customers` INTEGER (ORNL's modelled customers) | none | `fips` | |
-| `coverage` | EAGLE-I's `coverage_history.csv` and `DQI.csv` as published | none | | |
+| `coverage`, `dqi` | EAGLE-I's `coverage_history.csv` and `DQI.csv` as published | none | | |
 
 ### MaStR, every German unit (`lake/mastr/`), adding now
 
@@ -176,11 +176,12 @@ Common columns: `ts` (UTC start), `resolution_min`. `*_id` columns are the sourc
 
 Snapshots: the newest, plus one per year (the others are dropped after a year).
 
-### WRI Aqueduct 4.0 (`lake/aqueduct/v4.0/`), adding now
+### WRI Aqueduct 4.0 (`lake/aqueduct/`, `source_version` 4.0), adding now
 
 | Table | Columns | Sort |
 |---|---|---|
-| `baseline_annual` (GeoParquet) | `aq30_id`, `pfaf_id`, `gid_0`, `gid_1`, `name_0`, `name_1`, `area_km2`, then for each of the 13 indicators (`bws`, `bwd`, `iav`, `sev`, `gtd`, `rfr`, `cfr`, `drr`, `ucw`, `cep`, `udw`, `usa`, `rri`) `_raw` DOUBLE, `_score` FLOAT, `_cat` TINYINT, `_label`; the weighted scores; `geometry`, `bbox` | Hilbert |
+| `baseline_annual` (GeoParquet) | `aq30_id`, `pfaf_id`, `gid_0`, `gid_1`, `name_0`, `name_1`, `area_km2`, then for each of the 13 indicators (`bws`, `bwd`, `iav`, `sev`, `gtd`, `rfr`, `cfr`, `drr`, `ucw`, `cep`, `udw`, `usa`, `rri`) `_raw` DOUBLE, `_score` FLOAT, `_cat` SMALLINT (WRI's no-data -9999), `_label`; the weighted scores; `geometry`, `bbox` | Hilbert |
+| `basins` (GeoParquet) | `pfaf_id`, `iso2`, `iso3`, `admin1` (the country and province holding most of the basin), `geometry`, `bbox` | Hilbert |
 | `baseline_monthly` | `pfaf_id`, `month`, per indicator `_raw/_score/_cat` | `pfaf_id, month` |
 | `future_annual` | `pfaf_id`, `scenario`, `year`, per indicator | `pfaf_id, scenario, year` |
 
@@ -188,16 +189,20 @@ Snapshots: the newest, plus one per year (the others are dropped after a year).
 
 | Table | Columns | Partition | Sort | Bloom |
 |---|---|---|---|---|
-| `areas` | `area` (EIC), `code` (DE_LU), `country`, `kind` (BZN/CTA/CTY), `name` | | | |
-| `prices` (A44) | `ts`, `area`, `resolution_min`, `price` DECIMAL(9,2), `currency` | `year` | `area, ts` | |
-| `load` (A65) | `ts`, `area`, `resolution_min`, `actual_mw`, `day_ahead_mw` | `year` | `area, ts` | |
-| `generation` (A75) | `ts`, `area`, `psr_type`, `generation_mw`, `consumption_mw` | `year` | `area, psr_type, ts` | |
-| `forecast_wind_solar` (A69) | `ts`, `area`, `psr_type`, `forecast_mw` | `year` | `area, psr_type, ts` | |
-| `flows` (A11) | `ts`, `out_area`, `in_area`, `mw` | `year` | `out_area, in_area, ts` | |
-| `units` | `unit_eic`, `plant_eic`, `name`, `area`, `psr_type`, `capacity_mw`, `lon`, `lat` (JRC-PPDB) | | | |
-| `unit_output` (A73) | `ts`, `unit_eic`, `mw` | `year` | `unit_eic, ts` | `unit_eic` |
-| `capacity` (A68), `transfer_capacity` (A61/A31) | as published, per year | | | |
-| `outages` (A80/A78) | `mrid`, `revision`, `asset_eic`, `start`, `end`, `available_mw`, `nominal_mw`, `type`, `reason` | `year` of start | `asset_eic, start` | `asset_eic` |
+| `areas` | `area` (EIC), `code` (DE-LU), `kind` (BZN/CTY/CTA), `name`, `country`, `iso2`, `iso3` | | `code, kind` | |
+| `prices` (A44) | `ts`, `area`, `area_eic`, `resolution_min`, `price` DECIMAL(9,2), `currency`, `sequence` (classification sequence: EXAA, intraday auctions) | `year` | `area, ts` | |
+| `load` (A65) | `ts`, `area`, `resolution_min`, `actual_mw` (A16), `day_ahead_mw` (A01) | `year` | `area, ts` | |
+| `generation` (A75) | `ts`, `area`, `psr_type`, `resolution_min`, `generation_mw`, `consumption_mw` | `year` | `area, psr_type, ts` | |
+| `forecast_wind_solar` (A69) | `ts`, `area`, `psr_type`, `resolution_min`, `forecast_mw` | `year` | `area, psr_type, ts` | |
+| `flows` (A11) | `ts`, `out_area`, `in_area`, `resolution_min`, `mw` | `year` | `out_area, in_area, ts` | |
+| `units` | `unit_eic`, `plant_eic`, `name`, `area`, `psr_type`, `capacity_mw` (A71), `lon`, `lat` (JRC-PPDB) | | `unit_eic` | `unit_eic` |
+| `unit_output` (A73) | `ts`, `unit_eic`, `area`, `resolution_min`, `mw` | `year` | `unit_eic, ts` | `unit_eic` |
+| `capacity` (A68) | `ts`, `area`, `psr_type`, `capacity_mw` | `year` | `area, psr_type, ts` | |
+| `transfer_capacity` (A61, A31) | `ts`, `out_zone`, `in_zone`, `doc`, `resolution_min`, `mw` | `year` | `out_zone, in_zone, ts` | |
+| `outages` (A80) | `mrid`, `revision`, `doc_status`, `zone`, `asset_eic`, `asset_name`, `plant_eic`, `plant_name`, `psr_type`, `type`, `reason`, `reason_text`, `start`, `end`, `point_start`, `resolution_min`, `available_mw`, `nominal_mw` (one row per point of the available-capacity curve, every revision) | `year` of start | `asset_eic, start, revision` | `asset_eic` |
+
+Every table also carries `iso2`, `iso3` (from the area code) and `admin1` (NULL). A78
+(transmission unavailability) is not built yet: it is asked per border and was not probed.
 
 ### Overture power extract (`lake/overture_power/`), with task 07
 
@@ -309,9 +314,9 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 
 | Dataset | Access | Kept as | Size |
 |---|---|---|---|
-| US nodal prices, day-ahead (task 10) | ISO APIs, small windows, rate limits | Parquet | ~0.8 GB/yr (3 years ~2.4 GB) |
+| US nodal prices, day-ahead (`lake/us_lmp/day_ahead`, built: `scripts/fetch_us_nodes.py`) | the markets' files, one day per request | Parquet | ~1 GB/yr (measured 2.7 MB a day, six markets) |
 | US nodal prices, real-time 5-min | ISO APIs | API, recent only | 0 |
-| ISO live queues | APIs/files, current only | snapshots | ~0.01 GB/yr |
+| ISO live queues (`lake/iso_queues/requests`, built: `scripts/fetch_us_queues.py`) | the markets' files, current only | weekly snapshots | ~0.01 GB/yr |
 | ENTSO-E imbalance (A85/A86) | API | Parquet with ENTSO-E | +0.05 GB/yr |
 | netztransparenz redispatch, curtailment | downloads | Parquet | ~0.3 GB |
 | SMARD, Energinet, Fingrid, Elia, RTE, REE REData | APIs with history | API | 0 |

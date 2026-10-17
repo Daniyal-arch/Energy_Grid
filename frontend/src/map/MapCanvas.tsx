@@ -51,6 +51,9 @@ function wantedKeys(): string[] {
   if (L.ets) keys.push("ets");
   if (L.ctrace) keys.push("ctrace");
   if (L.connect) keys.push("connect");
+  if (L.usOutages) keys.push("usOutages", "usCounties");
+  if (L.water) keys.push("water");
+  if (L.mastrDE) keys.push("mastrMuni", "mastrUnits");
   if (L.cables) keys.push("cables");
   if (L.plantsWorld) keys.push("worldPlants");
   // EIA wins over GEM in the US: GEM's points inside the states are left out
@@ -81,6 +84,7 @@ function wantedKeys(): string[] {
     // the US replay has no weather layers
     if (date) keys.push(dayFileKey(s.dayRegion, date), ...(s.dayRegion === "eu" ? [`dayWind:${date}`] : []));
     if (L.plantOutput) keys.push(unitIndexKey(s.dayRegion), ...(date ? [unitOutKey(s.dayRegion, date)] : []));
+    if (L.usNodePrices && s.dayRegion === "us" && date) keys.push(`usNodes:${date}`);
   }
   const iso = selectedIso2(s.selection);
   if (iso && L.plantsEU && s.mode === "live") keys.push("plants", `units:${iso}`);
@@ -524,6 +528,8 @@ export default function MapCanvas() {
         plantStatus: s.plantStatus,
         plantStyle: s.plantStyle,
         connectSide: s.connectSide,
+        waterIndicator: s.waterIndicator,
+        mastrTech: s.mastrTech,
         selection: s.selection,
         files,
         zoom,
