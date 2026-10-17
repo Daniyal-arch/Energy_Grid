@@ -13,7 +13,8 @@ Columns: Overture's `id`, `class`, `kv` (highest value of the OSM voltage tag, k
 tags as published (`voltage`, `circuits`, `cables`, `frequency`, `operator`, all of them in
 `tags`), `name`, `dc` (frequency 0), `cable`, `iso3` (the country whose outline, from
 frontend/public/data/eu/world.json, holds the feature's centre; null at sea or in the 0.01°
-simplified outlines' gaps), `geometry` (GeoParquet, WGS84), `bbox`. Sorted by `iso3`, then
+simplified outlines' gaps) and its `iso2`, `geometry` (GeoParquet 1.1, WGS84) with the
+writer's `bbox` covering column. Sorted by `iso3`, then
 along a Hilbert curve.
 
     python scripts/build_lake_overture.py --band 3 --out lake-out
@@ -29,7 +30,7 @@ from pathlib import Path
 
 import duckdb
 from fetch_world_hv_overture import BANDS, KV, newest_release
-from lake import Lake, merge_catalogs
+from lake import Lake, hilbert, iso_codes, merge_catalogs
 
 ROOT = Path(__file__).resolve().parents[1]
 WORLD = ROOT / "frontend" / "public" / "data" / "eu" / "world.json"
@@ -38,7 +39,6 @@ SOURCE = "Overture Maps, base/infrastructure, subtype power (OpenStreetMap contr
 LINE_CLASSES = ("power_line", "minor_line", "cable")
 SKIP = ("tower", "pole", "portal", "insulator", "catenary_mast", "generator")
 MIN_KV = 60
-HILBERT = "ST_Hilbert(ST_Centroid(geometry), ST_Extent(ST_MakeEnvelope(-180, -90, 180, 90)))"
 
 
 def band(n: int, out: Path, release: str | None) -> None:
@@ -49,7 +49,10 @@ def band(n: int, out: Path, release: str | None) -> None:
     con.execute(
         "INSTALL spatial; LOAD spatial; INSTALL httpfs; LOAD httpfs; SET s3_region='us-west-2';"
     )
-    con.execute(f"CREATE TABLE countries AS SELECT iso3, geom FROM ST_Read('{WORLD.as_posix()}')")
+    con.execute(
+        f"CREATE TABLE countries AS SELECT iso3, ST_SetCRS(geom, 'OGC:CRS84') AS geom FROM ST_Read('{WORLD.as_posix()}')"
+    )
+    iso_codes(con)
     t = time.time()
     skip = ", ".join(f"'{c}'" for c in SKIP)
     con.execute(
@@ -60,7 +63,7 @@ def band(n: int, out: Path, release: str | None) -> None:
                source_tags['cables'] AS cables, source_tags['frequency'] AS frequency,
                source_tags['operator'] AS operator, names.primary AS name,
                coalesce(list_contains(string_split(source_tags['frequency'], ';'), '0'), false) AS dc,
-               class = 'cable' AS cable, source_tags AS tags, geometry, bbox
+               class = 'cable' AS cable, source_tags AS tags, geometry
         FROM read_parquet('{path}', hive_partitioning=1)
         WHERE bbox.xmin >= {w} AND bbox.xmin < {e} AND subtype = 'power' AND class NOT IN ({skip})
         """
@@ -70,8 +73,9 @@ def band(n: int, out: Path, release: str | None) -> None:
     )
     print(f"band {n} ({w}..{e}), {release}: read in {time.time() - t:.0f} s, {classes}", flush=True)
     with_country = """
-        SELECT f.*, c.iso3 FROM feats f
+        SELECT f.*, i.iso2, c.iso3 FROM feats f
         LEFT JOIN countries c ON ST_Intersects(c.geom, ST_Centroid(f.geometry))
+        LEFT JOIN iso_codes i ON i.iso3 = c.iso3
         QUALIFY row_number() OVER (PARTITION BY f.id ORDER BY c.iso3) = 1
     """
     lines = ", ".join(f"'{c}'" for c in LINE_CLASSES)
@@ -84,7 +88,11 @@ def band(n: int, out: Path, release: str | None) -> None:
         source_version=release,
     )
     common = dict(
-        sort=["iso3", HILBERT], bloom=["id"], partition={"release": release}, stem=f"band{n}"
+        sort=["iso3", hilbert()],
+        bloom=["id"],
+        geometry="geometry",
+        partition={"release": release},
+        stem=f"band{n}",
     )
     lake.write(
         con,
