@@ -37,8 +37,7 @@ jobs:
           pip install duckdb shapely pycountry
           # errors become public annotations (job logs need a sign-in)
           if ! curl -sSfL --retry 5 --retry-delay 30 -o aqueduct.zip https://files.wri.org/aqueduct/aqueduct-4-0-water-risk-data.zip 2> err.txt; then
-            echo "::error title=download::$(tail -c 1500 err.txt | tr '
-' '|')"
+            echo "::error title=download::$(tail -c 1500 err.txt | tr '\n' '|')"
             exit 1
           fi
           ls -la aqueduct.zip
@@ -49,8 +48,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           if ! python scripts/build_aqueduct.py --zip aqueduct.zip --lake lake-out --upload 2> err.txt; then
-            echo "::error title=build::$(tail -c 3000 err.txt | tr '
-' '|')"
+            echo "::error title=build::$(tail -c 3000 err.txt | tr '\n' '|')"
             exit 1
           fi
           python - <<'PY'
