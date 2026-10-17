@@ -30,4 +30,13 @@ jobs:
           ISONE_API_PASSWORD: ${{ secrets.ISONE_API_PASSWORD }}
         run: |
           pip install gridstatus httpx
-          python scripts/probe_us_nodes.py
+
+      # GitHub keeps at most 10 notices per step: one section per step
+      - name: ERCOT prices at every node
+        run: python scripts/probe_us_nodes.py lmp
+
+      - name: Live queues
+        run: python scripts/probe_us_nodes.py queue
+
+      - name: Node positions
+        run: python scripts/probe_us_nodes.py pos

@@ -62,7 +62,12 @@ def main() -> None:
             gridstatus.CAISO().get_lmp(DAY, market="DAY_AHEAD_HOURLY", locations="ALL_AP_NODES")
         ),
     )
-    attempt("lmp ERCOT", lambda: frame(gridstatus.Ercot().get_lmp(DAY, market="DAY_AHEAD_HOURLY")))
+    attempt(
+        "lmp ERCOT",
+        lambda: frame(
+            gridstatus.Ercot().get_spp(DAY, market="DAY_AHEAD_HOURLY", location_type="ALL")
+        ),
+    )
     attempt(
         "lmp MISO",
         lambda: frame(gridstatus.MISO().get_lmp(DAY, market="DAY_AHEAD_HOURLY", locations="ALL")),
