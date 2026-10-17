@@ -46,6 +46,8 @@ import { RetailCountryCard, RetailRankingCard, UsRetailCard } from "../component
 import type { RetailFile } from "../lib/retail";
 import type { UsNodesFile } from "../lib/usNodes";
 import { MastrCountryCard } from "../components/MastrCards";
+import { SiteCards, usePlace } from "../components/SiteCards";
+import type { LonLat } from "../lib/site";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
 interface Dossier {
@@ -118,6 +120,7 @@ export default function Panel() {
   const region = useApp((s) => s.region);
   const countries = useFile<CountriesFile>("countries");
   const european = sel?.kind === "country" && !!sel.iso2 && !!countries?.countries.some((c) => c.iso === sel.iso2);
+  if (sel?.kind === "site") return <SitePanel lon={sel.lon} lat={sel.lat} />;
   if (sel?.kind === "zone") return <ZonePanel zone={sel.id} />;
   if (sel?.kind === "region") return <RegionPanel grid={sel.grid} id={sel.id} />;
   if (sel?.kind === "country" && european) return <CountryPanel iso={sel.iso2!} />;
@@ -166,6 +169,21 @@ function Frame({ title, sub, tabs, close = true }: { title: string; sub?: ReactN
       )}
       <div className="min-h-0 flex-1 space-y-2.5 overflow-y-auto px-3 pb-4">{current.body()}</div>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------- one place: "Check a site"
+
+function SitePanel({ lon, lat }: { lon: number; lat: number }) {
+  const site = useMemo<LonLat>(() => [lon, lat], [lon, lat]);
+  const place = usePlace(site);
+  const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? "N" : "S"}, ${Math.abs(lon).toFixed(4)}° ${lon >= 0 ? "E" : "W"}`;
+  return (
+    <Frame
+      title={place.name ?? (place.ready ? "No country outline here" : "Site")}
+      sub={`Site check · ${coords}`}
+      tabs={[{ id: "site", label: "Site", body: () => <SiteCards place={place} /> }]}
+    />
   );
 }
 

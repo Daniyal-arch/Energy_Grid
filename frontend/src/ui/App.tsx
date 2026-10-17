@@ -114,6 +114,26 @@ function StoriesMenu() {
   );
 }
 
+/** "Check a site": arms the map, the next click picks the place (right-click does it directly). */
+function CheckSite({ small = false }: { small?: boolean }) {
+  const picking = useApp((s) => s.picking);
+  return (
+    <button
+      onClick={() => {
+        actions.setPicking(!picking);
+        if (small) useApp.setState({ sheet: "none" });
+      }}
+      className={`shrink-0 rounded-lg border px-2.5 py-1.5 text-[12px] backdrop-blur ${
+        picking ? "border-sky-400/50 bg-sky-400/15 text-sky-200" : "border-white/10 bg-[#0b0f16]/90 text-slate-200 hover:bg-white/[0.08]"
+      }`}
+      title="Check a site: click a place on the map (or right-click it)"
+      aria-pressed={picking}
+    >
+      {small ? "⌖ Site" : "⌖ Check a site"}
+    </button>
+  );
+}
+
 const Brand = () => (
   <div className="flex items-baseline gap-2">
     <span className="text-[14px] font-semibold tracking-[0.18em] text-slate-100">INFRAATLAS</span>
@@ -128,8 +148,9 @@ function Desktop() {
       <header className="absolute inset-x-3 top-3 z-30 flex items-center gap-3">
         <Brand />
         <StoriesMenu />
-        <div className="mx-auto w-full max-w-md">
+        <div className="mx-auto flex w-full max-w-lg items-center gap-2">
           <Search />
+          <CheckSite />
         </div>
         <TimeControl />
       </header>
@@ -171,6 +192,7 @@ function Phone() {
         <button onClick={() => set("search")} className="rounded-lg border border-white/10 bg-[#0b0f16]/90 px-2.5 py-1.5 text-[12px] text-slate-200" aria-label="Search">
           ⌕
         </button>
+        <CheckSite small />
         <div className="flex-1" />
         <TimeControl small />
       </header>

@@ -14,6 +14,7 @@ import { sunBounds, sunImage } from "../lib/sunLayer";
 import { rgbCss } from "../lib/theme";
 import { EUROPE_ISO3, ISO3, metricById, metricColor, type MetricId, type TransitionFile } from "../lib/transition";
 import { WindField, WindParticles, type WindFile } from "../lib/windParticles";
+import { useSiteLines } from "../lib/site";
 import { ACCESS_STOPS, latest, type WorldStatsFile } from "../lib/world";
 import { US_CENTRE } from "../lib/us";
 import { TR_NO_DATA, stopColor } from "../app/colors";
@@ -170,6 +171,8 @@ export default function MapCanvas() {
     // ------------------------------------------------------------ clicks: deck objects first, then the world's land
     map.on("click", (e) => {
       const s = useApp.getState();
+      // "Check a site" armed: this click picks the place
+      if (s.picking) return actions.checkSite(e.lngLat.wrap().lng, e.lngLat.wrap().lat);
       const info = overlay.pickObject({ x: e.point.x, y: e.point.y, radius: 4 });
       const same = (a: Selection | null, b: Selection) => JSON.stringify(a) === JSON.stringify(b);
       const pick = (sel: Selection, tab = "now") => actions.select(same(s.selection, sel) ? null : sel, tab);
@@ -192,6 +195,19 @@ export default function MapCanvas() {
       }
       actions.select(null);
     });
+    // right-click (desktop): check the place as a site
+    map.on("contextmenu", (e) => {
+      e.preventDefault();
+      const at = e.lngLat.wrap();
+      actions.checkSite(at.lng, at.lat);
+    });
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && useApp.getState().picking && actions.setPicking(false);
+    window.addEventListener("keydown", onKey);
+    const unsubCursor = useApp.subscribe((s, prev) => {
+      if (s.picking !== prev.picking) map.getCanvas().style.cursor = s.picking ? "crosshair" : "";
+    });
+    // the site's line search draws its link on the map
+    const unsubSite = useSiteLines.subscribe(touch);
     // the world's land: a DOM card (deck.gl's cards cover deck objects only)
     map.on("mousemove", "world-land", (e) => {
       const el = worldTip.current;
@@ -295,6 +311,11 @@ export default function MapCanvas() {
       // back from a European country: the overview again
       if (!sel && selectedIso2(prev)) fly(useApp.getState().mode === "day" ? "day" : "europe");
     };
+    /** A checked site: in view, close enough to see the search radius (the panel keeps the right). */
+    const focusSite = (lon: number, lat: number) => {
+      applyProjection();
+      map.easeTo({ center: [lon, lat], zoom: Math.max(map.getZoom(), 7.5), offset: isNarrow() ? [0, -120] : [-60, 0], duration: 900 });
+    };
     const unsubCam = useApp.subscribe((s, prev) => {
       if (s.flyTo && s.flyTo !== prev.flyTo) {
         const to = s.flyTo;
@@ -303,7 +324,8 @@ export default function MapCanvas() {
         else map.once("style.load", () => fly(to));
       } else if (s.selection !== prev.selection) {
         // a story sets its camera itself
-        focusCountry(s.selection, prev.selection);
+        if (s.selection?.kind === "site") focusSite(s.selection.lon, s.selection.lat);
+        else focusCountry(s.selection, prev.selection);
       } else if (s.mode !== prev.mode) applyProjection();
       else if (s.mode === "live" && !s.selection && s.layers.prices !== prev.layers.prices) {
         const was = flatNow;
@@ -324,6 +346,9 @@ export default function MapCanvas() {
           const padding = s.mode === "day" ? dayPadding() : undefined;
           map.jumpTo({ center: to.center, zoom: to.zoom, pitch: to.pitch ?? (s.mode === "day" ? 55 : 0), bearing: to.bearing ?? 0, padding });
         } else fly(to);
+      } else if (s.selection?.kind === "site") {
+        applyProjection();
+        map.jumpTo({ center: [s.selection.lon, s.selection.lat], zoom: 7.5 });
       } else if (s.selection) focusCountry(s.selection, null);
       else {
         applyProjection();
@@ -589,6 +614,9 @@ export default function MapCanvas() {
       unsubApp();
       unsubData();
       unsubCam();
+      unsubCursor();
+      unsubSite();
+      window.removeEventListener("keydown", onKey);
       mq.removeEventListener("change", onMq);
       map.remove();
     };

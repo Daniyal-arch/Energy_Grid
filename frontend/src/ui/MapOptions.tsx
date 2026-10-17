@@ -1,5 +1,5 @@
 // Switches that change how something on the map draws, shown on the map while it matters:
-// bars or beams for a selected country's plants (live mode).
+// bars or beams for a selected country's plants (live mode); the hint while "Check a site" is armed.
 
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { actions, useApp } from "../app/store";
@@ -11,10 +11,19 @@ export default function MapOptions() {
   const plantsOn = useApp((s) => s.layers.plantsEU);
   const plantStyle = useApp((s) => s.plantStyle);
   const sel = useApp((s) => s.selection);
+  const picking = useApp((s) => s.picking);
   const showPlants = mode === "live" && plantsOn && sel?.kind === "country" && !!sel.iso2;
-  if (!showPlants) return null;
+  if (!showPlants && !picking) return null;
   return (
     <div className="pointer-events-none absolute left-1/2 top-14 z-20 flex max-w-[92vw] -translate-x-1/2 flex-col items-center gap-1.5 md:top-16">
+      {picking && (
+        <div className={`${box} flex items-center gap-2.5`}>
+          <span className="text-[11.5px] text-slate-200">Click a place to check it as a site</span>
+          <button onClick={() => actions.setPicking(false)} className="rounded-md border border-white/10 px-2 py-0.5 text-[11px] text-slate-300 hover:bg-white/[0.07]">
+            Cancel
+          </button>
+        </div>
+      )}
       {showPlants && (
         <div className={box}>
           <div className="flex items-center gap-2">

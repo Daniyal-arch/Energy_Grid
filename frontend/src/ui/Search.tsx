@@ -51,6 +51,10 @@ export default function Search({ onDone, autoFocus = false }: { onDone?: () => v
       setOpen(false);
       onDone?.();
     };
+    // "51.3, 10.1": latitude, longitude -> check that place as a site
+    const ll = q.trim().match(/^(-?\d{1,2}(?:\.\d+)?)\s*[,;\s]\s*(-?\d{1,3}(?:\.\d+)?)$/);
+    if (ll && Math.abs(Number(ll[1])) <= 85 && Math.abs(Number(ll[2])) <= 180)
+      out.push({ key: `s:${ll[1]},${ll[2]}`, label: `${ll[1]}, ${ll[2]}`, kind: "Check a site · latitude, longitude", go: done(null, () => actions.checkSite(Number(ll[2]), Number(ll[1]))) });
     const europe = new Set(countries?.countries.map((c) => c.iso) ?? []);
     for (const c of countries?.countries ?? [])
       if (match(c.name) || t === c.iso.toLowerCase())
@@ -152,7 +156,7 @@ export default function Search({ onDone, autoFocus = false }: { onDone?: () => v
             input.current?.blur();
           }
         }}
-        placeholder="Search a country, zone, region or plant"
+        placeholder="Search a country, zone, plant, or latitude, longitude"
         className="w-full rounded-lg border border-white/10 bg-[#0b0f16]/90 px-3 py-1.5 text-[12.5px] text-slate-100 placeholder:text-slate-500 outline-none backdrop-blur focus:border-sky-400/50"
         aria-label="Search"
       />

@@ -100,6 +100,7 @@ import { usLayers } from "./usLayers";
 import { riskLayers } from "./riskLayers";
 import type { WaterIndicator } from "../lib/risk";
 import { mastrLayers } from "./mastrLayers";
+import { siteLayers } from "./siteLayers";
 import type { MastrTech } from "../lib/mastr";
 
 export interface Frame {
@@ -800,6 +801,7 @@ export function buildLayers(fr: Frame): Layer[] {
 
   // ---------------------------------------------------------------- price-zone markers, names
   if (facingEurope) layers.push(...zoneMarkers(fr));
+  layers.push(...siteLayers(fr));
   if (facingEurope && countries) parts.push(countryLabels(fr, countries));
   // under MapLibre's labels (map/labels.ts), which read well on the globe
   return layers.map((l) => ((l.props as { beforeId?: string }).beforeId ? l : l.clone({ beforeId: LABELS_BELOW } as never)));
