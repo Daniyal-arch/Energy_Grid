@@ -77,6 +77,8 @@ const STATIC: Record<string, Loader> = {
   // the US grid pack (scripts/fetch_us_grid.py; .github/workflows/us-grid.yml refreshes it on main)
   usPlants: bundledUs("plants.json"),
   usQueue: bundledUs("queue.json"),
+  // the markets' own queues, weekly (scripts/fetch_us_queues.py)
+  usQueuesLive: bundledUs("queues_live.json"),
   usTurbines: bundledUs("turbines.json"),
   usStates: bundledUs("states.json"),
   flows: snapshot("flows.json"),

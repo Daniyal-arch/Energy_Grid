@@ -316,7 +316,7 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 |---|---|---|---|
 | US nodal prices, day-ahead (task 10) | ISO APIs, small windows, rate limits | Parquet | ~0.8 GB/yr (3 years ~2.4 GB) |
 | US nodal prices, real-time 5-min | ISO APIs | API, recent only | 0 |
-| ISO live queues | APIs/files, current only | snapshots | ~0.01 GB/yr |
+| ISO live queues (`lake/iso_queues/requests`, built: `scripts/fetch_us_queues.py`) | the markets' files, current only | weekly snapshots | ~0.01 GB/yr |
 | ENTSO-E imbalance (A85/A86) | API | Parquet with ENTSO-E | +0.05 GB/yr |
 | netztransparenz redispatch, curtailment | downloads | Parquet | ~0.3 GB |
 | SMARD, Energinet, Fingrid, Elia, RTE, REE REData | APIs with history | API | 0 |

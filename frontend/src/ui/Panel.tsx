@@ -27,8 +27,8 @@ import type { FinanceFile } from "../lib/finance";
 import { AggregateCard, RankingCard, type RankRow } from "../components/TransitionCards";
 import type { IrenaFile } from "../lib/irena";
 import { AccessCard, BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard, WorldCountryCard } from "../components/WorldCards";
-import { UsCapacityCard, UsHubPricesCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
-import { hubPrices, hubPricesNow, type UsPlantsFile, type UsPricesFile, type UsQueueFile, type UsTurbinesFile } from "../lib/us";
+import { UsCapacityCard, UsHubPricesCard, UsLiveQueuesCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
+import { hubPrices, hubPricesNow, type UsPlantsFile, type UsPricesFile, type UsQueueFile, type UsQueuesLiveFile, type UsTurbinesFile } from "../lib/us";
 import { FUEL_COLOR, FUEL_LABEL, STACK_ORDER, gw, power } from "../lib/energy";
 import { priceMetricById, type PriceMetricId, type PricesFile } from "../lib/prices";
 import { rgbCss } from "../lib/theme";
@@ -795,6 +795,7 @@ function UsPanel() {
   const usDay = day?.region === "us" ? day : null;
   const plants = useFile<UsPlantsFile>("usPlants");
   const queue = useFile<UsQueueFile>("usQueue");
+  const queuesLive = useFile<UsQueuesLiveFile>("usQueuesLive");
   const turbines = useFile<UsTurbinesFile>("usTurbines");
   const us = useFile<UsFile>("us");
   const usPrices = useFile<UsPricesFile>("usPrices");
@@ -843,6 +844,7 @@ function UsPanel() {
               </button>
             )}
             <UsQueueCard q={queue} />
+            {queuesLive && <UsLiveQueuesCard f={queuesLive} />}
             <UsQueueStatesCard q={queue} names={names} />
             {sources}
           </>

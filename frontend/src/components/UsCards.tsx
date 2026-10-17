@@ -4,7 +4,7 @@
 import { useMemo, type ReactNode } from "react";
 
 import { rgbCss, type RGB } from "../lib/theme";
-import { US_TYPE_COLOR, US_TYPE_LABEL, US_TYPE_ORDER, gwText, queueColor, usd, type HubPrice, type UsPlantsFile, type UsQueueFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
+import { US_TYPE_COLOR, US_TYPE_LABEL, US_TYPE_ORDER, gwText, queueColor, usd, type HubPrice, type UsPlantsFile, type UsQueueFile, type UsQueuesLiveFile, type UsStatesFile, type UsTurbinesFile } from "../lib/us";
 import { useFile } from "../app/data";
 import { Card } from "./CountryCards";
 import { PlantsCard } from "./WorldCards";
@@ -282,6 +282,41 @@ export function UsHubPricesCard({ rows, time, regionName }: { rows: HubPrice[]; 
       <Note>
         Each market&apos;s day-ahead price (LMP) at its trading hub for this hour, as the market publishes it, matched to the EIA region it covers. One hub per market, not an average.
         {rows.some((r) => r.market === "PJM") ? "" : " PJM is not shown (its data need an API key)."}
+      </Note>
+    </Card>
+  );
+}
+
+/** The markets' own queues next to LBNL's: active requests per market, stacked by type. */
+export function UsLiveQueuesCard({ f }: { f: UsQueuesLiveFile }) {
+  const rows = Object.entries(f.markets)
+    .filter(([, m]) => m.active_mw != null)
+    .map(([name, m]) => ({
+      name,
+      m,
+      parts: Object.entries(m.by_type ?? {}).map(([k, v]) => ({ key: k, value: v, color: queueColor(k) })),
+    }))
+    .sort((a, b) => (b.m.active_mw ?? 0) - (a.m.active_mw ?? 0));
+  const max = Math.max(1, ...rows.map((r) => r.parts.reduce((a, p) => a + p.value, 0)));
+  const off = Object.entries(f.markets).filter(([, m]) => m.active_mw == null);
+  return (
+    <Card title="The markets' own queues" note={`fetched ${f.fetched.slice(0, 10)}`} accent={[196, 196, 214]}>
+      <div className="space-y-[3px]">
+        {rows.map((r) => (
+          <StackRow key={r.name} label={r.name} parts={r.parts} max={max} />
+        ))}
+      </div>
+      <div className={`mt-1.5 space-y-0.5 text-[10.5px] tabular-nums ${muted}`}>
+        {rows.map((r) => (
+          <div key={r.name}>
+            {r.name}: {(r.m.active ?? 0).toLocaleString("en-US")} active of {(r.m.requests ?? 0).toLocaleString("en-US")} requests listed, {gwText(r.m.active_mw ?? 0)}
+          </div>
+        ))}
+      </div>
+      <Note>
+        Each market's interconnection queue as it publishes it today (read with the open-source gridstatus library): requests whose status is "active", capacity summed (computed). Types mapped onto LBNL's names; a
+        hybrid counts under each of its types, so a bar can be longer than the total.
+        {off.length ? ` Not included: ${off.map(([n, m]) => `${n} (${m.missing ?? "the download failed"})`).join(", ")}.` : ""}
       </Note>
     </Card>
   );

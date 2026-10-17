@@ -558,6 +558,25 @@ standard columns, partition `snapshot` (and `land` for solar), sorted by `ags, m
 `operators`, `grid_connection_points`, `locations`, `catalog_values`. Snapshots kept: the
 newest, the first of each year, and every one younger than a year.
 
+## US live queues (`scripts/fetch_us_queues.py`, `us/queues_live.json`)
+
+Each market's own interconnection queue, read with the open-source `gridstatus` library (MIT)
+from the markets' public files (`scripts/probe_us_nodes.py`, run in Actions because ERCOT blocks
+many non-US addresses): CAISO, ERCOT, MISO, SPP, ISO-NE. Missing, and listed as such in the
+panel: NYISO (its site answers automated downloads with a bot check, HTTP 202) and PJM (needs
+`PJM_API_KEY`; PJM's DNS failed on 2026-10-17).
+
+- Passthrough per request: queue id, state, generation type, capacity (MW), queue date, status.
+- Computed: requests whose status is "active" (any case) summed per state and per type. Types
+  are mapped onto LBNL's names (`TYPE_RULES`); a hybrid ("Photovoltaic + Storage", "SUN BAT",
+  "Hybrid - Solar/Storage") counts under each of its types with its full capacity, LBNL's own
+  rule, so type sums exceed the request total. State names are turned into postal codes.
+- Probe (2026-10-17): CAISO 2,278 requests (261 active), ERCOT 1,758 (1,169), MISO 3,938 (1,137),
+  SPP 3,078 (216), ISO-NE 1,751 (56).
+- Lake: every market's full table, all columns as published (text), `lake/iso_queues/requests`,
+  partitions `snapshot` and `market`.
+- Refresh: weekly (`.github/workflows/us-queues.yml`, committed to main).
+
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
 | File | Records | Source |
