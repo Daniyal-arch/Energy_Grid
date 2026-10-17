@@ -11,6 +11,7 @@ import { LNG_SEND, type LngTerminalsFile } from "../lib/lngTerminals";
 import { RETAIL_STOPS, RETAIL_TICKS } from "../lib/retail";
 import { CT_COLOR, type CtraceFile } from "../lib/ctrace";
 import { OUTAGE_STOPS, OUTAGE_TICKS, WATER_COLOR, WATER_INDICATORS, newestYear, type UsOutagesFile, type WaterFile } from "../lib/risk";
+import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, type MastrMuniFile } from "../lib/mastr";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
@@ -243,6 +244,31 @@ function WaterKey() {
   );
 }
 
+function MastrKey() {
+  const f = useDataStore((d) => d.files.mastrMuni as MastrMuniFile | undefined);
+  const tech = useApp((s) => s.mastrTech);
+  return (
+    <>
+      <div className="mb-1 flex flex-wrap items-center gap-1">
+        {MASTR_TECHS.map((t) => (
+          <button
+            key={t}
+            onClick={() => actions.setMastrTech(t)}
+            className={`rounded-md border px-2 py-0.5 text-[10.5px] ${tech === t ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-300 hover:bg-white/[0.07]"}`}
+          >
+            {MASTR_LABEL[t].toLowerCase()}
+          </button>
+        ))}
+      </div>
+      <Scale
+        gradient={gradientCss(MASTR_STOPS)}
+        ticks={MASTR_TICKS}
+        note={`Each municipality by the gross MW of its ${MASTR_LABEL[tech].toLowerCase()} units in operation (sum, computed). From zoom ${MASTR_UNIT_ZOOM}: every unit of 1 MW and more with a published position, coloured by type. Marktstammdatenregister ${f?.snapshot ?? "…"}.`}
+      />
+    </>
+  );
+}
+
 function CtraceKey() {
   const ct = useDataStore((d) => d.files.ctrace as CtraceFile | undefined);
   return (
@@ -340,6 +366,8 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <OutagesKey />;
     case "water":
       return <WaterKey />;
+    case "mastrDE":
+      return <MastrKey />;
     case "plantOutput":
       return (
         <>

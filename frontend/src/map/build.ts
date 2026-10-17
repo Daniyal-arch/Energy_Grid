@@ -98,6 +98,8 @@ import { priceTerrain, type Terrain } from "./priceTerrain";
 import { usLayers } from "./usLayers";
 import { riskLayers } from "./riskLayers";
 import type { WaterIndicator } from "../lib/risk";
+import { mastrLayers } from "./mastrLayers";
+import type { MastrTech } from "../lib/mastr";
 
 export interface Frame {
   mode: TimeMode;
@@ -107,6 +109,7 @@ export interface Frame {
   plantStyle: "bars" | "beams";
   connectSide: "offtake" | "feedin";
   waterIndicator: WaterIndicator;
+  mastrTech: MastrTech;
   selection: Selection | null;
   files: Record<string, unknown>;
   zoom: number;
@@ -674,6 +677,7 @@ export function buildLayers(fr: Frame): Layer[] {
 
   // ---------------------------------------------------------------- the world (MapLibre draws the land, grid tiles)
   layers.push(...riskLayers(fr));
+  layers.push(...mastrLayers(fr));
   layers.push(...worldLayers(fr, near));
   layers.push(...usLayers(fr));
   layers.push(...gemLayers(fr));

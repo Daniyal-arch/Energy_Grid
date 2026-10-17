@@ -5,6 +5,7 @@
 import { create } from "zustand";
 
 import type { WaterIndicator } from "../lib/risk";
+import type { MastrTech } from "../lib/mastr";
 
 export type TimeMode = "live" | "day" | "years";
 
@@ -48,6 +49,7 @@ export type LayerId =
   | "dataCentres"
   | "usOutages"
   | "water"
+  | "mastrDE"
   | "wind"
   | "sun"
   | "night";
@@ -86,6 +88,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "plantsEU", label: "Power plants", desc: "20 MW and more, by fuel", group: "Power plants", coverage: "Europe", color: "rgb(255,128,72)" },
   { id: "plantsWorld", label: "Power plants worldwide", desc: "Operating, building, planned or retired", group: "Power plants", coverage: "World", color: "rgb(255,214,72)" },
   { id: "plantsUS", label: "US power plants", desc: "Every generator of 1 MW and more (EIA)", group: "Power plants", coverage: "US", color: "rgb(255,128,72)" },
+  { id: "mastrDE", label: "Germany: every unit", desc: "MW per municipality of solar, wind or storage; units of 1 MW and more (Marktstammdatenregister)", group: "Power plants", coverage: "DE", color: "rgb(255,214,72)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Power plants", coverage: "US", color: "rgb(196,196,214)", story: "us-queue" },
   { id: "gasPipes", label: "Gas pipelines", desc: "Operating, under construction, proposed", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,196,96)" },
@@ -144,6 +147,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "dataCentres",
   "usOutages",
   "water",
+  "mastrDE",
 ]);
 
 export type ColourId =
@@ -426,6 +430,8 @@ interface AppState {
   connectSide: "offtake" | "feedin";
   /** the Water stress layer's indicator (WRI Aqueduct) */
   waterIndicator: WaterIndicator;
+  /** the Germany layer's technology (Marktstammdatenregister) */
+  mastrTech: MastrTech;
   selection: Selection | null;
   tab: string;
   story: string | null;
@@ -459,6 +465,7 @@ export const useApp = create<AppState>(() => ({
   plantStyle: "bars",
   connectSide: "offtake",
   waterIndicator: "bws",
+  mastrTech: "solar",
   selection: null,
   tab: "now",
   story: "europe-live",
@@ -511,6 +518,9 @@ export const actions = {
   },
   setWaterIndicator(waterIndicator: WaterIndicator) {
     useApp.setState({ waterIndicator });
+  },
+  setMastrTech(mastrTech: MastrTech) {
+    useApp.setState({ mastrTech });
   },
   /** Jump the 24 h clock to a slot (pauses at the end of the day). */
   seekDay(slot: number) {

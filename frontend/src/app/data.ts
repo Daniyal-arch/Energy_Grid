@@ -116,6 +116,9 @@ const STATIC: Record<string, Loader> = {
   usCounties: bundledUs("counties.json"),
   // water risk per river basin (scripts/build_aqueduct.py, WRI Aqueduct 4.0)
   water: bundled("water.json"),
+  // every unit in Germany (scripts/build_mastr.py, Marktstammdatenregister)
+  mastrUnits: bundled("mastr/units_large.json"),
+  mastrMuni: bundled("mastr/municipalities.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)

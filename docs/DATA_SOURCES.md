@@ -524,6 +524,40 @@ and month), `future_annual` (one row per basin, scenario bau/opt/pes and year 20
 Basin tables carry the country and province holding most of the basin's area (sum of
 `area_km2`, computed) as `iso3`/`admin1`.
 
+## Germany: every unit (`scripts/build_mastr.py`, `mastr/units_large.json`, `mastr/municipalities.json`)
+
+| What | Source |
+|---|---|
+| Every generating and storage unit in Germany | Marktstammdatenregister (Bundesnetzagentur), daily bulk export `Gesamtdatenexport_<date>_<version>.zip` (3.2 GB, ~66 GB of UTF-16 XML), Datenlizenz Deutschland – Namensnennung 2.0 (dl-de/by-2-0, named on the download page) |
+| Municipality outlines | BKG VG5000, municipalities (`VG5000_GEM`, GF = 4: land areas), UTM 32N → lon/lat, simplified ~200 m; dl-de/by-2-0 |
+
+Built in GitHub Actions (`.github/workflows/mastr.yml`, monthly): one download (the server
+resets parallel downloads and serves ~1 MB/s, so ~55 min), then six parts streamed from the zip
+(never unpacked) in parallel processes. Codes (status, Land, energy carrier, …) are named from
+the export's own `Katalogwerte`.
+
+Rules (computed, labelled on the map and in the panel):
+- Units counted: status "In Betrieb" (in operation); MW = gross capacity (`Bruttoleistung`, kW
+  / 1000) summed per municipality (`Gemeindeschluessel`) and technology (the XML file a unit
+  comes from: solar, wind, storage, biomass, hydro, combustion, nuclear, other = geothermal,
+  mine gas, pressure relief).
+- Units without a municipality key are counted in `no_ags`, not drawn: offshore wind
+  (`offshore`, `WindAnLandOderAufSee` = "Windenergie auf See") and the large thermal units,
+  which the public export lists with their Land only (no municipality, postcode or
+  coordinates; 2026-10-13: 70.5 GW of combustion units in operation, e.g. Boxberg, Lünen).
+- Large units: in operation, ≥ 1 MW gross, with coordinates (MaStR publishes them only for
+  larger units); drawn from zoom 6.
+- New units per month: units whose commissioning date (`Inbetriebnahmedatum`) falls in each of
+  the last 24 months, any status but "In Planung", gross MW summed. Units are registered up to
+  a month late, so the newest months still grow.
+- The register lists wind per turbine and solar down to balcony panels; its sums are not
+  ENTSO-E's A68 figures (grid operators' figures per type), which the panel shows beside them.
+
+Lake: `lake/mastr/` (docs/DATA_LAKE.md section 6), every column as published plus the
+standard columns, partition `snapshot` (and `land` for solar), sorted by `ags, mastr_nr`;
+`operators`, `grid_connection_points`, `locations`, `catalog_values`. Snapshots kept: the
+newest, the first of each year, and every one younger than a year.
+
 ## Gas flows (`scripts/fetch_entsog.py`, `gas_flows.json`)
 
 | File | Records | Source |
