@@ -70,9 +70,9 @@ jobs:
               # three ENTSO-E values against the Transparency website (2026-10-17): DE-LU
               # day-ahead 79.66 EUR/MWh; Germany load 37,673.00 / 39,356.89 MW; unit
               # 11W0-0000-0669-G 28.70 MW, all at 2024-06-01 00:00 UTC
-              "SELECT area, ts, resolution_min, price, sequence FROM lake.entsoe.prices WHERE year = 2024 AND area = 'DE-LU' AND ts = TIMESTAMPTZ '2024-06-01 00:00:00+00'",
-              "SELECT area, ts, resolution_min, actual_mw, day_ahead_mw FROM lake.entsoe.load WHERE year = 2024 AND area = 'DE' AND ts = TIMESTAMPTZ '2024-06-01 00:00:00+00'",
-              "SELECT unit_eic, ts, resolution_min, mw FROM lake.entsoe.unit_output WHERE year = 2024 AND unit_eic = '11W0-0000-0669-G' AND ts = TIMESTAMPTZ '2024-06-01 00:00:00+00'",
+              "SELECT area, CAST(ts AS VARCHAR), resolution_min, price, sequence FROM lake.entsoe.prices WHERE year = 2024 AND area = 'DE-LU' AND ts = TIMESTAMPTZ '2024-06-01 00:00:00+00'",
+              "SELECT area, CAST(ts AS VARCHAR), resolution_min, actual_mw, day_ahead_mw FROM lake.entsoe.load WHERE year = 2024 AND area = 'DE' AND ts = TIMESTAMPTZ '2024-06-01 00:00:00+00'",
+              "SELECT unit_eic, CAST(ts AS VARCHAR), resolution_min, mw FROM lake.entsoe.unit_output WHERE year = 2024 AND unit_eic = '11W0-0000-0669-G' AND ts = TIMESTAMPTZ '2024-06-01 00:00:00+00'",
           ]:
               t = time.time()
               try:
