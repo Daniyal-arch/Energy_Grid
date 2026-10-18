@@ -61,6 +61,8 @@ const STATIC: Record<string, Loader> = {
   worldPlants: bundled("world_plants.json"),
   plantNames: bundled("world_plant_names.json"),
   cables: bundled("cables.json"),
+  // the solar and wind resource atlases: classes, tiles, lookup grid (scripts/build_atlas.py)
+  atlas: bundled("atlas.json"),
   // Global Energy Monitor trackers (scripts/build_gem_layers.py)
   gemGas: bundled("gem/pipelines_gas.json"),
   gemOil: bundled("gem/pipelines_oil.json"),
@@ -84,6 +86,8 @@ const STATIC: Record<string, Loader> = {
   usSolar: bundledUs("solar.json"),
   usSolarOutlines: bundledUs("solar_outlines.json"),
   usStates: bundledUs("states.json"),
+  // public EV fast chargers (scripts/fetch_ev_chargers.py, NREL AFDC; monthly in us-grid)
+  evChargers: bundledUs("ev_chargers.json"),
   flows: snapshot("flows.json"),
   stats: snapshot("stats.json"),
   // transfer capacity per border, today and tomorrow (scripts/fetch_eu_capacity.py)
@@ -98,7 +102,12 @@ const STATIC: Record<string, Loader> = {
   brazil: snapshot("brazil.json"),
   taiwan: snapshot("taiwan.json"),
   ontario: snapshot("ontario.json"),
+  // Great Britain's carbon intensity (NESO) and Denmark every 5 minutes (Energinet)
+  gbCarbon: snapshot("gb_carbon.json"),
+  dkLive: snapshot("dk_live.json"),
   prices: archive("prices.json"),
+  // imbalance prices per zone, the last 30 days (scripts/build_imbalance.py)
+  imbalance: archive("imbalance.json"),
   // US day-ahead prices at one hub per market, today and tomorrow (scripts/fetch_us_prices.py)
   usPrices: archive("us_prices.json"),
   worldStats: archive("world_stats.json"),
@@ -256,7 +265,7 @@ export function useFile<T>(key: string | null): T | undefined {
 export const fileOf = <T,>(key: string): T | undefined => useDataStore.getState().files[key] as T | undefined;
 
 /** Live files, reloaded every 10 minutes while the page is open. */
-export const LIVE_KEYS = ["flows", "stats", "outages", "wind", "aemo", "us", "brazil", "taiwan", "ontario", "windWorld"];
+export const LIVE_KEYS = ["flows", "stats", "outages", "wind", "aemo", "us", "brazil", "taiwan", "ontario", "windWorld", "gbCarbon", "dkLive"];
 
 // development only: lets headless checks read what has loaded
 if (import.meta.env.DEV) (window as unknown as { __data: typeof useDataStore }).__data = useDataStore;

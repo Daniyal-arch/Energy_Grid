@@ -26,7 +26,8 @@ import { actions, clearYearFromUrl, motion, useApp, writeUrl, yearFromUrl, type 
 import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
 import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection } from "./build";
 import { memo } from "./memo";
-import { GRID_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, STYLE, US_GRID_LAYERS, addGridLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, usFrame, worldCamera } from "./style";
+import { ATLAS_LAYERS, type AtlasFile, type AtlasId } from "../lib/atlas";
+import { GRID_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addGridLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, usFrame, worldCamera } from "./style";
 import { TIP_STYLE, countryHtml, tooltip } from "./tooltip";
 
 const SEC_PER_YEAR = 0.9;
@@ -67,6 +68,8 @@ function wantedKeys(zoom: number): string[] {
   if (L.usQueue) keys.push("usQueue", "usPlants");
   if (L.plantsUS || L.turbinesUS || L.gridUS || L.usQueue) keys.push("usStates");
   if (L.dataCentres) keys.push("datacentres");
+  if (L.evChargersUS) keys.push("evChargers");
+  if (L.solarResource || L.windResource) keys.push("atlas");
   if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario");
   if (L.financeCoal || L.financeGas) keys.push("gemFinance");
   for (const [id, style] of [...Object.entries(GEM_PIPES), ...Object.entries(GEM_POINTS)]) if (L[id as LayerId]) keys.push(style.file);
@@ -363,6 +366,7 @@ export default function MapCanvas() {
     // ------------------------------------------------------------ MapLibre's land and grid
     let landKey = "";
     let gridKey = "";
+    let atlasKey = "";
     let skyKey = "";
     const applyMapLibre = (dayFile: DayFile | null, sunAlt: number) => {
       if (!map.getLayer("world-land")) return;
@@ -409,6 +413,17 @@ export default function MapCanvas() {
         for (const id of US_GRID_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.gridUS ? "visible" : "none");
         for (const id of GRID_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.gridWorld ? "visible" : "none");
         for (const id of PREDICTED_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.predicted ? "visible" : "none");
+      }
+      // the resource atlases (raster tiles), once their description has loaded
+      const atlas = fileOf<AtlasFile>("atlas");
+      const ak = `${s.layers.solarResource}|${s.layers.windResource}|${!!atlas}`;
+      if (ak !== atlasKey && atlas) {
+        atlasKey = ak;
+        for (const [k, on] of [["pvout", s.layers.solarResource], ["wind", s.layers.windResource]] as [AtlasId, boolean][]) {
+          const id = ATLAS_LAYERS[k];
+          if (on) addAtlasLayer(map, id, atlas[k].tiles, atlas[k].max_zoom, atlas[k].source);
+          if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
+        }
       }
       // 24 h: near-black at night, deep blue by day (sun height over Central Europe)
       const light = dayFile ? Math.max(0, Math.min(1, (sunAlt + 4) / 24)) : -1;

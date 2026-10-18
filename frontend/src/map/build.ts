@@ -103,6 +103,7 @@ import { mastrLayers } from "./mastrLayers";
 import { siteLayers } from "./siteLayers";
 import { offshoreLayers } from "./offshoreLayers";
 import { usSolarLayers } from "./usSolarLayers";
+import { evLayers } from "./evLayers";
 import type { MastrTech } from "../lib/mastr";
 
 export interface Frame {
@@ -707,6 +708,7 @@ export function buildLayers(fr: Frame): Layer[] {
   layers.push(...mastrLayers(fr));
   layers.push(...offshoreLayers(fr));
   layers.push(...usSolarLayers(fr));
+  layers.push(...evLayers(fr));
   layers.push(...worldLayers(fr, near));
   layers.push(...usLayers(fr));
   layers.push(...gemLayers(fr));

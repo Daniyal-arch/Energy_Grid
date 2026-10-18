@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import type { ImbalanceFile, ImbalanceSeries } from "../lib/imbalance";
 import { HOUR_KEY, SEASON_COLOR, hourColor, monthLabel, type PriceMetric, type ZoneStats } from "../lib/prices";
 import { rgbCss } from "../lib/theme";
 import { Card } from "./CountryCards";
@@ -323,6 +324,123 @@ export function ZoneRankingCard({
             <span className="w-12 text-right text-slate-100">{metric.format(r.v)}</span>
           </button>
         ))}
+      </div>
+    </Card>
+  );
+}
+
+const num = (v: number) => v.toLocaleString("en-GB", { maximumFractionDigits: 2 });
+const DEFICIT: [number, number, number] = [240, 170, 90];
+const EXCESS: [number, number, number] = [110, 190, 230];
+
+/** Imbalance prices of one zone (ENTSO-E A85): the last 7 days and the 30 complete days. */
+export function ImbalanceCard({ file, zone }: { file: ImbalanceFile; zone: string }) {
+  const [hover, setHover] = useState<number | null>(null);
+  const z = file.zones[zone];
+  const days = file.days;
+  const span = `${days[0]} – ${days[days.length - 1]}`;
+  if (!z) {
+    const note =
+      zone === "DE-LU"
+        ? " Germany's imbalance price (reBAP) is published by the four TSOs on netztransparenz.de."
+        : "";
+    return (
+      <Card title="Imbalance price" note="ENTSO-E A85">
+        <div className={`text-[10.5px] leading-snug ${muted}`}>
+          {file.none.includes(zone)
+            ? `ENTSO-E has no imbalance price for ${zone} (${span}).${note}`
+            : file.failed?.includes(zone)
+              ? `ENTSO-E did not answer for ${zone} in the newest daily run; the next run asks again.`
+              : `No imbalance price for ${zone}.`}
+        </div>
+      </Card>
+    );
+  }
+  const cur = z.currency ?? "";
+  const partial = file.failed?.includes(zone);
+  // never chart a series that is 0 in every period (Italy fills its deficit series with 0)
+  const lines = [
+    { key: "Deficit", s: z.deficit, color: DEFICIT },
+    { key: "Excess", s: z.excess, color: EXCESS },
+  ].filter((l): l is { key: string; s: ImbalanceSeries; color: [number, number, number] } => !!l.s && !l.s.all_zero);
+  const zeroOnly = [z.deficit, z.excess].some((s) => s?.all_zero);
+  const n = Math.max(0, ...lines.map((l) => l.s.chart.length));
+  const vals = lines.flatMap((l) => l.s.chart).filter((v): v is number => v != null);
+  const top = Math.max(0, ...vals);
+  const bottom = Math.min(0, ...vals);
+  const H = 110;
+  const y = (v: number) => 4 + ((top - v) / (top - bottom || 1)) * (H - 8);
+  const x = (k: number) => (k / Math.max(1, n - 1)) * W;
+  const path = (c: (number | null)[]) => {
+    let d = "";
+    let pen = false;
+    c.forEach((v, k) => {
+      if (v == null) {
+        pen = false;
+        return;
+      }
+      d += `${pen ? "L" : "M"}${x(k).toFixed(1)},${y(v).toFixed(1)}`;
+      pen = true;
+    });
+    return d;
+  };
+  const t0 = Date.parse(file.chart_start);
+  const at = (k: number) => when(new Date(t0 + k * file.step_s * 1000).toISOString());
+  const pick = (e: React.PointerEvent<Element>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    setHover(Math.max(0, Math.min(n - 1, Math.round(((e.clientX - r.left) / r.width) * (n - 1)))));
+  };
+  const main = lines[0]?.s.period;
+  return (
+    <Card title="Imbalance price" note={`${cur}/MWh · ENTSO-E A85`}>
+      {lines.length > 0 && (
+        <>
+          <div className={`mb-1 flex flex-wrap gap-x-3 text-[9.5px] ${muted}`}>
+            {lines.map((l) => (
+              <span key={l.key} className="flex items-center gap-1">
+                <span className="inline-block h-[2px] w-3" style={{ background: rgbCss(l.color) }} />
+                {l.key === "Deficit" ? (z.same ? "Imbalance price (single price)" : "Deficit (short)") : "Excess (long)"}
+              </span>
+            ))}
+          </div>
+          <svg viewBox={`0 0 ${W} ${H}`} className="w-full" onPointerMove={pick} onPointerLeave={() => setHover(null)}>
+            <line x1={0} x2={W} y1={y(0)} y2={y(0)} stroke="rgba(255,255,255,0.15)" strokeWidth={0.6} />
+            {lines.map((l) => (
+              <path key={l.key} d={path(l.s.chart)} fill="none" stroke={rgbCss(l.color)} strokeWidth={0.9} />
+            ))}
+            {hover != null && <line x1={x(hover)} x2={x(hover)} y1={0} y2={H} stroke="rgba(255,255,255,0.35)" strokeWidth={0.6} />}
+          </svg>
+          <div className={`flex justify-between text-[9.5px] tabular-nums ${muted}`}>
+            {hover != null ? (
+              <span>
+                {at(hover)} ·{" "}
+                {lines.map((l) => `${l.key.toLowerCase()} ${l.s.chart[hover] == null ? "–" : num(l.s.chart[hover] as number)}`).join(" · ")} {cur}/MWh
+              </span>
+            ) : (
+              <>
+                <span>last 7 days, every {file.step_s / 60} min</span>
+                <span>
+                  {num(bottom)} … {num(top)} {cur}
+                </span>
+              </>
+            )}
+          </div>
+        </>
+      )}
+      {main && (
+        <div className="mt-2 grid grid-cols-2 gap-1.5">
+          <Tile label="Average" value={`${num(main[0] as number)}`} sub={`${cur}/MWh over ${main[4].toLocaleString("en-GB")} periods`} />
+          <Tile label="Below zero" value={`${main[3].toLocaleString("en-GB")}`} sub={`of ${main[4].toLocaleString("en-GB")} periods`} />
+          <Tile label="Lowest" value={num(main[1] as number)} sub={`${cur}/MWh`} />
+          <Tile label="Highest" value={num(main[2] as number)} sub={`${cur}/MWh`} />
+        </div>
+      )}
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        {lines[0] ? `${lines[0].key === "Deficit" ? (z.same ? "Single price" : "Deficit price") : "Excess price"}, ${days.length} complete days ${span}` : ""}
+        {lines[0] ? "; average = mean of the periods published (computed). " : ""}
+        What a balance responsible party pays or receives for energy it was short or long, as the TSO publishes it, in {cur}.
+        {zeroOnly ? " One series is 0 in every period at ENTSO-E and is not charted." : ""}
+        {partial ? " ENTSO-E did not answer every request for this zone in the newest run: some days may be missing." : ""}
       </div>
     </Card>
   );

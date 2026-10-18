@@ -10,6 +10,7 @@ import { MastrCountryCard } from "../components/MastrCards";
 import { BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard } from "../components/WorldCards";
 import { UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
 import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
+import { EV_COLOR, type EvChargersFile } from "../lib/evChargers";
 import type { FinanceFile } from "../lib/finance";
 import { CLASS_LABEL, GEM_PIPES, GEM_POINTS, type GemPipesFile, type GemPointsFile } from "../lib/gem";
 import { rgbCss } from "../lib/theme";
@@ -572,6 +573,35 @@ function EsConnectCard({ f }: { f: ConnectFile }) {
   );
 }
 
+/** US public EV fast chargers: the total, by state and the largest networks (sums, computed). */
+function EvChargersCard() {
+  const f = useFile<EvChargersFile>("evChargers");
+  const names = useStateNames();
+  if (!f) return <Card title="EV fast chargers">Loading…</Card>;
+  const [stations, dcStations, l2, dc] = f.total;
+  const col = rgbCss(EV_COLOR);
+  const states = Object.entries(f.states)
+    .filter(([, v]) => v[3] > 0)
+    .sort((a, b) => b[1][3] - a[1][3]);
+  return (
+    <Card title="EV fast chargers · US" note={`NREL AFDC · ${f.fetched.slice(0, 10)}`}>
+      <div className="text-[22px] font-light text-slate-50">
+        {dc.toLocaleString("en-US")} <span className={`text-[11px] ${muted}`}>DC fast ports at {dcStations.toLocaleString("en-US")} stations</span>
+      </div>
+      <div className={`text-[10.5px] ${muted}`}>
+        {stations.toLocaleString("en-US")} public charging stations in all, {l2.toLocaleString("en-US")} level 2 ports
+      </div>
+      <Head>DC fast ports by state</Head>
+      <Rows rows={states.slice(0, 8).map(([code, v]) => ({ key: code, label: names(code), value: v[3], color: col }))} unit="" />
+      <Head>Largest networks</Head>
+      <Rows rows={f.by_network.slice(0, 6).map(([n, , ports]) => ({ key: n, label: n, value: ports, color: col }))} unit="" />
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Public, open stations in NREL&apos;s Alternative Fuels Data Center; ports as published, totals per state and network are sums (computed).
+      </div>
+    </Card>
+  );
+}
+
 /** Climate TRACE: modelled CO2e of the facilities in scope, the largest and the sum per group. */
 function UsSolarCard() {
   const f = useFile<UsSolarFile>("usSolar");
@@ -771,6 +801,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
         if (id === "offshoreWind") return <OffshoreWindCard key={id} iso3={iso3} />;
         if (id === "solarUS") return iso3 && iso3 !== "USA" ? null : <UsSolarCard key={id} />;
+        if (id === "evChargersUS") return iso3 && iso3 !== "USA" ? null : <EvChargersCard key={id} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;
       })}

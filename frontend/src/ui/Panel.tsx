@@ -18,7 +18,7 @@ import {
   type LngRow,
   type WeekFile,
 } from "../components/CountryCards";
-import { CaptureCard, MonthsCard, TimeOfDayCard, ZoneCard, ZoneRankingCard } from "../components/PriceCards";
+import { CaptureCard, ImbalanceCard, MonthsCard, TimeOfDayCard, ZoneCard, ZoneRankingCard } from "../components/PriceCards";
 import { FinanceCountryCard, FinanceWorldCard } from "../components/FinanceCards";
 import { GasInOutCard, GasSourcesCard } from "../components/GasFlowCards";
 import type { GasFlowsFile } from "../lib/gasFlows";
@@ -49,6 +49,9 @@ import { MastrCountryCard } from "../components/MastrCards";
 import { SiteCards, usePlace } from "../components/SiteCards";
 import { ReportButton } from "../components/CountryReport";
 import type { LonLat } from "../lib/site";
+import type { ImbalanceFile } from "../lib/imbalance";
+import type { DkLiveFile, GbCarbonFile } from "../lib/live";
+import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
 interface Dossier {
@@ -396,6 +399,8 @@ function CountryPanel({ iso }: { iso: string }) {
   const gas = useFile<GasFile>("gas");
   const gasFlows = useFile<GasFlowsFile>("gasFlows");
   const irena = useFile<IrenaFile>("irena");
+  const gbCarbon = useFile<GbCarbonFile>(iso === "GB" ? "gbCarbon" : null);
+  const dkLive = useFile<DkLiveFile>(iso === "DK" ? "dkLive" : null);
   const yearLabel = useYearLabel();
   const { day, k, ts, timeOf } = useDayNow();
   const name = countries?.countries.find((c) => c.iso === iso)?.name ?? iso;
@@ -461,6 +466,8 @@ function CountryPanel({ iso }: { iso: string }) {
               </div>
             </Card>
           )}
+          {!day && gbCarbon && <GbCarbonCard gb={gbCarbon} />}
+          {!day && dkLive && <DkLiveCard dk={dkLive} />}
           {trade.length > 0 && <TradeCard rows={trade} time={timeOf(trade[0].ts)} />}
           {!day && outages?.countries[iso] && (
             <OutageCard totals={outages.countries[iso]} units={outages.units.filter((u) => u.country === iso)} at={outages.at} />
@@ -609,6 +616,7 @@ function CountryPrices({ iso }: { iso: string }) {
 
 function ZoneBody({ pf, zone }: { pf: PricesFile; zone: string }) {
   const z = pf.zones[zone];
+  const imbalance = useFile<ImbalanceFile>("imbalance");
   const colour = useApp((s) => s.colour);
   if (!z) return <Empty>No figures for {zone}.</Empty>;
   return (
@@ -617,6 +625,7 @@ function ZoneBody({ pf, zone }: { pf: PricesFile; zone: string }) {
       <TimeOfDayCard z={z} months={pf.months} />
       <MonthsCard months={pf.months} values={z.negative_by_month} />
       <CaptureCard z={z} />
+      {imbalance && <ImbalanceCard file={imbalance} zone={zone} />}
       <ZoneRankingCard
         zones={pf.zones}
         metric={priceMetricById(colour.startsWith("pr_") ? (colour.slice(3) as PriceMetricId) : "negative")}

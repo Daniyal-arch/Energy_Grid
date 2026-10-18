@@ -9,8 +9,9 @@ with 0 throughout (Italy's A05, 2026-10-17), flagged `all_zero` and not charted.
 (probe 2026-10-17); Poland publishes in PLN, kept as published.
 
 Passed through: every price, in the source's currency. Computed (docs/DATA_SOURCES.md): per
-zone, series and complete day (Europe/Brussels days, the app's day clock) the average, lowest and
-highest price and the number of periods below zero, over the periods published; the last 7 days
+zone, series and complete day (Europe/Brussels days, the app's day clock), and over all the
+complete days together, the average, lowest and highest price and the number of periods below
+zero, over the periods published; the last 7 days
 at 15 minutes for the chart. The excess series is stored only where it differs from the deficit
 one.
 
@@ -43,9 +44,11 @@ CHART_DAYS = 7
 SOURCE = "ENTSO-E Transparency Platform, imbalance prices (A85, 17.1.G)"
 
 
-def fetch(client: httpx.Client, eic: str, grid: entsoe.Grid) -> list[ET.Element]:
-    """The documents of one area over the grid (A85 answers a zip; an acknowledgement = none)."""
+def fetch(client: httpx.Client, eic: str, grid: entsoe.Grid) -> tuple[list[ET.Element], bool]:
+    """The documents of one area over the grid (A85 answers a zip; an acknowledgement = none),
+    and whether every window was answered (False: ENTSO-E gave no answer, e.g. HTTP 429)."""
     docs: list[ET.Element] = []
+    answered = True
     for window in grid.windows(days=60):
         q = {
             "securityToken": os.environ["ENTSOE_API_KEY"].strip(),
@@ -71,6 +74,7 @@ def fetch(client: httpx.Client, eic: str, grid: entsoe.Grid) -> list[ET.Element]
                 f"  {eic}: gave up ({'no answer' if r is None else f'HTTP {r.status_code}'})",
                 flush=True,
             )
+            answered = False
             continue
         try:
             if r.content[:2] == b"PK":
@@ -82,7 +86,8 @@ def fetch(client: httpx.Client, eic: str, grid: entsoe.Grid) -> list[ET.Element]
                     docs.append(root)
         except (zipfile.BadZipFile, ET.ParseError) as err:
             print(f"  {eic}: unreadable answer ({err})", flush=True)
-    return docs
+            answered = False
+    return docs, answered
 
 
 def series(
@@ -146,6 +151,7 @@ def main() -> None:
     seconds = grid.seconds()
     # complete days only: the first of the window to yesterday
     days = [(first + timedelta(days=i)).isoformat() for i in range(args.days)]
+    day_set = set(days)
     chart_from = datetime(today.year, today.month, today.day, tzinfo=BRUSSELS).astimezone(
         UTC
     ) - timedelta(days=CHART_DAYS)
@@ -159,10 +165,16 @@ def main() -> None:
         )
     zones: dict[str, dict] = {}
     none: list[str] = []
+    failed: list[str] = []
     for zone in entsoe.ZONE_EIC:
-        docs = got.get(zone) or []
+        docs, answered = got.get(zone) or ([], False)
         s, currency = series(docs, grid) if docs else ({}, None)
         s = {k: v for k, v in s.items() if any(x is not None for x in v)}
+        if not answered:
+            # not "no data": ENTSO-E did not answer (throttled); the zone waits for the next run
+            failed.append(zone)
+            if not s:
+                continue
         if not s:
             none.append(zone)
             continue
@@ -174,8 +186,25 @@ def main() -> None:
             if v is None:
                 return None
             published = [x for x in v if x is not None]
+            # over the complete days: [average, lowest, highest, periods below zero, periods]
+            span = [
+                x
+                for t, x in zip(seconds, v, strict=True)
+                if x is not None
+                and datetime.fromtimestamp(t, tz=UTC).astimezone(BRUSSELS).date().isoformat()
+                in day_set
+            ]
             return {
                 "all_zero": all(x == 0 for x in published),
+                "period": [
+                    round(sum(span) / len(span), 2),
+                    min(span),
+                    max(span),
+                    sum(x < 0 for x in span),
+                    len(span),
+                ]
+                if span
+                else None,
                 "daily": daily(v, seconds, days),
                 "chart": v[k0:],
             }
@@ -194,12 +223,19 @@ def main() -> None:
         "step_s": entsoe.STEP,
         "zones": zones,
         "none": none,
+        "failed": failed,
     }
+    if len(failed) > len(entsoe.ZONE_EIC) // 2:
+        # throttled: yesterday's file (on eu-days) is better than one missing most zones
+        raise SystemExit(
+            f"ENTSO-E did not answer for {len(failed)} zones: {failed}; nothing written"
+        )
     args.out.mkdir(parents=True, exist_ok=True)
     path = args.out / "imbalance.json"
     path.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
     print(
-        f"{len(zones)} zones with imbalance prices, none from {none}; {path.stat().st_size / 1e6:.2f} MB"
+        f"{len(zones)} zones with imbalance prices, none from {none}, not answered {failed}; "
+        f"{path.stat().st_size / 1e6:.2f} MB"
     )
 
 
