@@ -9,6 +9,14 @@ export const LIVE_SOURCES: Sources = [
     "Elexon (BMRS): generation by fuel every 5 minutes (the reading at each quarter-hour), national demand half-hourly, and every interconnector's flow. Transmission-level only.",
   ],
   [
+    "GB carbon intensity",
+    "NESO Carbon Intensity API (CC BY 4.0): national gCO2/kWh every 30 min, actual where published and otherwise the forecast (labelled), the 48 h forecast, the generation mix in %, and the forecast for the 14 regions. Passed through.",
+  ],
+  [
+    "Denmark every 5 minutes",
+    "Energinet, Energi Data Service (CC BY 4.0): CO2Emis (g/kWh consumed, DK1 and DK2) and ElectricityProdex5MinRealtime (MW by type and exchange per neighbour, positive = import). Initial values as published.",
+  ],
+  [
     "Computed from them",
     "Renewable share = renewable types / all generation types reported. Border flow = flow one way minus the other. EU = sum of the member states with data. Net import/export = sum of the measured border flows.",
   ],
@@ -45,6 +53,10 @@ export const PRICE_SOURCES = (period: string): Sources => [
     "Average = mean of all 15-min prices. Hours below zero = 15-min intervals with a negative price × 0.25 h. Capture price = Σ price × output / Σ output, with ENTSO-E's actual solar (B16) and wind (B18 + B19) generation of the zone; capture rate = capture price / average.",
   ],
   ["Period", `The twelve full months ${period}. Time of day: the average price per local hour (CET/CEST), per season and per month.`],
+  [
+    "Imbalance prices",
+    "ENTSO-E imbalance prices (A85), the last 30 complete days, in the currency each TSO publishes (PLN, CZK, HUF, RON as published). Deficit (A05) and excess (A04) price; one line where they are equal. Average, lowest, highest and periods below zero are computed over the periods published. No data at ENTSO-E for DE-LU (reBAP: netztransparenz.de), GR, BG, LT, ME, SE4, SK, UA-IPS.",
+  ],
   ["Markers", "Zone markers in DK, IT, NO and SE are placed for reading, not at an official zone centre."],
   [
     "What consumers pay",

@@ -9,8 +9,9 @@ with 0 throughout (Italy's A05, 2026-10-17), flagged `all_zero` and not charted.
 (probe 2026-10-17); Poland publishes in PLN, kept as published.
 
 Passed through: every price, in the source's currency. Computed (docs/DATA_SOURCES.md): per
-zone, series and complete day (Europe/Brussels days, the app's day clock) the average, lowest and
-highest price and the number of periods below zero, over the periods published; the last 7 days
+zone, series and complete day (Europe/Brussels days, the app's day clock), and over all the
+complete days together, the average, lowest and highest price and the number of periods below
+zero, over the periods published; the last 7 days
 at 15 minutes for the chart. The excess series is stored only where it differs from the deficit
 one.
 
@@ -146,6 +147,7 @@ def main() -> None:
     seconds = grid.seconds()
     # complete days only: the first of the window to yesterday
     days = [(first + timedelta(days=i)).isoformat() for i in range(args.days)]
+    day_set = set(days)
     chart_from = datetime(today.year, today.month, today.day, tzinfo=BRUSSELS).astimezone(
         UTC
     ) - timedelta(days=CHART_DAYS)
@@ -174,8 +176,25 @@ def main() -> None:
             if v is None:
                 return None
             published = [x for x in v if x is not None]
+            # over the complete days: [average, lowest, highest, periods below zero, periods]
+            span = [
+                x
+                for t, x in zip(seconds, v, strict=True)
+                if x is not None
+                and datetime.fromtimestamp(t, tz=UTC).astimezone(BRUSSELS).date().isoformat()
+                in day_set
+            ]
             return {
                 "all_zero": all(x == 0 for x in published),
+                "period": [
+                    round(sum(span) / len(span), 2),
+                    min(span),
+                    max(span),
+                    sum(x < 0 for x in span),
+                    len(span),
+                ]
+                if span
+                else None,
                 "daily": daily(v, seconds, days),
                 "chart": v[k0:],
             }
