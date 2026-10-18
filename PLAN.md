@@ -2,154 +2,91 @@
 
 ## Scope
 
-An interactive, source-backed map of the world's power system, starting with Europe:
-live figures, history, prices and infrastructure on one globe. Every number shown is
-passthrough from a named source or computed in a build script and documented in
-docs/DATA_SOURCES.md. It is a static site (frontend + JSON built by scripts); large
-geometry lives as PMTiles on Cloudflare R2. A data API and an AI agent come later.
+An interactive, source-backed map of the world's power system, starting with Europe and the US:
+live figures, history, prices and infrastructure on one globe, and an agent that answers
+questions from the same data and draws its answers on the map. Every number shown is passthrough
+from a named source or computed in a build script and documented in docs/DATA_SOURCES.md. The map
+is a static site (frontend + JSON built by scripts; geometry as PMTiles on Cloudflare R2); the
+full data sits in a Parquet lake on R2 (docs/DATA_LAKE.md); the agent is the one backend
+(docs/AGENT.md).
 
 The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
 
-## What exists
+## What exists (2026-10-18)
 
-- **One map** (`frontend/src/ui`, `frontend/src/map`): a Layers panel (on/off, coverage,
-  legend), "colour countries by", search, a time control (Live · 24 h · Years), a
-  context panel in tabs, Stories with shareable links, a phone layout. Europe live is
-  the default. `?capture=16x9` still opens the earlier single view for video recording.
-- **Europe:** grid, plants, gas, cross-border flows, wind and sunshine, outages, a
-  30-day archive every 15 minutes, twelve months of prices per zone, LNG and storage
-  (ENTSO-E, Elexon, GIE, Ember, Open-Meteo, powerplantmatching, SciGRID_gas).
-- **United States:** every generator of 1 MW and more (EIA-860M, monthly; replaces GEM in
-  the US while on), transmission lines from 100 kV (OpenStreetMap via Overture, PMTiles on
-  R2), every wind turbine (USWTDB), the interconnection queue raised per state (LBNL Queued
-  Up), a US panel and the stories "US grid" and "US interconnection queue".
-- **World:** GEM power plants by status, OSM high-voltage lines (PMTiles on R2),
-  Gridfinder's predicted grid, undersea power cables, data centres, electricity access,
-  Ember's yearly and monthly data, live grids of the US (EIA-930), Brazil (ONS) and
-  Australia (AEMO).
-- **Added 2026-10-11:** Europe's gas flows (ENTSOG), output per plant through a day
-  (ENTSO-E per unit + JRC), installed capacity from ENTSO-E, border capacity on the flow
-  arrows, wind and solar forecast vs actual, prices to 0.01 €; "A day in the US" (EIA-930),
-  US day-ahead prices at six trading hubs, US fossil units hour by hour (EPA CAMPD).
-  Stories in sections (Europe, United States, World); Live · Years (the day replays are
-  stories).
-- Refresh: `eu-snapshot.yml` (every 30 min onto `eu-data`), `eu-days.yml` (daily onto
-  `eu-days`), `world-hv.yml` and `world-grid.yml` (tiles onto R2, on demand), `us-grid.yml`
-  (US data monthly onto main, US line tiles quarterly onto R2).
-- Known gap: `grid/world-hv.pmtiles` holds no lines in the Americas (its `na` and `sa` jobs
-  did not finish; the tiles' bounds start at 22.5° W). The US has its own lines layer.
+- **One map** (`frontend/src`): Layers panel, "colour countries by", search (places, plants,
+  "lat, lon"), Live · 24 h · Years, a context panel in tabs, stories with shareable links, a phone
+  layout. **Check a site** (right-click: nearest lines and substations, room to connect, plants,
+  prices, water and outage risk; CSV) and a **country report** (printable, CSV, `?report=DE`).
+- **Europe:** grid, plants, gas and its flows, cross-border power flows with capacity, prices to
+  0.01 € and twelve months per zone, wind and sun, outages, output per plant through a day, a
+  30-day archive every 15 minutes, LNG per terminal, CO₂ per ETS installation, grid capacity (GB
+  TEC, NL capacity map, Spain nodes), retail prices, Germany's every unit (MaStR), offshore wind
+  farm areas (EMODnet).
+- **United States:** every generator (EIA-860M), lines from 100 kV, every wind turbine, every
+  large solar array (USPVDB), the queue (LBNL and the markets' own), "A day in the US", hub and
+  nodal day-ahead prices (six markets), fossil units hour by hour (EPA), outages per county
+  (EAGLE-I), retail prices.
+- **World:** GEM plants and fuel infrastructure, high-voltage lines (Overture), undersea cables,
+  data centres, access, Ember and IRENA, Climate TRACE emitters, water risk (Aqueduct), live grids
+  of Brazil, Australia, Taiwan and Ontario.
+- **Lake:** ~1.9 GB Parquet on R2, 101 tables (`lake/_catalog.json`, `lake.duckdb` views).
+- **Brief 16 (pull request):** imbalance prices per zone (card, lake history 2015–), GB carbon
+  intensity and Denmark every 5 minutes (country cards), the solar and wind resource atlases
+  (layers, "Check a site", COGs in the lake); US EV fast chargers built, waiting for a key.
 
 ## Waiting on the owner (keys and approvals)
 
-- **PJM** (`PJM_API_KEY`): Western Hub price for the Mid-Atlantic region. Needs a PJM Tools
-  account, then apiportal.pjm.com → Data Miner 2 → Primary key (the portal did not resolve
-  from the owner's network on 2026-10-11: try a hotspot or DNS 1.1.1.1). Add it as a cloud
-  network secret (`Ocp-Apim-Subscription-Key` on `api.pjm.com`) and a GitHub secret; no code
-  change needed.
-- **NYISO** nodal prices: its site answers automated downloads with a bot check (HTTP 202);
-  no key fixes it, a route the owner approves does (docs/DATA_SOURCES.md, US prices at every node).
-- **Alberta** (`AESO_API_KEY`), **South Korea** (`DATA_GO_KR_KEY`), **Turkey**
-  (`EPIAS_USERNAME`, `EPIAS_PASSWORD`): global live grids 3–5 below.
+- **Anthropic API key** for the agent (console.anthropic.com), ideally with Claude Startups
+  credits: needs a custom domain and an email on it (Cloudflare can register both).
+- **Cloudflare Workers Paid plan** ($5 a month; the backend runs as a Cloudflare Container) and
+  the token rights and R2 tokens of docs/AGENT.md section 10.
+- **PJM** (`PJM_API_KEY`), **Alberta** (`AESO_API_KEY`), **South Korea** (`DATA_GO_KR_KEY`),
+  **Turkey** (`EPIAS_USERNAME`, `EPIAS_PASSWORD`), **France RTE** (free key), **Finland**
+  (`FINGRID_API_KEY`).
+- **NYISO** nodal prices: its site answers automated downloads with a bot check (HTTP 202); no
+  key fixes it, a route the owner approves does.
 - **NREL** (`NREL_API_KEY`, an api.data.gov key from https://developer.nrel.gov/signup/) as a
-  repo secret: the US EV fast chargers (task 16 B) are built and wait for it; the repo secret
-  `EPA_API_KEY` reached the workflow empty on 2026-10-18.
+  repo secret: the US EV fast chargers (brief 16 B) are built and wait for it. The repo secret
+  `EPA_API_KEY` reached the workflow empty on 2026-10-18 (brief 17 counts on it too).
+- **Downloads to approve:** Global Renewables Watch (GeoPackages, size from its probe), GHSL
+  population (~0.3 GB at 1 km). (The atlases of brief 16 were approved and are built.)
 
-## Next
+## The plan: four phases, run as parallel cloud briefs
 
-1. **Check the new daily steps** (eu-days: plant output, US days, US prices, EPA) after the
-   next morning run; fix what fails.
-2. **Cloud wave 2** (briefs in `docs/tasks/`): Climate TRACE emissions per facility
-   (worldwide), the rest of the world high-voltage grid from Overture in Actions, EU CO₂ per
-   installation (EU ETS) with LNG send-out per terminal (GIE ALSI, `AGSI_API_KEY`).
-3. **Product:** ✅ "Check a site" (right-click; CSV), ✅ country report page (print, CSV); next the agent, then alerts.
-4. **Videos:** "A day in the US", gas flows into Europe, plants through a day.
+Each phase is a set of briefs in `docs/tasks/`, one cloud session each, run in parallel where they
+touch different files. The owner merges; the next phase starts when its inputs are on main.
 
-The full catalogue of candidate datasets (Europe, US, world; broad and granular; access and
-licence) is in [docs/DATASETS.md](docs/DATASETS.md).
+### Phase 1: data (one cloud session) and the backend
 
-## Data sources to add, one by one
+| Brief | What |
+|---|---|
+| **16** (pull request) | ✅ imbalance prices, ✅ GB carbon intensity, ✅ Denmark every 5 minutes, ✅ solar and wind atlases; US EV fast chargers wait for `NREL_API_KEY` |
+| **17 Datasets wave 5** ([17-datasets-wave5.md](docs/tasks/17-datasets-wave5.md)) | 22 datasets in one session: NUTS 0–3, bidding-zone outlines, world admin-1, GeoNames cities; EIA-923, eGRID, GHGRP; netztransparenz redispatch and curtailment, SMARD; TYNDP projects, ENTSO-E transmission outages; Global Renewables Watch; Eurostat balances, EIA SEDS, EIA STEO, Energy Institute review, EDGAR; JEPX, CENACE, Grid-India; GHSL population, NASA Black Marble |
+| **18 Backend skeleton** | `backend/` FastAPI + DuckDB (read-only lake, SQL guard, limits), saved maps on R2; hosting chosen by the owner (docs/AGENT.md §2) |
 
-Each one: a probe (`scripts/probe_*.py`), a fetch/build script, its file in
-docs/DATA_SOURCES.md, a layer and/or panel card, and the workflow that refreshes it.
-Credentials go in `.env` and `.env.example` (and the repo secrets for workflows).
+### Phase 2: the agent that draws
 
-### Global (first)
+| Brief | What |
+|---|---|
+| **19 Agent core** | the loop on the Claude API (tools of docs/AGENT.md §3), the semantic catalogue completed, MapSpec schema shared with the frontend, grounding check, SSE events, caps and logs, `agent/evals/` in CI |
+| **20 Ask in the app** | an "Ask" tab in the context panel, `map/agentLayers.ts` rendering MapSpec overlays with the app's palettes, legends in the existing key, "Explain this map", `?map=<id>` links, "Ask about this area" from the site analysis |
 
-1. ✅ **Taiwan live grid** (Taipower open data, every generating unit every 10 min, load;
-   no key). Live layer like US/Brazil/Australia, plus a card.
-2. ✅ **Ontario live grid** (IESO public reports: demand, generation by fuel, intertie flows,
-   prices; no key).
-3. **Alberta live grid** (AESO API: supply and demand, pool price, interchange;
-   `AESO_API_KEY`).
-4. **South Korea** (KPX via data.go.kr: demand, regional solar and wind; `DATA_GO_KR_KEY`).
-5. **Turkey** (EPİAŞ transparency platform: generation by source, prices;
-   `EPIAS_USERNAME`, `EPIAS_PASSWORD`).
-6. **GEM trackers beyond power plants** (Global Energy Monitor; each download needs the form;
-   files in `data/world/`, gitignored). Power plants of every fuel are already in the
-   Integrated Power Tracker.
-   - Fuel infrastructure layer: gas pipelines + LNG terminals (GGIT), oil/NGL pipelines
-     (GOIT), coal terminals.
-   - Fuel supply layer: oil and gas extraction fields (GOGET), coal mines.
-   - Industry layer (large electricity users): iron and steel, cement and concrete,
-     chemicals, iron ore mines.
-   - Panels and the agent: energy ownership (who owns each asset), coal and gas project
-     finance, methane emitters.
-7. ✅ **Solar and wind resource maps** (Global Solar Atlas PVOUT; Global Wind Atlas mean wind
-   speed at 100 m) as raster tiles on R2, the values in "Check a site", the full rasters as COG
-   in the lake (task 16, `.github/workflows/atlas.yml`).
-8. ✅ **Weather worldwide** (ECMWF open data: wind at 100 m, surface radiation; GRIB2 every
-   6 h) for wind particles and sunshine on the whole globe.
-9. ✅ **Installed capacity per country** (IRENA renewable capacity statistics, yearly).
-10. Later live grids: Japan (OCCTO and the nine area utilities), India (Grid-India),
-    South Africa (Eskom data portal), Chile (Coordinador Eléctrico Nacional), Uruguay
-    (ADME), New Zealand (Transpower/EMI).
+### Phase 4: products on top (after phase 2)
 
-### United States
+- **Alerts:** a daily and live job writes events (negative day-ahead hours tomorrow, large forced
+  outages, storage below the seasonal range, big queue changes) to a feed (JSON and RSS) with an
+  agent-written summary; email later.
+- **Maps to stories and videos:** a saved agent map becomes a story; the recorder
+  (docs/VIDEO.md) renders it for LinkedIn from the same spec.
+- **MCP server:** the agent's tools for Claude Code, Claude Desktop and other agents.
+- **Accounts and exports** when a paid tier starts (saved maps, site lists, CSV of any view).
 
-1. ✅ **Interconnection queues** (LBNL "Queued Up": every project waiting to connect,
-   by state, type, size and year; Excel, yearly).
-2. ✅ **Every generator** (EIA-860M, monthly: operating, planned and retiring units of
-   1 MW or more, with location).
-3. ✅ **Transmission lines** as vector tiles on R2: OpenStreetMap from 100 kV through
-   Overture (HIFLD's layer is no longer public since 2025).
-4. ✅ **Wind turbines** (USWTDB: every turbine) and ✅ **solar farm outlines** (USPVDB).
-5. **Hourly CO₂ per power plant** (EPA CAMPD API; `EPA_API_KEY`).
-6. **EV fast chargers** (NREL AFDC station locator): built (task 16), waits for `NREL_API_KEY`.
-7. **Power outages per county** (ORNL EAGLE-I, every 15 min, yearly releases).
-8. **Wholesale prices by node/zone** (ISO data: ERCOT, CAISO, NYISO, MISO, SPP, ISO-NE).
+## Rules that do not change
 
-### Europe
+CLAUDE.md's hard rules and working rules: every number sourced; probe before building; heavy
+downloads in Actions; calm maps with the grid as the hero; one Layers panel and one context
+panel; the data branches belong to the workflows; small commits, ruff, pytest and the build
+before a PR.
 
-1. **Gas flows at every border point** (ENTSOG transparency API): a gas version of the
-   power-flow map.
-2. ✅ **Denmark every 5 minutes** (Energinet Energi Data Service: CO₂ intensity per area,
-   production by type and exchange; card in Denmark's panel).
-3. **Finland every 3 minutes** (Fingrid open data; `FINGRID_API_KEY`).
-4. ✅ **Great Britain** (NESO Carbon Intensity API: now, the 48 h forecast, the mix, the
-   regions; card in Great Britain's panel; the TEC connection queue is in "Room to connect").
-5. ✅ **Offshore wind farms** (EMODnet Human Activities); sea cables still to do.
-6. **More ENTSO-E series:** ✅ imbalance prices (card in the zone panel, history in the lake),
-   ✅ day-ahead wind and solar forecasts, ✅ cross-border capacities, installed capacity per
-   unit (replaces Energy-Charts).
-7. **Retail electricity prices** (Eurostat, households and industry) and **emissions
-   per installation** (EU ETS, EUTL).
-
-## The agent (after the datasets)
-
-- FastAPI + LangGraph, traced with Langfuse; a free LLM to start (Groq Llama 3.3 70B,
-  Gemini Flash as fallback) behind a provider adapter.
-- Data as Parquet on R2, queried with DuckDB; a small Postgres (Neon) only for app state
-  (users, saved views, conversations).
-- Tools over the data (`query_prices`, `get_flows`, `country_profile`, `find_plants`),
-  also exposed as an MCP server. Grounding: every number in an answer comes from a tool
-  result and is checked against it; each answer lists its sources.
-- Evals in CI: fixed questions with known answers; correctness, citation coverage,
-  latency, cost.
-- Keys then: `GROQ_API_KEY`, `GOOGLE_API_KEY`, `LANGFUSE_*`, `DATABASE_URL`.
-
-## Possible products
-
-The map is the shop window. Paying use cases: history and exports (CSV/API), alerts
-(negative prices, outages, low storage), queue and plant-pipeline layers, country
-reports, and site screening for data centres and developers (grid distance, resource,
-queue congestion, prices).
+The full catalogue of candidate datasets is in [docs/DATASETS.md](docs/DATASETS.md).
