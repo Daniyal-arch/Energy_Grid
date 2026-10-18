@@ -1,1 +1,0 @@
-set NREL_API_KEY (an api.data.gov key: https://developer.nrel.gov/signup/)

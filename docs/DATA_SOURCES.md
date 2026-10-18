@@ -295,9 +295,11 @@ line only where it differs. A series that is 0 in every period published is flag
 and never charted (Italy fills A05 with 0 and publishes its price in A04). Currencies as
 published: PLN (PL), CZK (CZ), HUF (HU), RON (RO); the others EUR.
 
-**No imbalance price at ENTSO-E** (probe 2026-10-17, `scripts/probe_entsoe_imbalance.py`;
-the file lists them in `none`): DE-LU (Germany's reBAP is published by the four TSOs on
-netztransparenz.de), GR, BG, LT, ME, SE4, SK, UA-IPS. ENTSO-E throttles repeated full runs from
+**No imbalance price at ENTSO-E** (the file lists them in `none`; zones ENTSO-E did not answer
+go to `failed`, never to `none`): in the run of 2026-10-18 BG, DE-LU, LT and ME (Germany's reBAP
+is published by the four TSOs on netztransparenz.de); 40 zones had prices. The probe of
+2026-10-17 (`scripts/probe_entsoe_imbalance.py`) also found none for GR, SE4, SK and UA-IPS,
+which answered on 2026-10-18. ENTSO-E throttles repeated full runs from
 one address, so the builder runs once a day in Actions, retries 6 times and logs every give-up.
 
 History 2015 onward: `lake/entsoe/imbalance_price` (below, "Lake: ENTSO-E"): built 2026-10-18,

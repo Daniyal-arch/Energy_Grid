@@ -1,1 +1,0 @@
-40 zones with imbalance prices, none from ['BG', 'DE-LU', 'LT', 'ME'], not answered []; 0.28 MB

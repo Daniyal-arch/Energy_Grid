@@ -55,7 +55,7 @@ export const PRICE_SOURCES = (period: string): Sources => [
   ["Period", `The twelve full months ${period}. Time of day: the average price per local hour (CET/CEST), per season and per month.`],
   [
     "Imbalance prices",
-    "ENTSO-E imbalance prices (A85), the last 30 complete days, in the currency each TSO publishes (PLN, CZK, HUF, RON as published). Deficit (A05) and excess (A04) price; one line where they are equal. Average, lowest, highest and periods below zero are computed over the periods published. No data at ENTSO-E for DE-LU (reBAP: netztransparenz.de), GR, BG, LT, ME, SE4, SK, UA-IPS.",
+    "ENTSO-E imbalance prices (A85), the last 30 complete days, in the currency each TSO publishes (PLN, CZK, HUF, RON as published). Deficit (A05) and excess (A04) price; one line where they are equal. Average, lowest, highest and periods below zero are computed over the periods published. Zones without data are named on the card (2026-10-18: BG, DE-LU, LT, ME; Germany's reBAP is on netztransparenz.de).",
   ],
   ["Markers", "Zone markers in DK, IT, NO and SE are placed for reading, not at an official zone centre."],
   [
