@@ -347,12 +347,17 @@ export function ImbalanceCard({ file, zone }: { file: ImbalanceFile; zone: strin
     return (
       <Card title="Imbalance price" note="ENTSO-E A85">
         <div className={`text-[10.5px] leading-snug ${muted}`}>
-          {file.none.includes(zone) ? `ENTSO-E has no imbalance price for ${zone} (${span}).${note}` : `No imbalance price for ${zone}.`}
+          {file.none.includes(zone)
+            ? `ENTSO-E has no imbalance price for ${zone} (${span}).${note}`
+            : file.failed?.includes(zone)
+              ? `ENTSO-E did not answer for ${zone} in the newest daily run; the next run asks again.`
+              : `No imbalance price for ${zone}.`}
         </div>
       </Card>
     );
   }
   const cur = z.currency ?? "";
+  const partial = file.failed?.includes(zone);
   // never chart a series that is 0 in every period (Italy fills its deficit series with 0)
   const lines = [
     { key: "Deficit", s: z.deficit, color: DEFICIT },
@@ -435,6 +440,7 @@ export function ImbalanceCard({ file, zone }: { file: ImbalanceFile; zone: strin
         {lines[0] ? "; average = mean of the periods published (computed). " : ""}
         What a balance responsible party pays or receives for energy it was short or long, as the TSO publishes it, in {cur}.
         {zeroOnly ? " One series is 0 in every period at ENTSO-E and is not charted." : ""}
+        {partial ? " ENTSO-E did not answer every request for this zone in the newest run: some days may be missing." : ""}
       </div>
     </Card>
   );

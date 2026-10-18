@@ -453,8 +453,8 @@ def a85_docs(client: httpx.Client, eic: str, wins: list[dict]) -> list[ET_Elemen
             break
         if r is None or r.status_code != 200:
             entsoe.OUTCOMES["A85 failed"] += 1
-            print(f"  A85 {eic} {w['periodStart'][:8]}: gave up", flush=True)
-            continue
+            # a window left out would be a silent gap: the zone's job fails (counted, logged)
+            raise RuntimeError(f"A85 {eic} {w['periodStart'][:8]}: no answer after 6 tries")
         if r.content[:2] == b"PK":
             entsoe.OUTCOMES["200"] += 1
             z = zipfile.ZipFile(io.BytesIO(r.content))

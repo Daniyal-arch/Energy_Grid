@@ -31,7 +31,7 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: |
           mkdir -p probe-out
-          python scripts/probe_entsoe_imbalance.py 2>&1 | tee probe-out/imbalance_probe.txt
+          if [ ! -f probe-out/imbalance_probe.txt ]; then python scripts/probe_entsoe_imbalance.py 2>&1 | tee probe-out/imbalance_probe.txt; fi
           python scripts/build_imbalance.py --out frontend/public/data/eu 2>&1 | tee probe-out/imbalance_build.txt
       - name: EV fast chargers (probe, then the us-grid step)
         if: contains(github.event.head_commit.message, ' ev')

@@ -32,4 +32,6 @@ export interface ImbalanceFile {
   zones: Record<string, ImbalanceZone>;
   /** zones ENTSO-E sent no imbalance price for */
   none: string[];
+  /** zones ENTSO-E did not answer in this run (throttled): not "no data" */
+  failed?: string[];
 }
