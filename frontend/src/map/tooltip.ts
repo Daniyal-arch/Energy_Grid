@@ -23,6 +23,7 @@ import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type Wa
 import { MASTR_LABEL, mwText, type MastrMuniFile, type MastrUnitsFile } from "../lib/mastr";
 import { OFFSHORE_LABEL, offshoreStatus, type OffshoreWindFile } from "../lib/offshoreWind";
 import { solarCat, type UsSolarFile } from "../lib/usSolar";
+import type { EvChargersFile } from "../lib/evChargers";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
@@ -280,6 +281,13 @@ function mastrHtml(id: string, object: unknown): string | null {
 function tooltipHtml(id: string, object: unknown): string | null {
   if (id === "us-outages" || id === "w-water") return riskHtml(id, object);
   if (id.startsWith("de-mastr-")) return mastrHtml(id, object);
+  if (id === "us-ev") {
+    const f = fileOf<EvChargersFile>("evChargers");
+    const p = typeof object === "number" ? f?.points[object] : undefined;
+    if (!f || !p) return null;
+    const name = f.names[object as number] || "Unnamed station";
+    return `<b>${name}</b><div>${f.networks[p[3]]}</div><div><b>${p[2]}</b> DC fast port${p[2] === 1 ? "" : "s"}${p[4] ? ` · opened ${p[4]}` : ""}</div>${SRC(`NREL Alternative Fuels Data Center, ${f.fetched.slice(0, 10)}`)}`;
+  }
   if (id === "us-solar" || id === "us-solar-areas") {
     const f = fileOf<UsSolarFile>("usSolar");
     const k = typeof object === "number" ? object : (object as { k: number }).k;

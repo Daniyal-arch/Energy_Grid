@@ -1,0 +1,170 @@
+name: Resource atlases
+
+# Solar and wind resource atlases (scripts/build_atlas.py; docs/DATA_SOURCES.md "Resource
+# atlases"): the Global Solar Atlas PVOUT GeoTIFF (362 MB zip) and the Global Wind Atlas mean
+# wind speed at 100 m (a 14 GB Cloud-Optimized GeoTIFF) are downloaded here, never in a session
+# (the owner approved the downloads, docs/tasks/16-wrap-up.md part E). Each job builds:
+#   - map tiles (PNG, zoom 0-7, the source's classes) as PMTiles on the public bucket
+#     infraatlas-data/grid/atlas-<var>.pmtiles
+#   - the 0.1 degree lookup grid for "Check a site", infraatlas-data/grid/atlas-<var>-0.1deg.i16
+#   - the full raster as a Cloud-Optimized GeoTIFF in the private lake, lake/atlas/
+# The atlases change about once a year: run by hand (Actions > Resource atlases > Run workflow).
+# Needs CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/wrap-up]
+    paths: [.github/workflows/atlas.yml, scripts/build_atlas.py]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: atlas-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  atlas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        var:
+          - { name: solar, key: pvout, file: atlas-pvout }
+          - { name: wind, key: wind, file: atlas-wind100 }
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      WORK: /mnt/atlas
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Tools (GDAL, pmtiles)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q gdal-bin
+          gdalinfo --version
+          pip install numpy pmtiles
+          sudo mkdir -p "$WORK" && sudo chown "$USER" "$WORK"
+          df -h /mnt /
+
+      - name: Download (Global Solar Atlas, 362 MB)
+        if: matrix.var.name == 'solar'
+        run: |
+          cd "$WORK"
+          curl -fL --retry 5 -o pvout.zip "https://api.globalsolaratlas.info/download/World/World_PVOUT_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF.zip"
+          unzip -o pvout.zip
+          mv World_PVOUT_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF/PVOUT.tif source.tif
+          rm pvout.zip
+          gdalinfo source.tif | head -40
+
+      - name: Download (Global Wind Atlas, 14 GB; figshare.com answers a bot check, ndownloader does not)
+        if: matrix.var.name == 'wind'
+        run: |
+          cd "$WORK"
+          loc=$(curl -fsI "https://globalwindatlas.info/api/gis/global/wind-speed/100" | tr -d '\r' | awk 'tolower($1)=="location:"{print $2}')
+          echo "the atlas points to $loc"
+          id=$(echo "$loc" | sed -E 's|.*files/([0-9]+)\?private_link=([a-z0-9]+).*|\1|')
+          link=$(echo "$loc" | sed -E 's|.*files/([0-9]+)\?private_link=([a-z0-9]+).*|\2|')
+          url="https://ndownloader.figshare.com/files/$id?private_link=$link"
+          for i in 1 2 3 4 5 6; do curl -fL -C - --retry 3 --progress-bar -o source.tif "$url" && break; sleep 30; done
+          ls -la source.tif
+          gdalinfo source.tif | head -40
+
+      - name: Tiles (zoom 0-7) and PMTiles
+        run: |
+          python scripts/build_atlas.py tiles ${{ matrix.var.key }} "$WORK/source.tif" "$WORK/out"
+          pmtiles-convert "$WORK/out/${{ matrix.var.key }}.mbtiles" "$WORK/out/${{ matrix.var.file }}.pmtiles"
+          ls -la "$WORK/out"
+
+      - name: Lookup grid (0.1 degree)
+        run: python scripts/build_atlas.py lookup ${{ matrix.var.key }} "$WORK/source.tif" "$WORK/out"
+
+      - name: Cloud-Optimized GeoTIFF for the lake
+        run: |
+          if [ "${{ matrix.var.name }}" = solar ]; then
+            python scripts/build_atlas.py cog ${{ matrix.var.key }} "$WORK/source.tif" "$WORK/out/${{ matrix.var.file }}.tif"
+          else
+            mv "$WORK/source.tif" "$WORK/out/${{ matrix.var.file }}.tif"   # already a COG, as downloaded
+          fi
+          ls -la "$WORK/out"
+
+      - name: R2 S3 credentials (derived from the API token)
+        run: |
+          verify() { curl -sf -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "$1" | python3 -c 'import json,sys; print(json.load(sys.stdin)["result"]["id"])'; }
+          id=$(verify https://api.cloudflare.com/client/v4/user/tokens/verify || verify "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/tokens/verify" || true)
+          secret=$(printf %s "$CLOUDFLARE_API_TOKEN" | sha256sum | cut -d' ' -f1)
+          echo "::add-mask::$id"
+          echo "::add-mask::$secret"
+          { echo "AWS_ACCESS_KEY_ID=$id"; echo "AWS_SECRET_ACCESS_KEY=$secret"; echo "AWS_DEFAULT_REGION=auto"; } >> "$GITHUB_ENV"
+
+      - name: Upload (tiles and lookup public; the full raster to the lake)
+        run: |
+          s3() { aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors "$@"; }
+          cd "$WORK/out"
+          s3 ${{ matrix.var.file }}.pmtiles s3://infraatlas-data/grid/${{ matrix.var.file }}.pmtiles --content-type application/vnd.pmtiles
+          s3 ${{ matrix.var.key }}_0.1deg.i16 s3://infraatlas-data/grid/${{ matrix.var.file }}-0.1deg.i16 --content-type application/octet-stream
+          s3 ${{ matrix.var.file }}.tif s3://infraatlas-raw/lake/atlas/${{ matrix.var.file }}.tif --content-type image/tiff
+          python3 - <<'PY'
+          import json, os, pathlib
+          out = pathlib.Path(os.environ["WORK"]) / "out"
+          f = os.environ["FILE"]
+          entry = {
+              "path": f"lake/atlas/{f}.tif",
+              "bytes": (out / f"{f}.tif").stat().st_size,
+              "format": "Cloud-Optimized GeoTIFF",
+              "tiles": f"grid/{f}.pmtiles",
+              "tiles_bytes": (out / f"{f}.pmtiles").stat().st_size,
+              "lookup": f"grid/{f}-0.1deg.i16",
+              "lookup_meta": json.loads((out / f"{os.environ['KEY']}_lookup.json").read_text()),
+          }
+          pathlib.Path("part").mkdir(exist_ok=True)
+          pathlib.Path(f"part/{f}.json").write_text(json.dumps({f: entry}))
+          print(json.dumps(entry, indent=1))
+          PY
+        env:
+          FILE: ${{ matrix.var.file }}
+          KEY: ${{ matrix.var.key }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atlas-${{ matrix.var.name }}
+          path: part/
+          retention-days: 5
+
+  catalog:
+    needs: atlas
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: parts
+      - name: lake/atlas/_catalog.json (merged into the uploaded one)
+        run: |
+          npx --yes wrangler@4 r2 object get infraatlas-raw/lake/atlas/_catalog.json --file old.json --remote || echo '{}' > old.json
+          python3 - <<'PY'
+          import glob, json
+          from datetime import UTC, datetime
+          cat = json.load(open("old.json")) or {}
+          rasters = cat.get("rasters", {})
+          for p in glob.glob("parts/*/*.json"):
+              rasters.update(json.load(open(p)))
+          cat = {
+              "dataset": "atlas",
+              "source": "Global Solar Atlas (World Bank, Solargis); Global Wind Atlas 3 (DTU)",
+              "licence": "CC BY 4.0",
+              "script": "scripts/build_atlas.py",
+              "updated": datetime.now(UTC).isoformat(timespec="seconds"),
+              "tables": {},
+              "rasters": rasters,
+          }
+          json.dump(cat, open("_catalog.json", "w"), indent=1)
+          print(json.dumps(cat, indent=1))
+          PY
+          npx --yes wrangler@4 r2 object put infraatlas-raw/lake/atlas/_catalog.json --file _catalog.json --content-type application/json --remote

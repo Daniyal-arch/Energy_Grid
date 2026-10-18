@@ -336,7 +336,7 @@ def read_catalogues(con: duckdb.DuckDBPyConnection, have_s3: bool, tmp: Path) ->
 KNOWN = [
     "eaglei", "aqueduct", "mastr", "entsoe", "overture_power", "entsog", "eia930", "eia860m",
     "lbnl_queue", "irena", "power_plants_eu", "gem", "osm", "euets", "neso_tec", "nl_capacity",
-    "ree_nodes", "us_lmp",
+    "ree_nodes", "us_lmp", "afdc", "atlas",
 ]  # fmt: skip
 
 
@@ -344,6 +344,8 @@ def repair(con: duckdb.DuckDBPyConnection, cats: dict[str, dict], out: Path, upl
     """Rebuild each dataset's file list, rows and bytes from the files on R2 (parallel jobs of
     one dataset can overwrite each other's catalogue); upload the catalogues that changed."""
     for ds, cat in cats.items():
+        if not cat.get("tables"):  # a raster dataset (lake/atlas): files listed under `rasters`
+            continue
         found = con.execute(
             f"""SELECT file_name, sum(row_group_num_rows) FILTER (WHERE column_id = 0)
                 FROM parquet_metadata('{R2}/{lake.PREFIX}/{ds}/**/*.parquet') GROUP BY 1"""
@@ -414,8 +416,11 @@ def summary(cats: dict[str, dict]) -> dict:
             "licence": c.get("licence"),
             "updated": c.get("updated"),
             "rows": sum(t["rows"] for t in tables.values()),
-            "bytes": sum(t["bytes"] for t in tables.values()),
+            # Cloud-Optimized GeoTIFFs (lake/atlas) count by their bytes
+            "bytes": sum(t["bytes"] for t in tables.values())
+            + sum(r.get("bytes", 0) for r in c.get("rasters", {}).values()),
             "tables": tables,
+            **({"rasters": c["rasters"]} if c.get("rasters") else {}),
         }
     return {
         "updated": datetime.now(UTC).isoformat(timespec="seconds"),

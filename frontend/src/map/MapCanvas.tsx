@@ -67,6 +67,7 @@ function wantedKeys(zoom: number): string[] {
   if (L.usQueue) keys.push("usQueue", "usPlants");
   if (L.plantsUS || L.turbinesUS || L.gridUS || L.usQueue) keys.push("usStates");
   if (L.dataCentres) keys.push("datacentres");
+  if (L.evChargersUS) keys.push("evChargers");
   if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario");
   if (L.financeCoal || L.financeGas) keys.push("gemFinance");
   for (const [id, style] of [...Object.entries(GEM_PIPES), ...Object.entries(GEM_POINTS)]) if (L[id as LayerId]) keys.push(style.file);

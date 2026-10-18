@@ -403,6 +403,13 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <MastrKey />;
     case "offshoreWind":
       return <OffshoreKey />;
+    case "evChargersUS":
+      return (
+        <Note>
+          Public DC fast charging stations in operation; dot area = DC fast ports. Stations with only level 2 ports are counted in the card, not drawn. NREL Alternative Fuels
+          Data Center, monthly.
+        </Note>
+      );
     case "solarUS":
       return (
         <Note>

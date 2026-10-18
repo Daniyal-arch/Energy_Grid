@@ -84,6 +84,8 @@ const STATIC: Record<string, Loader> = {
   usSolar: bundledUs("solar.json"),
   usSolarOutlines: bundledUs("solar_outlines.json"),
   usStates: bundledUs("states.json"),
+  // public EV fast chargers (scripts/fetch_ev_chargers.py, NREL AFDC; monthly in us-grid)
+  evChargers: bundledUs("ev_chargers.json"),
   flows: snapshot("flows.json"),
   stats: snapshot("stats.json"),
   // transfer capacity per border, today and tomorrow (scripts/fetch_eu_capacity.py)
