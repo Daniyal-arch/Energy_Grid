@@ -18,9 +18,6 @@ on:
         description: 'entsog / eia930 backfill: "2015-2025" or "2019,2020" (empty: the recent days)'
         type: string
         default: ""
-  push:
-    branches: [claude/lake-integrated]
-    paths: [.github/workflows/lake-datasets.yml, scripts/build_lake_datasets.py]
 
 permissions:
   contents: read
