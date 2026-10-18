@@ -36,18 +36,23 @@ map/agentLayers.ts  <-- MapSpec --       tools: catalog, sql, places, live,     
 
 - **Backend:** one FastAPI app in `backend/` (Python 3.12, `uv`, ruff, pytest), DuckDB with
   `httpfs` and `spatial`. Stateless; conversation history is sent by the browser each turn.
-- **Hosting:** AWS Lambda (container image, AWS Lambda Web Adapter, a function URL with response
-  streaming for SSE), deployed by GitHub Actions through an OIDC role. AWS-native compute is
-  paid by the owner's AWS credits ($120 until 2027-10-13; Claude itself is not, see memory
-  "bedrock-route-dropped"). Cloudflare routes `/api/*` on the site's domain to the function URL
-  (same origin, no CORS) and applies a per-IP rate-limiting rule.
+- **Hosting: Cloudflare, next to the site and the lake.** The backend runs as a **Cloudflare
+  Container** (the FastAPI image, scaled to zero, woken per request, sleeping after a short idle
+  time) behind a small **Worker** on the site's own domain that routes `/api/*` (same origin, no
+  CORS), applies the per-IP limit (Workers rate-limiting binding) and holds the R2 bindings.
+  Needs the Workers Paid plan ($5 a month), which includes 25 GiB-hours of container memory,
+  375 vCPU-minutes and 200 GB-hours of disk a month (Cloudflare's pricing page, 2026); R2 reads
+  from the container stay inside Cloudflare (no egress fees). Deployed with wrangler from
+  GitHub Actions using the existing `CLOUDFLARE_API_TOKEN` secret (with Workers and Containers
+  edit rights). AWS is not used: its credits expire and do not pay for Claude.
 - **Model:** Claude through the Anthropic API (first-party key `ANTHROPIC_API_KEY`), funded by the
   Claude Startups credits once granted, else pay-as-you-go under the caps of section 7. Default
   `claude-opus-5-5` ($4 / $20 per million input / output tokens, cache reads $0.20; 1M context)
   at effort `medium`; `claude-sonnet-5-5` ($2 / $10) is the owner's choice if cost requires it.
   One model per conversation (caches are per model).
 - **State:** saved MapSpecs and usage logs on R2 (`agent/maps/<id>.json`,
-  `agent/logs/<date>.jsonl`); the daily spend counter in a small DynamoDB table (AWS credits).
+  `agent/logs/<date>.jsonl`); the daily spend counter in one Durable Object (strongly consistent,
+  included in Workers Paid).
 
 ## 3. Tools (what the model can call)
 
@@ -160,8 +165,9 @@ A MapSpec is plain JSON, validated against a schema shared by backend and fronte
 
 ## 7. Cost, abuse and safety
 
-- Caps: per IP (Cloudflare rule plus a per-IP daily count), a global daily spend cap from
-  `usage` tokens × price (the counter in DynamoDB); over the cap the Ask tab says so.
+- Caps: per IP (the Worker's rate-limiting binding plus a per-IP daily count), a global daily
+  spend cap from `usage` tokens × price (the counter in a Durable Object); over the cap the Ask
+  tab says so.
 - Planning figure (an estimate, not shown in the app): with caching, a typical question reads
   20–40 k tokens (mostly cached) and writes 1–3 k, roughly $0.03–0.10 on Opus 5.5.
 - Read-only everywhere: the R2 token can only read `lake/`; DuckDB runs with external access
@@ -193,5 +199,5 @@ Desktop or other agents can query InfraAtlas's data directly. Same limits and lo
 |---|---|---|
 | `ANTHROPIC_API_KEY` | console.anthropic.com (Claude Startups programme credits when granted) | backend (Lambda env, from a GitHub secret) |
 | R2 read-only token for `infraatlas-raw/lake/`, read-write for `agent/` | Cloudflare dashboard → R2 → API tokens | backend |
-| AWS role for deploys (GitHub OIDC), Lambda, DynamoDB | the AWS account with the credits; a template in `backend/deploy/` | deploy workflow |
-| Cloudflare route `/api/*` and a rate-limiting rule | Cloudflare dashboard (or the deploy workflow with the existing API token) | site |
+| Workers Paid plan ($5 a month; enables Containers and Durable Objects) | Cloudflare dashboard → Workers & Pages → Plans | backend |
+| `CLOUDFLARE_API_TOKEN` with Workers Scripts, Containers and R2 edit rights (extend the existing secret) | Cloudflare dashboard → My Profile → API Tokens | deploy workflow |

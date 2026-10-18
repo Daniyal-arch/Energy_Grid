@@ -38,8 +38,8 @@ The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
 
 - **Anthropic API key** for the agent (console.anthropic.com), ideally with Claude Startups
   credits: needs a custom domain and an email on it (Cloudflare can register both).
-- **AWS deploy role** for the backend (a template comes with brief 18), the R2 tokens of
-  docs/AGENT.md section 10.
+- **Cloudflare Workers Paid plan** ($5 a month; the backend runs as a Cloudflare Container) and
+  the token rights and R2 tokens of docs/AGENT.md section 10.
 - **PJM** (`PJM_API_KEY`), **Alberta** (`AESO_API_KEY`), **South Korea** (`DATA_GO_KR_KEY`),
   **Turkey** (`EPIAS_USERNAME`, `EPIAS_PASSWORD`), **France RTE** (free key), **Finland**
   (`FINGRID_API_KEY`).
@@ -56,7 +56,7 @@ touch different files. The owner merges; the next phase starts when its inputs a
 | Brief | What | Why |
 |---|---|---|
 | **17 Shapes, keys and the semantic catalogue** | `lake/shapes/`: countries, US states and counties, NUTS 0–3 (GISCO), European bidding-zone outlines, world admin-1 (geoBoundaries); a gazetteer (GeoNames ≥ 15,000 people); `agent/catalog/<dataset>.yaml` for every lake table and map file (grain, keys, units, joins, example queries with answers); topic views extended | the agent can shade any region by any key without handling geometry; the catalogue is what makes its SQL right |
-| **18 Backend skeleton** | `backend/` FastAPI + DuckDB (read-only lake, SQL guard, limits), `/api/health`, `/api/sql` (internal), saved maps on R2, Docker image, deploy to AWS Lambda (function URL, streaming) by OIDC from Actions, Cloudflare route `/api/*`, tests | the one backend, small and stateless |
+| **18 Backend skeleton** | `backend/` FastAPI + DuckDB (read-only lake, SQL guard, limits), `/api/health`, `/api/sql` (internal), saved maps on R2; a Cloudflare Container behind a Worker on the site's domain (`/api/*`, rate limit, R2 bindings, a Durable Object for the spend counter), deployed with wrangler from Actions; tests | the one backend, small and stateless, on the same platform as the site and the lake |
 
 ### Phase 2: the agent that draws (week 2)
 
