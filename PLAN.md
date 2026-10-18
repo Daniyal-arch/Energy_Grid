@@ -51,35 +51,20 @@ The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
 Each phase is a set of briefs in `docs/tasks/`, one cloud session each, run in parallel where they
 touch different files. The owner merges; the next phase starts when its inputs are on main.
 
-### Phase 1: data the agent needs (now, with brief 16)
-
-| Brief | What | Why |
-|---|---|---|
-| **17 Shapes, keys and the semantic catalogue** | `lake/shapes/`: countries, US states and counties, NUTS 0–3 (GISCO), European bidding-zone outlines, world admin-1 (geoBoundaries); a gazetteer (GeoNames ≥ 15,000 people); `agent/catalog/<dataset>.yaml` for every lake table and map file (grain, keys, units, joins, example queries with answers); topic views extended | the agent can shade any region by any key without handling geometry; the catalogue is what makes its SQL right |
-| **18 Backend skeleton** | `backend/` FastAPI + DuckDB (read-only lake, SQL guard, limits), `/api/health`, `/api/sql` (internal), saved maps on R2; a Cloudflare Container behind a Worker on the site's domain (`/api/*`, rate limit, R2 bindings, a Durable Object for the spend counter), deployed with wrangler from Actions; tests | the one backend, small and stateless, on the same platform as the site and the lake |
-
-### Phase 2: the agent that draws (week 2)
+### Phase 1: data (one cloud session) and the backend
 
 | Brief | What |
 |---|---|
-| **19 Agent core** | the loop on the Claude API (tools of docs/AGENT.md section 3), MapSpec schema shared with the frontend, grounding check, SSE events, caps and logs, `agent/evals/` (40 questions + 10 maps) in CI |
-| **20 Ask in the app** | an "Ask" tab in the context panel (SSE client, sources list), `map/agentLayers.ts` rendering MapSpec overlays with the app's palettes, legends in the existing key, "Explain this map", `?map=<id>` links, "Ask about this site" from Check a site |
+| **16** (running) | imbalance prices, US EV fast chargers, GB carbon intensity, Denmark every 5 minutes, solar and wind atlases |
+| **17 Datasets wave 5** ([17-datasets-wave5.md](docs/tasks/17-datasets-wave5.md)) | 22 datasets in one session: NUTS 0–3, bidding-zone outlines, world admin-1, GeoNames cities; EIA-923, eGRID, GHGRP; netztransparenz redispatch and curtailment, SMARD; TYNDP projects, ENTSO-E transmission outages; Global Renewables Watch; Eurostat balances, EIA SEDS, EIA STEO, Energy Institute review, EDGAR; JEPX, CENACE, Grid-India; GHSL population, NASA Black Marble |
+| **18 Backend skeleton** | `backend/` FastAPI + DuckDB (read-only lake, SQL guard, limits), saved maps on R2; hosting chosen by the owner (docs/AGENT.md §2) |
 
-### Phase 3: datasets, wave 5 (in parallel with phase 2)
+### Phase 2: the agent that draws
 
-Chosen for the agent's questions and the paid uses (site screening, history, alerts). Each follows
-the API-or-Parquet rule (docs/DATA_LAKE.md): what an API answers fast stays an agent tool, the rest
-goes to the lake.
-
-| Brief | Datasets | Gives the agent |
-|---|---|---|
-| **21 US plant performance** | EIA-923 generation and fuel per plant (monthly), EPA eGRID, EPA GHGRP, through PUDL's public Parquet (queried in place) | capacity factors, CO₂ per MWh per plant, industrial emitters |
-| **22 Germany congestion** | netztransparenz.de redispatch and curtailment (EinsMan), SMARD 15-min market data | where wind is curtailed and what redispatch costs |
-| **23 The grid that is coming** | ENTSO-E TYNDP projects (lines, storage, with dates and costs), ENTSO-E transmission outages (A78/A79) | "which new lines reach this region", why flows and prices change |
-| **24 Every wind turbine and solar farm worldwide** | Global Renewables Watch (Microsoft/Planet; download approval), with build quarters | renewables built per country and region over time, beyond GEM's thresholds |
-| **25 Country and state profiles** | Eurostat energy balances, EIA SEDS and STEO, Energy Institute Statistical Review, EDGAR (API where they have one) | whole-energy context: heat, transport, industry, emissions by sector |
-| **26 Live markets beyond Europe and the US** | Japan JEPX (area prices), Mexico CENACE (nodal), Grid-India, plus the keyed ones when keys arrive | the live globe and price maps in Asia and Latin America |
-| **27 People and lights** | GHSL population grid (per admin-1 and NUTS 3), NASA Black Marble (monthly lights) | per-capita maps, electrification, outage detection after disasters |
+| Brief | What |
+|---|---|
+| **19 Agent core** | the loop on the Claude API (tools of docs/AGENT.md §3), the semantic catalogue completed, MapSpec schema shared with the frontend, grounding check, SSE events, caps and logs, `agent/evals/` in CI |
+| **20 Ask in the app** | an "Ask" tab in the context panel, `map/agentLayers.ts` rendering MapSpec overlays with the app's palettes, legends in the existing key, "Explain this map", `?map=<id>` links, "Ask about this area" from the site analysis |
 
 ### Phase 4: products on top (after phase 2)
 

@@ -29,6 +29,7 @@ rules apply to every task.
 | 14 (done on main) | [14-lake-entsoe.md](14-lake-entsoe.md) ENTSO-E history 2015– in the lake (Parquet on R2) | `ENTSOE_API_KEY` (repo secret; runs in Actions) |
 | 15 (done on main) | [15-lake-integrated.md](15-lake-integrated.md) the lake for the datasets already on the map, catalogue, topic views, PUDL timings | no (Cloudflare stays in repo secrets) |
 | 16 | [16-wrap-up.md](16-wrap-up.md) imbalance prices (ENTSO-E A85), US EV fast chargers (NREL AFDC), GB carbon intensity, Denmark every 5 min, solar and wind resource atlases | `ENTSOE_API_KEY`, `EPA_API_KEY` (api.data.gov, for NREL) |
+| 17 | [17-datasets-wave5.md](17-datasets-wave5.md) 22 datasets: shapes and names, US plant performance and emitters, German redispatch, TYNDP and line outages, Global Renewables Watch, country profiles, JEPX/CENACE/Grid-India, population and night lights | `ENTSOE_API_KEY`, `EIA_API_KEY`, `EPA_API_KEY`; some may need sign-ups (listed in the PR) |
 
 Several sessions run at once and touch the same files (store, layers, panels, docs,
 workflows): before opening a pull request, merge `origin/main` into the branch and resolve
