@@ -262,6 +262,11 @@ built. Parquet, zstd level 9, on R2.
 | `entsoe` (task 14: `areas`, `units` so far; years backfilling) | 2 | 1,875 | 0.00003 GB | ~1.2 GB |
 | **All built** | **101** | **304.6 M** | **1.91 GB** | |
 
+Added 2026-10-18 (task 16): `entsoe/imbalance_price` (2015 → today) 13,728,572 rows, 0.026 GB
+(estimate was +0.05 GB/yr); `atlas` rasters (COG, not Parquet): `atlas-pvout.tif` 0.49 GB and
+`atlas-wind100.tif` 14.07 GB, the wind atlas as downloaded (its own COG, float32 at ~250 m),
+which takes the bucket past R2's 10 GB free storage.
+
 MaStR is twice the estimate (every column of every unit, 6.6 M solar rows); EAGLE-I a third
 of it (sorted by county and time, its 249 M rows compress to ~1 byte each).
 

@@ -300,7 +300,12 @@ the file lists them in `none`): DE-LU (Germany's reBAP is published by the four 
 netztransparenz.de), GR, BG, LT, ME, SE4, SK, UA-IPS. ENTSO-E throttles repeated full runs from
 one address, so the builder runs once a day in Actions, retries 6 times and logs every give-up.
 
-History 2015 onward: `lake/entsoe/imbalance_price` (below, "Lake: ENTSO-E").
+History 2015 onward: `lake/entsoe/imbalance_price` (below, "Lake: ENTSO-E"): built 2026-10-18,
+13,728,572 rows, 26.0 MB, every zone answered in every year (rows per year: 2015 585,070;
+2016 641,976; 2017 699,360; 2018 713,394; 2019 717,000; 2020 741,028; 2021 892,778; 2022
+1,451,030; 2023 1,579,428; 2024 1,790,146; 2025 2,493,806; 2026 to 17 Oct 2,101,682). Zones
+without data today published some years (SK in 2015, UA-IPS in 2024): the lake keeps what ENTSO-E
+returns for each year.
 
 ## LNG send-out (`scripts/fetch_eu_dossier.py`, in `dossier.json`)
 
@@ -981,9 +986,9 @@ requests:
 
 | Output | Where | Computed |
 |---|---|---|
-| Layers "Solar resource", "Wind resource" (Weather) | `grid/atlas-pvout.pmtiles` (28.7 MB), `grid/atlas-wind100.pmtiles` on the public bucket | warped to Web Mercator at zoom 7 (mean of the source pixels in each tile pixel), coloured by class, PNG tiles zoom 0–7 (lower zooms by nearest pixel, so classes stay classes). Classes: solar the atlas legend's own 0.2 kWh/kWp-a-day steps from 2.0 to 6.4; wind 1 m/s steps over the atlas's own 0–10 m/s scale (the wind atlas draws a continuous scale, no classes) |
-| Check a site, "Around it" | `grid/atlas-pvout-0.1deg.i16`, `grid/atlas-wind100-0.1deg.i16` (int16, 3600 × 1800, row-major from 90° N 180° W; PVOUT × 1000, wind × 100; −32768 = none) | the mean of the source pixels in each 0.1° cell; the card reads one cell by range request. PVOUT a year = daily × 365, as the atlas's own map gives yearly totals (730 = 2.0 × 365) |
-| The full rasters | `lake/atlas/atlas-pvout.tif` (COG, 489.5 MB), `lake/atlas/atlas-wind100.tif` (the downloaded COG) in the private bucket; `lake/atlas/_catalog.json` lists them under `rasters` | none |
+| Layers "Solar resource", "Wind resource" (Weather) | `grid/atlas-pvout.pmtiles` (28.7 MB), `grid/atlas-wind100.pmtiles` (74.5 MB) on the public bucket | warped to Web Mercator at zoom 7 (mean of the source pixels in each tile pixel), coloured by class, PNG tiles zoom 0–7 (lower zooms by nearest pixel, so classes stay classes). Classes: solar the atlas legend's own 0.2 kWh/kWp-a-day steps from 2.0 to 6.4; wind 1 m/s steps over the atlas's own 0–10 m/s scale (the wind atlas draws a continuous scale, no classes) |
+| Check a site, "Around it" | `grid/atlas-pvout-0.1deg.i16`, `grid/atlas-wind100-0.1deg.i16` (int16, 3600 × 1800, row-major from 90° N 180° W; PVOUT × 1000, wind × 100; −32768 = none) | the mean of the source pixels in each 0.1° cell (cells with a value: solar 1,246,598, wind 2,888,422); the card reads one cell by range request. PVOUT a year = daily × 365, as the atlas's own map gives yearly totals (730 = 2.0 × 365) |
+| The full rasters | `lake/atlas/atlas-pvout.tif` (COG, 489.5 MB), `lake/atlas/atlas-wind100.tif` (the downloaded COG, 14.07 GB) in the private bucket; `lake/atlas/_catalog.json` lists them under `rasters` | none |
 
 Check 2026-10-18 against the atlas's own site API (`api.globalsolaratlas.info/data/lta`, a
 point): Madrid 1,655 kWh/kWp a year at the point, 1,663 in our 0.1° cell (4.555 a day); Berlin
