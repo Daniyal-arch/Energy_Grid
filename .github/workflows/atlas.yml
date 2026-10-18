@@ -13,9 +13,6 @@ name: Resource atlases
 
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/wrap-up]
-    paths: [.github/workflows/atlas.yml, scripts/build_atlas.py]
 
 permissions:
   contents: read
@@ -121,8 +118,9 @@ jobs:
               "lookup": f"grid/{f}-0.1deg.i16",
               "lookup_meta": json.loads((out / f"{os.environ['KEY']}_lookup.json").read_text()),
           }
-          pathlib.Path("part").mkdir(exist_ok=True)
-          pathlib.Path(f"part/{f}.json").write_text(json.dumps({f: entry}))
+          part = pathlib.Path(os.environ["GITHUB_WORKSPACE"]) / "part"
+          part.mkdir(exist_ok=True)
+          (part / f"{f}.json").write_text(json.dumps({f: entry}))
           print(json.dumps(entry, indent=1))
           PY
         env:
