@@ -619,10 +619,13 @@ function AtlasKey({ id }: { id: AtlasId }) {
       note={
         id === "pvout" ? (
           <>
-            Long-term average daily PV output per kWp (×365 for a year, as the atlas gives it: 2.0 = 730 kWh/kWp), in the atlas&apos;s 0.2 steps. {a.source}.
+            Long-term average daily PV output per kWp (×365 for a year, as the atlas gives it: 2.0 = 730 kWh/kWp), in the atlas&apos;s 0.2 steps. Over Europe, colour the countries &quot;Plain&quot; to see it. {a.source}.
           </>
         ) : (
-          <>Mean wind speed at 100 m above ground, in 1 m/s classes over the atlas&apos;s 0–10 m/s scale. {a.source}.</>
+          <>
+            Mean wind speed at 100 m above ground, in 1 m/s classes over the atlas&apos;s 0–10 m/s scale. Over Europe, colour the countries &quot;Plain&quot; to see it.{" "}
+            {a.source}.
+          </>
         )
       }
     />

@@ -117,7 +117,7 @@ export function GbCarbonCard({ gb }: { gb: GbCarbonFile }) {
   const regions = gb.regions.rows.filter((r) => r[0] <= 14);
   const shown = all ? regions : [...regions].sort((a, b) => (a[3] ?? 0) - (b[3] ?? 0)).slice(0, 5);
   return (
-    <Card title="Carbon intensity · Great Britain" note={`NESO · ${london(gb.now.from)}`} accent={[120, 200, 160]}>
+    <Card title="Carbon intensity" note={`NESO · ${london(gb.now.from)}`} accent={[120, 200, 160]}>
       <div className="grid grid-cols-2 gap-1.5">
         <Big
           label={gb.now.kind === "actual" ? "Now (actual)" : "Now (forecast)"}
