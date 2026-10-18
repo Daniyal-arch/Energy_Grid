@@ -63,8 +63,31 @@ export type LayerId =
   | "sun"
   | "night";
 
-export type LayerGroup = "Electricity now" | "Power grid" | "Power plants" | "Gas, oil & coal" | "Money" | "Industry & data" | "Weather";
-export const LAYER_GROUPS: LayerGroup[] = ["Electricity now", "Power grid", "Power plants", "Gas, oil & coal", "Money", "Industry & data", "Weather"];
+export type LayerGroup =
+  | "Electricity now"
+  | "Power grid"
+  | "Connections & queues"
+  | "Power plants"
+  | "Gas, oil & coal"
+  | "Emissions"
+  | "Industry & demand"
+  | "Risk"
+  | "Resources"
+  | "Weather"
+  | "Money";
+export const LAYER_GROUPS: LayerGroup[] = [
+  "Electricity now",
+  "Power grid",
+  "Connections & queues",
+  "Power plants",
+  "Gas, oil & coal",
+  "Emissions",
+  "Industry & demand",
+  "Risk",
+  "Resources",
+  "Weather",
+  "Money",
+];
 
 export interface LayerInfo {
   id: LayerId;
@@ -92,7 +115,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "substations", label: "Substations", desc: "220 kV and more, shown zoomed in", group: "Power grid", coverage: "Europe", color: "rgb(226,232,240)" },
   { id: "gridWorld", label: "High-voltage lines", desc: "220 kV and more, mapped in OpenStreetMap", group: "Power grid", coverage: "World", color: "rgb(160,210,255)" },
   { id: "gridUS", label: "US transmission lines", desc: "100–765 kV by voltage, mapped in OpenStreetMap", group: "Power grid", coverage: "US", color: "rgb(236,178,120)" },
-  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Power grid", coverage: "GB, NL, ES", color: "rgb(206,138,72)" },
+  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Connections & queues", coverage: "GB, NL, ES", color: "rgb(206,138,72)" },
   { id: "cables", label: "Undersea power cables", desc: "HVDC and AC cables at sea", group: "Power grid", coverage: "World", color: "rgb(110,190,255)" },
   { id: "predicted", label: "Predicted local grid", desc: "Estimated from night lights (Gridfinder)", group: "Power grid", coverage: "World", color: "rgb(255,190,110)" },
   { id: "plantsEU", label: "Power plants", desc: "20 MW and more, by fuel", group: "Power plants", coverage: "Europe", color: "rgb(255,128,72)" },
@@ -104,36 +127,35 @@ export const LAYERS: LayerInfo[] = [
   { id: "offshoreWind", label: "Offshore wind farms", desc: "Areas at sea: operating, building, approved, planned (EMODnet)", group: "Power plants", coverage: "Europe", color: "rgb(96,190,255)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "solarUS", label: "US solar farms", desc: "Every array of 1 MW and more; outlines zoomed in (USPVDB)", group: "Power plants", coverage: "US", color: "rgb(255,214,72)" },
-  { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Power plants", coverage: "US", color: "rgb(196,196,214)", story: "us-queue" },
+  { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Connections & queues", coverage: "US", color: "rgb(196,196,214)", story: "us-queue" },
   { id: "gasPipes", label: "Gas pipelines", desc: "Operating, under construction, proposed", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,196,96)" },
   { id: "oilPipes", label: "Oil pipelines", desc: "Crude oil and NGL", group: "Gas, oil & coal", coverage: "World", color: "rgb(222,110,82)" },
   { id: "lngTerminals", label: "LNG terminals", desc: "Import and export, sized by capacity", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,150,92)" },
   { id: "coalTerminals", label: "Coal ports", desc: "Coal export and import terminals", group: "Gas, oil & coal", coverage: "World", color: "rgb(196,182,166)" },
   { id: "oilGasFields", label: "Oil and gas fields", desc: "Where oil and gas are produced", group: "Gas, oil & coal", coverage: "World", color: "rgb(214,96,64)" },
   { id: "coalMines", label: "Coal mines", desc: "Sized by capacity", group: "Gas, oil & coal", coverage: "World", color: "rgb(160,146,132)" },
-  { id: "methane", label: "Methane plumes", desc: "Leaks seen by satellites", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,90,200)" },
+  { id: "methane", label: "Methane plumes", desc: "Leaks seen by satellites", group: "Emissions", coverage: "World", color: "rgb(255,90,200)" },
   { id: "plantOutput", label: "Plant output", desc: "What each large plant produces at the clock", group: "Power plants", coverage: "Europe, US", color: "rgb(255,214,140)", modes: ["day"] },
   { id: "gasFlows", label: "Gas flows", desc: "Gas crossing borders and entering Europe, per gas day", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(255,178,62)", modes: ["live"] },
   { id: "lngSendOut", label: "LNG send-out", desc: "Gas each EU terminal sends into the grid, per day", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(120,180,255)" },
   { id: "gas", label: "Gas storage", desc: "Underground storage sites", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(255,150,92)" },
   { id: "financeCoal", label: "Who finances coal power", desc: "Money from lenders' countries to coal plants", group: "Money", coverage: "World", color: "rgb(232,204,128)" },
   { id: "financeGas", label: "Who finances gas", desc: "Money to gas plants and LNG terminals", group: "Money", coverage: "World", color: "rgb(255,170,60)" },
-  { id: "ets", label: "CO₂ per installation", desc: "Verified emissions under the EU ETS, per year", group: "Industry & data", coverage: "Europe", color: "rgb(236,128,92)" },
-  { id: "ctrace", label: "Emissions per facility", desc: "Modelled CO₂e of plants, mills and fields (Climate TRACE)", group: "Industry & data", coverage: "World", color: "rgb(255,196,96)" },
-  { id: "steel", label: "Steel plants", desc: "Electric furnaces stand out", group: "Industry & data", coverage: "World", color: "rgb(120,200,255)" },
-  { id: "cement", label: "Cement plants", desc: "Sized by capacity", group: "Industry & data", coverage: "World", color: "rgb(206,192,166)" },
-  { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & data", coverage: "World", color: "rgb(230,160,255)" },
-  { id: "ironOre", label: "Iron ore mines", desc: "Sized by production", group: "Industry & data", coverage: "World", color: "rgb(206,112,88)" },
-  // { id: "evChargersUS", label: "EV fast chargers", desc: "Public DC fast charging stations, sized by ports (NREL AFDC)", group: "Industry & data", coverage: "US", color: "rgb(96,214,255)" },
-  // listed once frontend/public/data/us/ev_chargers.json exists (us-grid.yml needs NREL_API_KEY)
-  { id: "ghgrpUS", label: "US industrial emitters", desc: "Reported CO₂e of large facilities (EPA GHGRP)", group: "Industry & data", coverage: "US", color: "rgb(236,128,92)" },
-  { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & data", coverage: "World", color: "rgb(196,150,255)" },
-  { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Industry & data", coverage: "World", color: "rgb(255,153,0)" },
-  { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Power grid", coverage: "US", color: "rgb(230,120,80)" },
+  { id: "ets", label: "CO₂ per installation", desc: "Verified emissions under the EU ETS, per year", group: "Emissions", coverage: "Europe", color: "rgb(236,128,92)" },
+  { id: "ctrace", label: "Emissions per facility", desc: "Modelled CO₂e of plants, mills and fields (Climate TRACE)", group: "Emissions", coverage: "World", color: "rgb(255,196,96)" },
+  { id: "ghgrpUS", label: "US industrial emitters", desc: "Reported CO₂e of large facilities (EPA GHGRP)", group: "Emissions", coverage: "US", color: "rgb(236,128,92)" },
+  { id: "steel", label: "Steel plants", desc: "Electric furnaces stand out", group: "Industry & demand", coverage: "World", color: "rgb(120,200,255)" },
+  { id: "cement", label: "Cement plants", desc: "Sized by capacity", group: "Industry & demand", coverage: "World", color: "rgb(206,192,166)" },
+  { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & demand", coverage: "World", color: "rgb(230,160,255)" },
+  { id: "ironOre", label: "Iron ore mines", desc: "Sized by production", group: "Industry & demand", coverage: "World", color: "rgb(206,112,88)" },
+  { id: "evChargersUS", label: "EV fast chargers", desc: "Public DC fast charging stations, sized by ports (NREL AFDC)", group: "Industry & demand", coverage: "US", color: "rgb(96,214,255)" },
+  { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & demand", coverage: "World", color: "rgb(196,150,255)" },
+  { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Risk", coverage: "World", color: "rgb(255,153,0)" },
+  { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Risk", coverage: "US", color: "rgb(230,120,80)" },
   { id: "wind", label: "Wind", desc: "Moving wind at turbine height", group: "Weather", coverage: "World", color: "rgb(220,240,255)", modes: ["live", "day"] },
   { id: "sun", label: "Sunshine", desc: "Solar radiation reaching the ground", group: "Weather", coverage: "World", color: "rgb(255,214,72)", modes: ["live", "day"] },
-  { id: "solarResource", label: "Solar resource", desc: "PV output per kWp installed, long-term average (Global Solar Atlas)", group: "Weather", coverage: "World", color: "rgb(240,196,112)" },
-  { id: "windResource", label: "Wind resource", desc: "Mean wind speed at 100 m (Global Wind Atlas)", group: "Weather", coverage: "World", color: "rgb(128,206,206)" },
+  { id: "solarResource", label: "Solar resource", desc: "PV output per kWp installed, long-term average (Global Solar Atlas)", group: "Resources", coverage: "World", color: "rgb(240,196,112)" },
+  { id: "windResource", label: "Wind resource", desc: "Mean wind speed at 100 m (Global Wind Atlas)", group: "Resources", coverage: "World", color: "rgb(128,206,206)" },
   { id: "night", label: "Night", desc: "Where it is dark at that moment", group: "Weather", coverage: "World", color: "rgb(90,110,160)", modes: ["day"] },
 ];
 
