@@ -46,10 +46,13 @@ The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
   from the owner's network on 2026-10-11: try a hotspot or DNS 1.1.1.1). Add it as a cloud
   network secret (`Ocp-Apim-Subscription-Key` on `api.pjm.com`) and a GitHub secret; no code
   change needed.
+- **NYISO** nodal prices: its site answers automated downloads with a bot check (HTTP 202);
+  no key fixes it, a route the owner approves does (docs/DATA_SOURCES.md, US prices at every node).
 - **Alberta** (`AESO_API_KEY`), **South Korea** (`DATA_GO_KR_KEY`), **Turkey**
   (`EPIAS_USERNAME`, `EPIAS_PASSWORD`): global live grids 3–5 below.
-- **Downloads to approve:** Global Solar Atlas PVOUT (~362 MB), Global Wind Atlas (several GB),
-  both in GitHub Actions.
+- **NREL** (`NREL_API_KEY`, an api.data.gov key from https://developer.nrel.gov/signup/) as a
+  repo secret: the US EV fast chargers (task 16 B) are built and wait for it; the repo secret
+  `EPA_API_KEY` reached the workflow empty on 2026-10-18.
 
 ## Next
 
@@ -91,9 +94,9 @@ Credentials go in `.env` and `.env.example` (and the repo secrets for workflows)
      chemicals, iron ore mines.
    - Panels and the agent: energy ownership (who owns each asset), coal and gas project
      finance, methane emitters.
-7. **Solar and wind resource maps** (Global Solar Atlas: irradiation; Global Wind Atlas:
-   mean wind speed at 100 m; GeoTIFF, large downloads) as raster tiles on R2: "where is
-   the resource".
+7. ✅ **Solar and wind resource maps** (Global Solar Atlas PVOUT; Global Wind Atlas mean wind
+   speed at 100 m) as raster tiles on R2, the values in "Check a site", the full rasters as COG
+   in the lake (task 16, `.github/workflows/atlas.yml`).
 8. ✅ **Weather worldwide** (ECMWF open data: wind at 100 m, surface radiation; GRIB2 every
    6 h) for wind particles and sunshine on the whole globe.
 9. ✅ **Installed capacity per country** (IRENA renewable capacity statistics, yearly).
@@ -111,7 +114,7 @@ Credentials go in `.env` and `.env.example` (and the repo secrets for workflows)
    Overture (HIFLD's layer is no longer public since 2025).
 4. ✅ **Wind turbines** (USWTDB: every turbine) and ✅ **solar farm outlines** (USPVDB).
 5. **Hourly CO₂ per power plant** (EPA CAMPD API; `EPA_API_KEY`).
-6. **EV chargers** (NREL AFDC station locator; `NREL_API_KEY`).
+6. **EV fast chargers** (NREL AFDC station locator): built (task 16), waits for `NREL_API_KEY`.
 7. **Power outages per county** (ORNL EAGLE-I, every 15 min, yearly releases).
 8. **Wholesale prices by node/zone** (ISO data: ERCOT, CAISO, NYISO, MISO, SPP, ISO-NE).
 
@@ -119,14 +122,15 @@ Credentials go in `.env` and `.env.example` (and the repo secrets for workflows)
 
 1. **Gas flows at every border point** (ENTSOG transparency API): a gas version of the
    power-flow map.
-2. **Denmark every 5 minutes** (Energinet Energi Data Service: CO₂ intensity, prices,
-   production).
+2. ✅ **Denmark every 5 minutes** (Energinet Energi Data Service: CO₂ intensity per area,
+   production by type and exchange; card in Denmark's panel).
 3. **Finland every 3 minutes** (Fingrid open data; `FINGRID_API_KEY`).
-4. **Great Britain** (NESO data portal: carbon-intensity forecast, the grid connection
-   queue).
+4. ✅ **Great Britain** (NESO Carbon Intensity API: now, the 48 h forecast, the mix, the
+   regions; card in Great Britain's panel; the TEC connection queue is in "Room to connect").
 5. ✅ **Offshore wind farms** (EMODnet Human Activities); sea cables still to do.
-6. **More ENTSO-E series:** imbalance prices, day-ahead wind and solar forecasts,
-   cross-border capacities, installed capacity per unit (replaces Energy-Charts).
+6. **More ENTSO-E series:** ✅ imbalance prices (card in the zone panel, history in the lake),
+   ✅ day-ahead wind and solar forecasts, ✅ cross-border capacities, installed capacity per
+   unit (replaces Energy-Charts).
 7. **Retail electricity prices** (Eurostat, households and industry) and **emissions
    per installation** (EU ETS, EUTL).
 

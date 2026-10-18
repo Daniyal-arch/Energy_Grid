@@ -276,6 +276,32 @@ not at an official zone centre. The `eu-days` workflow checks daily and rebuilds
 when a new month is complete (on the `eu-days` branch; the app prefers that copy when
 it is newer).
 
+## Imbalance prices (`scripts/build_imbalance.py`, `imbalance.json`)
+
+What a balance responsible party pays (short) or receives (long) per settlement period, as each
+TSO publishes it to ENTSO-E: documentType A85, asked per area (`controlArea_Domain` = the
+bidding zone's code), answered as a zip of XML documents. Daily in `eu-days` (the last 30 days;
+on the `eu-days` branch), card "Imbalance price" in the zone panel (Prices tab).
+
+| Field | Passed through | Computed |
+|---|---|---|
+| `chart` | every price of the last 7 days at the published 15 minutes, in the source's currency | |
+| `daily` per Brussels day | | average (mean of the periods published), lowest, highest, periods below zero, periods published |
+| `period` | | the same over the 30 complete days together (the card's tiles) |
+
+Two series per area by `imbalance_Price.category`: **A05 deficit** and **A04 excess**. Under
+single pricing they are equal and the file keeps one (`same: true`); the card draws the excess
+line only where it differs. A series that is 0 in every period published is flagged `all_zero`
+and never charted (Italy fills A05 with 0 and publishes its price in A04). Currencies as
+published: PLN (PL), CZK (CZ), HUF (HU), RON (RO); the others EUR.
+
+**No imbalance price at ENTSO-E** (probe 2026-10-17, `scripts/probe_entsoe_imbalance.py`;
+the file lists them in `none`): DE-LU (Germany's reBAP is published by the four TSOs on
+netztransparenz.de), GR, BG, LT, ME, SE4, SK, UA-IPS. ENTSO-E throttles repeated full runs from
+one address, so the builder runs once a day in Actions, retries 6 times and logs every give-up.
+
+History 2015 onward: `lake/entsoe/imbalance_price` (below, "Lake: ENTSO-E").
+
 ## LNG send-out (`scripts/fetch_eu_dossier.py`, in `dossier.json`)
 
 GIE ALSI (same key as AGSI+), daily for the EU and the 12 countries with terminals (BE,
@@ -434,6 +460,7 @@ secret; `.github/workflows/lake-entsoe.yml`).
 | `capacity` | A68 installed (A33) | country, production type | per year |
 | `transfer_capacity` | A61 forecast (contract A01) and A31 offered (auction A01) | zone border direction (`fetch_eu_capacity.zone_pairs`) | both documents as published, `doc` says which |
 | `outages` | A80 generation units | bidding zone | every revision, one row per point of the available-capacity curve; partition = year of the outage's start |
+| `imbalance_price` | A85 imbalance prices | bidding zone (+ DE-AT-LU to 2018) | `category` A05 deficit / A04 excess read from each point, `price` DECIMAL(12,3) and `currency` as published, `resolution_s`; partition `zone` and `year` |
 | `areas`, `units` | code lists; A71 per area | | units' positions from JRC-PPDB where it names the EIC code |
 
 Rules: values as published at the resolution ENTSO-E publishes (`resolution_min`), no 15-min
@@ -628,6 +655,7 @@ the same site.
 | Customer-hours without power (US) | `us_outages.json` (EAGLE-I) | the county holding the site, newest year |
 | Renewable share, carbon intensity | `transition.json` (Ember) | newest year with a value |
 | Data centres within 50 km | `datacentres.json` (OpenStreetMap) | count and distance |
+| Solar resource (PVOUT), mean wind speed at 100 m | `grid/atlas-pvout-0.1deg.i16`, `grid/atlas-wind100-0.1deg.i16` on R2 (Global Solar Atlas, Global Wind Atlas; "Resource atlases" below) | the mean of the source pixels in the site's 0.1° cell (built in Actions), read with one range request; a year of PV = the daily total × 365, as the atlas gives it |
 
 ## Country report (computed in the app: `frontend/src/components/CountryReport.tsx`)
 
@@ -888,6 +916,78 @@ HVDC), `cable` (underground or submarine); coordinates rounded to 0.0001°. 2026
 out 36,356 without a voltage tag, 103,511 below 100 kV, 10,048 outside the US. Tiles: 345 kV+
 from zoom 0, 200 kV+ from zoom 3, 100 kV+ from zoom 5, to zoom 11 (18 MB). The map colours
 them with Europe's voltage bands (380 kV+, 275–379, 200–274) and a darker 100–199 kV band.
+
+## Great Britain: carbon intensity (`scripts/fetch_gb_carbon.py`, `gb_carbon.json`)
+
+NESO Carbon Intensity API (api.carbonintensity.org.uk, no key, CC BY 4.0 as stated on
+carbonintensity.org.uk; `scripts/probe_gb_carbon.py`), every half hour. In the snapshot loop of
+`eu-snapshot` (onto `eu-data`, reloaded every 10 minutes by the app); a card in Great Britain's
+country panel (Now tab).
+
+| Field | Endpoint | Notes |
+|---|---|---|
+| `now` | `/intensity/{t}/pt24h` | the newest period with an **actual** value (gCO2/kWh); when none is published yet, the current forecast, labelled `kind: forecast` |
+| `past` | `/intensity/{t}/pt24h` | the last 24 h: forecast and actual per half hour |
+| `ahead` | `/intensity/{t}/fw48h` | the national forecast for the next 48 h and NESO's index (very low … very high) |
+| `mix` | `/generation` | the generation mix of the current half hour in % per fuel, as published |
+| `regions` | `/regional` | the 14 DNO regions (and England, Scotland, Wales, GB): **forecast only**, the API publishes no regional actual |
+
+Probe 2026-10-18: 48 of 48 half hours of the last day had an actual value, the newest ending at
+the last full half hour (05:00Z at 05:21Z); 96 periods ahead; a day 400 days back answers too.
+Nothing is computed; the card's "lowest ahead" is the smallest published forecast value.
+
+## Denmark every 5 minutes (`scripts/fetch_dk_live.py`, `dk_live.json`)
+
+Energinet's Energi Data Service (api.energidataservice.dk, no key, CC BY 4.0 per its terms
+page; `scripts/probe_dk_live.py`). In the snapshot loop of `eu-snapshot`; a card in Denmark's
+country panel (Now tab), labelled "Energinet, every 5 minutes".
+
+| Field | Dataset | Notes |
+|---|---|---|
+| `co2.DK1`, `co2.DK2` | `CO2Emis` | g CO2 per kWh **consumed**, per price area, every 5 min, the last 24 h on a 5-min grid (gaps stay empty). Energinet's initial values; the declared values follow in `DeclarationGridEmission` |
+| `production.DK1/DK2.mw` | `ElectricityProdex5MinRealtime` | MW, the newest 5 minutes per area: plants ≥ 100 MW, plants < 100 MW, offshore wind, onshore wind, solar, and the exchange per neighbour (positive = import into the area, Energinet's convention; Great Belt between DK1 and DK2) |
+
+Values as published: initial figures from upscaled real-time measurements that Energinet does
+not correct. The API returns 32-bit floats (87.129997); they are kept to 2 decimals. Probe
+2026-10-18: both datasets update every 5 minutes, the newest record 3 minutes old; the last 24 h
+are 576 records for each.
+
+## US EV fast chargers (`scripts/fetch_ev_chargers.py`, `us/ev_chargers.json`): waiting for a key
+
+NREL's Alternative Fuels Data Center station locator, `alt-fuel-stations/v1.json` with
+`fuel_type=ELEC`, `status=E`, `access=public`, `country=US`, `limit=all`
+(`developer.nrel.gov` is now an alias of `developer.nlr.gov`; `scripts/probe_nrel_afdc.py`).
+Planned: DC fast stations as points `[lon, lat, DC ports, network index, open year]` with names;
+per state stations, DC fast stations, level 2 ports and DC fast ports (sums, computed); per
+network DC fast stations and ports (sums); every station with every field to
+`lake/afdc/stations` (GeoParquet, partition `snapshot`); monthly in `us-grid` (data job).
+
+**Not built yet**: the probe in Actions (2026-10-18) got no key: the repo secret `EPA_API_KEY`
+reached the step empty and the API answered `API_KEY_MISSING`. It needs `NREL_API_KEY`
+(an api.data.gov key, https://developer.nrel.gov/signup/) as a repo secret; the layer "EV fast
+chargers" is listed once the file exists. The station fields were read from a 40-station sample
+with the public `DEMO_KEY` (to write the builder; nothing from it is on the map).
+
+## Resource atlases (`scripts/build_atlas.py`, `grid/atlas-*.pmtiles`, `atlas.json`)
+
+Downloaded and processed only in GitHub Actions (`.github/workflows/atlas.yml`, by hand; the
+owner approved the downloads). `scripts/probe_atlas.py` reads both files' headers by range
+requests:
+
+| Atlas | File | Values |
+|---|---|---|
+| Global Solar Atlas 2.13 (World Bank, Solargis; CC BY 4.0 per the atlas's terms of use) | `World_PVOUT_GISdata_LTAy_AvgDailyTotals_GlobalSolarAtlas-v2_GEOTIFF.zip`, 362 MB (2026-05-06), `PVOUT.tif` EPSG:4326 | PVOUT: long-term average of daily totals of PV output, kWh/kWp (free-standing c-Si at optimum tilt), 1994/1999/2005/2007/2018/2019 (by region) to 2025 |
+| Global Wind Atlas 3 (DTU; CC BY 4.0) | `wind_speed_cog_100m.tif`, 14.07 GB, float32 COG, 0.0025° (~250 m), 80° N to 64° S, no data = NaN; globalwindatlas.info redirects to figshare.com, which answers a bot check (AWS WAF), the same file through `ndownloader.figshare.com` answers | mean wind speed at 100 m, m/s |
+
+| Output | Where | Computed |
+|---|---|---|
+| Layers "Solar resource", "Wind resource" (Weather) | `grid/atlas-pvout.pmtiles` (28.7 MB), `grid/atlas-wind100.pmtiles` on the public bucket | warped to Web Mercator at zoom 7 (mean of the source pixels in each tile pixel), coloured by class, PNG tiles zoom 0–7 (lower zooms by nearest pixel, so classes stay classes). Classes: solar the atlas legend's own 0.2 kWh/kWp-a-day steps from 2.0 to 6.4; wind 1 m/s steps over the atlas's own 0–10 m/s scale (the wind atlas draws a continuous scale, no classes) |
+| Check a site, "Around it" | `grid/atlas-pvout-0.1deg.i16`, `grid/atlas-wind100-0.1deg.i16` (int16, 3600 × 1800, row-major from 90° N 180° W; PVOUT × 1000, wind × 100; −32768 = none) | the mean of the source pixels in each 0.1° cell; the card reads one cell by range request. PVOUT a year = daily × 365, as the atlas's own map gives yearly totals (730 = 2.0 × 365) |
+| The full rasters | `lake/atlas/atlas-pvout.tif` (COG, 489.5 MB), `lake/atlas/atlas-wind100.tif` (the downloaded COG) in the private bucket; `lake/atlas/_catalog.json` lists them under `rasters` | none |
+
+Check 2026-10-18 against the atlas's own site API (`api.globalsolaratlas.info/data/lta`, a
+point): Madrid 1,655 kWh/kWp a year at the point, 1,663 in our 0.1° cell (4.555 a day); Berlin
+1,071 at the point, 1,069 in the cell.
 
 ## Wind and sun layers (`scripts/fetch_wind.py`)
 

@@ -201,6 +201,8 @@ Snapshots: the newest, plus one per year (the others are dropped after a year).
 | `transfer_capacity` (A61, A31) | `ts`, `out_zone`, `in_zone`, `doc`, `resolution_min`, `mw` | `year` | `out_zone, in_zone, ts` | |
 | `outages` (A80) | `mrid`, `revision`, `doc_status`, `zone`, `asset_eic`, `asset_name`, `plant_eic`, `plant_name`, `psr_type`, `type`, `reason`, `reason_text`, `start`, `end`, `point_start`, `resolution_min`, `available_mw`, `nominal_mw` (one row per point of the available-capacity curve, every revision) | `year` of start | `asset_eic, start, revision` | `asset_eic` |
 
+| `imbalance_price` (A85) | `ts`, `zone`, `category` (A05 deficit, A04 excess), `price` DECIMAL(12,3), `currency` (as published: EUR, PLN, CZK, HUF, RON …), `resolution_s` | `zone`, `year` | `zone, category, ts` | |
+
 Every table also carries `iso2`, `iso3` (from the area code) and `admin1` (NULL). A78
 (transmission unavailability) is not built yet: it is asked per border and was not probed.
 
@@ -230,8 +232,12 @@ tiles (`grid/world-hv.pmtiles`) are cut from the same extract.
   partition `market`, `year`, `month`; sort `node_id, ts`; bloom `node_id`; `nodes` dimension
   with published positions. Real-time 5-minute prices: API only (recent), not stored.
 - GeoParquet for Global Renewables Watch, USPVDB, GRanD, TYNDP projects (EMODnet answers by WFS: API).
-- Rasters (Global Solar/Wind Atlas, population grids) are **Cloud-Optimized GeoTIFF**, the
-  raster standard, not Parquet: `lake/rasters/<name>/<version>.tif`.
+- Rasters are **Cloud-Optimized GeoTIFF**, the raster standard, not Parquet. Built (task 16):
+  `lake/atlas/atlas-pvout.tif` (Global Solar Atlas PVOUT) and `lake/atlas/atlas-wind100.tif`
+  (Global Wind Atlas, mean wind speed at 100 m), listed under `rasters` in
+  `lake/atlas/_catalog.json` (`scripts/build_atlas.py`). Population grids later.
+- `lake/afdc/stations` (GeoParquet, partition `snapshot`): every public US charging station
+  with every AFDC field (`scripts/fetch_ev_chargers.py`); waits for `NREL_API_KEY`.
 
 ## 7. Every dataset: API or Parquet, and its size
 
@@ -317,7 +323,8 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | US nodal prices, day-ahead (`lake/us_lmp/day_ahead`, built: `scripts/fetch_us_nodes.py`) | the markets' files, one day per request | Parquet | ~1 GB/yr (measured 2.7 MB a day, six markets) |
 | US nodal prices, real-time 5-min | ISO APIs | API, recent only | 0 |
 | ISO live queues (`lake/iso_queues/requests`, built: `scripts/fetch_us_queues.py`) | the markets' files, current only | weekly snapshots | ~0.01 GB/yr |
-| ENTSO-E imbalance (A85/A86) | API | Parquet with ENTSO-E | +0.05 GB/yr |
+| ENTSO-E imbalance prices (A85; built: `lake/entsoe/imbalance_price`, task 16) | API, one zip of XML documents per area and 60 days | Parquet with ENTSO-E | +0.05 GB/yr |
+| ENTSO-E imbalance volumes (A86) | API | Parquet with ENTSO-E (not built) | +0.02 GB/yr |
 | netztransparenz redispatch, curtailment | downloads | Parquet | ~0.3 GB |
 | SMARD, Energinet, Fingrid, Elia, RTE, REE REData | APIs with history | API | 0 |
 | Eurostat balances, EIA SEDS/STEO/AEO, OWID, EDGAR (country) | APIs | API | 0 |

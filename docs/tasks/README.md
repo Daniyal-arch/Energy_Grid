@@ -28,7 +28,7 @@ rules apply to every task.
 | 13 (done on main) | [13-retail-prices.md](13-retail-prices.md) retail electricity and gas prices (Eurostat, EIA-861) | no |
 | 14 (done on main) | [14-lake-entsoe.md](14-lake-entsoe.md) ENTSO-E history 2015– in the lake (Parquet on R2) | `ENTSOE_API_KEY` (repo secret; runs in Actions) |
 | 15 (done on main) | [15-lake-integrated.md](15-lake-integrated.md) the lake for the datasets already on the map, catalogue, topic views, PUDL timings | no (Cloudflare stays in repo secrets) |
-| 16 | [16-wrap-up.md](16-wrap-up.md) imbalance prices (ENTSO-E A85), US EV fast chargers (NREL AFDC), GB carbon intensity, Denmark every 5 min, solar and wind resource atlases | `ENTSOE_API_KEY`, `EPA_API_KEY` (api.data.gov, for NREL) |
+| 16 | [16-wrap-up.md](16-wrap-up.md) imbalance prices (ENTSO-E A85), US EV fast chargers (NREL AFDC), GB carbon intensity, Denmark every 5 min, solar and wind resource atlases | `ENTSOE_API_KEY`; NREL needs `NREL_API_KEY` (part B waits for it) |
 
 Several sessions run at once and touch the same files (store, layers, panels, docs,
 workflows): before opening a pull request, merge `origin/main` into the branch and resolve
@@ -51,5 +51,8 @@ JRC), installed capacity from ENTSO-E A68, border capacity on the flow arrows (A
 wind and solar forecast vs actual, "A day in the US" (EIA-930), prices to 0.01 €.
 
 Later: CO₂ per EU installation (EU ETS), LNG send-out per terminal (GIE ALSI), Climate TRACE
-facility emissions, Global Solar/Wind Atlas rasters, the rest of the world HV grid from
-Overture in Actions.
+facility emissions, the rest of the world HV grid from Overture in Actions.
+
+Done in task 16 (2026-10-18): imbalance prices per zone (card and lake history), GB carbon
+intensity, Denmark every 5 minutes, the solar and wind resource atlases (layers, Check a site,
+COGs in the lake). Waiting: US EV fast chargers (`NREL_API_KEY`).
