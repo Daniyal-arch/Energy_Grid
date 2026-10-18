@@ -6,8 +6,9 @@ name: Lake ENTSO-E
 # r2://infraatlas-raw/lake/entsoe/ (scripts/build_lake_entsoe.py).
 #
 # Backfill: Actions > Lake ENTSO-E > Run workflow, `years` = "2015-2025" or "2019,2020": one
-# job per year, a few at a time (ENTSO-E allows 400 requests a minute per key, shared with the
-# map's own workflows). Daily after eu-days: the last three days of the current year are
+# job per year, one at a time: ENTSO-E throttles one key to ~100 requests a minute in practice
+# (three years at once ran at 38/min each with thousands of 429s and none finished within the
+# 350-minute job limit, run 39020225322; 2024 alone took 2 h 49 min). Daily after eu-days: the last three days of the current year are
 # fetched again and that year's files rewritten. A last job merges the catalogue.
 # On a branch (before the workflow is on main, where Run workflow appears) a push runs the
 # years and tables its commit message names: "[years: 2015-2023]" "[tables: capacity]".
@@ -98,7 +99,7 @@ jobs:
     timeout-minutes: 350
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 1
       matrix:
         year: ${{ fromJson(needs.plan.outputs.years) }}
     steps:
