@@ -14,7 +14,7 @@ import { sunBounds, sunImage } from "../lib/sunLayer";
 import { rgbCss } from "../lib/theme";
 import { EUROPE_ISO3, ISO3, metricById, metricColor, type MetricId, type TransitionFile } from "../lib/transition";
 import { WindField, WindParticles, type WindFile } from "../lib/windParticles";
-import { useSiteLines } from "../lib/site";
+import { SITE_RADIUS_KM, useSiteFeatures, useSiteLines } from "../lib/site";
 import { SOLAR_OUTLINE_ZOOM } from "../lib/usSolar";
 import { ACCESS_STOPS, latest, type WorldStatsFile } from "../lib/world";
 import { US_CENTRE } from "../lib/us";
@@ -216,8 +216,13 @@ export default function MapCanvas() {
     const unsubCursor = useApp.subscribe((s, prev) => {
       if (s.picking !== prev.picking) map.getCanvas().style.cursor = s.picking ? "crosshair" : "";
     });
-    // the site's line search draws its link on the map
-    const unsubSite = useSiteLines.subscribe(touch);
+    // the site's line search and what the panel found in the area draw on the map
+    const unsubSiteLines = useSiteLines.subscribe(touch);
+    const unsubSiteFeatures = useSiteFeatures.subscribe(touch);
+    const unsubSite = () => {
+      unsubSiteLines();
+      unsubSiteFeatures();
+    };
     // the world's land: a DOM card (deck.gl's cards cover deck objects only)
     map.on("mousemove", "world-land", (e) => {
       const el = worldTip.current;
@@ -321,10 +326,19 @@ export default function MapCanvas() {
       // back from a European country: the overview again
       if (!sel && selectedIso2(prev)) fly(useApp.getState().mode === "day" ? "day" : "europe");
     };
-    /** A checked site: in view, close enough to see the search radius (the panel keeps the right). */
-    const focusSite = (lon: number, lat: number) => {
+    /** A checked site: the whole area in view, clear of the panels. */
+    const focusSite = (lon: number, lat: number, r: number, duration = 900) => {
       applyProjection();
-      map.easeTo({ center: [lon, lat], zoom: Math.max(map.getZoom(), 7.5), offset: isNarrow() ? [0, -120] : [-60, 0], duration: 900 });
+      const dLat = (r * 1.08) / 111.2;
+      const dLon = dLat / Math.max(0.05, Math.cos((lat * Math.PI) / 180));
+      const padding = isNarrow() ? { left: 12, right: 12, top: 70, bottom: 300 } : { left: 300, right: 410, top: 80, bottom: 70 };
+      map.fitBounds(
+        [
+          [lon - dLon, lat - dLat],
+          [lon + dLon, lat + dLat],
+        ],
+        { padding, duration, pitch: 0, bearing: 0, maxZoom: 13 },
+      );
     };
     const unsubCam = useApp.subscribe((s, prev) => {
       if (s.flyTo && s.flyTo !== prev.flyTo) {
@@ -334,7 +348,7 @@ export default function MapCanvas() {
         else map.once("style.load", () => fly(to));
       } else if (s.selection !== prev.selection) {
         // a story sets its camera itself
-        if (s.selection?.kind === "site") focusSite(s.selection.lon, s.selection.lat);
+        if (s.selection?.kind === "site") focusSite(s.selection.lon, s.selection.lat, s.selection.r ?? SITE_RADIUS_KM);
         else focusCountry(s.selection, prev.selection);
       } else if (s.mode !== prev.mode) applyProjection();
       else if (s.mode === "live" && !s.selection && s.layers.prices !== prev.layers.prices) {
@@ -357,8 +371,7 @@ export default function MapCanvas() {
           map.jumpTo({ center: to.center, zoom: to.zoom, pitch: to.pitch ?? (s.mode === "day" ? 55 : 0), bearing: to.bearing ?? 0, padding });
         } else fly(to);
       } else if (s.selection?.kind === "site") {
-        applyProjection();
-        map.jumpTo({ center: [s.selection.lon, s.selection.lat], zoom: 7.5 });
+        focusSite(s.selection.lon, s.selection.lat, s.selection.r ?? SITE_RADIUS_KM, 0);
       } else if (s.selection) focusCountry(s.selection, null);
       else {
         applyProjection();

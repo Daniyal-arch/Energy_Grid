@@ -1,6 +1,8 @@
-// "Check a site": the cards of the site panel (ui/Panel.tsx). Every card reads the map's own
-// files and names its source; distances, point-in-outline tests and sums within
-// SITE_RADIUS_KM are computed in lib/site.ts. A card with nothing for the place stays away.
+// "Check a site": the site analysis panel (ui/Panel.tsx). Every card reads the map's own files
+// and names its source; distances, point-in-outline tests and sums within the area the user
+// picks (a radius around the point) are computed here and in lib/site.ts. What the cards find in
+// the area goes to the map (lib/site.ts publishSite, map/siteLayers.ts). A card with nothing for
+// the place stays away.
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { create } from "zustand";
@@ -10,19 +12,21 @@ import type { CountriesFile, GridFile, PlantsFile, WorldFile } from "../app/type
 import { atlasValue, type AtlasFile } from "../lib/atlas";
 import { POP_CELL, peopleWithin } from "../lib/population";
 import { gbSiteTotals, type ConnectFile } from "../lib/connect";
-import { FUEL_LABEL, power } from "../lib/energy";
+import { FUEL_COLOR, FUEL_LABEL, power } from "../lib/energy";
 import type { PricesFile } from "../lib/prices";
 import { euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../lib/retail";
 import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type WaterFile } from "../lib/risk";
-import { SITE_RADIUS_KM, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, searchSiteLines, siteKey, useSiteLines, type LineSearch, type LonLat, type NearLine } from "../lib/site";
+import { SITE_RADII, SITE_RADIUS_KM, areaKey, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, publishSite, searchSiteLines, siteKey, useSiteLines, type LineSearch, type LonLat, type NearLine, type SitePlant } from "../lib/site";
+import { actions } from "../app/store";
+import type { RGB } from "../lib/theme";
 import { ISO3, type TransitionFile } from "../lib/transition";
-import { US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFile, type UsQueuesLiveFile, type UsState, type UsStatesFile } from "../lib/us";
+import { US_TYPE_COLOR, US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFile, type UsQueuesLiveFile, type UsState, type UsStatesFile } from "../lib/us";
 import type { DataCentresFile } from "../lib/world";
-import { PLANT_TYPE_LABEL, type WorldPlantsFile } from "../lib/worldPlants";
+import { PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, type WorldPlantsFile } from "../lib/worldPlants";
 import { Card } from "./CountryCards";
 
 const muted = "text-[#8d94a1]";
-const R = SITE_RADIUS_KM;
+const GREY: RGB = [150, 154, 166];
 
 export interface Place {
   site: LonLat;
@@ -34,10 +38,12 @@ export interface Place {
   state: UsState | null;
   /** the outlines have arrived (a place at sea has no country) */
   ready: boolean;
+  /** the area: a circle of this radius around the point, km */
+  radius: number;
 }
 
 /** Which country (and US state) holds the site: point in the map's own outlines. */
-export function usePlace(site: LonLat): Place {
+export function usePlace(site: LonLat, radius: number = SITE_RADIUS_KM): Place {
   const countries = useFile<CountriesFile>("countries");
   const world = useFile<WorldFile>("world");
   const [lon, lat] = site;
@@ -54,6 +60,7 @@ export function usePlace(site: LonLat): Place {
     europe: !!eu,
     state,
     ready: !!countries && (!!eu || !!world) && (iso3 !== "USA" || !!states),
+    radius,
   };
 }
 
@@ -82,8 +89,8 @@ type Section = (typeof SECTIONS)[number];
 const useSiteReport = create<{ key: string; sections: Partial<Record<Section, ReportRow[]>> }>(() => ({ key: "", sections: {} }));
 
 /** A card hands its figures to the report (kept per site). */
-function useReport(site: LonLat, section: Section, rows: (ReportRow | null | false | undefined)[]) {
-  const key = siteKey(site);
+function useReport(place: Place, section: Section, rows: (ReportRow | null | false | undefined)[]) {
+  const key = areaKey(place.site, place.radius);
   const json = JSON.stringify(rows.filter(Boolean));
   useEffect(() => {
     const clean = JSON.parse(json) as ReportRow[];
@@ -97,7 +104,7 @@ const csvCell = (v: unknown) => {
 };
 
 function SiteDownload({ place }: { place: Place }) {
-  const key = siteKey(place.site);
+  const key = areaKey(place.site, place.radius);
   const report = useSiteReport();
   const rows = report.key === key ? SECTIONS.flatMap((sec) => (report.sections[sec] ?? []).map((r) => [sec, ...r])) : [];
   const download = () => {
@@ -106,6 +113,7 @@ function SiteDownload({ place }: { place: Place }) {
       ["section", "item", "value", "unit", "note", "source"],
       ["Site", "Latitude", lat, "degrees", "", ""],
       ["Site", "Longitude", lon, "degrees", "", ""],
+      ["Site", "Area radius", place.radius, "km", "figures summed within this distance", ""],
       ["Site", "Place", place.name ?? "", "", "", "the map's outlines"],
       ["Site", "Link", window.location.href, "", "", "InfraAtlas"],
       ["Site", "Downloaded", new Date().toISOString().slice(0, 19) + "Z", "UTC", "", ""],
@@ -113,7 +121,7 @@ function SiteDownload({ place }: { place: Place }) {
     const text = [...head, ...rows].map((r) => r.map(csvCell).join(",")).join("\r\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob(["\ufeff" + text], { type: "text/csv;charset=utf-8" }));
-    a.download = `infraatlas-site-${lat.toFixed(4)}_${lon.toFixed(4)}.csv`;
+    a.download = `infraatlas-site-${lat.toFixed(4)}_${lon.toFixed(4)}_${place.radius}km.csv`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   };
@@ -138,7 +146,7 @@ function lineReport(label: string, s: LineSearch | null | undefined, pick: (s: L
 }
 
 /** Records within the radius, nearest first. */
-function within<T>(rows: T[] | undefined, at: (r: T) => LonLat, site: LonLat): { row: T; d: number }[] {
+function within<T>(rows: T[] | undefined, at: (r: T) => LonLat, site: LonLat, R: number): { row: T; d: number }[] {
   if (!rows) return [];
   // a degree of latitude is 111 km: a box test before the distance
   const dLat = R / 111;
@@ -170,18 +178,28 @@ function lineRow(label: string, s: LineSearch | null, failed: boolean, pick: (s:
 
 export function SiteGridCard({ place }: { place: Place }) {
   const { site } = place;
-  const key = siteKey(site);
+  const R = place.radius;
+  const key = areaKey(site, R);
   const inUs = !!place.state;
   useEffect(() => {
-    searchSiteLines("world", site);
-    if (inUs) searchSiteLines("us", site);
-  }, [site, inUs]);
+    searchSiteLines("world", site, R);
+    if (inUs) searchSiteLines("us", site, R);
+  }, [site, inUs, R]);
   const world = useSiteLines((s) => (s.world.key === key ? s.world : null));
   const us = useSiteLines((s) => (s.us.key === key ? s.us : null));
   const grid = useFile<GridFile>(place.europe ? "grid" : null);
-  const subs = useMemo(() => within(grid?.substations, (s) => [s[1], s[2]], site), [grid, site]);
+  const subs = useMemo(() => within(grid?.substations, (s) => [s[1], s[2]], site, R), [grid, site, R]);
+  useEffect(() => publishSite(key, { subs: subs.map((x) => ({ at: [x.row[1], x.row[2]] as LonLat, kv: x.row[0], km: x.d })) }), [key, subs]);
+  const linesIn = (s: LineSearch | null | undefined) => {
+    const byKv = new Map<string, number>();
+    for (const l of s?.lines ?? []) {
+      const k = l.kv != null ? `${l.kv} kV` : "voltage not tagged";
+      byKv.set(k, (byKv.get(k) ?? 0) + 1);
+    }
+    return [...byKv.entries()].sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]));
+  };
   const pypsa = "PyPSA-Eur network from OpenStreetMap (grid.json)";
-  useReport(site, "Grid", [
+  useReport(place, "Grid", [
     inUs && lineReport("Nearest line, 100 kV or more", us?.result, (s) => s.nearest, OSM_US),
     lineReport("Nearest line, 220 kV or more", world?.result, (s) => s.nearest, OSM_WORLD),
     lineReport("Nearest line, 345 kV or more", world?.result, (s) => s.ehv, OSM_WORLD),
@@ -193,6 +211,16 @@ export function SiteGridCard({ place }: { place: Place }) {
       {inUs && lineRow("Nearest line, 100 kV or more", us?.result ?? null, !!us?.failed, (s) => s.nearest)}
       {lineRow("Nearest line, 220 kV or more", world?.result ?? null, !!world?.failed, (s) => s.nearest)}
       {lineRow("Nearest line, 345 kV or more", world?.result ?? null, !!world?.failed, (s) => s.ehv)}
+      {world?.result && (
+        <Row
+          k={`Line sections within ${R} km`}
+          v={(world.result.lines.length + (us?.result?.lines.length ?? 0)).toLocaleString("en-US")}
+          sub={linesIn(world.result)
+            .slice(0, 3)
+            .map(([k, n]) => `${k} ${n}`)
+            .join(" · ")}
+        />
+      )}
       {place.europe &&
         (grid ? (
           <>
@@ -215,13 +243,28 @@ export function SiteGridCard({ place }: { place: Place }) {
 
 export function SiteCapacityCard({ place }: { place: Place }) {
   const { site } = place;
+  const R = place.radius;
+  const key = areaKey(site, R);
   const connect = useFile<ConnectFile>(place.iso2 === "GB" || place.iso2 === "NL" ? "connect" : null);
   const queue = useFile<UsQueueFile>(place.state ? "usQueue" : null);
   const live = useFile<UsQueuesLiveFile>(place.state ? "usQueuesLive" : null);
   const nl = useMemo(() => (place.iso2 === "NL" && connect ? (connect.nl.areas.find((a) => inPairPolygons(site, a.polygons)) ?? null) : null), [connect, place.iso2, site]);
   const gb = useMemo(
-    () => (place.iso2 === "GB" && connect ? within(gbSiteTotals(connect.gb), (t) => [t.site[1] as number, t.site[2] as number], site) : []),
-    [connect, place.iso2, site],
+    () => (place.iso2 === "GB" && connect ? within(gbSiteTotals(connect.gb), (t) => [t.site[1] as number, t.site[2] as number], site, R) : []),
+    [connect, place.iso2, site, R],
+  );
+  useEffect(
+    () =>
+      publishSite(key, {
+        gb: connect
+          ? gb.map((g) => ({ at: [g.row.site[1] as number, g.row.site[2] as number] as LonLat, name: g.row.site[0], owner: g.row.site[3], mw: g.row.mw, km: g.d, date: connect.gb.date }))
+          : [],
+        nl:
+          nl && connect
+            ? { name: nl.name, operator: nl.operator, offtake: connect.nl.status[nl.offtake], feedin: connect.nl.status[nl.feedin], offtakeK: nl.offtake, polygons: nl.polygons }
+            : null,
+      }),
+    [key, gb, nl, connect],
   );
   const code = place.state?.code;
   const st = code ? queue?.states[code] : undefined;
@@ -236,7 +279,7 @@ export function SiteCapacityCard({ place }: { place: Place }) {
   const tec = connect ? `NESO TEC register, ${connect.gb.date}` : "";
   const nlSrc = "Netbeheer Nederland capacity map (connect.json)";
   const lbnl = queue ? `LBNL Queued Up, through ${queue.through}` : "";
-  useReport(site, "Room to connect", [
+  useReport(place, "Room to connect", [
     ...(nl && connect
       ? ([
           ["Capacity-map area", nl.name, "", nl.operator ?? "", nlSrc],
@@ -332,6 +375,8 @@ interface NearPlant {
   type: string;
   mw: number;
   d: number;
+  at: LonLat;
+  color: RGB;
 }
 
 function PlantRows({ title, rows }: { title: string; rows: NearPlant[] }) {
@@ -349,6 +394,8 @@ function PlantRows({ title, rows }: { title: string; rows: NearPlant[] }) {
 
 export function SitePlantsCard({ place }: { place: Place }) {
   const { site } = place;
+  const R = place.radius;
+  const key = areaKey(site, R);
   const us = !!place.state;
   const eu = useFile<PlantsFile>(place.europe ? "plants" : null);
   const usp = useFile<UsPlantsFile>(us ? "usPlants" : null);
@@ -356,19 +403,42 @@ export function SitePlantsCard({ place }: { place: Place }) {
   const data = useMemo(() => {
     if (us) {
       if (!usp) return null;
-      const near = within(usp.points, (p) => [p[0], p[1]], site);
+      const near = within(usp.points, (p) => [p[0], p[1]], site, R);
       const of = (status: string) =>
         near
           .filter((n) => usp.statuses[n.row[3]] === status)
-          .map((n) => ({ name: usp.plants[n.row[6]]?.[0] ?? null, type: US_TYPE_LABEL[usp.types[n.row[2]]] ?? usp.types[n.row[2]], mw: n.row[4], d: n.d }));
+          .map((n) => ({
+            name: usp.plants[n.row[6]]?.[0] ?? null,
+            type: US_TYPE_LABEL[usp.types[n.row[2]]] ?? usp.types[n.row[2]],
+            mw: n.row[4],
+            d: n.d,
+            at: [n.row[0], n.row[1]] as LonLat,
+            color: US_TYPE_COLOR[usp.types[n.row[2]]] ?? GREY,
+          }));
       return { operating: of("operating"), construction: of("construction"), planned: of("planned"), source: `EIA-860M (${usp.release}), units of 1 MW and more, net summer capacity` };
     }
     if (!gem || (place.europe && !eu)) return null;
-    const near = within(gem.points, (p) => [p[0], p[1]], site);
+    const near = within(gem.points, (p) => [p[0], p[1]], site, R);
     const of = (status: string) =>
-      near.filter((n) => gem.statuses[n.row[3]] === status).map((n) => ({ name: null, type: PLANT_TYPE_LABEL[gem.types[n.row[2]]] ?? gem.types[n.row[2]], mw: n.row[4], d: n.d }));
+      near
+        .filter((n) => gem.statuses[n.row[3]] === status)
+        .map((n) => ({
+          name: null,
+          type: PLANT_TYPE_LABEL[gem.types[n.row[2]]] ?? gem.types[n.row[2]],
+          mw: n.row[4],
+          d: n.d,
+          at: [n.row[0], n.row[1]] as LonLat,
+          color: PLANT_TYPE_COLOR[gem.types[n.row[2]]] ?? GREY,
+        }));
     if (place.europe && eu) {
-      const op = within(eu.plants, (p) => [p[2], p[3]], site).map((n) => ({ name: n.row[5], type: FUEL_LABEL[eu.groups[n.row[0]]] ?? eu.groups[n.row[0]], mw: n.row[1], d: n.d }));
+      const op = within(eu.plants, (p) => [p[2], p[3]], site, R).map((n) => ({
+        name: n.row[5],
+        type: FUEL_LABEL[eu.groups[n.row[0]]] ?? eu.groups[n.row[0]],
+        mw: n.row[1],
+        d: n.d,
+        at: [n.row[2], n.row[3]] as LonLat,
+        color: FUEL_COLOR[eu.groups[n.row[0]]] ?? GREY,
+      }));
       return {
         operating: op,
         construction: of("construction"),
@@ -377,7 +447,13 @@ export function SitePlantsCard({ place }: { place: Place }) {
       };
     }
     return { operating: of("operating"), construction: of("construction"), planned: of("planned"), source: "Global Energy Monitor's Integrated Power Tracker (its own size thresholds per type)" };
-  }, [us, usp, gem, eu, place.europe, site]);
+  }, [us, usp, gem, eu, place.europe, site, R]);
+  useEffect(() => {
+    if (!data) return;
+    const pts = (rows: NearPlant[], status: SitePlant["status"]): SitePlant[] =>
+      rows.map((r) => ({ at: r.at, mw: r.mw, type: r.type, color: r.color, name: r.name, status, km: r.d, source: data.source }));
+    publishSite(key, { plants: [...pts(data.operating, "operating"), ...pts(data.construction, "construction"), ...pts(data.planned, "planned")] });
+  }, [key, data]);
   const plantRows = (status: string, rows: NearPlant[]): ReportRow[] => {
     const byType = new Map<string, number>();
     for (const r of rows) byType.set(r.type, (byType.get(r.type) ?? 0) + r.mw);
@@ -387,7 +463,7 @@ export function SitePlantsCard({ place }: { place: Place }) {
     ];
   };
   useReport(
-    site,
+    place,
     "Power plants",
     data
       ? [
@@ -439,7 +515,7 @@ export function SitePricesCard({ place }: { place: Place }) {
   const us = usRow ? { ind: newestMonth(months, usRow.IND), com: newestMonth(months, usRow.COM), res: newestMonth(months, usRow.RES) } : null;
   const period = prices ? `${prices.period[0]} to ${prices.period[1]}` : "";
   const flagged = (r: { period: string; flag: string | null }) => r.period + (r.flag ? ` (${r.flag})` : "");
-  useReport(place.site, "Prices", [
+  useReport(place, "Prices", [
     ...zones.flatMap(
       ([id, z]) =>
         [
@@ -506,7 +582,7 @@ export function SiteRiskCard({ place }: { place: Place }) {
   const county = useMemo(() => counties?.counties.find((c) => inFlatPolygons(site, c.polygons)) ?? null, [counties, site]);
   const ny = outages ? newestYear(outages) : null;
   const hours = county && outages && ny ? outages.counties[county.code]?.[ny.k] : null;
-  useReport(site, "Risk", [
+  useReport(place, "Risk", [
     ...(water && basin
       ? water.order.map(
           (ind, i) =>
@@ -593,7 +669,10 @@ function usePeopleAt(site: LonLat, on: boolean) {
 export function SiteCountryCard({ place }: { place: Place }) {
   const t = useFile<TransitionFile>(place.iso3 ? "transition" : null);
   const dc = useFile<DataCentresFile>(place.ready ? "datacentres" : null);
-  const near = useMemo(() => within(dc?.points, (p) => [p[0], p[1]], place.site), [dc, place.site]);
+  const R = place.radius;
+  const near = useMemo(() => within(dc?.points, (p) => [p[0], p[1]], place.site, R), [dc, place.site, R]);
+  const key = areaKey(place.site, R);
+  useEffect(() => publishSite(key, { dcs: near.map((n) => ({ at: [n.row[0], n.row[1]] as LonLat, name: n.row[2], operator: n.row[3], km: n.d })) }), [key, near]);
   const e = place.iso3 ? t?.entities[place.iso3] : undefined;
   const k = e && t ? [...t.years.keys()].reverse().find((i) => e.renewables[i] != null) : undefined;
   const osm = "OpenStreetMap (datacentres.json)";
@@ -601,7 +680,7 @@ export function SiteCountryCard({ place }: { place: Place }) {
   const people = usePeopleAt(place.site, place.ready);
   const cell = at.atlas?.pvout.lookup.cell_deg ?? 0.1;
   const atlasNote = `mean over the ${cell}° cell (computed)`;
-  useReport(place.site, "Around it", [
+  useReport(place, "Around it", [
     at.pvout != null && ["PV output potential (PVOUT)", round(at.pvout, 3), "kWh/kWp per day", `${atlasNote}; x365 = ${Math.round(at.pvout * 365)} kWh/kWp a year`, at.atlas?.pvout.source ?? "Global Solar Atlas"],
     !!people && [`People within ${R} km`, people.people, "people", `2025; sum of the ${people.cells} cells of ${POP_CELL}° whose centre is within ${R} km (computed)`, "GHSL GHS-POP R2023A (JRC, CC BY 4.0)"],
     at.wind != null && ["Mean wind speed at 100 m", round(at.wind, 2), "m/s", atlasNote, at.atlas?.wind.source ?? "Global Wind Atlas"],
@@ -644,10 +723,31 @@ export function SiteCountryCard({ place }: { place: Place }) {
   );
 }
 
+/** The area: a radius around the point; everything inside it is summed here and drawn on the map. */
+function SiteArea({ place }: { place: Place }) {
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 px-1">
+      <span className={`mr-1 text-[9.5px] uppercase tracking-[0.16em] ${muted}`}>Area</span>
+      {SITE_RADII.map((r) => (
+        <button
+          key={r}
+          onClick={() => actions.setSiteRadius(r)}
+          className={`rounded-md border px-2 py-0.5 text-[11px] tabular-nums ${
+            place.radius === r ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-300 hover:bg-white/[0.07]"
+          }`}
+        >
+          {r} km
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function SiteCards({ place }: { place: Place }) {
   if (!place.ready) return <Loading what="the outlines" />;
   return (
     <>
+      <SiteArea place={place} />
       <SiteGridCard place={place} />
       <SiteCapacityCard place={place} />
       <SitePlantsCard place={place} />
@@ -656,7 +756,8 @@ export function SiteCards({ place }: { place: Place }) {
       <SiteCountryCard place={place} />
       <SiteDownload place={place} />
       <p className={`px-1 text-[10px] leading-snug ${muted}`}>
-        A first screen from public data, not a connection study. Right-click another place (or use Check a site) to compare; the link in the address bar opens this site.
+        A first screen from public data, not a connection study. The map shows what lies inside the area: high-voltage lines by voltage, substations, plants by fuel (rings:
+        building or planned), data centres and capacity sites. Right-click another place to move the area; the link in the address bar opens this analysis.
       </p>
     </>
   );

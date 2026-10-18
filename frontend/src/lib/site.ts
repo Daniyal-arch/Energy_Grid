@@ -7,11 +7,16 @@ import Protobuf from "pbf";
 import { PMTiles } from "pmtiles";
 import { create } from "zustand";
 
+import type { RGB } from "./theme";
+
 import { HV_TILES } from "./worldPlants";
 import { US_LINES_TILES } from "./us";
 
-/** Plants, data centres and capacity sites are summed within this distance of the site. */
+/** The analysis area: a circle of this radius around the site (the user picks it). */
+export const SITE_RADII = [5, 10, 25, 50, 100] as const;
 export const SITE_RADIUS_KM = 50;
+/** The nearest line is looked for at least this far, even in a small area. */
+const NEAREST_SEARCH_KM = 50;
 /** The line tiles are read at this zoom (all features: the tiles drop none). */
 const LINE_ZOOM = 9;
 const EARTH_KM = 6371.0088;
@@ -99,12 +104,23 @@ export interface NearLine {
   at: LonLat;
   dc: boolean;
 }
+/** A line (one part of a tile feature) that comes within the area. */
+export interface SiteLine {
+  kv: number | null;
+  name: string | null;
+  dc: boolean;
+  /** its nearest point to the site, km */
+  km: number;
+  path: LonLat[];
+}
 export interface LineSearch {
   /** the nearest line of any voltage in the tiles, and the nearest of 345 kV or more */
   nearest: NearLine | null;
   ehv: NearLine | null;
   /** lines farther than this may sit outside the tiles read: they are not reported */
   radiusKm: number;
+  /** every line part within the area, for the map */
+  lines: SiteLine[];
 }
 
 const archives = new Map<string, PMTiles>();
@@ -123,53 +139,65 @@ const tileY = (lat: number, n: number) => {
 const lonOf = (x: number, n: number) => (x / n) * 360 - 180;
 const latOf = (y: number, n: number) => Math.atan(Math.sinh(Math.PI * (1 - (2 * y) / n))) / RAD;
 
-/** The nearest lines around a site in a PMTiles archive of lines (properties kv, name, dc):
- *  the tile holding the site and its eight neighbours at zoom 9, so every line within one
- *  tile's width (about 78 km at the equator, 50 km at 50° N) is found. */
-export async function nearestTileLines(url: string, layer: string, site: LonLat): Promise<LineSearch> {
+/** The lines around a site in a PMTiles archive of lines (properties kv, name, dc), read at
+ *  zoom 9 (the tiles drop no feature there): the tile holding the site and enough neighbours
+ *  to cover the area and the nearest-line search (at most 3 tiles each way). */
+export async function nearestTileLines(url: string, layer: string, site: LonLat, areaKm: number): Promise<LineSearch> {
   const z = LINE_ZOOM;
   const n = 2 ** z;
   const tx = tileX(site[0], n);
   const ty = tileY(site[1], n);
+  const tileKm = (40075 * Math.cos(site[1] * RAD)) / n;
+  const reach = Math.min(3, Math.max(1, Math.ceil(Math.max(areaKm, NEAREST_SEARCH_KM) / tileKm)));
   const a = archiveOf(url);
-  const jobs: Promise<NearLine[]>[] = [];
-  for (let dx = -1; dx <= 1; dx++)
-    for (let dy = -1; dy <= 1; dy++) {
+  const jobs: Promise<{ near: NearLine[]; lines: SiteLine[] }>[] = [];
+  for (let dx = -reach; dx <= reach; dx++)
+    for (let dy = -reach; dy <= reach; dy++) {
       const x = (tx + dx + n) % n;
       const y = ty + dy;
       if (y < 0 || y >= n) continue;
       jobs.push(
         a.getZxy(z, x, y).then((res) => {
-          if (!res) return [];
+          const near: NearLine[] = [];
+          const lines: SiteLine[] = [];
+          if (!res) return { near, lines };
           const vt = new VectorTile(new Protobuf(new Uint8Array(res.data)));
           const lyr = vt.layers[layer];
-          if (!lyr) return [];
-          const out: NearLine[] = [];
+          if (!lyr) return { near, lines };
           for (let i = 0; i < lyr.length; i++) {
             const f = lyr.feature(i);
             const props = f.properties as { kv?: number; name?: string; dc?: number };
+            const kv = typeof props.kv === "number" ? props.kv : null;
+            const name = props.name ?? null;
+            const dc = props.dc === 1;
             let best: { d: number; at: LonLat } = { d: Infinity, at: site };
             for (const part of f.loadGeometry()) {
               const flat: number[] = [];
               for (const p of part) flat.push(lonOf(x + p.x / lyr.extent, n), latOf(y + p.y / lyr.extent, n));
               const r = nearestOnFlat(site, flat);
               if (r.d < best.d) best = r;
+              if (r.d <= areaKm) {
+                const path: LonLat[] = [];
+                for (let k = 0; k + 1 < flat.length; k += 2) path.push([flat[k], flat[k + 1]]);
+                lines.push({ kv, name, dc, km: r.d, path });
+              }
             }
-            if (Number.isFinite(best.d)) out.push({ kv: typeof props.kv === "number" ? props.kv : null, name: props.name ?? null, km: best.d, at: best.at, dc: props.dc === 1 });
+            if (Number.isFinite(best.d)) near.push({ kv, name, km: best.d, at: best.at, dc });
           }
-          return out;
+          return { near, lines };
         }),
       );
     }
-  const all = (await Promise.all(jobs)).flat();
-  // the shortest distance from the site to the edge of the nine tiles read
-  const x0 = lonOf(tx - 1, n);
-  const x1 = lonOf(tx + 2, n);
-  const y0 = latOf(ty + 2, n);
-  const y1 = latOf(ty - 1, n);
+  const got = await Promise.all(jobs);
+  const all = got.flatMap((g) => g.near);
+  // the shortest distance from the site to the edge of the tiles read
+  const x0 = lonOf(tx - reach, n);
+  const x1 = lonOf(tx + reach + 1, n);
+  const y0 = latOf(ty + reach + 1, n);
+  const y1 = latOf(ty - reach, n);
   const radiusKm = Math.min(km(site, [x0, site[1]]), km(site, [x1, site[1]]), km(site, [site[0], y0]), km(site, [site[0], y1]));
   const inside = all.filter((l) => l.km <= radiusKm).sort((p, q) => p.km - q.km);
-  return { nearest: inside[0] ?? null, ehv: inside.find((l) => (l.kv ?? 0) >= 345) ?? null, radiusKm };
+  return { nearest: inside[0] ?? null, ehv: inside.find((l) => (l.kv ?? 0) >= 345) ?? null, radiusKm, lines: got.flatMap((g) => g.lines) };
 }
 
 // ------------------------------------------------------------------ the site's line searches, shared with the map
@@ -182,23 +210,57 @@ interface SiteLines {
   us: Search;
 }
 const idle: Search = { key: "", result: null, failed: false };
-/** The line searches for the selected site (the panel shows them, the map draws the link). */
+/** The line searches for the selected site (the panel shows them, the map draws the lines). */
 export const useSiteLines = create<SiteLines>(() => ({ world: idle, us: idle }));
 
 export const siteKey = (site: LonLat) => `${site[0].toFixed(4)},${site[1].toFixed(4)}`;
+/** One analysis: the site and the area's radius. */
+export const areaKey = (site: LonLat, radiusKm: number) => `${siteKey(site)}|${radiusKm}`;
 
-/** Start a line search for a site (once per site and tile set). */
-export function searchSiteLines(which: keyof SiteLines, site: LonLat): void {
-  const key = siteKey(site);
+/** Start a line search for a site and area (once per site, radius and tile set). */
+export function searchSiteLines(which: keyof SiteLines, site: LonLat, radiusKm: number): void {
+  const key = areaKey(site, radiusKm);
   if (useSiteLines.getState()[which].key === key) return;
   useSiteLines.setState({ [which]: { key, result: null, failed: false } });
   const done = (v: Search) => {
     if (useSiteLines.getState()[which].key === key) useSiteLines.setState({ [which]: v });
   };
   const [url, layer] = which === "world" ? [HV_TILES, "hv"] : [US_LINES_TILES, "lines"];
-  nearestTileLines(url, layer, site)
+  nearestTileLines(url, layer, site, radiusKm)
     .then((result) => done({ key, result, failed: false }))
     .catch(() => done({ key, result: null, failed: true }));
+}
+
+// ------------------------------------------------------------------ what the panel found in the area, for the map
+
+export interface SitePlant {
+  at: LonLat;
+  mw: number;
+  type: string;
+  color: RGB;
+  name: string | null;
+  status: "operating" | "construction" | "planned";
+  km: number;
+  source: string;
+}
+export interface SiteFeatures {
+  key: string;
+  plants: SitePlant[];
+  /** substations, 220 kV and more (Europe) */
+  subs: { at: LonLat; kv: number; km: number }[];
+  dcs: { at: LonLat; name: string | null; operator: string | null; km: number }[];
+  /** GB: TEC register sites with MW waiting */
+  gb: { at: LonLat; name: string; owner: string; mw: number; km: number; date: string }[];
+  /** NL: the capacity-map area holding the site */
+  nl: { name: string; operator: string | null; offtake: string; feedin: string; offtakeK: number; polygons: [number, number][][][] } | null;
+}
+const empty = (key: string): SiteFeatures => ({ key, plants: [], subs: [], dcs: [], gb: [], nl: null });
+export const useSiteFeatures = create<SiteFeatures>(() => empty(""));
+
+/** A card hands what it found in the area to the map. */
+export function publishSite(key: string, part: Partial<Omit<SiteFeatures, "key">>): void {
+  const s = useSiteFeatures.getState();
+  useSiteFeatures.setState({ ...(s.key === key ? s : empty(key)), ...part, key });
 }
 
 /** "4.2 km" (one decimal under 10 km). */

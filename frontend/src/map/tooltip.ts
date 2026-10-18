@@ -26,6 +26,7 @@ import { solarCat, type UsSolarFile } from "../lib/usSolar";
 import type { EvChargersFile } from "../lib/evChargers";
 import type { GhgrpFile } from "../lib/ghgrp";
 import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
+import { siteHtml } from "./siteLayers";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
@@ -287,6 +288,7 @@ function mastrHtml(id: string, object: unknown): string | null {
 }
 
 function tooltipHtml(id: string, object: unknown): string | null {
+  if (id.startsWith("site-")) return siteHtml(id, object);
   if (id === "us-outages" || id === "w-water") return riskHtml(id, object);
   if (id.startsWith("de-mastr-")) return mastrHtml(id, object);
   if (id === "eu-tyndp" || id === "eu-tyndp-areas" || id === "eu-tyndp-points") {

@@ -48,7 +48,7 @@ import type { UsNodesFile } from "../lib/usNodes";
 import { MastrCountryCard } from "../components/MastrCards";
 import { SiteCards, usePlace } from "../components/SiteCards";
 import { ReportButton } from "../components/CountryReport";
-import type { LonLat } from "../lib/site";
+import { SITE_RADIUS_KM, type LonLat } from "../lib/site";
 import type { ImbalanceFile } from "../lib/imbalance";
 import type { DkLiveFile, GbCarbonFile } from "../lib/live";
 import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
@@ -128,7 +128,7 @@ export default function Panel() {
   const region = useApp((s) => s.region);
   const countries = useFile<CountriesFile>("countries");
   const european = sel?.kind === "country" && !!sel.iso2 && !!countries?.countries.some((c) => c.iso === sel.iso2);
-  if (sel?.kind === "site") return <SitePanel lon={sel.lon} lat={sel.lat} />;
+  if (sel?.kind === "site") return <SitePanel lon={sel.lon} lat={sel.lat} r={sel.r ?? SITE_RADIUS_KM} />;
   if (sel?.kind === "zone") return <ZonePanel zone={sel.id} />;
   if (sel?.kind === "region") return <RegionPanel grid={sel.grid} id={sel.id} />;
   if (sel?.kind === "country" && european) return <CountryPanel iso={sel.iso2!} />;
@@ -183,14 +183,14 @@ function Frame({ title, sub, tabs, close = true, action }: { title: string; sub?
 
 // ---------------------------------------------------------------- one place: "Check a site"
 
-function SitePanel({ lon, lat }: { lon: number; lat: number }) {
+function SitePanel({ lon, lat, r }: { lon: number; lat: number; r: number }) {
   const site = useMemo<LonLat>(() => [lon, lat], [lon, lat]);
-  const place = usePlace(site);
+  const place = usePlace(site, r);
   const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? "N" : "S"}, ${Math.abs(lon).toFixed(4)}° ${lon >= 0 ? "E" : "W"}`;
   return (
     <Frame
       title={place.name ?? (place.ready ? "No country outline here" : "Site")}
-      sub={`Site check · ${coords}`}
+      sub={`Site analysis · ${r} km around ${coords}`}
       tabs={[{ id: "site", label: "Site", body: () => <SiteCards place={place} /> }]}
     />
   );

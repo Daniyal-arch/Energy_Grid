@@ -225,7 +225,7 @@ export type Selection =
   | { kind: "zone"; id: string }
   | { kind: "region"; grid: "us" | "br" | "au" | "tw" | "on"; id: string }
   /** "Check a site": one place, what the map's files say about it (ui/SitePanel.tsx) */
-  | { kind: "site"; lon: number; lat: number };
+  | { kind: "site"; lon: number; lat: number; r?: number };
 
 export type PlantStatus = "operating" | "construction" | "planned" | "retired";
 export type Region = "europe" | "world" | "us";
@@ -583,8 +583,15 @@ export const actions = {
   openReport(report: string | null) {
     useApp.setState({ report });
   },
+  /** Check a place as a site; the area keeps the radius chosen last. */
   checkSite(lon: number, lat: number) {
-    actions.select({ kind: "site", lon: Number(lon.toFixed(4)), lat: Number(lat.toFixed(4)) }, "site");
+    const s = useApp.getState().selection;
+    const r = s?.kind === "site" ? s.r : undefined;
+    actions.select({ kind: "site", lon: Number(lon.toFixed(4)), lat: Number(lat.toFixed(4)), ...(r ? { r } : {}) }, "site");
+  },
+  setSiteRadius(r: number) {
+    const s = useApp.getState().selection;
+    if (s?.kind === "site") useApp.setState({ selection: { ...s, r } });
   },
   applyStory(id: string) {
     const st = STORIES.find((x) => x.id === id);
@@ -646,8 +653,9 @@ export function readUrl(): void {
     if (kind === "zone") patch.selection = { kind, id: a };
     if (kind === "region") patch.selection = { kind, grid: a as "us" | "br" | "au" | "tw" | "on", id: b };
     if (kind === "site") {
-      const [lon, lat] = (a ?? "").split(",").map(Number);
-      if (Number.isFinite(lon) && Number.isFinite(lat) && Math.abs(lat) <= 85 && Math.abs(lon) <= 180) patch.selection = { kind, lon, lat };
+      const [lon, lat, r] = (a ?? "").split(",").map(Number);
+      if (Number.isFinite(lon) && Number.isFinite(lat) && Math.abs(lat) <= 85 && Math.abs(lon) <= 180)
+        patch.selection = { kind, lon, lat, ...(Number.isFinite(r) && r > 0 && r <= 200 ? { r } : {}) };
     }
   }
   const at = p.get("at");
@@ -696,7 +704,7 @@ export function writeUrl(camera?: Camera): void {
   if (sel?.kind === "country") p.set("sel", `country:${sel.iso2 ?? sel.iso3}`);
   if (sel?.kind === "zone") p.set("sel", `zone:${sel.id}`);
   if (sel?.kind === "region") p.set("sel", `region:${sel.grid}:${sel.id}`);
-  if (sel?.kind === "site") p.set("sel", `site:${sel.lon},${sel.lat}`);
+  if (sel?.kind === "site") p.set("sel", `site:${sel.lon},${sel.lat}${sel.r ? `,${sel.r}` : ""}`);
   if (sel && s.tab !== "now" && sel.kind !== "site") p.set("tab", s.tab);
   if (camera) {
     const tilt = camera.pitch || camera.bearing ? `,${(camera.pitch ?? 0).toFixed(0)},${(camera.bearing ?? 0).toFixed(0)}` : "";
