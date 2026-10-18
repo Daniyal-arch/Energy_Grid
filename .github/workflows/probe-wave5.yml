@@ -1,0 +1,69 @@
+name: Probe wave 5
+
+# The probes of brief 17 (scripts/probe_wave5.py): one step per group, read from the annotations.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/busy-fermat-nodvwe]
+    paths: [.github/workflows/probe-wave5.yml, scripts/probe_wave5.py]
+
+permissions:
+  contents: read
+
+jobs:
+  probe-a-d:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb
+      - name: A1 NUTS, zones
+        run: python scripts/probe_wave5.py A1
+        continue-on-error: true
+      - name: A2 CGAZ, GeoNames
+        run: python scripts/probe_wave5.py A2
+        continue-on-error: true
+      - name: B United States
+        run: python scripts/probe_wave5.py B
+        continue-on-error: true
+      - name: C Germany
+        run: python scripts/probe_wave5.py C
+        continue-on-error: true
+      - name: D planned grid, outages
+        run: python scripts/probe_wave5.py D
+        continue-on-error: true
+
+  probe-e-h:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb
+      - name: E Global Renewables Watch
+        run: python scripts/probe_wave5.py E
+        continue-on-error: true
+      - name: F1 Eurostat, EIA
+        run: python scripts/probe_wave5.py F1
+        continue-on-error: true
+      - name: F2 EI review, EDGAR
+        run: python scripts/probe_wave5.py F2
+        continue-on-error: true
+      - name: G live markets
+        run: python scripts/probe_wave5.py G
+        continue-on-error: true
+      - name: H people and lights
+        run: python scripts/probe_wave5.py H
+        continue-on-error: true
