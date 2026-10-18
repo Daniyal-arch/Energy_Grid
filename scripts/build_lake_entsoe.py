@@ -591,7 +591,10 @@ def write_table(
         "outages": "zone",
         "unit_output": "area",
     }.get(table, "area")
-    query = f"SELECT DISTINCT * FROM {src} WHERE year(\"{tcol}\" AT TIME ZONE 'UTC') = {year}"
+    # a year's file holds the points starting in it (UTC); installed capacity is asked once
+    # per year and its period starts at local midnight (2023-12-31T23:00Z for 2024): all kept
+    where = "TRUE" if table == "capacity" else f"year(\"{tcol}\" AT TIME ZONE 'UTC') = {year}"
+    query = f"SELECT DISTINCT * FROM {src} WHERE {where}"
     if replace and old and old.get(table):
         files = ", ".join(f"'{p}'" for p in old[table])
         keep = ", ".join(f'"{c}"' for c in cols)
