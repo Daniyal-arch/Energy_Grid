@@ -119,7 +119,8 @@ export const LAYERS: LayerInfo[] = [
   { id: "cement", label: "Cement plants", desc: "Sized by capacity", group: "Industry & data", coverage: "World", color: "rgb(206,192,166)" },
   { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & data", coverage: "World", color: "rgb(230,160,255)" },
   { id: "ironOre", label: "Iron ore mines", desc: "Sized by production", group: "Industry & data", coverage: "World", color: "rgb(206,112,88)" },
-  { id: "evChargersUS", label: "EV fast chargers", desc: "Public DC fast charging stations, sized by ports (NREL AFDC)", group: "Industry & data", coverage: "US", color: "rgb(96,214,255)" },
+  // { id: "evChargersUS", label: "EV fast chargers", desc: "Public DC fast charging stations, sized by ports (NREL AFDC)", group: "Industry & data", coverage: "US", color: "rgb(96,214,255)" },
+  // listed once frontend/public/data/us/ev_chargers.json exists (us-grid.yml needs NREL_API_KEY)
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & data", coverage: "World", color: "rgb(196,150,255)" },
   { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Industry & data", coverage: "World", color: "rgb(255,153,0)" },
   { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Power grid", coverage: "US", color: "rgb(230,120,80)" },

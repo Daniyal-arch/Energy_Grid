@@ -8,7 +8,8 @@ name: US grid
 #   checks all three; changed files are committed to main. scripts/check_us_totals.py then
 #   logs the national total against EIA's Electric Power Monthly (no gate, only the log).
 #   scripts/fetch_ev_chargers.py refreshes the public EV fast chargers (NREL AFDC) every month
-#   and puts every station into the lake (lake/afdc/stations); NREL_API_KEY = the EPA key.
+#   and puts every station into the lake (lake/afdc/stations); needs NREL_API_KEY (an
+#   api.data.gov key; EPA_API_KEY is tried when it is not set).
 # lines: scripts/fetch_us_lines.py reads OpenStreetMap's power lines from 100 kV through
 #   Overture Maps (newest release, public S3, ~5 min), tippecanoe cuts them into vector tiles
 #   (345 kV+ from zoom 0, 200 kV from 3, 100 kV from 5) and they go to the R2 bucket
@@ -77,8 +78,8 @@ jobs:
         if: ${{ !cancelled() }}
         continue-on-error: true
         env:
-          # NREL keys are api.data.gov keys: the EPA key serves
-          NREL_API_KEY: ${{ secrets.EPA_API_KEY }}
+          # NREL keys are api.data.gov keys: NREL_API_KEY, else the EPA key
+          NREL_API_KEY: ${{ secrets.NREL_API_KEY || secrets.EPA_API_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
