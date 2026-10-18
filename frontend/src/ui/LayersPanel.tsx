@@ -407,6 +407,16 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <MastrKey />;
     case "offshoreWind":
       return <OffshoreKey />;
+    case "grw":
+      return (
+        <>
+          <Swatches>
+            <Swatch color="rgb(255,214,72)" label="Solar arrays" />
+            <Swatch color="rgb(72,222,184)" label="Wind turbines" />
+          </Swatches>
+          <Note>Found in Planet satellite images by Microsoft&apos;s models, up to 2024 Q2 (Global Renewables Watch v1.0, MIT). Small arrays appear when zoomed in.</Note>
+        </>
+      );
     case "tyndp":
       return <TyndpKey />;
     case "ghgrpUS":

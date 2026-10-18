@@ -53,6 +53,7 @@ import type { ImbalanceFile } from "../lib/imbalance";
 import type { DkLiveFile, GbCarbonFile } from "../lib/live";
 import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
 import { LinesOutCard, RedispatchCard } from "../components/GridCards";
+import { SedsCard, SteoCard, type SedsFile, type SteoFile } from "../components/ProfileCards";
 import type { LinesOutFile, RedispatchFile } from "../lib/grid";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
@@ -845,6 +846,8 @@ function UsPanel() {
   const plantsOn = useApp((s) => s.layers.plantsUS);
   const queueOn = useApp((s) => s.layers.usQueue);
   const sources = <SourcesCard items={US_SOURCES} />;
+  const seds = useFile<SedsFile>("pfSeds");
+  const steo = useFile<SteoFile>("steo");
   const tabs: Tab[] = [
     // the day replay first, while it plays
     ...(usDay ? [{ id: "now", label: "This hour", body: () => <UsDayNow day={usDay} k={k} ts={ts} timeOf={timeOf} /> }] : []),
@@ -889,6 +892,16 @@ function UsPanel() {
         ) : (
           <Empty>Loading LBNL's queue data…</Empty>
         ),
+    },
+    {
+      id: "energy",
+      label: "Energy",
+      body: () => (
+        <>
+          {steo && <SteoCard f={steo} />}
+          {seds ? <SedsCard f={seds} names={names} /> : <Empty>Loading EIA SEDS…</Empty>}
+        </>
+      ),
     },
     {
       id: "live",

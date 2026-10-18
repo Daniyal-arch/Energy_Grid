@@ -149,3 +149,66 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 5 transmission outages"
+
+  E:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'E')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry
+      - name: Build tippecanoe
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+      - name: 12 Global Renewables Watch (453 MB of GeoPackages)
+        continue-on-error: true
+        run: |
+          python scripts/build_grw.py --tiles --upload
+          bash scripts/r2_creds.sh
+      - name: Upload grid/grw.pmtiles
+        continue-on-error: true
+        run: |
+          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
+            /tmp/wave5/grw/grw.pmtiles s3://infraatlas-data/grid/grw.pmtiles --content-type application/vnd.pmtiles
+          ls -la /tmp/wave5/grw/grw.pmtiles
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group E outputs"
+
+  F:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'F')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl
+      - name: 13 Eurostat energy balances
+        continue-on-error: true
+        run: python scripts/build_profiles.py eurostat
+      - name: 14 EIA SEDS
+        continue-on-error: true
+        run: python scripts/build_profiles.py seds
+      - name: 15 EIA STEO
+        continue-on-error: true
+        run: python scripts/build_profiles.py steo
+      - name: 16 Energy Institute review
+        continue-on-error: true
+        run: python scripts/build_profiles.py ei --upload
+      - name: 17 EDGAR
+        continue-on-error: true
+        run: python scripts/build_profiles.py edgar --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group F outputs"

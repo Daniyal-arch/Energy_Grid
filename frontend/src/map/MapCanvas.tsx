@@ -27,7 +27,7 @@ import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
 import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection } from "./build";
 import { memo } from "./memo";
 import { ATLAS_LAYERS, type AtlasFile, type AtlasId } from "../lib/atlas";
-import { GRID_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addGridLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, usFrame, worldCamera } from "./style";
+import { GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addGridLayers, addGrwLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, usFrame, worldCamera } from "./style";
 import { TIP_STYLE, countryHtml, tooltip } from "./tooltip";
 
 const SEC_PER_YEAR = 0.9;
@@ -71,6 +71,7 @@ function wantedKeys(zoom: number): string[] {
   if (L.evChargersUS) keys.push("evChargers");
   if (L.ghgrpUS) keys.push("ghgrp");
   if (L.tyndp) keys.push("tyndp");
+  if (L.grw) keys.push("grwCountries");
   if (L.plantsUS) keys.push("plantsPerf");
   if (L.solarResource || L.windResource) keys.push("atlas");
   if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario");
@@ -417,6 +418,9 @@ export default function MapCanvas() {
         for (const id of GRID_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.gridWorld ? "visible" : "none");
         for (const id of PREDICTED_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.predicted ? "visible" : "none");
       }
+      // Global Renewables Watch (vector tiles)
+      if (s.layers.grw) addGrwLayers(map);
+      for (const id of GRW_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.grw ? "visible" : "none");
       // the resource atlases (raster tiles), once their description has loaded
       const atlas = fileOf<AtlasFile>("atlas");
       const ak = `${s.layers.solarResource}|${s.layers.windResource}|${!!atlas}`;

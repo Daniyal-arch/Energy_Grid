@@ -65,8 +65,17 @@ const STATIC: Record<string, Loader> = {
   atlas: bundled("atlas.json"),
   // bidding zones built from NUTS regions; cities of 100,000+ for the search (scripts/build_shapes.py)
   zones: bundled("zones.json"),
+  // country and state profiles (scripts/build_profiles.py, build_population.py)
+  pfEurostat: bundled("profiles/eurostat_balances.json"),
+  pfEi: bundled("profiles/ei_review.json"),
+  pfEdgar: bundled("profiles/edgar.json"),
+  pfPopulation: bundled("profiles/population.json"),
+  pfSeds: bundled("profiles/us_seds.json"),
+  steo: bundledUs("steo.json"),
   // TYNDP 2024 projects; German redispatch 2013-2020 (scripts/build_tyndp.py, build_germany.py)
   tyndp: bundled("tyndp.json"),
+  // Global Renewables Watch per country (scripts/build_grw.py)
+  grwCountries: bundled("grw_countries.json"),
   deRedispatch: bundled("de_redispatch.json"),
   cities: bundled("cities.json"),
   // Global Energy Monitor trackers (scripts/build_gem_layers.py)

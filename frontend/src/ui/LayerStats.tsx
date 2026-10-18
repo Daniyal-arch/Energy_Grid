@@ -575,6 +575,44 @@ function EsConnectCard({ f }: { f: ConnectFile }) {
   );
 }
 
+/** Global Renewables Watch per country: turbines and solar arrays found, solar area (computed). */
+function GrwCard({ iso3 }: { iso3?: string }) {
+  const f = useFile<{ release: string; countries: Record<string, Record<string, Record<string, [number, number, number | null]>>> }>("grwCountries");
+  const names = useFile<{ features: { properties: { iso3: string; name: string } }[] }>("world");
+  if (!f) return <Card title="Wind and solar seen from space">Loading…</Card>;
+  const latest = (d?: Record<string, [number, number, number | null]>) => {
+    if (!d) return [0, 0] as const;
+    const v = Object.values(d).reduce((a, x) => [a[0] + x[0], a[1] + x[1]] as [number, number], [0, 0] as [number, number]);
+    return v;
+  };
+  const rows = Object.entries(f.countries)
+    .filter(([k]) => k !== "none" && (!iso3 || k === iso3))
+    .map(([k, v]) => ({ k, wind: latest(v.wind)[0], solar: latest(v.solar)[0], km2: latest(v.solar)[1] }));
+  const tot = rows.reduce((a, r) => [a[0] + r.wind, a[1] + r.solar, a[2] + r.km2], [0, 0, 0]);
+  const name = (k: string) => names?.features.find((x) => x.properties.iso3 === k)?.properties.name ?? k;
+  const top = [...rows].sort((a, b) => b.wind - a.wind).slice(0, 6);
+  const topSolar = [...rows].sort((a, b) => b.km2 - a.km2).slice(0, 6);
+  return (
+    <Card title="Wind and solar seen from space" note={`Global Renewables Watch · ${f.release}`}>
+      <div className="text-[13px] text-slate-100 tabular-nums">
+        {tot[0].toLocaleString("en-US")} turbines · {tot[1].toLocaleString("en-US")} solar arrays ({Math.round(tot[2]).toLocaleString("en-US")} km²)
+      </div>
+      {!iso3 && (
+        <>
+          <Head>Most turbines</Head>
+          <Rows rows={top.map((r) => ({ key: r.k, label: name(r.k), value: r.wind, color: "rgb(72,222,184)" }))} unit="" />
+          <Head>Most solar area (km²)</Head>
+          <Rows rows={topSolar.map((r) => ({ key: r.k, label: name(r.k), value: r.km2, color: "rgb(255,214,72)" }))} unit="km²" />
+        </>
+      )}
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Counted as found in satellite images by Microsoft&apos;s models (not registers); country = the outline holding each feature&apos;s centre; offshore features outside every
+        outline are counted in the total only; solar area computed from the polygons.
+      </div>
+    </Card>
+  );
+}
+
 /** TYNDP 2024 projects: counts by status (as drawn), commissioning years, the largest by capacity. */
 function TyndpCard({ iso3 }: { iso3?: string }) {
   const f = useFile<TyndpFile>("tyndp");
@@ -867,6 +905,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
         if (id === "offshoreWind") return <OffshoreWindCard key={id} iso3={iso3} />;
         if (id === "solarUS") return iso3 && iso3 !== "USA" ? null : <UsSolarCard key={id} />;
+        if (id === "grw") return <GrwCard key={id} iso3={iso3} />;
         if (id === "tyndp") return <TyndpCard key={id} iso3={iso3} />;
         if (id === "ghgrpUS") return iso3 && iso3 !== "USA" ? null : <GhgrpCard key={id} />;
         if (id === "evChargersUS") return iso3 && iso3 !== "USA" ? null : <EvChargersCard key={id} />;
