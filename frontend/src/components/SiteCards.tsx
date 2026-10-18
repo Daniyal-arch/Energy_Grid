@@ -50,7 +50,8 @@ export function usePlace(site: LonLat, radius: number = SITE_RADIUS_KM): Place {
   const eu = useMemo(() => countries?.countries.find((c) => inFlatPolygons([lon, lat], c.polygons)) ?? null, [countries, lon, lat]);
   const w = useMemo(() => (eu || !world ? null : (world.features.find((f) => inGeoJsonPolygons([lon, lat], f.geometry.coordinates)) ?? null)), [eu, world, lon, lat]);
   const iso3 = eu ? (ISO3[eu.iso] ?? null) : (w?.properties.iso3 ?? null);
-  const states = useFile<UsStatesFile>(iso3 === "USA" ? "usStates" : null);
+  // loaded at once with the other outlines (small), not after the country is known
+  const states = useFile<UsStatesFile>("usStates");
   const state = useMemo(() => states?.states.find((s) => inFlatPolygons([lon, lat], s.polygons)) ?? null, [states, lon, lat]);
   return {
     site,

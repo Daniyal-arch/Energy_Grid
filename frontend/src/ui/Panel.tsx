@@ -1,7 +1,7 @@
 // The context panel: what is selected (or the overview of where the camera looks), in tabs.
 // Every card is the existing one from components/; this file only picks what to show.
 
-import { useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, type ReactNode } from "react";
 
 import {
   Card,
@@ -48,7 +48,7 @@ import type { UsNodesFile } from "../lib/usNodes";
 import { MastrCountryCard } from "../components/MastrCards";
 import { SiteCards, usePlace } from "../components/SiteCards";
 import { ReportButton } from "../components/CountryReport";
-import { SITE_RADIUS_KM, type LonLat } from "../lib/site";
+import { SITE_RADIUS_KM, searchSiteLines, type LonLat } from "../lib/site";
 import type { ImbalanceFile } from "../lib/imbalance";
 import type { DkLiveFile, GbCarbonFile } from "../lib/live";
 import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
@@ -185,6 +185,11 @@ function Frame({ title, sub, tabs, close = true, action }: { title: string; sub?
 
 function SitePanel({ lon, lat, r }: { lon: number; lat: number; r: number }) {
   const site = useMemo<LonLat>(() => [lon, lat], [lon, lat]);
+  // the line tiles are read at once, while the outlines load (the US tiles inside the US box)
+  useEffect(() => {
+    searchSiteLines("world", site, r);
+    if (lon > -170 && lon < -60 && lat > 17 && lat < 72) searchSiteLines("us", site, r);
+  }, [site, r, lon, lat]);
   const place = usePlace(site, r);
   const coords = `${Math.abs(lat).toFixed(4)}° ${lat >= 0 ? "N" : "S"}, ${Math.abs(lon).toFixed(4)}° ${lon >= 0 ? "E" : "W"}`;
   return (
