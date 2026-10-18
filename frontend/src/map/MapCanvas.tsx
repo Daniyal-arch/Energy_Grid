@@ -70,6 +70,7 @@ function wantedKeys(zoom: number): string[] {
   if (L.dataCentres) keys.push("datacentres");
   if (L.evChargersUS) keys.push("evChargers");
   if (L.ghgrpUS) keys.push("ghgrp");
+  if (L.tyndp) keys.push("tyndp");
   if (L.plantsUS) keys.push("plantsPerf");
   if (L.solarResource || L.windResource) keys.push("atlas");
   if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario");

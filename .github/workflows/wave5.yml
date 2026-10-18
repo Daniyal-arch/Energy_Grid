@@ -10,19 +10,15 @@ on:
   workflow_dispatch:
     inputs:
       groups:
-        description: "Groups to build (A B C D E F G H)"
+        description: "Groups to build (A B C D E F G H; R = transmission outages, A78)"
         type: string
-        default: "A B C D E F G H"
+        default: "A B C D E F G H R"
   push:
     branches: [claude/busy-fermat-nodvwe]
     paths: [.github/workflows/wave5.yml, "scripts/build_*.py", scripts/wave5_common.py]
 
 permissions:
   contents: write
-
-concurrency:
-  group: wave5-${{ github.ref_name }}
-  cancel-in-progress: false
 
 env:
   GROUPS: ${{ inputs.groups || github.event.head_commit.message }}
@@ -40,7 +36,7 @@ jobs:
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import os, re
           g = os.environ["GROUPS"]
-          m = re.search(r"\[w5: ([A-H ]+)\]", g)
+          m = re.search(r"\[w5: ([A-Z ]+)\]", g)
           print("groups=" + (m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""))
           PY
 
@@ -91,3 +87,65 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 5 group B outputs"
+
+  C:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry
+      - name: 8 netztransparenz redispatch (open archive 2013-2020)
+        continue-on-error: true
+        run: python scripts/build_germany.py --upload
+      - name: 9 SMARD (catalogue only)
+        continue-on-error: true
+        run: python scripts/build_smard_catalog.py
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group C outputs"
+
+  D:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'D')
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry shapely python-dotenv
+      - name: 10 TYNDP 2024 projects
+        continue-on-error: true
+        run: python scripts/build_tyndp.py --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group D outputs"
+
+  R:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'R')
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry python-dotenv
+      - name: Wait until no Lake ENTSO-E run is active (the key was banned when both ran)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bash scripts/entsoe_idle.sh 300
+      - name: 11 transmission outages (A78), one request at a time
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+        run: python scripts/build_transmission_outages.py --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 transmission outages"

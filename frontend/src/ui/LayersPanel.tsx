@@ -46,6 +46,7 @@ import {
 
 import type { AtlasFile, AtlasId } from "../lib/atlas";
 import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
+import { TYNDP_STYLE, type TyndpFile } from "../lib/tyndp";
 
 const muted = "text-[#8d94a1]";
 const MODE_LABEL: Record<TimeMode, string> = { live: "Live", day: "24 h", years: "Years" };
@@ -406,6 +407,8 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <MastrKey />;
     case "offshoreWind":
       return <OffshoreKey />;
+    case "tyndp":
+      return <TyndpKey />;
     case "ghgrpUS":
       return <GhgrpKey />;
     case "evChargersUS":
@@ -603,6 +606,20 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <AtlasKey id="wind" />;
   }
   return null;
+}
+
+function TyndpKey() {
+  const f = useDataStore((d) => d.files.tyndp as TyndpFile | undefined);
+  return (
+    <>
+      <Swatches>
+        {(f?.statuses ?? Object.keys(TYNDP_STYLE)).filter((s) => s !== "Completed").map((s) => (
+          <Swatch key={s} color={rgbCss(TYNDP_STYLE[s]?.[0] ?? [120, 128, 140])} label={s} kind="line" />
+        ))}
+      </Swatches>
+      <Note>Projects of ENTSO-E&apos;s Ten-Year Network Development Plan 2024 as its project map draws them (lines, areas; rings: storage and point projects). Capacity and commissioning year on hover, as the promoters submitted them.</Note>
+    </>
+  );
 }
 
 function GhgrpKey() {

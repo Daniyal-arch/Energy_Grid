@@ -12,6 +12,7 @@ import { UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateN
 import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
 import { EV_COLOR, type EvChargersFile } from "../lib/evChargers";
 import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
+import { TYNDP_STYLE, type TyndpFile } from "../lib/tyndp";
 import type { FinanceFile } from "../lib/finance";
 import { CLASS_LABEL, GEM_PIPES, GEM_POINTS, type GemPipesFile, type GemPointsFile } from "../lib/gem";
 import { rgbCss } from "../lib/theme";
@@ -574,6 +575,40 @@ function EsConnectCard({ f }: { f: ConnectFile }) {
   );
 }
 
+/** TYNDP 2024 projects: counts by status (as drawn), commissioning years, the largest by capacity. */
+function TyndpCard({ iso3 }: { iso3?: string }) {
+  const f = useFile<TyndpFile>("tyndp");
+  if (!f) return <Card title="Planned grid projects">Loading…</Card>;
+  const iso2 = iso3 ? Object.entries(ISO3).find(([, b]) => b === iso3)?.[0] : undefined;
+  const xs = iso2 ? f.features.filter((x) => x.country === iso2) : f.features;
+  if (!xs.length) return <Card title="Planned grid projects">No TYNDP 2024 investment drawn here.</Card>;
+  const rows = f.statuses
+    .map((s, i) => ({ key: s, label: s, value: xs.filter((x) => x.status === i).length, color: rgbCss(TYNDP_STYLE[s]?.[0] ?? [120, 128, 140]) }))
+    .filter((r) => r.value > 0);
+  const big = [...xs].filter((x) => x.capacity_mw).sort((a, b) => (b.capacity_mw ?? 0) - (a.capacity_mw ?? 0)).slice(0, 6);
+  return (
+    <Card title="Planned grid projects" note="ENTSO-E TYNDP 2024">
+      <Rows rows={rows} unit="items" />
+      {big.length > 0 && (
+        <>
+          <Head>Largest by capacity</Head>
+          {big.map((x, i) => (
+            <div key={i} className="flex justify-between gap-2 text-[11px]">
+              <span className="truncate text-slate-200">
+                {x.investment ?? x.project} <span className={muted}>{x.year}</span>
+              </span>
+              <span className="tabular-nums text-slate-100">{(x.capacity_mw ?? 0).toLocaleString("en-US")} MW</span>
+            </div>
+          ))}
+        </>
+      )}
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        One item per investment of a transmission project (and per storage project) as the TYNDP map publishes it; capacities as the promoters submitted them, not summed.
+      </div>
+    </Card>
+  );
+}
+
 /** US industrial emitters (EPA GHGRP): total, by sector, the largest. */
 function GhgrpCard() {
   const f = useFile<GhgrpFile>("ghgrp");
@@ -832,6 +867,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
         if (id === "offshoreWind") return <OffshoreWindCard key={id} iso3={iso3} />;
         if (id === "solarUS") return iso3 && iso3 !== "USA" ? null : <UsSolarCard key={id} />;
+        if (id === "tyndp") return <TyndpCard key={id} iso3={iso3} />;
         if (id === "ghgrpUS") return iso3 && iso3 !== "USA" ? null : <GhgrpCard key={id} />;
         if (id === "evChargersUS") return iso3 && iso3 !== "USA" ? null : <EvChargersCard key={id} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;

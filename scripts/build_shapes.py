@@ -193,13 +193,13 @@ def admin1(args: argparse.Namespace) -> None:
 
     lake.iso_codes(con)
     con.execute(f"CREATE TABLE a AS SELECT * FROM ST_Read('{src}')")
-    print(con.execute("DESCRIBE a").fetchall(), flush=True)
+    print("  CGAZ columns:", [r[0] for r in con.execute("DESCRIBE a").fetchall()], flush=True)
     lk = w.lake_for(
         "shapes", args.lake, "geoBoundaries CGAZ ADM1 (wmgeolab)", "CC BY 4.0",
         "scripts/build_shapes.py", "CGAZ",
     )  # fmt: skip
     base = """SELECT a.shapeGroup AS iso3, i.iso2, a.shapeID AS admin1_id, a.shapeName AS name,
-                     a.shapeISO AS admin1_iso, {geom} AS geometry
+                     {geom} AS geometry
               FROM a LEFT JOIN iso_codes i ON i.iso3 = a.shapeGroup"""
     lk.write(
         con, "admin1", base.format(geom="a.geom"), sort=["iso3", "admin1_id"], geometry="geometry"

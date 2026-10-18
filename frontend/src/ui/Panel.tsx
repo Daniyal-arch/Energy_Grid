@@ -52,6 +52,8 @@ import type { LonLat } from "../lib/site";
 import type { ImbalanceFile } from "../lib/imbalance";
 import type { DkLiveFile, GbCarbonFile } from "../lib/live";
 import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
+import { LinesOutCard, RedispatchCard } from "../components/GridCards";
+import type { LinesOutFile, RedispatchFile } from "../lib/grid";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
 interface Dossier {
@@ -401,6 +403,8 @@ function CountryPanel({ iso }: { iso: string }) {
   const irena = useFile<IrenaFile>("irena");
   const gbCarbon = useFile<GbCarbonFile>(iso === "GB" ? "gbCarbon" : null);
   const dkLive = useFile<DkLiveFile>(iso === "DK" ? "dkLive" : null);
+  const redispatch = useFile<RedispatchFile>(iso === "DE" ? "deRedispatch" : null);
+  const linesOut = useFile<LinesOutFile>(mode === "live" ? "linesOut" : null);
   const yearLabel = useYearLabel();
   const { day, k, ts, timeOf } = useDayNow();
   const name = countries?.countries.find((c) => c.iso === iso)?.name ?? iso;
@@ -468,6 +472,8 @@ function CountryPanel({ iso }: { iso: string }) {
           )}
           {!day && gbCarbon && <GbCarbonCard gb={gbCarbon} />}
           {!day && dkLive && <DkLiveCard dk={dkLive} />}
+          {!day && linesOut && <LinesOutCard f={linesOut} iso2={iso} />}
+          {redispatch && <RedispatchCard f={redispatch} />}
           {trade.length > 0 && <TradeCard rows={trade} time={timeOf(trade[0].ts)} />}
           {!day && outages?.countries[iso] && (
             <OutageCard totals={outages.countries[iso]} units={outages.units.filter((u) => u.country === iso)} at={outages.at} />

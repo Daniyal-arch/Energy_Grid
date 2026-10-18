@@ -26,6 +26,7 @@ export type LayerId =
   | "plantsUS"
   | "turbinesUS"
   | "solarUS"
+  | "tyndp"
   | "ghgrpUS"
   | "solarResource"
   | "windResource"
@@ -97,6 +98,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "plantsWorld", label: "Power plants worldwide", desc: "Operating, building, planned or retired", group: "Power plants", coverage: "World", color: "rgb(255,214,72)" },
   { id: "plantsUS", label: "US power plants", desc: "Every generator of 1 MW and more (EIA)", group: "Power plants", coverage: "US", color: "rgb(255,128,72)" },
   { id: "mastrDE", label: "Germany: every unit", desc: "MW per municipality of solar, wind or storage; units of 1 MW and more (Marktstammdatenregister)", group: "Power plants", coverage: "DE", color: "rgb(255,214,72)" },
+  { id: "tyndp", label: "Planned grid projects", desc: "ENTSO-E TYNDP 2024: lines and storage by status", group: "Power grid", coverage: "Europe", color: "rgb(255,196,96)" },
   { id: "offshoreWind", label: "Offshore wind farms", desc: "Areas at sea: operating, building, approved, planned (EMODnet)", group: "Power plants", coverage: "Europe", color: "rgb(96,190,255)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "solarUS", label: "US solar farms", desc: "Every array of 1 MW and more; outlines zoomed in (USPVDB)", group: "Power plants", coverage: "US", color: "rgb(255,214,72)" },
@@ -141,6 +143,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "plantsUS",
   "turbinesUS",
   "solarUS",
+  "tyndp",
   "ghgrpUS",
   "evChargersUS",
   "usQueue",

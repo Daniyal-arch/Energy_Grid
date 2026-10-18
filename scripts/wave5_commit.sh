@@ -4,7 +4,7 @@
 set -u
 git config user.name "github-actions[bot]"
 git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-git add frontend/public/data
+git add frontend/public/data agent/catalog 2>/dev/null || git add frontend/public/data
 git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
 git commit -q -m "$1"
 for i in 1 2 3 4 5; do

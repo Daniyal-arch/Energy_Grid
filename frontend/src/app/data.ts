@@ -65,6 +65,9 @@ const STATIC: Record<string, Loader> = {
   atlas: bundled("atlas.json"),
   // bidding zones built from NUTS regions; cities of 100,000+ for the search (scripts/build_shapes.py)
   zones: bundled("zones.json"),
+  // TYNDP 2024 projects; German redispatch 2013-2020 (scripts/build_tyndp.py, build_germany.py)
+  tyndp: bundled("tyndp.json"),
+  deRedispatch: bundled("de_redispatch.json"),
   cities: bundled("cities.json"),
   // Global Energy Monitor trackers (scripts/build_gem_layers.py)
   gemGas: bundled("gem/pipelines_gas.json"),
@@ -112,6 +115,8 @@ const STATIC: Record<string, Loader> = {
   gbCarbon: snapshot("gb_carbon.json"),
   dkLive: snapshot("dk_live.json"),
   prices: archive("prices.json"),
+  // lines out of service (ENTSO-E A78), daily on eu-days (scripts/build_transmission_outages.py)
+  linesOut: archive("transmission_outages.json"),
   // imbalance prices per zone, the last 30 days (scripts/build_imbalance.py)
   imbalance: archive("imbalance.json"),
   // US day-ahead prices at one hub per market, today and tomorrow (scripts/fetch_us_prices.py)

@@ -25,6 +25,7 @@ import { OFFSHORE_LABEL, offshoreStatus, type OffshoreWindFile } from "../lib/of
 import { solarCat, type UsSolarFile } from "../lib/usSolar";
 import type { EvChargersFile } from "../lib/evChargers";
 import type { GhgrpFile } from "../lib/ghgrp";
+import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
@@ -288,6 +289,20 @@ function mastrHtml(id: string, object: unknown): string | null {
 function tooltipHtml(id: string, object: unknown): string | null {
   if (id === "us-outages" || id === "w-water") return riskHtml(id, object);
   if (id.startsWith("de-mastr-")) return mastrHtml(id, object);
+  if (id === "eu-tyndp" || id === "eu-tyndp-areas" || id === "eu-tyndp-points") {
+    const f = fileOf<TyndpFile>("tyndp");
+    const k = typeof object === "number" ? object : (object as { k: number }).k;
+    const x: TyndpFeature | undefined = f?.features[k];
+    if (!f || !x) return null;
+    const facts = [
+      x.capacity_mw ? `${x.capacity_mw.toLocaleString("en-US")} MW` : "",
+      x.voltage_kv ? `${x.voltage_kv} kV` : "",
+      x.generating_mw ? `${x.generating_mw.toLocaleString("en-US")} MW generating` : "",
+      x.element ?? "",
+      x.length_km ? `${x.length_km} km` : "",
+    ].filter(Boolean);
+    return `<b>${x.investment ?? x.project ?? "Project"}</b>${x.investment && x.project ? `<div>${x.project}</div>` : ""}<div>${x.status != null ? f.statuses[x.status] : "status not given"}${x.year ? ` · commissioning ${x.year}` : ""}</div>${facts.length ? `<div>${facts.join(" · ")}</div>` : ""}${x.promoter ? `<div style="color:#8d94a1">${x.promoter}</div>` : ""}${SRC(`ENTSO-E TYNDP 2024 project ${x.type ?? ""} ${x.id ?? ""}`)}`;
+  }
   if (id === "us-ghgrp") {
     const f = fileOf<GhgrpFile>("ghgrp");
     const p = typeof object === "number" ? f?.points[object] : undefined;
