@@ -37,6 +37,19 @@ jobs:
           mkdir -p probe-out
           python scripts/probe_entsoe_imbalance.py 2>&1 | tee probe-out/imbalance_probe.txt
           python scripts/build_imbalance.py --out frontend/public/data/eu 2>&1 | tee probe-out/imbalance_build.txt
+      - name: EV fast chargers (probe, then the us-grid step)
+        if: contains(github.event.head_commit.message, ' ev')
+        timeout-minutes: 30
+        continue-on-error: true
+        env:
+          NREL_API_KEY: ${{ secrets.EPA_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p probe-out
+          python scripts/probe_nrel_afdc.py 2>&1 | tee probe-out/afdc_probe.txt
+          python scripts/fetch_ev_chargers.py --lake lake-out --tmp /tmp/afdc --upload 2>&1 | tee probe-out/afdc_build.txt
+          cp lake-out/afdc/_catalog.json probe-out/afdc_catalog.json || true
       - name: Commit the outputs to the branch
         if: ${{ !cancelled() }}
         run: |
