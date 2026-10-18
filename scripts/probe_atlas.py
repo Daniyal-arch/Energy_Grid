@@ -145,25 +145,31 @@ def wind(c: httpx.Client) -> None:
             print(f"  {text[i : i + 200].split(' ')[0]!r}")
 
 
+def licences(c: httpx.Client) -> None:
+    """Both sites are JavaScript apps: the solar terms come from the atlas's CMS API, the wind
+    licence from the app's own script."""
+    cc = r"CC[ -]BY[ -][0-9.]+|Creative Commons Attribution [0-9.]+[^<,.]{0,30}"
+    terms = c.get("https://api.globalsolaratlas.info/cms/terms-of-use", timeout=30).json()
+    body = re.sub(r"<[^>]+>", " ", str(terms.get("data", {}).get("body", "")))
+    print("Global Solar Atlas terms of use:", sorted(set(re.findall(cc, body))))
+    page = c.get("https://globalwindatlas.info/en/about/license", timeout=30).text
+    found: set[str] = set()
+    for src in re.findall(r'src="([^"]+\.js)"', page):
+        url = src if src.startswith("http") else "https://globalwindatlas.info/" + src.lstrip("./")
+        try:
+            found |= set(re.findall(cc, c.get(url, timeout=60).text))
+        except httpx.HTTPError:
+            continue
+    print("Global Wind Atlas licence (app script):", sorted(found))
+
+
 def main() -> None:
     with httpx.Client(timeout=120, follow_redirects=True) as c:
         print("== Global Solar Atlas")
         solar(c)
         print("== Global Wind Atlas")
         wind(c)
-        for page in (
-            "https://globalsolaratlas.info/support/terms-of-use",
-            "https://globalwindatlas.info/en/about/license",
-        ):
-            try:
-                t = re.sub(r"<[^>]+>", " ", c.get(page, timeout=20).text)
-            except httpx.HTTPError as e:
-                print(page, type(e).__name__)
-                continue
-            print(
-                page,
-                sorted(set(re.findall(r"CC[ -]BY[ -][0-9.]+|Creative Commons[^.]{0,60}", t)))[:5],
-            )
+        licences(c)
 
 
 if __name__ == "__main__":
