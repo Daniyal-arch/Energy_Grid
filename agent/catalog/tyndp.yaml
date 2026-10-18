@@ -1,0 +1,13 @@
+dataset: tyndp
+title: ENTSO-E TYNDP 2024 projects (project map and project pages)
+licence: ENTSO-E terms of use (re-use with attribution)
+map_file: frontend/public/data/eu/tyndp.json (layer "Planned grid projects")
+tables:
+  projects:
+    grain: one row per investment of a transmission project, and per storage project, with its geometry
+    keys: {id: project id, investmentId: investment id, type: Transmission | Storage, countryCode}
+    measures: {capacity_mw: {unit: MW, how: as submitted by the promoter}, voltage_kv: {unit: kV}}
+    examples:
+      - q: how many investments are under consideration
+        sql: SELECT count(*) FROM tyndp.projects WHERE status = 'Under Consideration'
+        answer: 116

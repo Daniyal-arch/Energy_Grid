@@ -1,0 +1,17 @@
+dataset: shapes
+title: NUTS 2024 regions, levels 0-3 (Eurostat GISCO, 1:20M)
+licence: "© EuroGeographics for the administrative boundaries"
+tables:
+  nuts:
+    grain: one row per NUTS region (levels 0 to 3) with its outline
+    keys: {nuts_id: NUTS 2024 code, level: 0 country .. 3 small region, iso2: country (GR for EL)}
+    measures: {}
+    time: NUTS 2024
+    joins: [ghsl.population on id = nuts_id where unit = 'nuts3']
+    examples:
+      - q: how many NUTS 3 regions are there
+        sql: SELECT count(*) FROM shapes.nuts WHERE level = 3
+        answer: 1345
+      - q: name of NUTS 2 region DE21
+        sql: SELECT name FROM shapes.nuts WHERE nuts_id = 'DE21'
+        answer: Oberbayern

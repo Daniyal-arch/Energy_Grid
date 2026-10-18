@@ -1,0 +1,16 @@
+dataset: egrid
+title: EPA eGRID2023 plant file
+licence: public domain (US EPA)
+tables:
+  plants:
+    grain: one row per US power plant, eGRID year (partition year)
+    keys: {ORISPL: EIA plant id, PSTATABB: state}
+    measures: {PLCO2AN: {unit: short tons, how: as published}, PLCO2RTA: {unit: lb/MWh, how: as published}, PLNGENAN: {unit: MWh}}
+    joins: [pudl tables on ORISPL = plant_id_eia]
+    examples:
+      - q: annual CO2 of Martin Lake (EIA 6146) in eGRID2023
+        sql: SELECT PLCO2AN FROM egrid.plants WHERE ORISPL = 6146 AND year = '2023'
+        answer: 13996318 short tons (rounded)
+      - q: how many plants are in eGRID2023
+        sql: SELECT count(*) FROM egrid.plants
+        answer: 12612

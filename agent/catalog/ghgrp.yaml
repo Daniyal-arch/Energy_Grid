@@ -1,0 +1,16 @@
+dataset: ghgrp
+title: EPA Greenhouse Gas Reporting Program, direct emitters
+licence: public domain (US EPA)
+map_file: frontend/public/data/us/ghgrp.json (layer "US industrial emitters")
+tables:
+  facilities:
+    grain: one row per facility and reporting year (partition year; 2023)
+    keys: {facility_id: GHGRP id, state: postal code, naics: primary NAICS}
+    measures: {t_co2e: {unit: t CO2e (AR4 GWP), how: as reported}, t_co2: {unit: t}}
+    examples:
+      - q: the largest direct emitter in 2023
+        sql: SELECT name, state, t_co2e FROM ghgrp.facilities ORDER BY t_co2e DESC LIMIT 1
+        answer: James H Miller Jr, AL, 16558380.818 t CO2e
+      - q: direct emitters in Texas and their emissions, 2023
+        sql: SELECT count(*), sum(t_co2e) FROM ghgrp.facilities WHERE state = 'TX'
+        answer: 855 facilities, 379849251 t CO2e

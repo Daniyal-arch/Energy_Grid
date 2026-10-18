@@ -1,0 +1,14 @@
+dataset: netztransparenz
+title: German redispatch measures 2013-2020 (netztransparenz.de open archive)
+licence: netztransparenz.de terms (data of the German TSOs, re-use with attribution)
+map_file: frontend/public/data/eu/de_redispatch.json (card in Germany's panel)
+tables:
+  redispatch:
+    grain: one row per redispatch measure as published
+    keys: {start: UTC, requesting_tso, instructing_tso, direction: reduce | increase}
+    measures: {mwh: {unit: MWh, how: as published}, mean_mw: {unit: MW}, max_mw: {unit: MW}}
+    time: 2013-04 to 2020-12 (newer years only through the registered API)
+    examples:
+      - q: redispatch energy reduced in 2020
+        sql: SELECT sum(mwh) FROM netztransparenz.redispatch WHERE year(start) = 2020 AND direction = 'reduce'
+        answer: 4128644 MWh

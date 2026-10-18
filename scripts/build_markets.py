@@ -150,12 +150,12 @@ def node_catalogue() -> dict[str, list[str]]:
         links = re.findall(r"""href=["']([^"']*Nodos[^"']*\.xlsx?)["']""", html, re.I)
         tried.append(f"{page}: {len(links)} catalogue links")
         for link in links:
+            path = link.replace("\\", "/")
+            # links come as "/Docs/...", "../Docs/..." or "Docs/..."
             url = (
-                link
-                if link.startswith("http")
-                else "https://www.cenace.gob.mx"
-                + ("" if link.startswith("/") else "/")
-                + link.replace("\\", "/").lstrip("./")
+                path
+                if path.startswith("http")
+                else "https://www.cenace.gob.mx/" + path.lstrip("./")
             )
             src = w.download(url.replace(" ", "%20"), TMP / "cenace_nodos.xlsx")
             wb = openpyxl.load_workbook(src, read_only=True)
