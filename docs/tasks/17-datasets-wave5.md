@@ -1,10 +1,56 @@
-# 17. Datasets wave 5: 22 datasets in one session
+# 17. Datasets wave 5: 22 datasets in one session (20 to build, 2 blocked)
 
 Read CLAUDE.md, then this file. Each dataset below has a fixed spec: source, what to build, where it
 shows. Follow the spec; do not redesign, do not research beyond the probe. Work through the
 checklist in order; commit and push after each dataset. If a source needs a login or key, is closed,
 or its licence forbids reuse: stop that dataset, add one line to the PR (what blocked it, the sign-up
 URL, the env var name), and continue with the next one. Never estimate a missing value.
+
+## Run to the end (owner's standing approval, 2026-10-18)
+
+- **Do not stop to ask or to show results.** The probe already ran (branch
+  `claude/busy-fermat-nodvwe`, workflow "Probe wave 5", 2026-10-18); its findings are the decisions
+  below. CLAUDE.md's "show the probe output" is met by listing it in the PR. The owner approves the
+  large downloads named here (CGAZ 360 MB, GHSL 484 MB, Global Renewables Watch 453 MB, EDGAR) in
+  GitHub Actions. Keep working until every dataset is ✅ or ⛔; only then open the PR.
+- **20 datasets are required** (all except 20 Grid-India and 22 Black Marble, blocked below). Allowed
+  reasons to mark one ⛔: a login/key the environment lacks, a licence that forbids reuse, or a
+  source that fails twice in Actions with the error quoted. "It is a lot of work" is not one.
+- **A dataset is ✅ only when all of these hold:** its build ran in Actions on the branch and its
+  output exists (repo file ≤ 5 MB, or R2 / lake upload confirmed by the run); its UI piece from the
+  spec is in (layer + key + card, or the rows/card named); a refresh step exists (workflow step or
+  documented "by hand"); docs/DATA_SOURCES.md section, docs/DATA_LAKE.md row, `agent/catalog/<name>.yaml`;
+  one pytest for its pure parsing/shaping function. Partial work stays ☐ in the PR checklist.
+- **One build workflow for all:** `.github/workflows/wave5.yml` (`workflow_dispatch` + `push` on
+  the branch), one job per dataset group with `continue-on-error`, each committing its small outputs
+  back to the branch; the session triggers it, waits, pulls, and reads only the job summaries. Delete
+  the branch trigger before the PR; keep the scheduled refresh steps in the existing workflows.
+
+## Decisions from the probe (do not probe again)
+
+| # | Finding | Decision |
+|---|---|---|
+| 1 NUTS | GISCO file reachable | build as specified |
+| 2 Bidding zones | electricityMaps geometry is AGPL-3.0; entsoe-py's are copies of it | build zones from NUTS regions (zone → NUTS ids per zone, documented); label them "approximate outline (NUTS regions)"; single-zone countries = the country |
+| 3 CGAZ ADM1 | 360.5 MB, CC BY 4.0 per geoboundaries.org | build as specified |
+| 4 GeoNames | CC BY 4.0, 34,167 cities, 6,284 ≥ 100,000 people | build as specified |
+| 5 EIA-923 | PUDL `core_eia923__monthly_generation_fuel` (to 2026-06), `out_eia__yearly_generators` (has `capacity_factor`), `out_eia__yearly_plants` | use PUDL's tables in place; capacity factor = PUDL's where present, else computed and labelled |
+| 6 eGRID | `egrid2023_data_rev2.xlsx` (21.2 MB) | build as specified |
+| 7 GHGRP | Envirofacts `PUB_DIM_FACILITY` answers (with lat/lon); `2023_data_summary_spreadsheets.zip` (28.4 MB) | facilities from Envirofacts, emissions from the data summary |
+| 8 netztransparenz | API needs registration (401); open archive `redispatch export 2013-2020.zip` | build from the open archive (2013–2020); PR lists `NETZTRANSPARENZ_CLIENT_ID/_SECRET` for newer years |
+| 9 SMARD | answers, weekly files to 2026-10-11 | catalogue file only (API) |
+| 10 TYNDP | pages build links with JavaScript | find the JSON/file endpoint the page calls (two tries in Actions, e.g. the `api`/`assets` requests in the page source); else ⛔ with the error |
+| 11 A78 | HTTP 429 "Requester banned": the lake backfill used the same key | run only when no "Lake ENTSO-E" run is active (check with the API before dispatching), one request at a time, short windows |
+| 12 GRW | MIT; v1.0 `solar_all_2024q2_v1.gpkg` 395 MB, `wind_all_2024q2_v1.gpkg` 58 MB | build as specified (quarter 2024 Q2) |
+| 13 Eurostat balances | API answers (`nrg_bal_c`) | as specified |
+| 14 SEDS, 15 STEO | EIA API v2 answers (paginate: 5,000 rows per request) | as specified |
+| 16 EI review | resources page builds links with JavaScript | try the file URL the page requests (two tries); else ⛔ |
+| 17 EDGAR | `IEA_EDGAR_CO2_1970_2024.zip` and the 2025 booklet xlsx | use the booklet xlsx (per country and sector) |
+| 18 JEPX | `spot_summary_2026.csv` answers (Shift-JIS, 48 slots a day, 9 areas); terms page 404 | build it; the PR says the terms of use were not found (owner decides before merge) |
+| 19 CENACE | `SWPML/SIM/SIN/MDA/<nodes>/<dates>/JSON` answers | as specified |
+| 20 Grid-India | ConnectError from Actions (all endpoints) | ⛔ blocked: refuses GitHub runners |
+| 21 GHSL | `GHS_POP_E2025_GLOBE_R2023A_4326_30ss_V1_0.zip` 483.7 MB | as specified |
+| 22 Black Marble | LAADS listing 404 without a login | ⛔ blocked: `NASA_EARTHDATA_TOKEN` (urs.earthdata.nasa.gov) |
 
 ## Keep the session cheap (token rules)
 
@@ -20,11 +66,13 @@ URL, the env var name), and continue with the next one. Never estimate a missing
    - country rows: `frontend/src/components/CountryReport.tsx` (`useSections`).
    - daily refresh steps: `.github/workflows/eu-days.yml` (each step with `timeout-minutes` and
      `continue-on-error: true`).
-3. **One probe for everything:** `scripts/probe_wave5.py` with one function per dataset printing at
-   most 10 lines (status, size, row count, fields, licence text found, sample). Run it once in
-   GitHub Actions (`.github/workflows/probe-wave5.yml`, `workflow_dispatch` + a `push` trigger limited
-   to your branch, one step per group so each step has at most 10 `::notice` lines). Read only the
-   annotations. Delete the push trigger before the PR.
+3. **The probe is done** (`scripts/probe_wave5.py`, decisions table above): do not rerun it. One
+   shared helper `scripts/wave5_common.py` (download with retries and progress lines, unzip to a temp
+   dir, simplify geometry, write compact JSON, hand tables to `scripts/lake.py`) keeps each build
+   script short; write the scripts of a whole group, then run that group once in `wave5.yml` and
+   fix what fails, rather than one Actions run per dataset.
+   Wait for a run with one polling command (e.g. a loop on the runs API with `sleep 30`), not
+   repeated manual checks; read only the failing job's last 40 log lines.
 4. **No browser checks:** no headless browser, no screenshots. Verify with `npm run build`,
    `uv run pytest` (add a small test per build script for its pure functions) and the probe output.
 5. **Short docs:** per dataset one section in docs/DATA_SOURCES.md (≤ 10 lines: source, licence,
@@ -37,10 +85,15 @@ URL, the env var name), and continue with the next one. Never estimate a missing
    ⛔ blocked + why). If your context runs low, stop at a dataset boundary, push, update the PR
    checklist with "next: …"; a new session continues from it.
 
-Keys available as secrets/env: `ENTSOE_API_KEY`, `EIA_API_KEY`, `EPA_API_KEY`, Cloudflare (R2 uploads
-from Actions only). Large downloads (Global Renewables Watch, GHSL, EDGAR, geoBoundaries CGAZ) run
-only in Actions and only if the session prompt says the owner approved them; otherwise skip them
-like a blocked dataset.
+Keys available as secrets/env: `ENTSOE_API_KEY`, `EIA_API_KEY`, `EPA_API_KEY`, `NREL_API_KEY`,
+Cloudflare (R2 uploads from Actions only). The large downloads are approved (see "Run to the end"),
+Actions only.
+
+8. **No exploring:** don't read frontend files beyond the templates; don't refactor or restyle
+   existing code; new map layers follow the offshore-wind template exactly (layer file, key, card,
+   `LAYERS` entry in the right group: see `LAYER_GROUPS` in `app/store.ts`).
+9. **PR text:** the checklist (one line per dataset: ✅/⛔, output, size, refresh), the blocked list
+   with what the owner must do, and the session link. Nothing else.
 
 ## The checklist (in this order)
 
