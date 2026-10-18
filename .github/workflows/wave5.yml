@@ -212,3 +212,42 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 5 group F outputs"
+
+  G:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'G')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl tzdata
+      - name: 18 JEPX
+        continue-on-error: true
+        run: python scripts/build_markets.py jepx --upload
+      - name: 19 CENACE
+        continue-on-error: true
+        run: python scripts/build_markets.py cenace --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group G outputs"
+
+  H:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'H')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry rasterio shapely pyproj numpy
+      - name: 21 GHSL population (484 MB)
+        continue-on-error: true
+        run: python scripts/build_population.py --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group H outputs"

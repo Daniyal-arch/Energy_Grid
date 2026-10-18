@@ -8,6 +8,7 @@ import { create } from "zustand";
 import { useFile } from "../app/data";
 import type { CountriesFile, GridFile, PlantsFile, WorldFile } from "../app/types";
 import { atlasValue, type AtlasFile } from "../lib/atlas";
+import { POP_CELL, peopleWithin } from "../lib/population";
 import { gbSiteTotals, type ConnectFile } from "../lib/connect";
 import { FUEL_LABEL, power } from "../lib/energy";
 import type { PricesFile } from "../lib/prices";
@@ -570,6 +571,23 @@ function useAtlasAt(site: LonLat, on: boolean) {
   return { atlas, ...(got.key === key ? got : { pvout: undefined, wind: undefined }) };
 }
 
+/** People within the site radius (GHSL 2025 on the 0.1 degree grid); undefined until read or when the grid is missing. */
+function usePeopleAt(site: LonLat, on: boolean) {
+  const [got, setGot] = useState<{ key: string; v?: { people: number; cells: number } }>({ key: "" });
+  const key = siteKey(site);
+  useEffect(() => {
+    if (!on) return;
+    let live = true;
+    peopleWithin(site[0], site[1], R)
+      .then((v) => live && setGot({ key, v }))
+      .catch(() => live && setGot({ key }));
+    return () => {
+      live = false;
+    };
+  }, [key, on]); // eslint-disable-line react-hooks/exhaustive-deps
+  return got.key === key ? got.v : undefined;
+}
+
 // ---------------------------------------------------------------- the country's power, data centres
 
 export function SiteCountryCard({ place }: { place: Place }) {
@@ -580,10 +598,12 @@ export function SiteCountryCard({ place }: { place: Place }) {
   const k = e && t ? [...t.years.keys()].reverse().find((i) => e.renewables[i] != null) : undefined;
   const osm = "OpenStreetMap (datacentres.json)";
   const at = useAtlasAt(place.site, place.ready);
+  const people = usePeopleAt(place.site, place.ready);
   const cell = at.atlas?.pvout.lookup.cell_deg ?? 0.1;
   const atlasNote = `mean over the ${cell}° cell (computed)`;
   useReport(place.site, "Around it", [
     at.pvout != null && ["PV output potential (PVOUT)", round(at.pvout, 3), "kWh/kWp per day", `${atlasNote}; x365 = ${Math.round(at.pvout * 365)} kWh/kWp a year`, at.atlas?.pvout.source ?? "Global Solar Atlas"],
+    !!people && [`People within ${R} km`, people.people, "people", `2025; sum of the ${people.cells} cells of ${POP_CELL}° whose centre is within ${R} km (computed)`, "GHSL GHS-POP R2023A (JRC, CC BY 4.0)"],
     at.wind != null && ["Mean wind speed at 100 m", round(at.wind, 2), "m/s", atlasNote, at.atlas?.wind.source ?? "Global Wind Atlas"],
     !!e && !!t && k != null && [`Renewable share of generation, ${place.iso2 ?? place.iso3}`, e.renewables[k], "%", t.years[k], "Ember yearly electricity data"],
     !!e && !!t && k != null && e.intensity[k] != null && ["Carbon intensity of generation", e.intensity[k], "gCO2/kWh", t.years[k], "Ember yearly electricity data"],
@@ -600,6 +620,7 @@ export function SiteCountryCard({ place }: { place: Place }) {
         />
       )}
       {at.wind != null && <Row k="Mean wind speed at 100 m" v={`${at.wind.toFixed(1)} m/s`} />}
+      {people && <Row k={`People within ${R} km`} v={people.people.toLocaleString("en-US")} sub={`GHSL 2025, ${POP_CELL}° cells`} />}
       {e && t && k != null && (
         <>
           <Row k={`Renewable share of generation, ${place.iso2 ?? place.iso3}`} v={`${e.renewables[k]?.toFixed(1)} %`} sub={t.years[k]} />

@@ -54,6 +54,7 @@ import type { DkLiveFile, GbCarbonFile } from "../lib/live";
 import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
 import { LinesOutCard, RedispatchCard } from "../components/GridCards";
 import { SedsCard, SteoCard, type SedsFile, type SteoFile } from "../components/ProfileCards";
+import { CenaceCard, JepxCard, type CenaceFile, type JepxFile } from "../components/MarketCards";
 import type { LinesOutFile, RedispatchFile } from "../lib/grid";
 import { GAS_SOURCES, LIVE_SOURCES, PLANT_SOURCES, PRICE_SOURCES, US_SOURCES, WORLD_SOURCES, YEAR_SOURCES } from "./sources";
 
@@ -674,6 +675,8 @@ function WorldPanel() {
   const yearLabel = useYearLabel();
   const names = useNames();
   const access = ws ? latest(ws.access.WLD, ws.years) : null;
+  const jepx = useFile<JepxFile>("jepx");
+  const cenace = useFile<CenaceFile>("cenace");
   const statsOn = useStatsLayers().length > 0;
   const tabs: Tab[] = [
     {
@@ -691,6 +694,8 @@ function WorldPanel() {
           {au && <NemCard aemo={au} />}
           {tw && <TaiwanCard tw={tw} />}
           {on && <OntarioCard on={on} />}
+          {jepx && <JepxCard f={jepx} />}
+          {cenace && <CenaceCard f={cenace} />}
           <SourcesCard items={WORLD_SOURCES.filter(([k]) => ["United States", "Brazil", "Australia", "Taiwan", "Ontario"].includes(k))} />
         </>
       ),
