@@ -14,7 +14,9 @@ auction series apart), load (A65: actual A16 and day-ahead A01), generation (A75
 of pumps and batteries in its own column), forecast_wind_solar (A69, day-ahead), flows (A11,
 per border direction), unit_output (A73), capacity (A68), transfer_capacity (A61 day-ahead
 forecast and A31 offered capacity, both as published), outages (A80, every revision, one row
-per point of the available-capacity curve; partition = year of the outage's start).
+per point of the available-capacity curve; partition = year of the outage's start),
+imbalance_price (A85, per zone: the deficit A05 and excess A04 price as published, in the
+source's currency; partition `zone` and `year`).
 Dimensions: areas, units (A71 per area, positions from JRC-PPDB where it names the unit).
 
 `--recent N` fetches the last N days of the current year again and rewrites that year's
@@ -68,7 +70,12 @@ TABLES = [
     "capacity",
     "transfer_capacity",
     "outages",
+    "imbalance_price",
 ]
+# tables with one folder per zone and year (`zone=NL/year=2024/`)
+ZONE_PARTITIONED = {"imbalance_price"}
+# days per A85 request (scripts/build_imbalance.py asks 60 at a time)
+A85_DAYS = 60
 SEQ = "classificationSequence_AttributeInstanceComponent.position"
 
 COLUMNS: dict[str, dict[str, str]] = {
@@ -151,6 +158,14 @@ COLUMNS: dict[str, dict[str, str]] = {
         "available_mw": "FLOAT",
         "nominal_mw": "FLOAT",
     },
+    "imbalance_price": {
+        "ts": "TIMESTAMPTZ",
+        "zone": "VARCHAR",
+        "category": "VARCHAR",
+        "price": "DECIMAL(12,3)",
+        "currency": "VARCHAR",
+        "resolution_s": "INTEGER",
+    },
 }
 SORT = {
     "prices": ["area", "ts"],
@@ -162,6 +177,7 @@ SORT = {
     "capacity": ["area", "psr_type", "ts"],
     "transfer_capacity": ["out_zone", "in_zone", "ts"],
     "outages": ["asset_eic", '"start"', "revision"],
+    "imbalance_price": ["zone", "category", "ts"],
 }
 BLOOM = {"unit_output": ["unit_eic"], "outages": ["asset_eic"]}
 TS_COL = {"outages": "start"}
@@ -230,6 +246,48 @@ def capacity_rows(area: str, found: list) -> list[tuple]:
 
 def transfer_rows(za: str, zb: str, doc: str, found: list) -> list[tuple]:
     return [(_iso(t), za, zb, doc, res, v) for _, pts in found for t, res, v in pts]
+
+
+def imbalance_rows(zone: str, docs: list[ET_Element]) -> list[tuple]:
+    """A85 documents: one row per point and price category (A04 excess, A05 deficit), the
+    category read from each Point; A03 curves written out like `entsoe.points_of`."""
+    rows = []
+    for root in docs:
+        ns = {"n": root.tag.split("}")[0].strip("{")}
+        for ts in root.findall("n:TimeSeries", ns):
+            currency = ts.findtext("n:currency_Unit.name", default=None, namespaces=ns)
+            variable = ts.findtext("n:curveType", default="A01", namespaces=ns) == "A03"
+            for period in ts.findall("n:Period", ns):
+                res = period.findtext("n:resolution", default="", namespaces=ns) or ""
+                minutes = entsoe.resolution_minutes(res)
+                start = period.findtext("n:timeInterval/n:start", namespaces=ns)
+                end = period.findtext("n:timeInterval/n:end", namespaces=ns)
+                if not start or not end or not minutes:
+                    continue
+                t0 = datetime.fromtimestamp(entsoe._ts(start), tz=UTC)
+                t1 = datetime.fromtimestamp(entsoe._ts(end), tz=UTC)
+                by_cat: dict[str, list[tuple[int, float]]] = {}
+                for p in period.findall("n:Point", ns):
+                    amount = p.findtext("n:imbalance_Price.amount", namespaces=ns)
+                    if amount is None:
+                        continue
+                    cat = p.findtext("n:imbalance_Price.category", default="", namespaces=ns)
+                    pos = int(p.findtext("n:position", namespaces=ns) or 0)
+                    by_cat.setdefault(cat, []).append((pos, float(amount)))
+                for cat, points in by_cat.items():
+                    points.sort()
+                    for i, (pos, value) in enumerate(points):
+                        last = pos
+                        if variable:
+                            if i + 1 < len(points):
+                                last = points[i + 1][0] - 1
+                            else:
+                                while entsoe._step(t0, res, last) < t1:
+                                    last += 1
+                        for k in range(pos, last + 1):
+                            t = entsoe._step(t0, res, k - 1)
+                            rows.append((_iso(t), zone, cat, value, currency, minutes * 60))
+    return rows
 
 
 def _dt(d: str | None, t: str | None) -> str | None:
@@ -374,6 +432,43 @@ def a80_docs(client: httpx.Client, eic: str, wins: list[dict]) -> list[ET_Elemen
     return list(seen.values())
 
 
+def a85_docs(client: httpx.Client, eic: str, wins: list[dict]) -> list[ET_Element]:
+    """Every A85 document of an area over the windows (ENTSO-E answers a zip of XML documents,
+    or an acknowledgement when it has none)."""
+    key = os.environ["ENTSOE_API_KEY"].strip()
+    docs: list[ET_Element] = []
+    for w in wins:
+        params = {"securityToken": key, "documentType": "A85", "controlArea_Domain": eic, **w}
+        r = None
+        for attempt in range(6):
+            try:
+                r = client.get(entsoe.BASE, params=params)
+            except httpx.TransportError:
+                time.sleep(10 * (attempt + 1))
+                continue
+            if r.status_code == 429 or r.status_code >= 500:
+                entsoe.OUTCOMES[f"HTTP {r.status_code}"] += 1
+                time.sleep(float(r.headers.get("retry-after") or 15 * (attempt + 1)))
+                continue
+            break
+        if r is None or r.status_code != 200:
+            entsoe.OUTCOMES["A85 failed"] += 1
+            print(f"  A85 {eic} {w['periodStart'][:8]}: gave up", flush=True)
+            continue
+        if r.content[:2] == b"PK":
+            entsoe.OUTCOMES["200"] += 1
+            z = zipfile.ZipFile(io.BytesIO(r.content))
+            docs += [entsoe.ET.fromstring(z.read(n)) for n in z.namelist()]
+        else:
+            root = entsoe.ET.fromstring(r.content)
+            if root.tag.endswith("Acknowledgement_MarketDocument"):
+                entsoe.OUTCOMES["no data"] += 1
+            else:
+                entsoe.OUTCOMES["200"] += 1
+                docs.append(root)
+    return docs
+
+
 @dataclass
 class Job:
     table: str
@@ -473,6 +568,15 @@ def jobs_for(
                     f"{area} {w['periodStart'][:8]}",
                     lambda a=area, p=p, w=w: unit_rows(a, fetch(client, p, [w]), units),
                 )
+    if "imbalance_price" in tables:
+        iw = windows(start, end, A85_DAYS)
+        zones = {**entsoe.ZONE_EIC, **(HISTORIC_ZONES if year <= 2018 else {})}
+        for zone, eic in zones.items():
+            yield Job(
+                "imbalance_price",
+                zone,
+                lambda z=zone, e=eic: imbalance_rows(z, a85_docs(client, e, iw)),
+            )
     if "outages" in tables:
         ow = windows(start, end, A80_DAYS)
         zones = {**entsoe.ZONE_EIC, **(HISTORIC_ZONES if year <= 2018 else {})}
@@ -590,6 +694,7 @@ def write_table(
         "transfer_capacity": "out_zone",
         "outages": "zone",
         "unit_output": "area",
+        "imbalance_price": "zone",
     }.get(table, "area")
     query = f"SELECT DISTINCT * FROM {src} WHERE year(\"{tcol}\" AT TIME ZONE 'UTC') = {year}"
     if replace and old and old.get(table):
@@ -600,7 +705,25 @@ def write_table(
         else:
             cond = f"NOT (\"{tcol}\" >= '{replace[0].isoformat()}' AND \"{tcol}\" < '{replace[1].isoformat()}')"
         con.execute(f"CREATE OR REPLACE TEMP TABLE new_rows AS {query}")
-        query = f"SELECT {keep} FROM read_parquet([{files}]) WHERE {cond} UNION ALL SELECT * FROM new_rows"
+        query = (
+            f"SELECT {keep} FROM read_parquet([{files}], hive_partitioning = false) "
+            f"WHERE {cond} UNION ALL SELECT * FROM new_rows"
+        )
+    if table in ZONE_PARTITIONED:
+        con.execute(f"CREATE OR REPLACE TEMP TABLE zone_rows AS {query}")
+        for (zone,) in con.execute("SELECT DISTINCT zone FROM zone_rows ORDER BY 1").fetchall():
+            lk.write(
+                con,
+                table,
+                f"""SELECT r.*, {iso_of("r.zone")} AS iso2, i.iso3, NULL::VARCHAR AS admin1
+                    FROM zone_rows r LEFT JOIN iso_codes i ON i.iso2 = {iso_of("r.zone")}
+                    WHERE r.zone = '{zone}'""",
+                sort=SORT[table],
+                bloom=BLOOM.get(table, []),
+                partition={"zone": zone, "year": str(year)},
+            )
+        print(f"  {table}: {n:,} rows fetched", flush=True)
+        return
     lk.write(
         con,
         table,

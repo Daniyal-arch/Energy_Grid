@@ -115,6 +115,13 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_prices.py --out store/eu || echo "prices failed; keeping yesterday's"
 
+      - name: Imbalance prices per zone (ENTSO-E A85, the last 30 days)
+        timeout-minutes: 15
+        continue-on-error: true
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+        run: python scripts/build_imbalance.py --out store/eu || echo "imbalance failed; keeping yesterday's"
+
       - name: World figures (World Bank access, OpenStreetMap data centres)
         timeout-minutes: 10
         continue-on-error: true
