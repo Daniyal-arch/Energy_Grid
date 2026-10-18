@@ -1,0 +1,9 @@
+https://developer.nlr.gov: HTTP 403, rate limit None, remaining None
+  answer: {
+  "error": {
+    "code": "API_KEY_MISSING",
+    "message": "No api_key was supplied. Get one at https://developer.nrel.gov/signup/"
+  }
+}
+https://developer.nrel.gov: ConnectError
+no host accepted the key: ask the owner for an NREL key
