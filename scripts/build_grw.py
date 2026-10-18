@@ -80,6 +80,18 @@ def main() -> None:
     for kind, name in FILES.items():
         src = w.download(f"{BASE}/{name}", TMP / name)
         con.execute(f"CREATE OR REPLACE TABLE {kind} AS SELECT * FROM ST_Read('{src}')")
+        # the GeoPackages are in Web Mercator (EPSG:3857): to lon/lat for the lake, tiles and join
+        g0 = (
+            find(
+                [r[0] for r in con.execute(f"DESCRIBE {kind}").fetchall()],
+                r"^geom$|^geometry$|^shape$",
+            )
+            or "geom"
+        )
+        con.execute(
+            f"""CREATE OR REPLACE TABLE {kind} AS SELECT * REPLACE (
+                    ST_Transform({g0}::GEOMETRY, 'EPSG:3857', 'EPSG:4326', always_xy := true) AS {g0}) FROM {kind}"""
+        )
         cols = [r[0] for r in con.execute(f"DESCRIBE {kind}").fetchall()]
         geom = find(cols, r"^geom$|^geometry$|^shape$") or "geom"
         cap = find(cols, r"capacity|_mw$|^mw$|power")
@@ -95,7 +107,7 @@ def main() -> None:
         con.execute(
             f"""CREATE OR REPLACE TABLE {kind}_x AS
                 SELECT t.* EXCLUDE ({geom}), t.{geom} AS geometry, {area} AS area_km2, w.iso3
-                FROM {kind} t LEFT JOIN world w ON ST_Intersects(w.geom, ST_Centroid(t.{geom}))"""
+                FROM {kind} t LEFT JOIN world w ON ST_Intersects(w.geom, ST_Centroid(t.{geom}::GEOMETRY))"""
         )
         q = when or "NULL"
         rows = con.execute(
