@@ -1,0 +1,47 @@
+name: Wrap-up branch test (temporary, removed before the PR)
+
+# Runs the new steps of docs/tasks/16-wrap-up.md on the session's branch and commits their small
+# outputs back to it. A push runs the parts its commit message names: "[run: imbalance, ev, atlas]".
+
+on:
+  push:
+    branches: [claude/wrap-up]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wrapup-test
+  cancel-in-progress: false
+
+jobs:
+  test:
+    if: contains(github.event.head_commit.message, '[run:')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      MSG: ${{ github.event.head_commit.message }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx python-dotenv tzdata duckdb pycountry
+      - name: Imbalance prices (probe, then the eu-days step)
+        if: contains(github.event.head_commit.message, 'imbalance')
+        timeout-minutes: 30
+        continue-on-error: true
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+        run: |
+          mkdir -p probe-out
+          python scripts/probe_entsoe_imbalance.py 2>&1 | tee probe-out/imbalance_probe.txt
+          python scripts/build_imbalance.py --out frontend/public/data/eu 2>&1 | tee probe-out/imbalance_build.txt
+      - name: Commit the outputs to the branch
+        if: ${{ !cancelled() }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A probe-out frontend/public/data
+          git commit -q -m "Wrap-up test outputs $(date -u +%Y-%m-%dT%H:%MZ)" || exit 0
+          for i in 1 2 3; do git pull -q --rebase origin claude/wrap-up && git push -q origin HEAD:claude/wrap-up && break; sleep 5; done

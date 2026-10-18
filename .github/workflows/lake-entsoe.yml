@@ -28,7 +28,7 @@ on:
         type: boolean
         default: false
   push:
-    branches: [main]
+    branches: [main, claude/wrap-up]
     paths: [.github/workflows/lake-entsoe.yml, scripts/build_lake_entsoe.py, scripts/probe_lake_entsoe.py]
 
 permissions:

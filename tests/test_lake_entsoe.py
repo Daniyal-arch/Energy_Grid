@@ -123,7 +123,6 @@ def test_imbalance_partitioned_by_zone_and_year(tmp_path: Path) -> None:
         "imbalance_price/zone=PL/year=2025/part-0.parquet",
     ]
     f = tmp_path / "lake" / "entsoe" / t["files"][0]
-    got = con.execute(
-        f"SELECT count(*), min(price), any_value(iso3) FROM read_parquet('{f}', hive_partitioning = false)"
-    ).fetchone()
+    src = f"read_parquet('{f}', hive_partitioning = false)"
+    got = con.execute(f"SELECT count(*), min(price), any_value(iso3) FROM {src}").fetchone()
     assert got[0] == 5 and float(got[1]) == -30.25 and got[2] == "NLD"
