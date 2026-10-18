@@ -11,6 +11,7 @@ import { BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCa
 import { UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
 import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
 import { EV_COLOR, type EvChargersFile } from "../lib/evChargers";
+import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
 import type { FinanceFile } from "../lib/finance";
 import { CLASS_LABEL, GEM_PIPES, GEM_POINTS, type GemPipesFile, type GemPointsFile } from "../lib/gem";
 import { rgbCss } from "../lib/theme";
@@ -573,6 +574,36 @@ function EsConnectCard({ f }: { f: ConnectFile }) {
   );
 }
 
+/** US industrial emitters (EPA GHGRP): total, by sector, the largest. */
+function GhgrpCard() {
+  const f = useFile<GhgrpFile>("ghgrp");
+  if (!f) return <Card title="US industrial emitters">Loading…</Card>;
+  const total = f.points.reduce((a, p) => a + p[2], 0);
+  const rows = f.sectors
+    .map((s, i) => ({ key: s, label: s, value: f.points.filter((p) => p[3] === i).reduce((a, p) => a + p[2], 0) / 1e6, color: rgbCss(ghgrpColor(s)) }))
+    .filter((r) => r.value > 0)
+    .sort((a, b) => b.value - a.value);
+  return (
+    <Card title="US industrial emitters" note={`EPA GHGRP · ${f.year}`}>
+      <div className="text-[22px] font-light text-slate-50">
+        {(total / 1e6).toFixed(0)} Mt <span className={`text-[11px] ${muted}`}>CO₂e from {f.points.length.toLocaleString("en-US")} facilities (sum, computed)</span>
+      </div>
+      <Head>By sector (first listed)</Head>
+      <Rows rows={rows} unit="Mt" />
+      <Head>Largest</Head>
+      {f.points.slice(0, 6).map((p, i) => (
+        <div key={i} className="flex justify-between gap-2 text-[11px]">
+          <span className="truncate text-slate-200">
+            {p[4]} <span className={muted}>{p[5]}</span>
+          </span>
+          <span className="tabular-nums text-slate-100">{(p[2] / 1e6).toFixed(1)} Mt</span>
+        </div>
+      ))}
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>Reported direct emissions (AR4 GWP) of the direct emitters (reporting threshold 25,000 t CO₂e a year); suppliers and oil and gas onshore production are reported apart and not drawn.</div>
+    </Card>
+  );
+}
+
 /** US public EV fast chargers: the total, by state and the largest networks (sums, computed). */
 function EvChargersCard() {
   const f = useFile<EvChargersFile>("evChargers");
@@ -801,6 +832,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
         if (id === "offshoreWind") return <OffshoreWindCard key={id} iso3={iso3} />;
         if (id === "solarUS") return iso3 && iso3 !== "USA" ? null : <UsSolarCard key={id} />;
+        if (id === "ghgrpUS") return iso3 && iso3 !== "USA" ? null : <GhgrpCard key={id} />;
         if (id === "evChargersUS") return iso3 && iso3 !== "USA" ? null : <EvChargersCard key={id} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;

@@ -63,6 +63,9 @@ const STATIC: Record<string, Loader> = {
   cables: bundled("cables.json"),
   // the solar and wind resource atlases: classes, tiles, lookup grid (scripts/build_atlas.py)
   atlas: bundled("atlas.json"),
+  // bidding zones built from NUTS regions; cities of 100,000+ for the search (scripts/build_shapes.py)
+  zones: bundled("zones.json"),
+  cities: bundled("cities.json"),
   // Global Energy Monitor trackers (scripts/build_gem_layers.py)
   gemGas: bundled("gem/pipelines_gas.json"),
   gemOil: bundled("gem/pipelines_oil.json"),
@@ -88,6 +91,9 @@ const STATIC: Record<string, Loader> = {
   usStates: bundledUs("states.json"),
   // public EV fast chargers (scripts/fetch_ev_chargers.py, NREL AFDC; monthly in us-grid)
   evChargers: bundledUs("ev_chargers.json"),
+  // EPA GHGRP direct emitters; per-plant generation and CO2 (scripts/build_us_perf.py)
+  ghgrp: bundledUs("ghgrp.json"),
+  plantsPerf: bundledUs("plants_perf.json"),
   flows: snapshot("flows.json"),
   stats: snapshot("stats.json"),
   // transfer capacity per border, today and tomorrow (scripts/fetch_eu_capacity.py)

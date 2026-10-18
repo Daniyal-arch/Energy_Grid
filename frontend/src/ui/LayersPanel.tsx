@@ -45,6 +45,7 @@ import {
 } from "../app/store";
 
 import type { AtlasFile, AtlasId } from "../lib/atlas";
+import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
 
 const muted = "text-[#8d94a1]";
 const MODE_LABEL: Record<TimeMode, string> = { live: "Live", day: "24 h", years: "Years" };
@@ -405,6 +406,8 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <MastrKey />;
     case "offshoreWind":
       return <OffshoreKey />;
+    case "ghgrpUS":
+      return <GhgrpKey />;
     case "evChargersUS":
       return (
         <Note>
@@ -600,6 +603,20 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <AtlasKey id="wind" />;
   }
   return null;
+}
+
+function GhgrpKey() {
+  const f = useDataStore((d) => d.files.ghgrp as GhgrpFile | undefined);
+  return (
+    <>
+      <Swatches>
+        {(f?.sectors ?? []).map((s) => (
+          <Swatch key={s} color={rgbCss(ghgrpColor(s))} label={s} />
+        ))}
+      </Swatches>
+      <Note>Dot area = t CO₂e reported for {f?.year ?? "…"} (AR4 GWP), direct emitters (the program's reporting threshold is 25,000 t a year). EPA Greenhouse Gas Reporting Program; positions from Envirofacts.</Note>
+    </>
+  );
 }
 
 /** A resource atlas: its classes as drawn, the unit and the source. */

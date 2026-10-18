@@ -69,6 +69,8 @@ function wantedKeys(zoom: number): string[] {
   if (L.plantsUS || L.turbinesUS || L.gridUS || L.usQueue) keys.push("usStates");
   if (L.dataCentres) keys.push("datacentres");
   if (L.evChargersUS) keys.push("evChargers");
+  if (L.ghgrpUS) keys.push("ghgrp");
+  if (L.plantsUS) keys.push("plantsPerf");
   if (L.solarResource || L.windResource) keys.push("atlas");
   if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario");
   if (L.financeCoal || L.financeGas) keys.push("gemFinance");
@@ -80,7 +82,7 @@ function wantedKeys(zoom: number): string[] {
     if (L.wind || L.sun) keys.push("windWorld");
   }
   if (s.colour === "offline") keys.push("outages");
-  if (s.colour.startsWith("pr_")) keys.push("prices");
+  if (s.colour.startsWith("pr_")) keys.push("prices", "zones");
   if (s.colour === "access") keys.push("worldStats");
   if (s.colour === "rt_household") keys.push("retail", "usStates");
   if (s.colour.startsWith("ir_")) keys.push("irena");
