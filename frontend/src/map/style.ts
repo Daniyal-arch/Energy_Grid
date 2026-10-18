@@ -224,6 +224,15 @@ export function addGridLayers(map: maplibregl.Map, which: "hv" | "predicted" | "
     );
   }
 }
+/** A resource atlas as raster tiles, under the coastlines and the grid (added when first shown). */
+export function addAtlasLayer(map: maplibregl.Map, id: string, tiles: string, maxzoom: number, attribution: string): void {
+  if (map.getSource(id)) return;
+  map.addSource(id, { type: "raster", url: tiles, tileSize: 256, maxzoom, attribution });
+  map.addLayer(
+    { id, type: "raster", source: id, paint: { "raster-opacity": 0.62, "raster-resampling": "nearest", "raster-fade-duration": 0 } },
+    "world-coast",
+  );
+}
 export const GRID_LAYERS = ["hv-glow", "hv-lines"];
 export const PREDICTED_LAYERS = ["grid-predicted"];
 export const US_GRID_LAYERS = ["us-lines", "us-lines-dc"];

@@ -2,11 +2,12 @@
 // files and names its source; distances, point-in-outline tests and sums within
 // SITE_RADIUS_KM are computed in lib/site.ts. A card with nothing for the place stays away.
 
-import { useEffect, useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { create } from "zustand";
 
 import { useFile } from "../app/data";
 import type { CountriesFile, GridFile, PlantsFile, WorldFile } from "../app/types";
+import { atlasValue, type AtlasFile } from "../lib/atlas";
 import { gbSiteTotals, type ConnectFile } from "../lib/connect";
 import { FUEL_LABEL, power } from "../lib/energy";
 import type { PricesFile } from "../lib/prices";
@@ -548,6 +549,27 @@ export function SiteRiskCard({ place }: { place: Place }) {
   );
 }
 
+// ---------------------------------------------------------------- the resource atlases
+
+/** PVOUT and wind speed at 100 m in the site's 0.1 degree cell (one range request each). */
+function useAtlasAt(site: LonLat, on: boolean) {
+  const atlas = useFile<AtlasFile>(on ? "atlas" : null);
+  const [got, setGot] = useState<{ key: string; pvout: number | null | undefined; wind: number | null | undefined }>({ key: "", pvout: undefined, wind: undefined });
+  const key = siteKey(site);
+  useEffect(() => {
+    if (!atlas) return;
+    let live = true;
+    const [lon, lat] = site;
+    // a lookup that fails (file not published yet) shows nothing rather than a guess
+    const read = (k: "pvout" | "wind") => atlasValue(atlas[k], lon, lat).catch(() => undefined);
+    Promise.all([read("pvout"), read("wind")]).then(([pvout, wind]) => live && setGot({ key, pvout, wind }));
+    return () => {
+      live = false;
+    };
+  }, [atlas, key]); // eslint-disable-line react-hooks/exhaustive-deps
+  return { atlas, ...(got.key === key ? got : { pvout: undefined, wind: undefined }) };
+}
+
 // ---------------------------------------------------------------- the country's power, data centres
 
 export function SiteCountryCard({ place }: { place: Place }) {
@@ -557,7 +579,12 @@ export function SiteCountryCard({ place }: { place: Place }) {
   const e = place.iso3 ? t?.entities[place.iso3] : undefined;
   const k = e && t ? [...t.years.keys()].reverse().find((i) => e.renewables[i] != null) : undefined;
   const osm = "OpenStreetMap (datacentres.json)";
+  const at = useAtlasAt(place.site, place.ready);
+  const cell = at.atlas?.pvout.lookup.cell_deg ?? 0.1;
+  const atlasNote = `mean over the ${cell}° cell (computed)`;
   useReport(place.site, "Around it", [
+    at.pvout != null && ["PV output potential (PVOUT)", round(at.pvout, 3), "kWh/kWp per day", `${atlasNote}; x365 = ${Math.round(at.pvout * 365)} kWh/kWp a year`, at.atlas?.pvout.source ?? "Global Solar Atlas"],
+    at.wind != null && ["Mean wind speed at 100 m", round(at.wind, 2), "m/s", atlasNote, at.atlas?.wind.source ?? "Global Wind Atlas"],
     !!e && !!t && k != null && [`Renewable share of generation, ${place.iso2 ?? place.iso3}`, e.renewables[k], "%", t.years[k], "Ember yearly electricity data"],
     !!e && !!t && k != null && e.intensity[k] != null && ["Carbon intensity of generation", e.intensity[k], "gCO2/kWh", t.years[k], "Ember yearly electricity data"],
     !!dc && [`Data centres within ${R} km`, near.length, "count", "mapped sites", osm],
@@ -565,6 +592,14 @@ export function SiteCountryCard({ place }: { place: Place }) {
   ]);
   return (
     <Card title="Around it" accent={[150, 160, 180]}>
+      {at.pvout != null && (
+        <Row
+          k="Solar resource (PVOUT)"
+          v={`${Math.round(at.pvout * 365).toLocaleString("en-US")} kWh/kWp a year`}
+          sub={`${at.pvout.toFixed(2)} a day`}
+        />
+      )}
+      {at.wind != null && <Row k="Mean wind speed at 100 m" v={`${at.wind.toFixed(1)} m/s`} />}
       {e && t && k != null && (
         <>
           <Row k={`Renewable share of generation, ${place.iso2 ?? place.iso3}`} v={`${e.renewables[k]?.toFixed(1)} %`} sub={t.years[k]} />
@@ -579,7 +614,11 @@ export function SiteCountryCard({ place }: { place: Place }) {
           ))}
         </>
       )}
-      <Note>Country figures: Ember's yearly data (newest year with a value). Data centres: mapped in OpenStreetMap, a subset that follows mapping effort.</Note>
+      <Note>
+        {at.pvout != null || at.wind != null
+          ? `Solar and wind: Global Solar Atlas (Solargis) and Global Wind Atlas (DTU), ${atlasNote}; a year of PV = the daily total x 365, as the atlas gives it. `
+          : ""}
+        Country figures: Ember's yearly data (newest year with a value). Data centres: mapped in OpenStreetMap, a subset that follows mapping effort.</Note>
     </Card>
   );
 }

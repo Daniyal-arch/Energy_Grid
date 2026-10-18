@@ -61,6 +61,8 @@ const STATIC: Record<string, Loader> = {
   worldPlants: bundled("world_plants.json"),
   plantNames: bundled("world_plant_names.json"),
   cables: bundled("cables.json"),
+  // the solar and wind resource atlases: classes, tiles, lookup grid (scripts/build_atlas.py)
+  atlas: bundled("atlas.json"),
   // Global Energy Monitor trackers (scripts/build_gem_layers.py)
   gemGas: bundled("gem/pipelines_gas.json"),
   gemOil: bundled("gem/pipelines_oil.json"),
