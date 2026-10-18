@@ -26,7 +26,7 @@ import { QUEUE_COLOR, QUEUE_RATIO_TICKS, US_BANDS, US_TYPE_COLOR, US_TYPE_LABEL,
 import { PLANT_DETAIL_ZOOM, PLANT_MIN_MW, QUEUE_M_PER_GW } from "../map/usLayers";
 import { CABLE_STYLE, FLOW, GAS, HVDC, MULTI_ZONE, OFFLINE_STOPS, PRICE_STOPS, SHARE_STOPS, SUBSTATION, VOLTAGE_BANDS, gradientCss } from "../app/colors";
 import { BEAM_MIN_MW } from "../app/geo";
-import { useDataStore } from "../app/data";
+import { useDataStore, useFile } from "../app/data";
 import type { StatsFile } from "../app/types";
 import { priceRange, rampCss } from "../map/priceTerrain";
 import { currentDay } from "../map/tooltip";
@@ -43,6 +43,8 @@ import {
   type PlantStatus,
   type TimeMode,
 } from "../app/store";
+
+import type { AtlasFile, AtlasId } from "../lib/atlas";
 
 const muted = "text-[#8d94a1]";
 const MODE_LABEL: Record<TimeMode, string> = { live: "Live", day: "24 h", years: "Years" };
@@ -403,6 +405,13 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <MastrKey />;
     case "offshoreWind":
       return <OffshoreKey />;
+    case "evChargersUS":
+      return (
+        <Note>
+          Public DC fast charging stations in operation; dot area = DC fast ports. Stations with only level 2 ports are counted in the card, not drawn. NREL Alternative Fuels
+          Data Center, monthly.
+        </Note>
+      );
     case "solarUS":
       return (
         <Note>
@@ -585,8 +594,42 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <Scale gradient="linear-gradient(90deg, rgba(255,214,72,0), rgba(255,214,72,0.8))" ticks={["0", `${SUN_MAX_WM2} W/m²`]} />;
     case "night":
       return <Note>Darkness at the time on the clock.</Note>;
+    case "solarResource":
+      return <AtlasKey id="pvout" />;
+    case "windResource":
+      return <AtlasKey id="wind" />;
   }
   return null;
+}
+
+/** A resource atlas: its classes as drawn, the unit and the source. */
+function AtlasKey({ id }: { id: AtlasId }) {
+  const atlas = useFile<AtlasFile>("atlas");
+  const a = atlas?.[id];
+  if (!a) return null;
+  const cls = a.classes;
+  const gradient = `linear-gradient(90deg, ${cls.map((c, i) => `${rgbCss(c[2])} ${(i / cls.length) * 100}% ${((i + 1) / cls.length) * 100}%`).join(", ")})`;
+  const first = cls[0][1] as number;
+  const last = cls[cls.length - 1][0] as number;
+  const mid = cls[Math.floor(cls.length / 2)][0] as number;
+  return (
+    <Scale
+      gradient={gradient}
+      ticks={id === "pvout" ? [`${first}`, `${mid}`, `${last} kWh/kWp a day`] : [`${first}`, `${mid}`, `${last} m/s`]}
+      note={
+        id === "pvout" ? (
+          <>
+            Long-term average daily PV output per kWp (×365 for a year, as the atlas gives it: 2.0 = 730 kWh/kWp), in the atlas&apos;s 0.2 steps. Over Europe, colour the countries &quot;Plain&quot; to see it. {a.source}.
+          </>
+        ) : (
+          <>
+            Mean wind speed at 100 m above ground, in 1 m/s classes over the atlas&apos;s 0–10 m/s scale. Over Europe, colour the countries &quot;Plain&quot; to see it.{" "}
+            {a.source}.
+          </>
+        )
+      }
+    />
+  );
 }
 
 function Toggle({ on }: { on: boolean }) {

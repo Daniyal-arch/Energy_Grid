@@ -94,3 +94,35 @@ def test_outage_reason_with_quotes_and_line_breaks(tmp_path: Path) -> None:
     f = tmp_path / "lake" / "entsoe" / lk.catalog()["tables"]["outages"]["files"][0]
     got = con.execute(f"SELECT reason_text, revision FROM '{f}'").fetchone()
     assert got == ('Arrêt "programmé",\nlong line', 3)
+
+
+def test_imbalance_rows_keep_each_category() -> None:
+    rows = ble.imbalance_rows("NL", [_doc("entsoe_a85.xml")])
+    assert rows == [
+        ("2025-01-01T00:00:00+00:00", "NL", "A05", 120.5, "EUR", 900),
+        ("2025-01-01T00:15:00+00:00", "NL", "A05", -30.25, "EUR", 900),
+        # A03: position 1 holds until position 3
+        ("2025-01-01T00:00:00+00:00", "NL", "A04", 80.0, "EUR", 900),
+        ("2025-01-01T00:15:00+00:00", "NL", "A04", 80.0, "EUR", 900),
+        ("2025-01-01T00:30:00+00:00", "NL", "A04", 81.0, "EUR", 900),
+    ]
+
+
+def test_imbalance_partitioned_by_zone_and_year(tmp_path: Path) -> None:
+    sink = ble.Sink(tmp_path / "tmp")
+    rows = ble.imbalance_rows("NL", [_doc("entsoe_a85.xml")])
+    sink.add("imbalance_price", rows + [(r[0], "PL", *r[2:]) for r in rows])
+    sink.close()
+    con = duckdb.connect()
+    lk = ble.lake_of(tmp_path / "lake")
+    assert ble.write_tables(con, lk, sink, 2025) == []
+    t = lk.catalog()["tables"]["imbalance_price"]
+    assert t["partitions"] == ["zone", "year"]
+    assert sorted(t["files"]) == [
+        "imbalance_price/zone=NL/year=2025/part-0.parquet",
+        "imbalance_price/zone=PL/year=2025/part-0.parquet",
+    ]
+    f = tmp_path / "lake" / "entsoe" / t["files"][0]
+    src = f"read_parquet('{f}', hive_partitioning = false)"
+    got = con.execute(f"SELECT count(*), min(price), any_value(iso3) FROM {src}").fetchone()
+    assert got[0] == 5 and float(got[1]) == -30.25 and got[2] == "NLD"

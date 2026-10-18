@@ -31,8 +31,9 @@ The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
   data centres, access, Ember and IRENA, Climate TRACE emitters, water risk (Aqueduct), live grids
   of Brazil, Australia, Taiwan and Ontario.
 - **Lake:** ~1.9 GB Parquet on R2, 101 tables (`lake/_catalog.json`, `lake.duckdb` views).
-- **In the cloud now:** brief 16 (imbalance prices, US EV fast chargers, GB carbon intensity,
-  Denmark every 5 minutes, the solar and wind atlases).
+- **Brief 16 (pull request):** imbalance prices per zone (card, lake history 2015–), GB carbon
+  intensity and Denmark every 5 minutes (country cards), the solar and wind resource atlases
+  (layers, "Check a site", COGs in the lake); US EV fast chargers built, waiting for a key.
 
 ## Waiting on the owner (keys and approvals)
 
@@ -43,8 +44,13 @@ The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
 - **PJM** (`PJM_API_KEY`), **Alberta** (`AESO_API_KEY`), **South Korea** (`DATA_GO_KR_KEY`),
   **Turkey** (`EPIAS_USERNAME`, `EPIAS_PASSWORD`), **France RTE** (free key), **Finland**
   (`FINGRID_API_KEY`).
+- **NYISO** nodal prices: its site answers automated downloads with a bot check (HTTP 202); no
+  key fixes it, a route the owner approves does.
+- **NREL** (`NREL_API_KEY`, an api.data.gov key from https://developer.nrel.gov/signup/) as a
+  repo secret: the US EV fast chargers (brief 16 B) are built and wait for it. The repo secret
+  `EPA_API_KEY` reached the workflow empty on 2026-10-18 (brief 17 counts on it too).
 - **Downloads to approve:** Global Renewables Watch (GeoPackages, size from its probe), GHSL
-  population (~0.3 GB at 1 km); the atlases in brief 16 if not approved there.
+  population (~0.3 GB at 1 km). (The atlases of brief 16 were approved and are built.)
 
 ## The plan: four phases, run as parallel cloud briefs
 
@@ -55,7 +61,7 @@ touch different files. The owner merges; the next phase starts when its inputs a
 
 | Brief | What |
 |---|---|
-| **16** (running) | imbalance prices, US EV fast chargers, GB carbon intensity, Denmark every 5 minutes, solar and wind atlases |
+| **16** (pull request) | ✅ imbalance prices, ✅ GB carbon intensity, ✅ Denmark every 5 minutes, ✅ solar and wind atlases; US EV fast chargers wait for `NREL_API_KEY` |
 | **17 Datasets wave 5** ([17-datasets-wave5.md](docs/tasks/17-datasets-wave5.md)) | 22 datasets in one session: NUTS 0–3, bidding-zone outlines, world admin-1, GeoNames cities; EIA-923, eGRID, GHGRP; netztransparenz redispatch and curtailment, SMARD; TYNDP projects, ENTSO-E transmission outages; Global Renewables Watch; Eurostat balances, EIA SEDS, EIA STEO, Energy Institute review, EDGAR; JEPX, CENACE, Grid-India; GHSL population, NASA Black Marble |
 | **18 Backend skeleton** | `backend/` FastAPI + DuckDB (read-only lake, SQL guard, limits), saved maps on R2; hosting chosen by the owner (docs/AGENT.md §2) |
 

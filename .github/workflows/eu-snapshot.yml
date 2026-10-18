@@ -70,6 +70,9 @@ jobs:
             python scripts/fetch_brazil.py --out store/eu || echo "ONS fetch failed"
             python scripts/fetch_taiwan.py --out store/eu || echo "Taipower fetch failed"
             python scripts/fetch_ontario.py --out store/eu || echo "IESO fetch failed"
+            # Great Britain's carbon intensity (NESO) and Denmark every 5 min (Energinet), no keys
+            python scripts/fetch_gb_carbon.py --out store/eu || echo "GB carbon fetch failed"
+            python scripts/fetch_dk_live.py --out store/eu || echo "Energinet fetch failed"
             # the US grid (EIA-930); needs the EIA_API_KEY secret
             python scripts/fetch_us.py --out store/eu || echo "EIA fetch failed"
             # generating units offline now (ENTSO-E unavailability)
