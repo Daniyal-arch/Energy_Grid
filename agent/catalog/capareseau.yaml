@@ -1,0 +1,16 @@
+dataset: capareseau
+title: France, room to connect per substation (Capareseau, RTE and the distribution operators)
+licence: re-use allowed with the source named (capareseau.fr legal notice)
+map_file: frontend/public/data/eu/connect/fr.json (layer "Grid capacity", new generation; card; Check a site "Room to connect")
+tables:
+  substations:
+    grain: one row per substation (poste source) with its S3REnR values, per snapshot
+    keys: {code: Capareseau substation code, region: region name, snapshot: date fetched}
+    measures: {info_na: {unit: MW, how: "capacity reserved under the S3REnR still to allocate, as published"}, rte_cdr: {unit: MW, how: "reserved capacity available as seen from the transmission grid"}, info_fas3r: {unit: MW, how: "projects queued"}}
+    examples:
+      - q: how many French substations have S3REnR capacity left to allocate
+        sql: SELECT count(*) FROM capareseau.substations WHERE TRY_CAST(info_na AS DOUBLE) > 0
+        answer: 1640 of 3116 (snapshot 2026-10-19)
+      - q: total S3REnR capacity left to allocate
+        sql: SELECT sum(TRY_CAST(info_na AS DOUBLE)) FROM capareseau.substations WHERE TRY_CAST(info_na AS DOUBLE) > 0
+        answer: 25904.1 MW

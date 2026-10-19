@@ -1,0 +1,16 @@
+dataset: esb_heatmap
+title: Ireland, transformer capacity for demand and generation (ESB Networks capacity heatmap)
+licence: ESB Networks website terms
+map_file: frontend/public/data/eu/connect/ie.json (38 kV, 110 kV stations and MV transformers in "Grid capacity"; card; Check a site)
+tables:
+  transformers:
+    grain: one row per transformer group in the heatmap download (LV included), per snapshot
+    keys: {name: station name, voltage_class: LV | MV | 38 kV | 110 kV}
+    measures: {demand_available_mva: {unit: MVA}, gen_available_firm_mw: {unit: MW}, gen_available_nonfirm_mw: {unit: MW}}
+    examples:
+      - q: how many rows are in the heatmap
+        sql: SELECT count(*) FROM esb_heatmap.transformers
+        answer: 46527 (July 2026 file)
+      - q: how many 38 kV and 110 kV stations or MV transformers have firm generation capacity available
+        sql: SELECT count(*) FROM esb_heatmap.transformers WHERE voltage_class <> 'LV' AND gen_available_firm_mw > 0
+        answer: 453 of 657

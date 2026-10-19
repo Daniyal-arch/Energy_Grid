@@ -1,0 +1,13 @@
+dataset: eia861_territory
+title: US utility service territories per county (EIA-861 via PUDL)
+licence: CC BY 4.0 (PUDL); EIA public domain
+access: in place (PUDL core_eia861__yearly_service_territory on S3, no lake copy)
+map_file: frontend/public/data/us/utilities.json (Check a site; US state card)
+tables:
+  core_eia861__yearly_service_territory:
+    grain: one row per utility, state and county per year
+    keys: {utility_id_eia, county_id_fips: 5-digit county code, report_date}
+    examples:
+      - q: how many utilities report service in Texas
+        sql: SELECT count(DISTINCT utility_id_eia) FROM pudl.core_eia861__yearly_service_territory WHERE state = 'TX' AND report_date = '2025-01-01'
+        answer: 150

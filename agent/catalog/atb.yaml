@@ -1,0 +1,13 @@
+dataset: atb
+title: NREL Annual Technology Baseline, electricity (2025 v1.0.0)
+licence: CC BY 4.0
+map_file: frontend/public/data/eu/costs.json ("What new capacity costs", World and US panels)
+tables:
+  electricity:
+    grain: one row per technology detail, metric, case, scenario, cost recovery period and year, as published
+    keys: {technology, techdetail, core_metric_parameter: LCOE | CAPEX | Fixed O&M | CF ..., core_metric_case: R&D | Market, scenario: Advanced | Moderate | Conservative, core_metric_variable: year}
+    measures: {value: {unit: "in units ($/MWh, $/kW ...)"}}
+    examples:
+      - q: LCOE of utility PV, class 5, 2030, moderate, R&D case, 30-year recovery
+        sql: SELECT value FROM atb.electricity WHERE display_name = 'Utility PV - Class 5' AND core_metric_parameter = 'LCOE' AND core_metric_case = 'R&D' AND scenario = 'Moderate' AND crpyears = '30' AND core_metric_variable = '2030'
+        answer: 34.93 $/MWh
