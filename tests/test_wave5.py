@@ -1,3 +1,4 @@
+# ruff: noqa: E501, SIM905 - fixture lines as the sources publish them
 """Wave-5 builders (brief 17): their pure parsing and shaping functions."""
 
 from __future__ import annotations
