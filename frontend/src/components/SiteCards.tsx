@@ -458,7 +458,9 @@ export function SiteConstraintsCard({ place }: { place: Place }) {
   const cf = useFile<ConstraintsFile>("constraints");
   const pf = useFile<ProtectedFile>("protected");
   const covered = place.europe || !!place.state;
-  const prot = useAsync<ProtectedSearch>(pf && covered ? `p|${key}` : null, () => protectedAround(pf!.tiles, site));
+  // PAD-US may be missing from the newest build: then no protected-area figures for the US
+  const protCovered = place.europe ? !pf?.failed?.natura2000 : !!place.state && !pf?.failed?.padus;
+  const prot = useAsync<ProtectedSearch>(pf && protCovered ? `p|${key}` : null, () => protectedAround(pf!.tiles, site));
   const roads = useAsync(cf && covered ? `r|${key}` : null, () => roadsAround(cf!.roads.tiles, site));
   const flood = useAsync(cf ? `f|${key}` : null, async () => {
     const eu = await floodClassAt(cf!.flood.maps.eu.lookup, site[0], site[1]);
@@ -486,7 +488,8 @@ export function SiteConstraintsCard({ place }: { place: Place }) {
   const wait = (s: { v: unknown; failed: boolean }, k: string) => (s.failed ? <Row k={k} v="tiles not reachable" /> : !s.v ? <Row k={k} v="…" /> : null);
   return (
     <Card title="Constraints" note={`within ${R} km`} accent={[96, 186, 120]}>
-      {covered && (wait(prot, "Protected areas") ?? (prot.v && (
+      {covered && !protCovered && <Row k="Protected areas" v="not available" sub={place.europe ? "Natura 2000" : "PAD-US could not be read"} />}
+      {protCovered && (wait(prot, "Protected areas") ?? (prot.v && (
         <>
           <Row k={`Protected, share of ${R} km around`} v={`${(100 * prot.v.share).toFixed(1)} %`} sub={`${prot.v.areas.length} areas`} />
           {prot.v.areas.slice(0, 4).map((a) => (

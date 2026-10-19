@@ -1237,7 +1237,9 @@ publishers' ArcGIS services, paged GeoJSON with their generalisation (maxAllowab
 ~50 m): the 1.36 GB GeoPackage and 1.01 GB GeoParquet are over the download limit. Passed through:
 code, name, type, area, PAD-US designation, manager, GAP status. Computed: counts and areas per
 country/state; Check a site: areas within 10 km and the share of that circle covered (points 0.5 km
-apart). Lake `protected/*`. Refresh: group C yearly.
+apart). Lake `protected/*`. Refresh: group P yearly. PAD-US is blocked: its service answered HTTP
+524 (timeout) in two Actions runs, at offsets 0 and 2,500; the build skips it and records that in
+`protected.json`, so the US shows no protected-area figures.
 
 ## River flood hazard (`build_constraints.py flood`, R2 `grid/flood-{eu,world}.pmtiles`, lookups)
 
