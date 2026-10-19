@@ -1,6 +1,6 @@
 name: US live queues
 
-# The US markets' own interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE; NYISO and PJM
+# The US markets' own interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO; PJM
 # listed as missing), read with gridstatus (scripts/fetch_us_queues.py): the summary for the
 # US panel's Queue tab is committed to main (frontend/public/data/us/queues_live.json) and every
 # market's full table goes to the lake (r2://infraatlas-raw/lake/iso_queues/, one snapshot a

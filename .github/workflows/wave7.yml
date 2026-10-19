@@ -1,0 +1,110 @@
+name: Wave 7 datasets
+
+# The builds of brief 22 (docs/tasks/22-coverage-wave7.md): one job per dataset family, each
+# committing its small outputs (frontend/public/data, agent/catalog, data/coverage.yaml) back to
+# the branch and uploading lake tables to R2. A push runs the families its commit message names:
+# "[w7: A B]". Run by hand from main: Actions > Wave 7 datasets > Run workflow.
+# A room to connect, B every unit, C live mix and CO2, D redispatch and congestion, E prices,
+# F what consumers pay, G emitters, H plants offline, I EV charging, J gas (US), K reliability,
+# P the probe (scripts/probe_wave7.py).
+# Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, ENTSOE_API_KEY, EIA_API_KEY.
+
+on:
+  workflow_dispatch:
+    inputs:
+      groups:
+        description: "Families to build (A B C D E F G H I J K; P = probe)"
+        type: string
+        default: "A B C D E F G H I J K"
+  push:
+    branches: [claude/eloquent-heisenberg-dut9ql]
+    paths: [.github/workflows/wave7.yml, "scripts/build_*.py", "scripts/probe_wave7.py", scripts/wave7_common.py]
+
+permissions:
+  contents: write
+
+env:
+  GROUPS: ${{ inputs.groups || github.event.head_commit.message }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      groups: ${{ steps.p.outputs.groups }}
+    steps:
+      - id: p
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os, re
+          g = os.environ["GROUPS"]
+          m = re.search(r"\[w7: ([A-Z ]+)\]", g)
+          print("groups=" + (m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""))
+          PY
+
+  P:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'P')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - name: 1 room to connect
+        continue-on-error: true
+        run: python scripts/probe_wave7.py connect
+      - name: 2 every unit
+        continue-on-error: true
+        run: python scripts/probe_wave7.py units
+      - name: 3 live mix and CO2
+        continue-on-error: true
+        run: python scripts/probe_wave7.py live
+      - name: 4 redispatch and congestion
+        continue-on-error: true
+        run: python scripts/probe_wave7.py congestion
+      - name: 5 prices
+        continue-on-error: true
+        run: python scripts/probe_wave7.py prices
+      - name: 6 what consumers pay
+        continue-on-error: true
+        run: python scripts/probe_wave7.py retail
+      - name: 7 emitters
+        continue-on-error: true
+        run: python scripts/probe_wave7.py emitters
+      - name: 8 plants offline
+        continue-on-error: true
+        run: python scripts/probe_wave7.py offline
+      - name: 9 EV charging
+        continue-on-error: true
+        run: python scripts/probe_wave7.py ev
+      - name: 10 gas
+        continue-on-error: true
+        run: python scripts/probe_wave7.py gas
+      - name: 11 reliability
+        continue-on-error: true
+        run: python scripts/probe_wave7.py reliability
+
+  A:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'A')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry pyproj gridstatus openpyxl
+      - name: 1 room to connect, ten countries
+        continue-on-error: true
+        run: python scripts/build_connect_eu.py all --upload
+      - name: 1 US queues with NYISO (refreshed weekly by us-queues.yml)
+        continue-on-error: true
+        run: python scripts/fetch_us_queues.py --lake lake-out --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family A outputs"

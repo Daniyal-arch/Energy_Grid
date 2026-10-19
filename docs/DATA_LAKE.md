@@ -342,6 +342,12 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | GHSL population 2025 (`ghsl/population`) | 484 MB zip | Parquet (+ `grid/population-0.1deg.i32` public, 26 MB) | 4,569 rows |
 | Energy Institute review (`ei_review/series`) | xlsx via a browser (`browser-fetch.yml`), raw file in `sources/ei/` | Parquet, long | 277,731 rows, 0.0015 GB |
 
+### Wave 7 (brief 22, the coverage registry `data/coverage.yaml`)
+
+| Dataset | Access | Kept as | Size (measured) |
+|---|---|---|---|
+| Room to connect, ten countries and two distribution grids (`connect_eu/<cc>`) | operators' JSON, ArcGIS layers, HTML tables, CSV | GeoParquet (Parquet for AT, DE, SE), snapshot partition | ~5,500 rows a snapshot, < 0.001 GB |
+
 ### Future (docs/DATASETS.md)
 
 | Dataset | Access | Kept as | Size |

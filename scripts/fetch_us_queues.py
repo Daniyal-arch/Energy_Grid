@@ -2,9 +2,9 @@
 
 Each market publishes its queue (Excel or a web table); the open-source `gridstatus` library
 (MIT) reads them into one shape (scripts/probe_us_nodes.py shows what each returns). Kept
-markets: CAISO, ERCOT, MISO, SPP, ISO-NE. NYISO's site answers automated downloads with a bot
-check (HTTP 202) and PJM needs a key that is not set yet: both are listed as missing, not
-estimated. Runs in GitHub Actions (ERCOT blocks many non-US addresses).
+markets: CAISO, ERCOT, MISO, SPP, ISO-NE and NYISO (its queue file answered again on
+2026-10-19, wave 7; it had answered with a bot check, HTTP 202). PJM needs a key that is not set
+yet: it is listed as missing, not estimated. Runs in GitHub Actions (ERCOT blocks many non-US addresses).
 
 Passthrough per request: queue id, state, generation type, capacity (MW), queue date, status.
 Computed for the map file: active requests (the market's own status "active", any case) summed
@@ -28,10 +28,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "frontend" / "public" / "data" / "us"
-SOURCE = "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE), read with gridstatus (MIT)"
-MARKETS = {"CAISO": "CAISO", "ERCOT": "Ercot", "MISO": "MISO", "SPP": "SPP", "ISO-NE": "ISONE"}
+SOURCE = "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)"
+MARKETS = {
+    "CAISO": "CAISO",
+    "ERCOT": "Ercot",
+    "MISO": "MISO",
+    "SPP": "SPP",
+    "ISO-NE": "ISONE",
+    "NYISO": "NYISO",
+}
 MISSING = {
-    "NYISO": "the site answers automated downloads with a bot check",
     "PJM": "needs PJM_API_KEY",
 }
 # (pattern, LBNL type), first match per part; a part is one technology of a hybrid

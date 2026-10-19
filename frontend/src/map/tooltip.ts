@@ -32,6 +32,7 @@ import { SEA_CABLE_SOURCE, type SeaCable, type SeaPipe } from "../lib/seaCables"
 import { frValue, itTotals, type FrFile, type FrSite, type IeFile, type IeStation, type ItFile } from "../lib/connectMore";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
+import { connectEuKey, valueText, type ConnectEuFile, type EuArea, type EuPoint } from "../lib/connectEu";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { useApp, motion } from "../app/store";
@@ -355,6 +356,19 @@ function tooltipHtml(id: string, object: unknown): string | null {
     const p = us.price[d.code];
     return `<b>${d.name}</b><div>Households pay <b>${usCents(n.v)}/kWh</b> on average</div>
       <div>businesses ${usCents(p.COM[n.k])} · industry ${usCents(p.IND[n.k])}</div>${SRC(`EIA retail sales (EIA-861M), ${n.month}`)}`;
+  }
+  if (id.startsWith("eu-connect7")) {
+    // eu-connect7:<id> (points) or eu-connect7-areas:<id> (areas): every published column
+    const cc = id.split(":")[1];
+    const f = fileOf<ConnectEuFile>(connectEuKey(cc));
+    if (!f) return null;
+    const isArea = id.includes("-areas-");
+    const row = isArea ? (object as { a: EuArea }).a : (object as EuPoint);
+    const vals = isArea ? (row as EuArea)[2] : (row as EuPoint)[4];
+    const kv = !isArea && (row as EuPoint)[3] != null ? ` · ${(row as EuPoint)[3]} kV` : "";
+    const lines = f.columns.map(([, label, unit], i) => (vals[i] == null || vals[i] === "" ? "" : `<div>${label}: <b>${valueText(vals[i], unit)}</b></div>`)).join("");
+    const cls = isArea ? (row as EuArea)[3] : (row as EuPoint)[5];
+    return `<b>${row[0]}</b><div style="color:#8d94a1">${f.classes[cls] ?? ""}${kv}</div>${lines}${SRC(`${f.source}${f.updated ? `, ${f.updated}` : ""}`)}`;
   }
   if (id.startsWith("gem-")) return gemHtml(id, object);
   if (id.startsWith("us-")) return usHtml(id, object);

@@ -149,6 +149,19 @@ const STATIC: Record<string, Loader> = {
   // where new demand or generation can connect: GB, NL, ES (scripts/fetch_connect_here.py)
   connect: archive("connect.json"),
   // France, Italy, Belgium, Portugal, Ireland, Poland (scripts/build_connect_more.py)
+  // room to connect in ten more countries (scripts/build_connect_eu.py)
+  connect7AT: bundled("connect/at.json"),
+  connect7BG: bundled("connect/bg.json"),
+  connect7CZ: bundled("connect/cz.json"),
+  connect7DE: bundled("connect/de.json"),
+  connect7DK: bundled("connect/dk.json"),
+  connect7EE: bundled("connect/ee.json"),
+  connect7LT: bundled("connect/lt.json"),
+  connect7LU: bundled("connect/lu.json"),
+  connect7MT: bundled("connect/mt.json"),
+  connect7SE: bundled("connect/se.json"),
+  connect7ESDSO: bundled("connect/es_dso.json"),
+  connect7GBDSO: bundled("connect/gb_dso.json"),
   connectFR: bundled("connect/fr.json"),
   connectIT: bundled("connect/it.json"),
   connectBE: bundled("connect/be.json"),

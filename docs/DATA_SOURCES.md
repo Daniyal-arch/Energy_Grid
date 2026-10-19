@@ -449,6 +449,21 @@ Rules:
   only. Nodes sharing a zone share capacity, so the card does not sum them.
 - Refresh: Mondays on `eu-days`.
 
+## Room to connect, ten more countries (`scripts/build_connect_eu.py`, `connect/<cc>.json`)
+
+The operators' own figures, passed through, one file format: Austria (APG, available feed-in and
+offtake per substation, HTML table, monthly; no positions), Bulgaria (ESO, free MW per substation
+for generation and consumption by voltage, and "grid expansion needed"), Czechia (ČEPS,
+suitability per substation for 2031 and 2036), Germany (TransnetBW only: ranges per substation;
+50Hertz and Amprion publish PDFs), Denmark (Energinet and the DSOs, MW per station), Estonia
+(Elering, expandable or not, extra fee), Lithuania (Litgrid, free MW for solar, wind, storage per
+year), Luxembourg (Creos, per station and voltage, 2026/2030/2035), Malta (Enemalta, kVA and kWp
+per substation), Sweden (Svenska kraftnät, per county), Spain's distribution nodes (e-distribución,
+CNMC monthly CSV) and GB's six DNO embedded capacity registers (1 MW and more). Computed: the map
+class (four MW classes on the feed-in value, or the operator's category), WGS84 positions from
+UTM / OSGB / ED50 as each file gives them. Layer "Grid capacity", card per country, site analysis
+rows; lake `connect_eu/<cc>`. Refresh: by hand (`wave7.yml` family A). Coverage: docs/COVERAGE.md.
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

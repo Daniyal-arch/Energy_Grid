@@ -107,6 +107,7 @@ import { evLayers } from "./evLayers";
 import { ghgrpLayers } from "./ghgrpLayers";
 import { tyndpLayers } from "./tyndpLayers";
 import { connectMoreLayers } from "./connectMoreLayers";
+import { connectEuLayers } from "./connectEuLayers";
 import { comingLayers } from "./comingLayers";
 import { SEA_CABLE_COLOR, seaPipeLayer, type SeaCable, type SeaCablesFile, type SeaPipe } from "../lib/seaCables";
 import type { MastrTech } from "../lib/mastr";
@@ -544,7 +545,7 @@ export function buildLayers(fr: Frame): Layer[] {
   }
 
   // France, Italy, Ireland (scripts/build_connect_more.py)
-  if (facingEurope) layers.push(...connectMoreLayers(fr));
+  if (facingEurope) layers.push(...connectMoreLayers(fr), ...connectEuLayers(fr));
   // hydrogen projects and planned gas infrastructure (scripts/build_coming.py)
   if (facingEurope) layers.push(...comingLayers(fr));
 

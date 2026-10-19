@@ -29,6 +29,8 @@ import { ETS_COLOR, ETS_REGISTRY_NAME, etsIn, mt, newestT, type EtsFile } from "
 import { LNG_SEND, gwhdText, lngDay, type LngTerminalsFile } from "../lib/lngTerminals";
 import { CT_COLOR, subsectorLabel, type CtraceFile } from "../lib/ctrace";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
+import { ConnectEuCard } from "../components/ConnectEuCards";
+import { CONNECT_EU, connectEuCountry } from "../lib/connectEu";
 import { BeConnectCard, FrConnectCard, IeConnectCard, ItConnectCard, PlConnectCard, PtConnectCard } from "../components/ConnectMoreCards";
 import { ProtectedCard } from "../components/ConstraintCards";
 import { GasProjectsCard, HydrogenCard } from "../components/ComingCards";
@@ -465,7 +467,7 @@ function ConnectCards({ iso3 }: { iso3?: string }) {
   const f = useFile<ConnectFile>("connect");
   if (!f) return <Card title="Connecting to the grid">Loading…</Card>;
   const show = (code: string) => !iso3 || iso3 === code;
-  const any = ["GBR", "NLD", "ESP", "FRA", "ITA", "BEL", "PRT", "IRL", "POL"].some(show);
+  const any = ["GBR", "NLD", "ESP", "FRA", "ITA", "BEL", "PRT", "IRL", "POL", ...CONNECT_EU.map((c) => ISO3[connectEuCountry(c)])].some(show);
   if (!any) return null;
   return (
     <>
@@ -478,6 +480,9 @@ function ConnectCards({ iso3 }: { iso3?: string }) {
       {show("PRT") && <PtConnectCard />}
       {show("IRL") && <IeConnectCard />}
       {show("POL") && <PlConnectCard />}
+      {CONNECT_EU.filter((c) => show(ISO3[connectEuCountry(c)])).map((c) => (
+        <ConnectEuCard key={c} cc={c} />
+      ))}
     </>
   );
 }

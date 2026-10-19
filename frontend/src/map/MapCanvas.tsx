@@ -3,6 +3,7 @@
 // only mounts this once. When nothing moves and nothing changed, a frame costs nothing.
 
 import { AmbientLight, DirectionalLight, LightingEffect, MapView, _GlobeView as GlobeView, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
+import { CONNECT_EU, connectEuKey } from "../lib/connectEu";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
 import { useEffect, useRef } from "react";
@@ -54,7 +55,7 @@ function wantedKeys(zoom: number): string[] {
   if (L.lngSendOut) keys.push("lngTerminals");
   if (L.ets) keys.push("ets");
   if (L.ctrace) keys.push("ctrace");
-  if (L.connect) keys.push("connect", "connectFR", "connectIT", "connectIE");
+  if (L.connect) keys.push("connect", "connectFR", "connectIT", "connectIE", ...CONNECT_EU.map(connectEuKey));
   if (L.usOutages) keys.push("usOutages", "usCounties");
   if (L.water) keys.push("water");
   if (L.offshoreWind) keys.push("offshoreWind");

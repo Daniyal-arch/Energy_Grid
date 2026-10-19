@@ -237,7 +237,9 @@ function ConnectKey() {
       <Note>
         Dots, MW (MVA) left as published: France (new generation), each substation's S3REnR capacity still to allocate (Capareseau); Ireland, each 38 kV and 110 kV station's
         and MV transformer's demand or firm generation capacity available (ESB Networks heatmap). Italy (new generation): GW requested to connect per region, renewables and storage
-        (Terna Econnextion). Portugal and Poland publish no positions: see the panel.
+        (Terna Econnextion). Portugal and Poland publish no positions: see the panel. Also Bulgaria (ESO), Czechia (ČEPS, suitability in 2031), Denmark (Energinet and the DSOs),
+        Estonia (Elering, expandable or not), Lithuania (Litgrid), Luxembourg (Creos), Malta (Enemalta) and Sweden (Svenska kraftnät, per county); Austria (APG) and Baden-Württemberg
+        (TransnetBW) publish no positions: see the panel.
       </Note>
     </>
   );
