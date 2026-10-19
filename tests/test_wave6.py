@@ -225,3 +225,112 @@ def test_roads_classes() -> None:
     assert bc.ROAD_CLASSES == ["motorway", "trunk", "primary"]
     x0, y0, x1, y1 = bc.BOXES["europe"]
     assert x0 < 0 < x1 and y0 < 50 < y1
+
+
+# ---------------------------------------------------------------- D. what is coming and what it costs
+
+import build_coming as bk  # noqa: E402
+
+
+def test_hydrogen_row() -> None:
+    procs: list[str] = []
+    uses: list[str] = []
+    stages: list[str] = []
+    r = {"Name": "H2 Green Steel (Phase 1) ", "City": "Boden", "Country": "Sweden", "Start year": 2026, "Production capacity MW/MWel": 740,
+         "Production process": "Water electrolysis", "End-use": "Steel", "Consumption capacity (tonnes/year)": 122309.4339, "Latitude": 65.86769, "Longitude": 21.72567,
+         "Project stage": "Construction"}  # fmt: skip
+    row = bk.h2_row(r, procs, uses, stages)
+    assert row == [
+        "H2 Green Steel (Phase 1)",
+        "Boden",
+        "SWE",
+        2026,
+        740,
+        0,
+        0,
+        122309,
+        21.7257,
+        65.8677,
+        0,
+    ]
+    assert (
+        stages == ["Construction"]
+        and bk.h2_row({**r, "Latitude": None}, procs, uses, stages) is None
+    )
+
+
+def test_aures_round() -> None:
+    r = {"Country": "Croatia", "Year": 2020, "Auction date (deadline) [MM/YEAR]": datetime(2020, 12, 11), "Eligible Technologies": "PV", "Status of the auction": "concluded",
+         "Average awarded price [ct/ kWh]": 7.81, "Awarded capacity [kW]": 50000, "Number of submitted bids": "n/a"}  # fmt: skip
+    x = bk.aures_round(r)
+    assert (
+        x["date"] == "2020-12"
+        and x["awarded_mw"] == 50.0
+        and x["avg_ct_kwh"] == 7.81
+        and x["bids"] is None
+        and x["iso3"] == "HRV"
+    )
+
+
+def test_atb_pick_and_irena_table() -> None:
+    from collections import Counter
+
+    assert bk.atb_pick(Counter({("Market", "None"): 5, ("R&D", ""): 9})) == ("Market", "None")
+    assert bk.atb_pick(Counter({("R&D", ""): 9})) == ("R&D", "")
+    rows = [
+        ("Figure 1.1 Global weighted average LCOE (USD/kWh)",),
+        (None, 2010, 2015, 2020, 2023, 2024),
+        ("Solar PV", 0.46, 0.13, 0.06, 0.044, 0.043),
+        ("Onshore wind", 0.11, 0.07, 0.04, 0.033, 0.034),
+    ]
+    t = bk.irena_table(rows)
+    assert t["Solar PV"]["2024"] == 0.043 and len(t["Onshore wind"]) == 5
+
+
+def test_gas_category() -> None:
+    assert (
+        bk.gas_category("TRA-F-7") == "TRA"
+        and bk.gas_category("H2T-F-642") == "H2T"
+        and bk.gas_category("") == ""
+    )
+    assert bk.iso3("Czech Republic") == "CZE" and bk.iso3("Croatia") == "HRV"
+
+
+def test_ghg_rows() -> None:
+    v = {
+        ("DE", "TOTX4_MEMO", "2023"): 673.0,
+        ("DE", "TOTX4_MEMO", "2024"): 649.76952,
+        ("DE", "CRF1", "2024"): 543.29497,
+        ("DE", "CRF4", "2023"): 50.0,
+    }
+    year, rows = bk.ghg_rows(v, "DE", ["2023", "2024"])
+    assert year == "2024" and rows == [
+        ["Total, excluding LULUCF", 649.77, "Mt CO2e", "2024"],
+        ["Energy", 543.295, "Mt CO2e", "2024"],
+    ]
+
+
+# ---------------------------------------------------------------- E. United States
+
+import build_us_reliability as ur  # noqa: E402
+
+
+def test_oe417_events() -> None:
+    rows = [("Major Disturbances and Unusual Occurrences, Year-to-Date 2024",), ("Month", "Date Event Began", "Time Event Began", "Date of Restoration", "Time of Restoration",
+            "Area Affected", "NERC Region", "Alert Criteria", "Event Type", "Demand Loss (MW)", "Number of Customers Affected"),
+            ("January", datetime(2024, 1, 9), "14:30", datetime(2024, 1, 10), "08:00", "Georgia: Fulton County; South Carolina;", "SERC", "Loss of electric service", "Severe Weather", 300, 120000),
+            ("January", datetime(2024, 1, 12), "01:00", None, None, "West Virginia:", "RF", "x", "Vandalism", "Unknown", None)]  # fmt: skip
+    ev = ur.oe417_events(rows)
+    assert (
+        ev[0]["began_date"] == "2024-01-09"
+        and ev[0]["states"] == ["SC", "GA"]
+        and ev[0]["mw"] == 300
+        and ev[0]["customers"] == 120000
+    )
+    assert ev[1]["states"] == ["WV"] and ev[1]["mw"] is None
+
+
+def test_ferc714_threshold() -> None:
+    # the newest year with demand from 80 planning areas or more (2025: 89; 2014 had 100+)
+    assert "WHERE n >= 80" in Path(ur.__file__).read_text(encoding="utf-8")
+    assert ur.states_in("Washington, DC; Maryland") == ["MD"]

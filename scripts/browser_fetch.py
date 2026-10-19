@@ -76,7 +76,7 @@ SOURCES: dict[str, dict] = {
         ],
         "links": [r"[^\"'\s>]*(?:[Dd]ata|DATA)[^\"'\s>]*\.xlsx", r"[^\"'\s>]*\.xlsx"],
         "refresh": "yearly (the report appears in July); checked monthly",
-        "build": "python scripts/build_costs.py irena --file {file} --upload",
+        "build": "python scripts/build_coming.py irena --file {file}",
     },
 }
 

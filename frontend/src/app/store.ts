@@ -58,6 +58,8 @@ export type LayerId =
   | "usOutages"
   | "water"
   | "protectedAreas"
+  | "hydrogen"
+  | "gasProjects"
   | "flood"
   | "roadsRail"
   | "mastrDE"
@@ -141,6 +143,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "plantOutput", label: "Plant output", desc: "What each large plant produces at the clock", group: "Power plants", coverage: "Europe, US", color: "rgb(255,214,140)", modes: ["day"] },
   { id: "gasFlows", label: "Gas flows", desc: "Gas crossing borders and entering Europe, per gas day", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(255,178,62)", modes: ["live"] },
   { id: "lngSendOut", label: "LNG send-out", desc: "Gas each EU terminal sends into the grid, per day", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(120,180,255)" },
+  { id: "gasProjects", label: "Planned gas projects", desc: "ENTSOG TYNDP 2026: gas and hydrogen projects per country", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(96,214,255)" },
   { id: "gas", label: "Gas storage", desc: "Underground storage sites", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(255,150,92)" },
   { id: "financeCoal", label: "Who finances coal power", desc: "Money from lenders' countries to coal plants", group: "Money", coverage: "World", color: "rgb(232,204,128)" },
   { id: "financeGas", label: "Who finances gas", desc: "Money to gas plants and LNG terminals", group: "Money", coverage: "World", color: "rgb(255,170,60)" },
@@ -152,6 +155,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & demand", coverage: "World", color: "rgb(230,160,255)" },
   { id: "ironOre", label: "Iron ore mines", desc: "Sized by production", group: "Industry & demand", coverage: "World", color: "rgb(206,112,88)" },
   { id: "evChargersUS", label: "EV fast chargers", desc: "Public DC fast charging stations, sized by ports (NREL AFDC)", group: "Industry & demand", coverage: "US", color: "rgb(96,214,255)" },
+  { id: "hydrogen", label: "Hydrogen projects", desc: "Electrolysers and other clean-hydrogen plants, operating or being built (European Hydrogen Observatory)", group: "Industry & demand", coverage: "Europe", color: "rgb(96,214,255)" },
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & demand", coverage: "World", color: "rgb(196,150,255)" },
   { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Risk", coverage: "World", color: "rgb(255,153,0)" },
   { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Risk", coverage: "US", color: "rgb(230,120,80)" },
@@ -201,6 +205,8 @@ export const STATS_LAYERS = new Set<LayerId>([
   "usOutages",
   "water",
   "protectedAreas",
+  "hydrogen",
+  "gasProjects",
   "mastrDE",
   "offshoreWind",
 ]);

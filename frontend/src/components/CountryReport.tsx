@@ -75,6 +75,7 @@ function useSections(code: string) {
     useFile<ProfileFile>(europe ? "pfEurostat" : null),
     useFile<ProfileFile>("pfEi"),
     useFile<ProfileFile>("pfEdgar"),
+    useFile<ProfileFile>("pfGhg"),
     useFile<ProfileFile>("pfPopulation"),
     useFile<ProfileFile>(us ? "pfSeds" : null),
   ];

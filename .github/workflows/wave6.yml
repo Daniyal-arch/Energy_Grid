@@ -191,9 +191,68 @@ jobs:
           tippecanoe -o /tmp/wave6/roads-rail.pmtiles -Z4 -z9 --no-feature-limit --no-tile-size-limit --simplification=4 \
             --attribution='© OpenStreetMap contributors (ODbL), via Overture Maps' --force /tmp/wave6/constraints/roads.geojsons
           ls -la /tmp/wave6/roads-rail.pmtiles
-      - name: Upload grid/roads-rail.pmtiles (R2 credentials only now: DuckDB would send them to Overture's bucket)
+      - name: "Upload grid/roads-rail.pmtiles (R2 credentials only now, DuckDB would send them to Overture's bucket)"
         run: |
           bash scripts/r2_creds.sh
       - run: |
           aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
             /tmp/wave6/roads-rail.pmtiles s3://infraatlas-data/grid/roads-rail.pmtiles --content-type application/vnd.pmtiles
+
+  D:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'D')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl
+      - name: 14 hydrogen projects (European Hydrogen Observatory)
+        continue-on-error: true
+        run: python scripts/build_coming.py hydrogen --upload
+      - name: 15 renewable auctions (AURES II, Mendeley Data)
+        continue-on-error: true
+        run: python scripts/build_coming.py auctions --upload
+      - name: 16a technology costs (NREL ATB, 321 MB CSV)
+        continue-on-error: true
+        run: python scripts/build_coming.py atb --upload
+      - name: Chromium for IRENA
+        continue-on-error: true
+        run: |
+          pip install playwright && python -m playwright install --with-deps chromium
+          bash scripts/r2_creds.sh
+      - name: 16b technology costs (IRENA, fetched with a browser; refreshed by browser-fetch.yml)
+        continue-on-error: true
+        run: xvfb-run -a python scripts/browser_fetch.py irena_costs --force
+      - name: 17 planned gas infrastructure (ENTSOG TYNDP 2026 Annex A)
+        continue-on-error: true
+        run: python scripts/build_coming.py gas --upload
+      - name: 18 greenhouse-gas inventories (Eurostat env_air_gge)
+        continue-on-error: true
+        run: python scripts/build_coming.py ghg
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group D outputs"
+
+  E:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'E')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl xlrd
+      - name: 19 DOE OE-417 disturbance events (second try from Actions; httpx, then curl -4)
+        continue-on-error: true
+        run: python scripts/build_us_reliability.py oe417 --upload
+      - name: 20 FERC 714 planning-area demand (PUDL)
+        continue-on-error: true
+        run: python scripts/build_us_reliability.py ferc714
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group E outputs"

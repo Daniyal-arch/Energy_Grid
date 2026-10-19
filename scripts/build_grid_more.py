@@ -126,9 +126,10 @@ def build_operators(args: argparse.Namespace) -> None:
     snap = con.execute(
         f"SELECT max(snapshot) FROM read_parquet('{MASTR}/operators/*/*.parquet', hive_partitioning = 1)"
     ).fetchone()[0]  # type: ignore[index]
-    src = lambda t: (
-        f"read_parquet('{MASTR}/{t}/snapshot={snap}/**/*.parquet', hive_partitioning = 1, union_by_name = true)"
-    )  # noqa: E731
+
+    def src(t: str) -> str:
+        return f"read_parquet('{MASTR}/{t}/snapshot={snap}/**/*.parquet', hive_partitioning = 1, union_by_name = true)"
+
     gcp_cols = [
         r[0]
         for r in con.execute(f"DESCRIBE SELECT * FROM {src('grid_connection_points')}").fetchall()

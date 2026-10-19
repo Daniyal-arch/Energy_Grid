@@ -27,6 +27,7 @@ import type { EvChargersFile } from "../lib/evChargers";
 import type { GhgrpFile } from "../lib/ghgrp";
 import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
 import { siteHtml } from "./siteLayers";
+import { type GasProjectsFile, type H2Project, type HydrogenFile } from "../lib/coming";
 import { SEA_CABLE_SOURCE, type SeaCable, type SeaPipe } from "../lib/seaCables";
 import { frValue, itTotals, type FrFile, type FrSite, type IeFile, type IeStation, type ItFile } from "../lib/connectMore";
 import { CABLE_STYLE } from "../app/colors";
@@ -517,6 +518,25 @@ function tooltipHtml(id: string, object: unknown): string | null {
         .map(([t, mw]) => `${t} ${connectGw(mw)}`)
         .join(" · ");
       return `<b>${d.site[0]}</b><div>${d.site[3]} · <b>${connectGw(d.mw)}</b> waiting to connect</div><div>${parts}</div>${SRC(`NESO TEC register, ${cf.gb.date} · placed at the GSP of that name (NESO lookup)`)}`;
+    }
+    case "eu-hydrogen": {
+      const p = object as H2Project;
+      const hf = fileOf<HydrogenFile>("hydrogen");
+      if (!hf) return null;
+      const part = (i: number | null, list: string[]) => (i != null ? list[i] : null);
+      return `<b>${p[0]}</b><div>${[p[1], part(p[10], hf.stages), p[3]].filter(Boolean).join(" · ")}</div>
+        <div>${p[4] != null ? `<b>${p[4].toLocaleString("en-US")} MW</b> · ` : ""}${[part(p[5], hf.processes), part(p[6], hf.end_uses)].filter(Boolean).join(" · ")}</div>
+        ${p[7] != null ? `<div>${p[7].toLocaleString("en-US")} t/year</div>` : ""}${SRC(`European Hydrogen Observatory (${hf.file})`)}`;
+    }
+    case "eu-gas-projects": {
+      const d = object as { name: string; n: number; byCat: Record<string, number> };
+      const gf = fileOf<GasProjectsFile>("gasProjects");
+      if (!gf) return null;
+      const parts = Object.entries(d.byCat)
+        .sort((a, b) => b[1] - a[1])
+        .map(([c, n]) => `${n} ${gf.categories[c] ?? c}`)
+        .join(" · ");
+      return `<b>${d.name}</b><div><b>${d.n}</b> projects in the TYNDP 2026</div><div>${parts}</div>${SRC("ENTSOG TYNDP 2026 Annex A (counted per country, computed)")}`;
     }
     case "w-sea-cables": {
       const c = object as SeaCable;

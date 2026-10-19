@@ -175,6 +175,15 @@ const STATIC: Record<string, Loader> = {
   // what stops a build: tiles, flood classes and lookups; protected areas per country (scripts/build_constraints.py)
   constraints: bundled("constraints.json"),
   protected: bundled("protected.json"),
+  // what is coming and what it costs (scripts/build_coming.py)
+  hydrogen: bundled("hydrogen.json"),
+  gasProjects: bundled("gas_projects.json"),
+  auctions: bundled("auctions.json"),
+  costs: bundled("costs.json"),
+  pfGhg: bundled("profiles/ghg_inventory.json"),
+  // US disturbances (DOE OE-417) and planning-area demand (FERC 714) (scripts/build_us_reliability.py)
+  oe417: bundledUs("oe417.json"),
+  ferc714: bundledUs("ferc714.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)

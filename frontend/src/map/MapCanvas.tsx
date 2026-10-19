@@ -77,6 +77,8 @@ function wantedKeys(zoom: number): string[] {
   if (L.plantsUS) keys.push("plantsPerf");
   if (L.solarResource || L.windResource) keys.push("atlas");
   if (L.protectedAreas) keys.push("protected");
+  if (L.hydrogen) keys.push("hydrogen");
+  if (L.gasProjects) keys.push("gasProjects");
   if (L.flood || L.roadsRail) keys.push("constraints");
   if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario");
   if (L.financeCoal || L.financeGas) keys.push("gemFinance");
