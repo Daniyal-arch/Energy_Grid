@@ -170,6 +170,9 @@ const STATIC: Record<string, Loader> = {
   usUtilities: bundledUs("utilities.json"),
   // EMODnet cables and pipelines at sea (scripts/build_grid_more.py emodnet)
   seaCables: bundled("sea_cables.json"),
+  // what stops a build: tiles, flood classes and lookups; protected areas per country (scripts/build_constraints.py)
+  constraints: bundled("constraints.json"),
+  protected: bundled("protected.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)

@@ -118,3 +118,82 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 6 group B outputs"
+
+  C:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      WORK: /mnt/wave6
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Tools (GDAL, tippecanoe, pmtiles)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q gdal-bin python3-gdal python3-numpy build-essential libsqlite3-dev zlib1g-dev
+          pip install httpx duckdb pycountry shapely numpy pmtiles
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+          sudo mkdir -p "$WORK" && sudo chown "$USER" "$WORK"
+          bash scripts/r2_creds.sh
+      - name: 11 protected areas (EEA Natura 2000, USGS PAD-US; ArcGIS services, paged)
+        continue-on-error: true
+        run: |
+          python scripts/build_constraints.py protected --upload
+          tippecanoe -o "$WORK/protected.pmtiles" -l protected -Z0 -z9 --no-feature-limit --no-tile-size-limit --simplification=4 \
+            --attribution='Natura 2000 © EEA; PAD-US (USGS)' --force /tmp/wave6/constraints/protected.geojsons
+          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
+            "$WORK/protected.pmtiles" s3://infraatlas-data/grid/protected.pmtiles --content-type application/vnd.pmtiles
+          ls -la "$WORK/protected.pmtiles"
+      - name: 12 river flood hazard (JRC, Europe 171 MB and world 49 MB)
+        continue-on-error: true
+        run: |
+          s3() { aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors "$@"; }
+          for k in eu world; do
+            url=$(python -c "import sys; sys.path.insert(0, 'scripts'); import build_constraints as b; print(b.FLOOD['$k']['zip'])")
+            curl -fL --retry 5 -o "$WORK/flood-$k.zip" "$url"
+            python scripts/build_constraints.py flood $k "$WORK/flood-$k.zip" "$WORK/flood-$k"
+            pmtiles-convert "$WORK/flood-$k/flood-$k.mbtiles" "$WORK/flood-$k/flood-$k.pmtiles"
+            s3 "$WORK/flood-$k/flood-$k.pmtiles" "s3://infraatlas-data/grid/flood-$k.pmtiles" --content-type application/vnd.pmtiles
+            for g in "$WORK"/flood-$k/flood-$k-*deg.u8; do s3 "$g" "s3://infraatlas-data/grid/$(basename "$g")" --content-type application/octet-stream; done
+            gdal_translate -of COG -co COMPRESS=ZSTD "$WORK/flood-$k/${k}_classes.tif" "$WORK/flood-$k-classes.tif"
+            s3 "$WORK/flood-$k-classes.tif" "s3://infraatlas-raw/lake/flood/flood-$k-rp100-classes.tif" --content-type image/tiff
+            ls -la "$WORK/flood-$k"; rm -rf "$WORK/flood-$k.zip" "$WORK/flood-$k"/*_3857.tif "$WORK/flood-$k"/*_rgba.tif
+          done
+      - name: Description for the app (tiles, classes, lookups)
+        run: python scripts/build_constraints.py meta
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group C outputs"
+
+  C-roads:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C')
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Tools (tippecanoe)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          pip install httpx duckdb pycountry
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+      - name: 13 major roads and railways (Overture transportation, Europe and the US)
+        run: |
+          python scripts/build_constraints.py roads --upload
+          tippecanoe -o /tmp/wave6/roads-rail.pmtiles -Z4 -z9 --no-feature-limit --no-tile-size-limit --simplification=4 \
+            --attribution='© OpenStreetMap contributors (ODbL), via Overture Maps' --force /tmp/wave6/constraints/roads.geojsons
+          ls -la /tmp/wave6/roads-rail.pmtiles
+      - name: Upload grid/roads-rail.pmtiles (R2 credentials only now: DuckDB would send them to Overture's bucket)
+        run: |
+          bash scripts/r2_creds.sh
+      - run: |
+          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
+            /tmp/wave6/roads-rail.pmtiles s3://infraatlas-data/grid/roads-rail.pmtiles --content-type application/vnd.pmtiles

@@ -17,6 +17,7 @@ import { euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../l
 import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { SITE_RADIUS_KM, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, searchSiteLines, searchSiteSubstations, siteKey, useSiteLines, useSiteSubstations, type LineSearch, type LonLat, type NearLine } from "../lib/site";
 import type { MastrMuniFile } from "../lib/mastr";
+import { CONSTRAINT_RADIUS_KM, SHARE_STEP_KM, floodClassAt, floodLabel, protectedAround, roadsAround, type ConstraintsFile, type ProtectedFile, type ProtectedSearch } from "../lib/constraints";
 import { ISO3, type TransitionFile } from "../lib/transition";
 import { US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFile, type UsQueuesLiveFile, type UsState, type UsStatesFile } from "../lib/us";
 import type { DataCentresFile } from "../lib/world";
@@ -79,7 +80,7 @@ const round = (v: number, d: number) => Number(v.toFixed(d));
 
 /** [item, value, unit, note, source]: one figure as a card shows it, unformatted. */
 export type ReportRow = [string, string | number | null, string, string, string];
-const SECTIONS = ["Grid", "Room to connect", "Power plants", "Prices", "Risk", "Around it"] as const;
+const SECTIONS = ["Grid", "Room to connect", "Constraints", "Power plants", "Prices", "Risk", "Around it"] as const;
 type Section = (typeof SECTIONS)[number];
 const useSiteReport = create<{ key: string; sections: Partial<Record<Section, ReportRow[]>> }>(() => ({ key: "", sections: {} }));
 
@@ -432,6 +433,85 @@ export function SiteCapacityCard({ place }: { place: Place }) {
   return null;
 }
 
+// ---------------------------------------------------------------- what stops a build
+
+type Pending<T> = { key: string; v: T | null; failed: boolean };
+function useAsync<T>(key: string | null, run: () => Promise<T>): Pending<T> {
+  const [st, setSt] = useState<Pending<T>>({ key: "", v: null, failed: false });
+  useEffect(() => {
+    if (!key) return;
+    let live = true;
+    setSt({ key, v: null, failed: false });
+    run()
+      .then((v) => live && setSt({ key, v, failed: false }))
+      .catch(() => live && setSt({ key, v: null, failed: true }));
+    return () => {
+      live = false;
+    };
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  return st.key === key ? st : { key: key ?? "", v: null, failed: false };
+}
+
+export function SiteConstraintsCard({ place }: { place: Place }) {
+  const { site } = place;
+  const key = siteKey(site);
+  const cf = useFile<ConstraintsFile>("constraints");
+  const pf = useFile<ProtectedFile>("protected");
+  const covered = place.europe || !!place.state;
+  const prot = useAsync<ProtectedSearch>(pf && covered ? `p|${key}` : null, () => protectedAround(pf!.tiles, site));
+  const roads = useAsync(cf && covered ? `r|${key}` : null, () => roadsAround(cf!.roads.tiles, site));
+  const flood = useAsync(cf ? `f|${key}` : null, async () => {
+    const eu = await floodClassAt(cf!.flood.maps.eu.lookup, site[0], site[1]);
+    if (eu > 0 || (eu === 0 && place.europe)) return { cls: eu, map: "eu" as const };
+    return { cls: Math.max(0, await floodClassAt(cf!.flood.maps.world.lookup, site[0], site[1])), map: "world" as const };
+  });
+  const R = CONSTRAINT_RADIUS_KM;
+  const n2k = pf ? `${pf.natura2000.source}` : "";
+  const pad = pf ? `${pf.padus.source}` : "";
+  const fl = cf && flood.v ? cf.flood.maps[flood.v.map] : null;
+  const flSrc = cf && fl ? `${cf.flood.source}; ${fl.title}; ${fl.lookup.computed}` : "";
+  const osm = cf?.roads.source ?? "";
+  useReport(site, "Constraints", [
+    ...(prot.v
+      ? ([
+          [`Share of ${R} km around covered by protected areas`, round(100 * prot.v.share, 1), "%", `${prot.v.points} points ${SHARE_STEP_KM} km apart (computed)`, place.europe ? n2k : pad],
+          ...prot.v.areas.slice(0, 20).map((a) => [a.name, round(a.km, 2), "km", [a.km === 0 ? "the site is inside" : "to its outline", a.kind, a.gap ? `GAP ${a.gap}` : "", a.id].filter(Boolean).join("; "), a.src === "n2k" ? n2k : pad]),
+        ] as ReportRow[])
+      : []),
+    !!cf && !!flood.v && ["River flood depth, 100-year flood", floodLabel(cf, flood.v.cls), "", flood.v.cls ? `class ${flood.v.cls} of 5` : "", flSrc],
+    !!roads.v && ["Nearest major road", roads.v.road ? round(roads.v.road.km, 2) : null, "km", roads.v.road ? [roads.v.road.cls, roads.v.road.name].filter(Boolean).join("; ") : `none within ${round(roads.v.radiusKm, 1)} km`, osm],
+    !!roads.v && ["Nearest railway", roads.v.rail ? round(roads.v.rail.km, 2) : null, "km", roads.v.rail ? roads.v.rail.name ?? "standard gauge" : `none within ${round(roads.v.radiusKm, 1)} km`, osm],
+  ]);
+  if (!cf || (!pf && covered)) return null;
+  const wait = (s: { v: unknown; failed: boolean }, k: string) => (s.failed ? <Row k={k} v="tiles not reachable" /> : !s.v ? <Row k={k} v="…" /> : null);
+  return (
+    <Card title="Constraints" note={`within ${R} km`} accent={[96, 186, 120]}>
+      {covered && (wait(prot, "Protected areas") ?? (prot.v && (
+        <>
+          <Row k={`Protected, share of ${R} km around`} v={`${(100 * prot.v.share).toFixed(1)} %`} sub={`${prot.v.areas.length} areas`} />
+          {prot.v.areas.slice(0, 4).map((a) => (
+            <Row key={`${a.src}${a.id ?? a.name}`} k={<span className="truncate">{a.name}</span>} v={a.km === 0 ? "inside" : kmText(a.km)} sub={a.kind ?? undefined} />
+          ))}
+        </>
+      )))}
+      {wait(flood, "River flood, 100-year") ?? (flood.v && <Row k="River flood depth, 100-year flood" v={floodLabel(cf, flood.v.cls)} sub={flood.v.map === "eu" ? "Europe, 100 m map" : "world, 1 km map"} />)}
+      {covered &&
+        (wait(roads, "Nearest major road") ??
+          (roads.v && (
+            <>
+              <Row k="Nearest major road" v={roads.v.road ? kmText(roads.v.road.km) : `none within ${kmText(roads.v.radiusKm)}`} sub={roads.v.road?.cls} />
+              <Row k="Nearest railway" v={roads.v.rail ? kmText(roads.v.rail.km) : `none within ${kmText(roads.v.radiusKm)}`} sub={roads.v.rail?.name ?? undefined} />
+            </>
+          )))}
+      <Note>
+        {covered ? `Protected areas: ${place.europe ? "Natura 2000 (EEA, end 2024)" : "PAD-US 4.1 (USGS)"} from the map's tiles; the share counts points ${SHARE_STEP_KM} km apart inside ${R} km (computed). ` : "Protected areas, roads and rail: Europe and the US only. "}
+        Flood: the deepest of JRC's depth classes in the {fl?.lookup.cell_deg ?? "…"}° cell holding the site (computed from the {fl?.title ?? "…"} map), a hazard map, not a flood
+        risk assessment.{covered ? " Roads (motorway, trunk, primary) and standard-gauge rail: OpenStreetMap via Overture Maps, straight-line distance." : ""}
+      </Note>
+    </Card>
+  );
+}
+
 // ---------------------------------------------------------------- plants nearby
 
 interface NearPlant {
@@ -757,6 +837,7 @@ export function SiteCards({ place }: { place: Place }) {
     <>
       <SiteGridCard place={place} />
       <SiteCapacityCard place={place} />
+      <SiteConstraintsCard place={place} />
       <SitePlantsCard place={place} />
       <SitePricesCard place={place} />
       <SiteRiskCard place={place} />

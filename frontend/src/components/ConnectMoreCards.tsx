@@ -113,13 +113,13 @@ export function BeConnectCard() {
 export function PtConnectCard() {
   const f = useFile<PtFile>("connectPT");
   if (!f) return null;
-  const k = f.columns.indexOf("capacidade_de_recepcao_mt_at_mva_ultimo_trimestre");
+  const k = f.columns.indexOf("capacidade_de_recepcao_at_mva_ultimo_trimestre");
   const rows = f.substations.map((s) => ({ s, v: s[7][k] })).filter((x): x is { s: (typeof f.substations)[number]; v: number } => x.v != null);
   const free = rows.filter((x) => x.v > 0);
   const top = [...free].sort((a, b) => b.v - a.v).slice(0, 8);
   return (
     <Card title="Connecting to the grid · Portugal" note={`E-REDES · ${f.date}`} accent={ACCENT}>
-      <Big value={free.length}>of {rows.length} HV/MV substations have reception capacity left (count, computed)</Big>
+      <Big value={free.length}>of {rows.length} substations have HV reception capacity left (count, computed)</Big>
       <Head>{PT_LABEL[f.columns[k]]}</Head>
       <Bars rows={top.map((x) => ({ key: x.s[0], label: <>{x.s[1]} <span className={muted}>{x.s[4]}</span></>, value: x.v }))} unit="MVA" />
       <Note>Reception capacity of the distribution grid per substation for new generation, the newest quarter, as E-REDES publishes it (CC BY 4.0). E-REDES publishes no positions: not on the map.</Note>

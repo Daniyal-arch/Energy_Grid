@@ -15,6 +15,7 @@ import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, ty
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 import { IT_CLASSES, IT_COLOR, ROOM_CLASSES } from "../lib/connectMore";
 import { SEA_CABLE_COLOR } from "../lib/seaCables";
+import { PROTECTED_COLOR, RAIL_COLOR, ROAD_COLOR, floodLabel, type ConstraintsFile } from "../lib/constraints";
 import type { UsNodesFile } from "../lib/usNodes";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
@@ -241,6 +242,20 @@ function ConnectKey() {
   );
 }
 
+function FloodKey() {
+  const cf = useDataStore((d) => d.files.constraints as ConstraintsFile | undefined);
+  return (
+    <>
+      <Swatches>
+        {(cf?.flood.classes ?? []).map((c, i) => (
+          <Swatch key={i} color={rgbCss(c[2])} label={cf ? floodLabel(cf, i + 1) : ""} />
+        ))}
+      </Swatches>
+      <Note>Water depth where rivers flood once in 100 years on average, as JRC maps it: Europe at 100 m, the world at about 1 km. A hazard map: defences are not modelled everywhere.</Note>
+    </>
+  );
+}
+
 function OutagesKey() {
   const f = useDataStore((d) => d.files.usOutages as UsOutagesFile | undefined);
   return (
@@ -422,6 +437,27 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <OutagesKey />;
     case "water":
       return <WaterKey />;
+    case "protectedAreas":
+      return (
+        <>
+          <Swatches>
+            <Swatch color={rgbCss(PROTECTED_COLOR)} label="Natura 2000 site / PAD-US area" />
+          </Swatches>
+          <Note>Natura 2000 (EEA, end 2024) and PAD-US 4.1 Fee (USGS), generalised to about 50 m by the publishers' services. Check a site lists those near it.</Note>
+        </>
+      );
+    case "flood":
+      return <FloodKey />;
+    case "roadsRail":
+      return (
+        <>
+          <Swatches>
+            <Swatch color={rgbCss(ROAD_COLOR)} kind="line" label="motorway, trunk, primary" />
+            <Swatch color={rgbCss(RAIL_COLOR)} kind="dash" label="railway (standard gauge)" />
+          </Swatches>
+          <Note>OpenStreetMap via Overture Maps; Europe and the US.</Note>
+        </>
+      );
     case "mastrDE":
       return <MastrKey />;
     case "offshoreWind":

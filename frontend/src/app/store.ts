@@ -57,14 +57,17 @@ export type LayerId =
   | "dataCentres"
   | "usOutages"
   | "water"
+  | "protectedAreas"
+  | "flood"
+  | "roadsRail"
   | "mastrDE"
   | "offshoreWind"
   | "wind"
   | "sun"
   | "night";
 
-export type LayerGroup = "Electricity now" | "Power grid" | "Power plants" | "Gas, oil & coal" | "Money" | "Industry & data" | "Weather";
-export const LAYER_GROUPS: LayerGroup[] = ["Electricity now", "Power grid", "Power plants", "Gas, oil & coal", "Money", "Industry & data", "Weather"];
+export type LayerGroup = "Electricity now" | "Power grid" | "Power plants" | "Gas, oil & coal" | "Money" | "Industry & data" | "Risk" | "Weather";
+export const LAYER_GROUPS: LayerGroup[] = ["Electricity now", "Power grid", "Power plants", "Gas, oil & coal", "Money", "Industry & data", "Risk", "Weather"];
 
 export interface LayerInfo {
   id: LayerId;
@@ -130,6 +133,9 @@ export const LAYERS: LayerInfo[] = [
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & data", coverage: "World", color: "rgb(196,150,255)" },
   { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Industry & data", coverage: "World", color: "rgb(255,153,0)" },
   { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Power grid", coverage: "US", color: "rgb(230,120,80)" },
+  { id: "protectedAreas", label: "Protected areas", desc: "Natura 2000 sites (EEA) and US protected lands (PAD-US)", group: "Risk", coverage: "Europe, US", color: "rgb(96,186,120)" },
+  { id: "flood", label: "River flood hazard", desc: "Water depth in a 100-year flood (JRC)", group: "Risk", coverage: "World", color: "rgb(60,130,210)" },
+  { id: "roadsRail", label: "Major roads and railways", desc: "Motorways, trunk and primary roads; standard-gauge rail (OpenStreetMap)", group: "Risk", coverage: "Europe, US", color: "rgb(200,196,186)" },
   { id: "wind", label: "Wind", desc: "Moving wind at turbine height", group: "Weather", coverage: "World", color: "rgb(220,240,255)", modes: ["live", "day"] },
   { id: "sun", label: "Sunshine", desc: "Solar radiation reaching the ground", group: "Weather", coverage: "World", color: "rgb(255,214,72)", modes: ["live", "day"] },
   { id: "solarResource", label: "Solar resource", desc: "PV output per kWp installed, long-term average (Global Solar Atlas)", group: "Weather", coverage: "World", color: "rgb(240,196,112)" },
@@ -172,6 +178,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "dataCentres",
   "usOutages",
   "water",
+  "protectedAreas",
   "mastrDE",
   "offshoreWind",
 ]);

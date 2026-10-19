@@ -123,7 +123,10 @@ def browser_fetch(name: str, src: dict) -> tuple[Path, str]:
                     if "just a moment" not in page.title().lower():
                         break
                     time.sleep(2)
-                page.wait_for_load_state("networkidle", timeout=60_000)
+                try:  # pages with endless analytics never go idle: read what has loaded
+                    page.wait_for_load_state("networkidle", timeout=60_000)
+                except Exception:  # noqa: BLE001
+                    print(f"  {url}: not idle after 60 s, reading the page as loaded", flush=True)
             except Exception as e:  # noqa: BLE001 - report every page's failure, try the next
                 errors.append(f"{url}: {type(e).__name__}: {str(e)[:120]}")
                 continue
