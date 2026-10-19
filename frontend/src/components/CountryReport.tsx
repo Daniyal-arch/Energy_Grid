@@ -7,6 +7,7 @@ import { useEffect, useMemo, type ReactNode } from "react";
 import { useFile } from "../app/data";
 import { actions, useApp } from "../app/store";
 import type { CountriesFile, GridFile, ReferenceFile, StatsFile, WorldFile } from "../app/types";
+import { coverageRows, type CoverageFile } from "../lib/coverage";
 import type { CtraceFile } from "../lib/ctrace";
 import { FUEL_LABEL } from "../lib/energy";
 import type { EtsFile } from "../lib/ets";
@@ -58,6 +59,7 @@ function useSections(code: string) {
   const access = useFile<WorldStatsFile>("worldStats");
   const dc = useFile<DataCentresFile>("datacentres");
   const retail = useFile<RetailFile>("retail");
+  const coverage = useFile<CoverageFile>("coverage");
   const offshore = useFile<OffshoreWindFile>(europe ? "offshoreWind" : null);
   const stats = useFile<StatsFile>(europe ? "stats" : null);
   const prices = useFile<PricesFile>(europe ? "prices" : null);
@@ -243,12 +245,19 @@ function useSections(code: string) {
       if (dcs) rows.push(["Data centres mapped in OpenStreetMap", dcs, "count", "a subset that follows mapping effort"]);
       out.push({ title: "Access and data centres", source: "World Bank WDI EG.ELC.ACCS.ZS; OpenStreetMap (ODbL)", rows });
     }
+    const cov = coverage && iso2 ? coverageRows(coverage, iso2) : [];
+    if (cov.length)
+      out.push({
+        title: "What we have",
+        source: `Coverage registry (data/coverage.yaml, docs/COVERAGE.md), checked ${coverage!.checked}`,
+        rows: cov.map(([fam, g, what, checked]) => [fam, g, "", `${what}${checked ? ` (checked ${checked})` : ""}`] as Row),
+      });
     for (const pf of profiles) {
       const rows = pf?.rows[iso3];
       if (pf && rows?.length) out.push({ title: pf.title, source: pf.source, rows });
     }
     return out;
-  }, [ready, t, iso3, iso2, europe, us, stats, prices, retail, reference, irena, gem, usPlants, usQueue, usSolar, ets, ctrace, grid, gas, offshore, access, dc, ...profiles]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ready, t, iso3, iso2, europe, us, stats, prices, retail, reference, irena, gem, usPlants, usQueue, usSolar, ets, ctrace, grid, gas, offshore, access, dc, coverage, ...profiles]); // eslint-disable-line react-hooks/exhaustive-deps
   return { name, sections, ready, iso3 };
 }
 

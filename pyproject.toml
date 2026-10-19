@@ -11,6 +11,7 @@ dependencies = [
     "openpyxl>=3.1.5",
     "pycountry>=26.2.16",
     "python-dotenv>=1.0",
+    "pyyaml>=6.0.3",
     "shapely>=2.0",
     "tzdata>=2024.1",  # time zones on Windows (build_eu_day.py)
     "tzfpy>=2.1.1",  # a plant's time zone from its coordinates (build_us_units.py)

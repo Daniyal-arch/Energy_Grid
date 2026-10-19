@@ -1,0 +1,1586 @@
+# The coverage registry (brief 22): one cell per family x country. scripts/coverage.py renders
+# docs/COVERAGE.md and frontend/public/data/eu/coverage.json and checks every cell.
+families:
+  connect:
+    name: Room to connect
+    shows: free grid capacity, hosting capacity or connection queues per substation, node or area (Grid capacity layer, site analysis)
+    cells:
+      AT:
+        status: todo
+      BE:
+        status: todo
+      BG:
+        status: todo
+      HR:
+        status: todo
+      CY:
+        status: todo
+      CZ:
+        status: todo
+      DK:
+        status: todo
+      EE:
+        status: todo
+      FI:
+        status: todo
+      FR:
+        status: have
+        source: Capareseau (RTE and DSOs)
+        url: https://www.capareseau.fr
+        licence: re-use with the source named
+        dataset: eu/connect/fr.json
+        checked: '2026-10-19'
+        note: wave 6 (brief 21)
+      DE:
+        status: todo
+      GR:
+        status: todo
+      HU:
+        status: todo
+      IE:
+        status: have
+        source: ESB Networks capacity heatmap
+        url: https://www.esbnetworks.ie/our-services/tools---maps/generator-availability-capacity-map
+        licence: public
+        dataset: eu/connect/ie.json
+        checked: '2026-10-19'
+        note: wave 6 (brief 21)
+      IT:
+        status: have
+        source: Terna Econnextion
+        url: https://dati.terna.it
+        licence: CC BY 4.0
+        dataset: eu/connect/it.json
+        checked: '2026-10-19'
+        note: wave 6 (brief 21)
+      LV:
+        status: todo
+      LT:
+        status: todo
+      LU:
+        status: todo
+      MT:
+        status: todo
+      NL:
+        status: have
+        source: Netbeheer Nederland capaciteitskaart
+        url: https://capaciteitskaart.netbeheernederland.nl
+        licence: public
+        dataset: eu/connect.json (nl)
+        checked: '2026-10-15'
+      PL:
+        status: have
+        source: PSE connection lists
+        url: https://www.pse.pl/obszary-dzialalnosci/krajowy-system-elektroenergetyczny/wykaz-obiektow-planowanych-do-przylaczenia
+        licence: public
+        dataset: eu/connect/pl.json
+        checked: '2026-10-19'
+        note: wave 6 (brief 21)
+      PT:
+        status: have
+        source: E-REDES capacidade de receção
+        url: https://e-redes.opendatasoft.com
+        licence: CC BY 4.0
+        dataset: eu/connect/pt.json
+        checked: '2026-10-19'
+        note: wave 6 (brief 21)
+      RO:
+        status: todo
+      SK:
+        status: todo
+      SI:
+        status: todo
+      ES:
+        status: have
+        source: REE access capacity per node
+        url: https://www.ree.es/es/clientes/generador/acceso-conexion/conoce-la-capacidad-de-acceso
+        licence: public
+        dataset: eu/connect.json (es)
+        checked: '2026-10-15'
+        partial: true
+        note: transmission nodes; the DSOs' node capacities are wave 7
+      SE:
+        status: todo
+      GB:
+        status: have
+        source: NESO TEC register
+        url: https://www.neso.energy/data-portal/transmission-entry-capacity-tec-register
+        licence: NESO Open Data Licence
+        dataset: eu/connect.json (gb)
+        checked: '2026-10-15'
+        partial: true
+        note: transmission queue; the DNOs' embedded capacity registers are wave 7
+      US:
+        status: have
+        source: ISO queues (gridstatus) and LBNL Queued Up
+        url: https://emp.lbl.gov/queues
+        licence: public
+        dataset: us/queues_live.json, us/queue.json
+        checked: '2026-10-15'
+        parts:
+        - name: CAISO
+          status: have
+          source: gridstatus
+        - name: ERCOT
+          status: have
+          source: gridstatus
+        - name: MISO
+          status: have
+          source: gridstatus
+        - name: SPP
+          status: have
+          source: gridstatus
+        - name: ISO-NE
+          status: have
+          source: gridstatus
+        - name: NYISO
+          status: todo
+          source: NYISO queue file (browser fetch)
+        - name: PJM
+          status: blocked
+          source: PJM Data Miner (PJM_API_KEY)
+        - name: non-ISO utilities
+          status: have
+          source: LBNL Queued Up
+  units:
+    name: Every generating unit
+    shows: national registers of generating units (layer per country under Power plants)
+    cells:
+      AT:
+        status: todo
+      BE:
+        status: todo
+      BG:
+        status: todo
+      HR:
+        status: todo
+      CY:
+        status: todo
+      CZ:
+        status: todo
+      DK:
+        status: todo
+      EE:
+        status: todo
+      FI:
+        status: todo
+      FR:
+        status: todo
+      DE:
+        status: have
+        source: Marktstammdatenregister (BNetzA)
+        url: https://www.marktstammdatenregister.de
+        licence: dl-de/by-2-0
+        dataset: eu/mastr/*, lake mastr/*
+        checked: '2026-10-15'
+      GR:
+        status: todo
+      HU:
+        status: todo
+      IE:
+        status: todo
+      IT:
+        status: todo
+      LV:
+        status: todo
+      LT:
+        status: todo
+      LU:
+        status: todo
+      MT:
+        status: todo
+      NL:
+        status: todo
+      PL:
+        status: todo
+      PT:
+        status: todo
+      RO:
+        status: todo
+      SK:
+        status: todo
+      SI:
+        status: todo
+      ES:
+        status: todo
+      SE:
+        status: todo
+      GB:
+        status: todo
+      US:
+        status: have
+        source: EIA-860M, USWTDB, USPVDB
+        url: https://www.eia.gov/electricity/data/eia860m/
+        licence: public domain
+        dataset: us/plants.json, us/turbines.json, us/solar.json
+        checked: '2026-10-15'
+  live_mix:
+    name: Live mix and CO₂
+    shows: generation by source at the operator's own time step, and CO₂ per kWh where the operator publishes it (country cards)
+    cells:
+      AT:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      BE:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      BG:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      HR:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      CY:
+        status: todo
+      CZ:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      DK:
+        status: have
+        source: Energinet Energi Data Service (5 min, CO₂)
+        url: https://www.energidataservice.dk
+        licence: CC BY 4.0
+        dataset: eu/dk_live.json
+        checked: '2026-10-18'
+      EE:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      FI:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      FR:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      DE:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      GR:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      HU:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      IE:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      IT:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      LV:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      LT:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      LU:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      MT:
+        status: todo
+      NL:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      PL:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      PT:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      RO:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      SK:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      SI:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      ES:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      SE:
+        status: have
+        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        checked: '2026-10-15'
+        partial: true
+        note: operator's own feed (finer step, CO₂) checked in wave 7
+      GB:
+        status: have
+        source: Elexon (5 min) and NESO carbon intensity
+        url: https://carbonintensity.org.uk
+        licence: CC BY 4.0
+        dataset: eu/gb_carbon.json, eu/stats.json
+        checked: '2026-10-18'
+      US:
+        status: todo
+  congestion:
+    name: Redispatch and curtailment
+    shows: redispatch, countertrading, congestion-management costs and curtailment (country cards, agent catalogue)
+    cells:
+      AT:
+        status: todo
+      BE:
+        status: todo
+      BG:
+        status: todo
+      HR:
+        status: todo
+      CY:
+        status: todo
+      CZ:
+        status: todo
+      DK:
+        status: todo
+      EE:
+        status: todo
+      FI:
+        status: todo
+      FR:
+        status: todo
+      DE:
+        status: have
+        source: netztransparenz.de redispatch archive 2013-2020
+        url: https://www.netztransparenz.de
+        licence: public
+        dataset: eu/de_redispatch.json, lake netztransparenz/*
+        checked: '2026-10-18'
+        partial: true
+        note: 2013-2020; newer years need NETZTRANSPARENZ_CLIENT_ID/_SECRET; ENTSO-E A63/A91/A92 in wave 7
+      GR:
+        status: todo
+      HU:
+        status: todo
+      IE:
+        status: todo
+      IT:
+        status: todo
+      LV:
+        status: todo
+      LT:
+        status: todo
+      LU:
+        status: todo
+      MT:
+        status: todo
+      NL:
+        status: todo
+      PL:
+        status: todo
+      PT:
+        status: todo
+      RO:
+        status: todo
+      SK:
+        status: todo
+      SI:
+        status: todo
+      ES:
+        status: todo
+      SE:
+        status: todo
+      GB:
+        status: todo
+      US:
+        status: todo
+  prices:
+    name: Wholesale prices
+    shows: day-ahead and imbalance (or real-time) prices (Prices views, imbalance card)
+    cells:
+      AT:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      BE:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      BG:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+        partial: true
+        note: ENTSO-E has no imbalance price for this area (imbalance.json 'none')
+      HR:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      CY:
+        status: todo
+      CZ:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      DK:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      EE:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      FI:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      FR:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      DE:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+        partial: true
+        note: ENTSO-E has no imbalance price for this area (imbalance.json 'none')
+      GR:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      HU:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      IE:
+        status: todo
+      IT:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      LV:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      LT:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+        partial: true
+        note: ENTSO-E has no imbalance price for this area (imbalance.json 'none')
+      LU:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+        partial: true
+        note: ENTSO-E has no imbalance price for this area (imbalance.json 'none')
+      MT:
+        status: todo
+      NL:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      PL:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      PT:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      RO:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      SK:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      SI:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      ES:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      SE:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      GB:
+        status: todo
+      US:
+        status: have
+        source: US day-ahead hub and nodal prices (gridstatus)
+        url: https://opensource.gridstatus.io
+        licence: per ISO
+        dataset: eu/us_prices.json, us_nodes/*
+        checked: '2026-10-18'
+        partial: true
+        note: real-time hub prices in wave 7
+  retail:
+    name: What consumers pay
+    shows: household and business electricity and gas prices (retail colouring, country report)
+    cells:
+      AT:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      BE:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      BG:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      HR:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      CY:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      CZ:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      DK:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      EE:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      FI:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      FR:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      DE:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      GR:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      HU:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      IE:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      IT:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      LV:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      LT:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      LU:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      MT:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      NL:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      PL:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      PT:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      RO:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      SK:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      SI:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      ES:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      SE:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      GB:
+        status: todo
+      US:
+        status: have
+        source: EIA-861M
+        url: https://www.eia.gov/electricity/data/eia861m/
+        licence: public domain
+        dataset: eu/retail.json (us)
+        checked: '2026-10-18'
+  emitters:
+    name: Emitters per installation
+    shows: verified CO₂ per installation (CO₂ per installation layer)
+    cells:
+      AT:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      BE:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      BG:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      HR:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      CY:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      CZ:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      DK:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      EE:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      FI:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      FR:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      DE:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      GR:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      HU:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      IE:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      IT:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      LV:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      LT:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      LU:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      MT:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      NL:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      PL:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      PT:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      RO:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      SK:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      SI:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      ES:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      SE:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      GB:
+        status: todo
+      US:
+        status: have
+        source: EPA GHGRP
+        url: https://www.epa.gov/ghgreporting
+        licence: public domain
+        dataset: us/ghgrp.json
+        checked: '2026-10-18'
+  offline:
+    name: Plants offline now
+    shows: generating units out of service now (planned and forced)
+    cells:
+      AT:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      BE:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      BG:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      HR:
+        status: todo
+      CY:
+        status: todo
+      CZ:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      DK:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      EE:
+        status: todo
+      FI:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      FR:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      DE:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      GR:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      HU:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      IE:
+        status: todo
+      IT:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      LV:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      LT:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      LU:
+        status: todo
+      MT:
+        status: todo
+      NL:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      PL:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      PT:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      RO:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      SK:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      SI:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      ES:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      SE:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      GB:
+        status: todo
+      US:
+        status: have
+        source: EPA CAMPD hourly unit output (fossil units)
+        url: https://campd.epa.gov
+        licence: public domain
+        dataset: usunits/*
+        checked: '2026-10-15'
+        partial: true
+        note: US markets publish no unit outages; fossil units at zero output hour by hour
+  ev:
+    name: EV charging
+    shows: public charge points (EV charging layer) and counts per country
+    cells:
+      AT:
+        status: todo
+      BE:
+        status: todo
+      BG:
+        status: todo
+      HR:
+        status: todo
+      CY:
+        status: todo
+      CZ:
+        status: todo
+      DK:
+        status: todo
+      EE:
+        status: todo
+      FI:
+        status: todo
+      FR:
+        status: todo
+      DE:
+        status: todo
+      GR:
+        status: todo
+      HU:
+        status: todo
+      IE:
+        status: todo
+      IT:
+        status: todo
+      LV:
+        status: todo
+      LT:
+        status: todo
+      LU:
+        status: todo
+      MT:
+        status: todo
+      NL:
+        status: todo
+      PL:
+        status: todo
+      PT:
+        status: todo
+      RO:
+        status: todo
+      SK:
+        status: todo
+      SI:
+        status: todo
+      ES:
+        status: todo
+      SE:
+        status: todo
+      GB:
+        status: todo
+      US:
+        status: have
+        source: NREL AFDC station locator
+        url: https://developer.nrel.gov/docs/transportation/alt-fuel-stations-v1/
+        licence: public domain
+        dataset: us/ev_chargers.json
+        checked: '2026-10-18'
+  gas:
+    name: Gas
+    shows: gas flows, storage, LNG and prices
+    cells:
+      AT:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      BE:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      BG:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      HR:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      CY:
+        status: todo
+      CZ:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      DK:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      EE:
+        status: todo
+      FI:
+        status: todo
+      FR:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      DE:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      GR:
+        status: todo
+      HU:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      IE:
+        status: todo
+      IT:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      LV:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      LT:
+        status: todo
+      LU:
+        status: todo
+      MT:
+        status: todo
+      NL:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      PL:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      PT:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      RO:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      SK:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      SI:
+        status: todo
+      ES:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      SE:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      GB:
+        status: todo
+      US:
+        status: todo
+  reliability:
+    name: Reliability
+    shows: interruptions per customer (SAIDI, SAIFI) or outages per area
+    cells:
+      AT:
+        status: todo
+      BE:
+        status: todo
+      BG:
+        status: todo
+      HR:
+        status: todo
+      CY:
+        status: todo
+      CZ:
+        status: todo
+      DK:
+        status: todo
+      EE:
+        status: todo
+      FI:
+        status: todo
+      FR:
+        status: todo
+      DE:
+        status: todo
+      GR:
+        status: todo
+      HU:
+        status: todo
+      IE:
+        status: todo
+      IT:
+        status: todo
+      LV:
+        status: todo
+      LT:
+        status: todo
+      LU:
+        status: todo
+      MT:
+        status: todo
+      NL:
+        status: todo
+      PL:
+        status: todo
+      PT:
+        status: todo
+      RO:
+        status: todo
+      SK:
+        status: todo
+      SI:
+        status: todo
+      ES:
+        status: todo
+      SE:
+        status: todo
+      GB:
+        status: todo
+      US:
+        status: have
+        source: EAGLE-I outages per county (ORNL)
+        url: https://figshare.com/articles/dataset/24237376
+        licence: CC BY 4.0
+        dataset: eu/us_outages.json
+        checked: '2026-10-15'

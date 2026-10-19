@@ -52,6 +52,7 @@ import type { LonLat } from "../lib/site";
 import type { ImbalanceFile } from "../lib/imbalance";
 import type { DkLiveFile, GbCarbonFile } from "../lib/live";
 import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
+import { CoverageCard } from "../components/CoverageCards";
 import { LinesOutCard, RedispatchCard } from "../components/GridCards";
 import { SedsCard, SteoCard, type SedsFile, type SteoFile } from "../components/ProfileCards";
 import { CenaceCard, JepxCard, type CenaceFile, type JepxFile } from "../components/MarketCards";
@@ -480,6 +481,7 @@ function CountryPanel({ iso }: { iso: string }) {
           {!day && outages?.countries[iso] && (
             <OutageCard totals={outages.countries[iso]} units={outages.units.filter((u) => u.country === iso)} at={outages.at} />
           )}
+          <CoverageCard iso2={iso} name={name} />
           <SourcesCard items={LIVE_SOURCES} />
         </>
       ),
@@ -870,6 +872,7 @@ function UsPanel() {
             <UsCapacityCard f={plants} />
             <UsPlantsCard f={plants} status={status} onStatus={(st) => actions.setPlantStatus(st as typeof status)} />
             {turbines && <UsTurbinesCard t={turbines} names={names} />}
+            <CoverageCard iso2="US" name="the United States" />
             {sources}
           </>
         ) : (
@@ -930,6 +933,9 @@ function UsPanel() {
   );
 }
 
+// Cyprus and Malta are EU members without a European country panel: their coverage shows here
+const ISO2_OF_3: Record<string, string> = { CYP: "CY", MLT: "MT" };
+
 function WorldCountryPanel({ code }: { code: string }) {
   const ws = useFile<WorldStatsFile>("worldStats");
   const dc = useFile<DataCentresFile>("datacentres");
@@ -957,6 +963,7 @@ function WorldCountryPanel({ code }: { code: string }) {
             renewables={renewables}
             monthly={monthly?.entities[code] ? { months: monthly.months, ...monthly.entities[code] } : null}
           />
+          {ISO2_OF_3[code] && <CoverageCard iso2={ISO2_OF_3[code]} name={name} />}
           <SourcesCard items={WORLD_SOURCES.filter(([k]) => ["Access to electricity", "Data centres", "Renewables"].includes(k))} />
         </>
       ),
