@@ -4,9 +4,6 @@ name: Probe wave 5
 
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/busy-fermat-nodvwe]
-    paths: [.github/workflows/probe-wave5.yml, scripts/probe_wave5.py]
 
 permissions:
   contents: read

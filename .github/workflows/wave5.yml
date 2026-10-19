@@ -2,7 +2,7 @@ name: Wave 5 datasets
 
 # The builds of brief 17 (docs/tasks/17-datasets-wave5.md): one job per dataset group, each
 # committing its small outputs (frontend/public/data) back to the branch and uploading lake
-# tables and tiles to R2. A push runs the groups its commit message names: "[w5: A B]".
+# tables and tiles to R2.
 # Run by hand from main: Actions > Wave 5 datasets > Run workflow (groups = "A B C ...").
 # Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, ENTSOE_API_KEY, EIA_API_KEY. Group F fetches the
 # Energy Institute file with Chromium (scripts/browser_fetch.py; monthly in browser-fetch.yml).
@@ -14,15 +14,12 @@ on:
         description: "Groups to build (A B C D E F G H; R = transmission outages, A78)"
         type: string
         default: "A B C D E F G H R"
-  push:
-    branches: [claude/busy-fermat-nodvwe]
-    paths: [.github/workflows/wave5.yml, "scripts/build_*.py", scripts/wave5_common.py]
 
 permissions:
   contents: write
 
 env:
-  GROUPS: ${{ inputs.groups || github.event.head_commit.message }}
+  GROUPS: ${{ inputs.groups }}
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
