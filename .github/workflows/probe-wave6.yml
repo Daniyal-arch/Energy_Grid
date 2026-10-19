@@ -1,0 +1,47 @@
+name: Probe wave 6
+
+# The probes of brief 21 (scripts/probe_wave6.py): one step per group, read from the annotations.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/bold-johnson-figd07]
+    paths: [.github/workflows/probe-wave6.yml, scripts/probe_wave6.py]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb
+      - name: R2 read credentials (lake probes)
+        continue-on-error: true
+        run: bash scripts/r2_creds.sh
+      - name: A room to connect
+        run: python scripts/probe_wave6.py A
+        continue-on-error: true
+      - name: B grid and networks
+        run: python scripts/probe_wave6.py B
+        continue-on-error: true
+      - name: C what stops a build
+        run: python scripts/probe_wave6.py C
+        continue-on-error: true
+      - name: D what is coming and what it costs
+        run: python scripts/probe_wave6.py D
+        continue-on-error: true
+      - name: E United States
+        run: python scripts/probe_wave6.py E
+        continue-on-error: true
+      - name: F regional and live
+        run: python scripts/probe_wave6.py F
+        continue-on-error: true
