@@ -1169,11 +1169,13 @@ ITH1 + ITH2). Computed: totals per region (shading in four classes, feed-in side
 Terms of use not found on dati.terna.it. Lake `econnextion/requests`. Refresh: group A (monthly
 at the source).
 
-## Room to connect: Belgium (`build_connect_more.py be`, `connect/be.json`)
+## Room to connect: Belgium (`build_connect_more.py be`, `connect/be.json`), blocked
 
-Elia's capacity for new decentralised generation: elia.be answers scripts with HTTP 403, so the
-file comes through `scripts/browser_fetch.py elia_capacity` (Chromium in Actions). Columns as
-published; card in "On the map". Lake `elia_hosting/capacity`. Refresh: `browser-fetch.yml` monthly.
+Elia's capacity for new decentralised generation: elia.be answers scripts with HTTP 403 and kept
+Chromium on Cloudflare's "Just a moment..." page in two Actions runs (2026-10-19), and Elia's and
+Fluvius' open-data portals hold no capacity set. `scripts/browser_fetch.py elia_capacity` (monthly
+in `browser-fetch.yml`) builds it from a file the owner uploads to
+`r2://infraatlas-raw/sources/elia_capacity/manual/`; the card and lake table follow.
 
 ## Room to connect: Portugal (`build_connect_more.py pt`, `connect/pt.json`)
 
@@ -1328,11 +1330,11 @@ fuel (MW) and 5-minute demand for NZ and each island, as published. "Live grids"
 the World panel and its region panel. The Electricity Authority's EMI datasets (CC BY 4.0, monthly
 CSVs on emidatasets.blob.core.windows.net) are in the agent catalogue. Every snapshot. API only.
 
-## South Africa live (`build_regional_live.py za`, `za.json`)
+## South Africa live (`build_regional_live.py za`, `za.json`), blocked
 
-Eskom data portal CSVs (hourly demand, station build-up) and the load-shedding status
-(loadshedding.eskom.co.za; the answer minus 1 is the stage). "Live grids" marker and card. Every
-snapshot. API only.
+Eskom's data portal links its hourly demand and station build-up CSVs, but both answered HTTP 404
+in two Actions runs (2026-10-19); only the load-shedding status (loadshedding.eskom.co.za) answers.
+The snapshot step, marker and card are in place and fill when the files answer.
 
 ## Notes
 

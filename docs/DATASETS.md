@@ -51,7 +51,7 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 
 | Dataset | Gives | Access | Licence | Status |
 |---|---|---|---|---|
-| Capareseau (FR), Terna Econnextion (IT), Elia (BE), E-REDES (PT), ESB Networks (IE), PSE (PL) | room to connect per substation / requests per region | site JSON, xlsx, APIs | various (see DATA_SOURCES) | have (21) |
+| Capareseau (FR), Terna Econnextion (IT), E-REDES (PT), ESB Networks (IE), PSE (PL); Elia (BE) blocked | room to connect per substation / requests per region | site JSON, xlsx, APIs | various (see DATA_SOURCES) | have (21) |
 | Substations worldwide (our Overture extract) | every mapped substation | lake | ODbL | have (21) |
 | MaStR grid operators per municipality | who runs the grid here | lake | dl-de/by-2-0 | have (21) |
 | EIA-861 service territories | utilities per county | PUDL | CC BY 4.0 | have (21) |
@@ -59,7 +59,8 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 | JRC river flood hazard (RP100) | flood depth | download | CC BY 4.0 | have (21) |
 | Overture roads and rail | major roads, railways | Overture S3 | ODbL | have (21) |
 | FERC Form 714 | hourly demand per planning area | PUDL | CC BY 4.0 | have (21) |
-| New Zealand (Transpower/em6), South Africa (Eskom) | live generation, demand, load-shedding | APIs/CSV | see DATA_SOURCES | have (21) |
+| New Zealand (Transpower/em6) | live generation by fuel, demand | API | Transpower terms | have (21) |
+| South Africa (Eskom data portal) | demand, generation, load-shedding | CSV | Eskom terms | blocked (21: CSVs answer 404) |
 | IRENA renewable cost database | LCOE by technology, world | xlsx behind Azure WAF | IRENA terms | blocked (21) |
 
 ## United States

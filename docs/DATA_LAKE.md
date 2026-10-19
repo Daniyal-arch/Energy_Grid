@@ -348,7 +348,7 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 |---|---|---|---|
 | Capareseau substations (`capareseau/substations`) | site JSON + CSV | GeoParquet, partition snapshot | 3,116 rows, 0.0003 GB |
 | Terna Econnextion (`econnextion/requests`) | download-center JSON | Parquet, snapshot | 582 rows |
-| Elia capacity (`elia_hosting/capacity`) | xlsx via a browser | Parquet, snapshot | see the PR |
+| Elia capacity (`elia_hosting/capacity`) | xlsx via a browser | Parquet, snapshot | blocked (Cloudflare) |
 | E-REDES reception capacity (`eredes_capacity/substations`) | API (Opendatasoft) | Parquet, snapshot | 470 rows |
 | ESB Networks heatmap (`esb_heatmap/transformers`) | xlsx | GeoParquet, snapshot | 46,527 rows, 0.002 GB |
 | PSE Art. 7(8l) list, full switchgears (`pse_capacity/*`) | xlsx | Parquet, snapshot | 886 + 69 rows |
