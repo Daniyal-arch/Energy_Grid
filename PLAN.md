@@ -65,6 +65,12 @@ touch different files. The owner merges; the next phase starts when its inputs a
 | **17 Datasets wave 5** ([17-datasets-wave5.md](docs/tasks/17-datasets-wave5.md)) | 22 datasets in one session: NUTS 0–3, bidding-zone outlines, world admin-1, GeoNames cities; EIA-923, eGRID, GHGRP; netztransparenz redispatch and curtailment, SMARD; TYNDP projects, ENTSO-E transmission outages; Global Renewables Watch; Eurostat balances, EIA SEDS, EIA STEO, Energy Institute review, EDGAR; JEPX, CENACE, Grid-India; GHSL population, NASA Black Marble |
 | **18 Backend skeleton** | `backend/` FastAPI + DuckDB (read-only lake, SQL guard, limits), saved maps on R2; hosting chosen by the owner (docs/AGENT.md §2) |
 
+### Phase 1b: datasets wave 6 (after wave 5 merges)
+
+| Brief | What |
+|---|---|
+| **21 Datasets wave 6** ([21-datasets-wave6.md](docs/tasks/21-datasets-wave6.md)) | 24 datasets: room to connect in France, Italy, Belgium, Portugal, Ireland, Poland; substations worldwide, German grid operators, US utility territories, sea cables and pipelines; protected areas, flood hazard, major roads and rail; hydrogen projects, auction results, technology costs, planned gas projects, GHG inventories; OE-417 disturbances, FERC 714 demand; France and Spain regional mix, New Zealand and South Africa live |
+
 ### Phase 2: the agent that draws
 
 | Brief | What |
