@@ -4,7 +4,8 @@ name: Wave 5 datasets
 # committing its small outputs (frontend/public/data) back to the branch and uploading lake
 # tables and tiles to R2. A push runs the groups its commit message names: "[w5: A B]".
 # Run by hand from main: Actions > Wave 5 datasets > Run workflow (groups = "A B C ...").
-# Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, ENTSOE_API_KEY, EIA_API_KEY.
+# Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, ENTSOE_API_KEY, EIA_API_KEY. Group F fetches the
+# Energy Institute file with Chromium (scripts/browser_fetch.py; monthly in browser-fetch.yml).
 
 on:
   workflow_dispatch:
