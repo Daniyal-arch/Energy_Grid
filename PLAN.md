@@ -71,6 +71,12 @@ touch different files. The owner merges; the next phase starts when its inputs a
 |---|---|
 | **21 Datasets wave 6** ([21-datasets-wave6.md](docs/tasks/21-datasets-wave6.md)) | 24 datasets: room to connect in France, Italy, Belgium, Portugal, Ireland, Poland; substations worldwide, German grid operators, US utility territories, sea cables and pipelines; protected areas, flood hazard, major roads and rail; hydrogen projects, auction results, technology costs, planned gas projects, GHG inventories; OE-417 disturbances, FERC 714 demand; France and Spain regional mix, New Zealand and South Africa live |
 
+### Phase 1c: wave 7, one coverage for EU-27, UK and US (after wave 6 merges)
+
+| Brief | What |
+|---|---|
+| **22 Coverage wave 7** ([22-coverage-wave7.md](docs/tasks/22-coverage-wave7.md)) | a coverage registry (family × country, shown per country), then 11 families made consistent: room to connect, every unit, live mix and CO₂, redispatch and curtailment, GB prices, GB retail, UK ETS, GB plants offline, EV charging, US gas, reliability |
+
 ### Phase 2: the agent that draws
 
 | Brief | What |
