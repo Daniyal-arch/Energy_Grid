@@ -194,26 +194,16 @@ def main() -> None:
             f"ENTSO-E did not answer {len(failed)} requests: {failed[:10]} ...; nothing written"
         )
     rows = newest_revisions(rows)
-    seen, items = set(), []
-    for r in sorted(rows, key=lambda r: (r["area"], r["start"] or "", r["element"] or "")):
-        k = (r["mrid"], r["element_eic"], r["start"])
-        if k in seen:
-            continue
-        seen.add(k)
-        items.append(
-            [
-                r["area"],
-                r["element"],
-                r["psr_type"],
-                r["voltage"],
-                r["start"],
-                r["end"],
-                r["kind"],
-                r["reason_code"],
-                r["reason_text"],
-                r["available_mw_min"],
-            ]
-        )
+    # a border's outage often comes back from both directions under two report ids with the same
+    # fields: the card lists each published line once
+    items = [
+        [
+            r["area"], r["element"], r["psr_type"], r["voltage"], r["start"], r["end"],
+            r["kind"], r["reason_code"], r["reason_text"], r["available_mw_min"],
+        ]
+        for r in sorted(rows, key=lambda r: (r["area"], r["start"] or "", r["element"] or ""))
+    ]  # fmt: skip
+    items = list({tuple(i): i for i in items}.values())
     w.write_json(
         args.out / "transmission_outages.json",
         {
