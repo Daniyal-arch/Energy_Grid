@@ -58,6 +58,26 @@ SOURCES: dict[str, dict] = {
         "refresh": "yearly (the review appears in June); checked monthly",
         "build": "python scripts/build_profiles.py ei --file {file} --upload",
     },
+    "elia_capacity": {
+        "title": "Elia, capacity of the grid for new decentralised generation (brief 21, dataset 3)",
+        "pages": [
+            "https://www.elia.be/en/infrastructure-and-projects/our-infrastructure/capacity-of-decentralized-production",
+            "https://www.elia.be/infrastructure-and-projects/our-infrastructure/capacity-of-decentralized-production",
+        ],
+        "links": [r"[^\"'\s>]*\.xlsx", r"[^\"'\s>]*\.csv"],
+        "refresh": "quarterly; checked monthly",
+        "build": "python scripts/build_connect_more.py be --file {file} --upload",
+    },
+    "irena_costs": {
+        "title": "IRENA Renewable Power Generation Costs, data file (brief 21, dataset 16)",
+        "pages": [
+            "https://www.irena.org/Publications/2025/Jul/Renewable-Power-Generation-Costs-in-2024",
+            "https://www.irena.org/Data/View-data-by-topic/Costs/Global-LCOE-and-Auction-values",
+        ],
+        "links": [r"[^\"'\s>]*(?:[Dd]ata|DATA)[^\"'\s>]*\.xlsx", r"[^\"'\s>]*\.xlsx"],
+        "refresh": "yearly (the report appears in July); checked monthly",
+        "build": "python scripts/build_costs.py irena --file {file} --upload",
+    },
 }
 
 
@@ -103,7 +123,10 @@ def browser_fetch(name: str, src: dict) -> tuple[Path, str]:
                     if "just a moment" not in page.title().lower():
                         break
                     time.sleep(2)
-                page.wait_for_load_state("networkidle", timeout=60_000)
+                try:  # pages with endless analytics never go idle: read what has loaded
+                    page.wait_for_load_state("networkidle", timeout=60_000)
+                except Exception:  # noqa: BLE001
+                    print(f"  {url}: not idle after 60 s, reading the page as loaded", flush=True)
             except Exception as e:  # noqa: BLE001 - report every page's failure, try the next
                 errors.append(f"{url}: {type(e).__name__}: {str(e)[:120]}")
                 continue
