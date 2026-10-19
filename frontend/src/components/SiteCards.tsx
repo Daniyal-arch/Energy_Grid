@@ -649,9 +649,9 @@ function useAtlasAt(site: LonLat, on: boolean) {
 }
 
 /** People within the site radius (GHSL 2025 on the 0.1 degree grid); undefined until read or when the grid is missing. */
-function usePeopleAt(site: LonLat, on: boolean) {
+function usePeopleAt(site: LonLat, on: boolean, R: number) {
   const [got, setGot] = useState<{ key: string; v?: { people: number; cells: number } }>({ key: "" });
-  const key = siteKey(site);
+  const key = areaKey(site, R);
   useEffect(() => {
     if (!on) return;
     let live = true;
@@ -678,7 +678,7 @@ export function SiteCountryCard({ place }: { place: Place }) {
   const k = e && t ? [...t.years.keys()].reverse().find((i) => e.renewables[i] != null) : undefined;
   const osm = "OpenStreetMap (datacentres.json)";
   const at = useAtlasAt(place.site, place.ready);
-  const people = usePeopleAt(place.site, place.ready);
+  const people = usePeopleAt(place.site, place.ready, R);
   const cell = at.atlas?.pvout.lookup.cell_deg ?? 0.1;
   const atlasNote = `mean over the ${cell}° cell (computed)`;
   useReport(place, "Around it", [
