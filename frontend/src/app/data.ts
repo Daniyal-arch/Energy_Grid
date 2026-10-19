@@ -77,6 +77,8 @@ const STATIC: Record<string, Loader> = {
   // Global Renewables Watch per country (scripts/build_grw.py)
   grwCountries: bundled("grw_countries.json"),
   deRedispatch: bundled("de_redispatch.json"),
+  // what the map holds per country and dataset family (scripts/coverage.py)
+  coverage: bundled("coverage.json"),
   cities: bundled("cities.json"),
   // Global Energy Monitor trackers (scripts/build_gem_layers.py)
   gemGas: bundled("gem/pipelines_gas.json"),
