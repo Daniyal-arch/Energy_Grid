@@ -41,14 +41,31 @@ ACKS: dict[str, int] = {}  # the API's reasons for answers without documents
 TMP = Path("/tmp/wave5")
 
 
+# Germany publishes A78 under its TSOs' control areas and the DE-LU bidding zone, not under the
+# country's code (10Y1001A1001A83F answered nothing on every German border, 2026-10-19)
+DE_CODES = [
+    "10Y1001A1001A82H",  # DE-LU bidding zone
+    "10YDE-VE-------2",  # 50Hertz
+    "10YDE-RWENET---I",  # Amprion
+    "10YDE-EON------1",  # TenneT DE
+    "10YDE-ENBW-----N",  # TransnetBW
+]
+
+
 def borders() -> list[tuple[str, str, str]]:
     """(label, in EIC, out EIC) for every border in both directions: A78 is published per
     border (In_Domain and Out_Domain, the two sides), not per area."""
     eic = entsoe.AREA_EIC
+
+    def codes(c: str) -> list[str]:
+        return DE_CODES if c == "DE" else [eic[c]]
+
     out = []
     for x, y in entsoe.BORDERS:
         if x in eic and y in eic:
-            out += [(f"{x}-{y}", eic[y], eic[x]), (f"{x}-{y}", eic[x], eic[y])]
+            for cx in codes(x):
+                for cy in codes(y):
+                    out += [(f"{x}-{y}", cy, cx), (f"{x}-{y}", cx, cy)]
     return out
 
 

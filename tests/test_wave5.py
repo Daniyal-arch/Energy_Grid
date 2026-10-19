@@ -141,6 +141,10 @@ def test_a78() -> None:
     old = {**r, "revision": 1}
     gone = {**r, "mrid": "x", "doc_status": "A13"}
     assert a78.newest_revisions([old, r, gone]) == [r]
+    b = a78.borders()
+    assert ("AT-DE", "10YDE-EON------1", "10YAT-APG------L") in b and not any(
+        x[1] == "10Y1001A1001A83F" for x in b
+    )
 
 
 def test_grw() -> None:

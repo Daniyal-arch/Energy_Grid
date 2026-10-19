@@ -1082,7 +1082,8 @@ summed); lake `tyndp/projects`. Refresh by hand (`wave5.yml` group D) when ENTSO
 ## Lines out of service (`scripts/build_transmission_outages.py`, `transmission_outages.json`)
 
 ENTSO-E A78 (unavailability of transmission infrastructure) per border (79 borders, both
-directions; per area it answers nothing), planned (A53) and forced (A54), the last 30 days and the
+directions; per area it answers nothing; German borders under the four TSO control areas and
+DE-LU, as Germany publishes them), planned (A53) and forced (A54), the last 30 days and the
 next 30, one request at a time in 30-day windows; the card lists a border on both countries; newest revision
 per report, withdrawn ones left out. Passthrough: element, type, voltage where named, start, end,
 reason, lowest available MW. Card "Lines out of service" in the country panel; lake
