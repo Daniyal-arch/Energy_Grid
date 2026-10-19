@@ -132,6 +132,8 @@ const STATIC: Record<string, Loader> = {
   prices: archive("prices.json"),
   // lines out of service (ENTSO-E A78), daily on eu-days (scripts/build_transmission_outages.py)
   linesOut: archive("transmission_outages.json"),
+  // redispatch, countertrading, congestion costs, GB constraints, CAISO curtailment (scripts/build_congestion.py)
+  congestion: archive("congestion.json"),
   // Japan and Mexico day-ahead prices, daily on eu-days (scripts/build_markets.py)
   jepx: archive("jepx.json"),
   cenace: archive("cenace.json"),

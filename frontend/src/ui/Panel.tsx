@@ -55,6 +55,7 @@ import type { ImbalanceFile } from "../lib/imbalance";
 import type { DkLiveFile, GbCarbonFile } from "../lib/live";
 import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
 import { CoverageCard } from "../components/CoverageCards";
+import { CongestionCard, UsCurtailmentCard } from "../components/CongestionCards";
 import { OperatorCo2Card, UsCo2RegionsCard } from "../components/Co2Cards";
 import { RegisterCard } from "../components/RegisterCards";
 import { REGISTERS } from "../lib/registers";
@@ -488,6 +489,7 @@ function CountryPanel({ iso }: { iso: string }) {
           {!day && <OperatorCo2Card iso={iso} />}
           {!day && linesOut && <LinesOutCard f={linesOut} iso2={iso} />}
           {redispatch && <RedispatchCard f={redispatch} />}
+          {!day && <CongestionCard iso={iso} />}
           {trade.length > 0 && <TradeCard rows={trade} time={timeOf(trade[0].ts)} />}
           {!day && outages?.countries[iso] && (
             <OutageCard totals={outages.countries[iso]} units={outages.units.filter((u) => u.country === iso)} at={outages.at} />
@@ -936,6 +938,7 @@ function UsPanel() {
         <>
           {us ? <UsCard us={us} /> : <Empty>Loading EIA-930…</Empty>}
           <UsCo2RegionsCard />
+          <UsCurtailmentCard />
           {pricesNow && <UsHubPricesCard rows={pricesNow.rows} time={`${ET_HOUR.format(new Date(pricesNow.hour))} ET`} />}
           <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === "United States" || (pricesNow != null && k === "US prices"))} />
         </>

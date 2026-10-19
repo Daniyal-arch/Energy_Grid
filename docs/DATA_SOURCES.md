@@ -492,6 +492,18 @@ only unit conversions. Cards "CO₂ per kWh" (country Now tab; US Live tab). Ref
 in `eu-snapshot.yml` (fr, es, ie), weekly in `us-queues.yml` (us). No lake copy (the sources keep
 their history; API-or-Parquet rule).
 
+## Redispatch, countertrading, congestion costs, curtailment (`scripts/build_congestion.py`, `congestion.json`)
+
+ENTSO-E (`ENTSOE_API_KEY`), per control area (Germany per TSO), one request at a time: redispatching
+internal (A63, A85) and cross-border (A63, A46, per border and direction), countertrading (A91) and
+costs of congestion management (A92). GB: NESO "Constraint Breakdown Costs and Volume" (daily, NESO
+Open Data Licence). California: CAISO production and curtailments data (5-min wind and solar
+curtailment, yearly xlsx). Computed: MWh = MW × interval, summed per month (up and down shown
+together); costs and NESO figures summed per month. Card "Redispatch and congestion" (country Now
+tab), "Constraint costs" (GB), "Wind and solar curtailed, California" (US Live tab). Refresh: daily
+in `eu-days.yml` (35 days, merged into the year; ENTSO-E skipped while a Lake ENTSO-E run is
+active); lake `entsoe/congestion_*`, `neso/constraint_breakdown`, `caiso/curtailment`.
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

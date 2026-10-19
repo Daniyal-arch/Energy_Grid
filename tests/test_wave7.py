@@ -201,3 +201,53 @@ def test_es_parts_factor_and_technologies() -> None:
     assert factor == [["2026-10-18", 0.1025]] and tech == {
         "Ciclo combinado": [["2026-10-19", 46023.9]]
     }
+
+
+# ---------------------------------------------------------------- family 4, redispatch and congestion
+
+import xml.etree.ElementTree as ET  # noqa: E402
+
+import build_congestion as bc  # noqa: E402
+
+A63 = """<Redispatching_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-1:redispatchingdocument:7:0">
+<mRID>x</mRID><revisionNumber>1</revisionNumber><type>A63</type>
+<TimeSeries><mRID>1</mRID><businessType>A85</businessType><flowDirection.direction>A01</flowDirection.direction>
+<Period><timeInterval><start>2026-09-30T22:00Z</start><end>2026-09-30T23:00Z</end></timeInterval><resolution>PT15M</resolution>
+<Point><position>1</position><quantity>100</quantity></Point><Point><position>3</position><quantity>40</quantity></Point></Period></TimeSeries>
+</Redispatching_MarketDocument>"""
+
+
+def test_points_and_monthly_mwh() -> None:
+    pts = bc.points(ET.fromstring(A63))
+    assert [(p["time"], p["quantity"], p["hours"], p["flowDirection.direction"]) for p in pts] == [
+        ("2026-09-30T22:00:00+00:00", 100.0, 0.25, "A01"),
+        ("2026-09-30T22:30:00+00:00", 40.0, 0.25, "A01"),
+    ]
+    assert bc.monthly(pts, "quantity", True) == {"2026-09": 35.0}
+
+
+def test_merge_months_keeps_history() -> None:
+    old = {
+        "countries": {"DE": {"costs": {"months": {"2026-01": 1.0, "2026-09": 2.0}}}},
+        "acks": {"a": 1},
+    }
+    new = {"countries": {"DE": {"costs": {"months": {"2026-09": 3.0, "2026-10": 4.0}}}}}
+    assert bc.merge_months(old, new) == {
+        "countries": {
+            "DE": {"costs": {"months": {"2026-09": 3.0, "2026-10": 4.0, "2026-01": 1.0}}}
+        },
+        "acks": {"a": 1},
+    }
+
+
+def test_neso_rows_numbers() -> None:
+    rows = bc.neso_rows(
+        "Date,Thermal constraints cost,Thermal constraints volume\n2026-04-01,9530229,-59177\n"
+    )
+    assert rows == [
+        {
+            "Date": "2026-04-01",
+            "Thermal constraints cost": 9530229.0,
+            "Thermal constraints volume": -59177.0,
+        }
+    ]

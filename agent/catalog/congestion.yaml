@@ -1,0 +1,18 @@
+dataset: congestion
+title: Redispatch, countertrading and congestion-management costs (ENTSO-E A63/A91/A92), GB constraint costs (NESO), California curtailment (CAISO)
+licence: ENTSO-E terms of use; NESO Open Data Licence; CAISO public data
+map_file: frontend/public/data/eu/congestion.json (cards, no layer)
+tables:
+  entsoe.congestion_redispatch_internal: {grain: one row per point of a redispatching series (A63, A85), measures: {quantity: {unit: MW, how: as published}, hours: {how: the point's duration}}, dims: [iso2, area, flowDirection.direction, time]}
+  entsoe.congestion_redispatch_cross_border: {grain: one row per point (A63, A46), dims: [iso2, area (this side>neighbour), flowDirection.direction, time]}
+  entsoe.congestion_countertrading: {grain: one row per point (A91), measures: {quantity: {unit: MW}}}
+  entsoe.congestion_costs: {grain: one row per point (A92), measures: {"*.amount": {unit: EUR, how: as published}}}
+  neso.constraint_breakdown: {grain: one row per day, measures: {"Thermal constraints cost": {unit: GBP}, "Thermal constraints volume": {unit: MWh}}}
+  caiso.curtailment: {grain: one row per 5-min interval with curtailment, measures: {wind_mw: {unit: MW}, solar_mw: {unit: MW}}, dims: [reason]}
+examples:
+  - q: what did GB's thermal constraints cost in September 2026
+    sql: SELECT sum("Thermal constraints cost") FROM neso.constraint_breakdown WHERE "Date" LIKE '2026-09%'
+    answer: £469.3 M (NESO daily figures summed)
+  - q: how much solar did CAISO curtail in December 2025
+    sql: SELECT sum(solar_mw) * 5 / 60 FROM caiso.curtailment WHERE time LIKE '2025-12%'
+    answer: 23,925 MWh (local 14,294, system 9,631)

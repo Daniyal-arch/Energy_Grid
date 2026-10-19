@@ -144,3 +144,31 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family C outputs"
+
+  D:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'D')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl python-dotenv
+      - name: Wait until no Lake ENTSO-E run is active (the key was banned when both ran)
+        run: bash scripts/entsoe_idle.sh 120
+      - name: 4 redispatch, countertrading, congestion costs (ENTSO-E, 400 days, one request at a time)
+        continue-on-error: true
+        run: python scripts/build_congestion.py entsoe --days 400 --upload
+      - name: 4 GB constraint costs (NESO), CAISO curtailment
+        continue-on-error: true
+        run: |
+          python scripts/build_congestion.py gb --upload
+          python scripts/build_congestion.py caiso --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family D outputs"

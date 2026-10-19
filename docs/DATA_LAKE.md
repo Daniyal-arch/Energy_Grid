@@ -347,6 +347,7 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | Dataset | Access | Kept as | Size (measured) |
 |---|---|---|---|
 | Room to connect, ten countries and two distribution grids (`connect_eu/<cc>`) | operators' JSON, ArcGIS layers, HTML tables, CSV | GeoParquet (Parquet for AT, DE, SE), snapshot partition | ~5,500 rows a snapshot, < 0.001 GB |
+| Redispatch, countertrading, congestion costs (`entsoe/congestion_*`), NESO constraints, CAISO curtailment | ENTSO-E API, NESO CSV, CAISO xlsx | Parquet, snapshot partition | see the catalogue |
 | CO₂ per kWh: RTE éCO2mix, REE, EirGrid, EIA-930 grid monitor | APIs and EIA's xlsx | API (no lake copy) | 0 |
 | Every unit, national registers (`registers/<cc>`: gb, fr, dk, se, ie, be, fi) | CSV, xlsx, ArcGIS, ODRÉ export | GeoParquet where positioned, snapshot partition | ~30,000 positioned rows plus FR's register |
 
