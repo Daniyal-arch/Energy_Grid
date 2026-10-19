@@ -1,0 +1,79 @@
+name: Wave 6 datasets
+
+# The builds of brief 21 (docs/tasks/21-datasets-wave6.md): one job per dataset group, each
+# committing its small outputs (frontend/public/data, agent/catalog) back to the branch and
+# uploading lake tables and tiles to R2. A push runs the groups its commit message names: "[w6: A B]".
+# Run by hand from main: Actions > Wave 6 datasets > Run workflow (groups = "A B C ...").
+# Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, EIA_API_KEY.
+
+on:
+  workflow_dispatch:
+    inputs:
+      groups:
+        description: "Groups to build (A B C D E F)"
+        type: string
+        default: "A B C D E F"
+  push:
+    branches: [claude/bold-johnson-figd07]
+    paths: [.github/workflows/wave6.yml, "scripts/build_*.py", scripts/wave5_common.py, scripts/browser_fetch.py]
+
+permissions:
+  contents: write
+
+env:
+  GROUPS: ${{ inputs.groups || github.event.head_commit.message }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      groups: ${{ steps.p.outputs.groups }}
+    steps:
+      - id: p
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os, re
+          g = os.environ["GROUPS"]
+          m = re.search(r"\[w6: ([A-Z ]+)\]", g)
+          print("groups=" + (m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""))
+          PY
+
+  A:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'A')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry shapely openpyxl
+      - name: 1 France, Capareseau
+        continue-on-error: true
+        run: python scripts/build_connect_more.py fr --upload
+      - name: 2 Italy, Terna Econnextion
+        continue-on-error: true
+        run: python scripts/build_connect_more.py it --upload
+      - name: 4 Portugal, E-REDES
+        continue-on-error: true
+        run: python scripts/build_connect_more.py pt --upload
+      - name: 5 Ireland, ESB Networks
+        continue-on-error: true
+        run: python scripts/build_connect_more.py ie --upload
+      - name: 6 Poland, PSE
+        continue-on-error: true
+        run: python scripts/build_connect_more.py pl --upload
+      - name: Chromium for Elia
+        continue-on-error: true
+        run: |
+          pip install playwright && python -m playwright install --with-deps chromium
+          bash scripts/r2_creds.sh
+      - name: 3 Belgium, Elia (fetched with a browser; refreshed by browser-fetch.yml)
+        continue-on-error: true
+        run: xvfb-run -a python scripts/browser_fetch.py elia_capacity --force
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group A outputs"

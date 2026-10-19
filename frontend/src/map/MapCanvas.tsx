@@ -53,7 +53,7 @@ function wantedKeys(zoom: number): string[] {
   if (L.lngSendOut) keys.push("lngTerminals");
   if (L.ets) keys.push("ets");
   if (L.ctrace) keys.push("ctrace");
-  if (L.connect) keys.push("connect");
+  if (L.connect) keys.push("connect", "connectFR", "connectIT", "connectIE");
   if (L.usOutages) keys.push("usOutages", "usCounties");
   if (L.water) keys.push("water");
   if (L.offshoreWind) keys.push("offshoreWind");

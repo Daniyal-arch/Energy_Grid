@@ -13,6 +13,7 @@ import { CT_COLOR, type CtraceFile } from "../lib/ctrace";
 import { OUTAGE_STOPS, OUTAGE_TICKS, WATER_COLOR, WATER_INDICATORS, newestYear, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, type MastrMuniFile } from "../lib/mastr";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
+import { IT_CLASSES, IT_COLOR, ROOM_CLASSES } from "../lib/connectMore";
 import type { UsNodesFile } from "../lib/usNodes";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
@@ -193,7 +194,7 @@ function ConnectKey() {
   return (
     <>
       <div className="mb-1 flex items-center gap-1.5">
-        <span className="text-[10px] text-slate-400">Netherlands:</span>
+        <span className="text-[10px] text-slate-400">Netherlands, Ireland:</span>
         {(["offtake", "feedin"] as const).map((s) => (
           <button
             key={s}
@@ -217,6 +218,23 @@ function ConnectKey() {
       <Note>
         Netherlands: each supply area as the regional operators' capacity map shows it. Great Britain: MW waiting to connect at each site (TEC register, {gb?.date ?? "…"}), coloured by the largest
         type; {gwText(placed)} of {gwText(total)} placed, at sites named after a GSP in NESO's lookup; the rest are in the panel. Spain publishes no positions: see the panel.
+      </Note>
+      <Swatches>
+        {ROOM_CLASSES.map((label, i) => (
+          <Swatch key={label} color={rgbCss(NL_COLOR[i])} label={label} kind="dot" />
+        ))}
+      </Swatches>
+      {side === "feedin" && (
+        <Swatches>
+          {IT_CLASSES.map((label, i) => (
+            <Swatch key={label} color={rgbCss(IT_COLOR[i])} label={label} />
+          ))}
+        </Swatches>
+      )}
+      <Note>
+        Dots, MW (MVA) left as published: France (new generation), each substation's S3REnR capacity still to allocate (Capareseau); Ireland, each 38 kV and 110 kV station's
+        and MV transformer's demand or firm generation capacity available (ESB Networks heatmap). Italy (new generation): GW requested to connect per region, renewables and storage
+        (Terna Econnextion). Portugal and Poland publish no positions: see the panel.
       </Note>
     </>
   );

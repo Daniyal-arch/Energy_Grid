@@ -146,6 +146,13 @@ const STATIC: Record<string, Loader> = {
   ctrace: archive("ctrace.json"),
   // where new demand or generation can connect: GB, NL, ES (scripts/fetch_connect_here.py)
   connect: archive("connect.json"),
+  // France, Italy, Belgium, Portugal, Ireland, Poland (scripts/build_connect_more.py)
+  connectFR: bundled("connect/fr.json"),
+  connectIT: bundled("connect/it.json"),
+  connectBE: bundled("connect/be.json"),
+  connectPT: bundled("connect/pt.json"),
+  connectIE: bundled("connect/ie.json"),
+  connectPL: bundled("connect/pl.json"),
   // retail electricity and gas prices (scripts/fetch_retail_prices.py, Eurostat + EIA)
   retail: archive("retail.json"),
   // US outages per county (scripts/build_us_outages.py, EAGLE-I) and their outlines

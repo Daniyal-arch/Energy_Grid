@@ -26,6 +26,7 @@ import { solarCat, type UsSolarFile } from "../lib/usSolar";
 import type { EvChargersFile } from "../lib/evChargers";
 import type { GhgrpFile } from "../lib/ghgrp";
 import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
+import { frValue, itTotals, type FrFile, type FrSite, type IeFile, type IeStation, type ItFile } from "../lib/connectMore";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
@@ -513,6 +514,39 @@ function tooltipHtml(id: string, object: unknown): string | null {
         .map(([t, mw]) => `${t} ${connectGw(mw)}`)
         .join(" · ");
       return `<b>${d.site[0]}</b><div>${d.site[3]} · <b>${connectGw(d.mw)}</b> waiting to connect</div><div>${parts}</div>${SRC(`NESO TEC register, ${cf.gb.date} · placed at the GSP of that name (NESO lookup)`)}`;
+    }
+    case "eu-connect-fr": {
+      const st = object as FrSite;
+      const cf = fileOf<FrFile>("connectFR");
+      if (!cf) return null;
+      const row = (code: string, unit = "MW") => {
+        const v = frValue(cf, st, code);
+        return v == null ? "" : `<div>${cf.labels[code] ?? code}: <b>${typeof v === "number" ? `${v.toLocaleString("en-US")} ${unit}` : v}</b></div>`;
+      };
+      return `<b>${st[1]}</b><div>${st[2]}${st[5] ? ` · up to ${st[5]} kV` : ""}</div>${row("INFO_NA")}${row("RTE_CDR")}${row("GRD1_CDR")}${row("INFO_FAS3R")}${row("INFO_QP", "")}${SRC(`Capareseau (RTE and the distribution operators), updated ${st[6] ?? "–"}`)}`;
+    }
+    case "eu-connect-ie": {
+      const st = object as IeStation;
+      const cf = fileOf<IeFile>("connectIE");
+      if (!cf) return null;
+      const v = (c: string) => st[5][cf.columns.indexOf(c)];
+      const n = (x: number | null | undefined, u: string) => (x == null ? "–" : `${x.toLocaleString("en-US", { maximumFractionDigits: 1 })} ${u}`);
+      return `<b>${st[0]}</b><div>installed ${n(v("installed_mva"), "MVA")}</div>
+        <div>Demand available: <b>${n(v("demand_available_mva"), "MVA")}</b></div>
+        <div>Generation available: <b>${n(v("gen_available_firm_mw"), "MW")}</b> firm, ${n(v("gen_available_nonfirm_mw"), "MW")} non-firm</div>
+        ${st[6] ? `<div style="color:#8d94a1">${st[6]}</div>` : ""}${SRC(`ESB Networks capacity heatmap (${cf.file}); transformer capacity only`)}`;
+    }
+    case "eu-connect-it": {
+      const d = object as { reg: string };
+      const cf = fileOf<ItFile>("connectIT");
+      if (!cf) return null;
+      const t = itTotals(cf)[d.reg];
+      const top = Object.entries(cf.renewables.regions[d.reg] ?? {})
+        .sort((a, b) => b[1][0] - a[1][0])
+        .slice(0, 3)
+        .map(([src, [mw]]) => `${src} ${connectGw(mw)}`)
+        .join(" · ");
+      return `<b>${d.reg}</b><div>Renewables requested: <b>${connectGw(t?.fer ?? 0)}</b></div><div>${top}</div><div>Storage requested: <b>${connectGw(t?.storage ?? 0)}</b></div>${SRC("Terna Econnextion: requests to connect to the transmission grid (sums over sources, computed); requests, not plants")}`;
     }
     case "w-ctrace": {
       const r = object as CtRow;

@@ -10,6 +10,7 @@ import type { CountriesFile, GridFile, PlantsFile, WorldFile } from "../app/type
 import { atlasValue, type AtlasFile } from "../lib/atlas";
 import { POP_CELL, peopleWithin } from "../lib/population";
 import { gbSiteTotals, type ConnectFile } from "../lib/connect";
+import { frNumber, ieRoom, itTotals, type FrFile, type IeFile, type ItFile } from "../lib/connectMore";
 import { FUEL_LABEL, power } from "../lib/energy";
 import type { PricesFile } from "../lib/prices";
 import { euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../lib/retail";
@@ -223,6 +224,19 @@ export function SiteCapacityCard({ place }: { place: Place }) {
     () => (place.iso2 === "GB" && connect ? within(gbSiteTotals(connect.gb), (t) => [t.site[1] as number, t.site[2] as number], site) : []),
     [connect, place.iso2, site],
   );
+  const frf = useFile<FrFile>(place.iso2 === "FR" ? "connectFR" : null);
+  const ief = useFile<IeFile>(place.iso2 === "IE" ? "connectIE" : null);
+  const itf = useFile<ItFile>(place.iso2 === "IT" ? "connectIT" : null);
+  const frNear = useMemo(() => (frf ? within(frf.sites, (x) => [x[3], x[4]], site) : []), [frf, site]);
+  const ieNear = useMemo(() => (ief ? within(ief.stations, (x) => [x[3], x[4]], site) : []), [ief, site]);
+  const itReg = useMemo(
+    () => (itf ? (Object.entries(itf.nuts2).find(([, ids]) => ids.some((id) => inFlatPolygons(site, itf.shapes[id] ?? []))))?.[0] ?? null : null),
+    [itf, site],
+  );
+  const itTot = itf && itReg ? itTotals(itf)[itReg] : undefined;
+  const capSrc = "Capareseau (RTE and the distribution operators)";
+  const esbSrc = ief ? `ESB Networks capacity heatmap (${ief.file})` : "";
+  const ternaSrc = "Terna Econnextion (dati.terna.it)";
   const code = place.state?.code;
   const st = code ? queue?.states[code] : undefined;
   // a hybrid counts under each of its types with its full capacity: types, not a total
@@ -256,6 +270,24 @@ export function SiteCapacityCard({ place }: { place: Place }) {
       ? ([
           [`Active requests in ${place.state?.name}`, round(sum(st.active), 1), "MW", `${st.active_n} projects`, lbnl],
           ...types.map((x) => [`Active requests, ${x.t}`, round(x.mw, 1), "MW", "", lbnl]),
+        ] as ReportRow[])
+      : []),
+    ...(frf
+      ? ([
+          [`S3REnR capacity left to allocate within ${R} km`, round(sum(frNear.map((x) => frNumber(frf, x.row, "INFO_NA") ?? 0)), 1), "MW", `${frNear.length} substations (sum, computed)`, capSrc],
+          ...frNear.slice(0, 20).map((x) => [x.row[1], frNumber(frf, x.row, "INFO_NA"), "MW", `${round(x.d, 2)} km; S3REnR capacity left to allocate`, capSrc]),
+        ] as ReportRow[])
+      : []),
+    ...(ief
+      ? ieNear.slice(0, 20).flatMap((x) => [
+          [`${x.row[0]}: demand available`, ieRoom(ief, x.row, "offtake"), "MVA", `${round(x.d, 2)} km`, esbSrc],
+          [`${x.row[0]}: generation available, firm`, ieRoom(ief, x.row, "feedin"), "MW", `${round(x.d, 2)} km`, esbSrc],
+        ] as ReportRow[])
+      : []),
+    ...(itTot && itReg
+      ? ([
+          [`Renewables requested in ${itReg}`, round(itTot.fer, 1), "MW", "sum over sources, computed", ternaSrc],
+          [`Storage requested in ${itReg}`, round(itTot.storage, 1), "MW", "sum over types, computed", ternaSrc],
         ] as ReportRow[])
       : []),
     ...mine.flatMap((x) =>
@@ -294,6 +326,38 @@ export function SiteCapacityCard({ place }: { place: Place }) {
           Transmission Entry Capacity contracted and not yet connected, summed per site (computed); sites placed by NESO's GSP lookup, those without a position left out.
           Contracts, not spare capacity.
         </Note>
+      </Card>
+    );
+  }
+  if (frf && place.iso2 === "FR") {
+    const left = sum(frNear.map((x) => frNumber(frf, x.row, "INFO_NA") ?? 0));
+    return (
+      <Card title="Room to connect" note="Capareseau" accent={[206, 138, 72]}>
+        <Row k={`S3REnR capacity left within ${R} km`} v={gwText(left)} sub={`${frNear.length} substations`} />
+        {frNear.slice(0, 5).map((x) => (
+          <Row key={x.row[0]} k={<span className="truncate">{x.row[1]}</span>} v={gwText(frNumber(frf, x.row, "INFO_NA") ?? 0)} sub={kmText(x.d)} />
+        ))}
+        <Note>Capacity reserved for renewables by the region's S3REnR and not yet allocated, per substation, as RTE and the distribution operators publish it (sum, computed). For new generation only; indicative.</Note>
+      </Card>
+    );
+  }
+  if (ief && place.iso2 === "IE") {
+    return (
+      <Card title="Room to connect" note="ESB Networks heatmap" accent={[206, 138, 72]}>
+        {ieNear.length === 0 && <Row k={`Stations within ${R} km`} v="none" />}
+        {ieNear.slice(0, 5).map((x) => (
+          <Row key={x.row[0]} k={<span className="truncate">{x.row[0]}</span>} v={`${round(ieRoom(ief, x.row, "offtake") ?? 0, 1)} MVA / ${round(ieRoom(ief, x.row, "feedin") ?? 0, 1)} MW`} sub={kmText(x.d)} />
+        ))}
+        <Note>Demand available (MVA) / firm generation available (MW) at the nearest 38 kV and 110 kV stations and MV transformers: transformer capacity only, as ESB Networks publishes it.</Note>
+      </Card>
+    );
+  }
+  if (itTot && itReg) {
+    return (
+      <Card title="Waiting to connect" note={`in ${itReg}`} accent={[206, 138, 72]}>
+        <Row k="Renewables requested (Terna)" v={gwText(itTot.fer)} />
+        <Row k="Storage requested (Terna)" v={gwText(itTot.storage)} />
+        <Note>Per region, not per substation: requests to connect to the transmission grid at every stage (Terna Econnextion), most of which will not be built.</Note>
       </Card>
     );
   }

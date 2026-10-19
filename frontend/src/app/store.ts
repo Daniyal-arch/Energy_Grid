@@ -92,7 +92,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "substations", label: "Substations", desc: "220 kV and more, shown zoomed in", group: "Power grid", coverage: "Europe", color: "rgb(226,232,240)" },
   { id: "gridWorld", label: "High-voltage lines", desc: "220 kV and more, mapped in OpenStreetMap", group: "Power grid", coverage: "World", color: "rgb(160,210,255)" },
   { id: "gridUS", label: "US transmission lines", desc: "100–765 kV by voltage, mapped in OpenStreetMap", group: "Power grid", coverage: "US", color: "rgb(236,178,120)" },
-  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Power grid", coverage: "GB, NL, ES", color: "rgb(206,138,72)" },
+  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Power grid", coverage: "GB, NL, ES, FR, IT, IE, PT, PL", color: "rgb(206,138,72)" },
   { id: "cables", label: "Undersea power cables", desc: "HVDC and AC cables at sea", group: "Power grid", coverage: "World", color: "rgb(110,190,255)" },
   { id: "predicted", label: "Predicted local grid", desc: "Estimated from night lights (Gridfinder)", group: "Power grid", coverage: "World", color: "rgb(255,190,110)" },
   { id: "plantsEU", label: "Power plants", desc: "20 MW and more, by fuel", group: "Power plants", coverage: "Europe", color: "rgb(255,128,72)" },
