@@ -138,7 +138,7 @@ def build_protected(args: argparse.Namespace) -> None:
             ("natura2000", N2K, N2K_FIELDS, n2k_props),
             ("padus", PADUS, PADUS_FIELDS, padus_props),
         ):
-            feats = arcgis_pages(url, fields, 500 if src == "natura2000" else 2000)
+            feats = arcgis_pages(url, fields, 500 if src == "natura2000" else 250)
             for ft in feats:
                 if not ft.get("geometry"):
                     continue

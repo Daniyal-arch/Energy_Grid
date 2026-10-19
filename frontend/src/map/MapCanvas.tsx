@@ -80,7 +80,7 @@ function wantedKeys(zoom: number): string[] {
   if (L.hydrogen) keys.push("hydrogen");
   if (L.gasProjects) keys.push("gasProjects");
   if (L.flood || L.roadsRail) keys.push("constraints");
-  if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario");
+  if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario", "nz", "za");
   if (L.financeCoal || L.financeGas) keys.push("gemFinance");
   for (const [id, style] of [...Object.entries(GEM_PIPES), ...Object.entries(GEM_POINTS)]) if (L[id as LayerId]) keys.push(style.file);
   if (s.mode === "live") {
@@ -199,8 +199,8 @@ export default function MapCanvas() {
           return pick({ kind: "country", iso2: iso, iso3: ISO3[iso] }, s.colour.startsWith("pr_") ? "prices" : s.mode === "years" ? "years" : "now");
         }
         if (id === "pr-zones") return pick({ kind: "zone", id: (info.object as { zone: string }).zone }, "prices");
-        const region = id.match(/^w-(us|br|au|tw|on)-regions$/);
-        if (region) return pick({ kind: "region", grid: region[1] as "us" | "br" | "au" | "tw" | "on", id: (info.object as { id: string }).id });
+        const region = id.match(/^w-(us|br|au|tw|on|nz|za)-regions$/);
+        if (region) return pick({ kind: "region", grid: region[1] as "us" | "br" | "au" | "tw" | "on" | "nz" | "za", id: (info.object as { id: string }).id });
         return; // plants, cables, sites: hover cards only
       }
       const land = map.queryRenderedFeatures(e.point, { layers: ["world-land"] })[0];

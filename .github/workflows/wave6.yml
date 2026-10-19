@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       groups:
-        description: "Groups to build (A B C D E F)"
+        description: "Groups to build (A B C D E F; K = roads and rail only)"
         type: string
         default: "A B C D E F"
   push:
@@ -171,7 +171,7 @@ jobs:
 
   C-roads:
     needs: plan
-    if: contains(needs.plan.outputs.groups, 'C')
+    if: contains(needs.plan.outputs.groups, 'C') || contains(needs.plan.outputs.groups, 'K')
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
@@ -182,7 +182,7 @@ jobs:
       - name: Tools (tippecanoe)
         run: |
           sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
-          pip install httpx duckdb pycountry
+          pip install httpx duckdb pycountry shapely
           git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
           make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
       - name: 13 major roads and railways (Overture transportation, Europe and the US)
@@ -256,3 +256,30 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 6 group E outputs"
+
+  F:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'F')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - name: 21 France regional mix (éCO2mix régional)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py fr
+      - name: 22 Spain regional mix (REE REData)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py es
+      - name: 23 New Zealand live (Transpower, em6)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py nz
+      - name: 24 South Africa (Eskom data portal, load-shedding)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py za
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group F outputs"

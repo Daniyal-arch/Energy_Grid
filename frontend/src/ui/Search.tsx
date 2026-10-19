@@ -81,7 +81,7 @@ export default function Search({ onDone, autoFocus = false }: { onDone?: () => v
             if (ZONE_POINT[zone]) fly(ZONE_POINT[zone].at, 4.6);
           }),
         });
-    const region = (grid: "us" | "br" | "au" | "tw" | "on", id: string, name: string, at: [number, number] | undefined, kind: string) => {
+    const region = (grid: "us" | "br" | "au" | "tw" | "on" | "nz" | "za", id: string, name: string, at: [number, number] | undefined, kind: string) => {
       if (!at || !(match(name) || match(id))) return;
       out.push({
         key: `r:${grid}:${id}`,

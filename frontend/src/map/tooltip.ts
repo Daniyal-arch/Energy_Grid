@@ -26,6 +26,7 @@ import { solarCat, type UsSolarFile } from "../lib/usSolar";
 import type { EvChargersFile } from "../lib/evChargers";
 import type { GhgrpFile } from "../lib/ghgrp";
 import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
+import type { NzFile, ZaFile } from "../lib/regionalLive";
 import { type GasProjectsFile, type H2Project, type HydrogenFile } from "../lib/coming";
 import { SEA_CABLE_SOURCE, type SeaCable, type SeaPipe } from "../lib/seaCables";
 import { frValue, itTotals, type FrFile, type FrSite, type IeFile, type IeStation, type ItFile } from "../lib/connectMore";
@@ -425,6 +426,16 @@ function tooltipHtml(id: string, object: unknown): string | null {
       if (!tw) return null;
       const solar = tw.types.filter((t) => t.group === "solar" || t.group === "wind").reduce((a, t) => a + (t.net_mw ?? 0), 0);
       return `<b>Taiwan</b><div>Net generation ${power(tw.total_mw)} · wind and solar ${power(solar)}</div>${SRC(`Taipower, every unit, ${tw.at.slice(11, 16)} Taipei time · click for details`)}`;
+    }
+    case "w-nz-regions": {
+      const nz = fileOf<NzFile>("nz");
+      if (!nz) return null;
+      return `<b>New Zealand</b><div>Generation ${power(nz.total_mw)}</div>${SRC(`Transpower (em6), ${nz.at} · click for details`)}`;
+    }
+    case "w-za-regions": {
+      const za = fileOf<ZaFile>("za");
+      if (!za) return null;
+      return `<b>South Africa</b><div>Load-shedding: <b>${za.loadshedding_stage ? `stage ${za.loadshedding_stage}` : "none"}</b></div>${SRC("Eskom · click for details")}`;
     }
     case "w-on-regions": {
       const on = fileOf<OntarioFile>("ontario");
