@@ -14,6 +14,7 @@ import { OUTAGE_STOPS, OUTAGE_TICKS, WATER_COLOR, WATER_INDICATORS, newestYear, 
 import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, type MastrMuniFile } from "../lib/mastr";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 import { IT_CLASSES, IT_COLOR, ROOM_CLASSES } from "../lib/connectMore";
+import { SEA_CABLE_COLOR } from "../lib/seaCables";
 import type { UsNodesFile } from "../lib/usNodes";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
@@ -495,11 +496,15 @@ function LayerLegend({ id }: { id: LayerId }) {
       );
     case "cables":
       return (
-        <Swatches>
-          {Object.entries(CABLE_STYLE).map(([k, s]) => (
-            <Swatch key={k} color={`rgba(${s.color.join(",")})`} kind="line" label={s.label} />
-          ))}
-        </Swatches>
+        <>
+          <Swatches>
+            {Object.entries(CABLE_STYLE).map(([k, s]) => (
+              <Swatch key={k} color={`rgba(${s.color.join(",")})`} kind="line" label={s.label} />
+            ))}
+            <Swatch color={rgbCss(SEA_CABLE_COLOR)} kind="line" label="European seas (EMODnet)" />
+          </Swatches>
+          <Note>OpenStreetMap worldwide; EMODnet adds the power cables the German, Dutch, French and Norwegian authorities publish (both may show one cable).</Note>
+        </>
       );
     case "predicted":
       return <Note>Predicted from night-time lights and roads, not surveyed.</Note>;
@@ -561,9 +566,9 @@ function LayerLegend({ id }: { id: LayerId }) {
         </>
       );
     case "gasPipes":
-      return <>{pipeStatus("rgb(255,196,96)")}<Note>Thicker = more capacity. Global Energy Monitor.</Note></>;
+      return <>{pipeStatus("rgb(255,196,96)")}<Note>Thicker = more capacity. Global Energy Monitor; thin lines at sea: EMODnet's gas pipelines in European seas.</Note></>;
     case "oilPipes":
-      return <>{pipeStatus("rgb(222,110,82)")}<Note>Thicker = more capacity. Global Energy Monitor.</Note></>;
+      return <>{pipeStatus("rgb(222,110,82)")}<Note>Thicker = more capacity. Global Energy Monitor; thin lines at sea: EMODnet's oil and condensate pipelines in European seas.</Note></>;
     case "lngTerminals":
       return (
         <>

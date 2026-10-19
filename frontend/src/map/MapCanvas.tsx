@@ -59,6 +59,7 @@ function wantedKeys(zoom: number): string[] {
   if (L.offshoreWind) keys.push("offshoreWind");
   if (L.mastrDE) keys.push("mastrMuni", "mastrUnits");
   if (L.cables) keys.push("cables");
+  if (L.cables || L.gasPipes || L.oilPipes) keys.push("seaCables");
   if (L.plantsWorld) keys.push("worldPlants");
   // EIA wins over GEM in the US: GEM's points inside the states are left out
   if (L.plantsUS) keys.push("usPlants");

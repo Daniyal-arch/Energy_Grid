@@ -201,5 +201,76 @@ export function searchSiteLines(which: keyof SiteLines, site: LonLat): void {
     .catch(() => done({ key, result: null, failed: true }));
 }
 
+// ------------------------------------------------------------------ substations from the world tiles
+
+/** Every substation mapped in OpenStreetMap (the lake's Overture extract; scripts/build_grid_more.py). */
+export const SUBSTATION_TILES = "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/grid/world-substations.pmtiles";
+
+export interface NearSubstation {
+  kv: number | null;
+  name: string | null;
+  operator: string | null;
+  km: number;
+  at: LonLat;
+}
+export interface SubstationSearch {
+  /** within radiusKm, nearest first */
+  near: NearSubstation[];
+  radiusKm: number;
+}
+
+/** The substations around a site: the zoom-9 tile holding it and its eight neighbours (every
+ *  substation is in them), those within the shortest distance to the edge of the tiles read. */
+export async function nearestTileSubstations(url: string, layer: string, site: LonLat): Promise<SubstationSearch> {
+  const z = LINE_ZOOM;
+  const n = 2 ** z;
+  const tx = tileX(site[0], n);
+  const ty = tileY(site[1], n);
+  const a = archiveOf(url);
+  const jobs: Promise<NearSubstation[]>[] = [];
+  for (let dx = -1; dx <= 1; dx++)
+    for (let dy = -1; dy <= 1; dy++) {
+      const x = (tx + dx + n) % n;
+      const y = ty + dy;
+      if (y < 0 || y >= n) continue;
+      jobs.push(
+        a.getZxy(z, x, y).then((res) => {
+          if (!res) return [];
+          const lyr = new VectorTile(new Protobuf(new Uint8Array(res.data))).layers[layer];
+          if (!lyr) return [];
+          const out: NearSubstation[] = [];
+          for (let i = 0; i < lyr.length; i++) {
+            const f = lyr.feature(i);
+            const p = f.loadGeometry()[0]?.[0];
+            if (!p) continue;
+            const at: LonLat = [lonOf(x + p.x / lyr.extent, n), latOf(y + p.y / lyr.extent, n)];
+            const props = f.properties as { kv?: number; name?: string; operator?: string };
+            out.push({ kv: typeof props.kv === "number" ? props.kv : null, name: props.name ?? null, operator: props.operator ?? null, km: km(site, at), at });
+          }
+          return out;
+        }),
+      );
+    }
+  const all = (await Promise.all(jobs)).flat();
+  const radiusKm = Math.min(km(site, [lonOf(tx - 1, n), site[1]]), km(site, [lonOf(tx + 2, n), site[1]]), km(site, [site[0], latOf(ty + 2, n)]), km(site, [site[0], latOf(ty - 1, n)]));
+  return { near: all.filter((s) => s.km <= radiusKm).sort((p, q) => p.km - q.km), radiusKm };
+}
+
+type SubSearch = { key: string; result: SubstationSearch | null; failed: boolean };
+export const useSiteSubstations = create<SubSearch>(() => ({ key: "", result: null, failed: false }));
+
+/** Start the substation search for a site (once per site). */
+export function searchSiteSubstations(site: LonLat): void {
+  const key = siteKey(site);
+  if (useSiteSubstations.getState().key === key) return;
+  useSiteSubstations.setState({ key, result: null, failed: false });
+  const done = (v: SubSearch) => {
+    if (useSiteSubstations.getState().key === key) useSiteSubstations.setState(v);
+  };
+  nearestTileSubstations(SUBSTATION_TILES, "substations", site)
+    .then((result) => done({ key, result, failed: false }))
+    .catch(() => done({ key, result: null, failed: true }));
+}
+
 /** "4.2 km" (one decimal under 10 km). */
 export const kmText = (v: number) => (v < 10 ? `${v.toFixed(1)} km` : `${Math.round(v)} km`);

@@ -26,6 +26,7 @@ import { solarCat, type UsSolarFile } from "../lib/usSolar";
 import type { EvChargersFile } from "../lib/evChargers";
 import type { GhgrpFile } from "../lib/ghgrp";
 import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
+import { SEA_CABLE_SOURCE, type SeaCable, type SeaPipe } from "../lib/seaCables";
 import { frValue, itTotals, type FrFile, type FrSite, type IeFile, type IeStation, type ItFile } from "../lib/connectMore";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
@@ -514,6 +515,14 @@ function tooltipHtml(id: string, object: unknown): string | null {
         .map(([t, mw]) => `${t} ${connectGw(mw)}`)
         .join(" · ");
       return `<b>${d.site[0]}</b><div>${d.site[3]} · <b>${connectGw(d.mw)}</b> waiting to connect</div><div>${parts}</div>${SRC(`NESO TEC register, ${cf.gb.date} · placed at the GSP of that name (NESO lookup)`)}`;
+    }
+    case "w-sea-cables": {
+      const c = object as SeaCable;
+      return `<b>${c[1] ?? "Power cable"}</b>${c[2] ? `<div>${c[2]}</div>` : ""}${SRC(`EMODnet Human Activities, power cables from ${SEA_CABLE_SOURCE[c[0]] ?? c[0]}`)}`;
+    }
+    case "w-sea-pipes": {
+      const p = object as SeaPipe;
+      return `<b>${p[0] ?? "Pipeline"}</b><div>${[p[1], p[2], p[3], p[5] != null ? `${p[5]} in` : null].filter(Boolean).join(" · ")}</div>${SRC(`EMODnet Human Activities, pipelines at sea${p[4] ? ` (${p[4]})` : ""}`)}`;
     }
     case "eu-connect-fr": {
       const st = object as FrSite;

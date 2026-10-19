@@ -77,3 +77,44 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 6 group A outputs"
+
+  B:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'B')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry shapely
+      - name: R2 credentials (the lake is read and written)
+        run: bash scripts/r2_creds.sh
+      - name: Build tippecanoe
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+      - name: 7 substations worldwide (lake overture_power/sites -> PMTiles)
+        continue-on-error: true
+        run: |
+          python scripts/build_grid_more.py substations
+          tippecanoe -o /tmp/wave6/grid/world-substations.pmtiles -l substations -Z4 -z9 -r1 \
+            --no-feature-limit --no-tile-size-limit \
+            --attribution='© OpenStreetMap contributors (ODbL), via Overture Maps' --force /tmp/wave6/grid/substations.geojsons
+          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
+            /tmp/wave6/grid/world-substations.pmtiles s3://infraatlas-data/grid/world-substations.pmtiles --content-type application/vnd.pmtiles
+          ls -la /tmp/wave6/grid/world-substations.pmtiles; cat /tmp/wave6/grid/substations-summary.json
+      - name: 8 Germany, grid operator per municipality (lake MaStR)
+        continue-on-error: true
+        run: python scripts/build_grid_more.py operators --upload
+      - name: 9 US utility service territories (PUDL EIA-861)
+        continue-on-error: true
+        run: python scripts/build_grid_more.py utilities
+      - name: 10 EMODnet cables and pipelines at sea
+        continue-on-error: true
+        run: python scripts/build_grid_more.py emodnet
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group B outputs"

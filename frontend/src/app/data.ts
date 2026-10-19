@@ -165,6 +165,11 @@ const STATIC: Record<string, Loader> = {
   // every unit in Germany (scripts/build_mastr.py, Marktstammdatenregister)
   mastrUnits: bundled("mastr/units_large.json"),
   mastrMuni: bundled("mastr/municipalities.json"),
+  // the grid operator per municipality (MaStR) and US utilities per county (EIA-861) (scripts/build_grid_more.py)
+  deGridOperators: bundled("de_grid_operators.json"),
+  usUtilities: bundledUs("utilities.json"),
+  // EMODnet cables and pipelines at sea (scripts/build_grid_more.py emodnet)
+  seaCables: bundled("sea_cables.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)

@@ -107,6 +107,7 @@ import { evLayers } from "./evLayers";
 import { ghgrpLayers } from "./ghgrpLayers";
 import { tyndpLayers } from "./tyndpLayers";
 import { connectMoreLayers } from "./connectMoreLayers";
+import { SEA_CABLE_COLOR, seaPipeLayer, type SeaCable, type SeaCablesFile, type SeaPipe } from "../lib/seaCables";
 import type { MastrTech } from "../lib/mastr";
 
 export interface Frame {
@@ -1306,6 +1307,36 @@ function worldLayers(fr: Frame, near: (p: [number, number]) => boolean): Layer[]
         getPath: (c) => pairs(c[3]),
         getColor: (c) => (CABLE_STYLE[c[0]] ?? CABLE_STYLE.other).color,
         getWidth: (c) => (CABLE_STYLE[c[0]] ?? CABLE_STYLE.other).width,
+        widthUnits: "pixels",
+        pickable: true,
+        parameters: ON_TOP,
+      }),
+    );
+  }
+  // EMODnet: power cables in European seas (cables layer), pipelines at sea (gas and oil layers)
+  const sea = f.seaCables as SeaCablesFile | undefined;
+  if (sea && isOn("cables"))
+    out.push(
+      new PathLayer<SeaCable>({
+        id: "w-sea-cables",
+        data: memo("seaCablesNear", [sea, fr.camKey], () => sea.cables.filter((c) => near([c[3][0], c[3][1]]))),
+        getPath: (c) => pairs(c[3]),
+        getColor: [...SEA_CABLE_COLOR, 170],
+        getWidth: 1.1,
+        widthUnits: "pixels",
+        pickable: true,
+        parameters: ON_TOP,
+      }),
+    );
+  if (sea && (isOn("gasPipes") || isOn("oilPipes"))) {
+    const show = (m: string | null) => seaPipeLayer(m).some((id) => isOn(id));
+    out.push(
+      new PathLayer<SeaPipe>({
+        id: "w-sea-pipes",
+        data: memo("seaPipesNear", [sea, fr.camKey, isOn("gasPipes"), isOn("oilPipes")], () => sea.pipelines.filter((p) => show(p[1]) && near([p[6][0], p[6][1]]))),
+        getPath: (p) => pairs(p[6]),
+        getColor: (p) => [...(seaPipeLayer(p[1])[0] === "gasPipes" ? GEM_PIPES.gasPipes.color : GEM_PIPES.oilPipes.color), 170],
+        getWidth: 1,
         widthUnits: "pixels",
         pickable: true,
         parameters: ON_TOP,

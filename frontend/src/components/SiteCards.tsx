@@ -15,7 +15,8 @@ import { FUEL_LABEL, power } from "../lib/energy";
 import type { PricesFile } from "../lib/prices";
 import { euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../lib/retail";
 import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type WaterFile } from "../lib/risk";
-import { SITE_RADIUS_KM, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, searchSiteLines, siteKey, useSiteLines, type LineSearch, type LonLat, type NearLine } from "../lib/site";
+import { SITE_RADIUS_KM, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, searchSiteLines, searchSiteSubstations, siteKey, useSiteLines, useSiteSubstations, type LineSearch, type LonLat, type NearLine } from "../lib/site";
+import type { MastrMuniFile } from "../lib/mastr";
 import { ISO3, type TransitionFile } from "../lib/transition";
 import { US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFile, type UsQueuesLiveFile, type UsState, type UsStatesFile } from "../lib/us";
 import type { DataCentresFile } from "../lib/world";
@@ -182,12 +183,34 @@ export function SiteGridCard({ place }: { place: Place }) {
   const grid = useFile<GridFile>(place.europe ? "grid" : null);
   const subs = useMemo(() => within(grid?.substations, (s) => [s[1], s[2]], site), [grid, site]);
   const pypsa = "PyPSA-Eur network from OpenStreetMap (grid.json)";
+  // outside Europe: every substation mapped in OpenStreetMap (the world tiles)
+  const outside = place.ready && !place.europe;
+  useEffect(() => {
+    if (outside) searchSiteSubstations(site);
+  }, [site, outside]);
+  const wsub = useSiteSubstations((s) => (s.key === key ? s : null));
+  const OSM_SUBS = "OpenStreetMap via Overture Maps (grid/world-substations.pmtiles)";
+  // Germany: the grid operator of the municipality (MaStR); US: the utilities serving the county (EIA-861)
+  const muni = useFile<MastrMuniFile>(place.iso2 === "DE" ? "mastrMuni" : null);
+  const deOps = useFile<{ snapshot: string; municipalities: Record<string, [string, string, number, number, number]> }>(place.iso2 === "DE" ? "deGridOperators" : null);
+  const gem = useMemo(() => muni?.gemeinden.find((g) => inFlatPolygons(site, g.polygons)) ?? null, [muni, site]);
+  const deOp = gem && deOps ? (deOps.municipalities[gem.ags] ?? null) : null;
+  const counties = useFile<UsCountiesFile>(place.state ? "usCounties" : null);
+  const utilities = useFile<{ year: string; utilities: Record<string, string>; counties: Record<string, number[]> }>(place.state ? "usUtilities" : null);
+  const county = useMemo(() => counties?.counties.find((c) => inFlatPolygons(site, c.polygons)) ?? null, [counties, site]);
+  const serving = county && utilities ? (utilities.counties[county.code] ?? []).map((id) => utilities.utilities[String(id)]) : [];
+  const mastrSrc = deOps ? `Marktstammdatenregister ${deOps.snapshot} (units' grid connection points)` : "";
+  const eiaSrc = utilities ? `EIA-861 service territory ${utilities.year} (PUDL)` : "";
   useReport(site, "Grid", [
     inUs && lineReport("Nearest line, 100 kV or more", us?.result, (s) => s.nearest, OSM_US),
     lineReport("Nearest line, 220 kV or more", world?.result, (s) => s.nearest, OSM_WORLD),
     lineReport("Nearest line, 345 kV or more", world?.result, (s) => s.ehv, OSM_WORLD),
     place.europe && !!grid && ["Nearest substation, 220 kV or more", subs[0] ? round(subs[0].d, 2) : null, "km", subs[0] ? `${subs[0].row[0]} kV` : `none within ${R} km`, pypsa],
     place.europe && !!grid && [`Substations within ${R} km`, subs.length, "count", "220 kV and more", pypsa],
+    outside && !!wsub?.result && ["Nearest substation", wsub.result.near[0] ? round(wsub.result.near[0].km, 2) : null, "km", wsub.result.near[0] ? [wsub.result.near[0].kv != null ? `${wsub.result.near[0].kv} kV` : "voltage not tagged", wsub.result.near[0].name ?? ""].filter(Boolean).join("; ") : `none within ${round(wsub.result.radiusKm, 1)} km`, OSM_SUBS],
+    outside && !!wsub?.result && [`Substations within ${round(wsub.result.radiusKm, 1)} km`, wsub.result.near.length, "count", "every voltage mapped", OSM_SUBS],
+    !!deOp && ["Grid operator of the municipality", deOp[0], "", `${deOp[2]} of ${deOp[4]} units in ${gem?.name ?? gem?.ags}; ${deOp[3]} operators`, mastrSrc],
+    ...serving.map((u) => ["Utility serving the county", u, "", county?.name ?? "", eiaSrc] as ReportRow),
   ]);
   return (
     <Card title="Grid" note={`straight-line distance`} accent={[236, 178, 120]}>
@@ -203,10 +226,30 @@ export function SiteGridCard({ place }: { place: Place }) {
         ) : (
           <Loading what="substations" />
         ))}
+      {outside &&
+        (wsub?.failed ? (
+          <Row k="Nearest substation" v="tiles not reachable" />
+        ) : !wsub?.result ? (
+          <Row k="Nearest substation" v="…" />
+        ) : (
+          <>
+            <Row
+              k="Nearest substation"
+              v={wsub.result.near[0] ? kmText(wsub.result.near[0].km) : `none within ${kmText(wsub.result.radiusKm)}`}
+              sub={wsub.result.near[0] ? (wsub.result.near[0].kv != null ? `${wsub.result.near[0].kv} kV` : "voltage not tagged") : undefined}
+            />
+            {wsub.result.near[0]?.name && <div className={`-mt-0.5 truncate pb-0.5 text-right text-[10px] ${muted}`}>{wsub.result.near[0].name}</div>}
+            <Row k={`Substations within ${kmText(wsub.result.radiusKm)}`} v={wsub.result.near.length.toLocaleString("en-US")} sub="every voltage mapped" />
+          </>
+        ))}
+      {deOp && <Row k="Grid operator of the municipality" v={<span className="truncate">{deOp[0]}</span>} sub={`${deOp[2].toLocaleString("en-US")} of ${deOp[4].toLocaleString("en-US")} units; ${deOp[3]} operators`} />}
+      {serving.length > 0 && <Row k={`Utilities serving ${county?.name ?? "the county"}`} v={serving.length} sub={serving.slice(0, 3).join(", ")} />}
       <Note>
         Distance in a straight line to the line's mapped course. Lines: OpenStreetMap (ODbL) via Overture Maps, the map's own tiles ({inUs ? "US lines from 100 kV, " : ""}
         lines from 220 kV worldwide; simplified by about 0.1 km), voltage as tagged.{place.europe ? " Substations: PyPSA-Eur's network from OpenStreetMap." : ""} Projects connect at
-        substations, where the operator has room: a line nearby is not a connection offer.
+        substations, where the operator has room: a line nearby is not a connection offer.{outside ? " Substations outside Europe: every one mapped in OpenStreetMap (points at the centre of mapped outlines), within the tiles read." : ""}
+        {deOp ? " Germany: the operator most of the municipality's units are connected to (MaStR, count computed)." : ""}
+        {serving.length ? ` United States: the utilities reporting service in the county (EIA-861, ${utilities?.year}).` : ""}
       </Note>
     </Card>
   );
