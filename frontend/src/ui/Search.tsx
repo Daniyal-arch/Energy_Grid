@@ -35,6 +35,8 @@ export default function Search({ onDone, autoFocus = false }: { onDone?: () => v
   const br = useFile<BrazilFile>(open ? "brazil" : null);
   const wp = useFile<WorldPlantsFile>(gem ? "worldPlants" : null);
   const names = useFile<{ names: string[] }>(gem ? "plantNames" : null);
+  // cities of 100,000 people and more (GeoNames, scripts/build_shapes.py): [name, iso2, lon, lat, people]
+  const cities = useFile<{ cities: [string, string, number, number, number][] }>(open ? "cities" : null);
   useEffect(() => {
     if (autoFocus) input.current?.focus();
   }, [autoFocus]);
@@ -96,6 +98,20 @@ export default function Search({ onDone, autoFocus = false }: { onDone?: () => v
     for (const id of Object.keys(NEM_POINT)) region("au", id, NEM_NAME[id] ?? id, NEM_POINT[id], "Region · Australia");
     region("tw", "TW", "Taiwan", TW_POINT, "Live grid · Taipower");
     region("on", "ON", "Ontario", ON_POINT.ON, "Live grid · IESO");
+    if (t.length >= 3 && cities) {
+      let c = 0;
+      for (const [name, iso2, lon, lat, people] of cities.cities) {
+        if (c >= 5) break;
+        if (!match(name)) continue;
+        c++;
+        out.push({
+          key: `city:${name}:${lon}`,
+          label: `${name}, ${iso2}`,
+          kind: `City · ${people.toLocaleString("en-US")} people (GeoNames)`,
+          go: done(null, () => fly([lon, lat], 8)),
+        });
+      }
+    }
     if (t.length >= 3) {
       let n = 0;
       for (const p of plants?.plants ?? []) {
@@ -132,7 +148,7 @@ export default function Search({ onDone, autoFocus = false }: { onDone?: () => v
       }
     }
     return out.slice(0, 24);
-  }, [q, countries, world, prices, plants, us, br, wp, names, onDone]);
+  }, [q, countries, world, prices, plants, us, br, wp, names, cities, onDone]);
 
   const showGem = q.trim().length >= 3 && !gem;
   return (

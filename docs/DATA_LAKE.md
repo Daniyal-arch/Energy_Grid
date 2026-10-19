@@ -321,6 +321,27 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | MaStR | bulk XML (~2.5 GB zip); SOAP API with registration and ~10,000 calls/day | Parquet snapshots | API far too limited | ~0.6 GB per snapshot |
 | WRI Aqueduct 4.0 | 262 MB zip, no API | GeoParquet | no API | ~0.15 GB |
 
+### Wave 5 (brief 17, built 2026-10-18)
+
+| Dataset | Access | Kept as | Size (measured) |
+|---|---|---|---|
+| NUTS 2024, bidding zones from NUTS, CGAZ admin-1 (`shapes/*`) | downloads (360 MB CGAZ) | GeoParquet | 1,798 + 43 + 3,224 rows, ~0.11 GB |
+| GeoNames cities15000 (`places/cities`) | download | GeoParquet | 34,167 rows, 0.002 GB |
+| EIA-923 via PUDL | public Parquet on S3 | in place (no copy) | 0 |
+| EPA eGRID2023 (`egrid/plants`) | xlsx | GeoParquet | 12,612 rows, 0.003 GB |
+| EPA GHGRP 2023 (`ghgrp/facilities`) | xlsx + Envirofacts API | GeoParquet | 6,470 rows, 0.0005 GB |
+| netztransparenz redispatch 2013-2020 (`netztransparenz/redispatch`) | open archive zip | Parquet | 40,118 rows, 0.0004 GB |
+| SMARD | API, no key | API (catalogue only) | 0 |
+| TYNDP 2024 projects (`tyndp/projects`) | JSON endpoints of the project map | GeoParquet | 363 rows, 0.0001 GB |
+| ENTSO-E transmission outages A78 (`entsoe/transmission_outages`) | API, 246 border directions | Parquet, partition fetched day | 6,056 rows, 0.00015 GB a day |
+| Global Renewables Watch v1.0 (`grw/solar`, `grw/wind`) | GitHub release, 453 MB GeoPackages | GeoParquet (+ `grid/grw.pmtiles` public) | see the catalogue |
+| Eurostat nrg_bal_c, EIA SEDS, EIA STEO | APIs | API | 0 |
+| EDGAR 2025 booklet (`edgar/ghg_by_sector`) | xlsx | Parquet | 261,365 rows, 0.002 GB |
+| JEPX spot (`jepx/spot`) | CSV per year | Parquet, partition year | 9,696 rows a year, 0.0005 GB |
+| CENACE PML (`cenace/pml`) | web service | Parquet, partition date | 62,640 rows a day, 0.0003 GB |
+| GHSL population 2025 (`ghsl/population`) | 484 MB zip | Parquet (+ `grid/population-0.1deg.i32` public, 26 MB) | 4,569 rows |
+| Energy Institute review (`ei_review/series`) | xlsx via a browser (`browser-fetch.yml`), raw file in `sources/ei/` | Parquet, long | 277,731 rows, 0.0015 GB |
+
 ### Future (docs/DATASETS.md)
 
 | Dataset | Access | Kept as | Size |

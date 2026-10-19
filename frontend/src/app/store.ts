@@ -26,6 +26,9 @@ export type LayerId =
   | "plantsUS"
   | "turbinesUS"
   | "solarUS"
+  | "grw"
+  | "tyndp"
+  | "ghgrpUS"
   | "solarResource"
   | "windResource"
   | "evChargersUS"
@@ -96,6 +99,8 @@ export const LAYERS: LayerInfo[] = [
   { id: "plantsWorld", label: "Power plants worldwide", desc: "Operating, building, planned or retired", group: "Power plants", coverage: "World", color: "rgb(255,214,72)" },
   { id: "plantsUS", label: "US power plants", desc: "Every generator of 1 MW and more (EIA)", group: "Power plants", coverage: "US", color: "rgb(255,128,72)" },
   { id: "mastrDE", label: "Germany: every unit", desc: "MW per municipality of solar, wind or storage; units of 1 MW and more (Marktstammdatenregister)", group: "Power plants", coverage: "DE", color: "rgb(255,214,72)" },
+  { id: "tyndp", label: "Planned grid projects", desc: "ENTSO-E TYNDP 2024: lines and storage by status", group: "Power grid", coverage: "Europe", color: "rgb(255,196,96)" },
+  { id: "grw", label: "Wind and solar seen from space", desc: "Every turbine and solar array found in satellite images, 2024 Q2 (Global Renewables Watch)", group: "Power plants", coverage: "World", color: "rgb(255,214,72)" },
   { id: "offshoreWind", label: "Offshore wind farms", desc: "Areas at sea: operating, building, approved, planned (EMODnet)", group: "Power plants", coverage: "Europe", color: "rgb(96,190,255)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "solarUS", label: "US solar farms", desc: "Every array of 1 MW and more; outlines zoomed in (USPVDB)", group: "Power plants", coverage: "US", color: "rgb(255,214,72)" },
@@ -121,6 +126,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "ironOre", label: "Iron ore mines", desc: "Sized by production", group: "Industry & data", coverage: "World", color: "rgb(206,112,88)" },
   // { id: "evChargersUS", label: "EV fast chargers", desc: "Public DC fast charging stations, sized by ports (NREL AFDC)", group: "Industry & data", coverage: "US", color: "rgb(96,214,255)" },
   // listed once frontend/public/data/us/ev_chargers.json exists (us-grid.yml needs NREL_API_KEY)
+  { id: "ghgrpUS", label: "US industrial emitters", desc: "Reported CO₂e of large facilities (EPA GHGRP)", group: "Industry & data", coverage: "US", color: "rgb(236,128,92)" },
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & data", coverage: "World", color: "rgb(196,150,255)" },
   { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Industry & data", coverage: "World", color: "rgb(255,153,0)" },
   { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Power grid", coverage: "US", color: "rgb(230,120,80)" },
@@ -139,6 +145,9 @@ export const STATS_LAYERS = new Set<LayerId>([
   "plantsUS",
   "turbinesUS",
   "solarUS",
+  "grw",
+  "tyndp",
+  "ghgrpUS",
   "evChargersUS",
   "usQueue",
   "cables",

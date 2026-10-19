@@ -1,0 +1,29 @@
+dataset: smard
+title: SMARD electricity market data, Germany (Bundesnetzagentur)
+licence: CC BY 4.0
+access: api  # no lake copy (docs/DATA_LAKE.md, the API-or-Parquet rule)
+api: "https://www.smard.de/app/chart_data/{filter}/{region}/index_{resolution}.json then /{filter}/{region}/{filter}_{region}_{resolution}_{timestamp}.json"
+notes: weekly files; series = [[ms since 1970 UTC, value], ...]; regions DE, AT, LU, DE-LU, 50Hertz, Amprion, TenneT, TransnetBW; resolutions hour, quarterhour, day, week, month, year
+series:
+  410: {name: "Electricity consumption (grid load)", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  4359: {name: "Residual load", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  1223: {name: "Generation: lignite", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  1224: {name: "Generation: nuclear", unit: "MWh per interval", from: 2014-12-28, weekly_files: 475}
+  1225: {name: "Generation: wind offshore", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  1226: {name: "Generation: hydro", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  1227: {name: "Generation: other conventional", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  1228: {name: "Generation: other renewable", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  4066: {name: "Generation: biomass", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  4067: {name: "Generation: wind onshore", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  4068: {name: "Generation: solar", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  4069: {name: "Generation: hard coal", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  4070: {name: "Generation: pumped storage", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  4071: {name: "Generation: natural gas", unit: "MWh per interval", from: 2014-12-28, weekly_files: 616}
+  4169: {name: "Day-ahead price DE/LU", unit: "EUR/MWh", from: 2018-09-30, weekly_files: 421}
+examples:
+  - q: "Electricity consumption (grid load), Germany, hour starting 2026-10-18T12:00+00:00"
+    call: "GET https://www.smard.de/app/chart_data/410/DE/index_hour.json, then the newest weekly file; the last non-null pair"
+    answer: "49690.48 MWh per interval (read 2026-10-18)"
+  - q: "Residual load, Germany, hour starting 2026-10-18T12:00+00:00"
+    call: "GET https://www.smard.de/app/chart_data/4359/DE/index_hour.json, then the newest weekly file; the last non-null pair"
+    answer: "20641.73 MWh per interval (read 2026-10-18)"

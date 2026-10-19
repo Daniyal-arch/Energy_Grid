@@ -24,6 +24,8 @@ import { MASTR_LABEL, mwText, type MastrMuniFile, type MastrUnitsFile } from "..
 import { OFFSHORE_LABEL, offshoreStatus, type OffshoreWindFile } from "../lib/offshoreWind";
 import { solarCat, type UsSolarFile } from "../lib/usSolar";
 import type { EvChargersFile } from "../lib/evChargers";
+import type { GhgrpFile } from "../lib/ghgrp";
+import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
@@ -187,7 +189,13 @@ function usHtml(id: string, object: unknown): string | null {
     const [name, state, eia] = f.plants[p[6]];
     const status = f.statuses[p[3]];
     const when = p[5] ? ` · ${status === "retired" ? "retired" : status === "operating" ? "since" : "planned for"} ${p[5]}` : "";
-    return `<b>${name}</b><div>${US_TYPE_LABEL[f.types[p[2]]] ?? f.types[p[2]]} · ${p[4].toLocaleString("en-US")} MW net summer · ${STATUS_LABEL[status] ?? status}${when}</div><div>${p[7]} generator${p[7] > 1 ? "s" : ""} · ${state} · EIA plant ${eia}</div>${SRC(`EIA-860M, ${f.release}`)}`;
+    // newest full year's generation and capacity factor (EIA-923 via PUDL), CO2 (eGRID)
+    const pf = fileOf<{ year: number; egrid_year: number; plants: Record<string, [number | null, number | null, number, number | null, number | null]> }>("plantsPerf");
+    const q = pf?.plants[String(eia)];
+    const perf = q
+      ? `<div>${q[0] != null ? `${Math.round(q[0] / 1000).toLocaleString("en-US")} GWh in ${pf?.year}` : ""}${q[1] != null ? ` · capacity factor ${Math.round(q[1] * 100)} %${q[2] ? "" : " (computed: generation ÷ nameplate × hours)"}` : ""}</div>${q[4] != null ? `<div>CO₂ ${Math.round(q[4]).toLocaleString("en-US")} short tons, ${q[3] != null ? `${Math.round(q[3]).toLocaleString("en-US")} lb/MWh` : ""} (eGRID${pf?.egrid_year})</div>` : ""}`
+      : "";
+    return `<b>${name}</b><div>${US_TYPE_LABEL[f.types[p[2]]] ?? f.types[p[2]]} · ${p[4].toLocaleString("en-US")} MW net summer · ${STATUS_LABEL[status] ?? status}${when}</div><div>${p[7]} generator${p[7] > 1 ? "s" : ""} · ${state} · EIA plant ${eia}</div>${perf}${SRC(`EIA-860M, ${f.release}${q ? `; EIA-923 via PUDL, EPA eGRID` : ""}`)}`;
   }
   if (id === "us-turbines") {
     const f = fileOf<UsTurbinesFile>("usTurbines");
@@ -281,6 +289,26 @@ function mastrHtml(id: string, object: unknown): string | null {
 function tooltipHtml(id: string, object: unknown): string | null {
   if (id === "us-outages" || id === "w-water") return riskHtml(id, object);
   if (id.startsWith("de-mastr-")) return mastrHtml(id, object);
+  if (id === "eu-tyndp" || id === "eu-tyndp-areas" || id === "eu-tyndp-points") {
+    const f = fileOf<TyndpFile>("tyndp");
+    const k = typeof object === "number" ? object : (object as { k: number }).k;
+    const x: TyndpFeature | undefined = f?.features[k];
+    if (!f || !x) return null;
+    const facts = [
+      x.capacity_mw ? `${x.capacity_mw.toLocaleString("en-US")} MW` : "",
+      x.voltage_kv ? `${x.voltage_kv} kV` : "",
+      x.generating_mw ? `${x.generating_mw.toLocaleString("en-US")} MW generating` : "",
+      x.element ?? "",
+      x.length_km ? `${x.length_km} km` : "",
+    ].filter(Boolean);
+    return `<b>${x.investment ?? x.project ?? "Project"}</b>${x.investment && x.project ? `<div>${x.project}</div>` : ""}<div>${x.status != null ? f.statuses[x.status] : "status not given"}${x.year ? ` · commissioning ${x.year}` : ""}</div>${facts.length ? `<div>${facts.join(" · ")}</div>` : ""}${x.promoter ? `<div style="color:#8d94a1">${x.promoter}</div>` : ""}${SRC(`ENTSO-E TYNDP 2024 project ${x.type ?? ""} ${x.id ?? ""}`)}`;
+  }
+  if (id === "us-ghgrp") {
+    const f = fileOf<GhgrpFile>("ghgrp");
+    const p = typeof object === "number" ? f?.points[object] : undefined;
+    if (!f || !p) return null;
+    return `<b>${p[4]}</b><div>${f.sectors[p[3]]} · ${p[5]}</div><div><b>${Math.round(p[2]).toLocaleString("en-US")}</b> t CO₂e in ${f.year}, reported</div>${SRC(`EPA GHGRP ${f.year} (AR4 GWP)`)}`;
+  }
   if (id === "us-ev") {
     const f = fileOf<EvChargersFile>("evChargers");
     const p = typeof object === "number" ? f?.points[object] : undefined;
@@ -418,7 +446,8 @@ function tooltipHtml(id: string, object: unknown): string | null {
       const z = pf?.zones[zone];
       if (!pf || !z) return null;
       const m = priceMetricById(useApp.getState().colour.slice(3) as Parameters<typeof priceMetricById>[0]);
-      return `<b>${zone}</b><div>${m.label.toLowerCase()} <b>${m.format(m.value(z))}</b></div>${SRC(`${pf.period[0].slice(0, 7)} to ${pf.period[1].slice(0, 7)} · click for the zone`)}`;
+      const shaped = "polygon" in (object as object) ? `<div style="color:#8d94a1">approximate outline (NUTS regions)</div>` : "";
+      return `<b>${zone}</b><div>${m.label.toLowerCase()} <b>${m.format(m.value(z))}</b></div>${shaped}${SRC(`${pf.period[0].slice(0, 7)} to ${pf.period[1].slice(0, 7)} · click for the zone`)}`;
     }
     case "eu-flows": {
       const a = object as Arc;

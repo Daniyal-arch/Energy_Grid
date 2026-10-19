@@ -20,6 +20,13 @@ import type { UsSolarFile } from "../lib/usSolar";
 import type { DataCentresFile, WorldStatsFile } from "../lib/world";
 import { PLANT_TYPE_LABEL, STATUS_LABEL, type WorldPlantsFile } from "../lib/worldPlants";
 
+/** A profile file (scripts/build_profiles.py): rows per ISO alpha-3 (US states by postal code). */
+interface ProfileFile {
+  title: string;
+  source: string;
+  rows: Record<string, Row[]>;
+}
+
 /** [item, value, unit, note]: one figure, unformatted. */
 type Row = [string, number | string | null, string, string];
 interface Section {
@@ -61,6 +68,14 @@ function useSections(code: string) {
   const usPlants = useFile<UsPlantsFile>(us ? "usPlants" : null);
   const usQueue = useFile<UsQueueFile>(us ? "usQueue" : null);
   const usSolar = useFile<UsSolarFile>(us ? "usSolar" : null);
+  // profiles (scripts/build_profiles.py, build_population.py): sections keyed by ISO alpha-3
+  const profiles = [
+    useFile<ProfileFile>(europe ? "pfEurostat" : null),
+    useFile<ProfileFile>("pfEi"),
+    useFile<ProfileFile>("pfEdgar"),
+    useFile<ProfileFile>("pfPopulation"),
+    useFile<ProfileFile>(us ? "pfSeds" : null),
+  ];
 
   const name = (europe ? countries?.countries.find((c) => c.iso === iso2)?.name : null) ?? t?.entities[iso3]?.name ?? world?.features.find((f) => f.properties.iso3 === iso3)?.properties.name ?? code;
   const ready = !!countries && !!t && !!gem && !!irena && !!ctrace && !!access && !!dc && !!retail && (!europe || (!!stats && !!prices && !!reference && !!ets && !!grid && !!gas && !!offshore)) && (!us || (!!usPlants && !!usQueue && !!usSolar));
@@ -228,8 +243,12 @@ function useSections(code: string) {
       if (dcs) rows.push(["Data centres mapped in OpenStreetMap", dcs, "count", "a subset that follows mapping effort"]);
       out.push({ title: "Access and data centres", source: "World Bank WDI EG.ELC.ACCS.ZS; OpenStreetMap (ODbL)", rows });
     }
+    for (const pf of profiles) {
+      const rows = pf?.rows[iso3];
+      if (pf && rows?.length) out.push({ title: pf.title, source: pf.source, rows });
+    }
     return out;
-  }, [ready, t, iso3, iso2, europe, us, stats, prices, retail, reference, irena, gem, usPlants, usQueue, usSolar, ets, ctrace, grid, gas, offshore, access, dc]);
+  }, [ready, t, iso3, iso2, europe, us, stats, prices, retail, reference, irena, gem, usPlants, usQueue, usSolar, ets, ctrace, grid, gas, offshore, access, dc, ...profiles]); // eslint-disable-line react-hooks/exhaustive-deps
   return { name, sections, ready, iso3 };
 }
 

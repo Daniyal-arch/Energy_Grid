@@ -11,6 +11,8 @@ import { BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCa
 import { UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
 import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
 import { EV_COLOR, type EvChargersFile } from "../lib/evChargers";
+import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
+import { TYNDP_STYLE, type TyndpFile } from "../lib/tyndp";
 import type { FinanceFile } from "../lib/finance";
 import { CLASS_LABEL, GEM_PIPES, GEM_POINTS, type GemPipesFile, type GemPointsFile } from "../lib/gem";
 import { rgbCss } from "../lib/theme";
@@ -573,6 +575,108 @@ function EsConnectCard({ f }: { f: ConnectFile }) {
   );
 }
 
+/** Global Renewables Watch per country: turbines and solar arrays found, solar area (computed). */
+function GrwCard({ iso3 }: { iso3?: string }) {
+  const f = useFile<{ release: string; countries: Record<string, Record<string, Record<string, [number, number, number | null]>>> }>("grwCountries");
+  const names = useFile<{ features: { properties: { iso3: string; name: string } }[] }>("world");
+  if (!f) return <Card title="Wind and solar seen from space">Loading…</Card>;
+  const latest = (d?: Record<string, [number, number, number | null]>) => {
+    if (!d) return [0, 0] as const;
+    const v = Object.values(d).reduce((a, x) => [a[0] + x[0], a[1] + x[1]] as [number, number], [0, 0] as [number, number]);
+    return v;
+  };
+  const rows = Object.entries(f.countries)
+    .filter(([k]) => k !== "none" && (!iso3 || k === iso3))
+    .map(([k, v]) => ({ k, wind: latest(v.wind)[0], solar: latest(v.solar)[0], km2: latest(v.solar)[1] }));
+  const tot = rows.reduce((a, r) => [a[0] + r.wind, a[1] + r.solar, a[2] + r.km2], [0, 0, 0]);
+  const name = (k: string) => names?.features.find((x) => x.properties.iso3 === k)?.properties.name ?? k;
+  const top = [...rows].sort((a, b) => b.wind - a.wind).slice(0, 6);
+  const topSolar = [...rows].sort((a, b) => b.km2 - a.km2).slice(0, 6);
+  return (
+    <Card title="Wind and solar seen from space" note={`Global Renewables Watch · ${f.release}`}>
+      <div className="text-[13px] text-slate-100 tabular-nums">
+        {tot[0].toLocaleString("en-US")} turbines · {tot[1].toLocaleString("en-US")} solar arrays ({Math.round(tot[2]).toLocaleString("en-US")} km²)
+      </div>
+      {!iso3 && (
+        <>
+          <Head>Most turbines</Head>
+          <Rows rows={top.map((r) => ({ key: r.k, label: name(r.k), value: r.wind, color: "rgb(72,222,184)" }))} unit="" />
+          <Head>Most solar area (km²)</Head>
+          <Rows rows={topSolar.map((r) => ({ key: r.k, label: name(r.k), value: r.km2, color: "rgb(255,214,72)" }))} unit="km²" />
+        </>
+      )}
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        Counted as found in satellite images by Microsoft&apos;s models (not registers); country = the outline holding each feature&apos;s centre; offshore features outside every
+        outline are counted in the total only; solar area computed from the polygons.
+      </div>
+    </Card>
+  );
+}
+
+/** TYNDP 2024 projects: counts by status (as drawn), commissioning years, the largest by capacity. */
+function TyndpCard({ iso3 }: { iso3?: string }) {
+  const f = useFile<TyndpFile>("tyndp");
+  if (!f) return <Card title="Planned grid projects">Loading…</Card>;
+  const iso2 = iso3 ? Object.entries(ISO3).find(([, b]) => b === iso3)?.[0] : undefined;
+  const xs = iso2 ? f.features.filter((x) => x.country === iso2) : f.features;
+  if (!xs.length) return <Card title="Planned grid projects">No TYNDP 2024 investment drawn here.</Card>;
+  const rows = f.statuses
+    .map((s, i) => ({ key: s, label: s, value: xs.filter((x) => x.status === i).length, color: rgbCss(TYNDP_STYLE[s]?.[0] ?? [120, 128, 140]) }))
+    .filter((r) => r.value > 0);
+  const big = [...xs].filter((x) => x.capacity_mw).sort((a, b) => (b.capacity_mw ?? 0) - (a.capacity_mw ?? 0)).slice(0, 6);
+  return (
+    <Card title="Planned grid projects" note="ENTSO-E TYNDP 2024">
+      <Rows rows={rows} unit="items" />
+      {big.length > 0 && (
+        <>
+          <Head>Largest by capacity</Head>
+          {big.map((x, i) => (
+            <div key={i} className="flex justify-between gap-2 text-[11px]">
+              <span className="truncate text-slate-200">
+                {x.investment ?? x.project} <span className={muted}>{x.year}</span>
+              </span>
+              <span className="tabular-nums text-slate-100">{(x.capacity_mw ?? 0).toLocaleString("en-US")} MW</span>
+            </div>
+          ))}
+        </>
+      )}
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        One item per investment of a transmission project (and per storage project) as the TYNDP map publishes it; capacities as the promoters submitted them, not summed.
+      </div>
+    </Card>
+  );
+}
+
+/** US industrial emitters (EPA GHGRP): total, by sector, the largest. */
+function GhgrpCard() {
+  const f = useFile<GhgrpFile>("ghgrp");
+  if (!f) return <Card title="US industrial emitters">Loading…</Card>;
+  const total = f.points.reduce((a, p) => a + p[2], 0);
+  const rows = f.sectors
+    .map((s, i) => ({ key: s, label: s, value: f.points.filter((p) => p[3] === i).reduce((a, p) => a + p[2], 0) / 1e6, color: rgbCss(ghgrpColor(s)) }))
+    .filter((r) => r.value > 0)
+    .sort((a, b) => b.value - a.value);
+  return (
+    <Card title="US industrial emitters" note={`EPA GHGRP · ${f.year}`}>
+      <div className="text-[22px] font-light text-slate-50">
+        {(total / 1e6).toFixed(0)} Mt <span className={`text-[11px] ${muted}`}>CO₂e from {f.points.length.toLocaleString("en-US")} facilities (sum, computed)</span>
+      </div>
+      <Head>By sector (first listed)</Head>
+      <Rows rows={rows} unit="Mt" />
+      <Head>Largest</Head>
+      {f.points.slice(0, 6).map((p, i) => (
+        <div key={i} className="flex justify-between gap-2 text-[11px]">
+          <span className="truncate text-slate-200">
+            {p[4]} <span className={muted}>{p[5]}</span>
+          </span>
+          <span className="tabular-nums text-slate-100">{(p[2] / 1e6).toFixed(1)} Mt</span>
+        </div>
+      ))}
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>Reported direct emissions (AR4 GWP) of the direct emitters (reporting threshold 25,000 t CO₂e a year); suppliers and oil and gas onshore production are reported apart and not drawn.</div>
+    </Card>
+  );
+}
+
 /** US public EV fast chargers: the total, by state and the largest networks (sums, computed). */
 function EvChargersCard() {
   const f = useFile<EvChargersFile>("evChargers");
@@ -801,6 +905,9 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
         if (id === "offshoreWind") return <OffshoreWindCard key={id} iso3={iso3} />;
         if (id === "solarUS") return iso3 && iso3 !== "USA" ? null : <UsSolarCard key={id} />;
+        if (id === "grw") return <GrwCard key={id} iso3={iso3} />;
+        if (id === "tyndp") return <TyndpCard key={id} iso3={iso3} />;
+        if (id === "ghgrpUS") return iso3 && iso3 !== "USA" ? null : <GhgrpCard key={id} />;
         if (id === "evChargersUS") return iso3 && iso3 !== "USA" ? null : <EvChargersCard key={id} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;

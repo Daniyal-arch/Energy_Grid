@@ -45,6 +45,8 @@ import {
 } from "../app/store";
 
 import type { AtlasFile, AtlasId } from "../lib/atlas";
+import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
+import { TYNDP_STYLE, type TyndpFile } from "../lib/tyndp";
 
 const muted = "text-[#8d94a1]";
 const MODE_LABEL: Record<TimeMode, string> = { live: "Live", day: "24 h", years: "Years" };
@@ -405,6 +407,20 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <MastrKey />;
     case "offshoreWind":
       return <OffshoreKey />;
+    case "grw":
+      return (
+        <>
+          <Swatches>
+            <Swatch color="rgb(255,214,72)" label="Solar arrays" />
+            <Swatch color="rgb(72,222,184)" label="Wind turbines" />
+          </Swatches>
+          <Note>Found in Planet satellite images by Microsoft&apos;s models, up to 2024 Q2 (Global Renewables Watch v1.0, MIT). Small arrays appear when zoomed in.</Note>
+        </>
+      );
+    case "tyndp":
+      return <TyndpKey />;
+    case "ghgrpUS":
+      return <GhgrpKey />;
     case "evChargersUS":
       return (
         <Note>
@@ -600,6 +616,34 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <AtlasKey id="wind" />;
   }
   return null;
+}
+
+function TyndpKey() {
+  const f = useDataStore((d) => d.files.tyndp as TyndpFile | undefined);
+  return (
+    <>
+      <Swatches>
+        {(f?.statuses ?? Object.keys(TYNDP_STYLE)).filter((s) => s !== "Completed").map((s) => (
+          <Swatch key={s} color={rgbCss(TYNDP_STYLE[s]?.[0] ?? [120, 128, 140])} label={s} kind="line" />
+        ))}
+      </Swatches>
+      <Note>Projects of ENTSO-E&apos;s Ten-Year Network Development Plan 2024 as its project map draws them (lines, areas; rings: storage and point projects). Capacity and commissioning year on hover, as the promoters submitted them.</Note>
+    </>
+  );
+}
+
+function GhgrpKey() {
+  const f = useDataStore((d) => d.files.ghgrp as GhgrpFile | undefined);
+  return (
+    <>
+      <Swatches>
+        {(f?.sectors ?? []).map((s) => (
+          <Swatch key={s} color={rgbCss(ghgrpColor(s))} label={s} />
+        ))}
+      </Swatches>
+      <Note>Dot area = t CO₂e reported for {f?.year ?? "…"} (AR4 GWP), direct emitters (the program's reporting threshold is 25,000 t a year). EPA Greenhouse Gas Reporting Program; positions from Envirofacts.</Note>
+    </>
+  );
 }
 
 /** A resource atlas: its classes as drawn, the unit and the source. */

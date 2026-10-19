@@ -1,0 +1,16 @@
+dataset: eurostat_balances
+title: Eurostat energy balances (nrg_bal_c), final energy by sector and fuel
+licence: CC BY 4.0
+access: api  # https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nrg_bal_c (JSON-stat, no key)
+map_file: frontend/public/data/eu/profiles/eurostat_balances.json ("Final energy use" in the country report)
+series:
+  nrg_bal: {FC_E: final energy consumption, FC_IND_E: industry, FC_TRA_E: transport, FC_OTH_HH_E: households, FC_OTH_CP_E: commerce and public services, FC_OTH_AF_E: agriculture and forestry}
+  siec: {TOTAL: all fuels, C0000X0350-0370: solid fossil, O4000XBIO: oil, G3000: natural gas, E7000: electricity, H8000: heat, RA000: renewables and biofuels}
+  unit: KTOE
+examples:
+  - q: Germany's final energy consumption in 2024
+    call: GET nrg_bal_c?geo=DE&unit=KTOE&nrg_bal=FC_E&siec=TOTAL&time=2024
+    answer: 177745.064 ktoe
+  - q: Germany's final energy use in industry, 2024
+    call: GET nrg_bal_c?geo=DE&unit=KTOE&nrg_bal=FC_IND_E&siec=TOTAL&time=2024
+    answer: 48368.387 ktoe

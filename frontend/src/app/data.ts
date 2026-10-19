@@ -63,6 +63,21 @@ const STATIC: Record<string, Loader> = {
   cables: bundled("cables.json"),
   // the solar and wind resource atlases: classes, tiles, lookup grid (scripts/build_atlas.py)
   atlas: bundled("atlas.json"),
+  // bidding zones built from NUTS regions; cities of 100,000+ for the search (scripts/build_shapes.py)
+  zones: bundled("zones.json"),
+  // country and state profiles (scripts/build_profiles.py, build_population.py)
+  pfEurostat: bundled("profiles/eurostat_balances.json"),
+  pfEi: bundled("profiles/ei_review.json"),
+  pfEdgar: bundled("profiles/edgar.json"),
+  pfPopulation: bundled("profiles/population.json"),
+  pfSeds: bundled("profiles/us_seds.json"),
+  steo: bundledUs("steo.json"),
+  // TYNDP 2024 projects; German redispatch 2013-2020 (scripts/build_tyndp.py, build_germany.py)
+  tyndp: bundled("tyndp.json"),
+  // Global Renewables Watch per country (scripts/build_grw.py)
+  grwCountries: bundled("grw_countries.json"),
+  deRedispatch: bundled("de_redispatch.json"),
+  cities: bundled("cities.json"),
   // Global Energy Monitor trackers (scripts/build_gem_layers.py)
   gemGas: bundled("gem/pipelines_gas.json"),
   gemOil: bundled("gem/pipelines_oil.json"),
@@ -88,6 +103,9 @@ const STATIC: Record<string, Loader> = {
   usStates: bundledUs("states.json"),
   // public EV fast chargers (scripts/fetch_ev_chargers.py, NREL AFDC; monthly in us-grid)
   evChargers: bundledUs("ev_chargers.json"),
+  // EPA GHGRP direct emitters; per-plant generation and CO2 (scripts/build_us_perf.py)
+  ghgrp: bundledUs("ghgrp.json"),
+  plantsPerf: bundledUs("plants_perf.json"),
   flows: snapshot("flows.json"),
   stats: snapshot("stats.json"),
   // transfer capacity per border, today and tomorrow (scripts/fetch_eu_capacity.py)
@@ -106,6 +124,11 @@ const STATIC: Record<string, Loader> = {
   gbCarbon: snapshot("gb_carbon.json"),
   dkLive: snapshot("dk_live.json"),
   prices: archive("prices.json"),
+  // lines out of service (ENTSO-E A78), daily on eu-days (scripts/build_transmission_outages.py)
+  linesOut: archive("transmission_outages.json"),
+  // Japan and Mexico day-ahead prices, daily on eu-days (scripts/build_markets.py)
+  jepx: archive("jepx.json"),
+  cenace: archive("cenace.json"),
   // imbalance prices per zone, the last 30 days (scripts/build_imbalance.py)
   imbalance: archive("imbalance.json"),
   // US day-ahead prices at one hub per market, today and tomorrow (scripts/fetch_us_prices.py)

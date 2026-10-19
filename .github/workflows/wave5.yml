@@ -1,0 +1,256 @@
+name: Wave 5 datasets
+
+# The builds of brief 17 (docs/tasks/17-datasets-wave5.md): one job per dataset group, each
+# committing its small outputs (frontend/public/data) back to the branch and uploading lake
+# tables and tiles to R2.
+# Run by hand from main: Actions > Wave 5 datasets > Run workflow (groups = "A B C ...").
+# Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, ENTSOE_API_KEY, EIA_API_KEY. Group F fetches the
+# Energy Institute file with Chromium (scripts/browser_fetch.py; monthly in browser-fetch.yml).
+
+on:
+  workflow_dispatch:
+    inputs:
+      groups:
+        description: "Groups to build (A B C D E F G H; R = transmission outages, A78)"
+        type: string
+        default: "A B C D E F G H R"
+
+permissions:
+  contents: write
+
+env:
+  GROUPS: ${{ inputs.groups }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      groups: ${{ steps.p.outputs.groups }}
+    steps:
+      - id: p
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os, re
+          g = os.environ["GROUPS"]
+          m = re.search(r"\[w5: ([A-Z ]+)\]", g)
+          print("groups=" + (m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""))
+          PY
+
+  A:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'A')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry shapely
+      - name: 1 NUTS
+        continue-on-error: true
+        run: python scripts/build_shapes.py nuts --upload
+      - name: 2 bidding zones
+        continue-on-error: true
+        run: python scripts/build_shapes.py zones --upload
+      - name: 3 CGAZ admin-1 (360 MB)
+        continue-on-error: true
+        run: python scripts/build_shapes.py admin1 --upload
+      - name: 4 cities
+        continue-on-error: true
+        run: python scripts/build_shapes.py cities --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group A outputs"
+
+  B:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'B')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl
+      - name: 5-6 EIA-923 (PUDL) and eGRID
+        continue-on-error: true
+        run: python scripts/build_us_perf.py perf --upload
+      - name: 7 GHGRP
+        continue-on-error: true
+        run: python scripts/build_us_perf.py ghgrp --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group B outputs"
+
+  C:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry
+      - name: 8 netztransparenz redispatch (open archive 2013-2020)
+        continue-on-error: true
+        run: python scripts/build_germany.py --upload
+      - name: 9 SMARD (catalogue only)
+        continue-on-error: true
+        run: python scripts/build_smard_catalog.py
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group C outputs"
+
+  D:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'D')
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry shapely python-dotenv
+      - name: 10 TYNDP 2024 projects
+        continue-on-error: true
+        run: python scripts/build_tyndp.py --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group D outputs"
+
+  R:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'R')
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry python-dotenv
+      - name: Wait until no Lake ENTSO-E run is active (the key was banned when both ran)
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bash scripts/entsoe_idle.sh 300
+      - name: 11 transmission outages (A78), one request at a time
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+        run: python scripts/build_transmission_outages.py --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 transmission outages"
+
+  E:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'E')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry
+      - name: Build tippecanoe
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+      - name: 12 Global Renewables Watch (453 MB of GeoPackages)
+        continue-on-error: true
+        run: |
+          python scripts/build_grw.py --tiles --upload
+          bash scripts/r2_creds.sh
+      - name: Upload grid/grw.pmtiles
+        continue-on-error: true
+        run: |
+          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
+            /tmp/wave5/grw/grw.pmtiles s3://infraatlas-data/grid/grw.pmtiles --content-type application/vnd.pmtiles
+          ls -la /tmp/wave5/grw/grw.pmtiles
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group E outputs"
+
+  F:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'F')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl
+      - name: 13 Eurostat energy balances
+        continue-on-error: true
+        run: python scripts/build_profiles.py eurostat
+      - name: 14 EIA SEDS
+        continue-on-error: true
+        run: python scripts/build_profiles.py seds
+      - name: 15 EIA STEO
+        continue-on-error: true
+        run: python scripts/build_profiles.py steo
+      - name: Chromium for the Energy Institute review
+        continue-on-error: true
+        run: |
+          pip install playwright && python -m playwright install --with-deps chromium
+          bash scripts/r2_creds.sh
+      - name: 16 Energy Institute review (fetched with a browser; refreshed by browser-fetch.yml)
+        continue-on-error: true
+        run: xvfb-run -a python scripts/browser_fetch.py ei --force
+      - name: 17 EDGAR
+        continue-on-error: true
+        run: python scripts/build_profiles.py edgar --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group F outputs"
+
+  G:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'G')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl tzdata
+      - name: 18 JEPX
+        continue-on-error: true
+        run: python scripts/build_markets.py jepx --upload
+      - name: 19 CENACE
+        continue-on-error: true
+        run: python scripts/build_markets.py cenace --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group G outputs"
+
+  H:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'H')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry rasterio shapely pyproj numpy
+      - name: 21 GHSL population (484 MB)
+        continue-on-error: true
+        run: python scripts/build_population.py --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 5 group H outputs"

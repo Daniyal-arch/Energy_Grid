@@ -1,0 +1,14 @@
+dataset: seds
+title: EIA State Energy Data System (SEDS)
+licence: public domain (US EIA)
+access: api  # https://api.eia.gov/v2/seds/data/ (EIA_API_KEY), 5,000 rows per request
+map_file: frontend/public/data/eu/profiles/us_seds.json (US country report, "Energy by state" card)
+series: {TETCB: total consumption, CLTCB: coal, NGTCB: natural gas, PATCB: petroleum, NUETB: nuclear electricity, RETCB: renewables, TEPRB: total primary production, CLPRB: coal production, NGMPB: marketed gas, PAPRB: crude oil, REPRB: renewable production}
+units: billion Btu
+examples:
+  - q: US total energy consumption in 2024
+    call: GET seds/data/?frequency=annual&data[]=value&facets[seriesId][]=TETCB&facets[stateId][]=US&start=2024&end=2024
+    answer: 94543438 billion Btu
+  - q: Texas total primary energy production in 2024
+    call: GET seds/data/?frequency=annual&data[]=value&facets[seriesId][]=TEPRB&facets[stateId][]=TX&start=2024&end=2024
+    answer: 28288241 billion Btu

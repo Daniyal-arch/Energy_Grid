@@ -224,6 +224,33 @@ export function addGridLayers(map: maplibregl.Map, which: "hv" | "predicted" | "
     );
   }
 }
+export const GRW_TILES = "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/grid/grw.pmtiles";
+export const GRW_LAYERS = ["grw-solar", "grw-wind"];
+
+/** Global Renewables Watch: solar arrays as soft yellow areas, turbines as small dots (added when first shown). */
+export function addGrwLayers(map: maplibregl.Map): void {
+  if (map.getSource("grw")) return;
+  map.addSource("grw", { type: "vector", url: GRW_TILES, attribution: "Global Renewables Watch (Microsoft, Planet), MIT" });
+  map.addLayer(
+    { id: "grw-solar", type: "fill", source: "grw", "source-layer": "solar", paint: { "fill-color": "rgba(255,214,72,0.55)", "fill-outline-color": "rgba(255,214,72,0.9)" } },
+    "world-pick",
+  );
+  map.addLayer(
+    {
+      id: "grw-wind",
+      type: "circle",
+      source: "grw",
+      "source-layer": "wind",
+      paint: {
+        "circle-color": "rgba(72,222,184,0.8)",
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 2, 0.6, 8, 1.6, 12, 3],
+        "circle-stroke-width": 0,
+      },
+    },
+    "world-pick",
+  );
+}
+
 /** A resource atlas as raster tiles, under the coastlines and the grid (added when first shown). */
 export function addAtlasLayer(map: maplibregl.Map, id: string, tiles: string, maxzoom: number, attribution: string): void {
   if (map.getSource(id)) return;

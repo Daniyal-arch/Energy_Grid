@@ -1,0 +1,16 @@
+dataset: shapes
+title: European bidding zones, outlines built from NUTS 3 regions
+licence: "© EuroGeographics for the administrative boundaries (the NUTS regions)"
+map_file: frontend/public/data/eu/zones.json (Prices view shades zones of countries with several)
+tables:
+  bidding_zones:
+    grain: one row per bidding zone as prices.json names it (43)
+    keys: {zone: bidding zone id (DE-LU, DK1, IT-North, NO1, SE3 ...), iso2: first two letters}
+    measures: {nuts3: the NUTS 3 regions it is built from, exact: true where the zone border follows the regions}
+    time: NUTS 2024
+    notes: approximate outline where a zone border cuts a region (Nordic zones by county)
+    joins: [entsoe.prices on area = zone, entsoe.imbalance_price on zone]
+    examples:
+      - q: how many NUTS 3 regions make up DK1
+        sql: SELECT len(nuts3) FROM shapes.bidding_zones WHERE zone = 'DK1'
+        answer: 5

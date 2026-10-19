@@ -1,0 +1,17 @@
+dataset: ghsl
+title: GHSL population 2025 (JRC GHS-POP R2023A, 30 arc-seconds), summed per region
+licence: CC BY 4.0
+map_file: frontend/public/data/eu/profiles/population.json (country report); R2 grid/population-0.1deg.i32 (Check a site)
+tables:
+  population:
+    grain: one row per NUTS 3 region (unit nuts3) and per geoBoundaries admin-1 region (unit admin1)
+    keys: {unit: nuts3 | admin1, id: NUTS id or geoBoundaries shapeID, iso3}
+    measures: {people: {unit: people, how: sum of the cells whose centre lies inside (computed)}, area_km2: {unit: km2, how: geodesic area of the admin-1 region (computed)}}
+    joins: [shapes.nuts on id = nuts_id, shapes.admin1 on id = admin1_id]
+    examples:
+      - q: people in Germany in 2025 (GHSL)
+        sql: SELECT sum(people) FROM ghsl.population WHERE unit = 'admin1' AND iso3 = 'DEU'
+        answer: 83232416
+      - q: how many regions were summed
+        sql: SELECT count(*) FROM ghsl.population
+        answer: 4569

@@ -122,6 +122,26 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_imbalance.py --out store/eu || echo "imbalance failed; keeping yesterday's"
 
+      - name: Lines out of service (ENTSO-E A78; skipped while a Lake ENTSO-E run is active)
+        timeout-minutes: 30
+        continue-on-error: true
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          pip install duckdb pycountry
+          if bash scripts/entsoe_idle.sh 0; then
+            python scripts/build_transmission_outages.py --out store/eu || echo "A78 failed; keeping yesterday's"
+          fi
+
+      - name: Japan and Mexico day-ahead prices (JEPX, CENACE)
+        timeout-minutes: 20
+        continue-on-error: true
+        run: |
+          pip install openpyxl
+          python scripts/build_markets.py jepx --out store/eu || echo "JEPX failed; keeping yesterday's"
+          python scripts/build_markets.py cenace --out store/eu || echo "CENACE failed; keeping yesterday's"
+
       - name: World figures (World Bank access, OpenStreetMap data centres)
         timeout-minutes: 10
         continue-on-error: true

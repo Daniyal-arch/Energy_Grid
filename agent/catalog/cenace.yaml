@@ -1,0 +1,16 @@
+dataset: cenace
+title: CENACE day-ahead local marginal prices (Mexico), every node
+licence: CENACE public information
+map_file: frontend/public/data/eu/cenace.json (Mexico card in the World panel; daily on eu-days)
+tables:
+  pml:
+    grain: one row per node and hour of a delivery day (partition date)
+    keys: {date: delivery day, hour: 1-24, system: SIN | BCA | BCS, node: CENACE node key}
+    measures: {pml_mxn_mwh: {unit: MXN/MWh, how: as published}}
+    examples:
+      - q: how many SIN nodes were priced on 2026-10-18
+        sql: SELECT count(DISTINCT node) FROM cenace.pml WHERE date = '2026-10-18' AND system = 'SIN'
+        answer: 2458
+      - q: highest SIN node price in hour 1 of 2026-10-18
+        sql: SELECT max(pml_mxn_mwh) FROM cenace.pml WHERE date = '2026-10-18' AND system = 'SIN' AND hour = 1
+        answer: 9774.57 MXN/MWh

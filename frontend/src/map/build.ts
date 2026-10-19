@@ -104,6 +104,8 @@ import { siteLayers } from "./siteLayers";
 import { offshoreLayers } from "./offshoreLayers";
 import { usSolarLayers } from "./usSolarLayers";
 import { evLayers } from "./evLayers";
+import { ghgrpLayers } from "./ghgrpLayers";
+import { tyndpLayers } from "./tyndpLayers";
 import type { MastrTech } from "../lib/mastr";
 
 export interface Frame {
@@ -709,6 +711,8 @@ export function buildLayers(fr: Frame): Layer[] {
   layers.push(...offshoreLayers(fr));
   layers.push(...usSolarLayers(fr));
   layers.push(...evLayers(fr));
+  layers.push(...ghgrpLayers(fr));
+  layers.push(...tyndpLayers(fr));
   layers.push(...worldLayers(fr, near));
   layers.push(...usLayers(fr));
   layers.push(...gemLayers(fr));
@@ -1216,6 +1220,36 @@ function zoneMarkers(fr: Frame): Layer[] {
   if (!pr || !prices) return [];
   const m = priceMetricById(pr);
   const zoneSel = fr.selection?.kind === "zone" ? fr.selection.id : null;
+  // with zones.json (outlines built from NUTS regions): the zones of countries with several, shaded
+  const outlines = fr.files.zones as ZonesFile | undefined;
+  if (outlines) {
+    const shapes = memo("zoneShapes", [outlines, prices], () =>
+      zoneMarkerData(prices).flatMap((d) => (outlines.zones[d.zone]?.polygons ?? []).map((rings) => ({ ...d, polygon: rings.map(pairs) }))),
+    );
+    return [
+      new SolidPolygonLayer<ZoneShape>({
+        id: "pr-zones",
+        data: shapes,
+        getPolygon: (d) => d.polygon,
+        getFillColor: (d) => [...(stopColor(m.stops, m.value(d.z)) ?? NO_DATA), 235],
+        updateTriggers: { getFillColor: [pr] },
+        pickable: true,
+        autoHighlight: true,
+        highlightColor: [255, 255, 255, 50],
+        parameters: ON_TOP,
+      }),
+      new PathLayer<ZoneShape>({
+        id: "pr-zones-lines",
+        data: shapes,
+        getPath: (d) => d.polygon[0],
+        getColor: (d) => (d.zone === zoneSel ? [255, 246, 230, 255] : [8, 10, 14, 200]),
+        widthUnits: "pixels",
+        getWidth: (d) => (d.zone === zoneSel ? 2 : 0.8),
+        updateTriggers: { getColor: [zoneSel], getWidth: [zoneSel] },
+        parameters: ON_TOP,
+      }),
+    ];
+  }
   return [
     new ScatterplotLayer<ZoneMarker>({
       id: "pr-zones",
@@ -1234,6 +1268,14 @@ function zoneMarkers(fr: Frame): Layer[] {
     }),
   ];
 }
+
+/** zones.json (scripts/build_shapes.py): each zone's NUTS 3 regions and outline. */
+export interface ZonesFile {
+  fetched: string;
+  source: string;
+  zones: Record<string, { nuts3: string[]; exact: boolean; polygons: number[][][] }>;
+}
+type ZoneShape = ZoneMarker & { polygon: [number, number][][] };
 
 export interface ZoneMarker {
   zone: string;

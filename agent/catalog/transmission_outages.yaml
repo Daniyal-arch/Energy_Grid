@@ -1,0 +1,16 @@
+dataset: entsoe/transmission_outages
+title: ENTSO-E unavailability of transmission infrastructure (A78), planned and forced, per border
+licence: ENTSO-E Transparency Platform terms (re-use with attribution)
+map_file: frontend/public/data/eu/transmission_outages.json (card "Lines out of service", country panel; daily on eu-days)
+tables:
+  transmission_outages:
+    grain: one row per element of each outage report (newest revision; both directions of a border may repeat a line), partition fetched (the day asked; window the last 30 days and the next 30)
+    keys: {area: border "AT-DE", element: as published, element_eic, kind: planned | forced, start, end}
+    measures: {available_mw_min: {unit: MW, how: lowest available capacity the report gives, as published}}
+    examples:
+      - q: distinct forced line outages ENTSO-E listed on 2026-10-19 (window 2026-09-19 to 2026-11-18)
+        sql: SELECT count(DISTINCT (area, element, start, "end")) FROM entsoe.transmission_outages WHERE fetched = '2026-10-19' AND kind = 'forced'
+        answer: 17
+      - q: distinct outages on the Czech-German border listed on 2026-10-19
+        sql: SELECT count(DISTINCT (element, start, "end", kind)) FROM entsoe.transmission_outages WHERE fetched = '2026-10-19' AND area = 'CZ-DE'
+        answer: 410

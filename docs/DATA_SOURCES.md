@@ -1023,6 +1023,134 @@ batches a minute apart; a 30-day archive costs about as much as one day.
 The ranking in World view lists the 30 countries with the largest published total
 generation in the year shown.
 
+## Shapes and names (`scripts/build_shapes.py`, `zones.json`, `cities.json`)
+
+- **NUTS 2024** (Eurostat GISCO, 1:20M, all levels; © EuroGeographics for the administrative
+  boundaries): lake `shapes/nuts` (1,798 regions: 39 / 115 / 299 / 1,345 per level). Passthrough.
+- **Bidding zones** built from NUTS 3 regions (the open zone geometries are AGPL): each zone of
+  `prices.json` is the union of the regions in `ZONES` (DK1 = Syddanmark, Midtjylland, Nordjylland;
+  IT zones by Terna's regions; NO and SE zones by county, approximate where a zone border cuts a
+  county); single-zone countries are the country without overseas regions. `zones.json` (simplified
+  0.01°) shades the zones in the Prices view, labelled "approximate outline (NUTS regions)";
+  lake `shapes/bidding_zones`. Refresh by hand (NUTS changes every few years).
+- **Admin-1** (geoBoundaries CGAZ ADM1, CC BY 4.0, 360 MB, Actions only): lake `shapes/admin1`
+  (3,224 regions) and `shapes/admin1_simplified` (0.01°).
+- **Cities** (GeoNames cities15000, CC BY 4.0): lake `places/cities` (34,167); the 6,284 of
+  100,000 people and more in `cities.json` for the search box. Refresh by hand.
+
+## US plant performance (`scripts/build_us_perf.py perf`, `us/plants_perf.json`)
+
+EIA-923 through PUDL's public Parquet (Catalyst Cooperative, CC BY 4.0), read in place with DuckDB:
+per EIA plant the newest full year's net generation (2025; sum of
+`core_eia923__monthly_generation_fuel`) and the capacity factor: PUDL's own, capacity-weighted over
+the plant's generators, where every generator has one (12,697 plants), else computed as generation ÷
+(nameplate × 8,760 h) and labelled (1,936). Plus EPA eGRID2023 (public domain): CO₂ (short tons)
+and CO₂ rate (lb/MWh) as published; lake `egrid/plants` (12,612 plants, every column). Shown in
+the US plant hover. Refresh: by hand (`wave5.yml` group B) when eGRID or the year changes.
+
+## US industrial emitters (`scripts/build_us_perf.py ghgrp`, `us/ghgrp.json`)
+
+EPA GHGRP 2023 (public domain): emissions from the data summary spreadsheet (Direct Point Emitters,
+t CO₂e, AR4 GWP, as reported), positions from Envirofacts `PUB_DIM_FACILITY` (all 6,470 found).
+Layer "US industrial emitters" (dot area = t CO₂e, colour = the first sector listed, on Climate
+TRACE's colours), card in "On the map" (sums computed); lake `ghgrp/facilities`. Refresh by hand
+when EPA publishes the next year.
+
+## German redispatch (`scripts/build_germany.py`, `de_redispatch.json`)
+
+netztransparenz.de's open archive `redispatch export 2013-2020` (40,118 measures as the four TSOs
+publish them). Computed: energy per month (by the measure's start, UTC), by direction and by
+requesting TSO. Card "Redispatch" in Germany's panel; lake `netztransparenz/redispatch`. Measures
+since 2021, costs and curtailment (EinsMan) are only in the registered API
+(`NETZTRANSPARENZ_CLIENT_ID`, `NETZTRANSPARENZ_CLIENT_SECRET`, api-portal.netztransparenz.de).
+
+## SMARD (`scripts/build_smard_catalog.py`, catalogue only)
+
+Bundesnetzagentur's SMARD chart API (CC BY 4.0, no key): stays an API (no lake copy, no UI);
+`agent/catalog/smard.yaml` lists 15 German series (load, generation by source, day-ahead price),
+their weekly files from 2014-12-28 and the newest values as examples.
+
+## Planned grid projects (`scripts/build_tyndp.py`, `tyndp.json`)
+
+ENTSO-E TYNDP 2024: the project map's `/api/maps/all` (363 investments and storage projects of 206
+projects, as GeoJSON) and each project page (`/api/public/Projects/{type}/{id}`): status,
+commissioning year, promoter, and per investment capacity (MW), voltage (kV) and element as the
+promoters submitted them (capacity given for 99). Computed: geometry simplified (0.005°). Layer
+"Planned grid projects" (Power grid), card in "On the map" (counts by status; capacities not
+summed); lake `tyndp/projects`. Refresh by hand (`wave5.yml` group D) when ENTSO-E updates the TYNDP.
+
+## Lines out of service (`scripts/build_transmission_outages.py`, `transmission_outages.json`)
+
+ENTSO-E A78 (unavailability of transmission infrastructure) per border (79 borders, both
+directions; per area it answers nothing; German borders under the four TSO control areas and
+DE-LU, as Germany publishes them), planned (A53) and forced (A54), the last 30 days and the
+next 30, one request at a time in 30-day windows; the card lists a border on both countries; newest revision
+per report, withdrawn ones left out. Passthrough: element, type, voltage where named, start, end,
+reason, lowest available MW. Card "Lines out of service" in the country panel; lake
+`entsoe/transmission_outages`. Daily in `eu-days`, skipped while a Lake ENTSO-E run is active
+(the key was banned when both ran).
+
+## Wind and solar seen from space (`scripts/build_grw.py`, R2 `grid/grw.pmtiles`, `grw_countries.json`)
+
+Global Renewables Watch v1.0 (Microsoft, Planet; MIT): 375,197 wind turbines (points) and 86,345
+solar arrays (polygons) detected in satellite images up to 2024 Q2, GeoPackages in Web Mercator
+(453 MB, Actions only), transformed to lon/lat. Passthrough: every published field (country,
+construction year and quarter, land cover, area). Computed: the country outline (`world.json`)
+holding each feature's centre, a polygon's area in km², per country and construction quarter the
+counts and solar area (sums; the files publish no MW). Tiles by tippecanoe (30.3 MB; small arrays
+from zoom 6); layer "Wind and solar seen from space" (Power plants), card in "On the map"; lake
+`grw/solar`, `grw/wind`. Refresh by hand when a new release appears.
+
+## Profiles (`scripts/build_profiles.py`, `profiles/*.json`, `us/steo.json`)
+
+- **Eurostat energy balances** (`nrg_bal_c`, CC BY 4.0, API): final energy by sector and fuel,
+  newest year (2024), ktoe as published → "Final energy use" in the country report. API only.
+- **EIA SEDS** (API v2): per state consumption and production by source, 2024, billion Btu as
+  published → US country report and the "Energy by state" card (US panel, Energy tab). API only.
+- **EIA STEO** (API v2): residential price and power-sector generation, monthly from 2024; months
+  from the release month are labelled forecast → "Short-term outlook" card. API only.
+- **EDGAR 2025** (JRC, CC BY 4.0), the GHG booklet: Mt CO₂e (GWP-100 AR5) per country, sector and
+  substance 1970–2024 → lake `edgar/ghg_by_sector`; the country report sums the substances per
+  sector for 2024 (computed).
+- **Energy Institute Statistical Review** (free with attribution), `EI-Stats-Review-ALL-data.xlsx`:
+  the site answers scripts with a Cloudflare challenge, so `scripts/browser_fetch.py` downloads it
+  with Chromium in Actions and keeps it in `r2://infraatlas-raw/sources/ei/`. Every sheet's values
+  as published → lake `ei_review/series` (277,731 values); the country report shows nine items
+  (total energy supply, oil, gas, coal, nuclear, hydro, renewables in EJ, electricity in TWh, CO₂
+  from energy in Mt) for the newest year, 2025, for 79 countries. Country names are matched to
+  ISO3 (pycountry plus a short alias list in the script); regions and totals stay unmatched.
+- Refresh: Eurostat, SEDS, STEO, EDGAR by hand (`wave5.yml` group F) when a new year appears; the
+  Energy Institute file monthly (`browser-fetch.yml`, rebuilt only when the file changed).
+
+## Files behind a browser check (`scripts/browser_fetch.py`, `browser-fetch.yml`)
+
+Some sites answer scripts with a JavaScript challenge. `browser_fetch.py` opens the source's page in
+Chromium (headed under xvfb in Actions), finds the file link, downloads it and keeps it in the
+private bucket `r2://infraatlas-raw/sources/<name>/` with `latest.json` (url, sha256, date). An
+unchanged file is not uploaded or rebuilt. If the browser is refused too, the owner uploads the file
+to `sources/<name>/manual/` and the newest file there is used. A new source is one `SOURCES` entry
+(pages, link pattern, refresh, build command). Sources: `ei` (above).
+
+## Japan and Mexico day-ahead prices (`scripts/build_markets.py`, `jepx.json`, `cenace.json`)
+
+- **JEPX** spot summary CSV (Shift-JIS; the download answers only with the spot page as
+  referrer): system and nine area prices per 30 minutes, JPY/kWh as published; the card shows the
+  newest delivery day's average, lowest and highest (computed). Terms of use not found (jepx.jp's
+  site-policy page answers 404). Lake `jepx/spot`.
+- **CENACE** SWPML web service, day-ahead PML (MXN/MWh) for every node of CENACE's node catalogue
+  (SIN 2,458, BCA 121, BCS 31 nodes on 2026-10-18), 20 nodes per request; per system and hour the
+  lowest, median and highest (computed). Nodes are counted, not placed. Lake `cenace/pml`.
+- Both daily in `eu-days` (onto the eu-days branch).
+
+## People (`scripts/build_population.py`, `profiles/population.json`, R2 `grid/population-0.1deg.i32`)
+
+JRC GHSL GHS-POP R2023A, epoch 2025, 30 arc-seconds (CC BY 4.0, 484 MB, Actions only). Computed:
+people per NUTS 3 and per admin-1 region (sum of the cells whose centre lies inside; 4,569
+regions → lake `ghsl/population`); per country the sum of its admin-1 regions, their geodesic
+land area and people per km² ("People" in the country report); a 0.1° grid of people per cell
+(sum of 12 × 12 source cells, int32, 26 MB on the public bucket) read by "Check a site" for the
+people in the cells whose centre lies within 50 km. Refresh by hand.
+
 ## Notes
 
 - ENTSO-E allows 400 requests a minute; the scripts ask four at a time. A full snapshot

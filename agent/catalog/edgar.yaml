@@ -1,0 +1,16 @@
+dataset: edgar
+title: EDGAR 2025 GHG emissions by country and sector (JRC)
+licence: CC BY 4.0
+map_file: frontend/public/data/eu/profiles/edgar.json (country report)
+tables:
+  ghg_by_sector:
+    grain: one row per substance, sector, country and year (1970-2024)
+    keys: {iso3: country (EDGAR code), sector, substance: CO2 | CH4 | N2O | F-gases, year}
+    measures: {mt_co2e: {unit: Mt CO2e (GWP-100 AR5), how: as published}}
+    examples:
+      - q: Germany's GHG emissions in 2024
+        sql: SELECT sum(mt_co2e) FROM edgar.ghg_by_sector WHERE iso3 = 'DEU' AND year = 2024
+        answer: 674.4 Mt CO2e
+      - q: Germany's largest emitting sector in 2024
+        sql: SELECT sector, sum(mt_co2e) s FROM edgar.ghg_by_sector WHERE iso3 = 'DEU' AND year = 2024 GROUP BY 1 ORDER BY s DESC LIMIT 1
+        answer: Power Industry, 173.1 Mt CO2e

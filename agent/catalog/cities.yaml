@@ -1,0 +1,13 @@
+dataset: places
+title: Cities of 15,000 people and more (GeoNames cities15000)
+licence: CC BY 4.0
+map_file: frontend/public/data/eu/cities.json (the search box: cities of 100,000 and more)
+tables:
+  cities:
+    grain: one row per populated place
+    keys: {geonameid: GeoNames id, iso2: country, admin1: GeoNames admin-1 code}
+    measures: {population: {unit: people, how: as published by GeoNames}}
+    examples:
+      - q: the largest city in Germany and its population
+        sql: SELECT name, population FROM places.cities WHERE iso2 = 'DE' ORDER BY population DESC LIMIT 1
+        answer: Berlin, 3426354

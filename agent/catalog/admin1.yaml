@@ -1,0 +1,16 @@
+dataset: shapes
+title: World admin-1 regions (geoBoundaries CGAZ ADM1)
+licence: CC BY 4.0
+tables:
+  admin1:
+    grain: one row per first-level administrative region, full outline
+    keys: {iso3: country, admin1_id: geoBoundaries shapeID, name: shapeName}
+    time: CGAZ (geoBoundaries main branch)
+    joins: [ghsl.population on id = admin1_id where unit = 'admin1']
+    examples:
+      - q: how many admin-1 regions are in the lake
+        sql: SELECT count(*) FROM shapes.admin1
+        answer: 3224
+  admin1_simplified:
+    grain: the same regions simplified to 0.01 degrees, for maps
+    keys: {iso3: country, admin1_id: geoBoundaries shapeID}

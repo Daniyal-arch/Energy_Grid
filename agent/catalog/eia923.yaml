@@ -1,0 +1,20 @@
+dataset: pudl
+title: EIA-923 generation per US plant, read in place from PUDL's public Parquet
+licence: CC BY 4.0 (Catalyst Cooperative); EIA data public domain
+access: parquet in place (s3://pudl.catalyst.coop/stable/), no lake copy
+map_file: frontend/public/data/us/plants_perf.json (US plant hover: net generation, capacity factor)
+tables:
+  core_eia923__monthly_generation_fuel:
+    grain: one row per plant, month, fuel and prime mover
+    keys: {plant_id_eia: EIA plant id, report_date: month}
+    measures: {net_generation_mwh: {unit: MWh, how: as published}}
+    examples:
+      - q: net generation of W A Parish (EIA 3470) in 2025
+        sql: SELECT sum(net_generation_mwh) FROM 'https://s3.us-west-2.amazonaws.com/pudl.catalyst.coop/stable/core_eia923__monthly_generation_fuel.parquet' WHERE plant_id_eia = 3470 AND year(report_date) = 2025
+        answer: 15578685 MWh (plants_perf.json, rounded)
+  plants_perf (map file):
+    grain: per EIA plant, 2025
+    measures: {capacity factor: "PUDL's (capacity-weighted over the plant's generators) for 12,697 plants, computed generation / (nameplate x 8760 h) for 1,936"}
+    examples:
+      - q: capacity factor of Labadie (EIA 2103) in 2025
+        answer: 0.799 (PUDL's)
