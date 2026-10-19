@@ -78,6 +78,13 @@ LOADSHEDDING = "https://loadshedding.eskom.co.za/LoadShedding/GetStatus"
 # ---------------------------------------------------------------- France
 
 
+def _num(v: object) -> float | None:
+    """A published value as a number ("0" -> 0.0), else None."""
+    if isinstance(v, int | float):
+        return float(v)
+    return float(v) if isinstance(v, str) and re.fullmatch(r"-?\d+(\.\d+)?", v) else None
+
+
 def fr_newest(records: list[dict]) -> dict[str, dict]:
     """Per region the newest record with consumption, its values and the consumption series."""
     by: dict[str, list[dict]] = defaultdict(list)
@@ -88,12 +95,7 @@ def fr_newest(records: list[dict]) -> dict[str, dict]:
     for code, rows in by.items():
         rows.sort(key=lambda r: r["date_heure"])
         last = rows[-1]
-        num = lambda v: (
-            float(v)
-            if isinstance(v, int | float)
-            or (isinstance(v, str) and re.fullmatch(r"-?\d+(\.\d+)?", v))
-            else None
-        )  # noqa: E731
+        num = _num
         out[code] = {
             "name": last["libelle_region"], "nuts1": FR_NUTS1.get(code), "ts": last["date_heure"],
             "mw": {k: num(last.get(k)) for k in FR_FIELDS},
