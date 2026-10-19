@@ -278,8 +278,10 @@ def build_roads(args: argparse.Namespace) -> None:
 
     rel = newest_release()
     con = duckdb.connect()
+    con.execute("INSTALL httpfs; LOAD httpfs; INSTALL spatial; LOAD spatial")
+    # Overture's bucket is public: an anonymous secret for it, whatever credentials the environment holds
     con.execute(
-        "INSTALL httpfs; LOAD httpfs; INSTALL spatial; LOAD spatial; SET s3_region='us-west-2'"
+        "CREATE SECRET overture (TYPE s3, KEY_ID '', SECRET '', REGION 'us-west-2', SCOPE 's3://overturemaps-us-west-2')"
     )
     path = f"s3://overturemaps-us-west-2/release/{rel}/theme=transportation/type=segment/*"
     TMP.mkdir(parents=True, exist_ok=True)
@@ -289,7 +291,7 @@ def build_roads(args: argparse.Namespace) -> None:
         out = TMP / f"roads_{name}.parquet"
         con.execute(
             f"""COPY (
-                  SELECT id, subtype, class, names.primary AS name, ST_GeomFromWKB(geometry) AS geometry
+                  SELECT id, subtype, class, names.primary AS name, geometry
                   FROM read_parquet('{path}', hive_partitioning = 1)
                   WHERE bbox.xmin < {x1} AND bbox.xmax > {x0} AND bbox.ymin < {y1} AND bbox.ymax > {y0}
                     AND ((subtype = 'road' AND class IN ({", ".join(f"'{c}'" for c in ROAD_CLASSES)}))

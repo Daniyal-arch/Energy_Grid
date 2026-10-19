@@ -1,0 +1,14 @@
+dataset: flood
+title: River flood hazard, 100-year return period (JRC, Europe 100 m and world 30 arc-seconds)
+licence: CC BY 4.0
+map_file: frontend/public/data/eu/constraints.json (layer "River flood hazard"; Check a site "Constraints")
+rasters:
+  flood-eu-rp100-classes.tif: {path: lake/flood/flood-eu-rp100-classes.tif, values: "1..5 = JRC depth classes under 0.5, 0.5-1, 1-2, 2-4, 4 m or more; 0 none"}
+  flood-world-rp100-classes.tif: {path: lake/flood/flood-world-rp100-classes.tif}
+lookups:
+  europe: {url: grid/flood-eu-0.01deg.u8, cell: 0.01, origin: [-32, 72], width: 7800, height: 4600, flooded_cells: 1127757}
+  world: {url: grid/flood-world-0.05deg.u8, cell: 0.05, origin: [-180, 85], width: 7200, height: 2900, flooded_cells: 743761}
+examples:
+  - q: the flood class of a place in Europe
+    call: byte (row * 7800 + col) of grid/flood-eu-0.01deg.u8, row = floor((72 - lat) / 0.01), col = floor((lon + 32) / 0.01)
+    answer: 0 = no flooding mapped, 1..5 = depth class (the deepest in the cell)
