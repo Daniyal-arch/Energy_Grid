@@ -452,51 +452,49 @@ families:
     cells:
       AT:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: APG's transparency API answers the session with a reset; APG publishes no CO₂ per kWh
+        checked: '2026-10-19'
       BE:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: Elia's open data repeats the 15-min mix; no CO₂ per kWh found
+        checked: '2026-10-19'
       BG:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       HR:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       CY:
-        status: todo
+        status: not_published
+        url: https://tsoc.org.cy/electrical-system/total-daily-system-generation-on-the-transmission-system/
+        note: Cyprus is not on the ENTSO-E platform; TSO Cyprus's generation pages answer scripts with HTTP 403
+        checked: '2026-10-19'
       CZ:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       DK:
         status: have
         source: Energinet Energi Data Service (5 min, CO₂)
@@ -506,177 +504,175 @@ families:
         checked: '2026-10-18'
       EE:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: Elering's dashboard API gives 15-min production and consumption, no CO₂ per kWh (checked)
+        checked: '2026-10-19'
       FI:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
-        dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        dataset: eu/stats.json
+        note: Fingrid's 3-min data and its CO₂ per kWh need FINGRID_API_KEY (data.fingrid.fi)
+        parts:
+        - name: ENTSO-E mix
+          status: have
+          source: ENTSO-E
+        - name: Fingrid 3 min and CO₂
+          status: blocked
+          source: FINGRID_API_KEY (https://data.fingrid.fi)
+        checked: '2026-10-19'
       FR:
-        status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
-        url: https://transparency.entsoe.eu
-        licence: ENTSO-E terms
-        dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        status: built
+        source: RTE éCO2mix national real time (ODRÉ) and ENTSO-E
+        url: https://odre.opendatasoft.com/explore/dataset/eco2mix-national-tr/
+        licence: Licence Ouverte v2.0
+        dataset: eu/live_co2.json (fr), card CO₂ per kWh (RTE)
+        note: 15-min mix and RTE's CO₂ per kWh; regional mix in wave 6
+        checked: '2026-10-19'
       DE:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: SMARD (BNetzA) publishes the same 15-min mix (catalogue file); no CO₂ per kWh published by the TSOs
+        checked: '2026-10-19'
       GR:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       HU:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       IE:
-        status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
-        url: https://transparency.entsoe.eu
-        licence: ENTSO-E terms
-        dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        status: built
+        source: EirGrid Smart Grid Dashboard CO₂ intensity and ENTSO-E
+        url: https://www.smartgriddashboard.com
+        licence: EirGrid terms (attribution)
+        dataset: eu/live_co2.json (ie), card CO₂ per kWh (EirGrid)
+        note: 15-min CO₂ intensity, Ireland and the island
+        checked: '2026-10-19'
       IT:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: Terna's API needs a key (developer.terna.it) and publishes no CO₂ per kWh
+        checked: '2026-10-19'
       LV:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       LT:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       LU:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       MT:
-        status: todo
+        status: not_published
+        url: https://enemalta.com.mt
+        note: Malta is not on the ENTSO-E platform; Enemalta publishes no live generation data
+        checked: '2026-10-19'
       NL:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
-        dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        dataset: eu/stats.json
+        note: 'NED (Nationaal Energie Dashboard) needs a free key: NED_API_KEY (https://ned.nl)'
+        parts:
+        - name: ENTSO-E mix
+          status: have
+          source: ENTSO-E
+        - name: NED mix and CO₂
+          status: blocked
+          source: NED_API_KEY (https://ned.nl)
+        checked: '2026-10-19'
       PL:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: PSE's API (api.raporty.pse.pl his-wlk-cal) gives the same 15-min mix; no CO₂ per kWh (checked 2026-10-19)
+        checked: '2026-10-19'
       PT:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: REN's data hub repeats the mix; no CO₂ per kWh found
+        checked: '2026-10-19'
       RO:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       SK:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       SI:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
       ES:
-        status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
-        url: https://transparency.entsoe.eu
-        licence: ENTSO-E terms
-        dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        status: built
+        source: REE REData emission factor and ENTSO-E
+        url: https://apidatos.ree.es/es/datos/generacion/no-renovables-detalle-emisiones-CO2
+        licence: REE terms (attribution)
+        dataset: eu/live_co2.json (es), card CO₂ per kWh (REE)
+        note: REE's daily CO₂ factor of the national system (REE's real-time feed demanda.ree.es is behind a bot check); regional mix in wave 6
+        checked: '2026-10-19'
       SE:
         status: have
-        source: ENTSO-E A75 actual generation per type (15 min to 1 h)
+        source: ENTSO-E A75 actual generation per type
         url: https://transparency.entsoe.eu
         licence: ENTSO-E terms
         dataset: eu/stats.json, eu/day/*
-        checked: '2026-10-15'
-        partial: true
-        note: operator's own feed (finer step, CO₂) checked in wave 7
+        note: Svenska kraftnät's control-room feed gives the same 15-min production; no CO₂ per kWh (checked)
+        checked: '2026-10-19'
       GB:
         status: have
         source: Elexon (5 min) and NESO carbon intensity
@@ -685,7 +681,13 @@ families:
         dataset: eu/gb_carbon.json, eu/stats.json
         checked: '2026-10-18'
       US:
-        status: todo
+        status: built
+        source: EIA-930 Hourly Electric Grid Monitor (CO₂ intensity per region)
+        url: https://www.eia.gov/electricity/gridmonitor/
+        licence: public domain
+        dataset: us/co2.json, card CO₂ per kWh generated (US Live tab)
+        note: EIA's hourly CO₂ intensity of generated and consumed electricity per region (EIA's estimate); the mix itself from EIA-930 (have)
+        checked: '2026-10-19'
   congestion:
     name: Redispatch and curtailment
     shows: redispatch, countertrading, congestion-management costs and curtailment (country cards, agent catalogue)

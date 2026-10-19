@@ -480,6 +480,18 @@ Computed: fuel groups, totals per status and group, WGS84 positions (OSGB, UTM 3
 Layers "UK: every project", "Denmark/Sweden: every wind turbine", "Ireland: wind farms" (Power
 plants), a register card in the Plants tab; lake `registers/<cc>`. Refresh by hand (`wave7.yml` B).
 
+## CO₂ per kWh from the operators (`scripts/fetch_live_co2.py`, `live_co2.json`, `us/co2.json`)
+
+France: RTE éCO2mix national real time (ODRÉ `eco2mix-national-tr`, Licence Ouverte), every 15 min,
+`taux_co2` (g/kWh) and the mix, last 48 h. Spain: REE REData, the national system's daily emission
+factor (t CO₂-eq/MWh; shown × 1000 as g/kWh) and emissions per technology, last 30 days. Ireland:
+EirGrid Smart Grid Dashboard CO₂ intensity (g/kWh), every 15 min, Ireland and the island. US:
+EIA-930 grid monitor files per region (14 xlsx, ~0.5 GB), "CO2 Emissions Intensity for Generated /
+Consumed Electricity" (lb/kWh, EIA's estimate; × 453.592 = g/kWh), last 14 days. Passthrough,
+only unit conversions. Cards "CO₂ per kWh" (country Now tab; US Live tab). Refresh: every 30 min
+in `eu-snapshot.yml` (fr, es, ie), weekly in `us-queues.yml` (us). No lake copy (the sources keep
+their history; API-or-Parquet rule).
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

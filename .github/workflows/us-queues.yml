@@ -46,11 +46,17 @@ jobs:
           fi
           python3 -c "import json; d=json.load(open('frontend/public/data/us/queues_live.json')); print('::notice title=queues::' + json.dumps({k: (v.get('active'), v.get('active_mw'), v.get('error') or v.get('missing')) for k, v in d['markets'].items()}))"
 
+      - name: CO₂ per kWh per US region (EIA-930 grid monitor, 14 xlsx files, ~0.5 GB)
+        continue-on-error: true
+        run: |
+          pip install httpx openpyxl
+          python scripts/fetch_live_co2.py us
+
       - name: Commit to main
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add frontend/public/data/us/queues_live.json
+          git add frontend/public/data/us/queues_live.json frontend/public/data/us/co2.json
           git diff --cached --quiet && exit 0
           git commit -m "US live queues: $(date -u +%Y-%m-%d)"
           git pull --rebase origin main

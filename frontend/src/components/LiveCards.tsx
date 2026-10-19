@@ -14,7 +14,7 @@ const COPENHAGEN = clock("Europe/Copenhagen");
 const london = (iso: string) => LONDON.format(new Date(iso));
 const copenhagen = (iso: string) => COPENHAGEN.format(new Date(iso.endsWith("Z") || iso.includes("+") ? iso : `${iso}Z`));
 
-function Big({ label, value, sub }: { label: string; value: string; sub?: string }) {
+export function Big({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div className="rounded-lg bg-white/[0.035] px-2.5 py-2">
       <div className={`text-[9px] uppercase tracking-[0.16em] ${muted}`}>{label}</div>
@@ -32,7 +32,7 @@ interface Line {
 }
 
 /** A small line chart over n slots; hover reads every line at one slot. */
-function Lines({ lines, n, label, unit }: { lines: Line[]; n: number; label: (k: number) => string; unit: string }) {
+export function Lines({ lines, n, label, unit }: { lines: Line[]; n: number; label: (k: number) => string; unit: string }) {
   const [hover, setHover] = useState<number | null>(null);
   const vals = lines.flatMap((l) => l.values).filter((v): v is number => v != null);
   const top = Math.max(1, ...vals);

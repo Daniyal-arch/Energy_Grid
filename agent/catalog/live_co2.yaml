@@ -1,0 +1,14 @@
+dataset: live_co2
+title: CO₂ per kWh as the operators publish it (RTE éCO2mix, REE, EirGrid, EIA-930 grid monitor)
+licence: Licence Ouverte (RTE); REE and EirGrid terms (attribution); public domain (EIA)
+map_file: frontend/public/data/eu/live_co2.json, frontend/public/data/us/co2.json (cards, no layer)
+api:
+  fr: {call: "GET https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-national-tr/records?order_by=date_heure desc&where=taux_co2 is not null", unit: g CO₂/kWh, step: 15 min}
+  es: {call: "GET https://apidatos.ree.es/es/datos/generacion/no-renovables-detalle-emisiones-CO2?start_date=...&end_date=...&time_trunc=day&geo_trunc=electric_system&geo_limit=nacional&geo_ids=8741", unit: t CO₂-eq/MWh, step: day}
+  ie: {call: "GET https://www.smartgriddashboard.com/DashboardService.svc/data?area=co2intensity&region=ROI&datefrom=DD-Mon-YYYY HH:MM&dateto=...", unit: g CO₂/kWh, step: 15 min}
+  us: {call: "GET https://www.eia.gov/electricity/gridmonitor/knownissues/xls/Region_<CAL|TEX|...|US48>.xlsx (sheet Published Hourly Data)", unit: lb CO₂/kWh, step: hour}
+examples:
+  - q: what was Spain's CO₂ factor on 18 October 2026
+    answer: 0.1025 t CO₂-eq per MWh, 103 g per kWh (REE, national system)
+  - q: California's CO₂ per kWh generated on the morning of 19 October 2026
+    answer: 0.505 lb/kWh at 07:00 UTC = 229 g/kWh (EIA-930 grid monitor)

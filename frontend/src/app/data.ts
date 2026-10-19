@@ -108,6 +108,8 @@ const STATIC: Record<string, Loader> = {
   // EPA GHGRP direct emitters; per-plant generation and CO2 (scripts/build_us_perf.py)
   ghgrp: bundledUs("ghgrp.json"),
   plantsPerf: bundledUs("plants_perf.json"),
+  // CO₂ per kWh per US region, EIA-930 grid monitor (scripts/fetch_live_co2.py us, weekly)
+  usCo2: bundledUs("co2.json"),
   flows: snapshot("flows.json"),
   stats: snapshot("stats.json"),
   // transfer capacity per border, today and tomorrow (scripts/fetch_eu_capacity.py)
@@ -124,6 +126,8 @@ const STATIC: Record<string, Loader> = {
   ontario: snapshot("ontario.json"),
   // Great Britain's carbon intensity (NESO) and Denmark every 5 minutes (Energinet)
   gbCarbon: snapshot("gb_carbon.json"),
+  // CO₂ per kWh as France, Spain and Ireland publish it (scripts/fetch_live_co2.py)
+  liveCo2: snapshot("live_co2.json"),
   dkLive: snapshot("dk_live.json"),
   prices: archive("prices.json"),
   // lines out of service (ENTSO-E A78), daily on eu-days (scripts/build_transmission_outages.py)

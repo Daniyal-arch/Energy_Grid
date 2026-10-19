@@ -166,3 +166,38 @@ def test_totals_by_status_and_group() -> None:
         ["c", 0, 0, "solar", None, "planning", None, "x"],
     ]
     assert br.totals(pts) == {"operating": {"wind": [2, 5.0]}, "planning": {"solar": [1, 0.0]}}
+
+
+# ---------------------------------------------------------------- family 3, live mix and CO₂
+
+import fetch_live_co2 as lc  # noqa: E402
+
+
+def test_fr_series_keeps_co2_rows_in_order() -> None:
+    recs = [
+        {
+            "date_heure": "2026-10-19T10:15:00+00:00",
+            "taux_co2": 21,
+            "nucleaire": 40000,
+            "gaz": 1500,
+            "eolien": None,
+        },
+        {"date_heure": "2026-10-19T10:00:00+00:00", "taux_co2": 20, "nucleaire": 40100},
+        {"date_heure": "2026-10-19T10:30:00+00:00", "taux_co2": None, "nucleaire": 40200},
+    ]
+    assert lc.fr_series(recs) == [
+        ["2026-10-19T10:00:00+00:00", 20, {"nucleaire": 40100}],
+        ["2026-10-19T10:15:00+00:00", 21, {"nucleaire": 40000, "gaz": 1500}],
+    ]
+
+
+def test_es_parts_factor_and_technologies() -> None:
+    d = {"included": [
+        {"type": "Ciclo combinado", "attributes": {"values": [{"value": 46023.9, "datetime": "2026-10-19T00:00:00.000+02:00"}]}},
+        {"type": "Total tCO2 eq.", "attributes": {"values": [{"value": 1.0, "datetime": "2026-10-19T00:00:00.000+02:00"}]}},
+        {"type": "tCO2 eq./MWh", "attributes": {"values": [{"value": 0.1025, "datetime": "2026-10-18T00:00:00.000+02:00"}]}},
+    ]}  # fmt: skip
+    factor, tech = lc.es_parts(d)
+    assert factor == [["2026-10-18", 0.1025]] and tech == {
+        "Ciclo combinado": [["2026-10-19", 46023.9]]
+    }

@@ -123,3 +123,24 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family B outputs"
+
+  C:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx openpyxl
+      - name: 3 CO2 per kWh from France, Spain, Ireland (every 30 min in eu-snapshot.yml)
+        continue-on-error: true
+        run: python scripts/fetch_live_co2.py eu
+      - name: 3 CO2 per kWh per US region, EIA-930 grid monitor (~0.5 GB; weekly in us-queues.yml)
+        continue-on-error: true
+        run: python scripts/fetch_live_co2.py us
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family C outputs"
