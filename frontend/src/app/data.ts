@@ -149,6 +149,14 @@ const STATIC: Record<string, Loader> = {
   // where new demand or generation can connect: GB, NL, ES (scripts/fetch_connect_here.py)
   connect: archive("connect.json"),
   // France, Italy, Belgium, Portugal, Ireland, Poland (scripts/build_connect_more.py)
+  // every unit from the national registers (scripts/build_registers.py)
+  registerGB: bundled("registers/gb.json"),
+  registerFR: bundled("registers/fr.json"),
+  registerDK: bundled("registers/dk.json"),
+  registerSE: bundled("registers/se.json"),
+  registerIE: bundled("registers/ie.json"),
+  registerBE: bundled("registers/be.json"),
+  registerFI: bundled("registers/fi.json"),
   // room to connect in ten more countries (scripts/build_connect_eu.py)
   connect7AT: bundled("connect/at.json"),
   connect7BG: bundled("connect/bg.json"),

@@ -30,6 +30,8 @@ import { LNG_SEND, gwhdText, lngDay, type LngTerminalsFile } from "../lib/lngTer
 import { CT_COLOR, subsectorLabel, type CtraceFile } from "../lib/ctrace";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 import { ConnectEuCard } from "../components/ConnectEuCards";
+import { RegisterCard } from "../components/RegisterCards";
+import { REGISTER_LAYERS } from "../lib/registers";
 import { CONNECT_EU, connectEuCountry } from "../lib/connectEu";
 import { BeConnectCard, FrConnectCard, IeConnectCard, ItConnectCard, PlConnectCard, PtConnectCard } from "../components/ConnectMoreCards";
 import { ProtectedCard } from "../components/ConstraintCards";
@@ -929,6 +931,10 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "gasProjects") return <GasProjectsCard key={id} iso3={iso3} />;
         if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
         if (id === "offshoreWind") return <OffshoreWindCard key={id} iso3={iso3} />;
+        if (id in REGISTER_LAYERS) {
+          const cc = REGISTER_LAYERS[id as keyof typeof REGISTER_LAYERS];
+          return iso3 && iso3 !== ISO3[cc] ? null : <RegisterCard key={id} cc={cc} />;
+        }
         if (id === "solarUS") return iso3 && iso3 !== "USA" ? null : <UsSolarCard key={id} />;
         if (id === "grw") return <GrwCard key={id} iso3={iso3} />;
         if (id === "tyndp") return <TyndpCard key={id} iso3={iso3} />;

@@ -125,3 +125,44 @@ def test_tbw_tooltips() -> None:
         and r["feedin"] == "500 – 1.000 MW"
         and r["voltage"] == "380 kV"
     )
+
+
+# ---------------------------------------------------------------- family 2, every unit
+
+import build_registers as br  # noqa: E402
+
+
+def test_group_of() -> None:
+    assert br.group_of("Wind Offshore") == "wind_offshore"
+    assert br.group_of("Battery") == "storage"
+    assert br.group_of("Solar Photovoltaics") == "solar"
+    assert br.group_of("Hydraulique", "Fil de l'eau") == "hydro"
+    assert br.group_of("CCGT (Natural Gas)") == "gas"
+    assert br.group_of("Something else") == "other"
+
+
+def test_repd_points_keeps_live_projects() -> None:
+    from pyproj import Transformer
+
+    tr = Transformer.from_crs(27700, 4326, always_xy=True)
+    text = (
+        "Ref ID,Site Name,Operator (or Applicant),Technology Type,Storage Type,Installed Capacity (MWelec),Development Status (short),X-coordinate,Y-coordinate,Operational,Country\n"
+        "1,Farm A,Op,Wind Onshore,,49.9,Operational,302219,166320,01/05/2007,Wales\n"
+        "2,Farm B,Op,Solar Photovoltaics,,20,Application Refused,302219,166320,,Wales\n"
+        "3,Store C,Op,Battery,Battery,100,Awaiting Construction,302219,166320,,Wales\n"
+    )
+    rows = br.repd_points(text, tr)
+    assert [(r["name"], r["status"], r["group"], r["year"]) for r in rows] == [
+        ("Farm A", "operating", "wind", 2007),
+        ("Store C", "permitted", "storage", None),
+    ]
+    assert abs(rows[0]["lon"] - -3.40) < 0.02 and abs(rows[0]["lat"] - 51.39) < 0.02
+
+
+def test_totals_by_status_and_group() -> None:
+    pts = [
+        ["a", 0, 0, "wind", 2.0, "operating", None, "x"],
+        ["b", 0, 0, "wind", 3.0, "operating", None, "x"],
+        ["c", 0, 0, "solar", None, "planning", None, "x"],
+    ]
+    assert br.totals(pts) == {"operating": {"wind": [2, 5.0]}, "planning": {"solar": [1, 0.0]}}

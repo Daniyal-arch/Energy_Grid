@@ -4,6 +4,7 @@
 
 import { AmbientLight, DirectionalLight, LightingEffect, MapView, _GlobeView as GlobeView, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
 import { CONNECT_EU, connectEuKey } from "../lib/connectEu";
+import { REGISTER_LAYERS, registerKey } from "../lib/registers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
 import { useEffect, useRef } from "react";
@@ -60,6 +61,7 @@ function wantedKeys(zoom: number): string[] {
   if (L.water) keys.push("water");
   if (L.offshoreWind) keys.push("offshoreWind");
   if (L.mastrDE) keys.push("mastrMuni", "mastrUnits");
+  for (const [layer, cc] of Object.entries(REGISTER_LAYERS)) if (L[layer as keyof typeof L]) keys.push(registerKey(cc));
   if (L.cables) keys.push("cables");
   if (L.cables || L.gasPipes || L.oilPipes) keys.push("seaCables");
   if (L.plantsWorld) keys.push("worldPlants");

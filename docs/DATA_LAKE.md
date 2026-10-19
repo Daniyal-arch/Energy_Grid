@@ -347,6 +347,7 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | Dataset | Access | Kept as | Size (measured) |
 |---|---|---|---|
 | Room to connect, ten countries and two distribution grids (`connect_eu/<cc>`) | operators' JSON, ArcGIS layers, HTML tables, CSV | GeoParquet (Parquet for AT, DE, SE), snapshot partition | ~5,500 rows a snapshot, < 0.001 GB |
+| Every unit, national registers (`registers/<cc>`: gb, fr, dk, se, ie, be, fi) | CSV, xlsx, ArcGIS, ODRÉ export | GeoParquet where positioned, snapshot partition | ~30,000 positioned rows plus FR's register |
 
 ### Future (docs/DATASETS.md)
 

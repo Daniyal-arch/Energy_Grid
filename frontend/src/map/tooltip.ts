@@ -32,6 +32,7 @@ import { SEA_CABLE_SOURCE, type SeaCable, type SeaPipe } from "../lib/seaCables"
 import { frValue, itTotals, type FrFile, type FrSite, type IeFile, type IeStation, type ItFile } from "../lib/connectMore";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
+import { STATUS_LABEL as REG_STATUS, registerKey, type RegisterFile, type RegisterPoint } from "../lib/registers";
 import { connectEuKey, valueText, type ConnectEuFile, type EuArea, type EuPoint } from "../lib/connectEu";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
@@ -369,6 +370,12 @@ function tooltipHtml(id: string, object: unknown): string | null {
     const lines = f.columns.map(([, label, unit], i) => (vals[i] == null || vals[i] === "" ? "" : `<div>${label}: <b>${valueText(vals[i], unit)}</b></div>`)).join("");
     const cls = isArea ? (row as EuArea)[3] : (row as EuPoint)[5];
     return `<b>${row[0]}</b><div style="color:#8d94a1">${f.classes[cls] ?? ""}${kv}</div>${lines}${SRC(`${f.source}${f.updated ? `, ${f.updated}` : ""}`)}`;
+  }
+  if (id.startsWith("reg:")) {
+    const p = object as RegisterPoint;
+    const f = fileOf<RegisterFile>(registerKey(id.slice(4)));
+    const mw = p[4] != null ? `${p[4].toLocaleString("en-US", { maximumFractionDigits: 2 })} MW` : "MW not given";
+    return `<b>${p[0]}</b><div>${FUEL_LABEL[p[3] === "wind_offshore" ? "wind" : p[3]] ?? p[3]}${p[3] === "wind_offshore" ? " at sea" : ""} · ${mw}</div><div style="color:#8d94a1">${REG_STATUS[p[5]] ?? p[5]}${p[6] ? ` · ${p[6]}` : ""}</div>${SRC(f ? `${p[7]} (${f.source})` : p[7])}`;
   }
   if (id.startsWith("gem-")) return gemHtml(id, object);
   if (id.startsWith("us-")) return usHtml(id, object);

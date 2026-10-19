@@ -55,6 +55,8 @@ import type { ImbalanceFile } from "../lib/imbalance";
 import type { DkLiveFile, GbCarbonFile } from "../lib/live";
 import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
 import { CoverageCard } from "../components/CoverageCards";
+import { RegisterCard } from "../components/RegisterCards";
+import { REGISTERS } from "../lib/registers";
 import { LinesOutCard, RedispatchCard } from "../components/GridCards";
 import { SedsCard, SteoCard, type SedsFile, type SteoFile } from "../components/ProfileCards";
 import { CenaceCard, JepxCard, type CenaceFile, type JepxFile } from "../components/MarketCards";
@@ -580,6 +582,7 @@ function CountryPanel({ iso }: { iso: string }) {
             </Card>
           )}
           {iso === "DE" && <MastrCountryCard entsoeGw={capacity?.source === "ENTSO-E A68" ? capacity.gw : undefined} />}
+          {(REGISTERS as readonly string[]).includes(iso) && <RegisterCard cc={iso} />}
           {irena && <IrenaCountryCard f={irena} iso3={ISO3[iso]} year={yearLabel} />}
           {reservoir && (
             <Card title="Hydro reservoirs" note={`ENTSO-E · week of ${reservoir.week}`} accent={[84, 156, 255]}>

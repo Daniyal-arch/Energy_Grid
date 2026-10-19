@@ -464,6 +464,19 @@ class (four MW classes on the feed-in value, or the operator's category), WGS84 
 UTM / OSGB / ED50 as each file gives them. Layer "Grid capacity", card per country, site analysis
 rows; lake `connect_eu/<cc>`. Refresh: by hand (`wave7.yml` family A). Coverage: docs/COVERAGE.md.
 
+## Every unit, national registers (`scripts/build_registers.py`, `registers/<cc>.json`)
+
+UK: DESNZ REPD (quarterly CSV, every renewable and storage project from 150 kW, operational to in
+planning; refused, withdrawn, expired left out) and DUKES 5.11 (major power producers) for the
+fuels REPD does not cover (gas, coal, nuclear, oil); OGL v3.0. Denmark: Energistyrelsen's master
+data of every wind turbine (monthly xlsx). Sweden: Vindbrukskollen, every turbine built, permitted
+or in planning (ArcGIS). Ireland: SEAI wind farms connected (June 2022, CC BY 4.0), at their node's
+coordinates. France: ODRÉ national register (Licence Ouverte), no positions: summed per region and
+group. Belgium: Elia ods179 contracted units (no positions). Finland: Energy Authority register.
+Computed: fuel groups, totals per status and group, WGS84 positions (OSGB, UTM 32, Irish Grid).
+Layers "UK: every project", "Denmark/Sweden: every wind turbine", "Ireland: wind farms" (Power
+plants), a register card in the Plants tab; lake `registers/<cc>`. Refresh by hand (`wave7.yml` B).
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

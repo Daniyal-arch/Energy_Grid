@@ -63,6 +63,10 @@ export type LayerId =
   | "flood"
   | "roadsRail"
   | "mastrDE"
+  | "regGB"
+  | "regDK"
+  | "regSE"
+  | "regIE"
   | "offshoreWind"
   | "wind"
   | "sun"
@@ -129,6 +133,10 @@ export const LAYERS: LayerInfo[] = [
   { id: "mastrDE", label: "Germany: every unit", desc: "MW per municipality of solar, wind or storage; units of 1 MW and more (Marktstammdatenregister)", group: "Power plants", coverage: "DE", color: "rgb(255,214,72)" },
   { id: "tyndp", label: "Planned grid projects", desc: "ENTSO-E TYNDP 2024: lines and storage by status", group: "Power grid", coverage: "Europe", color: "rgb(255,196,96)" },
   { id: "grw", label: "Wind and solar seen from space", desc: "Every turbine and solar array found in satellite images, 2024 Q2 (Global Renewables Watch)", group: "Power plants", coverage: "World", color: "rgb(255,214,72)" },
+  { id: "regGB", label: "UK: every project", desc: "Renewables and storage from 150 kW in planning or operating (REPD), gas, coal and nuclear stations (DUKES)", group: "Power plants", coverage: "GB", color: "rgb(255,214,72)" },
+  { id: "regDK", label: "Denmark: every wind turbine", desc: "On land and at sea, with capacity and model (Energistyrelsen)", group: "Power plants", coverage: "DK", color: "rgb(72,222,184)" },
+  { id: "regSE", label: "Sweden: every wind turbine", desc: "Built, permitted or in planning (Vindbrukskollen)", group: "Power plants", coverage: "SE", color: "rgb(72,222,184)" },
+  { id: "regIE", label: "Ireland: wind farms", desc: "Connected by June 2022, at their grid node (SEAI)", group: "Power plants", coverage: "IE", color: "rgb(72,222,184)" },
   { id: "offshoreWind", label: "Offshore wind farms", desc: "Areas at sea: operating, building, approved, planned (EMODnet)", group: "Power plants", coverage: "Europe", color: "rgb(96,190,255)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "solarUS", label: "US solar farms", desc: "Every array of 1 MW and more; outlines zoomed in (USPVDB)", group: "Power plants", coverage: "US", color: "rgb(255,214,72)" },
@@ -208,6 +216,10 @@ export const STATS_LAYERS = new Set<LayerId>([
   "hydrogen",
   "gasProjects",
   "mastrDE",
+  "regGB",
+  "regDK",
+  "regSE",
+  "regIE",
   "offshoreWind",
 ]);
 

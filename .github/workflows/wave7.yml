@@ -108,3 +108,21 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family A outputs"
+
+  B:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'B')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry pyproj openpyxl
+      - name: 2 every unit, national registers (GB, FR, DK, SE, IE, BE, FI)
+        continue-on-error: true
+        run: python scripts/build_registers.py all --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family B outputs"

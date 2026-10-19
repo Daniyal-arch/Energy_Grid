@@ -487,6 +487,20 @@ function LayerLegend({ id }: { id: LayerId }) {
       );
     case "mastrDE":
       return <MastrKey />;
+    case "regGB":
+    case "regDK":
+    case "regSE":
+    case "regIE":
+      return (
+        <>
+          <Swatches>
+            {["solar", "wind", "bio", "hydro", "storage", "gas", "nuclear"].map((g) => (
+              <Swatch key={g} color={rgbCss(FUEL_COLOR[g])} label={FUEL_LABEL[g]} kind="dot" />
+            ))}
+          </Swatches>
+          <Note>One dot per unit or project, sized by √MW; paler from operating to being built, permitted and in planning. The national register as published (see the card for its source).</Note>
+        </>
+      );
     case "offshoreWind":
       return <OffshoreKey />;
     case "grw":
