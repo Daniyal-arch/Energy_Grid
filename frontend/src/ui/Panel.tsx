@@ -25,6 +25,7 @@ import type { GasFlowsFile } from "../lib/gasFlows";
 import { IrenaCountryCard, IrenaRankingCard } from "../components/IrenaCards";
 import type { FinanceFile } from "../lib/finance";
 import { AggregateCard, RankingCard, type RankRow } from "../components/TransitionCards";
+import { AuctionsCard, CostsCard } from "../components/ComingCards";
 import type { IrenaFile } from "../lib/irena";
 import { AccessCard, BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard, WorldCountryCard } from "../components/WorldCards";
 import { UsCapacityCard, UsHubPricesCard, UsLiveQueuesCard, UsNodeSpreadCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
@@ -603,8 +604,13 @@ function CountryPrices({ iso }: { iso: string }) {
   if (!pf) return <Empty>Loading twelve months of prices…</Empty>;
   const zones = Object.keys(pf.zones).filter((z) => pf.zones[z].country === iso);
   const wholesale = zones.length === 1 ? { eur_mwh: pf.zones[zones[0]].mean, period: periodLabel(pf) } : undefined;
-  const consumers = retail ? <RetailCountryCard f={retail} iso={iso} wholesale={wholesale} /> : null;
-  if (!zones.length) return consumers ?? <Empty>No day-ahead price at ENTSO-E for this country.</Empty>;
+  const consumers = (
+    <>
+      {retail && <RetailCountryCard f={retail} iso={iso} wholesale={wholesale} />}
+      <AuctionsCard iso3={ISO3[iso] ?? iso} />
+    </>
+  );
+  if (!zones.length) return retail ? consumers : <Empty>No day-ahead price at ENTSO-E for this country.</Empty>;
   return (
     <>
       {consumers}
@@ -728,6 +734,7 @@ function WorldPanel() {
         irena ? (
           <>
             <IrenaRankingCard f={irena} year={yearLabel} names={names} onPick={(c) => actions.select({ kind: "country", iso3: c }, "capacity")} />
+            <CostsCard />
             <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === "Installed capacity")} />
           </>
         ) : (
@@ -876,7 +883,7 @@ function UsPanel() {
           <Empty>Loading EIA's generator inventory…</Empty>
         ),
     },
-    { id: "retail", label: "Retail prices", body: () => (retail ? <><UsRetailCard f={retail} />{sources}</> : <Empty>Loading EIA's retail prices…</Empty>) },
+    { id: "retail", label: "Retail prices", body: () => (retail ? <><UsRetailCard f={retail} /><CostsCard />{sources}</> : <Empty>Loading EIA's retail prices…</Empty>) },
     { id: "pipeline", label: "Additions & retirements", body: () => (plants ? <><UsPipelineCard f={plants} />{sources}</> : <Empty>Loading EIA's generator inventory…</Empty>) },
     {
       id: "queue",

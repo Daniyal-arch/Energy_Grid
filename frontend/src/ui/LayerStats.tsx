@@ -31,6 +31,7 @@ import { CT_COLOR, subsectorLabel, type CtraceFile } from "../lib/ctrace";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 import { BeConnectCard, FrConnectCard, IeConnectCard, ItConnectCard, PlConnectCard, PtConnectCard } from "../components/ConnectMoreCards";
 import { ProtectedCard } from "../components/ConstraintCards";
+import { GasProjectsCard, HydrogenCard } from "../components/ComingCards";
 import { OFFSHORE_LABEL, OFFSHORE_STYLE, offshoreStatus, type OffshoreWindFile } from "../lib/offshoreWind";
 import { solarCat, type UsSolarFile } from "../lib/usSolar";
 
@@ -911,6 +912,8 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "usOutages") return iso3 && iso3 !== "USA" ? null : <UsOutagesCard key={id} />;
         if (id === "water") return <WaterCard key={id} iso3={iso3} />;
         if (id === "protectedAreas") return <ProtectedCard key={id} iso3={iso3} />;
+        if (id === "hydrogen") return <HydrogenCard key={id} iso3={iso3} />;
+        if (id === "gasProjects") return <GasProjectsCard key={id} iso3={iso3} />;
         if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
         if (id === "offshoreWind") return <OffshoreWindCard key={id} iso3={iso3} />;
         if (id === "solarUS") return iso3 && iso3 !== "USA" ? null : <UsSolarCard key={id} />;

@@ -15,6 +15,7 @@ import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, ty
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 import { IT_CLASSES, IT_COLOR, ROOM_CLASSES } from "../lib/connectMore";
 import { SEA_CABLE_COLOR } from "../lib/seaCables";
+import { GAS_CAT_COLOR, H2_STAGE_COLOR } from "../lib/coming";
 import { PROTECTED_COLOR, RAIL_COLOR, ROAD_COLOR, floodLabel, type ConstraintsFile } from "../lib/constraints";
 import type { UsNodesFile } from "../lib/usNodes";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
@@ -242,6 +243,8 @@ function ConnectKey() {
   );
 }
 
+const GAS_LABEL: Record<string, string> = { TRA: "gas pipeline", LNG: "LNG", UGS: "gas storage", H2T: "H₂ pipeline", H2S: "H₂ storage", H2E: "electrolyser", H2L: "H₂ import" };
+
 function FloodKey() {
   const cf = useDataStore((d) => d.files.constraints as ConstraintsFile | undefined);
   return (
@@ -448,6 +451,28 @@ function LayerLegend({ id }: { id: LayerId }) {
       );
     case "flood":
       return <FloodKey />;
+    case "hydrogen":
+      return (
+        <>
+          <Swatches>
+            {Object.entries(H2_STAGE_COLOR).map(([k, c]) => (
+              <Swatch key={k} color={rgbCss(c)} label={k.toLowerCase()} />
+            ))}
+          </Swatches>
+          <Note>Sized by production capacity (MW as published). European Hydrogen Observatory.</Note>
+        </>
+      );
+    case "gasProjects":
+      return (
+        <>
+          <Swatches>
+            {(["TRA", "LNG", "UGS", "H2T", "H2S", "H2E", "H2L"] as const).map((k) => (
+              <Swatch key={k} color={rgbCss(GAS_CAT_COLOR[k])} kind="ring" label={GAS_LABEL[k]} />
+            ))}
+          </Swatches>
+          <Note>ENTSOG publishes no positions: one ring per country, sized by its number of projects, coloured by the most common kind. The panel lists them.</Note>
+        </>
+      );
     case "roadsRail":
       return (
         <>
