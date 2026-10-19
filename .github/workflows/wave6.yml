@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       groups:
-        description: "Groups to build (A B C D E F; K = roads and rail only)"
+        description: "Groups to build (A B C D E F; K = roads and rail only, P = protected areas only)"
         type: string
         default: "A B C D E F"
   push:
@@ -139,15 +139,6 @@ jobs:
           make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
           sudo mkdir -p "$WORK" && sudo chown "$USER" "$WORK"
           bash scripts/r2_creds.sh
-      - name: 11 protected areas (EEA Natura 2000, USGS PAD-US; ArcGIS services, paged)
-        continue-on-error: true
-        run: |
-          python scripts/build_constraints.py protected --upload
-          tippecanoe -o "$WORK/protected.pmtiles" -l protected -Z0 -z9 --no-feature-limit --no-tile-size-limit --simplification=4 \
-            --attribution='Natura 2000 © EEA; PAD-US (USGS)' --force /tmp/wave6/constraints/protected.geojsons
-          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
-            "$WORK/protected.pmtiles" s3://infraatlas-data/grid/protected.pmtiles --content-type application/vnd.pmtiles
-          ls -la "$WORK/protected.pmtiles"
       - name: 12 river flood hazard (JRC, Europe 171 MB and world 49 MB)
         continue-on-error: true
         run: |
@@ -168,6 +159,40 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 6 group C outputs"
+
+
+  C-protected:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C') || contains(needs.plan.outputs.groups, 'P')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      WORK: /mnt/wave6
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Tools (tippecanoe)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          pip install httpx duckdb pycountry
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+          sudo mkdir -p "$WORK" && sudo chown "$USER" "$WORK"
+          bash scripts/r2_creds.sh
+      - name: 11 protected areas (EEA Natura 2000, USGS PAD-US; ArcGIS services, paged)
+        continue-on-error: true
+        run: |
+          python scripts/build_constraints.py protected --upload
+          tippecanoe -o "$WORK/protected.pmtiles" -l protected -Z0 -z9 --no-feature-limit --no-tile-size-limit --simplification=4 \
+            --attribution='Natura 2000 © EEA; PAD-US (USGS)' --force /tmp/wave6/constraints/protected.geojsons
+          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
+            "$WORK/protected.pmtiles" s3://infraatlas-data/grid/protected.pmtiles --content-type application/vnd.pmtiles
+          ls -la "$WORK/protected.pmtiles"
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 protected areas"
 
   C-roads:
     needs: plan
