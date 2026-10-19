@@ -308,3 +308,29 @@ def test_ghg_rows() -> None:
         ["Total, excluding LULUCF", 649.77, "Mt CO2e", "2024"],
         ["Energy", 543.295, "Mt CO2e", "2024"],
     ]
+
+
+# ---------------------------------------------------------------- E. United States
+
+import build_us_reliability as ur  # noqa: E402
+
+
+def test_oe417_events() -> None:
+    rows = [("Major Disturbances and Unusual Occurrences, Year-to-Date 2024",), ("Month", "Date Event Began", "Time Event Began", "Date of Restoration", "Time of Restoration",
+            "Area Affected", "NERC Region", "Alert Criteria", "Event Type", "Demand Loss (MW)", "Number of Customers Affected"),
+            ("January", datetime(2024, 1, 9), "14:30", datetime(2024, 1, 10), "08:00", "Georgia: Fulton County; South Carolina;", "SERC", "Loss of electric service", "Severe Weather", 300, 120000),
+            ("January", datetime(2024, 1, 12), "01:00", None, None, "West Virginia:", "RF", "x", "Vandalism", "Unknown", None)]  # fmt: skip
+    ev = ur.oe417_events(rows)
+    assert (
+        ev[0]["began_date"] == "2024-01-09"
+        and ev[0]["states"] == ["SC", "GA"]
+        and ev[0]["mw"] == 300
+        and ev[0]["customers"] == 120000
+    )
+    assert ev[1]["states"] == ["WV"] and ev[1]["mw"] is None
+
+
+def test_ferc714_threshold() -> None:
+    # the newest year with demand from 80 planning areas or more (2025: 89; 2014 had 100+)
+    assert "WHERE n >= 80" in Path(ur.__file__).read_text(encoding="utf-8")
+    assert ur.states_in("Washington, DC; Maryland") == ["MD"]

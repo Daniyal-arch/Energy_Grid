@@ -235,3 +235,24 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 6 group D outputs"
+
+  E:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'E')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl xlrd
+      - name: 19 DOE OE-417 disturbance events (second try from Actions; httpx, then curl -4)
+        continue-on-error: true
+        run: python scripts/build_us_reliability.py oe417 --upload
+      - name: 20 FERC 714 planning-area demand (PUDL)
+        continue-on-error: true
+        run: python scripts/build_us_reliability.py ferc714
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group E outputs"

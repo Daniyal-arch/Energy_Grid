@@ -26,6 +26,7 @@ import { IrenaCountryCard, IrenaRankingCard } from "../components/IrenaCards";
 import type { FinanceFile } from "../lib/finance";
 import { AggregateCard, RankingCard, type RankRow } from "../components/TransitionCards";
 import { AuctionsCard, CostsCard } from "../components/ComingCards";
+import { Ferc714Card } from "../components/ReliabilityCards";
 import type { IrenaFile } from "../lib/irena";
 import { AccessCard, BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard, WorldCountryCard } from "../components/WorldCards";
 import { UsCapacityCard, UsHubPricesCard, UsLiveQueuesCard, UsNodeSpreadCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
@@ -1000,6 +1001,7 @@ function RegionPanel({ grid, id }: { grid: "us" | "br" | "au" | "tw" | "on"; id:
   const body = () => (
     <>
       {us && <UsCard us={us} />}
+      {grid === "us" && <Ferc714Card region={id} />}
       {br && <BrazilCard br={br} />}
       {au && <NemCard aemo={au} />}
       {tw && <TaiwanCard tw={tw} />}
