@@ -8,9 +8,10 @@ seds      EIA SEDS (API v2, EIA_API_KEY): per state consumption and production b
           year, billion Btu as published. API only.
 steo      EIA STEO (API v2): US electricity generation and residential price, monthly, the months
           from the release month on labelled "forecast". API only.
-ei        Energy Institute Statistical Review (consolidated panel, free with attribution): energy
-          by fuel, electricity and CO2 per country, newest year each, as published -> lake
-          `ei_review/panel` (every row and column). Its site answers scripts with a Cloudflare
+ei        Energy Institute Statistical Review (all-data workbook, free with attribution): energy
+          by fuel, electricity and CO2 per country, newest year each, as published; country names
+          matched to ISO3 (pycountry and a short alias list) -> lake `ei_review/series` (every
+          sheet's values, long). Its site answers scripts with a Cloudflare
           challenge: scripts/browser_fetch.py fetches the file with a browser and passes --file.
 edgar     EDGAR 2025 (JRC, CC BY 4.0), the GHG booklet: GHG per country and sector, Mt CO2e
           (GWP-100 AR5) -> lake `edgar/*`.
@@ -312,76 +313,111 @@ def edgar(args: argparse.Namespace) -> None:
     w.lake_done(lk, args.upload)
 
 
-# EI panel columns (name pattern, label, unit): the review's energy and emissions per country
-EI_ITEMS = [
-    (r"^primary_ej$", "Primary energy", "EJ"),
-    (r"^oilcons_ej$", "Oil consumption", "EJ"),
-    (r"^gascons_ej$", "Gas consumption", "EJ"),
-    (r"^coalcons_ej$", "Coal consumption", "EJ"),
-    (r"^nuclear_ej$", "Nuclear", "EJ"),
-    (r"^hydro_ej$", "Hydro", "EJ"),
-    (r"^ren_power_ej$", "Renewables in power", "EJ"),
-    (r"^elect_twh$", "Electricity generation", "TWh"),
-    (r"^co2_combust_mtco2$|^co2_mtco2$", "CO2 from energy", "Mt CO2"),
+# EI workbook sheets (name pattern, profile label): the report rows, values as published
+EI_SHEETS = [
+    (r"^Primary Energy Cons", "Primary energy"),
+    (r"^Oil Consumption - EJ", "Oil consumption"),
+    (r"^Gas Consumption - EJ", "Gas consumption"),
+    (r"^Coal Consumption - EJ", "Coal consumption"),
+    (r"^Nuclear Consumption - EJ", "Nuclear"),
+    (r"^Hydro Consumption - EJ", "Hydro"),
+    (r"^Renewables? (Energy )?Consumption", "Renewables"),
+    (r"^Electricity Generation", "Electricity generation"),
+    (r"^CO2 Emissions from Energy", "CO2 from energy"),
 ]
+# EI country names that pycountry does not find by name (regions and totals stay unmatched)
+EI_NAMES = {
+    "US": "USA", "Russian Federation": "RUS", "Iran": "IRN", "South Korea": "KOR",
+    "Vietnam": "VNM", "Venezuela": "VEN", "Trinidad & Tobago": "TTO", "Turkey": "TUR",
+    "Turkiye": "TUR", "Türkiye": "TUR", "Czech Republic": "CZE", "Taiwan": "TWN",
+    "China Hong Kong SAR": "HKG", "Bolivia": "BOL", "Syria": "SYR", "Laos": "LAO",
+    "Moldova": "MDA", "North Macedonia": "MKD", "Tanzania": "TZA", "Congo": "COG",
+    "Democratic Republic of Congo": "COD", "Brunei": "BRN", "Kosovo": "XKX",
+}  # fmt: skip
 
 
-def ei_rows(records: list[dict], cols: list[str]) -> tuple[dict[str, list], int | None]:
-    """Profile rows from the EI panel (one record per country and year): per ISO3, each item's
-    value in the newest year that has it, as published."""
-    iso = next((c for c in cols if re.search(r"iso3166_alpha3|^iso3?$", c, re.I)), None)
-    year = next((c for c in cols if c.lower() == "year"), None)
-    if not iso or not year:
-        raise SystemExit(f"EI panel: no ISO3 or year column in {cols[:20]}")
-    found = [
-        (next((c for c in cols if re.match(p, c, re.I)), None), lab, u) for p, lab, u in EI_ITEMS
-    ]
-    print(f"  EI columns used: {[(lab, c) for c, lab, _ in found]}", flush=True)
-    best: dict[tuple[str, str], tuple[int, float]] = {}
-    for r in records:
-        code = str(r.get(iso) or "").strip()
-        if not re.fullmatch(r"[A-Z]{3}", code):  # regions and totals carry no ISO3
+def ei_iso3(name: str) -> str | None:
+    import pycountry
+
+    n = re.sub(r"[#*\u00b9\u00b2\u00b3^\d]+$", "", str(name)).strip()
+    if n in EI_NAMES:
+        return EI_NAMES[n]
+    if re.search(
+        r"^Total|^Other|^of which|^Non-|^OECD|^European Union|^CIS|Africa$|America$|Asia$|Europe$|Middle East$|Pacific$",
+        n,
+    ):
+        return None
+    try:
+        return pycountry.countries.lookup(n).alpha_3
+    except LookupError:
+        return None
+
+
+def ei_sheet(rows: list[tuple]) -> tuple[str, list[tuple[str, int, float]]]:
+    """(unit, [(name, year, value)]) from one EI sheet: the header row is the first with 20 or
+    more year cells, its first cell names the unit; country names in the first column."""
+    head_i = next(
+        i for i, r in enumerate(rows)
+        if sum(1 for c in r if isinstance(c, int | float | str) and re.fullmatch(r"(19|20)\d\d", str(c).split(".")[0])) >= 20
+    )  # fmt: skip
+    head = rows[head_i]
+    years = {
+        j: int(str(c).split(".")[0])
+        for j, c in enumerate(head)
+        if c is not None and re.fullmatch(r"(19|20)\d\d(\.0)?", str(c))
+    }
+    unit = str(head[0] or "").strip()
+    out = []
+    for r in rows[head_i + 1 :]:
+        if not r or not isinstance(r[0], str) or not r[0].strip():
             continue
-        for col, lab, _ in found:
-            v = r.get(col) if col else None
-            if v in (None, "") or not str(r.get(year) or "").isdigit():
-                continue
-            y = int(r[year])
-            if (code, lab) not in best or y > best[(code, lab)][0]:
-                best[(code, lab)] = (y, float(v))
-    rows: dict[str, list] = {}
-    for _col, lab, unit in found:
-        for (code, item), (y, v) in sorted(best.items()):
-            if item == lab:
-                rows.setdefault(code, []).append([lab, round(v, 4), unit, f"{y}, as published"])
-    years = [y for y, _ in best.values()]
-    return rows, max(years) if years else None
+        for j, y in years.items():
+            v = r[j] if j < len(r) else None
+            if isinstance(v, int | float):
+                out.append((r[0].strip(), y, float(v)))
+    return unit, out
 
 
 def ei(args: argparse.Namespace) -> None:
-    """From the file scripts/browser_fetch.py fetched (the page answers scripts with a
+    """From the workbook scripts/browser_fetch.py fetched (the site answers scripts with a
     Cloudflare challenge): python scripts/build_profiles.py ei --file PATH [--upload]."""
     import duckdb
+    import openpyxl
 
     if not args.file:
         raise SystemExit("ei needs --file (scripts/browser_fetch.py ei fetches it)")
     src = Path(args.file)
-    con = duckdb.connect()
-    if src.suffix == ".csv":
-        con.execute(f"CREATE TABLE ei AS SELECT * FROM read_csv('{src}', sample_size = -1)")
-    else:
-        con.execute("INSTALL excel; LOAD excel")
-        con.execute(f"CREATE TABLE ei AS SELECT * FROM read_xlsx('{src}', all_varchar = true)")
-    cols = [c[0] for c in con.execute("DESCRIBE ei").fetchall()]
-    print(
-        f"  {src.name}: {con.execute('SELECT count(*) FROM ei').fetchone()[0]:,} rows; columns {cols[:40]}",
-        flush=True,
-    )  # type: ignore[index]
-    cur = con.execute("SELECT * FROM ei")
-    records = [dict(zip(cols, r, strict=True)) for r in cur.fetchall()]
-    rows, newest = ei_rows(records, cols)
+    wb = openpyxl.load_workbook(src, read_only=True, data_only=True)
+    print(f"  {src.name}: sheets {wb.sheetnames}", flush=True)
+    long: list[dict] = []
+    best: dict[tuple[str, str], tuple[int, float, str]] = {}
+    unmatched: set[str] = set()
+    for ws in wb.worksheets:
+        label = next((lab for pat, lab in EI_SHEETS if re.match(pat, ws.title.strip(), re.I)), None)
+        try:
+            unit, vals = ei_sheet(list(ws.iter_rows(values_only=True)))
+        except StopIteration:  # notes, contents, definitions: no year header
+            continue
+        for name, y, v in vals:
+            iso3 = ei_iso3(name)
+            long.append(
+                {"sheet": ws.title, "name": name, "iso3": iso3, "year": y, "value": v, "unit": unit}
+            )
+            if not iso3:
+                unmatched.add(name)
+            elif label and ((iso3, label) not in best or y > best[(iso3, label)][0]):
+                best[(iso3, label)] = (y, v, unit)
+        if label:
+            print(f"  {ws.title!r} -> {label}: unit {unit!r}, {len(vals):,} values", flush=True)
+    print(f"  names without ISO3 (regions, totals): {sorted(unmatched)[:80]}", flush=True)
+    rows: dict[str, list] = {}
+    for _pat, lab in EI_SHEETS:
+        for (iso3, item), (y, v, unit) in sorted(best.items()):
+            if item == lab:
+                rows.setdefault(iso3, []).append([lab, round(v, 4), unit, f"{y}, as published"])
     if not rows:
-        raise SystemExit("EI panel: no country rows parsed")
+        raise SystemExit("EI workbook: no country rows parsed")
+    newest = max(y for y, _, _ in best.values())
     write_profile(
         "ei_review",
         {
@@ -391,25 +427,28 @@ def ei(args: argparse.Namespace) -> None:
             "rows": rows,
         },
     )
-    print(f"  EI: {len(rows)} countries, newest year {newest}", flush=True)
+    print(f"  EI: {len(long):,} values, {len(rows)} countries, newest year {newest}", flush=True)
+    tmp = TMP / "ei_review.json"
+    tmp.parent.mkdir(parents=True, exist_ok=True)
+    tmp.write_text(json.dumps(long), encoding="utf-8")
+    con = duckdb.connect()
     import lake
 
     lake.iso_codes(con)
-    iso = next(c for c in cols if re.search(r"iso3166_alpha3|^iso3?$", c, re.I))
     lk = w.lake_for(
         "ei_review",
         args.lake,
-        "Energy Institute Statistical Review of World Energy, consolidated dataset",
+        "Energy Institute Statistical Review of World Energy, all data workbook",
         "free with attribution (Energy Institute)",
         "scripts/build_profiles.py",
         src.stem,
     )
     lk.write(
         con,
-        "panel",
-        f"""SELECT e.*, e."{iso}" AS iso3, i.iso2, NULL::VARCHAR AS admin1 FROM ei e
-            LEFT JOIN iso_codes i ON i.iso3 = e."{iso}" """,
-        sort=["iso3"],
+        "series",
+        f"""SELECT t.*, i.iso2, NULL::VARCHAR AS admin1 FROM read_json('{tmp}', maximum_object_size = 1000000000) t
+            LEFT JOIN iso_codes i ON i.iso3 = t.iso3""",
+        sort=["sheet", "iso3", "year"],
     )
     w.lake_done(lk, args.upload)
 

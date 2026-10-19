@@ -178,36 +178,17 @@ def test_ei_panel_and_browser_link() -> None:
         == "https://www.energyinst.org/__data/assets/file/0001/1/Statistical-Review-Panel-format.csv"
     )
     assert browser_fetch.find_link("<html>nothing</html>", pats, "https://x.org/") is None
-    cols = ["Country", "Year", "ISO3166_alpha3", "primary_ej", "elect_twh"]
-    recs = [
-        {
-            "Country": "Germany",
-            "Year": 2023,
-            "ISO3166_alpha3": "DEU",
-            "primary_ej": 11.9,
-            "elect_twh": 515.0,
-        },
-        {
-            "Country": "Germany",
-            "Year": 2024,
-            "ISO3166_alpha3": "DEU",
-            "primary_ej": 11.6,
-            "elect_twh": None,
-        },
-        {
-            "Country": "Total World",
-            "Year": 2024,
-            "ISO3166_alpha3": None,
-            "primary_ej": 592.0,
-            "elect_twh": 31000.0,
-        },
+    rows = [
+        ("Primary energy consumption", None, None, None),
+        ("Exajoules", *range(2000, 2025), "2024 growth"),
+        ("Germany", *[float(i) for i in range(25)], 0.01),
+        ("US", *[None] * 24, 94.0, None),
+        (None,),
     ]
-    rows, newest = build_profiles.ei_rows(recs, cols)
-    assert newest == 2024 and list(rows) == ["DEU"]
-    assert rows["DEU"] == [
-        ["Primary energy", 11.6, "EJ", "2024, as published"],
-        ["Electricity generation", 515.0, "TWh", "2023, as published"],
-    ]
+    unit, vals = build_profiles.ei_sheet(rows)
+    assert unit == "Exajoules" and len(vals) == 26 and vals[-1] == ("US", 2024, 94.0)
+    assert build_profiles.ei_iso3("US") == "USA" and build_profiles.ei_iso3("Germany") == "DEU"
+    assert build_profiles.ei_iso3("Total Europe") is None
 
 
 def test_markets() -> None:

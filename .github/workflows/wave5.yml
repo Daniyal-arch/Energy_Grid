@@ -203,9 +203,14 @@ jobs:
       - name: 15 EIA STEO
         continue-on-error: true
         run: python scripts/build_profiles.py steo
-      - name: 16 Energy Institute review
+      - name: Chromium for the Energy Institute review
         continue-on-error: true
-        run: python scripts/build_profiles.py ei --upload
+        run: |
+          pip install playwright && python -m playwright install --with-deps chromium
+          bash scripts/r2_creds.sh
+      - name: 16 Energy Institute review (fetched with a browser; refreshed by browser-fetch.yml)
+        continue-on-error: true
+        run: xvfb-run -a python scripts/browser_fetch.py ei --force
       - name: 17 EDGAR
         continue-on-error: true
         run: python scripts/build_profiles.py edgar --upload

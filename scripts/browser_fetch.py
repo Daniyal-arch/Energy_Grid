@@ -109,6 +109,10 @@ def browser_fetch(name: str, src: dict) -> tuple[Path, str]:
                 continue
             title = page.title()
             link = find_link(page.content(), src["links"], url)
+            files = sorted(
+                set(re.findall(r"""["']([^"'\s]+\.(?:xlsx|csv|zip))["']""", page.content()))
+            )
+            print(f"  data links on the page: {files[:20]}", flush=True)
             print(f"  {url}: title {title!r}; file link {link}", flush=True)
             if not link:
                 errors.append(f"{url}: no file link (title {title!r})")
