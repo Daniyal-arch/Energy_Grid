@@ -191,7 +191,7 @@ jobs:
           tippecanoe -o /tmp/wave6/roads-rail.pmtiles -Z4 -z9 --no-feature-limit --no-tile-size-limit --simplification=4 \
             --attribution='© OpenStreetMap contributors (ODbL), via Overture Maps' --force /tmp/wave6/constraints/roads.geojsons
           ls -la /tmp/wave6/roads-rail.pmtiles
-      - name: Upload grid/roads-rail.pmtiles (R2 credentials only now: DuckDB would send them to Overture's bucket)
+      - name: "Upload grid/roads-rail.pmtiles (R2 credentials only now, DuckDB would send them to Overture's bucket)"
         run: |
           bash scripts/r2_creds.sh
       - run: |
