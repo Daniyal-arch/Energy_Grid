@@ -491,6 +491,7 @@ function LayerLegend({ id }: { id: LayerId }) {
     case "regDK":
     case "regSE":
     case "regIE":
+    case "regPT":
       return (
         <>
           <Swatches>

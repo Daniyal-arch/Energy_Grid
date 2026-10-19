@@ -1,7 +1,7 @@
 """Every generating unit from the national registers (brief 22, family 2), beside MaStR (DE) and
 EIA-860M (US).
 
-    python scripts/build_registers.py gb|fr|dk|se|ie|be|fi|all [--lake lake-out] [--upload]
+    python scripts/build_registers.py gb|fr|dk|se|ie|be|fi|pt|cz|all [--lake lake-out] [--upload]
 
 gb  DESNZ Renewable Energy Planning Database (REPD, quarterly CSV: every renewable and storage
     project from 150 kW with its planning status) and DUKES 5.11 (major power producers'
@@ -18,6 +18,8 @@ ie  SEAI, wind farms connected (June 2022, from EirGrid and ESB Networks reports
 be  Elia open data ods179: the contracted technical units (transmission), Pmax and fuel; no
     positions.
 fi  Energy Authority (Energiavirasto) power plant register (xlsx).
+pt  DGEG, power plants licensed or being licensed: wind, solar, thermal, hydro (ArcGIS, CC BY 4.0).
+cz  ERÚ, every licensed generation plant (monthly XML, TEZ group 11); no positions.
 
 Each writes frontend/public/data/eu/registers/<cc>.json (points [name, lon, lat, group, MW,
 status, year] and/or a table, totals by group and status, computed) and a lake table
@@ -40,12 +42,12 @@ OUT = w.EU / "registers"
 SCRIPT = "scripts/build_registers.py"
 # the map's colour groups (the app's FUEL_COLOR keys where they exist)
 GROUPS = [
-    (r"offshore", "wind_offshore"), (r"wind|vind|éolien|eolien", "wind"),
-    (r"solar|photovolta|pv\b|sol\b", "solar"), (r"batter|storage|stockage|lagring", "storage"),
-    (r"pumped|pompage", "storage"), (r"hydro|water|hydraul|tidal|wave|marine|vattenkraft", "hydro"),
-    (r"nuclear|nucléaire|nucleaire", "nuclear"), (r"coal|charbon|lignite", "coal"),
-    (r"bio|landfill|sewage|anaerobic|waste|efw|déchets|dechets|wood|bois", "bio"),
-    (r"gas|ccgt|ocgt|gaz|chp", "gas"), (r"oil|diesel|fioul|pétrole|petrole", "oil"),
+    (r"offshore", "wind_offshore"), (r"wind|vind|éolien|eolien|větrn", "wind"),
+    (r"solar|photovolta|pv\b|sol\b|solár|sluneční", "solar"), (r"batter|storage|stockage|lagring|akumul", "storage"),
+    (r"pumped|pompage|přečerpávací", "storage"), (r"hydro|water|hydraul|tidal|wave|marine|vattenkraft|vodní", "hydro"),
+    (r"nuclear|nucléaire|nucleaire|jadern", "nuclear"), (r"coal|charbon|lignite|uhlí", "coal"),
+    (r"bio|landfill|sewage|anaerobic|waste|efw|déchets|dechets|wood|bois|skládkov|kalov|dřevoplyn", "bio"),
+    (r"gas|ccgt|ocgt|gaz|chp|plyn", "gas"), (r"oil|diesel|fioul|pétrole|petrole|olej|kapaln|propan", "oil"),
 ]  # fmt: skip
 STATUS = ["operating", "construction", "permitted", "planning"]
 
@@ -70,10 +72,10 @@ def totals(points: list[list]) -> dict[str, dict[str, list[float]]]:
 
 def write(cc: str, *, source: str, url: str, licence: str, note: str, points: list[list], rows: list[dict],
           args: argparse.Namespace, table: list | None = None, table_columns: list | None = None,
-          updated: str | None = None, sum_note: str = "") -> None:  # fmt: skip
+          updated: str | None = None, sum_note: str = "", unit: str = "MW") -> None:  # fmt: skip
     data = {
         "fetched": w.now(), "cc": cc, "source": source, "url": url, "licence": licence, "updated": updated,
-        "note": note, "sum_note": sum_note or "units and MW summed over the register's rows (computed)",
+        "note": note, "unit": unit, "sum_note": sum_note or "units and MW summed over the register's rows (computed)",
         "totals": totals(points), "points": points, "table_columns": table_columns or [], "table": table or [],
     }  # fmt: skip
     w.write_json(OUT / f"{cc.lower()}.json", data)
@@ -169,7 +171,11 @@ def build_gb(args: argparse.Namespace) -> None:
     path = w7.TMP / "dukes_5_11.xlsx"
     path.write_bytes(w7.get(dukes_url).content)
     # DUKES lists renewables REPD already holds: only the fuels REPD does not cover are taken from it
-    rows += [r for r in dukes_points(path, tr) if r["group"] in ("gas", "coal", "nuclear", "oil", "other")]
+    rows += [
+        r
+        for r in dukes_points(path, tr)
+        if r["group"] in ("gas", "coal", "nuclear", "oil", "other")
+    ]
     pts = [
         [r["name"], r["lon"], r["lat"], r["group"], r["mw"], r["status"], r["year"], r["register"]]
         for r in rows
@@ -420,6 +426,125 @@ def build_fi(args: argparse.Namespace) -> None:
           table_columns=["Plant", "Group", "Type", "MW"], table=table, note="Every power plant in the Energy Authority's register; no positions published.")  # fmt: skip
 
 
+# ---------------------------------------------------------------- Portugal (DGEG)
+
+DGEG = "https://servergeo.dgeg.gov.pt/arcgis/rest/services/Visualizadores"
+DGEG_LAYERS = {"CE": "wind", "CS": "solar", "CT": "bio", "CH": "hydro"}
+
+
+def dgeg_rows(code: str, feats: list[dict]) -> list[dict]:
+    """One row per park (and sub-park): the layers have one polygon per block (a turbine or a
+    field), so blocks are merged (first block's values, centroid of all). Wind: capacity = the
+    blocks' generator kW summed (the park kVA field repeats or disagrees); other layers: the park's
+    installed kVA."""
+    parks: dict[tuple, dict] = {}
+    for f in feats:
+        key = (
+            (f.get("processo"), f.get("subparque"))
+            if code == "CE"
+            else (f.get("processo"), f.get("subparque"), f.get("potencia_instaladakva"))
+        )
+        polys = f.get("_polys") or []
+        xs = [c for poly in polys for ring in poly[:1] for c in ring[0::2]]
+        ys = [c for poly in polys for ring in poly[:1] for c in ring[1::2]]
+        if not xs:
+            continue
+        p = parks.setdefault(key, {"xs": [], "ys": [], "f": f, "kw": 0.0})
+        p["kw"] += w7.number(f.get("potencia_geradorkw")) or 0
+        p["xs"] += xs
+        p["ys"] += ys
+    out = []
+    for p in parks.values():
+        f = p["f"]
+        kva = w7.number(f.get("potencia_instaladakva"))
+        if (
+            code == "CE"
+        ):  # wind: the blocks' generator kW summed (the park's kVA field is not consistent)
+            kva = p["kw"]
+        operating = bool(f.get("lic_exploracao"))
+        out.append({"id": f.get("inspireid"), "name": " / ".join(x for x in (f.get("nome"), f.get("subparque")) if x), "owner": f.get("proprietario"),
+                    "type": code, "subtype": f.get("subtipo_instalacao"), "group": DGEG_LAYERS[code] if code != "CT" else group_of(f.get("subtipo_instalacao")),
+                    "mw": round(kva / 1000, 3) if kva is not None else None, "status": "operating" if operating else "permitted",
+                    "licence_operation": f.get("lic_exploracao"), "licence_production": f.get("lic_producao"), "municipality": f.get("concelho"), "district": f.get("distrito"),
+                    "lon": round(sum(p["xs"]) / len(p["xs"]), 5), "lat": round(sum(p["ys"]) / len(p["ys"]), 5)})  # fmt: skip
+    return out
+
+
+def build_pt(args: argparse.Namespace) -> None:
+    rows = []
+    for code in DGEG_LAYERS:
+        rows += dgeg_rows(code, w7.arcgis(f"{DGEG}/{code}/FeatureServer/0"))
+    pts = [
+        [r["name"], r["lon"], r["lat"], r["group"], r["mw"], r["status"], None, "DGEG"]
+        for r in rows
+    ]
+    write("PT", source="DGEG, power plants licensed or being licensed (wind, solar, thermal, hydro)", url="https://dados.gov.pt/pt/datasets/?organization=dgeg",
+          licence="CC BY 4.0 (dados.gov.pt, High Value Dataset)", points=pts, rows=rows, args=args,
+          note="Mainland Portugal's power plants in DGEG's licensing (production licence, and operation licence when operating), placed at the centre of their area; wind: the turbines' generator kW summed per park (computed), others: installed kVA as published, shown as MVA.",
+          unit="MVA", sum_note="parks summed per status and group (computed); capacity in MVA (installed kVA / 1000)")  # fmt: skip
+
+
+# ---------------------------------------------------------------- Czechia (ERÚ)
+
+ERU_PAGE = "https://data.gov.cz/datová-sada?iri=https%3A%2F%2Fdata.gov.cz%2Fzdroj%2Fdatové-sady%2F70894451%2F1713221853"
+ERU_XML = "https://eru.gov.cz/sites/default/files/obsah/prilohy/tez-sk-11-{date}.xml"
+
+
+def eru_rows(path: Path) -> list[dict]:
+    """One row per licensed generating plant (PremiseElec) of the active licence versions: MW
+    summed over its sources as published (OutputElec, MW)."""
+    import xml.etree.ElementTree as ET
+
+    out = []
+    for _, lic in ET.iterparse(path, events=("end",)):
+        if lic.tag != "LicTable":
+            continue
+        if (lic.findtext("VersionStatusDes") or "").startswith("Aktivní"):
+            for pr in lic.iter("PremiseElec"):
+                outs = pr.findall("PremiseElecOutputsGroup/PremiseElecOutput")
+                mw = sum(w7.number(o.findtext("OutputElec")) or 0 for o in outs)
+                fuels = sorted({o.findtext("FuelTypeDes") or "" for o in outs} - {""})
+                kind = pr.findtext("TechnicalData/ElecPremiseTypeDes")
+                out.append({"licence": lic.findtext("LicId"), "id": pr.findtext("PremiseElecId"), "name": pr.findtext("Name"), "type": kind,
+                            "fuels": ", ".join(fuels), "group": group_of(kind, " ".join(fuels)), "mw": round(mw, 5), "sources": len(outs),
+                            "city": pr.findtext("City"), "district": pr.findtext("County"), "region": pr.findtext("State"), "since": pr.findtext("DateBegin")})  # fmt: skip
+        lic.clear()
+    return out
+
+
+def build_cz(args: argparse.Namespace) -> None:
+    from datetime import date, timedelta
+
+    w7.TMP.mkdir(parents=True, exist_ok=True)
+    path = w7.TMP / "cz_tez.xml"
+    day, url = date.today(), None
+    for _ in range(62):  # the newest monthly file (published on the 1st)
+        candidate = ERU_XML.format(date=day.replace(day=1).isoformat())
+        try:
+            path.write_bytes(w7.get(candidate, tries=1, timeout=300).content)
+            url = candidate
+            break
+        except SystemExit:
+            day = day.replace(day=1) - timedelta(days=1)
+    if not url:
+        raise SystemExit("ERÚ: no monthly file found")
+    rows = eru_rows(path)
+    by: dict[tuple, list[float]] = defaultdict(lambda: [0, 0.0])
+    for r in rows:
+        t = by[(r["region"] or "–", r["group"])]
+        t[0] += 1
+        t[1] += r["mw"] or 0
+    table = [
+        [reg, g, int(n), round(mw, 1)]
+        for (reg, g), (n, mw) in sorted(by.items(), key=lambda kv: -kv[1][1])
+    ]
+    write("CZ", source="ERÚ (Energy Regulatory Office), licensed electricity generation plants (TEZ group 11)", url=url,
+          licence="Czech open data (data.gov.cz), reuse with the source named", points=[], rows=rows, args=args, updated=url.rsplit("-11-", 1)[-1][:10],
+          table_columns=["Region", "Group", "Plants", "MW"], table=table,
+          note="Every plant under an active generation licence, with its sources' electrical output as published; no positions (municipality and cadastre only), so no map points. Plants under 50 kW without a licence are not in it.",
+          sum_note="plants and MW summed per region and group (computed)")  # fmt: skip
+
+
 BUILDERS = {
     "gb": build_gb,
     "fr": build_fr,
@@ -428,6 +553,8 @@ BUILDERS = {
     "ie": build_ie,
     "be": build_be,
     "fi": build_fi,
+    "pt": build_pt,
+    "cz": build_cz,
 }
 
 

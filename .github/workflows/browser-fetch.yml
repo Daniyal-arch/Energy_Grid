@@ -44,7 +44,7 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies and Chromium
         run: |
-          pip install playwright httpx duckdb pycountry openpyxl gridstatus
+          pip install playwright httpx duckdb pycountry openpyxl
           python -m playwright install --with-deps chromium
           bash scripts/r2_creds.sh
       - name: Fetch, keep in R2, build what changed

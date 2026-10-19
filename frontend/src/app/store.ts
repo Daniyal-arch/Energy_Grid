@@ -67,6 +67,7 @@ export type LayerId =
   | "regDK"
   | "regSE"
   | "regIE"
+  | "regPT"
   | "offshoreWind"
   | "wind"
   | "sun"
@@ -137,6 +138,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "regDK", label: "Denmark: every wind turbine", desc: "On land and at sea, with capacity and model (Energistyrelsen)", group: "Power plants", coverage: "DK", color: "rgb(72,222,184)" },
   { id: "regSE", label: "Sweden: every wind turbine", desc: "Built, permitted or in planning (Vindbrukskollen)", group: "Power plants", coverage: "SE", color: "rgb(72,222,184)" },
   { id: "regIE", label: "Ireland: wind farms", desc: "Connected by June 2022, at their grid node (SEAI)", group: "Power plants", coverage: "IE", color: "rgb(72,222,184)" },
+  { id: "regPT", label: "Portugal: licensed plants", desc: "Wind, solar, thermal and small hydro in DGEG's licensing", group: "Power plants", coverage: "PT", color: "rgb(255,214,72)" },
   { id: "offshoreWind", label: "Offshore wind farms", desc: "Areas at sea: operating, building, approved, planned (EMODnet)", group: "Power plants", coverage: "Europe", color: "rgb(96,190,255)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "solarUS", label: "US solar farms", desc: "Every array of 1 MW and more; outlines zoomed in (USPVDB)", group: "Power plants", coverage: "US", color: "rgb(255,214,72)" },
@@ -220,6 +222,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "regDK",
   "regSE",
   "regIE",
+  "regPT",
   "offshoreWind",
 ]);
 

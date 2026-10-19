@@ -1,11 +1,11 @@
 // Every generating unit from the national registers (scripts/build_registers.py): GB (REPD and
-// DUKES), Denmark and Sweden (every wind turbine), Ireland (wind farms), with positions; France,
-// Belgium and Finland as tables (no positions published).
+// DUKES), Denmark and Sweden (every wind turbine), Ireland (wind farms), Portugal (DGEG's licensed
+// plants), with positions; France, Czechia, Belgium and Finland as tables (no positions published).
 
-export const REGISTER_LAYERS = { regGB: "GB", regDK: "DK", regSE: "SE", regIE: "IE" } as const;
+export const REGISTER_LAYERS = { regGB: "GB", regDK: "DK", regSE: "SE", regIE: "IE", regPT: "PT" } as const;
 export type RegisterLayer = keyof typeof REGISTER_LAYERS;
 /** every country with a register file, positions or not */
-export const REGISTERS = ["GB", "FR", "DK", "SE", "IE", "BE", "FI"] as const;
+export const REGISTERS = ["GB", "FR", "DK", "SE", "IE", "BE", "FI", "PT", "CZ"] as const;
 export const registerKey = (cc: string) => `register${cc}`;
 
 /** [name, lon, lat, group, MW, status, year, register] */
@@ -19,6 +19,8 @@ export interface RegisterFile {
   updated: string | null;
   note: string;
   sum_note: string;
+  /** MW, or MVA where the register gives apparent power (Portugal) */
+  unit?: string;
   /** {status: {group: [units, MW]}} (computed) */
   totals: Record<string, Record<string, [number, number]>>;
   points: RegisterPoint[];

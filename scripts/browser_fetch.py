@@ -58,13 +58,6 @@ SOURCES: dict[str, dict] = {
         "refresh": "yearly (the review appears in June); checked monthly",
         "build": "python scripts/build_profiles.py ei --file {file} --upload",
     },
-    "nyiso_queue": {
-        "title": "NYISO interconnection queue (xlsx)",
-        "pages": ["https://www.nyiso.com/interconnections"],
-        "links": [r"[^\"'\s>]*NYISO-Interconnection-Queue[^\"'\s>]*\.xlsx"],
-        "refresh": "monthly (NYISO updates the file monthly)",
-        "build": "python scripts/fetch_us_queues.py --nyiso-file {file} --lake lake-out --upload",
-    },
     "elia_capacity": {
         "title": "Elia, capacity of the grid for new decentralised generation (brief 21, dataset 3)",
         "pages": [

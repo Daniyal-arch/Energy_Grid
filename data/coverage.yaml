@@ -270,25 +270,69 @@ families:
     shows: national registers of generating units (layer per country under Power plants)
     cells:
       AT:
-        status: todo
+        status: not_published
+        url: https://www.data.gv.at
+        note: no national plant list (E-Control publishes none); data.europa.eu finds operators' and Vorarlberg's layers only; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=at)
+        checked: '2026-10-19'
       BE:
-        status: todo
+        status: built
+        partial: true
+        source: Elia open data ods179, contracted technical units
+        url: https://opendata.elia.be/explore/dataset/ods179/
+        licence: Elia open data terms
+        dataset: eu/registers/be.json (card), lake registers/be
+        note: the large units under contract with Elia, no positions; no register of every unit as data
+        checked: '2026-10-19'
       BG:
-        status: todo
+        status: not_published
+        url: https://data.egov.bg
+        note: no unit register on the open data portal (data.europa.eu search 2026-10-19); searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=bg)
+        checked: '2026-10-19'
       HR:
-        status: todo
+        status: not_published
+        url: https://www.hrote.hr
+        note: HROTE's OIEKPP register is not published as a dataset; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=hr)
+        checked: '2026-10-19'
       CY:
-        status: todo
+        status: not_published
+        url: https://www.data.gov.cy
+        note: only power station locations on a topographic map; no register with capacity; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=cy)
+        checked: '2026-10-19'
       CZ:
-        status: todo
+        status: built
+        source: ERÚ, licensed generation plants (TEZ group 11, monthly XML)
+        url: https://eru.gov.cz/sites/default/files/obsah/prilohy/tez-sk-11-2026-10-01.xml
+        licence: Czech open data (data.gov.cz)
+        dataset: eu/registers/cz.json (card, no positions), lake registers/cz
+        note: every plant under an active licence; municipality and cadastre only, no positions
+        checked: '2026-10-19'
       DK:
-        status: todo
+        status: built
+        partial: true
+        source: Energistyrelsen, master data of wind turbines
+        url: https://ens.dk/analyser-og-statistik/data-oversigt-over-energisektoren
+        licence: free reuse with the source named
+        dataset: 'eu/registers/dk.json (layer Denmark: every wind turbine), lake registers/dk'
+        note: every wind turbine; other technologies have no unit register published as data
+        checked: '2026-10-19'
       EE:
-        status: todo
+        status: not_published
+        url: https://andmed.stat.ee/et/stat/KE032
+        note: statistics of capacity only (Statistikaamet); no unit register as data; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=ee)
+        checked: '2026-10-19'
       FI:
-        status: todo
+        status: not_published
+        url: https://energiavirasto.fi/voimalaitosrekisteri
+        note: the Energy Authority's power plant register page answers scripts with HTTP 403 (session and Actions); no other open copy found
+        checked: '2026-10-19'
       FR:
-        status: todo
+        status: built
+        source: ODRÉ, Registre national des installations de production et de stockage
+        url: https://odre.opendatasoft.com/explore/dataset/registre-national-installation-production-stockage-electricite-agrege/
+        licence: Licence Ouverte v2.0
+        dataset: eu/registers/fr.json (card, no positions), lake registers/fr
+        note: every installation (under 36 kW grouped per commune by the source); no positions published, so a card per region and sector, no map points
+        checked: '2026-10-19'
       DE:
         status: have
         source: Marktstammdatenregister (BNetzA)
@@ -297,39 +341,104 @@ families:
         dataset: eu/mastr/*, lake mastr/*
         checked: '2026-10-15'
       GR:
-        status: todo
+        status: not_published
+        url: https://www.rae.gr
+        note: RAAEY's licence map is not published as a dataset; data.europa.eu finds none; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=gr)
+        checked: '2026-10-19'
       HU:
-        status: todo
+        status: not_published
+        url: https://www.mekh.hu
+        note: MEKH publishes aggregated system data; no unit register as data; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=hu)
+        checked: '2026-10-19'
       IE:
-        status: todo
+        status: built
+        partial: true
+        source: SEAI, wind farms in Ireland (June 2022)
+        url: https://data.gov.ie/dataset/wind-farms-in-ireland
+        licence: CC BY 4.0
+        dataset: 'eu/registers/ie.json (layer Ireland: wind farms), lake registers/ie'
+        note: wind farms connected by June 2022 at their node; EirGrid's newer lists are PDFs (https://cms.eirgrid.ie/sites/default/files/publications/TSO-Connected-Renewable-Generation.pdf)
+        checked: '2026-10-19'
       IT:
-        status: todo
+        status: not_published
+        url: https://dati.terna.it
+        note: Terna's GAUDÌ register and GSE's Atlaimpianti have no bulk download; data.europa.eu finds regional layers only
+        checked: '2026-10-19'
       LV:
-        status: todo
+        status: not_published
+        url: https://data.gov.lv
+        note: no unit register on the open data portal; the ETS installation list covers combustion only; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=lv)
+        checked: '2026-10-19'
       LT:
-        status: todo
+        status: not_published
+        url: https://data.gov.lt
+        note: production permits are not published with capacity as data; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=lt)
+        checked: '2026-10-19'
       LU:
-        status: todo
+        status: not_published
+        url: https://data.public.lu
+        note: only capacity totals per technology; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=lu)
+        checked: '2026-10-19'
       MT:
-        status: todo
+        status: not_published
+        url: https://data.gov.mt
+        note: no unit register as data; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=mt)
+        checked: '2026-10-19'
       NL:
-        status: todo
+        status: not_published
+        url: https://data.overheid.nl/dataset/16611-hernieuwbare-energie--zonnestroom--windenergie--res-regio
+        note: only aggregates (CBS per region); the grid operators' production-installation register (PIR) is not open
+        checked: '2026-10-19'
       PL:
-        status: todo
+        status: not_published
+        url: https://www.ure.gov.pl
+        note: URE publishes reports (PDF) and a 2018 list per county; no current unit register as data
+        checked: '2026-10-19'
       PT:
-        status: todo
+        status: built
+        source: DGEG, power plants licensed or being licensed
+        url: https://dados.gov.pt/pt/datasets/?organization=dgeg
+        licence: CC BY 4.0 (High Value Dataset)
+        dataset: 'eu/registers/pt.json (layer Portugal: licensed plants), lake registers/pt'
+        note: wind, solar, thermal and small hydro of mainland Portugal in DGEG's licensing; capacity in MVA
+        checked: '2026-10-19'
       RO:
-        status: todo
+        status: not_published
+        url: https://www.anre.ro
+        note: ANRE's licence lists are web tables of companies, not units with capacity; data.gov.ro holds LCP data only; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=ro)
+        checked: '2026-10-19'
       SK:
-        status: todo
+        status: not_published
+        url: https://data.gov.sk
+        note: an old atlas layer of large plants only; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=sk)
+        checked: '2026-10-19'
       SI:
-        status: todo
+        status: not_published
+        url: https://podatki.gov.si
+        note: statistics of power-plant capacity only; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=si)
+        checked: '2026-10-19'
       ES:
-        status: todo
+        status: not_published
+        url: https://www.miteco.gob.es/es/energia/energia-electrica/electricidad/energias-renovables.html
+        note: RAIPEE (MITECO and the regions) is not published as a dataset
+        checked: '2026-10-19'
       SE:
-        status: todo
+        status: built
+        partial: true
+        source: Vindbrukskollen (Länsstyrelserna, Energimyndigheten)
+        url: https://vbk.lansstyrelsen.se/
+        licence: public geodata, reuse with the source named
+        dataset: 'eu/registers/se.json (layer Sweden: every wind turbine), lake registers/se'
+        note: 'every wind turbine built, permitted or in planning; other technologies: no register as data'
+        checked: '2026-10-19'
       GB:
-        status: todo
+        status: built
+        source: DESNZ REPD (quarterly) and DUKES 5.11
+        url: https://www.gov.uk/government/publications/renewable-energy-planning-database-quarterly-extract
+        licence: Open Government Licence v3.0
+        dataset: 'eu/registers/gb.json (layer UK: every project), lake registers/gb'
+        note: renewables and storage from 150 kW (operating to in planning) and the major producers' gas, coal, nuclear and oil stations
+        checked: '2026-10-19'
       US:
         status: have
         source: EIA-860M, USWTDB, USPVDB

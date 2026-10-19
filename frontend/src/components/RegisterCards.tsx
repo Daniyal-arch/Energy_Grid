@@ -15,6 +15,7 @@ export function RegisterCard({ cc }: { cc: string }) {
   const f = useFile<RegisterFile>(registerKey(cc));
   if (!f) return null;
   const statuses = Object.keys(STATUS_LABEL).filter((s) => f.totals[s]);
+  const amount = (v: number) => (f.unit === "MVA" ? power(v).replace(/W$/, "VA") : power(v));
   return (
     <Card title="Every unit (national register)" note={`${f.source.split(",")[0]}${f.updated ? ` · ${f.updated}` : ""}`} accent={[255, 214, 72]}>
       {statuses.map((s) => {
@@ -29,7 +30,7 @@ export function RegisterCard({ cc }: { cc: string }) {
                   {label(g)}
                 </span>
                 <span>
-                  {power(mw)} <span className={muted}>· {n.toLocaleString("en-US")}</span>
+                  {amount(mw)} <span className={muted}>· {n.toLocaleString("en-US")}</span>
                 </span>
               </div>
             ))}

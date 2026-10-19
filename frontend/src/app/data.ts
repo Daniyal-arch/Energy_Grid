@@ -157,6 +157,8 @@ const STATIC: Record<string, Loader> = {
   registerIE: bundled("registers/ie.json"),
   registerBE: bundled("registers/be.json"),
   registerFI: bundled("registers/fi.json"),
+  registerPT: bundled("registers/pt.json"),
+  registerCZ: bundled("registers/cz.json"),
   // room to connect in ten more countries (scripts/build_connect_eu.py)
   connect7AT: bundled("connect/at.json"),
   connect7BG: bundled("connect/bg.json"),

@@ -472,7 +472,10 @@ fuels REPD does not cover (gas, coal, nuclear, oil); OGL v3.0. Denmark: Energist
 data of every wind turbine (monthly xlsx). Sweden: Vindbrukskollen, every turbine built, permitted
 or in planning (ArcGIS). Ireland: SEAI wind farms connected (June 2022, CC BY 4.0), at their node's
 coordinates. France: ODRÉ national register (Licence Ouverte), no positions: summed per region and
-group. Belgium: Elia ods179 contracted units (no positions). Finland: Energy Authority register.
+group. Belgium: Elia ods179 contracted units (no positions). Portugal: DGEG's licensed plants (wind,
+solar, thermal, small hydro; ArcGIS, CC BY 4.0; wind = the turbines' generator kW summed per park,
+others installed kVA, shown as MVA). Czechia: ERÚ's licensed plants (monthly XML), no positions.
+Finland's register page answers scripts with 403 (not built).
 Computed: fuel groups, totals per status and group, WGS84 positions (OSGB, UTM 32, Irish Grid).
 Layers "UK: every project", "Denmark/Sweden: every wind turbine", "Ireland: wind farms" (Power
 plants), a register card in the Plants tab; lake `registers/<cc>`. Refresh by hand (`wave7.yml` B).

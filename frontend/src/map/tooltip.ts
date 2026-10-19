@@ -374,7 +374,7 @@ function tooltipHtml(id: string, object: unknown): string | null {
   if (id.startsWith("reg:")) {
     const p = object as RegisterPoint;
     const f = fileOf<RegisterFile>(registerKey(id.slice(4)));
-    const mw = p[4] != null ? `${p[4].toLocaleString("en-US", { maximumFractionDigits: 2 })} MW` : "MW not given";
+    const mw = p[4] != null ? `${p[4].toLocaleString("en-US", { maximumFractionDigits: 2 })} ${f?.unit ?? "MW"}` : "capacity not given";
     return `<b>${p[0]}</b><div>${FUEL_LABEL[p[3] === "wind_offshore" ? "wind" : p[3]] ?? p[3]}${p[3] === "wind_offshore" ? " at sea" : ""} · ${mw}</div><div style="color:#8d94a1">${REG_STATUS[p[5]] ?? p[5]}${p[6] ? ` · ${p[6]}` : ""}</div>${SRC(f ? `${p[7]} (${f.source})` : p[7])}`;
   }
   if (id.startsWith("gem-")) return gemHtml(id, object);
