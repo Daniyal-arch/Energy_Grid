@@ -8,10 +8,10 @@ seds      EIA SEDS (API v2, EIA_API_KEY): per state consumption and production b
           year, billion Btu as published. API only.
 steo      EIA STEO (API v2): US electricity generation and residential price, monthly, the months
           from the release month on labelled "forecast". API only.
-ei        Energy Institute Statistical Review (consolidated dataset, free with attribution):
-          primary energy by fuel since 1965 -> lake `ei_review/*`. Its page builds the links with
-          JavaScript: the file URL is looked for in two places; when neither answers, the step
-          fails with the error (brief 17: then the dataset is blocked).
+ei        Energy Institute Statistical Review (consolidated panel, free with attribution): energy
+          by fuel, electricity and CO2 per country, newest year each, as published -> lake
+          `ei_review/panel` (every row and column). Its site answers scripts with a Cloudflare
+          challenge: scripts/browser_fetch.py fetches the file with a browser and passes --file.
 edgar     EDGAR 2025 (JRC, CC BY 4.0), the GHG booklet: GHG per country and sector, Mt CO2e
           (GWP-100 AR5) -> lake `edgar/*`.
 
@@ -35,10 +35,6 @@ TMP = Path("/tmp/wave5")
 EUROSTAT = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/nrg_bal_c"
 EIA = "https://api.eia.gov/v2"
 EDGAR_URL = "https://edgar.jrc.ec.europa.eu/booklet/EDGAR_2025_GHG_booklet_2025.xlsx"
-EI_PAGES = [
-    "https://www.energyinst.org/statistical-review/resources-and-data-downloads",
-    "https://www.energyinst.org/statistical-review/home",
-]
 SECTORS = {
     "FC_IND_E": "Industry",
     "FC_TRA_E": "Transport",
@@ -316,51 +312,106 @@ def edgar(args: argparse.Namespace) -> None:
     w.lake_done(lk, args.upload)
 
 
-def ei_link(html: str) -> str | None:
-    """The consolidated dataset's file link on an EI page (xlsx or csv, 'all data' / 'panel')."""
-    links = re.findall(
-        r"""["'](https?://[^"']+?\.(?:xlsx|csv)|/__data/assets/[^"']+?\.(?:xlsx|csv))["']""",
-        html,
-        re.I,
-    )
-    for link in links:
-        if re.search(r"all[-_ ]?data|panel|consolidated", link, re.I):
-            return link if link.startswith("http") else "https://www.energyinst.org" + link
-    return None
+# EI panel columns (name pattern, label, unit): the review's energy and emissions per country
+EI_ITEMS = [
+    (r"^primary_ej$", "Primary energy", "EJ"),
+    (r"^oilcons_ej$", "Oil consumption", "EJ"),
+    (r"^gascons_ej$", "Gas consumption", "EJ"),
+    (r"^coalcons_ej$", "Coal consumption", "EJ"),
+    (r"^nuclear_ej$", "Nuclear", "EJ"),
+    (r"^hydro_ej$", "Hydro", "EJ"),
+    (r"^ren_power_ej$", "Renewables in power", "EJ"),
+    (r"^elect_twh$", "Electricity generation", "TWh"),
+    (r"^co2_combust_mtco2$|^co2_mtco2$", "CO2 from energy", "Mt CO2"),
+]
+
+
+def ei_rows(records: list[dict], cols: list[str]) -> tuple[dict[str, list], int | None]:
+    """Profile rows from the EI panel (one record per country and year): per ISO3, each item's
+    value in the newest year that has it, as published."""
+    iso = next((c for c in cols if re.search(r"iso3166_alpha3|^iso3?$", c, re.I)), None)
+    year = next((c for c in cols if c.lower() == "year"), None)
+    if not iso or not year:
+        raise SystemExit(f"EI panel: no ISO3 or year column in {cols[:20]}")
+    found = [
+        (next((c for c in cols if re.match(p, c, re.I)), None), lab, u) for p, lab, u in EI_ITEMS
+    ]
+    print(f"  EI columns used: {[(lab, c) for c, lab, _ in found]}", flush=True)
+    best: dict[tuple[str, str], tuple[int, float]] = {}
+    for r in records:
+        code = str(r.get(iso) or "").strip()
+        if not re.fullmatch(r"[A-Z]{3}", code):  # regions and totals carry no ISO3
+            continue
+        for col, lab, _ in found:
+            v = r.get(col) if col else None
+            if v in (None, "") or not str(r.get(year) or "").isdigit():
+                continue
+            y = int(r[year])
+            if (code, lab) not in best or y > best[(code, lab)][0]:
+                best[(code, lab)] = (y, float(v))
+    rows: dict[str, list] = {}
+    for _col, lab, unit in found:
+        for (code, item), (y, v) in sorted(best.items()):
+            if item == lab:
+                rows.setdefault(code, []).append([lab, round(v, 4), unit, f"{y}, as published"])
+    years = [y for y, _ in best.values()]
+    return rows, max(years) if years else None
 
 
 def ei(args: argparse.Namespace) -> None:
-    import httpx
-
-    errors = []
-    for page in EI_PAGES:
-        try:
-            r = httpx.get(page, headers=w.UA, timeout=60, follow_redirects=True)
-        except httpx.HTTPError as e:
-            errors.append(f"{page}: {type(e).__name__}")
-            continue
-        link = ei_link(r.text)
-        if link:
-            break
-        title = re.search(r"<title>([^<]*)", r.text)
-        errors.append(
-            f"{page}: HTTP {r.status_code}, no data file link ({title.group(1) if title else 'no title'})"
-        )
-    else:
-        raise SystemExit("Energy Institute review not reachable: " + "; ".join(errors))
+    """From the file scripts/browser_fetch.py fetched (the page answers scripts with a
+    Cloudflare challenge): python scripts/build_profiles.py ei --file PATH [--upload]."""
     import duckdb
 
-    src = w.download(link, TMP / ("ei_review" + Path(link).suffix))
-    print(f"  {link}", flush=True)
+    if not args.file:
+        raise SystemExit("ei needs --file (scripts/browser_fetch.py ei fetches it)")
+    src = Path(args.file)
     con = duckdb.connect()
     if src.suffix == ".csv":
         con.execute(f"CREATE TABLE ei AS SELECT * FROM read_csv('{src}', sample_size = -1)")
     else:
         con.execute("INSTALL excel; LOAD excel")
-        con.execute(f"CREATE TABLE ei AS SELECT * FROM read_xlsx('{src}')")
+        con.execute(f"CREATE TABLE ei AS SELECT * FROM read_xlsx('{src}', all_varchar = true)")
     cols = [c[0] for c in con.execute("DESCRIBE ei").fetchall()]
-    print(f"  columns {cols[:60]}", flush=True)
-    raise SystemExit("EI review: file found; its columns are listed above for the parser")
+    print(
+        f"  {src.name}: {con.execute('SELECT count(*) FROM ei').fetchone()[0]:,} rows; columns {cols[:40]}",
+        flush=True,
+    )  # type: ignore[index]
+    cur = con.execute("SELECT * FROM ei")
+    records = [dict(zip(cols, r, strict=True)) for r in cur.fetchall()]
+    rows, newest = ei_rows(records, cols)
+    if not rows:
+        raise SystemExit("EI panel: no country rows parsed")
+    write_profile(
+        "ei_review",
+        {
+            "title": "Energy and emissions, Statistical Review",
+            "source": f"Energy Institute Statistical Review of World Energy ({src.name}), free with attribution",
+            "year": newest,
+            "rows": rows,
+        },
+    )
+    print(f"  EI: {len(rows)} countries, newest year {newest}", flush=True)
+    import lake
+
+    lake.iso_codes(con)
+    iso = next(c for c in cols if re.search(r"iso3166_alpha3|^iso3?$", c, re.I))
+    lk = w.lake_for(
+        "ei_review",
+        args.lake,
+        "Energy Institute Statistical Review of World Energy, consolidated dataset",
+        "free with attribution (Energy Institute)",
+        "scripts/build_profiles.py",
+        src.stem,
+    )
+    lk.write(
+        con,
+        "panel",
+        f"""SELECT e.*, e."{iso}" AS iso3, i.iso2, NULL::VARCHAR AS admin1 FROM ei e
+            LEFT JOIN iso_codes i ON i.iso3 = e."{iso}" """,
+        sort=["iso3"],
+    )
+    w.lake_done(lk, args.upload)
 
 
 def main() -> None:
@@ -368,6 +419,7 @@ def main() -> None:
     ap.add_argument("what", choices=["eurostat", "seds", "steo", "ei", "edgar"])
     ap.add_argument("--lake", type=Path, default=Path("lake-out"))
     ap.add_argument("--upload", action="store_true")
+    ap.add_argument("--file", help="ei: the fetched file (scripts/browser_fetch.py)")
     args = ap.parse_args()
     {"eurostat": eurostat, "seds": seds, "steo": steo, "ei": ei, "edgar": edgar}[args.what](args)
 

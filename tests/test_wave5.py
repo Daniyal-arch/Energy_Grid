@@ -9,6 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
+import browser_fetch  # noqa: E402
 import build_germany  # noqa: E402
 import build_grw  # noqa: E402
 import build_markets  # noqa: E402
@@ -167,12 +168,46 @@ def test_jsonstat_and_ei_link() -> None:
         ("DE", "2024"): 2.0,
         ("FR", "2024"): 4.0,
     }
-    html = '<a href="/__data/assets/file/0001/1/EI-Stats-Review-ALL-data.xlsx">x</a>'
+
+
+def test_ei_panel_and_browser_link() -> None:
+    html = '<a href="/__data/assets/file/0001/1/Statistical-Review-Panel-format.csv">x</a> <a href="/x.pdf">'
+    pats = browser_fetch.SOURCES["ei"]["links"]
     assert (
-        build_profiles.ei_link(html)
-        == "https://www.energyinst.org/__data/assets/file/0001/1/EI-Stats-Review-ALL-data.xlsx"
+        browser_fetch.find_link(html, pats, "https://www.energyinst.org/statistical-review/home")
+        == "https://www.energyinst.org/__data/assets/file/0001/1/Statistical-Review-Panel-format.csv"
     )
-    assert build_profiles.ei_link("<html>nothing</html>") is None
+    assert browser_fetch.find_link("<html>nothing</html>", pats, "https://x.org/") is None
+    cols = ["Country", "Year", "ISO3166_alpha3", "primary_ej", "elect_twh"]
+    recs = [
+        {
+            "Country": "Germany",
+            "Year": 2023,
+            "ISO3166_alpha3": "DEU",
+            "primary_ej": 11.9,
+            "elect_twh": 515.0,
+        },
+        {
+            "Country": "Germany",
+            "Year": 2024,
+            "ISO3166_alpha3": "DEU",
+            "primary_ej": 11.6,
+            "elect_twh": None,
+        },
+        {
+            "Country": "Total World",
+            "Year": 2024,
+            "ISO3166_alpha3": None,
+            "primary_ej": 592.0,
+            "elect_twh": 31000.0,
+        },
+    ]
+    rows, newest = build_profiles.ei_rows(recs, cols)
+    assert newest == 2024 and list(rows) == ["DEU"]
+    assert rows["DEU"] == [
+        ["Primary energy", 11.6, "EJ", "2024, as published"],
+        ["Electricity generation", 515.0, "TWh", "2023, as published"],
+    ]
 
 
 def test_markets() -> None:
