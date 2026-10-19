@@ -50,7 +50,7 @@ export function RedispatchCard({ f }: { f: RedispatchFile }) {
 export function LinesOutCard({ f, iso2 }: { f: LinesOutFile; iso2: string }) {
   const [all, setAll] = useState(false);
   const now = Date.now();
-  const items = f.items.filter((r) => r[0] === iso2 || r[0].startsWith(`${iso2}-`));
+  const items = f.items.filter((r) => r[0].split("-").includes(iso2)); // a border "AT-DE": either side
   if (!items.length) return null;
   const current = items.filter((r) => (!r[4] || Date.parse(r[4]) <= now) && (!r[5] || Date.parse(r[5]) >= now));
   const shown = all ? items : current.slice(0, 8);

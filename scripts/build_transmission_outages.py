@@ -1,7 +1,8 @@
 """Lines out of service: ENTSO-E unavailability of transmission infrastructure (A78, brief 17, 11).
 
-documentType A78 per area (In_Domain = Out_Domain = the area's code), planned (businessType A53)
-and forced (A54), the last 30 days and the next 30, asked one request at a time in 10-day windows
+documentType A78 per border (`entsoe.BORDERS`, both directions: In_Domain and Out_Domain are the two
+sides), planned (businessType A53) and forced (A54), the last 30 days and the next 30, asked one
+request at a time in 30-day windows
 (ENTSO-E banned the key for a while when this ran beside the lake backfill: `wave5.yml` starts it
 only when no "Lake ENTSO-E" run is active). Answers come zipped like A85
 (scripts/build_imbalance.py); newer revisions of a document replace older ones; withdrawn
@@ -23,6 +24,7 @@ import argparse
 import io
 import json
 import os
+import re
 import time
 import xml.etree.ElementTree as ET
 import zipfile
@@ -33,19 +35,21 @@ import entsoe
 import httpx
 import wave5_common as w
 
-DE_CONTROL = {
-    "DE-50Hertz": "10YDE-VE-------2",
-    "DE-Amprion": "10YDE-RWENET---I",
-    "DE-TenneT": "10YDE-EON------1",
-    "DE-TransnetBW": "10YDE-ENBW-----N",
-}
 KIND = {"A53": "planned", "A54": "forced"}
-WINDOW_DAYS = 10
+WINDOW_DAYS = 30
+ACKS: dict[str, int] = {}  # the API's reasons for answers without documents
 TMP = Path("/tmp/wave5")
 
 
-def areas() -> dict[str, str]:
-    return {**{k: v for k, v in entsoe.AREA_EIC.items() if k != "DE"}, **DE_CONTROL}
+def borders() -> list[tuple[str, str, str]]:
+    """(label, in EIC, out EIC) for every border in both directions: A78 is published per
+    border (In_Domain and Out_Domain, the two sides), not per area."""
+    eic = entsoe.AREA_EIC
+    out = []
+    for x, y in entsoe.BORDERS:
+        if x in eic and y in eic:
+            out += [(f"{x}-{y}", eic[y], eic[x]), (f"{x}-{y}", eic[x], eic[y])]
+    return out
 
 
 def _dt(d: str | None, t: str | None) -> str | None:
@@ -124,14 +128,14 @@ def newest_revisions(rows: list[dict]) -> list[dict]:
 
 
 def fetch(
-    client: httpx.Client, eic: str, btype: str, a: datetime, b: datetime
+    client: httpx.Client, eic_in: str, eic_out: str, btype: str, a: datetime, b: datetime
 ) -> tuple[list[ET.Element], bool]:
     q = {
         "securityToken": os.environ["ENTSOE_API_KEY"].strip(),
         "documentType": "A78",
         "BusinessType": btype,
-        "In_Domain": eic,
-        "Out_Domain": eic,
+        "In_Domain": eic_in,
+        "Out_Domain": eic_out,
         "periodStart": a.strftime("%Y%m%d%H00"),
         "periodEnd": b.strftime("%Y%m%d%H00"),
     }
@@ -152,6 +156,9 @@ def fetch(
             z = zipfile.ZipFile(io.BytesIO(r.content))
             return [ET.fromstring(z.read(n)) for n in z.namelist()], True
         if r.status_code == 200 or b"Acknowledgement" in r.content:
+            m = re.search(rb"<text>([^<]*)</text>", r.content)
+            why = m.group(1).decode()[:120] if m else f"HTTP {r.status_code}, no text"
+            ACKS[why] = ACKS.get(why, 0) + 1
             return [], True
         print(f"  HTTP {r.status_code}: {r.text[:160]}", flush=True)
         return [], False
@@ -169,18 +176,19 @@ def main() -> None:
     rows: list[dict] = []
     failed: list[str] = []
     with httpx.Client(timeout=120, headers=w.UA) as client:
-        for area, eic in areas().items():
+        for area, eic_in, eic_out in borders():
             for btype in KIND:
                 a = start
                 while a < end:
                     b = min(end, a + timedelta(days=WINDOW_DAYS))
-                    docs, ok = fetch(client, eic, btype, a, b)
+                    docs, ok = fetch(client, eic_in, eic_out, btype, a, b)
                     if not ok:
                         failed.append(f"{area} {btype} {a:%Y-%m-%d}")
                     for d in docs:
                         rows += parse(d, area)
                     a = b
-            print(f"  {area}: {len(rows):,} rows so far", flush=True)
+            print(f"  {area} (in {eic_in}): {len(rows):,} rows so far", flush=True)
+    print(f"  answers without documents, by reason: {ACKS}", flush=True)
     if len(failed) > 20:
         raise SystemExit(
             f"ENTSO-E did not answer {len(failed)} requests: {failed[:10]} ...; nothing written"
@@ -213,7 +221,7 @@ def main() -> None:
             "source": "ENTSO-E Transparency Platform, unavailability of transmission infrastructure (A78), planned (A53) and forced (A54)",
             "window": [start.isoformat(), end.isoformat()],
             "fields": [
-                "area",
+                "border",
                 "element",
                 "psr type",
                 "voltage",
