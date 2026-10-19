@@ -1110,9 +1110,24 @@ from zoom 6); layer "Wind and solar seen from space" (Power plants), card in "On
 - **EDGAR 2025** (JRC, CC BY 4.0), the GHG booklet: Mt CO₂e (GWP-100 AR5) per country, sector and
   substance 1970–2024 → lake `edgar/ghg_by_sector`; the country report sums the substances per
   sector for 2024 (computed).
-- **Energy Institute Statistical Review**: blocked, the site answers a Cloudflare challenge
-  (HTTP 403 "Just a moment...") to the build in Actions, twice.
-- Refresh: by hand (`wave5.yml` group F) when a source publishes a new year.
+- **Energy Institute Statistical Review** (free with attribution), `EI-Stats-Review-ALL-data.xlsx`:
+  the site answers scripts with a Cloudflare challenge, so `scripts/browser_fetch.py` downloads it
+  with Chromium in Actions and keeps it in `r2://infraatlas-raw/sources/ei/`. Every sheet's values
+  as published → lake `ei_review/series` (277,731 values); the country report shows nine items
+  (total energy supply, oil, gas, coal, nuclear, hydro, renewables in EJ, electricity in TWh, CO₂
+  from energy in Mt) for the newest year, 2025, for 79 countries. Country names are matched to
+  ISO3 (pycountry plus a short alias list in the script); regions and totals stay unmatched.
+- Refresh: Eurostat, SEDS, STEO, EDGAR by hand (`wave5.yml` group F) when a new year appears; the
+  Energy Institute file monthly (`browser-fetch.yml`, rebuilt only when the file changed).
+
+## Files behind a browser check (`scripts/browser_fetch.py`, `browser-fetch.yml`)
+
+Some sites answer scripts with a JavaScript challenge. `browser_fetch.py` opens the source's page in
+Chromium (headed under xvfb in Actions), finds the file link, downloads it and keeps it in the
+private bucket `r2://infraatlas-raw/sources/<name>/` with `latest.json` (url, sha256, date). An
+unchanged file is not uploaded or rebuilt. If the browser is refused too, the owner uploads the file
+to `sources/<name>/manual/` and the newest file there is used. A new source is one `SOURCES` entry
+(pages, link pattern, refresh, build command). Sources: `ei` (above).
 
 ## Japan and Mexico day-ahead prices (`scripts/build_markets.py`, `jepx.json`, `cenace.json`)
 

@@ -83,7 +83,7 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 
 | Dataset | Gives | Access | Licence | Why | Status |
 |---|---|---|---|---|---|
-| Energy Institute Statistical Review | energy and emissions by country and fuel, 1965– | xlsx | free with attribution | long history for every country | blocked (17: Cloudflare challenge to Actions) |
+| Energy Institute Statistical Review | energy and emissions by country and fuel, 1965– | xlsx | free with attribution | long history for every country | have (17, fetched with a browser) |
 | Our World in Data energy | merged indicators per country | CSV/GitHub | CC BY 4.0 | quick consistent indicators | candidate |
 | EDGAR (JRC) | emissions by country and sector, gridded | download | CC BY 4.0 | emissions context, heat maps | have (17) |
 | IMF fossil fuel subsidies | explicit/implicit subsidies by country | download | IMF terms | "who pays for fossil" story | candidate |

@@ -1,0 +1,17 @@
+dataset: ei_review
+title: Energy Institute Statistical Review of World Energy (all-data workbook)
+licence: free with attribution (Energy Institute)
+map_file: frontend/public/data/eu/profiles/ei_review.json (country report, newest year)
+raw_file: r2://infraatlas-raw/sources/ei/EI-Stats-Review-ALL-data.xlsx (scripts/browser_fetch.py)
+tables:
+  series:
+    grain: one row per sheet, name (country, region or total) and year, every sheet of the workbook
+    keys: {sheet: the workbook sheet, name: as published, iso3: matched (null for regions and totals), year}
+    measures: {value: {unit: the unit column (the sheet's header cell), how: as published}}
+    examples:
+      - q: Germany's total energy supply in 2025
+        sql: SELECT value, unit FROM ei_review.series WHERE sheet LIKE 'Total Energy Supply%' AND iso3 = 'DEU' AND year = 2025
+        answer: 10.0436 Exajoules
+      - q: Germany's CO2 emissions from energy in 2025
+        sql: SELECT value, unit FROM ei_review.series WHERE sheet = 'CO2 from Energy' AND iso3 = 'DEU' AND year = 2025
+        answer: 557.6044 million tonnes of CO2

@@ -340,7 +340,7 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | JEPX spot (`jepx/spot`) | CSV per year | Parquet, partition year | 9,696 rows a year, 0.0005 GB |
 | CENACE PML (`cenace/pml`) | web service | Parquet, partition date | 62,640 rows a day, 0.0003 GB |
 | GHSL population 2025 (`ghsl/population`) | 484 MB zip | Parquet (+ `grid/population-0.1deg.i32` public, 26 MB) | 4,569 rows |
-| Energy Institute review | blocked (Cloudflare challenge to Actions) | – | – |
+| Energy Institute review (`ei_review/series`) | xlsx via a browser (`browser-fetch.yml`), raw file in `sources/ei/` | Parquet, long | 277,731 rows, 0.0015 GB |
 
 ### Future (docs/DATASETS.md)
 
