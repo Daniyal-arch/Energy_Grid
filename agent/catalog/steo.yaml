@@ -1,0 +1,13 @@
+dataset: steo
+title: EIA Short-Term Energy Outlook (STEO)
+licence: public domain (US EIA)
+access: api  # https://api.eia.gov/v2/steo/data/ (EIA_API_KEY)
+map_file: frontend/public/data/us/steo.json ("Short-term outlook" card in the US panel; months from the release month labelled forecast)
+series: {EPEOPUS: electric power sector total generation (billion kWh per day), ESRCUUS: residential electricity price, US average (cents/kWh)}
+examples:
+  - q: STEO residential electricity price forecast for December 2027
+    call: GET steo/data/?frequency=monthly&data[]=value&facets[seriesId][]=ESRCUUS&start=2027-12&end=2027-12
+    answer: 18.22717 cents/kWh (forecast, release of 2026-10)
+  - q: US residential electricity price, October 2025
+    call: GET steo/data/?frequency=monthly&data[]=value&facets[seriesId][]=ESRCUUS&start=2025-10&end=2025-10
+    answer: 17.97 cents/kWh

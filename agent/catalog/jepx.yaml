@@ -1,0 +1,16 @@
+dataset: jepx
+title: JEPX spot market (Japan), 30-minute system and area prices
+licence: jepx.jp (terms of use not found; the owner decides before merge)
+map_file: frontend/public/data/eu/jepx.json (Japan card in the World panel; daily on eu-days)
+tables:
+  spot:
+    grain: one row per delivery day and 30-minute slot (48 a day), partition year
+    keys: {date: delivery day (JST), slot: 1-48}
+    measures: {system_jpy_kwh: {unit: JPY/kWh, how: as published}, tokyo_jpy_kwh: {unit: JPY/kWh}, contracted_kwh: {unit: kWh}}
+    examples:
+      - q: average JEPX system price on 2026-10-19
+        sql: SELECT round(avg(system_jpy_kwh), 2) FROM jepx.spot WHERE date = '2026-10-19'
+        answer: 29.9 JPY/kWh
+      - q: lowest Shikoku price on 2026-10-19
+        sql: SELECT min(shikoku_jpy_kwh) FROM jepx.spot WHERE date = '2026-10-19'
+        answer: 0.02 JPY/kWh
