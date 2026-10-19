@@ -62,7 +62,7 @@ def main() -> None:
     con = duckdb.connect()
     con.execute("INSTALL spatial; LOAD spatial")
     con.execute(
-        f"CREATE TABLE world AS SELECT iso3, name, geom FROM ST_Read('{w.EU / 'world.json'}')"
+        f"CREATE TABLE world AS SELECT iso3 AS w_iso3, geom::GEOMETRY AS w_geom FROM ST_Read('{w.EU / 'world.json'}')"
     )
     import lake
 
@@ -95,19 +95,23 @@ def main() -> None:
         cols = [r[0] for r in con.execute(f"DESCRIBE {kind}").fetchall()]
         geom = find(cols, r"^geom$|^geometry$|^shape$") or "geom"
         cap = find(cols, r"capacity|_mw$|^mw$|power")
-        when = find(cols, r"quarter|construct|first|date|year")
+        # the files carry construction_year and construction_quarter: one label "2023Q4"
+        if "construction_year" in cols and "construction_quarter" in cols:
+            when = "(construction_year::VARCHAR || 'Q' || construction_quarter::VARCHAR)"
+        else:
+            when = find(cols, r"quarter|construct|first|date|year")
         n = con.execute(f"SELECT count(*) FROM {kind}").fetchone()[0]  # type: ignore[index]
         print(f"  {name}: {n:,} features; columns {cols}; capacity {cap}; time {when}", flush=True)
         fields[kind] = {"capacity": cap, "time": when, "count": n}
         area = (
-            f"ST_Area({geom}) * {KM_PER_DEG}^2 * cos(radians(ST_Y(ST_Centroid({geom}))))"
+            f"ST_Area(t.{geom}) * {KM_PER_DEG}^2 * cos(radians(ST_Y(ST_Centroid(t.{geom}))))"
             if kind == "solar"
             else "NULL::DOUBLE"
         )
         con.execute(
             f"""CREATE OR REPLACE TABLE {kind}_x AS
-                SELECT t.* EXCLUDE ({geom}), t.{geom} AS geometry, {area} AS area_km2, w.iso3
-                FROM {kind} t LEFT JOIN world w ON ST_Intersects(w.geom, ST_Centroid(t.{geom}::GEOMETRY))"""
+                SELECT t.* EXCLUDE ({geom}), t.{geom} AS geometry, {area} AS area_km2, w.w_iso3 AS iso3
+                FROM {kind} t LEFT JOIN world w ON ST_Intersects(w.w_geom, ST_Centroid(t.{geom}))"""
         )
         q = when or "NULL"
         rows = con.execute(
