@@ -188,7 +188,13 @@ def test_ei_panel_and_browser_link() -> None:
     unit, vals = build_profiles.ei_sheet(rows)
     assert unit == "Exajoules" and len(vals) == 26 and vals[-1] == ("US", 2024, 94.0)
     assert build_profiles.ei_iso3("US") == "USA" and build_profiles.ei_iso3("Germany") == "DEU"
-    assert build_profiles.ei_iso3("Total Europe") is None
+    assert (
+        build_profiles.ei_iso3("Total Europe") is None and build_profiles.ei_iso3("Europe1") is None
+    )
+    assert (
+        build_profiles.ei_iso3("South Africa") == "ZAF"
+        and build_profiles.ei_iso3("Russia") == "RUS"
+    )
 
 
 def test_markets() -> None:

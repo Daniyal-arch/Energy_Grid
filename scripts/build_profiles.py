@@ -315,7 +315,7 @@ def edgar(args: argparse.Namespace) -> None:
 
 # EI workbook sheets (name pattern, profile label): the report rows, values as published
 EI_SHEETS = [
-    (r"^Primary Energy Cons", "Primary energy"),
+    (r"^Total Energy Supply \(TES\)|^Primary Energy Cons", "Total energy supply"),
     (r"^Oil Consumption - EJ", "Oil consumption"),
     (r"^Gas Consumption - EJ", "Gas consumption"),
     (r"^Coal Consumption - EJ", "Coal consumption"),
@@ -323,7 +323,7 @@ EI_SHEETS = [
     (r"^Hydro Consumption - EJ", "Hydro"),
     (r"^Renewables? (Energy )?Consumption", "Renewables"),
     (r"^Electricity Generation", "Electricity generation"),
-    (r"^CO2 Emissions from Energy", "CO2 from energy"),
+    (r"^CO2 from Energy|^CO2 Emissions from Energy", "CO2 from energy"),
 ]
 # EI country names that pycountry does not find by name (regions and totals stay unmatched)
 EI_NAMES = {
@@ -332,7 +332,9 @@ EI_NAMES = {
     "Turkiye": "TUR", "Türkiye": "TUR", "Czech Republic": "CZE", "Taiwan": "TWN",
     "China Hong Kong SAR": "HKG", "Bolivia": "BOL", "Syria": "SYR", "Laos": "LAO",
     "Moldova": "MDA", "North Macedonia": "MKD", "Tanzania": "TZA", "Congo": "COG",
-    "Democratic Republic of Congo": "COD", "Brunei": "BRN", "Kosovo": "XKX",
+    "Democratic Republic of Congo": "COD", "Brunei": "BRN", "Kosovo": "XKX", "Russia": "RUS",
+    "DR Congo": "COD", "Republic of Congo": "COG", "Curacao": "CUW",
+    "The Dominican Republic": "DOM",
 }  # fmt: skip
 
 
@@ -342,10 +344,7 @@ def ei_iso3(name: str) -> str | None:
     n = re.sub(r"[#*\u00b9\u00b2\u00b3^\d]+$", "", str(name)).strip()
     if n in EI_NAMES:
         return EI_NAMES[n]
-    if re.search(
-        r"^Total|^Other|^of which|^Non-|^OECD|^European Union|^CIS|Africa$|America$|Asia$|Europe$|Middle East$|Pacific$",
-        n,
-    ):
+    if re.search(r"^Total|^Other|^of which|^Non-|^OECD|^European Union|^CIS", n):
         return None
     try:
         return pycountry.countries.lookup(n).alpha_3

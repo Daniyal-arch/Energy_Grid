@@ -24,7 +24,7 @@ on:
         default: false
   push:
     branches: [claude/busy-fermat-nodvwe]
-    paths: [.github/workflows/browser-fetch.yml, scripts/browser_fetch.py]
+    paths: [.github/workflows/browser-fetch.yml, scripts/browser_fetch.py, scripts/build_profiles.py]
 
 permissions:
   contents: write
