@@ -58,4 +58,4 @@ jobs:
           xvfb-run -a python scripts/browser_fetch.py $args
       - name: Commit outputs
         if: ${{ !cancelled() }}
-        run: bash scripts/wave5_commit.sh "Browser fetch: rebuilt files"
+        run: bash scripts/wave5_commit.sh "Browser fetch, rebuilt files"
