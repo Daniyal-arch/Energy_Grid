@@ -333,7 +333,7 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | netztransparenz redispatch 2013-2020 (`netztransparenz/redispatch`) | open archive zip | Parquet | 40,118 rows, 0.0004 GB |
 | SMARD | API, no key | API (catalogue only) | 0 |
 | TYNDP 2024 projects (`tyndp/projects`) | JSON endpoints of the project map | GeoParquet | 363 rows, 0.0001 GB |
-| ENTSO-E transmission outages A78 (`entsoe/transmission_outages`) | API | Parquet, partition fetched day | ~0.001 GB a day |
+| ENTSO-E transmission outages A78 (`entsoe/transmission_outages`) | API, 246 border directions | Parquet, partition fetched day | 6,056 rows, 0.00015 GB a day |
 | Global Renewables Watch v1.0 (`grw/solar`, `grw/wind`) | GitHub release, 453 MB GeoPackages | GeoParquet (+ `grid/grw.pmtiles` public) | see the catalogue |
 | Eurostat nrg_bal_c, EIA SEDS, EIA STEO | APIs | API | 0 |
 | EDGAR 2025 booklet (`edgar/ghg_by_sector`) | xlsx | Parquet | 261,365 rows, 0.002 GB |
