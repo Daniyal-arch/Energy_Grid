@@ -6,23 +6,64 @@ families:
     shows: free grid capacity, hosting capacity or connection queues per substation, node or area (Grid capacity layer, site analysis)
     cells:
       AT:
-        status: todo
+        status: built
+        licence: public notice; reuse with the source named
+        source: APG, available connection capacities (monthly, EU 2019/943 Art. 50(4a))
+        url: https://markt.apg.at/netz/netzanschluss/netzanschlusskapazitaeten/
+        dataset: eu/connect/at.json, lake connect_eu/at
+        note: 'transmission substations; no positions (card); DSOs: the common platform ebutilities.at answers with a script-only page, no data file'
+        checked: '2026-10-19'
       BE:
-        status: todo
+        status: not_published
+        url: https://www.elia.be/en/customers/connection/grid-hosting-capacity
+        note: Elia publishes hosting capacity per substation as a file behind a browser check (HTTP 403 to scripts); wave 6 (brief 21) fetches it with a browser and its file is not produced yet. Fluvius'
+          open-data portal holds no capacity dataset found
+        checked: '2026-10-19'
       BG:
-        status: todo
+        status: built
+        licence: public notice; reuse with the source named
+        source: ESO, electronic map of free capacity
+        url: https://webapps.eso.bg/capacity/
+        dataset: eu/connect/bg.json, lake connect_eu/bg
+        checked: '2026-10-19'
       HR:
-        status: todo
+        status: not_published
+        url: https://www.hops.hr/informacije-o-mogucnosti-prikljucenja
+        note: 'HOPS: yearly PDF ''Mogućnosti priključenja na prijenosnu mrežu''; no data file'
+        checked: '2026-10-19'
       CY:
-        status: todo
+        status: not_published
+        url: https://www.eac.com.cy/EN/RegulatedActivities/Distribution/renewableenergy/Pages/hosting-capacity.aspx
+        note: EAC's hosting-capacity page resets the session's connection and times out from Actions (two tries); no file found
+        checked: '2026-10-19'
       CZ:
-        status: todo
+        status: built
+        licence: public notice; reuse with the source named
+        source: ČEPS, map of available capacity for connection (2031, 2036)
+        url: https://www.ceps.cz/cs/mapa-dostupne-kapacity-pro-pripojeni-k-ps
+        dataset: eu/connect/cz.json, lake connect_eu/cz
+        checked: '2026-10-19'
       DK:
-        status: todo
+        status: built
+        licence: public notice; reuse with the source named
+        source: Energinet and the DSOs, kapacitetskort.dk
+        url: http://www.kapacitetskort.dk
+        dataset: eu/connect/dk.json, lake connect_eu/dk
+        note: transmission and distribution stations
+        checked: '2026-10-19'
       EE:
-        status: todo
+        status: built
+        licence: public notice; reuse with the source named
+        source: Elering e-Gridmap
+        url: https://vla.elering.ee/
+        dataset: eu/connect/ee.json, lake connect_eu/ee
+        note: expandable or not and extra fee; no MW published
+        checked: '2026-10-19'
       FI:
-        status: todo
+        status: not_published
+        url: https://www.fingrid.fi/en/grid/grid-connection-agreement-phases/grid-scope/
+        note: Fingrid Grid Scope is a web map (karttapalaute.fingrid.fi) without a download; it resets the session's connection and times out from Actions
+        checked: '2026-10-19'
       FR:
         status: have
         source: Capareseau (RTE and DSOs)
@@ -32,11 +73,26 @@ families:
         checked: '2026-10-19'
         note: wave 6 (brief 21)
       DE:
-        status: todo
+        status: built
+        licence: public notice; reuse with the source named
+        partial: true
+        source: TransnetBW grid connection map
+        url: https://www.transnetbw.de/de/transparenz/netzzugang-und-entgelt/netzanschlusskarte
+        dataset: eu/connect/de.json, lake connect_eu/de
+        note: TransnetBW only (card, no positions); 50Hertz and Amprion publish PDF maps only (https://www.amprion.net/Strommarkt/Netzkunden/Netzanschluss/Darstellung-der-potenziellen-Netzanschlussmoeglichkeiten-und-der-Kundenprojekte.html);
+          TenneT's page answers scripts with HTTP 403 (session and Actions); DSOs (VNBdigital) no open file
+        checked: '2026-10-19'
       GR:
-        status: todo
+        status: not_published
+        url: https://www.admie.gr/en/grid/connection-to-the-system
+        note: IPTO (ADMIE) answers scripts with HTTP 403 (session and Actions); HEDNO's site lists no data file; margins are published as announcements
+        checked: '2026-10-19'
       HU:
-        status: todo
+        status: not_published
+        url: https://www.eon.hu/hu/lakossagi/ugyintezes/kiemelt-informaciok/szabad-kapacitas.html
+        note: free capacities per substation as PDF only (E.ON EDE/EED/ELMŰ, OPUS TITÁSZ https://www.opustitasz.hu/ugyfelek/halozati-szolgaltatas-es-termekek/alallomasok-szabad-kapacitasai); MVM pages hold
+          no file; MAVIR publishes none
+        checked: '2026-10-19'
       IE:
         status: have
         source: ESB Networks capacity heatmap
@@ -54,13 +110,31 @@ families:
         checked: '2026-10-19'
         note: wave 6 (brief 21)
       LV:
-        status: todo
+        status: not_published
+        url: https://karte.sadalestikls.lv/lv/briva-jauda
+        note: Sadales tīkls' free-capacity map answers HTTP 451 to a script that names itself (not bypassed); AST's page answers HTTP 403 (session and Actions)
+        checked: '2026-10-19'
       LT:
-        status: todo
+        status: built
+        licence: public notice; reuse with the source named
+        source: Litgrid generation capacity map
+        url: https://experience.arcgis.com/experience/1aa8fb2983c34b7bbc4343d22d9071a5
+        dataset: eu/connect/lt.json, lake connect_eu/lt
+        checked: '2026-10-19'
       LU:
-        status: todo
+        status: built
+        licence: public notice; reuse with the source named
+        source: Creos grid hosting capacity map
+        url: https://www.creos-net.lu/en/pro-space/products-services/grid-hosting-capacity
+        dataset: eu/connect/lu.json, lake connect_eu/lu
+        checked: '2026-10-19'
       MT:
-        status: todo
+        status: built
+        licence: public notice; reuse with the source named
+        source: Enemalta available capacity map
+        url: https://enemalta.com.mt/available-capacity/
+        dataset: eu/connect/mt.json, lake connect_eu/mt
+        checked: '2026-10-19'
       NL:
         status: have
         source: Netbeheer Nederland capaciteitskaart
@@ -85,11 +159,20 @@ families:
         checked: '2026-10-19'
         note: wave 6 (brief 21)
       RO:
-        status: todo
+        status: not_published
+        url: https://www.transelectrica.ro/web/tel/racordare
+        note: Transelectrica's connection-capacity map page answers 404; the 2026 allocation procedure is a PDF (https://www.transelectrica.ro/documents/10179/22805497/)
+        checked: '2026-10-19'
       SK:
-        status: todo
+        status: not_published
+        url: https://installedpower.sepsas.sk/
+        note: 'SEPS: a Power BI report only; ZSD''s connectability map is behind a Cloudflare check; VSD''s refuses connections'
+        checked: '2026-10-19'
       SI:
-        status: todo
+        status: not_published
+        url: https://www.eles.si/Portals/0/Documents/Hosting%20capacity%20ELESovih%20RTP.pdf
+        note: 'ELES: hosting capacity as a PDF; the DSO map (geo-portal.si sodokart) needs a login'
+        checked: '2026-10-19'
       ES:
         status: have
         source: REE access capacity per node
@@ -97,10 +180,28 @@ families:
         licence: public
         dataset: eu/connect.json (es)
         checked: '2026-10-15'
-        partial: true
-        note: transmission nodes; the DSOs' node capacities are wave 7
+        partial: false
+        note: REE transmission nodes (have) and e-distribución's distribution nodes (built, eu/connect/es_dso.json); i-DE answers 503 and UFD 403 to scripts
+        parts:
+        - name: REE transmission
+          status: have
+          source: REE
+        - name: e-distribución
+          status: built
+          source: CNMC monthly CSV
+        - name: i-DE
+          status: not_published
+          source: answers 503 to scripts
+        - name: UFD
+          status: not_published
+          source: answers 403 to scripts
       SE:
-        status: todo
+        status: built
+        licence: public notice; reuse with the source named
+        source: Svenska kraftnät capacity map (per county)
+        url: https://karta.svk.se/pages/kapacitetskartan
+        dataset: eu/connect/se.json, lake connect_eu/se
+        checked: '2026-10-19'
       GB:
         status: have
         source: NESO TEC register
@@ -108,15 +209,37 @@ families:
         licence: NESO Open Data Licence
         dataset: eu/connect.json (gb)
         checked: '2026-10-15'
-        partial: true
-        note: transmission queue; the DNOs' embedded capacity registers are wave 7
+        partial: false
+        note: NESO TEC (transmission, have) and the DNOs' embedded capacity registers (built, eu/connect/gb_dso.json)
+        parts:
+        - name: NESO TEC
+          status: have
+          source: NESO
+        - name: NGED
+          status: built
+          source: ECR CSV
+        - name: SSEN
+          status: built
+          source: ECR CSV
+        - name: NPg
+          status: built
+          source: ECR (Opendatasoft)
+        - name: ENWL
+          status: blocked
+          source: export empty without an account key (ENWL_API_KEY)
+        - name: SPEN
+          status: blocked
+          source: export empty without an account key (SPEN_API_KEY)
+        - name: UKPN
+          status: blocked
+          source: export empty without an account key (UKPN_API_KEY)
       US:
         status: have
         source: ISO queues (gridstatus) and LBNL Queued Up
         url: https://emp.lbl.gov/queues
         licence: public
         dataset: us/queues_live.json, us/queue.json
-        checked: '2026-10-15'
+        checked: '2026-10-19'
         parts:
         - name: CAISO
           status: have
@@ -134,8 +257,8 @@ families:
           status: have
           source: gridstatus
         - name: NYISO
-          status: todo
-          source: NYISO queue file (browser fetch)
+          status: built
+          source: NYISO queue xlsx via a browser fetch (bot check for scripts)
         - name: PJM
           status: blocked
           source: PJM Data Miner (PJM_API_KEY)

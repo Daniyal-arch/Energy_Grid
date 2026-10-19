@@ -2,8 +2,9 @@
 
 Each market publishes its queue (Excel or a web table); the open-source `gridstatus` library
 (MIT) reads them into one shape (scripts/probe_us_nodes.py shows what each returns). Kept
-markets: CAISO, ERCOT, MISO, SPP, ISO-NE and NYISO (its queue file answered again on
-2026-10-19, wave 7; it had answered with a bot check, HTTP 202). PJM needs a key that is not set
+markets: CAISO, ERCOT, MISO, SPP, ISO-NE and NYISO. NYISO answers scripts in Actions with a bot
+check (HTTP 202): its file is fetched with a browser (`browser_fetch.py nyiso_queue`, monthly) and
+passed in with --nyiso-file; without it NYISO is tried directly and listed as failed. PJM needs a key that is not set
 yet: it is listed as missing, not estimated. Runs in GitHub Actions (ERCOT blocks many non-US addresses).
 
 Passthrough per request: queue id, state, generation type, capacity (MW), queue date, status.
@@ -21,6 +22,7 @@ the market publishes) to the lake (`lake/iso_queues/requests`, snapshot partitio
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import re
 from datetime import UTC, datetime
@@ -145,13 +147,18 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=OUT)
     parser.add_argument("--lake", type=Path, help="also write the full tables to this lake root")
     parser.add_argument("--upload", action="store_true", help="upload the lake files to R2")
+    parser.add_argument("--nyiso-file", type=Path, help="NYISO's queue xlsx fetched with a browser (browser_fetch.py nyiso_queue)")
     args = parser.parse_args()
     fetched = datetime.now(UTC).isoformat(timespec="seconds")
     markets: dict[str, dict] = {}
     frames = {}
     for name, cls in MARKETS.items():
         try:
-            df = getattr(gridstatus, cls)().get_interconnection_queue()
+            iso = getattr(gridstatus, cls)()
+            if name == "NYISO" and args.nyiso_file:  # NYISO answers scripts with a bot check (HTTP 202)
+                data = args.nyiso_file.read_bytes()
+                iso.get_raw_interconnection_queue = lambda: io.BytesIO(data)
+            df = iso.get_interconnection_queue()
         except Exception as e:  # noqa: BLE001 - one market down must not stop the others
             markets[name] = {"error": f"{type(e).__name__}: {str(e)[:200]}"}
             print(f"  {name}: failed ({e})", flush=True)

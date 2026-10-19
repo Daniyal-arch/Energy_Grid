@@ -102,9 +102,15 @@ jobs:
       - name: 1 room to connect, ten countries
         continue-on-error: true
         run: python scripts/build_connect_eu.py all --upload
-      - name: 1 US queues with NYISO (refreshed weekly by us-queues.yml)
+      - name: Chromium for NYISO's queue file (bot check for scripts)
         continue-on-error: true
-        run: python scripts/fetch_us_queues.py --lake lake-out --upload
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+          bash scripts/r2_creds.sh
+      - name: 1 US queues with NYISO, its file fetched with a browser (monthly in browser-fetch.yml)
+        continue-on-error: true
+        run: xvfb-run -a python scripts/browser_fetch.py nyiso_queue --force
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family A outputs"
