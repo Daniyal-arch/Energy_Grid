@@ -148,6 +148,13 @@ const STATIC: Record<string, Loader> = {
   ctrace: archive("ctrace.json"),
   // where new demand or generation can connect: GB, NL, ES (scripts/fetch_connect_here.py)
   connect: archive("connect.json"),
+  // France, Italy, Belgium, Portugal, Ireland, Poland (scripts/build_connect_more.py)
+  connectFR: bundled("connect/fr.json"),
+  connectIT: bundled("connect/it.json"),
+  connectBE: bundled("connect/be.json"),
+  connectPT: bundled("connect/pt.json"),
+  connectIE: bundled("connect/ie.json"),
+  connectPL: bundled("connect/pl.json"),
   // retail electricity and gas prices (scripts/fetch_retail_prices.py, Eurostat + EIA)
   retail: archive("retail.json"),
   // US outages per county (scripts/build_us_outages.py, EAGLE-I) and their outlines
@@ -160,6 +167,14 @@ const STATIC: Record<string, Loader> = {
   // every unit in Germany (scripts/build_mastr.py, Marktstammdatenregister)
   mastrUnits: bundled("mastr/units_large.json"),
   mastrMuni: bundled("mastr/municipalities.json"),
+  // the grid operator per municipality (MaStR) and US utilities per county (EIA-861) (scripts/build_grid_more.py)
+  deGridOperators: bundled("de_grid_operators.json"),
+  usUtilities: bundledUs("utilities.json"),
+  // EMODnet cables and pipelines at sea (scripts/build_grid_more.py emodnet)
+  seaCables: bundled("sea_cables.json"),
+  // what stops a build: tiles, flood classes and lookups; protected areas per country (scripts/build_constraints.py)
+  constraints: bundled("constraints.json"),
+  protected: bundled("protected.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)

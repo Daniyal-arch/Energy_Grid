@@ -27,7 +27,8 @@ import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
 import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection } from "./build";
 import { memo } from "./memo";
 import { ATLAS_LAYERS, type AtlasFile, type AtlasId } from "../lib/atlas";
-import { GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addGridLayers, addGrwLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, usFrame, worldCamera } from "./style";
+import type { ConstraintsFile, ProtectedFile } from "../lib/constraints";
+import { FLOOD_LAYERS, GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, PROTECTED_LAYERS, ROADS_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addFloodLayers, addGridLayers, addGrwLayers, addProtectedLayers, addRoadsLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, usFrame, worldCamera } from "./style";
 import { TIP_STYLE, countryHtml, tooltip } from "./tooltip";
 
 const SEC_PER_YEAR = 0.9;
@@ -53,12 +54,13 @@ function wantedKeys(zoom: number): string[] {
   if (L.lngSendOut) keys.push("lngTerminals");
   if (L.ets) keys.push("ets");
   if (L.ctrace) keys.push("ctrace");
-  if (L.connect) keys.push("connect");
+  if (L.connect) keys.push("connect", "connectFR", "connectIT", "connectIE");
   if (L.usOutages) keys.push("usOutages", "usCounties");
   if (L.water) keys.push("water");
   if (L.offshoreWind) keys.push("offshoreWind");
   if (L.mastrDE) keys.push("mastrMuni", "mastrUnits");
   if (L.cables) keys.push("cables");
+  if (L.cables || L.gasPipes || L.oilPipes) keys.push("seaCables");
   if (L.plantsWorld) keys.push("worldPlants");
   // EIA wins over GEM in the US: GEM's points inside the states are left out
   if (L.plantsUS) keys.push("usPlants");
@@ -74,6 +76,8 @@ function wantedKeys(zoom: number): string[] {
   if (L.grw) keys.push("grwCountries");
   if (L.plantsUS) keys.push("plantsPerf");
   if (L.solarResource || L.windResource) keys.push("atlas");
+  if (L.protectedAreas) keys.push("protected");
+  if (L.flood || L.roadsRail) keys.push("constraints");
   if (L.liveGrids) keys.push("us", "brazil", "aemo", "taiwan", "ontario");
   if (L.financeCoal || L.financeGas) keys.push("gemFinance");
   for (const [id, style] of [...Object.entries(GEM_PIPES), ...Object.entries(GEM_POINTS)]) if (L[id as LayerId]) keys.push(style.file);
@@ -384,6 +388,7 @@ export default function MapCanvas() {
     let landKey = "";
     let gridKey = "";
     let atlasKey = "";
+    let consKey = "";
     let skyKey = "";
     const applyMapLibre = (dayFile: DayFile | null, sunAlt: number) => {
       if (!map.getLayer("world-land")) return;
@@ -434,6 +439,18 @@ export default function MapCanvas() {
       // Global Renewables Watch (vector tiles)
       if (s.layers.grw) addGrwLayers(map);
       for (const id of GRW_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.grw ? "visible" : "none");
+      // what stops a build: protected areas, flood depth, roads and rail (scripts/build_constraints.py)
+      const cons = fileOf<ConstraintsFile>("constraints");
+      const prot = fileOf<ProtectedFile>("protected");
+      const ck = `${s.layers.protectedAreas}|${s.layers.flood}|${s.layers.roadsRail}|${!!cons}|${!!prot}`;
+      if (ck !== consKey) {
+        consKey = ck;
+        if (s.layers.protectedAreas && prot) addProtectedLayers(map, prot.tiles);
+        if (s.layers.flood && cons) addFloodLayers(map, cons.flood.maps, cons.flood.source);
+        if (s.layers.roadsRail && cons) addRoadsLayers(map, cons.roads.tiles);
+        for (const [ids, on] of [[PROTECTED_LAYERS, s.layers.protectedAreas], [FLOOD_LAYERS, s.layers.flood], [ROADS_LAYERS, s.layers.roadsRail]] as const)
+          for (const id of ids) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
+      }
       // the resource atlases (raster tiles), once their description has loaded
       const atlas = fileOf<AtlasFile>("atlas");
       const ak = `${s.layers.solarResource}|${s.layers.windResource}|${!!atlas}`;

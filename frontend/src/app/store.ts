@@ -57,6 +57,9 @@ export type LayerId =
   | "dataCentres"
   | "usOutages"
   | "water"
+  | "protectedAreas"
+  | "flood"
+  | "roadsRail"
   | "mastrDE"
   | "offshoreWind"
   | "wind"
@@ -115,7 +118,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "substations", label: "Substations", desc: "220 kV and more, shown zoomed in", group: "Power grid", coverage: "Europe", color: "rgb(226,232,240)" },
   { id: "gridWorld", label: "High-voltage lines", desc: "220 kV and more, mapped in OpenStreetMap", group: "Power grid", coverage: "World", color: "rgb(160,210,255)" },
   { id: "gridUS", label: "US transmission lines", desc: "100–765 kV by voltage, mapped in OpenStreetMap", group: "Power grid", coverage: "US", color: "rgb(236,178,120)" },
-  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Connections & queues", coverage: "GB, NL, ES", color: "rgb(206,138,72)" },
+  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Connections & queues", coverage: "GB, NL, ES, FR, IT, IE, PT, PL", color: "rgb(206,138,72)" },
   { id: "cables", label: "Undersea power cables", desc: "HVDC and AC cables at sea", group: "Power grid", coverage: "World", color: "rgb(110,190,255)" },
   { id: "predicted", label: "Predicted local grid", desc: "Estimated from night lights (Gridfinder)", group: "Power grid", coverage: "World", color: "rgb(255,190,110)" },
   { id: "plantsEU", label: "Power plants", desc: "20 MW and more, by fuel", group: "Power plants", coverage: "Europe", color: "rgb(255,128,72)" },
@@ -152,6 +155,9 @@ export const LAYERS: LayerInfo[] = [
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & demand", coverage: "World", color: "rgb(196,150,255)" },
   { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Risk", coverage: "World", color: "rgb(255,153,0)" },
   { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Risk", coverage: "US", color: "rgb(230,120,80)" },
+  { id: "protectedAreas", label: "Protected areas", desc: "Natura 2000 sites (EEA) and US protected lands (PAD-US)", group: "Risk", coverage: "Europe, US", color: "rgb(96,186,120)" },
+  { id: "flood", label: "River flood hazard", desc: "Water depth in a 100-year flood (JRC)", group: "Risk", coverage: "World", color: "rgb(60,130,210)" },
+  { id: "roadsRail", label: "Major roads and railways", desc: "Motorways, trunk and primary roads; standard-gauge rail (OpenStreetMap)", group: "Risk", coverage: "Europe, US", color: "rgb(200,196,186)" },
   { id: "wind", label: "Wind", desc: "Moving wind at turbine height", group: "Weather", coverage: "World", color: "rgb(220,240,255)", modes: ["live", "day"] },
   { id: "sun", label: "Sunshine", desc: "Solar radiation reaching the ground", group: "Weather", coverage: "World", color: "rgb(255,214,72)", modes: ["live", "day"] },
   { id: "solarResource", label: "Solar resource", desc: "PV output per kWp installed, long-term average (Global Solar Atlas)", group: "Resources", coverage: "World", color: "rgb(240,196,112)" },
@@ -194,6 +200,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "dataCentres",
   "usOutages",
   "water",
+  "protectedAreas",
   "mastrDE",
   "offshoreWind",
 ]);

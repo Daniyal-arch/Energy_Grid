@@ -1,3 +1,4 @@
+import { useFile } from "../app/data";
 import { useState } from "react";
 
 import { Card } from "./CountryCards";
@@ -25,6 +26,8 @@ export function SedsCard({ f, names }: { f: SedsFile; names: (code: string) => s
   const [state, setState] = useState("USA");
   const codes = ["USA", ...Object.keys(f.rows).filter((k) => k !== "USA" && k.length === 2).sort((a, b) => names(a).localeCompare(names(b)))];
   const rows = f.rows[state] ?? [];
+  const util = useFile<{ year: string; utilities: Record<string, string>; states: Record<string, number> }>("usUtilities");
+  const nUtil = util ? (state === "USA" ? Object.keys(util.utilities).length : util.states[state]) : undefined;
   return (
     <Card title="Energy by state" note={`EIA SEDS · ${f.year}`}>
       <select value={state} onChange={(e) => setState(e.target.value)} className="mb-2 w-full rounded bg-white/[0.06] px-2 py-1 text-[11px] text-slate-200">
@@ -44,7 +47,16 @@ export function SedsCard({ f, names }: { f: SedsFile; names: (code: string) => s
           </div>
         ))}
       </div>
-      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>EIA State Energy Data System, as published (estimates for the newest year where EIA marks them so).</div>
+      {nUtil != null && (
+        <div className="mt-1 flex justify-between gap-2 border-t border-white/[0.06] pt-1 text-[11px] tabular-nums">
+          <span className="text-slate-300">Utilities reporting service (EIA-861, {util?.year})</span>
+          <span className="text-slate-100">{nUtil.toLocaleString("en-US")}</span>
+        </div>
+      )}
+      <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
+        EIA State Energy Data System, as published (estimates for the newest year where EIA marks them so). Utilities: those reporting a service territory in the state (count, computed);
+        "Check a site" names those serving its county.
+      </div>
     </Card>
   );
 }
