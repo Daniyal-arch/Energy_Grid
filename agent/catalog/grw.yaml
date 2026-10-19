@@ -1,0 +1,21 @@
+dataset: grw
+title: Global Renewables Watch v1.0 (Microsoft, Planet), every wind turbine and solar array found in satellite images to 2024 Q2
+licence: MIT
+map_file: R2 grid/grw.pmtiles (layer "Wind and solar seen from space"); frontend/public/data/eu/grw_countries.json (card)
+tables:
+  wind:
+    grain: one row per turbine detected (point), partition release
+    keys: {fid: GRW id, COUNTRY: as published, iso3: world.json outline holding the point (computed), construction_year, construction_quarter}
+    measures: {}
+    examples:
+      - q: how many turbines does GRW find worldwide
+        sql: SELECT count(*) FROM grw.wind
+        answer: 375197
+  solar:
+    grain: one row per solar array detected (polygon), partition release
+    keys: {fid: GRW id, COUNTRY, iso3, construction_year, construction_quarter}
+    measures: {area: {how: as published}, area_km2: {unit: km2, how: computed from the polygon}}
+    examples:
+      - q: how many solar arrays does GRW find worldwide
+        sql: SELECT count(*) FROM grw.solar
+        answer: 86345

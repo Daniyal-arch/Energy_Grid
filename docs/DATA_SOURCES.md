@@ -1088,6 +1088,17 @@ reason, lowest available MW. Card "Lines out of service" in the country panel; l
 `entsoe/transmission_outages`. Daily in `eu-days`, skipped while a Lake ENTSO-E run is active
 (the key was banned when both ran).
 
+## Wind and solar seen from space (`scripts/build_grw.py`, R2 `grid/grw.pmtiles`, `grw_countries.json`)
+
+Global Renewables Watch v1.0 (Microsoft, Planet; MIT): 375,197 wind turbines (points) and 86,345
+solar arrays (polygons) detected in satellite images up to 2024 Q2, GeoPackages in Web Mercator
+(453 MB, Actions only), transformed to lon/lat. Passthrough: every published field (country,
+construction year and quarter, land cover, area). Computed: the country outline (`world.json`)
+holding each feature's centre, a polygon's area in km², per country and construction quarter the
+counts and solar area (sums; the files publish no MW). Tiles by tippecanoe (30.3 MB; small arrays
+from zoom 6); layer "Wind and solar seen from space" (Power plants), card in "On the map"; lake
+`grw/solar`, `grw/wind`. Refresh by hand when a new release appears.
+
 ## Profiles (`scripts/build_profiles.py`, `profiles/*.json`, `us/steo.json`)
 
 - **Eurostat energy balances** (`nrg_bal_c`, CC BY 4.0, API): final energy by sector and fuel,

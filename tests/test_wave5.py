@@ -146,6 +146,9 @@ def test_grw() -> None:
     assert build_grw.quarter_of("2023Q4") == "2023Q4"
     assert build_grw.quarter_of("2023-11-02") == "2023Q4"
     assert build_grw.quarter_of(None) == build_grw.RELEASE_QUARTER
+    assert build_grw.quarter_of("2020|3") == "2020Q3"
+    assert build_grw.quarter_of("2020|Q3") == "2020Q3"
+    assert build_grw.quarter_of("2020|2020Q2") == "2020Q2"
     assert build_grw.find(["fid", "capacity_mw", "geom"], r"capacity") == "capacity_mw"
 
 

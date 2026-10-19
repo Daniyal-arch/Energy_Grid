@@ -42,6 +42,16 @@ def find(cols: list[str], pattern: str) -> str | None:
 def quarter_of(v: object) -> str:
     """A quarter label from a published value: '2023Q4', a date '2023-11-02', or a year."""
     s = str(v or "").strip()
+    if (
+        "|" in s
+    ):  # "year|quarter" from the two published columns; the quarter as "3", "Q3" or "2020Q3"
+        year, q = s.split("|", 1)
+        digits = re.findall(r"[1-4]", q.replace(year, ""))
+        return (
+            f"{year[:4]}Q{digits[0]}"
+            if year[:4].isdigit() and digits
+            else (year[:4] or RELEASE_QUARTER)
+        )
     m = re.match(r"(\d{4})\s*-?\s*Q([1-4])", s, re.I)
     if m:
         return f"{m.group(1)}Q{m.group(2)}"
@@ -97,7 +107,7 @@ def main() -> None:
         cap = find(cols, r"capacity|_mw$|^mw$|power")
         # the files carry construction_year and construction_quarter: one label "2023Q4"
         if "construction_year" in cols and "construction_quarter" in cols:
-            when = "(construction_year::VARCHAR || 'Q' || construction_quarter::VARCHAR)"
+            when = "(construction_year::VARCHAR || '|' || construction_quarter::VARCHAR)"
         else:
             when = find(cols, r"quarter|construct|first|date|year")
         n = con.execute(f"SELECT count(*) FROM {kind}").fetchone()[0]  # type: ignore[index]
@@ -111,7 +121,9 @@ def main() -> None:
         con.execute(
             f"""CREATE OR REPLACE TABLE {kind}_x AS
                 SELECT t.* EXCLUDE ({geom}), t.{geom} AS geometry, {area} AS area_km2, w.w_iso3 AS iso3
-                FROM {kind} t LEFT JOIN world w ON ST_Intersects(w.w_geom, ST_Centroid(t.{geom}))"""
+                FROM {kind} t LEFT JOIN world w ON ST_Intersects(w.w_geom, ST_Centroid(t.{geom}))
+                -- outlines overlap in a few places: one country per feature
+                QUALIFY row_number() OVER (PARTITION BY t.fid ORDER BY w.w_iso3) = 1"""
         )
         q = when or "NULL"
         rows = con.execute(
