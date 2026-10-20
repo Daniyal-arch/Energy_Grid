@@ -1901,61 +1901,258 @@ families:
     shows: interruptions per customer (SAIDI, SAIFI) or outages per area
     cells:
       AT:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       BE:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       BG:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       HR:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       CY:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       CZ:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       DK:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       EE:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       FI:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       FR:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       DE:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       GR:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       HU:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       IE:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       IT:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       LV:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       LT:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       LU:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       MT:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       NL:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       PL:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       PT:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       RO:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       SK:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       SI:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       ES:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       SE:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
       GB:
-        status: todo
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: London, data years 2014-2019 (series ended 2021); Ofgem's RIIO-ED1 network performance summaries give customer interruptions and minutes lost per DNO as PDF (2018-19 to 2021-22); no data file
+          found
       US:
         status: have
         source: EAGLE-I outages per county (ORNL)

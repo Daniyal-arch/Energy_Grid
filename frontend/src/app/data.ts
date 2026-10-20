@@ -157,6 +157,8 @@ const STATIC: Record<string, Loader> = {
   ets: archive("ets.json"),
   // EV charging in Europe (scripts/build_ev_eu.py; EAFO, BNetzA, IRVE, OpenStreetMap)
   evEu: bundled("ev_eu.json"),
+  // SAIDI and SAIFI per country (scripts/fetch_reliability.py, World Bank Doing Business)
+  reliability: bundled("reliability.json"),
   // Climate TRACE modelled emissions per facility (scripts/fetch_climate_trace.py)
   ctrace: archive("ctrace.json"),
   // where new demand or generation can connect: GB, NL, ES (scripts/fetch_connect_here.py)

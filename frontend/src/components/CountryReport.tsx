@@ -11,6 +11,7 @@ import { coverageRows, type CoverageFile } from "../lib/coverage";
 import type { CtraceFile } from "../lib/ctrace";
 import { FUEL_LABEL } from "../lib/energy";
 import type { EtsFile } from "../lib/ets";
+import type { ReliabilityFile } from "./ReliabilityCards";
 import type { IrenaFile } from "../lib/irena";
 import { OFFSHORE_LABEL, offshoreStatus, type OffshoreWindFile } from "../lib/offshoreWind";
 import type { PricesFile } from "../lib/prices";
@@ -59,6 +60,7 @@ function useSections(code: string) {
   const access = useFile<WorldStatsFile>("worldStats");
   const dc = useFile<DataCentresFile>("datacentres");
   const retail = useFile<RetailFile>("retail");
+  const reliability = useFile<ReliabilityFile>("reliability");
   const coverage = useFile<CoverageFile>("coverage");
   const offshore = useFile<OffshoreWindFile>(europe ? "offshoreWind" : null);
   const stats = useFile<StatsFile>(europe ? "stats" : null);
@@ -203,6 +205,15 @@ function useSections(code: string) {
       }
       out.push({ title: "Emissions", source: `${etc ? (iso2 === "GB" && ets?.uk ? `${ets.uk.source}; ` : `EU Union Registry (${ets?.snapshot}); `) : ""}${ct.length ? "Climate TRACE (modelled, CC BY 4.0)" : ""}`, rows });
     }
+    // ---- power cuts (World Bank SAIDI and SAIFI)
+    const rel = iso2 ? reliability?.countries[iso2] : undefined;
+    if (rel?.saidi?.length && reliability) {
+      const d = rel.saidi[rel.saidi.length - 1];
+      const fq = rel.saifi?.[rel.saifi.length - 1];
+      const rows: Row[] = [["Hours without power per customer (SAIDI)", d[1], "h a year", `${d[0]}, largest business city`]];
+      if (fq) rows.push(["Interruptions per customer (SAIFI)", fq[1], "a year", `${fq[0]}, largest business city`]);
+      out.push({ title: "Power cuts", source: reliability.source, rows });
+    }
     // ---- grid, gas, offshore wind (Europe)
     if (europe && iso2 && grid) {
       const subs = grid.substations.filter((s) => s[3] === iso2);
@@ -258,7 +269,7 @@ function useSections(code: string) {
       if (pf && rows?.length) out.push({ title: pf.title, source: pf.source, rows });
     }
     return out;
-  }, [ready, t, iso3, iso2, europe, us, stats, prices, retail, reference, irena, gem, usPlants, usQueue, usSolar, ets, ctrace, grid, gas, offshore, access, dc, coverage, ...profiles]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ready, t, iso3, iso2, europe, us, stats, prices, retail, reference, irena, gem, usPlants, usQueue, usSolar, ets, ctrace, grid, gas, offshore, access, dc, coverage, reliability, ...profiles]); // eslint-disable-line react-hooks/exhaustive-deps
   return { name, sections, ready, iso3 };
 }
 

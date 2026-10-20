@@ -331,3 +331,21 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family J outputs"
+
+  K:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'K')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - name: 11 power cuts, SAIDI and SAIFI (World Bank)
+        continue-on-error: true
+        run: python scripts/fetch_reliability.py
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family K outputs"

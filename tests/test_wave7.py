@@ -477,3 +477,18 @@ def test_eia_series_groups_and_sorts() -> None:
             "points": [["2026-10-03", 3720.0], ["2026-10-10", 3800.0]],
         }
     }
+
+
+# ---------------------------------------------------------------- family 11, reliability
+
+import fetch_reliability as rel  # noqa: E402
+
+
+def test_reliability_rows_to_series() -> None:
+    rows = [
+        {"countryiso3code": "DEU", "date": "2019", "value": 0.25},
+        {"countryiso3code": "DEU", "date": "2018", "value": 0.18},
+        {"countryiso3code": "DEU", "date": "2020", "value": None},
+        {"countryiso3code": "CHN", "date": "2019", "value": 0.5},
+    ]
+    assert rel.rows_to_series(rows) == {"DE": [[2018, 0.18], [2019, 0.25]]}

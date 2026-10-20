@@ -57,6 +57,7 @@ import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
 import { CoverageCard } from "../components/CoverageCards";
 import { UsRtCard } from "../components/UsRtCards";
 import { UsGasCard } from "../components/UsGasCards";
+import { PowerCutsCard } from "../components/ReliabilityCards";
 import { CongestionCard, UsCurtailmentCard } from "../components/CongestionCards";
 import { OperatorCo2Card, UsCo2RegionsCard } from "../components/Co2Cards";
 import { RegisterCard } from "../components/RegisterCards";
@@ -492,6 +493,7 @@ function CountryPanel({ iso }: { iso: string }) {
           {!day && linesOut && <LinesOutCard f={linesOut} iso2={iso} />}
           {redispatch && <RedispatchCard f={redispatch} />}
           {!day && <CongestionCard iso={iso} />}
+          {!day && <PowerCutsCard iso2={iso} />}
           {trade.length > 0 && <TradeCard rows={trade} time={timeOf(trade[0].ts)} />}
           {!day && outages?.countries[iso] && (
             <OutageCard

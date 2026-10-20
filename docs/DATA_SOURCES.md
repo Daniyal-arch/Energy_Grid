@@ -570,6 +570,16 @@ Energy Atlas, federal ArcGIS org), generalised by ArcGIS to 0.01° and rounded t
 "US gas pipelines". LNG terminals stay GEM's world layer. Card "Gas" (US Live tab). Refresh: weekly
 in `us-queues.yml`.
 
+## Power cuts, SAIDI and SAIFI (`scripts/fetch_reliability.py`, `reliability.json`)
+
+World Bank, Doing Business "Getting electricity" (API, CC BY 4.0): SAIDI (hours without power per
+customer a year, `IC.ELC.SAID.XD.DB1619`) and SAIFI (interruptions per customer,
+`IC.ELC.SAIF.XD.DB1619`) for EU-27, the UK and the US, data years 2014 to 2019, measured in the
+largest business city (US: New York and Los Angeles); passed through. The series ended with Doing
+Business in 2021. CEER's benchmarking reports give national values as PDF tables only and BNetzA's
+SAIDI is a press release, so neither is read (not_published as data, docs/COVERAGE.md). Card
+"Power cuts" (country Now tab) and the country report. Refresh: on the 1st of the month in `eu-days.yml`.
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

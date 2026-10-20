@@ -206,6 +206,14 @@ jobs:
             python scripts/fetch_gb_retail.py --out store/eu || echo "GB retail prices (DESNZ) failed; GB left out this week"
           fi
 
+      - name: Power cuts, SAIDI and SAIFI (World Bank; on the 1st of the month)
+        timeout-minutes: 5
+        continue-on-error: true
+        run: |
+          if [ "$(date -u +%d)" = 01 ] || [ ! -f store/eu/reliability.json ]; then
+            python scripts/fetch_reliability.py --out store/eu || echo "reliability failed; keeping the last copy"
+          fi
+
       - name: Emissions per facility worldwide (Climate TRACE; on the 1st of the month)
         timeout-minutes: 10
         continue-on-error: true

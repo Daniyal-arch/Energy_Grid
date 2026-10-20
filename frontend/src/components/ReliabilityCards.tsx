@@ -130,3 +130,42 @@ export function Ferc714Card({ region }: { region: string }) {
     </Card>
   );
 }
+
+/** World Bank Doing Business SAIDI and SAIFI (scripts/fetch_reliability.py). */
+export interface ReliabilityFile {
+  source: string;
+  fetched: string;
+  units: { saidi: string; saifi: string };
+  note: string;
+  countries: Record<string, { saidi?: [number, number][]; saifi?: [number, number][] }>;
+}
+
+/** Power cuts in one country: SAIDI and SAIFI per year, as the World Bank published them. */
+export function PowerCutsCard({ iso2 }: { iso2: string }) {
+  const f = useFile<ReliabilityFile>("reliability");
+  const c = f?.countries[iso2];
+  if (!f || !c?.saidi?.length) return null;
+  const top = Math.max(...c.saidi.map((p) => p[1]), 0.01);
+  const lastD = c.saidi[c.saidi.length - 1];
+  const lastF = c.saifi?.[c.saifi.length - 1];
+  return (
+    <Card title="Power cuts" note={`World Bank · ${c.saidi[0][0]}–${lastD[0]}`}>
+      <div className="text-[22px] font-light text-slate-50">
+        {lastD[1].toLocaleString("en-US")} h <span className={`text-[11px] ${muted}`}>without power per customer in {lastD[0]} (SAIDI)</span>
+      </div>
+      {lastF && <div className={`text-[10.5px] ${muted}`}>{lastF[1].toLocaleString("en-US")} interruptions per customer (SAIFI)</div>}
+      <div className="mt-2 flex h-10 items-end gap-[3px]">
+        {c.saidi.map(([y, v]) => (
+          <div key={y} className="flex-1 rounded-t-sm" title={`${y}: ${v} h`} style={{ height: `${(100 * v) / top}%`, background: "rgb(240,160,126)" }} />
+        ))}
+      </div>
+      <div className={`flex justify-between text-[9.5px] ${muted}`}>
+        <span>{c.saidi[0][0]}</span>
+        <span>{lastD[0]}</span>
+      </div>
+      <Note>
+        {f.source}. {f.note}. No newer national series is published as data (CEER benchmarks are PDF tables).
+      </Note>
+    </Card>
+  );
+}
