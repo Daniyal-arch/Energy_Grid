@@ -1,0 +1,13 @@
+dataset: entsog_tyndp
+title: ENTSOG TYNDP 2026 projects (Annex A list of projects)
+licence: ENTSOG terms of use (re-use with attribution)
+map_file: frontend/public/data/eu/gas_projects.json (layer "Planned gas projects", per country; card)
+tables:
+  projects:
+    grain: one row per project of the Project Main Info sheet, text as published
+    keys: {Code: e.g. TRA-F-7 (category-maturity-number), Country, "Maturity Status"}
+    measures: {"Project CAPEX (in million €)": {unit: million EUR, how: where not confidential}}
+    examples:
+      - q: how many TYNDP 2026 projects are in Germany
+        sql: SELECT count(*) FROM entsog_tyndp.projects WHERE Country = 'Germany'
+        answer: 88 of 347

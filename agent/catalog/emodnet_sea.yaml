@@ -1,0 +1,15 @@
+dataset: emodnet_sea
+title: Power cables and pipelines in European seas (EMODnet Human Activities)
+licence: CC BY 4.0
+access: api  # WFS https://ows.emodnet-humanactivities.eu/wfs (layers emodnet:pcables*, emodnet:pipelines), no lake copy
+map_file: frontend/public/data/eu/sea_cables.json ("Undersea power cables"; gas and oil pipelines layers)
+series:
+  pcablesbshcontis: {publisher: BSH (Germany), features: 89}
+  pcablesnve: {publisher: NVE (Norway), features: 918}
+  pcablesrijks: {publisher: Rijkswaterstaat (Netherlands), features: 37}
+  pcablesshom: {publisher: SHOM (France), features: 142}
+  pipelines: {features: 3951, media: "Gas 944, Oil 568, Water 658, ..."}
+examples:
+  - q: how many gas pipelines at sea does EMODnet list
+    call: GET wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json, count medium = 'Gas'
+    answer: 944 features (2026-10-19)

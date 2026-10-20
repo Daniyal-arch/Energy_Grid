@@ -342,6 +342,31 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | GHSL population 2025 (`ghsl/population`) | 484 MB zip | Parquet (+ `grid/population-0.1deg.i32` public, 26 MB) | 4,569 rows |
 | Energy Institute review (`ei_review/series`) | xlsx via a browser (`browser-fetch.yml`), raw file in `sources/ei/` | Parquet, long | 277,731 rows, 0.0015 GB |
 
+### Wave 6 (brief 21, built 2026-10-19)
+
+| Dataset | Access | Kept as | Size (measured) |
+|---|---|---|---|
+| Capareseau substations (`capareseau/substations`) | site JSON + CSV | GeoParquet, partition snapshot | 3,116 rows, 0.0003 GB |
+| Terna Econnextion (`econnextion/requests`) | download-center JSON | Parquet, snapshot | 582 rows |
+| Elia capacity (`elia_hosting/capacity`) | xlsx via a browser | Parquet, snapshot | blocked (Cloudflare) |
+| E-REDES reception capacity (`eredes_capacity/substations`) | API (Opendatasoft) | Parquet, snapshot | 470 rows |
+| ESB Networks heatmap (`esb_heatmap/transformers`) | xlsx | GeoParquet, snapshot | 46,527 rows, 0.002 GB |
+| PSE Art. 7(8l) list, full switchgears (`pse_capacity/*`) | xlsx | Parquet, snapshot | 886 + 69 rows |
+| Substations worldwide | our `overture_power/sites` | PMTiles `grid/world-substations.pmtiles` (public) | 870,774 points, 0.025 GB |
+| MaStR grid operators (`mastr_grid/operators`) | our `mastr/*` | Parquet, snapshot | 15,213 rows |
+| EIA-861 service territory | PUDL Parquet | in place | 0 |
+| EMODnet cables, pipelines | WFS | API | 0 |
+| Natura 2000 (`protected/natura2000`; PAD-US blocked) | ArcGIS services, paged | GeoParquet (+ `grid/protected.pmtiles`, 29 MB) | 27,173 rows |
+| JRC flood RP100 (`lake/flood/*.tif`) | 171 MB + 49 MB zips | COG (classes) + tiles and lookups (public) | 0.06 GB lookups |
+| Overture roads and rail (`overture_transport/segments`) | Overture S3 | GeoParquet, partition release (+ `grid/roads-rail.pmtiles`, 150 MB) | 5,939,529 rows, 0.80 GB |
+| Hydrogen Observatory (`hydrogen/projects`) | xlsx | GeoParquet | 238 rows |
+| AURES II (`aures/auctions`) | xlsx (Mendeley) | Parquet | 820 rows |
+| NREL ATB 2025 (`atb/electricity`) | 321 MB CSV | Parquet | 1,161,588 rows, 0.007 GB |
+| ENTSOG TYNDP 2026 (`entsog_tyndp/projects`) | xlsx | Parquet | 347 rows |
+| GHG inventories (Eurostat `env_air_gge`) | API | API | 0 |
+| FERC 714 | PUDL Parquet | in place | 0 |
+| éCO2mix régional, REData by community, Transpower, Eskom | APIs | API | 0 |
+
 ### Future (docs/DATASETS.md)
 
 | Dataset | Access | Kept as | Size |

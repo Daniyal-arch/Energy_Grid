@@ -1,0 +1,14 @@
+dataset: eredes_capacity
+title: Portugal, reception capacity of the distribution grid per substation (E-REDES)
+licence: CC BY 4.0
+access: also an API (e-redes.opendatasoft.com, dataset capacidade-rececao-rnd)
+map_file: frontend/public/data/eu/connect/pt.json (card only: E-REDES publishes no positions)
+tables:
+  substations:
+    grain: one row per HV/MV substation, every column as published (quarterly values), per snapshot
+    keys: {codigo: E-REDES code, instalacao: name, distrito, concelho, nut3}
+    measures: {capacidade_de_recepcao_at_mva_ultimo_trimestre: {unit: MVA, how: "HV reception capacity, newest quarter, text as published ('-' none)"}}
+    examples:
+      - q: how many substations have HV reception capacity left
+        sql: SELECT count(*) FROM eredes_capacity.substations WHERE TRY_CAST(capacidade_de_recepcao_at_mva_ultimo_trimestre AS DOUBLE) > 0
+        answer: 172 of 470 (3T2026)

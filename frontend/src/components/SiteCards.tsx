@@ -16,9 +16,12 @@ import { FUEL_COLOR, FUEL_LABEL, power } from "../lib/energy";
 import type { PricesFile } from "../lib/prices";
 import { euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../lib/retail";
 import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type WaterFile } from "../lib/risk";
-import { SITE_RADII, SITE_RADIUS_KM, areaKey, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, publishSite, searchSiteLines, siteKey, useSiteLines, type LineSearch, type LonLat, type NearLine, type SitePlant } from "../lib/site";
+import { SITE_RADII, SITE_RADIUS_KM, areaKey, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, publishSite, searchSiteLines, searchSiteSubstations, siteKey, useSiteLines, useSiteSubstations, type LineSearch, type LonLat, type NearLine, type SitePlant } from "../lib/site";
 import { actions } from "../app/store";
 import type { RGB } from "../lib/theme";
+import { frNumber, ieRoom, itTotals, type FrFile, type IeFile, type ItFile } from "../lib/connectMore";
+import type { MastrMuniFile } from "../lib/mastr";
+import { CONSTRAINT_RADIUS_KM, SHARE_STEP_KM, floodClassAt, floodLabel, protectedAround, roadsAround, type ConstraintsFile, type ProtectedFile, type ProtectedSearch } from "../lib/constraints";
 import { ISO3, type TransitionFile } from "../lib/transition";
 import { US_TYPE_COLOR, US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFile, type UsQueuesLiveFile, type UsState, type UsStatesFile } from "../lib/us";
 import type { DataCentresFile } from "../lib/world";
@@ -85,7 +88,7 @@ const round = (v: number, d: number) => Number(v.toFixed(d));
 
 /** [item, value, unit, note, source]: one figure as a card shows it, unformatted. */
 export type ReportRow = [string, string | number | null, string, string, string];
-const SECTIONS = ["Grid", "Room to connect", "Power plants", "Prices", "Risk", "Around it"] as const;
+const SECTIONS = ["Grid", "Room to connect", "Constraints", "Power plants", "Prices", "Risk", "Around it"] as const;
 type Section = (typeof SECTIONS)[number];
 const useSiteReport = create<{ key: string; sections: Partial<Record<Section, ReportRow[]>> }>(() => ({ key: "", sections: {} }));
 
@@ -200,12 +203,34 @@ export function SiteGridCard({ place }: { place: Place }) {
     return [...byKv.entries()].sort((a, b) => parseFloat(b[0]) - parseFloat(a[0]));
   };
   const pypsa = "PyPSA-Eur network from OpenStreetMap (grid.json)";
+  // outside Europe: every substation mapped in OpenStreetMap (the world tiles)
+  const outside = place.ready && !place.europe;
+  useEffect(() => {
+    if (outside) searchSiteSubstations(site);
+  }, [site, outside]);
+  const wsub = useSiteSubstations((s) => (s.key === siteKey(site) ? s : null));
+  const OSM_SUBS = "OpenStreetMap via Overture Maps (grid/world-substations.pmtiles)";
+  // Germany: the grid operator of the municipality (MaStR); US: the utilities serving the county (EIA-861)
+  const muni = useFile<MastrMuniFile>(place.iso2 === "DE" ? "mastrMuni" : null);
+  const deOps = useFile<{ snapshot: string; municipalities: Record<string, [string, string, number, number, number]> }>(place.iso2 === "DE" ? "deGridOperators" : null);
+  const gem = useMemo(() => muni?.gemeinden.find((g) => inFlatPolygons(site, g.polygons)) ?? null, [muni, site]);
+  const deOp = gem && deOps ? (deOps.municipalities[gem.ags] ?? null) : null;
+  const counties = useFile<UsCountiesFile>(place.state ? "usCounties" : null);
+  const utilities = useFile<{ year: string; utilities: Record<string, string>; counties: Record<string, number[]> }>(place.state ? "usUtilities" : null);
+  const county = useMemo(() => counties?.counties.find((c) => inFlatPolygons(site, c.polygons)) ?? null, [counties, site]);
+  const serving = county && utilities ? (utilities.counties[county.code] ?? []).map((id) => utilities.utilities[String(id)]) : [];
+  const mastrSrc = deOps ? `Marktstammdatenregister ${deOps.snapshot} (units' grid connection points)` : "";
+  const eiaSrc = utilities ? `EIA-861 service territory ${utilities.year} (PUDL)` : "";
   useReport(place, "Grid", [
     inUs && lineReport("Nearest line, 100 kV or more", us?.result, (s) => s.nearest, OSM_US),
     lineReport("Nearest line, 220 kV or more", world?.result, (s) => s.nearest, OSM_WORLD),
     lineReport("Nearest line, 345 kV or more", world?.result, (s) => s.ehv, OSM_WORLD),
     place.europe && !!grid && ["Nearest substation, 220 kV or more", subs[0] ? round(subs[0].d, 2) : null, "km", subs[0] ? `${subs[0].row[0]} kV` : `none within ${R} km`, pypsa],
     place.europe && !!grid && [`Substations within ${R} km`, subs.length, "count", "220 kV and more", pypsa],
+    outside && !!wsub?.result && ["Nearest substation", wsub.result.near[0] ? round(wsub.result.near[0].km, 2) : null, "km", wsub.result.near[0] ? [wsub.result.near[0].kv != null ? `${wsub.result.near[0].kv} kV` : "voltage not tagged", wsub.result.near[0].name ?? ""].filter(Boolean).join("; ") : `none within ${round(wsub.result.radiusKm, 1)} km`, OSM_SUBS],
+    outside && !!wsub?.result && [`Substations within ${round(wsub.result.radiusKm, 1)} km`, wsub.result.near.length, "count", "every voltage mapped", OSM_SUBS],
+    !!deOp && ["Grid operator of the municipality", deOp[0], "", `${deOp[2]} of ${deOp[4]} units in ${gem?.name ?? gem?.ags}; ${deOp[3]} operators`, mastrSrc],
+    ...serving.map((u) => ["Utility serving the county", u, "", county?.name ?? "", eiaSrc] as ReportRow),
   ]);
   return (
     <Card title="Grid" note={`straight-line distance`} accent={[236, 178, 120]}>
@@ -231,10 +256,30 @@ export function SiteGridCard({ place }: { place: Place }) {
         ) : (
           <Loading what="substations" />
         ))}
+      {outside &&
+        (wsub?.failed ? (
+          <Row k="Nearest substation" v="tiles not reachable" />
+        ) : !wsub?.result ? (
+          <Row k="Nearest substation" v="…" />
+        ) : (
+          <>
+            <Row
+              k="Nearest substation"
+              v={wsub.result.near[0] ? kmText(wsub.result.near[0].km) : `none within ${kmText(wsub.result.radiusKm)}`}
+              sub={wsub.result.near[0] ? (wsub.result.near[0].kv != null ? `${wsub.result.near[0].kv} kV` : "voltage not tagged") : undefined}
+            />
+            {wsub.result.near[0]?.name && <div className={`-mt-0.5 truncate pb-0.5 text-right text-[10px] ${muted}`}>{wsub.result.near[0].name}</div>}
+            <Row k={`Substations within ${kmText(wsub.result.radiusKm)}`} v={wsub.result.near.length.toLocaleString("en-US")} sub="every voltage mapped" />
+          </>
+        ))}
+      {deOp && <Row k="Grid operator of the municipality" v={<span className="truncate">{deOp[0]}</span>} sub={`${deOp[2].toLocaleString("en-US")} of ${deOp[4].toLocaleString("en-US")} units; ${deOp[3]} operators`} />}
+      {serving.length > 0 && <Row k={`Utilities serving ${county?.name ?? "the county"}`} v={serving.length} sub={serving.slice(0, 3).join(", ")} />}
       <Note>
         Distance in a straight line to the line's mapped course. Lines: OpenStreetMap (ODbL) via Overture Maps, the map's own tiles ({inUs ? "US lines from 100 kV, " : ""}
         lines from 220 kV worldwide; simplified by about 0.1 km), voltage as tagged.{place.europe ? " Substations: PyPSA-Eur's network from OpenStreetMap." : ""} Projects connect at
-        substations, where the operator has room: a line nearby is not a connection offer.
+        substations, where the operator has room: a line nearby is not a connection offer.{outside ? " Substations outside Europe: every one mapped in OpenStreetMap (points at the centre of mapped outlines), within the tiles read." : ""}
+        {deOp ? " Germany: the operator most of the municipality's units are connected to (MaStR, count computed)." : ""}
+        {serving.length ? ` United States: the utilities reporting service in the county (EIA-861, ${utilities?.year}).` : ""}
       </Note>
     </Card>
   );
@@ -267,6 +312,19 @@ export function SiteCapacityCard({ place }: { place: Place }) {
       }),
     [key, gb, nl, connect],
   );
+  const frf = useFile<FrFile>(place.iso2 === "FR" ? "connectFR" : null);
+  const ief = useFile<IeFile>(place.iso2 === "IE" ? "connectIE" : null);
+  const itf = useFile<ItFile>(place.iso2 === "IT" ? "connectIT" : null);
+  const frNear = useMemo(() => (frf ? within(frf.sites, (x) => [x[3], x[4]], site, R) : []), [frf, site, R]);
+  const ieNear = useMemo(() => (ief ? within(ief.stations, (x) => [x[3], x[4]], site, R) : []), [ief, site, R]);
+  const itReg = useMemo(
+    () => (itf ? (Object.entries(itf.nuts2).find(([, ids]) => ids.some((id) => inFlatPolygons(site, itf.shapes[id] ?? []))))?.[0] ?? null : null),
+    [itf, site],
+  );
+  const itTot = itf && itReg ? itTotals(itf)[itReg] : undefined;
+  const capSrc = "Capareseau (RTE and the distribution operators)";
+  const esbSrc = ief ? `ESB Networks capacity heatmap (${ief.file})` : "";
+  const ternaSrc = "Terna Econnextion (dati.terna.it)";
   const code = place.state?.code;
   const st = code ? queue?.states[code] : undefined;
   // a hybrid counts under each of its types with its full capacity: types, not a total
@@ -300,6 +358,24 @@ export function SiteCapacityCard({ place }: { place: Place }) {
       ? ([
           [`Active requests in ${place.state?.name}`, round(sum(st.active), 1), "MW", `${st.active_n} projects`, lbnl],
           ...types.map((x) => [`Active requests, ${x.t}`, round(x.mw, 1), "MW", "", lbnl]),
+        ] as ReportRow[])
+      : []),
+    ...(frf
+      ? ([
+          [`S3REnR capacity left to allocate within ${R} km`, round(sum(frNear.map((x) => frNumber(frf, x.row, "INFO_NA") ?? 0)), 1), "MW", `${frNear.length} substations (sum, computed)`, capSrc],
+          ...frNear.slice(0, 20).map((x) => [x.row[1], frNumber(frf, x.row, "INFO_NA"), "MW", `${round(x.d, 2)} km; S3REnR capacity left to allocate`, capSrc]),
+        ] as ReportRow[])
+      : []),
+    ...(ief
+      ? ieNear.slice(0, 20).flatMap((x) => [
+          [`${x.row[0]}: demand available`, ieRoom(ief, x.row, "offtake"), "MVA", `${round(x.d, 2)} km`, esbSrc],
+          [`${x.row[0]}: generation available, firm`, ieRoom(ief, x.row, "feedin"), "MW", `${round(x.d, 2)} km`, esbSrc],
+        ] as ReportRow[])
+      : []),
+    ...(itTot && itReg
+      ? ([
+          [`Renewables requested in ${itReg}`, round(itTot.fer, 1), "MW", "sum over sources, computed", ternaSrc],
+          [`Storage requested in ${itReg}`, round(itTot.storage, 1), "MW", "sum over types, computed", ternaSrc],
         ] as ReportRow[])
       : []),
     ...mine.flatMap((x) =>
@@ -341,6 +417,38 @@ export function SiteCapacityCard({ place }: { place: Place }) {
       </Card>
     );
   }
+  if (frf && place.iso2 === "FR") {
+    const left = sum(frNear.map((x) => frNumber(frf, x.row, "INFO_NA") ?? 0));
+    return (
+      <Card title="Room to connect" note="Capareseau" accent={[206, 138, 72]}>
+        <Row k={`S3REnR capacity left within ${R} km`} v={gwText(left)} sub={`${frNear.length} substations`} />
+        {frNear.slice(0, 5).map((x) => (
+          <Row key={x.row[0]} k={<span className="truncate">{x.row[1]}</span>} v={gwText(frNumber(frf, x.row, "INFO_NA") ?? 0)} sub={kmText(x.d)} />
+        ))}
+        <Note>Capacity reserved for renewables by the region's S3REnR and not yet allocated, per substation, as RTE and the distribution operators publish it (sum, computed). For new generation only; indicative.</Note>
+      </Card>
+    );
+  }
+  if (ief && place.iso2 === "IE") {
+    return (
+      <Card title="Room to connect" note="ESB Networks heatmap" accent={[206, 138, 72]}>
+        {ieNear.length === 0 && <Row k={`Stations within ${R} km`} v="none" />}
+        {ieNear.slice(0, 5).map((x) => (
+          <Row key={x.row[0]} k={<span className="truncate">{x.row[0]}</span>} v={`${round(ieRoom(ief, x.row, "offtake") ?? 0, 1)} MVA / ${round(ieRoom(ief, x.row, "feedin") ?? 0, 1)} MW`} sub={kmText(x.d)} />
+        ))}
+        <Note>Demand available (MVA) / firm generation available (MW) at the nearest 38 kV and 110 kV stations and MV transformers: transformer capacity only, as ESB Networks publishes it.</Note>
+      </Card>
+    );
+  }
+  if (itTot && itReg) {
+    return (
+      <Card title="Waiting to connect" note={`in ${itReg}`} accent={[206, 138, 72]}>
+        <Row k="Renewables requested (Terna)" v={gwText(itTot.fer)} />
+        <Row k="Storage requested (Terna)" v={gwText(itTot.storage)} />
+        <Note>Per region, not per substation: requests to connect to the transmission grid at every stage (Terna Econnextion), most of which will not be built.</Note>
+      </Card>
+    );
+  }
   if (code && queue) {
     return (
       <Card title="Waiting to connect" note={`in ${place.state?.name}`} accent={[206, 138, 72]}>
@@ -367,6 +475,88 @@ export function SiteCapacityCard({ place }: { place: Place }) {
     );
   }
   return null;
+}
+
+// ---------------------------------------------------------------- what stops a build
+
+type Pending<T> = { key: string; v: T | null; failed: boolean };
+function useAsync<T>(key: string | null, run: () => Promise<T>): Pending<T> {
+  const [st, setSt] = useState<Pending<T>>({ key: "", v: null, failed: false });
+  useEffect(() => {
+    if (!key) return;
+    let live = true;
+    setSt({ key, v: null, failed: false });
+    run()
+      .then((v) => live && setSt({ key, v, failed: false }))
+      .catch(() => live && setSt({ key, v: null, failed: true }));
+    return () => {
+      live = false;
+    };
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  return st.key === key ? st : { key: key ?? "", v: null, failed: false };
+}
+
+export function SiteConstraintsCard({ place }: { place: Place }) {
+  const { site } = place;
+  const key = siteKey(site);
+  const cf = useFile<ConstraintsFile>("constraints");
+  const pf = useFile<ProtectedFile>("protected");
+  const covered = place.europe || !!place.state;
+  // PAD-US may be missing from the newest build: then no protected-area figures for the US
+  const protCovered = place.europe ? !pf?.failed?.natura2000 : !!place.state && !pf?.failed?.padus;
+  const prot = useAsync<ProtectedSearch>(pf && protCovered ? `p|${key}` : null, () => protectedAround(pf!.tiles, site));
+  const roads = useAsync(cf && covered ? `r|${key}` : null, () => roadsAround(cf!.roads.tiles, site));
+  const flood = useAsync(cf ? `f|${key}` : null, async () => {
+    const eu = await floodClassAt(cf!.flood.maps.eu.lookup, site[0], site[1]);
+    if (eu > 0 || (eu === 0 && place.europe)) return { cls: eu, map: "eu" as const };
+    return { cls: Math.max(0, await floodClassAt(cf!.flood.maps.world.lookup, site[0], site[1])), map: "world" as const };
+  });
+  const R = CONSTRAINT_RADIUS_KM;
+  const n2k = pf ? `${pf.natura2000.source}` : "";
+  const pad = pf ? `${pf.padus.source}` : "";
+  const fl = cf && flood.v ? cf.flood.maps[flood.v.map] : null;
+  const flSrc = cf && fl ? `${cf.flood.source}; ${fl.title}; ${fl.lookup.computed}` : "";
+  const osm = cf?.roads.source ?? "";
+  useReport(place, "Constraints", [
+    ...(prot.v
+      ? ([
+          [`Share of ${R} km around covered by protected areas`, round(100 * prot.v.share, 1), "%", `${prot.v.points} points ${SHARE_STEP_KM} km apart (computed)`, place.europe ? n2k : pad],
+          ...prot.v.areas.slice(0, 20).map((a) => [a.name, round(a.km, 2), "km", [a.km === 0 ? "the site is inside" : "to its outline", a.kind, a.gap ? `GAP ${a.gap}` : "", a.id].filter(Boolean).join("; "), a.src === "n2k" ? n2k : pad]),
+        ] as ReportRow[])
+      : []),
+    !!cf && !!flood.v && ["River flood depth, 100-year flood", floodLabel(cf, flood.v.cls), "", flood.v.cls ? `class ${flood.v.cls} of 5` : "", flSrc],
+    !!roads.v && ["Nearest major road", roads.v.road ? round(roads.v.road.km, 2) : null, "km", roads.v.road ? [roads.v.road.cls, roads.v.road.name].filter(Boolean).join("; ") : `none within ${round(roads.v.radiusKm, 1)} km`, osm],
+    !!roads.v && ["Nearest railway", roads.v.rail ? round(roads.v.rail.km, 2) : null, "km", roads.v.rail ? roads.v.rail.name ?? "standard gauge" : `none within ${round(roads.v.radiusKm, 1)} km`, osm],
+  ]);
+  if (!cf || (!pf && covered)) return null;
+  const wait = (s: { v: unknown; failed: boolean }, k: string) => (s.failed ? <Row k={k} v="tiles not reachable" /> : !s.v ? <Row k={k} v="…" /> : null);
+  return (
+    <Card title="Constraints" note={`within ${R} km`} accent={[96, 186, 120]}>
+      {covered && !protCovered && <Row k="Protected areas" v="not available" sub={place.europe ? "Natura 2000" : "PAD-US could not be read"} />}
+      {protCovered && (wait(prot, "Protected areas") ?? (prot.v && (
+        <>
+          <Row k={`Protected, share of ${R} km around`} v={`${(100 * prot.v.share).toFixed(1)} %`} sub={`${prot.v.areas.length} areas`} />
+          {prot.v.areas.slice(0, 4).map((a) => (
+            <Row key={`${a.src}${a.id ?? a.name}`} k={<span className="truncate">{a.name}</span>} v={a.km === 0 ? "inside" : kmText(a.km)} sub={a.kind ?? undefined} />
+          ))}
+        </>
+      )))}
+      {wait(flood, "River flood, 100-year") ?? (flood.v && <Row k="River flood depth, 100-year flood" v={floodLabel(cf, flood.v.cls)} sub={flood.v.map === "eu" ? "Europe, 100 m map" : "world, 1 km map"} />)}
+      {covered &&
+        (wait(roads, "Nearest major road") ??
+          (roads.v && (
+            <>
+              <Row k="Nearest major road" v={roads.v.road ? kmText(roads.v.road.km) : `none within ${kmText(roads.v.radiusKm)}`} sub={roads.v.road?.cls} />
+              <Row k="Nearest railway" v={roads.v.rail ? kmText(roads.v.rail.km) : `none within ${kmText(roads.v.radiusKm)}`} sub={roads.v.rail?.name ?? undefined} />
+            </>
+          )))}
+      <Note>
+        {covered ? `Protected areas: ${place.europe ? "Natura 2000 (EEA, end 2024)" : "PAD-US 4.1 (USGS)"} from the map's tiles; the share counts points ${SHARE_STEP_KM} km apart inside ${R} km (computed). ` : "Protected areas, roads and rail: Europe and the US only. "}
+        Flood: the deepest of JRC's depth classes in the {fl?.lookup.cell_deg ?? "…"}° cell holding the site (computed from the {fl?.title ?? "…"} map), a hazard map, not a flood
+        risk assessment.{covered ? " Roads (motorway, trunk, primary) and standard-gauge rail: OpenStreetMap via Overture Maps, straight-line distance." : ""}
+      </Note>
+    </Card>
+  );
 }
 
 // ---------------------------------------------------------------- plants nearby
@@ -751,6 +941,7 @@ export function SiteCards({ place }: { place: Place }) {
       <SiteArea place={place} />
       <SiteGridCard place={place} />
       <SiteCapacityCard place={place} />
+      <SiteConstraintsCard place={place} />
       <SitePlantsCard place={place} />
       <SitePricesCard place={place} />
       <SiteRiskCard place={place} />

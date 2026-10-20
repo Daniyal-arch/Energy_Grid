@@ -25,6 +25,10 @@ import type { GasFlowsFile } from "../lib/gasFlows";
 import { IrenaCountryCard, IrenaRankingCard } from "../components/IrenaCards";
 import type { FinanceFile } from "../lib/finance";
 import { AggregateCard, RankingCard, type RankRow } from "../components/TransitionCards";
+import { AuctionsCard, CostsCard } from "../components/ComingCards";
+import { Ferc714Card } from "../components/ReliabilityCards";
+import { EsRegionsCard, FrRegionsCard, NzCard, ZaCard } from "../components/RegionalLiveCards";
+import type { NzFile, ZaFile } from "../lib/regionalLive";
 import type { IrenaFile } from "../lib/irena";
 import { AccessCard, BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard, WorldCountryCard } from "../components/WorldCards";
 import { UsCapacityCard, UsHubPricesCard, UsLiveQueuesCard, UsNodeSpreadCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
@@ -479,6 +483,8 @@ function CountryPanel({ iso }: { iso: string }) {
           )}
           {!day && gbCarbon && <GbCarbonCard gb={gbCarbon} />}
           {!day && dkLive && <DkLiveCard dk={dkLive} />}
+          {!day && iso === "FR" && <FrRegionsCard />}
+          {iso === "ES" && <EsRegionsCard />}
           {!day && linesOut && <LinesOutCard f={linesOut} iso2={iso} />}
           {redispatch && <RedispatchCard f={redispatch} />}
           {trade.length > 0 && <TradeCard rows={trade} time={timeOf(trade[0].ts)} />}
@@ -608,8 +614,13 @@ function CountryPrices({ iso }: { iso: string }) {
   if (!pf) return <Empty>Loading twelve months of prices…</Empty>;
   const zones = Object.keys(pf.zones).filter((z) => pf.zones[z].country === iso);
   const wholesale = zones.length === 1 ? { eur_mwh: pf.zones[zones[0]].mean, period: periodLabel(pf) } : undefined;
-  const consumers = retail ? <RetailCountryCard f={retail} iso={iso} wholesale={wholesale} /> : null;
-  if (!zones.length) return consumers ?? <Empty>No day-ahead price at ENTSO-E for this country.</Empty>;
+  const consumers = (
+    <>
+      {retail && <RetailCountryCard f={retail} iso={iso} wholesale={wholesale} />}
+      <AuctionsCard iso3={ISO3[iso] ?? iso} />
+    </>
+  );
+  if (!zones.length) return retail ? consumers : <Empty>No day-ahead price at ENTSO-E for this country.</Empty>;
   return (
     <>
       {consumers}
@@ -671,6 +682,8 @@ function WorldPanel() {
   const au = useFile<AemoFile>("aemo");
   const tw = useFile<TaiwanFile>("taiwan");
   const on = useFile<OntarioFile>("ontario");
+  const nzLive = useFile<NzFile>("nz");
+  const zaLive = useFile<ZaFile>("za");
   const wp = useFile<WorldPlantsFile>("worldPlants");
   const ws = useFile<WorldStatsFile>("worldStats");
   const dc = useFile<DataCentresFile>("datacentres");
@@ -698,6 +711,8 @@ function WorldPanel() {
           {br && <BrazilCard br={br} />}
           {au && <NemCard aemo={au} />}
           {tw && <TaiwanCard tw={tw} />}
+          {nzLive && <NzCard nz={nzLive} />}
+          {zaLive && <ZaCard za={zaLive} />}
           {on && <OntarioCard on={on} />}
           {jepx && <JepxCard f={jepx} />}
           {cenace && <CenaceCard f={cenace} />}
@@ -733,6 +748,7 @@ function WorldPanel() {
         irena ? (
           <>
             <IrenaRankingCard f={irena} year={yearLabel} names={names} onPick={(c) => actions.select({ kind: "country", iso3: c }, "capacity")} />
+            <CostsCard />
             <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === "Installed capacity")} />
           </>
         ) : (
@@ -881,7 +897,7 @@ function UsPanel() {
           <Empty>Loading EIA's generator inventory…</Empty>
         ),
     },
-    { id: "retail", label: "Retail prices", body: () => (retail ? <><UsRetailCard f={retail} />{sources}</> : <Empty>Loading EIA's retail prices…</Empty>) },
+    { id: "retail", label: "Retail prices", body: () => (retail ? <><UsRetailCard f={retail} /><CostsCard />{sources}</> : <Empty>Loading EIA's retail prices…</Empty>) },
     { id: "pipeline", label: "Additions & retirements", body: () => (plants ? <><UsPipelineCard f={plants} />{sources}</> : <Empty>Loading EIA's generator inventory…</Empty>) },
     {
       id: "queue",
@@ -987,22 +1003,27 @@ function WorldCountryPanel({ code }: { code: string }) {
   return <Frame title={name} tabs={withStats(tabs, statsOn, code)} action={<ReportButton code={code} />} />;
 }
 
-function RegionPanel({ grid, id }: { grid: "us" | "br" | "au" | "tw" | "on"; id: string }) {
+function RegionPanel({ grid, id }: { grid: "us" | "br" | "au" | "tw" | "on" | "nz" | "za"; id: string }) {
   const us = useFile<UsFile>(grid === "us" ? "us" : null);
   const br = useFile<BrazilFile>(grid === "br" ? "brazil" : null);
   const au = useFile<AemoFile>(grid === "au" ? "aemo" : null);
   const tw = useFile<TaiwanFile>(grid === "tw" ? "taiwan" : null);
   const on = useFile<OntarioFile>(grid === "on" ? "ontario" : null);
-  const title = grid === "us" ? (us?.regions[id]?.name ?? id) : grid === "br" ? (br?.subsystems[id]?.name ?? id) : grid === "tw" ? "Taiwan" : grid === "on" ? "Ontario" : (NEM_NAME[id] ?? id);
-  const sub = grid === "us" ? "United States · EIA-930" : grid === "br" ? "Brazil · ONS" : grid === "tw" ? "Taipower · every unit" : grid === "on" ? "IESO · Canada" : "Australia · AEMO";
+  const nz = useFile<NzFile>(grid === "nz" ? "nz" : null);
+  const za = useFile<ZaFile>(grid === "za" ? "za" : null);
+  const title = grid === "us" ? (us?.regions[id]?.name ?? id) : grid === "br" ? (br?.subsystems[id]?.name ?? id) : grid === "tw" ? "Taiwan" : grid === "on" ? "Ontario" : grid === "nz" ? "New Zealand" : grid === "za" ? "South Africa" : (NEM_NAME[id] ?? id);
+  const sub = grid === "us" ? "United States · EIA-930" : grid === "br" ? "Brazil · ONS" : grid === "tw" ? "Taipower · every unit" : grid === "on" ? "IESO · Canada" : grid === "nz" ? "Transpower · em6" : grid === "za" ? "Eskom" : "Australia · AEMO";
   const body = () => (
     <>
       {us && <UsCard us={us} />}
+      {grid === "us" && <Ferc714Card region={id} />}
       {br && <BrazilCard br={br} />}
       {au && <NemCard aemo={au} />}
       {tw && <TaiwanCard tw={tw} />}
       {on && <OntarioCard on={on} />}
-      <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === (grid === "us" ? "United States" : grid === "br" ? "Brazil" : grid === "tw" ? "Taiwan" : grid === "on" ? "Ontario" : "Australia"))} />
+      {nz && <NzCard nz={nz} />}
+      {za && <ZaCard za={za} />}
+      <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === (grid === "us" ? "United States" : grid === "br" ? "Brazil" : grid === "tw" ? "Taiwan" : grid === "on" ? "Ontario" : grid === "nz" ? "New Zealand" : grid === "za" ? "South Africa" : "Australia"))} />
     </>
   );
   return <Frame title={title} sub={sub} tabs={[{ id: "now", label: "Now", body }]} />;

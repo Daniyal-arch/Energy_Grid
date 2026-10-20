@@ -57,6 +57,11 @@ export type LayerId =
   | "dataCentres"
   | "usOutages"
   | "water"
+  | "protectedAreas"
+  | "hydrogen"
+  | "gasProjects"
+  | "flood"
+  | "roadsRail"
   | "mastrDE"
   | "offshoreWind"
   | "wind"
@@ -107,7 +112,7 @@ export interface LayerInfo {
 export const LAYERS: LayerInfo[] = [
   { id: "flows", label: "Cross-border flows", desc: "Power moving between countries now", group: "Electricity now", coverage: "Europe", color: "rgb(120,222,255)", modes: ["live", "day"] },
   { id: "prices", label: "Prices", desc: "Each country rises by its day-ahead price; generation towers stand on top", group: "Electricity now", coverage: "Europe", color: "rgb(255,196,90)", modes: ["live", "day"] },
-  { id: "liveGrids", label: "Live grids", desc: "US, Brazil, Australia, Taiwan, Ontario now", group: "Electricity now", coverage: "World", color: "rgb(255,196,120)", modes: ["live"] },
+  { id: "liveGrids", label: "Live grids", desc: "US, Brazil, Australia, Taiwan, Ontario, New Zealand, South Africa now", group: "Electricity now", coverage: "World", color: "rgb(255,196,120)", modes: ["live"] },
   { id: "usNodePrices", label: "Node prices", desc: "Day-ahead price at each placed node, hour by hour", group: "Electricity now", coverage: "US West", color: "rgb(255,196,90)", modes: ["day"] },
   { id: "towers", label: "Generation towers", desc: "Each country's (or US region's) output by source", group: "Electricity now", coverage: "Europe, US", color: "rgb(255,214,72)", modes: ["day"] },
   { id: "gridEU", label: "Transmission lines", desc: "220–750 kV, by voltage", group: "Power grid", coverage: "Europe", color: "rgb(236,178,120)" },
@@ -115,7 +120,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "substations", label: "Substations", desc: "220 kV and more, shown zoomed in", group: "Power grid", coverage: "Europe", color: "rgb(226,232,240)" },
   { id: "gridWorld", label: "High-voltage lines", desc: "220 kV and more, mapped in OpenStreetMap", group: "Power grid", coverage: "World", color: "rgb(160,210,255)" },
   { id: "gridUS", label: "US transmission lines", desc: "100–765 kV by voltage, mapped in OpenStreetMap", group: "Power grid", coverage: "US", color: "rgb(236,178,120)" },
-  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Connections & queues", coverage: "GB, NL, ES", color: "rgb(206,138,72)" },
+  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Connections & queues", coverage: "GB, NL, ES, FR, IT, IE, PT, PL", color: "rgb(206,138,72)" },
   { id: "cables", label: "Undersea power cables", desc: "HVDC and AC cables at sea", group: "Power grid", coverage: "World", color: "rgb(110,190,255)" },
   { id: "predicted", label: "Predicted local grid", desc: "Estimated from night lights (Gridfinder)", group: "Power grid", coverage: "World", color: "rgb(255,190,110)" },
   { id: "plantsEU", label: "Power plants", desc: "20 MW and more, by fuel", group: "Power plants", coverage: "Europe", color: "rgb(255,128,72)" },
@@ -138,6 +143,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "plantOutput", label: "Plant output", desc: "What each large plant produces at the clock", group: "Power plants", coverage: "Europe, US", color: "rgb(255,214,140)", modes: ["day"] },
   { id: "gasFlows", label: "Gas flows", desc: "Gas crossing borders and entering Europe, per gas day", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(255,178,62)", modes: ["live"] },
   { id: "lngSendOut", label: "LNG send-out", desc: "Gas each EU terminal sends into the grid, per day", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(120,180,255)" },
+  { id: "gasProjects", label: "Planned gas projects", desc: "ENTSOG TYNDP 2026: gas and hydrogen projects per country", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(96,214,255)" },
   { id: "gas", label: "Gas storage", desc: "Underground storage sites", group: "Gas, oil & coal", coverage: "Europe", color: "rgb(255,150,92)" },
   { id: "financeCoal", label: "Who finances coal power", desc: "Money from lenders' countries to coal plants", group: "Money", coverage: "World", color: "rgb(232,204,128)" },
   { id: "financeGas", label: "Who finances gas", desc: "Money to gas plants and LNG terminals", group: "Money", coverage: "World", color: "rgb(255,170,60)" },
@@ -149,9 +155,13 @@ export const LAYERS: LayerInfo[] = [
   { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & demand", coverage: "World", color: "rgb(230,160,255)" },
   { id: "ironOre", label: "Iron ore mines", desc: "Sized by production", group: "Industry & demand", coverage: "World", color: "rgb(206,112,88)" },
   { id: "evChargersUS", label: "EV fast chargers", desc: "Public DC fast charging stations, sized by ports (NREL AFDC)", group: "Industry & demand", coverage: "US", color: "rgb(96,214,255)" },
+  { id: "hydrogen", label: "Hydrogen projects", desc: "Electrolysers and other clean-hydrogen plants, operating or being built (European Hydrogen Observatory)", group: "Industry & demand", coverage: "Europe", color: "rgb(96,214,255)" },
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & demand", coverage: "World", color: "rgb(196,150,255)" },
   { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Risk", coverage: "World", color: "rgb(255,153,0)" },
   { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Risk", coverage: "US", color: "rgb(230,120,80)" },
+  { id: "protectedAreas", label: "Protected areas", desc: "Natura 2000 sites (EEA)", group: "Risk", coverage: "Europe", color: "rgb(96,186,120)" },
+  { id: "flood", label: "River flood hazard", desc: "Water depth in a 100-year flood (JRC)", group: "Risk", coverage: "World", color: "rgb(60,130,210)" },
+  { id: "roadsRail", label: "Major roads and railways", desc: "Motorways, trunk and primary roads; standard-gauge rail (OpenStreetMap)", group: "Risk", coverage: "Europe, US", color: "rgb(200,196,186)" },
   { id: "wind", label: "Wind", desc: "Moving wind at turbine height", group: "Weather", coverage: "World", color: "rgb(220,240,255)", modes: ["live", "day"] },
   { id: "sun", label: "Sunshine", desc: "Solar radiation reaching the ground", group: "Weather", coverage: "World", color: "rgb(255,214,72)", modes: ["live", "day"] },
   { id: "solarResource", label: "Solar resource", desc: "PV output per kWp installed, long-term average (Global Solar Atlas)", group: "Resources", coverage: "World", color: "rgb(240,196,112)" },
@@ -194,6 +204,9 @@ export const STATS_LAYERS = new Set<LayerId>([
   "dataCentres",
   "usOutages",
   "water",
+  "protectedAreas",
+  "hydrogen",
+  "gasProjects",
   "mastrDE",
   "offshoreWind",
 ]);
@@ -245,7 +258,7 @@ export const isYearColour = (c: ColourId) => c.startsWith("tr_");
 export type Selection =
   | { kind: "country"; iso2?: string; iso3?: string }
   | { kind: "zone"; id: string }
-  | { kind: "region"; grid: "us" | "br" | "au" | "tw" | "on"; id: string }
+  | { kind: "region"; grid: "us" | "br" | "au" | "tw" | "on" | "nz" | "za"; id: string }
   /** "Check a site": one place, what the map's files say about it (ui/SitePanel.tsx) */
   | { kind: "site"; lon: number; lat: number; r?: number };
 
@@ -673,7 +686,7 @@ export function readUrl(): void {
     const [kind, a, b] = sel.split(":");
     if (kind === "country") patch.selection = a.length === 2 ? { kind, iso2: a } : { kind, iso3: a };
     if (kind === "zone") patch.selection = { kind, id: a };
-    if (kind === "region") patch.selection = { kind, grid: a as "us" | "br" | "au" | "tw" | "on", id: b };
+    if (kind === "region") patch.selection = { kind, grid: a as "us" | "br" | "au" | "tw" | "on" | "nz" | "za", id: b };
     if (kind === "site") {
       const [lon, lat, r] = (a ?? "").split(",").map(Number);
       if (Number.isFinite(lon) && Number.isFinite(lat) && Math.abs(lat) <= 85 && Math.abs(lon) <= 180)

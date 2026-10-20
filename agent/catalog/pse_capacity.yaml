@@ -1,0 +1,19 @@
+dataset: pse_capacity
+title: Poland, connection requests to PSE (Art. 7(8l) Energy Law) and switchgears without free bays
+licence: PSE terms (public information under Art. 7(8l) of the Energy Law)
+map_file: frontend/public/data/eu/connect/pl.json (card only: PSE publishes no positions)
+tables:
+  requests:
+    grain: one row per object (project) in PSE's list, every column as published (text)
+    keys: {name, type: PV | FW | MEE | MIX | ODB | OSD ..., status}
+    measures: {mw_injected: {unit: MW, how: "connection capacity to inject, as published ('129; 240' for several points)"}}
+    examples:
+      - q: how many requests have connection conditions issued
+        sql: SELECT count(*) FROM pse_capacity.requests WHERE status = 'WARUNKI PRZYŁĄCZENIA wydane'
+        answer: 537 of 886 (as of 2026-08-31)
+  full_substations:
+    grain: one row per PSE switchgear with no free connection bay
+    examples:
+      - q: how many PSE switchgears have no free bay
+        sql: SELECT count(*) FROM pse_capacity.full_substations
+        answer: 69 (list of 2026-02-04)

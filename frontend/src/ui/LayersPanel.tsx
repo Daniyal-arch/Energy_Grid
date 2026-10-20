@@ -13,6 +13,10 @@ import { CT_COLOR, type CtraceFile } from "../lib/ctrace";
 import { OUTAGE_STOPS, OUTAGE_TICKS, WATER_COLOR, WATER_INDICATORS, newestYear, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, type MastrMuniFile } from "../lib/mastr";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
+import { IT_CLASSES, IT_COLOR, ROOM_CLASSES } from "../lib/connectMore";
+import { SEA_CABLE_COLOR } from "../lib/seaCables";
+import { GAS_CAT_COLOR, H2_STAGE_COLOR } from "../lib/coming";
+import { PROTECTED_COLOR, RAIL_COLOR, ROAD_COLOR, floodLabel, type ConstraintsFile } from "../lib/constraints";
 import type { UsNodesFile } from "../lib/usNodes";
 import { IRENA_METRICS, IRENA_STOPS, IRENA_TICKS } from "../lib/irena";
 import { PRICE_METRICS, stopGradient } from "../lib/prices";
@@ -193,7 +197,7 @@ function ConnectKey() {
   return (
     <>
       <div className="mb-1 flex items-center gap-1.5">
-        <span className="text-[10px] text-slate-400">Netherlands:</span>
+        <span className="text-[10px] text-slate-400">Netherlands, Ireland:</span>
         {(["offtake", "feedin"] as const).map((s) => (
           <button
             key={s}
@@ -218,6 +222,39 @@ function ConnectKey() {
         Netherlands: each supply area as the regional operators' capacity map shows it. Great Britain: MW waiting to connect at each site (TEC register, {gb?.date ?? "…"}), coloured by the largest
         type; {gwText(placed)} of {gwText(total)} placed, at sites named after a GSP in NESO's lookup; the rest are in the panel. Spain publishes no positions: see the panel.
       </Note>
+      <Swatches>
+        {ROOM_CLASSES.map((label, i) => (
+          <Swatch key={label} color={rgbCss(NL_COLOR[i])} label={label} kind="dot" />
+        ))}
+      </Swatches>
+      {side === "feedin" && (
+        <Swatches>
+          {IT_CLASSES.map((label, i) => (
+            <Swatch key={label} color={rgbCss(IT_COLOR[i])} label={label} />
+          ))}
+        </Swatches>
+      )}
+      <Note>
+        Dots, MW (MVA) left as published: France (new generation), each substation's S3REnR capacity still to allocate (Capareseau); Ireland, each 38 kV and 110 kV station's
+        and MV transformer's demand or firm generation capacity available (ESB Networks heatmap). Italy (new generation): GW requested to connect per region, renewables and storage
+        (Terna Econnextion). Portugal and Poland publish no positions: see the panel.
+      </Note>
+    </>
+  );
+}
+
+const GAS_LABEL: Record<string, string> = { TRA: "gas pipeline", LNG: "LNG", UGS: "gas storage", H2T: "H₂ pipeline", H2S: "H₂ storage", H2E: "electrolyser", H2L: "H₂ import" };
+
+function FloodKey() {
+  const cf = useDataStore((d) => d.files.constraints as ConstraintsFile | undefined);
+  return (
+    <>
+      <Swatches>
+        {(cf?.flood.classes ?? []).map((c, i) => (
+          <Swatch key={i} color={rgbCss(c[2])} label={cf ? floodLabel(cf, i + 1) : ""} />
+        ))}
+      </Swatches>
+      <Note>Water depth where rivers flood once in 100 years on average, as JRC maps it: Europe at 100 m, the world at about 1 km. A hazard map: defences are not modelled everywhere.</Note>
     </>
   );
 }
@@ -403,6 +440,49 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <OutagesKey />;
     case "water":
       return <WaterKey />;
+    case "protectedAreas":
+      return (
+        <>
+          <Swatches>
+            <Swatch color={rgbCss(PROTECTED_COLOR)} label="Natura 2000 site / PAD-US area" />
+          </Swatches>
+          <Note>Natura 2000 (EEA, end 2024) and PAD-US 4.1 Fee (USGS), generalised to about 50 m by the publishers' services. Check a site lists those near it.</Note>
+        </>
+      );
+    case "flood":
+      return <FloodKey />;
+    case "hydrogen":
+      return (
+        <>
+          <Swatches>
+            {Object.entries(H2_STAGE_COLOR).map(([k, c]) => (
+              <Swatch key={k} color={rgbCss(c)} label={k.toLowerCase()} />
+            ))}
+          </Swatches>
+          <Note>Sized by production capacity (MW as published). European Hydrogen Observatory.</Note>
+        </>
+      );
+    case "gasProjects":
+      return (
+        <>
+          <Swatches>
+            {(["TRA", "LNG", "UGS", "H2T", "H2S", "H2E", "H2L"] as const).map((k) => (
+              <Swatch key={k} color={rgbCss(GAS_CAT_COLOR[k])} kind="ring" label={GAS_LABEL[k]} />
+            ))}
+          </Swatches>
+          <Note>ENTSOG publishes no positions: one ring per country, sized by its number of projects, coloured by the most common kind. The panel lists them.</Note>
+        </>
+      );
+    case "roadsRail":
+      return (
+        <>
+          <Swatches>
+            <Swatch color={rgbCss(ROAD_COLOR)} kind="line" label="motorway, trunk, primary" />
+            <Swatch color={rgbCss(RAIL_COLOR)} kind="dash" label="railway (standard gauge)" />
+          </Swatches>
+          <Note>OpenStreetMap via Overture Maps; Europe and the US.</Note>
+        </>
+      );
     case "mastrDE":
       return <MastrKey />;
     case "offshoreWind":
@@ -477,11 +557,15 @@ function LayerLegend({ id }: { id: LayerId }) {
       );
     case "cables":
       return (
-        <Swatches>
-          {Object.entries(CABLE_STYLE).map(([k, s]) => (
-            <Swatch key={k} color={`rgba(${s.color.join(",")})`} kind="line" label={s.label} />
-          ))}
-        </Swatches>
+        <>
+          <Swatches>
+            {Object.entries(CABLE_STYLE).map(([k, s]) => (
+              <Swatch key={k} color={`rgba(${s.color.join(",")})`} kind="line" label={s.label} />
+            ))}
+            <Swatch color={rgbCss(SEA_CABLE_COLOR)} kind="line" label="European seas (EMODnet)" />
+          </Swatches>
+          <Note>OpenStreetMap worldwide; EMODnet adds the power cables the German, Dutch, French and Norwegian authorities publish (both may show one cable).</Note>
+        </>
       );
     case "predicted":
       return <Note>Predicted from night-time lights and roads, not surveyed.</Note>;
@@ -543,9 +627,9 @@ function LayerLegend({ id }: { id: LayerId }) {
         </>
       );
     case "gasPipes":
-      return <>{pipeStatus("rgb(255,196,96)")}<Note>Thicker = more capacity. Global Energy Monitor.</Note></>;
+      return <>{pipeStatus("rgb(255,196,96)")}<Note>Thicker = more capacity. Global Energy Monitor; thin lines at sea: EMODnet's gas pipelines in European seas.</Note></>;
     case "oilPipes":
-      return <>{pipeStatus("rgb(222,110,82)")}<Note>Thicker = more capacity. Global Energy Monitor.</Note></>;
+      return <>{pipeStatus("rgb(222,110,82)")}<Note>Thicker = more capacity. Global Energy Monitor; thin lines at sea: EMODnet's oil and condensate pipelines in European seas.</Note></>;
     case "lngTerminals":
       return (
         <>

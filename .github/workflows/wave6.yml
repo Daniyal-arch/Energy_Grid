@@ -1,0 +1,307 @@
+name: Wave 6 datasets
+
+# The builds of brief 21 (docs/tasks/21-datasets-wave6.md): one job per dataset group, each
+# committing its small outputs (frontend/public/data, agent/catalog) back to the branch and
+# uploading lake tables and tiles to R2.
+# Run by hand from main: Actions > Wave 6 datasets > Run workflow (groups = "A B C ...").
+# Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, EIA_API_KEY.
+
+on:
+  workflow_dispatch:
+    inputs:
+      groups:
+        description: "Groups to build (A B C D E F; K = roads and rail only, P = protected areas only)"
+        type: string
+        default: "A B C D E F"
+
+permissions:
+  contents: write
+
+env:
+  GROUPS: ${{ inputs.groups }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      groups: ${{ steps.p.outputs.groups }}
+    steps:
+      - id: p
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os, re
+          g = os.environ["GROUPS"]
+          m = re.search(r"\[w6: ([A-Z ]+)\]", g)
+          print("groups=" + (m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""))
+          PY
+
+  A:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'A')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry shapely openpyxl
+      - name: 1 France, Capareseau
+        continue-on-error: true
+        run: python scripts/build_connect_more.py fr --upload
+      - name: 2 Italy, Terna Econnextion
+        continue-on-error: true
+        run: python scripts/build_connect_more.py it --upload
+      - name: 4 Portugal, E-REDES
+        continue-on-error: true
+        run: python scripts/build_connect_more.py pt --upload
+      - name: 5 Ireland, ESB Networks
+        continue-on-error: true
+        run: python scripts/build_connect_more.py ie --upload
+      - name: 6 Poland, PSE
+        continue-on-error: true
+        run: python scripts/build_connect_more.py pl --upload
+      - name: Chromium for Elia
+        continue-on-error: true
+        run: |
+          pip install playwright && python -m playwright install --with-deps chromium
+          bash scripts/r2_creds.sh
+      - name: 3 Belgium, Elia (fetched with a browser; refreshed by browser-fetch.yml)
+        continue-on-error: true
+        run: xvfb-run -a python scripts/browser_fetch.py elia_capacity --force
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group A outputs"
+
+  B:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'B')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry shapely
+      - name: R2 credentials (the lake is read and written)
+        run: bash scripts/r2_creds.sh
+      - name: Build tippecanoe
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+      - name: 7 substations worldwide (lake overture_power/sites -> PMTiles)
+        continue-on-error: true
+        run: |
+          python scripts/build_grid_more.py substations
+          tippecanoe -o /tmp/wave6/grid/world-substations.pmtiles -l substations -Z4 -z9 -r1 \
+            --no-feature-limit --no-tile-size-limit \
+            --attribution='© OpenStreetMap contributors (ODbL), via Overture Maps' --force /tmp/wave6/grid/substations.geojsons
+          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
+            /tmp/wave6/grid/world-substations.pmtiles s3://infraatlas-data/grid/world-substations.pmtiles --content-type application/vnd.pmtiles
+          ls -la /tmp/wave6/grid/world-substations.pmtiles; cat /tmp/wave6/grid/substations-summary.json
+      - name: 8 Germany, grid operator per municipality (lake MaStR)
+        continue-on-error: true
+        run: python scripts/build_grid_more.py operators --upload
+      - name: 9 US utility service territories (PUDL EIA-861)
+        continue-on-error: true
+        run: python scripts/build_grid_more.py utilities
+      - name: 10 EMODnet cables and pipelines at sea
+        continue-on-error: true
+        run: python scripts/build_grid_more.py emodnet
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group B outputs"
+
+  C:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      WORK: /mnt/wave6
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Tools (GDAL, tippecanoe, pmtiles)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q gdal-bin python3-gdal python3-numpy build-essential libsqlite3-dev zlib1g-dev
+          pip install httpx duckdb pycountry shapely numpy pmtiles
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+          sudo mkdir -p "$WORK" && sudo chown "$USER" "$WORK"
+          bash scripts/r2_creds.sh
+      - name: 12 river flood hazard (JRC, Europe 171 MB and world 49 MB)
+        continue-on-error: true
+        run: |
+          s3() { aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors "$@"; }
+          for k in eu world; do
+            url=$(python -c "import sys; sys.path.insert(0, 'scripts'); import build_constraints as b; print(b.FLOOD['$k']['zip'])")
+            curl -fL --retry 5 -o "$WORK/flood-$k.zip" "$url"
+            python scripts/build_constraints.py flood $k "$WORK/flood-$k.zip" "$WORK/flood-$k"
+            pmtiles-convert "$WORK/flood-$k/flood-$k.mbtiles" "$WORK/flood-$k/flood-$k.pmtiles"
+            s3 "$WORK/flood-$k/flood-$k.pmtiles" "s3://infraatlas-data/grid/flood-$k.pmtiles" --content-type application/vnd.pmtiles
+            for g in "$WORK"/flood-$k/flood-$k-*deg.u8; do s3 "$g" "s3://infraatlas-data/grid/$(basename "$g")" --content-type application/octet-stream; done
+            gdal_translate -of COG -co COMPRESS=ZSTD "$WORK/flood-$k/${k}_classes.tif" "$WORK/flood-$k-classes.tif"
+            s3 "$WORK/flood-$k-classes.tif" "s3://infraatlas-raw/lake/flood/flood-$k-rp100-classes.tif" --content-type image/tiff
+            ls -la "$WORK/flood-$k"; rm -rf "$WORK/flood-$k.zip" "$WORK/flood-$k"/*_3857.tif "$WORK/flood-$k"/*_rgba.tif
+          done
+      - name: Description for the app (tiles, classes, lookups)
+        run: python scripts/build_constraints.py meta
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group C outputs"
+
+
+  C-protected:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C') || contains(needs.plan.outputs.groups, 'P')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      WORK: /mnt/wave6
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Tools (tippecanoe)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          pip install httpx duckdb pycountry
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+          sudo mkdir -p "$WORK" && sudo chown "$USER" "$WORK"
+          bash scripts/r2_creds.sh
+      - name: 11 protected areas (EEA Natura 2000, USGS PAD-US; ArcGIS services, paged)
+        continue-on-error: true
+        run: |
+          python scripts/build_constraints.py protected --upload
+          tippecanoe -o "$WORK/protected.pmtiles" -l protected -Z0 -z9 --no-feature-limit --no-tile-size-limit --simplification=4 \
+            --attribution='Natura 2000 © EEA; PAD-US (USGS)' --force /tmp/wave6/constraints/protected.geojsons
+          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
+            "$WORK/protected.pmtiles" s3://infraatlas-data/grid/protected.pmtiles --content-type application/vnd.pmtiles
+          ls -la "$WORK/protected.pmtiles"
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 protected areas"
+
+  C-roads:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C') || contains(needs.plan.outputs.groups, 'K')
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Tools (tippecanoe)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          pip install httpx duckdb pycountry shapely
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+      - name: 13 major roads and railways (Overture transportation, Europe and the US)
+        run: |
+          python scripts/build_constraints.py roads --upload
+          tippecanoe -o /tmp/wave6/roads-rail.pmtiles -Z4 -z9 --no-feature-limit --no-tile-size-limit --simplification=4 \
+            --attribution='© OpenStreetMap contributors (ODbL), via Overture Maps' --force /tmp/wave6/constraints/roads.geojsons
+          ls -la /tmp/wave6/roads-rail.pmtiles
+      - name: "Upload grid/roads-rail.pmtiles (R2 credentials only now, DuckDB would send them to Overture's bucket)"
+        run: |
+          bash scripts/r2_creds.sh
+      - run: |
+          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
+            /tmp/wave6/roads-rail.pmtiles s3://infraatlas-data/grid/roads-rail.pmtiles --content-type application/vnd.pmtiles
+
+  D:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'D')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl
+      - name: 14 hydrogen projects (European Hydrogen Observatory)
+        continue-on-error: true
+        run: python scripts/build_coming.py hydrogen --upload
+      - name: 15 renewable auctions (AURES II, Mendeley Data)
+        continue-on-error: true
+        run: python scripts/build_coming.py auctions --upload
+      - name: 16a technology costs (NREL ATB, 321 MB CSV)
+        continue-on-error: true
+        run: python scripts/build_coming.py atb --upload
+      - name: Chromium for IRENA
+        continue-on-error: true
+        run: |
+          pip install playwright && python -m playwright install --with-deps chromium
+          bash scripts/r2_creds.sh
+      - name: 16b technology costs (IRENA, fetched with a browser; refreshed by browser-fetch.yml)
+        continue-on-error: true
+        run: xvfb-run -a python scripts/browser_fetch.py irena_costs --force
+      - name: 17 planned gas infrastructure (ENTSOG TYNDP 2026 Annex A)
+        continue-on-error: true
+        run: python scripts/build_coming.py gas --upload
+      - name: 18 greenhouse-gas inventories (Eurostat env_air_gge)
+        continue-on-error: true
+        run: python scripts/build_coming.py ghg
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group D outputs"
+
+  E:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'E')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl xlrd
+      - name: 19 DOE OE-417 disturbance events (second try from Actions; httpx, then curl -4)
+        continue-on-error: true
+        run: python scripts/build_us_reliability.py oe417 --upload
+      - name: 20 FERC 714 planning-area demand (PUDL)
+        continue-on-error: true
+        run: python scripts/build_us_reliability.py ferc714
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group E outputs"
+
+  F:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'F')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - name: 21 France regional mix (éCO2mix régional)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py fr
+      - name: 22 Spain regional mix (REE REData)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py es
+      - name: 23 New Zealand live (Transpower, em6)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py nz
+      - name: 24 South Africa (Eskom data portal, load-shedding)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py za
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group F outputs"

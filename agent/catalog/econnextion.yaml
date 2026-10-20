@@ -1,0 +1,16 @@
+dataset: econnextion
+title: Italy, requests to connect to the transmission grid (Terna Econnextion, dati.terna.it)
+licence: Terna terms (not found on dati.terna.it; owner decides)
+map_file: frontend/public/data/eu/connect/it.json (NUTS-2 shading in "Grid capacity"; card; Check a site)
+tables:
+  requests:
+    grain: one row per dataset (FER renewables, Accumuli storage), view (region or province), area and source
+    keys: {dataset: FER | Accumuli, view: region | province, region: Terna's region name (NUTS-2 in it.json), province, source}
+    measures: {mw: {unit: MW, how: requested capacity as published}, requests: {unit: count, how: as published (region view)}}
+    examples:
+      - q: renewables requested to connect in Italy
+        sql: SELECT sum(mw) FROM econnextion.requests WHERE dataset = 'FER' AND view = 'region'
+        answer: 346742 MW (snapshot 2026-10-19)
+      - q: renewables requested in Puglia
+        sql: SELECT sum(mw) FROM econnextion.requests WHERE dataset = 'FER' AND view = 'region' AND region = 'PUGLIA'
+        answer: 96376 MW

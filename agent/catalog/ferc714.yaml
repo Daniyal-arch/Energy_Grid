@@ -1,0 +1,14 @@
+dataset: ferc714
+title: FERC Form 714 hourly demand per planning area (via PUDL)
+licence: CC BY 4.0 (PUDL); FERC public
+access: in place (PUDL out_ferc714__hourly_planning_area_demand on S3, 19.5 M rows 2006-2025; no lake copy)
+map_file: frontend/public/data/us/ferc714.json (US region card, "Demand per planning area")
+tables:
+  out_ferc714__hourly_planning_area_demand:
+    grain: one row per planning area (respondent) and hour
+    keys: {respondent_id_ferc714, datetime_utc}
+    measures: {demand_reported_mwh: {unit: MWh per hour, how: as reported}, demand_imputed_pudl_mwh: {unit: MWh, how: PUDL's imputation (not used on the map)}}
+    examples:
+      - q: PJM's highest daily mean demand in 2025
+        sql: SELECT max(d) FROM (SELECT avg(demand_reported_mwh) d FROM pudl.out_ferc714__hourly_planning_area_demand WHERE respondent_id_ferc714 = 119 AND year(report_date) = 2025 GROUP BY date_trunc('day', datetime_utc))
+        answer: 134755 MW

@@ -115,6 +115,11 @@ jobs:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
         run: python scripts/build_prices.py --out store/eu || echo "prices failed; keeping yesterday's"
 
+      - name: Spain's generation per autonomous community (REE REData, monthly, the last 13 months)
+        timeout-minutes: 10
+        continue-on-error: true
+        run: python scripts/build_regional_live.py es --out store/eu || echo "REData regions failed; keeping yesterday's"
+
       - name: Imbalance prices per zone (ENTSO-E A85, the last 30 days)
         timeout-minutes: 15
         continue-on-error: true

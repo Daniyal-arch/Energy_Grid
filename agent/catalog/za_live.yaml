@@ -1,0 +1,9 @@
+dataset: za_live
+title: South Africa, Eskom data portal and load-shedding status
+licence: Eskom data portal terms
+access: api  # https://www.eskom.co.za/dataportal/ (CSV per page); https://loadshedding.eskom.co.za/LoadShedding/GetStatus (stage = answer - 1)
+map_file: frontend/public/data/eu/za.json ("Live grids"; every snapshot)
+examples:
+  - q: is there load-shedding now
+    call: GET https://loadshedding.eskom.co.za/LoadShedding/GetStatus
+    answer: "1" -> stage 0, none (2026-10-19)

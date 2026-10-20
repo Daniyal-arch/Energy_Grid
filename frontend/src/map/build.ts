@@ -106,6 +106,10 @@ import { usSolarLayers } from "./usSolarLayers";
 import { evLayers } from "./evLayers";
 import { ghgrpLayers } from "./ghgrpLayers";
 import { tyndpLayers } from "./tyndpLayers";
+import { connectMoreLayers } from "./connectMoreLayers";
+import { comingLayers } from "./comingLayers";
+import { NZ_COLOR, NZ_POINT, ZA_COLOR, ZA_POINT, type NzFile, type ZaFile } from "../lib/regionalLive";
+import { SEA_CABLE_COLOR, seaPipeLayer, type SeaCable, type SeaCablesFile, type SeaPipe } from "../lib/seaCables";
 import type { MastrTech } from "../lib/mastr";
 
 export interface Frame {
@@ -539,6 +543,11 @@ export function buildLayers(fr: Frame): Layer[] {
       }),
     );
   }
+
+  // France, Italy, Ireland (scripts/build_connect_more.py)
+  if (facingEurope) layers.push(...connectMoreLayers(fr));
+  // hydrogen projects and planned gas infrastructure (scripts/build_coming.py)
+  if (facingEurope) layers.push(...comingLayers(fr));
 
   // ---------------------------------------------------------------- LNG send-out per terminal (GIE ALSI, newest gas day)
   const lng = f.lngTerminals as LngTerminalsFile | undefined;
@@ -1308,6 +1317,36 @@ function worldLayers(fr: Frame, near: (p: [number, number]) => boolean): Layer[]
       }),
     );
   }
+  // EMODnet: power cables in European seas (cables layer), pipelines at sea (gas and oil layers)
+  const sea = f.seaCables as SeaCablesFile | undefined;
+  if (sea && isOn("cables"))
+    out.push(
+      new PathLayer<SeaCable>({
+        id: "w-sea-cables",
+        data: memo("seaCablesNear", [sea, fr.camKey], () => sea.cables.filter((c) => near([c[3][0], c[3][1]]))),
+        getPath: (c) => pairs(c[3]),
+        getColor: [...SEA_CABLE_COLOR, 170],
+        getWidth: 1.1,
+        widthUnits: "pixels",
+        pickable: true,
+        parameters: ON_TOP,
+      }),
+    );
+  if (sea && (isOn("gasPipes") || isOn("oilPipes"))) {
+    const show = (m: string | null) => seaPipeLayer(m).some((id) => isOn(id));
+    out.push(
+      new PathLayer<SeaPipe>({
+        id: "w-sea-pipes",
+        data: memo("seaPipesNear", [sea, fr.camKey, isOn("gasPipes"), isOn("oilPipes")], () => sea.pipelines.filter((p) => show(p[1]) && near([p[6][0], p[6][1]]))),
+        getPath: (p) => pairs(p[6]),
+        getColor: (p) => [...(seaPipeLayer(p[1])[0] === "gasPipes" ? GEM_PIPES.gasPipes.color : GEM_PIPES.oilPipes.color), 170],
+        getWidth: 1,
+        widthUnits: "pixels",
+        pickable: true,
+        parameters: ON_TOP,
+      }),
+    );
+  }
   // GEM's plants of the chosen status, sized by capacity, coloured by fuel
   const wp = f.worldPlants as WorldPlantsFile | undefined;
   if (isOn("plantsWorld") && wp) {
@@ -1447,6 +1486,17 @@ function worldLayers(fr: Frame, near: (p: [number, number]) => boolean): Layer[]
       const dots = memo("twDots", [tw], () => [{ id: "TW", at: TW_POINT, mw: tw.total_mw, label: `TW ${(tw.total_mw / 1000).toFixed(0)} GW` }]);
       parts.push(memo("lbl-tw", [dots, fr.zoom >= 2.2], () => (fr.zoom >= 2.2 ? dots.map((d) => label("region", d.at, d.label, "", -d.mw)) : [])));
       out.push(...regionDotLayers("w-tw", dots, TW_COLOR, false));
+    }
+    for (const [key, grid, at, color, text] of [
+      ["nz", "nz", NZ_POINT, NZ_COLOR, (v: NzFile) => [v.total_mw, `NZ ${(v.total_mw / 1000).toFixed(1)} GW`]],
+      ["za", "za", ZA_POINT, ZA_COLOR, (v: ZaFile) => [3000, v.loadshedding_stage ? `ZA stage ${v.loadshedding_stage}` : "ZA"]],
+    ] as const) {
+      const v = f[key] as (NzFile & ZaFile) | undefined;
+      if (!v || !near(at)) continue;
+      const [mw, txt] = text(v) as [number, string];
+      const dots = memo(`${key}Dots`, [v], () => [{ id: key.toUpperCase(), at, mw, label: txt }]);
+      parts.push(memo(`lbl-${key}`, [dots, fr.zoom >= 2.2], () => (fr.zoom >= 2.2 ? dots.map((d) => label("region", d.at, d.label, "", -d.mw)) : [])));
+      out.push(...regionDotLayers(`w-${grid}`, dots, color, false));
     }
     const on = f.ontario as OntarioFile | undefined;
     if (on && near(ON_POINT.ON)) {

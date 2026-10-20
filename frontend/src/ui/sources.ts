@@ -98,6 +98,14 @@ export const WORLD_SOURCES: Sources = [
     "ONS Energia Agora: load, generation by source and imports/exports per subsystem, and the flows between subsystems, as published every few minutes. Markers are placed for reading; Imperatriz is ONS's junction node.",
   ],
   [
+    "New Zealand",
+    "Transpower (System Operator) live data page, generation and capacity by fuel sourced from em6, and 5-minute demand for NZ and each island, as published. The marker is placed for reading.",
+  ],
+  [
+    "South Africa",
+    "Eskom data portal (hourly demand and station build-up files, MW as published) and the load-shedding status from loadshedding.eskom.co.za (its answer minus 1 is the stage). The marker is placed for reading.",
+  ],
+  [
     "Taiwan",
     "Taipower open data (data.gov.tw dataset 8931), every 10 minutes: net generation and installed capacity of every unit Taipower owns or buys from, with its status note. Type totals are Taipower's subtotals; the island total is their sum (computed). No interconnectors. The marker is placed for reading.",
   ],

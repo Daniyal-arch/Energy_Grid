@@ -120,6 +120,11 @@ const STATIC: Record<string, Loader> = {
   brazil: snapshot("brazil.json"),
   taiwan: snapshot("taiwan.json"),
   ontario: snapshot("ontario.json"),
+  // New Zealand (Transpower) and South Africa (Eskom) live; France's regions (éCO2mix) every snapshot; Spain's regions daily
+  nz: snapshot("nz.json"),
+  za: snapshot("za.json"),
+  frRegions: snapshot("fr_regions.json"),
+  esRegions: archive("es_regions.json"),
   // Great Britain's carbon intensity (NESO) and Denmark every 5 minutes (Energinet)
   gbCarbon: snapshot("gb_carbon.json"),
   dkLive: snapshot("dk_live.json"),
@@ -146,6 +151,13 @@ const STATIC: Record<string, Loader> = {
   ctrace: archive("ctrace.json"),
   // where new demand or generation can connect: GB, NL, ES (scripts/fetch_connect_here.py)
   connect: archive("connect.json"),
+  // France, Italy, Belgium, Portugal, Ireland, Poland (scripts/build_connect_more.py)
+  connectFR: bundled("connect/fr.json"),
+  connectIT: bundled("connect/it.json"),
+  connectBE: bundled("connect/be.json"),
+  connectPT: bundled("connect/pt.json"),
+  connectIE: bundled("connect/ie.json"),
+  connectPL: bundled("connect/pl.json"),
   // retail electricity and gas prices (scripts/fetch_retail_prices.py, Eurostat + EIA)
   retail: archive("retail.json"),
   // US outages per county (scripts/build_us_outages.py, EAGLE-I) and their outlines
@@ -158,6 +170,23 @@ const STATIC: Record<string, Loader> = {
   // every unit in Germany (scripts/build_mastr.py, Marktstammdatenregister)
   mastrUnits: bundled("mastr/units_large.json"),
   mastrMuni: bundled("mastr/municipalities.json"),
+  // the grid operator per municipality (MaStR) and US utilities per county (EIA-861) (scripts/build_grid_more.py)
+  deGridOperators: bundled("de_grid_operators.json"),
+  usUtilities: bundledUs("utilities.json"),
+  // EMODnet cables and pipelines at sea (scripts/build_grid_more.py emodnet)
+  seaCables: bundled("sea_cables.json"),
+  // what stops a build: tiles, flood classes and lookups; protected areas per country (scripts/build_constraints.py)
+  constraints: bundled("constraints.json"),
+  protected: bundled("protected.json"),
+  // what is coming and what it costs (scripts/build_coming.py)
+  hydrogen: bundled("hydrogen.json"),
+  gasProjects: bundled("gas_projects.json"),
+  auctions: bundled("auctions.json"),
+  costs: bundled("costs.json"),
+  pfGhg: bundled("profiles/ghg_inventory.json"),
+  // US disturbances (DOE OE-417) and planning-area demand (FERC 714) (scripts/build_us_reliability.py)
+  oe417: bundledUs("oe417.json"),
+  ferc714: bundledUs("ferc714.json"),
   dayIndex: async (set) => {
     // days from the cloud archive plus any bundled with the site (one answer, so the
     // replay does not start on a bundled day and then jump to a newer one)
@@ -288,7 +317,7 @@ export function useFile<T>(key: string | null): T | undefined {
 export const fileOf = <T,>(key: string): T | undefined => useDataStore.getState().files[key] as T | undefined;
 
 /** Live files, reloaded every 10 minutes while the page is open. */
-export const LIVE_KEYS = ["flows", "stats", "outages", "wind", "aemo", "us", "brazil", "taiwan", "ontario", "windWorld", "gbCarbon", "dkLive"];
+export const LIVE_KEYS = ["flows", "stats", "outages", "wind", "aemo", "us", "brazil", "taiwan", "ontario", "nz", "za", "frRegions", "windWorld", "gbCarbon", "dkLive"];
 
 // development only: lets headless checks read what has loaded
 if (import.meta.env.DEV) (window as unknown as { __data: typeof useDataStore }).__data = useDataStore;

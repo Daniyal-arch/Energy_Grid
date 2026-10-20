@@ -1,0 +1,13 @@
+dataset: mastr_grid
+title: Germany, grid operators per municipality (Marktstammdatenregister)
+licence: dl-de/by-2-0
+map_file: frontend/public/data/eu/de_grid_operators.json (Check a site, "Grid operator of the municipality")
+tables:
+  operators:
+    grain: one row per municipality (AGS) and grid operator, with the units connected (computed)
+    keys: {ags: municipality key, grid_operator_nr: MaStR number (SNB...), grid_operator: name}
+    measures: {units: {unit: count, how: "units whose location's grid connection point names this operator"}}
+    examples:
+      - q: which grid operator serves Berlin
+        sql: SELECT grid_operator, units FROM mastr_grid.operators WHERE ags = '11000000' ORDER BY units DESC LIMIT 1
+        answer: Stromnetz Berlin GmbH, 94370 units (snapshot 2026-10-17)

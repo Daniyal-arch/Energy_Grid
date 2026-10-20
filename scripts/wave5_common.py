@@ -89,7 +89,8 @@ def write_json(path: Path, payload: dict, max_mb: float = 5.0) -> None:
     if len(text.encode()) > max_mb * 1e6:
         raise SystemExit(f"{path.name}: {len(text) / 1e6:.1f} MB, over {max_mb} MB")
     path.write_text(text, encoding="utf-8")
-    print(f"  wrote {path.relative_to(ROOT)}: {path.stat().st_size / 1e6:.2f} MB", flush=True)
+    shown = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+    print(f"  wrote {shown}: {path.stat().st_size / 1e6:.2f} MB", flush=True)
 
 
 def now() -> str:

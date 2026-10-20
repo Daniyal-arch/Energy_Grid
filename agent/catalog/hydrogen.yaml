@@ -1,0 +1,16 @@
+dataset: hydrogen
+title: Hydrogen production and consumption projects (European Hydrogen Observatory)
+licence: European Commission re-use policy (Decision 2011/833/EU)
+map_file: frontend/public/data/eu/hydrogen.json (layer "Hydrogen projects"; card)
+tables:
+  projects:
+    grain: one row per project, every column as published (Dec 2025 file: operating and under construction)
+    keys: {Name, Country, "Project stage"}
+    measures: {"Production capacity MW/MWel": {unit: MW}, "Consumption capacity (tonnes/year)": {unit: t/year}}
+    examples:
+      - q: the largest hydrogen project
+        sql: SELECT Name, "Production capacity MW/MWel" FROM hydrogen.projects ORDER BY 2 DESC LIMIT 1
+        answer: H2 Green Steel (H2GS)/Stegra (Phase 1), 740 MW
+      - q: production capacity of all projects listed
+        sql: SELECT sum("Production capacity MW/MWel") FROM hydrogen.projects
+        answer: 5052 MW (238 projects)

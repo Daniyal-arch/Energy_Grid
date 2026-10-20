@@ -260,6 +260,49 @@ export function addAtlasLayer(map: maplibregl.Map, id: string, tiles: string, ma
     "world-coast",
   );
 }
+/** Protected areas (Natura 2000, PAD-US): a soft green fill and a thin outline, under the grid. */
+export const PROTECTED_LAYERS = ["protected-fill", "protected-line"];
+export function addProtectedLayers(map: maplibregl.Map, tiles: string): void {
+  if (map.getSource("protected")) return;
+  map.addSource("protected", { type: "vector", url: tiles, attribution: "Natura 2000 © EEA; PAD-US (USGS)" });
+  map.addLayer({ id: "protected-fill", type: "fill", source: "protected", "source-layer": "protected", paint: { "fill-color": "rgba(96,186,120,0.22)" } }, "world-pick");
+  map.addLayer(
+    { id: "protected-line", type: "line", source: "protected", "source-layer": "protected", minzoom: 6, paint: { "line-color": "rgba(96,186,120,0.6)", "line-width": 0.6 } },
+    "world-pick",
+  );
+}
+
+/** River flood depth (JRC), world then Europe on top, as raster tiles under the coastlines. */
+export const FLOOD_LAYERS = ["flood-world", "flood-eu"];
+export function addFloodLayers(map: maplibregl.Map, maps: Record<"eu" | "world", { tiles: string; max_zoom: number }>, attribution: string): void {
+  for (const k of ["world", "eu"] as const) {
+    const id = `flood-${k}`;
+    if (map.getSource(id)) continue;
+    map.addSource(id, { type: "raster", url: maps[k].tiles, tileSize: 256, maxzoom: maps[k].max_zoom, attribution });
+    map.addLayer({ id, type: "raster", source: id, paint: { "raster-opacity": 0.8, "raster-resampling": "nearest", "raster-fade-duration": 0 } }, "world-coast");
+  }
+}
+
+/** Major roads and standard-gauge railways (Overture): thin, quiet lines. */
+export const ROADS_LAYERS = ["roads-major", "rail-lines"];
+export function addRoadsLayers(map: maplibregl.Map, tiles: string): void {
+  if (map.getSource("roads")) return;
+  map.addSource("roads", { type: "vector", url: tiles, attribution: "© OpenStreetMap contributors (ODbL), via Overture Maps" });
+  map.addLayer(
+    {
+      id: "roads-major",
+      type: "line",
+      source: "roads",
+      "source-layer": "roads",
+      paint: { "line-color": "rgba(200,196,186,0.55)", "line-width": ["match", ["get", "class"], "motorway", 1.2, "trunk", 0.9, 0.6] },
+    },
+    "world-pick",
+  );
+  map.addLayer(
+    { id: "rail-lines", type: "line", source: "roads", "source-layer": "rail", paint: { "line-color": "rgba(176,160,220,0.6)", "line-width": 0.8, "line-dasharray": [3, 2] } },
+    "world-pick",
+  );
+}
 export const GRID_LAYERS = ["hv-glow", "hv-lines"];
 export const PREDICTED_LAYERS = ["grid-predicted"];
 export const US_GRID_LAYERS = ["us-lines", "us-lines-dc"];
