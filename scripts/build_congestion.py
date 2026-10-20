@@ -75,8 +75,9 @@ def neighbours(cc: str) -> list[str]:
     return sorted({b if a == cc else a for a, b in entsoe.BORDERS if cc in (a, b)})
 
 
-def fetch(client: httpx.Client, params: dict[str, str]) -> list[ET.Element]:
-    """Documents of one query: zipped or plain XML; acknowledgements (no data) give none."""
+def fetch(client: httpx.Client, params: dict[str, str]) -> tuple[list[ET.Element], str]:
+    """(documents, acknowledgement text) of one query: zipped or plain XML; acknowledgements
+    (no data, or a refusal) give no document and their text."""
     q = {"securityToken": os.environ["ENTSOE_API_KEY"].strip(), **params}
     for attempt in range(4):
         try:
@@ -93,14 +94,53 @@ def fetch(client: httpx.Client, params: dict[str, str]) -> list[ET.Element]:
             continue
         if r.content[:2] == b"PK":
             z = zipfile.ZipFile(io.BytesIO(r.content))
-            return [ET.fromstring(z.read(n)) for n in z.namelist()]
+            return [ET.fromstring(z.read(n)) for n in z.namelist()], ""
         if b"Acknowledgement" in r.content[:400] or r.status_code != 200:
             m = re.search(rb"<text>([^<]*)</text>", r.content)
-            ACKS[(m.group(1).decode()[:100] if m else f"HTTP {r.status_code}")] += 1
-            return []
-        return [ET.fromstring(r.content)]
-    ACKS["gave up"] += 1
-    return []
+            text = m.group(1).decode() if m else f"HTTP {r.status_code}"
+            return [], text
+        return [ET.fromstring(r.content)], ""
+    return [], "gave up"
+
+
+TOO_MANY = re.compile(r"number of instances \((\d+)\) exceeds the allowed maximum \((\d+)\)")
+
+
+def windows(start: datetime, end: datetime) -> list[tuple[datetime, datetime]]:
+    """Calendar months from start to end (the API takes at most a year per request)."""
+    out, t = [], start
+    while t < end:
+        nxt = (t.replace(day=1) + timedelta(days=32)).replace(day=1, hour=0)
+        out.append((t, min(nxt, end)))
+        t = nxt
+    return out
+
+
+def fetch_window(
+    client: httpx.Client, params: dict[str, str], t0: datetime, t1: datetime
+) -> list[ET.Element]:
+    """Documents of one window; split into parts when the API answers that it holds more
+    instances than it returns at once (100), down to one hour."""
+    docs, ack = fetch(
+        client,
+        params | {"periodStart": t0.strftime("%Y%m%d%H00"), "periodEnd": t1.strftime("%Y%m%d%H00")},
+    )
+    m = TOO_MANY.search(ack)
+    if m and t1 - t0 > timedelta(hours=1):
+        parts = max(2, -(-int(m.group(1)) // (int(m.group(2)) - 10)))
+        step = max(timedelta(hours=1), (t1 - t0) / parts)
+        out, t = [], t0
+        while t < t1:
+            u = min(t + step, t1)
+            u = u.replace(minute=0, second=0, microsecond=0) if u < t1 else u
+            if u <= t:
+                u = min(t + timedelta(hours=1), t1)
+            out += fetch_window(client, params, t, u)
+            t = u
+        return out
+    if ack:
+        ACKS[ack[:100] if not ack.startswith("No matching data") else "No matching data"] += 1
+    return docs
 
 
 def points(root: ET.Element) -> list[dict]:
@@ -179,19 +219,14 @@ def build_entsoe(args: argparse.Namespace) -> dict:
                     ]
                 found: list[dict] = []
                 for label, i_dom, o_dom in pairs:
-                    params = {
-                        "documentType": doc,
-                        "In_Domain": i_dom,
-                        "Out_Domain": o_dom,
-                        "periodStart": start.strftime("%Y%m%d%H00"),
-                        "periodEnd": end.strftime("%Y%m%d%H00"),
-                    }
+                    params = {"documentType": doc, "In_Domain": i_dom, "Out_Domain": o_dom}
                     if btype:
                         params["businessType"] = btype
-                    for root in fetch(client, params):
-                        found += [
-                            {**p, "iso2": cc, "area": label, "query": key} for p in points(root)
-                        ]
+                    for t0, t1 in windows(start, end):
+                        for root in fetch_window(client, params, t0, t1):
+                            found += [
+                                {**p, "iso2": cc, "area": label, "query": key} for p in points(root)
+                            ]
                 rows_by[key] += found
                 if found:
                     if key == "costs":

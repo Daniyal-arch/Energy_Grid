@@ -511,3 +511,31 @@ def test_nl_points_sum_connector_groups() -> None:
     ]
     pts, rows = ev.nl_points(feats)
     assert pts == [(6.92, 53.33, 3)] and rows[0]["kw"] == 50.0
+
+
+def test_congestion_windows_and_split_on_too_many_instances() -> None:
+    import build_congestion as bc
+
+    w = bc.windows(datetime(2025, 9, 15, 4, tzinfo=UTC), datetime(2025, 11, 2, tzinfo=UTC))
+    assert [(a.day, b.month) for a, b in w] == [(15, 10), (1, 11), (1, 11)]
+    calls = []
+
+    def fake(client: object, params: dict) -> tuple[list, str]:
+        t0 = datetime.strptime(params["periodStart"], "%Y%m%d%H%M")
+        t1 = datetime.strptime(params["periodEnd"], "%Y%m%d%H%M")
+        calls.append((t0, t1))
+        if t1 - t0 > __import__("datetime").timedelta(days=10):
+            return (
+                [],
+                "The number of instances (250) exceeds the allowed maximum (100) for data item X",
+            )
+        return ["doc"], ""
+
+    bc.fetch, orig = fake, bc.fetch
+    try:
+        docs = bc.fetch_window(
+            None, {}, datetime(2025, 10, 1, tzinfo=UTC), datetime(2025, 11, 1, tzinfo=UTC)
+        )
+    finally:
+        bc.fetch = orig
+    assert len(docs) == 4 and len(calls) == 5  # one refusal, then four parts of under ten days
