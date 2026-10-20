@@ -545,3 +545,23 @@ def test_congestion_bad_xml_is_left_out_and_counted() -> None:
     assert bc.parse(b"<a><b>1</b></a>").find("b").text == "1"
     assert bc.parse(b"<a><b>1</b") is None
     assert any(k.startswith("not well-formed XML") for k in bc.ACKS)
+
+
+def test_congestion_merge_keeps_the_year_under_a_short_window() -> None:
+    import build_congestion as bc
+
+    old = {
+        "countries": {"DE": {"costs": {"months": {"2025-11": 5.0, "2026-09": 1.0}}}},
+        "window": ["a", "b"],
+    }
+    new = {
+        "countries": {"DE": {"costs": {"months": {"2026-09": 2.0, "2026-10": 3.0}}}},
+        "window": ["c", "d"],
+    }
+    m = bc.merge_months(old, new)
+    assert m["countries"]["DE"]["costs"]["months"] == {
+        "2026-09": 2.0,
+        "2026-10": 3.0,
+        "2025-11": 5.0,
+    }
+    assert m["window"] == ["c", "d"]

@@ -161,8 +161,9 @@ jobs:
       - run: pip install httpx duckdb pycountry openpyxl python-dotenv
       - name: Wait until no Lake ENTSO-E run is active (the key was banned when both ran)
         run: bash scripts/entsoe_idle.sh 120
-      - name: 4 redispatch, countertrading, congestion costs (ENTSO-E, 400 days, one request at a time)
+      - name: 4 redispatch, countertrading, congestion costs (ENTSO-E, 400 days, four requests at a time, each country kept as it arrives)
         continue-on-error: true
+        timeout-minutes: 240
         run: python scripts/build_congestion.py entsoe --days 400 --upload
       - name: 4 GB constraint costs (NESO), CAISO curtailment
         continue-on-error: true

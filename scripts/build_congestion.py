@@ -4,11 +4,12 @@
 
 New months are merged into the existing file (`--days 35` daily keeps the year built before).
 
-entsoe  ENTSO-E Transparency Platform (`ENTSOE_API_KEY`), per control area, one request at a time:
+entsoe  ENTSO-E Transparency Platform (`ENTSOE_API_KEY`), per control area, four requests at a time:
         redispatching internal (documentType A63, businessType A85) and cross-border (A63, A46),
         countertrading (A91) and costs of congestion management (A92). Germany is asked per TSO
         control area. One request per calendar month (the API answers a year at most), split further
-        where the API holds more than 100 instances for the window. Passed through: every point (MW, or EUR for costs) with its time,
+        where the API holds more than 100 instances for the window; each country is saved as it arrives and
+        one read today is kept on a rerun. Passed through: every point (MW, or EUR for costs) with its time,
         resolution, direction and business type. Computed: MWh = MW × the point's duration, summed
         per month and country; costs summed per month and country.
 gb      NESO "Constraint Breakdown Costs and Volume" (NESO Open Data Licence): daily costs (GBP) and
@@ -33,6 +34,7 @@ import time
 import xml.etree.ElementTree as ET
 import zipfile
 from collections import defaultdict
+from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -208,15 +210,26 @@ def monthly(rows: list[dict], value: str, scale_hours: bool) -> dict[str, float]
     return {k: round(v, 1) for k, v in sorted(out.items())}
 
 
-def build_entsoe(args: argparse.Namespace) -> dict:
+def build_entsoe(args: argparse.Namespace, save: Callable[[dict], None] | None = None) -> dict:
+    """Every control area, four requests at a time (entsoe.WORKERS); the file is saved after each
+    country (`save`) and a country already read today is kept, so a run that is stopped resumes."""
     end = datetime.now(UTC).replace(minute=0, second=0, microsecond=0)
     start = end - timedelta(days=args.days)
     rows_by: dict[str, list[dict]] = defaultdict(list)
-    countries: dict[str, dict] = {}
+    prev = (getattr(args, "previous", None) or {}).get("countries", {})
+    countries: dict[str, dict] = {cc: v for cc, v in prev.items() if v.get("fetched") == w7.TODAY}
     ars = areas()
+
+    def result() -> dict:
+        return {"source": "ENTSO-E Transparency Platform: redispatching (A63), countertrading (A91), costs of congestion management (A92)",
+                "window": [start.isoformat(), end.isoformat()], "countries": dict(sorted(countries.items())), "acks": dict(ACKS)}  # fmt: skip
+
     with httpx.Client(timeout=120) as client:
         for cc, own in ars.items():
-            res: dict[str, dict] = {}
+            if cc in countries:
+                print(f"  {cc}: read today, kept", flush=True)
+                continue
+            res: dict[str, dict] = {"fetched": w7.TODAY}
             for key, doc, btype, same in QUERIES:
                 if same:
                     pairs = [(label, eic, eic) for label, eic in own]
@@ -228,16 +241,21 @@ def build_entsoe(args: argparse.Namespace) -> dict:
                         for label, eic in own
                         for _, neic in ars[n]
                     ]
-                found: list[dict] = []
+                jobs = []
                 for label, i_dom, o_dom in pairs:
                     params = {"documentType": doc, "In_Domain": i_dom, "Out_Domain": o_dom}
                     if btype:
                         params["businessType"] = btype
                     for t0, t1 in windows(start, end):
-                        for root in fetch_window(client, params, t0, t1):
-                            found += [
-                                {**p, "iso2": cc, "area": label, "query": key} for p in points(root)
-                            ]
+                        jobs.append((f"{label} {t0:%Y-%m}", label,
+                                     lambda p=params, a=t0, b=t1: fetch_window(client, p, a, b)))  # fmt: skip
+                got = entsoe.run((name, job) for name, _, job in jobs)
+                found: list[dict] = [
+                    {**p, "iso2": cc, "area": label, "query": key}
+                    for name, label, _ in jobs
+                    for root in got[name]
+                    for p in points(root)
+                ]
                 rows_by[key] += found
                 if found:
                     if key == "costs":
@@ -259,15 +277,15 @@ def build_entsoe(args: argparse.Namespace) -> dict:
                         res[key] = {"unit": "MWh (MW × duration, computed)", "n": len(found),
                                     "by_direction": {d: monthly(v, "quantity", True) for d, v in dirs.items()}}  # fmt: skip
                 print(f"  {cc} {key}: {len(pairs)} requests, {len(found)} points", flush=True)
-            if res:
-                countries[cc] = res
+            countries[cc] = res
+            if save:
+                save(result())
     print(f"  acknowledgements: {dict(ACKS)}", flush=True)
     for key, rows in rows_by.items():
         if rows:
             w7.lake_rows("entsoe", [(f"congestion_{key}", rows, ["iso2", "time"], None)], lake_dir=args.lake, upload=args.upload,
                          source=entsoe.SOURCE, licence="ENTSO-E terms of use", script=SCRIPT)  # fmt: skip
-    return {"source": "ENTSO-E Transparency Platform: redispatching (A63), countertrading (A91), costs of congestion management (A92)",
-            "window": [start.isoformat(), end.isoformat()], "countries": countries, "acks": dict(ACKS)}  # fmt: skip
+    return result()
 
 
 # ---------------------------------------------------------------- Great Britain (NESO)
@@ -376,13 +394,22 @@ def main() -> None:
     out = args.out / "congestion.json"
     data = json.loads(out.read_text(encoding="utf-8")) if out.exists() else {}
     failed = []
+    args.previous = data.get("entsoe")
+
+    def save_entsoe(part: dict) -> None:
+        data["entsoe"] = merge_months(args.previous, {**part, "fetched": w.now()})
+        w.write_json(out, data)
+
+    builds = {
+        "entsoe": lambda a: build_entsoe(a, save_entsoe),
+        "gb": build_gb,
+        "caiso": build_caiso,
+    }
     for what in ["entsoe", "gb", "caiso"] if args.what == "all" else [args.what]:
         print(f"== {what}", flush=True)
         try:
-            data[what] = {
-                **{"entsoe": build_entsoe, "gb": build_gb, "caiso": build_caiso}[what](args),
-                "fetched": w.now(),
-            }
+            old = args.previous if what == "entsoe" else data.get(what)
+            data[what] = merge_months(old, {**builds[what](args), "fetched": w.now()})
         except (SystemExit, Exception) as e:  # one source failing must not stop the others
             print(f"  {what} failed: {type(e).__name__} {str(e)[:300]}", flush=True)
             failed.append(what)
