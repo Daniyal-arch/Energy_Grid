@@ -7,7 +7,8 @@ New months are merged into the existing file (`--days 35` daily keeps the year b
 entsoe  ENTSO-E Transparency Platform (`ENTSOE_API_KEY`), per control area, one request at a time:
         redispatching internal (documentType A63, businessType A85) and cross-border (A63, A46),
         countertrading (A91) and costs of congestion management (A92). Germany is asked per TSO
-        control area. Passed through: every point (MW, or EUR for costs) with its time,
+        control area. One request per calendar month (the API answers a year at most), split further
+        where the API holds more than 100 instances for the window. Passed through: every point (MW, or EUR for costs) with its time,
         resolution, direction and business type. Computed: MWh = MW × the point's duration, summed
         per month and country; costs summed per month and country.
 gb      NESO "Constraint Breakdown Costs and Volume" (NESO Open Data Licence): daily costs (GBP) and
