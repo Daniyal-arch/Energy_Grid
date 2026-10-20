@@ -537,3 +537,11 @@ def test_congestion_windows_and_split_on_too_many_instances() -> None:
     finally:
         bc.fetch = orig
     assert len(docs) == 3 and len(calls) == 4  # one refusal, then three parts of 83 instances
+
+
+def test_congestion_bad_xml_is_left_out_and_counted() -> None:
+    import build_congestion as bc
+
+    assert bc.parse(b"<a><b>1</b></a>").find("b").text == "1"
+    assert bc.parse(b"<a><b>1</b") is None
+    assert any(k.startswith("not well-formed XML") for k in bc.ACKS)

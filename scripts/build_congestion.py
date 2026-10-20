@@ -95,13 +95,23 @@ def fetch(client: httpx.Client, params: dict[str, str]) -> tuple[list[ET.Element
             continue
         if r.content[:2] == b"PK":
             z = zipfile.ZipFile(io.BytesIO(r.content))
-            return [ET.fromstring(z.read(n)) for n in z.namelist()], ""
+            return [d for n in z.namelist() if (d := parse(z.read(n))) is not None], ""
         if b"Acknowledgement" in r.content[:400] or r.status_code != 200:
             m = re.search(rb"<text>([^<]*)</text>", r.content)
             text = m.group(1).decode() if m else f"HTTP {r.status_code}"
             return [], text
-        return [ET.fromstring(r.content)], ""
+        d = parse(r.content)
+        return ([d] if d is not None else []), ""
     return [], "gave up"
+
+
+def parse(raw: bytes) -> ET.Element | None:
+    """One document; a document that is not well-formed XML is counted and left out."""
+    try:
+        return ET.fromstring(raw)
+    except ET.ParseError as e:
+        ACKS[f"not well-formed XML, left out ({e})"[:100]] += 1
+        return None
 
 
 TOO_MANY = re.compile(r"number of instances \((\d+)\) exceeds the allowed maximum \((\d+)\)")
