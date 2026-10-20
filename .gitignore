@@ -37,3 +37,6 @@ recordings/
 
 # Planet probe imagery (licensed, never commit)
 scripts/planet_chips/
+
+# lake tables written locally by the build scripts (uploaded to R2 from Actions)
+lake-out/
