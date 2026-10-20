@@ -309,6 +309,36 @@ def overpass(q: str, k: int) -> list[dict]:
     raise SystemExit(f"Overpass: {last}")
 
 
+def tiled(cc: str, k: int) -> list[dict]:
+    """The country's stations in four tiles of its bounding box (Nominatim, one request), each
+    still limited to the country's area; an element on a tile edge is kept once."""
+    bb = w7.get(
+        "https://nominatim.openstreetmap.org/search",
+        params={"country": cc, "format": "json", "limit": 1, "featureType": "country"},
+        headers=OSM_UA,
+    ).json()[0]["boundingbox"]
+    s, n, w, e = (float(v) for v in bb)
+    mid_lat, mid_lon = (s + n) / 2, (w + e) / 2
+    seen: dict[str, dict] = {}
+    for i, (s1, w1, n1, e1) in enumerate(
+        [
+            (s, w, mid_lat, mid_lon),
+            (s, mid_lon, mid_lat, e),
+            (mid_lat, w, n, mid_lon),
+            (mid_lat, mid_lon, n, e),
+        ]
+    ):
+        q = (f'[out:json][timeout:400];area["ISO3166-1"="{cc}"][admin_level=2]->.a;'
+             f'nwr["amenity"="charging_station"](area.a)({s1},{w1},{n1},{e1});out center tags;')  # fmt: skip
+        try:
+            for el in overpass(q, k + i):
+                seen[f"{el['type']}/{el['id']}"] = el
+        except SystemExit as err:
+            if "no elements" not in str(err):  # an empty tile (sea) is fine
+                raise
+    return list(seen.values())
+
+
 def osm(data: dict, args: argparse.Namespace) -> None:
     # a country already read today is kept (a rerun fills the countries that failed)
     todo = [
@@ -320,7 +350,10 @@ def osm(data: dict, args: argparse.Namespace) -> None:
         q = (f'[out:json][timeout:400];area["ISO3166-1"="{cc}"][admin_level=2]->.a;'
              'nwr["amenity"="charging_station"](area.a);out center tags;')  # fmt: skip
         try:
-            els = overpass(q, k)
+            try:
+                els = overpass(q, k)
+            except SystemExit:  # the whole country timed out everywhere: four tiles of it
+                els = tiled(cc, k)
             pts, rows = osm_points(els)
             if not pts:
                 raise ValueError("no stations")
