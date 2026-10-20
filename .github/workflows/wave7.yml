@@ -309,3 +309,25 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family I outputs"
+
+  J:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'J')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - name: 10 gas on the US side (EIA storage, Henry Hub, citygate, pipelines)
+        continue-on-error: true
+        run: |
+          python scripts/fetch_us_gas.py all
+          python3 -c "import json; d=json.load(open('frontend/public/data/us/gas.json')); print('::notice title=gas::' + json.dumps({k: [s['name'] for s in d['storage'].values()] if k == 'storage' else len(d[k] or {}) for k in ('storage', 'citygate')} | {'hh': (d['henry_hub'] or {}).get('points', [None])[-1]}))"
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family J outputs"

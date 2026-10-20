@@ -75,6 +75,7 @@ function wantedKeys(zoom: number): string[] {
   if (L.dataCentres) keys.push("datacentres");
   if (L.evChargersUS) keys.push("evChargers");
   if (L.evChargersEU) keys.push("evEu");
+  if (L.gasPipesUS) keys.push("usGasPipes");
   if (L.ghgrpUS) keys.push("ghgrp");
   if (L.tyndp) keys.push("tyndp");
   if (L.grw) keys.push("grwCountries");

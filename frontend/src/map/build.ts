@@ -105,6 +105,7 @@ import { offshoreLayers } from "./offshoreLayers";
 import { usSolarLayers } from "./usSolarLayers";
 import { evLayers } from "./evLayers";
 import { evEuLayers } from "./evEuLayers";
+import { usGasLayers } from "./usGasLayers";
 import { ghgrpLayers } from "./ghgrpLayers";
 import { tyndpLayers } from "./tyndpLayers";
 import { connectMoreLayers } from "./connectMoreLayers";
@@ -721,7 +722,7 @@ export function buildLayers(fr: Frame): Layer[] {
   layers.push(...mastrLayers(fr));
   layers.push(...offshoreLayers(fr));
   layers.push(...usSolarLayers(fr));
-  layers.push(...evLayers(fr), ...evEuLayers(fr));
+  layers.push(...evLayers(fr), ...evEuLayers(fr), ...usGasLayers(fr));
   layers.push(...ghgrpLayers(fr));
   layers.push(...tyndpLayers(fr));
   layers.push(...worldLayers(fr, near));

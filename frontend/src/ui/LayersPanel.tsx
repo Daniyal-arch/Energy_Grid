@@ -518,6 +518,8 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <TyndpKey />;
     case "ghgrpUS":
       return <GhgrpKey />;
+    case "gasPipesUS":
+      return <Note>Natural gas pipelines, interstate brighter than intrastate; lines generalised to about 1 km. EIA, U.S. Energy Atlas.</Note>;
     case "evChargersEU":
       return (
         <Note>

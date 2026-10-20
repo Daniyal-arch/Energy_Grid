@@ -13,6 +13,7 @@ import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
 import { EV_COLOR, type EvChargersFile } from "../lib/evChargers";
 import type { EvEuFile } from "../lib/evEu";
 import { EvEuCard } from "../components/EvEuCards";
+import { UsGasCard } from "../components/UsGasCards";
 import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
 import { TYNDP_STYLE, type TyndpFile } from "../lib/tyndp";
 import type { FinanceFile } from "../lib/finance";
@@ -950,6 +951,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "grw") return <GrwCard key={id} iso3={iso3} />;
         if (id === "tyndp") return <TyndpCard key={id} iso3={iso3} />;
         if (id === "ghgrpUS") return iso3 && iso3 !== "USA" ? null : <GhgrpCard key={id} />;
+        if (id === "gasPipesUS") return iso3 && iso3 !== "USA" ? null : <UsGasCard key={id} />;
         if (id === "evChargersEU") return <EvEuStats key={id} iso3={iso3} />;
         if (id === "evChargersUS") return iso3 && iso3 !== "USA" ? null : <EvChargersCard key={id} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;

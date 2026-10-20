@@ -1722,7 +1722,10 @@ families:
         dataset: eu/gas_flows.json, eu/dossier.json
         checked: '2026-10-18'
       CY:
-        status: todo
+        status: not_published
+        url: https://transparency.entsog.eu
+        checked: '2026-10-20'
+        note: 'Cyprus has no natural gas network: no ENTSOG point, no AGSI or ALSI facility (the Vasilikos LNG terminal is not in operation)'
       CZ:
         status: have
         source: ENTSOG flows, GIE AGSI storage and ALSI LNG
@@ -1738,9 +1741,21 @@ families:
         dataset: eu/gas_flows.json, eu/dossier.json
         checked: '2026-10-18'
       EE:
-        status: todo
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
       FI:
-        status: todo
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
       FR:
         status: have
         source: ENTSOG flows, GIE AGSI storage and ALSI LNG
@@ -1756,7 +1771,13 @@ families:
         dataset: eu/gas_flows.json, eu/dossier.json
         checked: '2026-10-18'
       GR:
-        status: todo
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
       HU:
         status: have
         source: ENTSOG flows, GIE AGSI storage and ALSI LNG
@@ -1765,7 +1786,13 @@ families:
         dataset: eu/gas_flows.json, eu/dossier.json
         checked: '2026-10-18'
       IE:
-        status: todo
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
       IT:
         status: have
         source: ENTSOG flows, GIE AGSI storage and ALSI LNG
@@ -1781,11 +1808,26 @@ families:
         dataset: eu/gas_flows.json, eu/dossier.json
         checked: '2026-10-18'
       LT:
-        status: todo
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
       LU:
-        status: todo
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
       MT:
-        status: todo
+        status: not_published
+        url: https://transparency.entsog.eu
+        checked: '2026-10-20'
+        note: Malta's Delimara LNG facility feeds one power station; it is in neither ENTSOG nor GIE ALSI, and Malta has no gas network
       NL:
         status: have
         source: ENTSOG flows, GIE AGSI storage and ALSI LNG
@@ -1822,7 +1864,13 @@ families:
         dataset: eu/gas_flows.json, eu/dossier.json
         checked: '2026-10-18'
       SI:
-        status: todo
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
       ES:
         status: have
         source: ENTSOG flows, GIE AGSI storage and ALSI LNG
@@ -1838,7 +1886,14 @@ families:
         dataset: eu/gas_flows.json, eu/dossier.json
         checked: '2026-10-18'
       GB:
-        status: todo
+        status: have
+        source: 'ENTSOG flows (UK points: BE, NL, NO, IE borders and LNG entry)'
+        url: https://transparency.entsog.eu
+        licence: ENTSOG terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        partial: true
+        note: Flows and LNG entry from ENTSOG; GB storage is not in the dossier's AGSI set
       US:
         status: todo
   reliability:

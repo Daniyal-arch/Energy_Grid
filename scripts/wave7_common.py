@@ -45,10 +45,16 @@ def get(
 
 
 def arcgis(
-    layer: str, *, where: str = "1=1", geometry: bool = True, page: int = 1000
+    layer: str,
+    *,
+    where: str = "1=1",
+    geometry: bool = True,
+    page: int = 1000,
+    extra: dict | None = None,
 ) -> list[dict]:
-    """Every feature of an ArcGIS feature layer: attributes, plus `_lon`/`_lat` (points, WGS84)
-    or `_polys` (polygons as [polygon][ring] flat lon/lat, WGS84) when `geometry`."""
+    """Every feature of an ArcGIS feature layer: attributes, plus `_lon`/`_lat` (points, WGS84),
+    `_polys` (polygons as [polygon][ring] flat lon/lat) or `_paths` (lines as [[lon, lat]...]
+    per path) when `geometry`; `extra` adds query parameters (maxAllowableOffset...)."""
     out: list[dict] = []
     offset = 0
     while True:
@@ -56,7 +62,7 @@ def arcgis(
             "where": where, "outFields": "*", "f": "json", "resultOffset": offset,
             "resultRecordCount": page, "returnGeometry": str(geometry).lower(), "outSR": 4326,
         }  # fmt: skip
-        d = get(f"{layer}/query", params=params).json()
+        d = get(f"{layer}/query", params=params | (extra or {})).json()
         if "error" in d:
             raise SystemExit(f"{layer}: {d['error']}")
         for f in d.get("features", []):
@@ -66,6 +72,8 @@ def arcgis(
                 row["_lon"], row["_lat"] = round(g["x"], 5), round(g["y"], 5)
             elif "rings" in g:
                 row["_polys"] = esri_polygons(g["rings"])
+            elif "paths" in g:
+                row["_paths"] = [[[round(x, 3), round(y, 3)] for x, y in p] for p in g["paths"]]
             out.append(row)
         if not d.get("exceededTransferLimit") and len(d.get("features", [])) < page:
             return out

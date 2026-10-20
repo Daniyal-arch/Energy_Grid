@@ -35,6 +35,7 @@ export type LayerId =
   | "evChargersEU"
   | "usQueue"
   | "gasPipes"
+  | "gasPipesUS"
   | "oilPipes"
   | "lngTerminals"
   | "coalTerminals"
@@ -144,6 +145,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "solarUS", label: "US solar farms", desc: "Every array of 1 MW and more; outlines zoomed in (USPVDB)", group: "Power plants", coverage: "US", color: "rgb(255,214,72)" },
   { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Connections & queues", coverage: "US", color: "rgb(196,196,214)", story: "us-queue" },
+  { id: "gasPipesUS", label: "US gas pipelines", desc: "Interstate and intrastate natural gas pipelines (EIA)", group: "Gas, oil & coal", coverage: "US", color: "rgb(255,196,96)" },
   { id: "gasPipes", label: "Gas pipelines", desc: "Operating, under construction, proposed", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,196,96)" },
   { id: "oilPipes", label: "Oil pipelines", desc: "Crude oil and NGL", group: "Gas, oil & coal", coverage: "World", color: "rgb(222,110,82)" },
   { id: "lngTerminals", label: "LNG terminals", desc: "Import and export, sized by capacity", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,150,92)" },
@@ -194,6 +196,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "ghgrpUS",
   "evChargersUS",
   "evChargersEU",
+  "gasPipesUS",
   "usQueue",
   "cables",
   "gasPipes",

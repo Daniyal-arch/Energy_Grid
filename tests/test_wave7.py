@@ -429,3 +429,51 @@ def test_de_register_reads_points_per_facility() -> None:
     text = "Ladesäulenregister\nLadeeinrichtungs-ID;Status;Anzahl Ladepunkte;Breitengrad;Längengrad;Betreiber\n1;In Betrieb;2;52,52;13,41;X\n2;Außer Betrieb;2;52,5;13,4;Y\n"
     pts, rows = ev.de_points(text)
     assert pts == [(13.41, 52.52, 2)] and rows[0]["points"] == 2
+
+
+# ---------------------------------------------------------------- family 10, gas on the US side
+
+import fetch_us_gas as ug  # noqa: E402
+
+
+def test_five_year_range_uses_the_same_week_of_five_years() -> None:
+    pts = [[f"{y}-01-0{d}", float(v)] for y, d, v in [
+        (2021, 8, 1), (2022, 7, 2), (2023, 6, 3), (2024, 5, 4), (2025, 3, 5), (2026, 9, 9)
+    ]]  # fmt: skip
+    # ISO week 1 of each year; 2026-01-09 is in week 2, so it has no full five-year range
+    assert ug.five_year_range(pts) == {}
+    pts[-1] = ["2026-01-02", 9.0]
+    assert ug.five_year_range(pts) == {"2026-01-02": [1.0, 5.0]}
+
+
+def test_eia_series_groups_and_sorts() -> None:
+    rows = [
+        {
+            "period": "2026-10-10",
+            "series": "S",
+            "series-description": "Lower 48",
+            "units": "BCF",
+            "value": "3800",
+        },
+        {
+            "period": "2026-10-03",
+            "series": "S",
+            "series-description": "Lower 48",
+            "units": "BCF",
+            "value": "3720",
+        },
+        {
+            "period": "2026-10-03",
+            "series": "T",
+            "series-description": "East",
+            "units": "BCF",
+            "value": None,
+        },
+    ]
+    assert ug.series(rows, "series") == {
+        "S": {
+            "name": "Lower 48",
+            "unit": "BCF",
+            "points": [["2026-10-03", 3720.0], ["2026-10-10", 3800.0]],
+        }
+    }

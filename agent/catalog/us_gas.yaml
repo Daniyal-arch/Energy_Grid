@@ -1,0 +1,15 @@
+dataset: us_gas
+title: Gas on the US side, EIA weekly storage per region, Henry Hub spot, citygate prices per state, pipelines
+licence: public domain (EIA)
+map_file: frontend/public/data/us/gas.json (storage, henry_hub, citygate), us/gas_pipes.json (lines)
+api:
+  storage: {call: "GET https://api.eia.gov/v2/natural-gas/stor/wkly/data/?frequency=weekly&data[0]=value", unit: Bcf, step: week}
+  henry_hub: {call: "GET https://api.eia.gov/v2/natural-gas/pri/fut/data/?frequency=daily&data[0]=value&facets[series][]=RNGWHHD", unit: USD/MMBtu, step: day}
+  citygate: {call: "GET https://api.eia.gov/v2/natural-gas/pri/sum/data/?frequency=monthly&data[0]=value&facets[process][]=PG1", unit: USD/Mcf, step: month}
+  pipelines: {call: "GET https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/Natural_Gas_Interstate_and_Intrastate_Pipelines_1/FeatureServer/0/query", unit: lines}
+notes:
+  - All need EIA_API_KEY (register at https://www.eia.gov/opendata/register.php) except the pipelines.
+  - The five-year range is computed from EIA's own weekly values.
+examples:
+  - q: How full is US gas storage against the five-year range?
+    answer: Read storage (the Lower 48 series), its newest point and range_5y at that week (computed from EIA's weekly values).

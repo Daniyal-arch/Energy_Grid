@@ -559,6 +559,17 @@ Overpass), one per mapped station, not per point. Computed: points or stations s
 each country says its source and unit. Layer "EV charging" and card. Refresh: by hand (`wave7.yml`
 family I); lake `ev_eu/<cc>` (every point or station).
 
+## Gas on the US side (`scripts/fetch_us_gas.py`, `us/gas.json`, `us/gas_pipes.json`)
+
+EIA API v2 (`EIA_API_KEY`, public domain): weekly working gas in storage per region (Bcf, Lower 48
+and EIA's regions), Henry Hub spot price (daily, USD/MMBtu), citygate price per state (monthly,
+USD/Mcf; EIA publishes no other regional hub price as open data). Computed: the change on the week
+and the five-year range (min and max of the same ISO week in the five years before), as EIA's
+storage report shows it. Pipelines: EIA "Natural Gas Interstate and Intrastate Pipelines" (U.S.
+Energy Atlas, federal ArcGIS org), generalised by ArcGIS to 0.01° and rounded to 3 decimals; layer
+"US gas pipelines". LNG terminals stay GEM's world layer. Card "Gas" (US Live tab). Refresh: weekly
+in `us-queues.yml`.
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

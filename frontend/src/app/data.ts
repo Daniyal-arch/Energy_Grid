@@ -110,6 +110,9 @@ const STATIC: Record<string, Loader> = {
   plantsPerf: bundledUs("plants_perf.json"),
   // CO₂ per kWh per US region, EIA-930 grid monitor (scripts/fetch_live_co2.py us, weekly)
   usCo2: bundledUs("co2.json"),
+  // gas on the US side (scripts/fetch_us_gas.py, EIA): storage, Henry Hub, citygate; pipelines
+  usGas: bundledUs("gas.json"),
+  usGasPipes: bundledUs("gas_pipes.json"),
   flows: snapshot("flows.json"),
   stats: snapshot("stats.json"),
   // transfer capacity per border, today and tomorrow (scripts/fetch_eu_capacity.py)

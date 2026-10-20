@@ -25,6 +25,7 @@ import { OFFSHORE_LABEL, offshoreStatus, type OffshoreWindFile } from "../lib/of
 import { solarCat, type UsSolarFile } from "../lib/usSolar";
 import type { EvChargersFile } from "../lib/evChargers";
 import type { EvEuFile } from "../lib/evEu";
+import type { UsGasPipesFile } from "../lib/usGas";
 import type { EvEuCell } from "./evEuLayers";
 import type { GhgrpFile } from "../lib/ghgrp";
 import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
@@ -372,6 +373,12 @@ function tooltipHtml(id: string, object: unknown): string | null {
     const lines = f.columns.map(([, label, unit], i) => (vals[i] == null || vals[i] === "" ? "" : `<div>${label}: <b>${valueText(vals[i], unit)}</b></div>`)).join("");
     const cls = isArea ? (row as EuArea)[3] : (row as EuPoint)[5];
     return `<b>${row[0]}</b><div style="color:#8d94a1">${f.classes[cls] ?? ""}${kv}</div>${lines}${SRC(`${f.source}${f.updated ? `, ${f.updated}` : ""}`)}`;
+  }
+  if (id === "us-gas-pipes") {
+    const g = fileOf<UsGasPipesFile>("usGasPipes");
+    const l = g?.lines[(object as [unknown, number])[1]];
+    if (!l) return null;
+    return `<b>${l[2] ?? "Operator not given"}</b><div>${l[1] ?? ""}${l[3] ? ` · ${l[3]}` : ""}</div>${SRC("EIA, natural gas pipelines (U.S. Energy Atlas)")}`;
   }
   if (id === "eu-ev") {
     const c = object as EvEuCell;
