@@ -288,7 +288,7 @@ jobs:
     needs: plan
     if: contains(needs.plan.outputs.groups, 'I')
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 200
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -304,8 +304,9 @@ jobs:
           python scripts/build_ev_eu.py de --upload
           python scripts/build_ev_eu.py fr --upload
           python scripts/build_ev_eu.py nl --upload
-      - name: 9 EV charging stations elsewhere (OpenStreetMap, Overpass; ~1 h)
+      - name: 9 EV charging stations elsewhere (OpenStreetMap, Overpass; up to 2 h, each country kept as it arrives)
         continue-on-error: true
+        timeout-minutes: 120
         run: python scripts/build_ev_eu.py osm --upload
       - name: Commit outputs
         if: ${{ !cancelled() }}

@@ -58,7 +58,11 @@ CLASS_NAME = {"Czech Republic": "CZ"}  # EAFO's overview table names
 DE_PAGE = "https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenkarte/start.html"
 FR_DATASET = "https://www.data.gouv.fr/api/1/datasets/fichier-consolide-des-bornes-de-recharge-pour-vehicules-electriques/"
 NL_FILE = "https://opendata.ndw.nu/charging_point_locations.geojson.gz"
-OVERPASS = "https://overpass-api.de/api/interpreter"
+# two public Overpass servers taken in turn (each country asks the next one first)
+OVERPASS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
+]
 REGISTER = {"DE", "FR", "NL"}
 
 
@@ -277,14 +281,26 @@ def osm_points(elements: list[dict]) -> tuple[list[tuple[float, float, int]], li
     return pts, rows
 
 
+def overpass(q: str, k: int) -> list[dict]:
+    """Elements of one query from the next server in turn, the other one if it fails."""
+    last: object = None
+    for url in (OVERPASS[k % 2], OVERPASS[(k + 1) % 2]):
+        try:
+            return w7.get(url, params={"data": q}, timeout=420, tries=1).json()["elements"]
+        except (Exception, SystemExit) as e:  # noqa: BLE001 - try the other server
+            last = e
+            print(f"    {url}: {e}", flush=True)
+    raise SystemExit(f"Overpass: {last}")
+
+
 def osm(data: dict, args: argparse.Namespace) -> None:
-    for cc in SLUG:
-        if cc in REGISTER or (args.only and cc not in args.only):
-            continue
-        q = (f'[out:json][timeout:900];area["ISO3166-1"="{cc}"][admin_level=2]->.a;'
+    for k, cc in enumerate(
+        c for c in SLUG if c not in REGISTER and not (args.only and c not in args.only)
+    ):
+        q = (f'[out:json][timeout:400];area["ISO3166-1"="{cc}"][admin_level=2]->.a;'
              'nwr["amenity"="charging_station"](area.a);out center tags;')  # fmt: skip
         try:
-            els = w7.get(OVERPASS, params={"data": q}, timeout=960).json()["elements"]
+            els = overpass(q, k)
             pts, rows = osm_points(els)
             if not pts:
                 raise ValueError("no stations")
@@ -295,7 +311,8 @@ def osm(data: dict, args: argparse.Namespace) -> None:
                 pts, rows, args)  # fmt: skip
         except (Exception, SystemExit) as e:  # noqa: BLE001 - one country down keeps its last read
             print(f"  OSM {cc}: failed ({e}); kept", flush=True)
-        time.sleep(20)  # Overpass asks for room between large queries
+        save(data)  # each country kept as it arrives
+        time.sleep(10)  # Overpass asks for room between large queries
 
 
 def main() -> None:
