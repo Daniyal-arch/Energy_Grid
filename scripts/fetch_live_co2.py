@@ -8,8 +8,8 @@ fr  RTE éCO2mix national, real time (ODRÉ `eco2mix-national-tr`, Licence Ouver
 es  REE REData (`generacion/no-renovables-detalle-emisiones-CO2`, no key): the daily emission
     factor of the national system (t CO₂-eq per MWh, shown as g per kWh = × 1000) and the
     emissions per technology, the last 30 days.
-ie  EirGrid Smart Grid Dashboard: CO₂ intensity (g per kWh) every 15 min for Ireland (ROI) and
-    the island (ALL), the last 24 h.
+ie  EirGrid Smart Grid Dashboard (`/api/chart/`, the request its own chart makes): CO₂ intensity
+    (g per kWh) every 15 min for Ireland (ROI) and the island (ALL), yesterday and today.
 us  EIA-930 Hourly Electric Grid Monitor files (one xlsx per region, ~38 MB each, ~0.5 GB for
     the 13 regions and the Lower 48; weekly in Actions): EIA's hourly "CO2 Emissions Intensity
     for Generated Electricity" and "... for Consumed Electricity" (lb per kWh, EIA's estimate from
@@ -48,7 +48,7 @@ FR_MIX = [
     "pompage",
 ]
 REE = "https://apidatos.ree.es/es/datos/generacion/no-renovables-detalle-emisiones-CO2"
-EIRGRID = "https://www.smartgriddashboard.com/DashboardService.svc/data"
+EIRGRID = "https://www.smartgriddashboard.com/api/chart/"
 EIA_REGIONS = [
     "US48",
     "CAL",
@@ -144,24 +144,25 @@ def fetch_es() -> dict:
 
 
 def fetch_ie() -> dict:
-    end = datetime.now(UTC)
-    start = end - timedelta(hours=24)
-    fmt = "%d-%b-%Y %H:%M"
+    """Today and yesterday (Irish dates), as the dashboard's own chart requests them."""
+    today = datetime.now(UTC).date()
     out = {}
     for region in ("ROI", "ALL"):
-        rows = (
-            w7.get(
-                EIRGRID,
-                params={
-                    "area": "co2intensity",
-                    "region": region,
-                    "datefrom": start.strftime(fmt),
-                    "dateto": end.strftime(fmt),
-                },
-            )
-            .json()
-            .get("Rows", [])
-        )
+        rows = []
+        for day in (today - timedelta(days=1), today):
+            params = {
+                "region": region,
+                "chartType": "co2",
+                "dateRange": "day",
+                "dateFrom": day.isoformat(),
+                "dateTo": day.isoformat(),
+                "areas": "co2intensity",
+            }
+            rows += [
+                r
+                for r in w7.get(EIRGRID, params=params).json().get("Rows", [])
+                if r.get("FieldName") == "CO2_INTENSITY"
+            ]
         out[region] = [[r["EffectiveTime"], r["Value"]] for r in rows if r.get("Value") is not None]
     if not any(out.values()):
         raise SystemExit("EirGrid: no CO₂ rows")
