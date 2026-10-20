@@ -88,7 +88,8 @@ function useIsoOf() {
   }, [world]);
 }
 
-const fmt = (v: number) => (v >= 1000 ? Math.round(v).toLocaleString("en-US") : v >= 10 ? v.toFixed(0) : v.toFixed(1));
+// counts stay whole ("1 items", not "1.0"); measures keep one decimal under 10
+const fmt = (v: number) => (Number.isInteger(v) || v >= 1000 ? Math.round(v).toLocaleString("en-US") : v >= 10 ? v.toFixed(0) : v.toFixed(1));
 
 function Rows({ rows, unit }: { rows: { key: string; label: string; value: number; color?: string }[]; unit: string }) {
   const top = Math.max(...rows.map((r) => r.value), 1);

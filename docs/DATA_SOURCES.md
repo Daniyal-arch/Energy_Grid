@@ -642,26 +642,31 @@ panel: NYISO (its site answers automated downloads with a bot check, HTTP 202) a
 
 ## Check a site (computed in the app: `frontend/src/lib/site.ts`, `components/SiteCards.tsx`)
 
-Right-click a place (or "Check a site", or type "latitude, longitude" in the search): the panel
-lists what the map's own files say about it. No new data; the link (`?sel=site:lon,lat`) opens
-the same site.
+Right-click a place (or "Check a site", or type "latitude, longitude" in the search): a site
+analysis of the area around it. The user picks the area's radius (5, 10, 25, 50 or 100 km; 50 by
+default); the panel sums what the map's own files hold inside it, and the map frames the area,
+dims everything outside it and draws what lies inside: high-voltage lines by voltage (from the
+line tiles, every section that comes within the radius), substations, plants by fuel (filled:
+operating; rings: building or planned; the largest named), data centres, GB TEC sites, the Dutch
+capacity-map area, the link to the nearest line and rings at the radius and half of it. No new
+data; the link (`?sel=site:lon,lat,radius`) opens the same analysis.
 
 | Figure | Source | Computed |
 |---|---|---|
 | Country, US state, US county | `countries.json` (Europe), `world.json`, `us/states.json`, `us/counties.json` | point in outline |
-| Nearest line of 220 kV and more (and of 345 kV and more) | `grid/world-hv.pmtiles` on R2 (OpenStreetMap via Overture, `scripts/fetch_world_hv_overture.py`) | straight-line distance (haversine scale, local flat projection) to the nearest segment in the nine zoom-9 tiles around the site; lines farther than the edge of those tiles are not reported ("none within N km"). Tiles simplified by 6 tile units (about 0.1 km) |
+| Nearest line of 220 kV and more (and of 345 kV and more) | `grid/world-hv.pmtiles` on R2 (OpenStreetMap via Overture, `scripts/fetch_world_hv_overture.py`) | straight-line distance (haversine scale, local flat projection) to the nearest segment in the zoom-9 tiles around the site (enough tiles to cover the radius and at least 50 km, at most 3 each way); lines farther than the edge of those tiles are not reported ("none within N km"). Tiles simplified by 6 tile units (about 0.1 km) |
 | Nearest line of 100 kV and more (US) | `grid/us-lines.pmtiles` (`scripts/fetch_us_lines.py`) | the same |
-| Nearest substation of 220 kV and more, substations within 50 km (Europe) | `grid.json` (PyPSA-Eur) | great-circle distance |
+| Nearest substation of 220 kV and more, substations within the radius (Europe) | `grid.json` (PyPSA-Eur) | great-circle distance |
 | Room to connect: NL | `connect.json` (capacity map) | the area holding the site, its published states and queues |
-| Room to connect: GB | `connect.json` (TEC register) | MW contracted and not yet connected per site, sites within 50 km |
+| Room to connect: GB | `connect.json` (TEC register) | MW contracted and not yet connected per site, sites within the radius |
 | Waiting to connect: US | `us/queue.json` (LBNL, per state: MW summed over types, each part of a hybrid under its own type), `us/queues_live.json` (markets, per state and type; not added up because a hybrid counts under each type) | none beyond the files' sums |
-| Power plants within 50 km: operating, under construction, planned | Europe: `plants.json` (operating) and `world_plants.json` (building, planned); US: `us/plants.json`; elsewhere `world_plants.json` | sums of the map points within 50 km (great-circle) |
+| Power plants within the radius: operating, under construction, planned | Europe: `plants.json` (operating) and `world_plants.json` (building, planned); US: `us/plants.json`; elsewhere `world_plants.json` | sums of the map points within 50 km (great-circle) |
 | Day-ahead price, hours below zero (Europe) | `prices.json`, every zone of the country (no zone outlines in the files) | as in the Prices tab |
 | Retail prices | `retail.json` (Eurostat bands IC and DC, all taxes; EIA per state) | newest value |
 | Water risk | `water.json` (WRI Aqueduct 4.0) | the basin holding the site |
 | Customer-hours without power (US) | `us_outages.json` (EAGLE-I) | the county holding the site, newest year |
 | Renewable share, carbon intensity | `transition.json` (Ember) | newest year with a value |
-| Data centres within 50 km | `datacentres.json` (OpenStreetMap) | count and distance |
+| Data centres within the radius | `datacentres.json` (OpenStreetMap) | count and distance |
 | Solar resource (PVOUT), mean wind speed at 100 m | `grid/atlas-pvout-0.1deg.i16`, `grid/atlas-wind100-0.1deg.i16` on R2 (Global Solar Atlas, Global Wind Atlas; "Resource atlases" below) | the mean of the source pixels in the site's 0.1° cell (built in Actions), read with one range request; a year of PV = the daily total × 365, as the atlas gives it |
 
 ## Country report (computed in the app: `frontend/src/components/CountryReport.tsx`)

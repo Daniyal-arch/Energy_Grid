@@ -30,6 +30,7 @@ import type { NzFile, ZaFile } from "../lib/regionalLive";
 import { type GasProjectsFile, type H2Project, type HydrogenFile } from "../lib/coming";
 import { SEA_CABLE_SOURCE, type SeaCable, type SeaPipe } from "../lib/seaCables";
 import { frValue, itTotals, type FrFile, type FrSite, type IeFile, type IeStation, type ItFile } from "../lib/connectMore";
+import { siteHtml } from "./siteLayers";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
@@ -291,6 +292,7 @@ function mastrHtml(id: string, object: unknown): string | null {
 }
 
 function tooltipHtml(id: string, object: unknown): string | null {
+  if (id.startsWith("site-")) return siteHtml(id, object);
   if (id === "us-outages" || id === "w-water") return riskHtml(id, object);
   if (id.startsWith("de-mastr-")) return mastrHtml(id, object);
   if (id === "eu-tyndp" || id === "eu-tyndp-areas" || id === "eu-tyndp-points") {
