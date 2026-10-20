@@ -524,11 +524,9 @@ def test_congestion_windows_and_split_on_too_many_instances() -> None:
         t0 = datetime.strptime(params["periodStart"], "%Y%m%d%H%M")
         t1 = datetime.strptime(params["periodEnd"], "%Y%m%d%H%M")
         calls.append((t0, t1))
-        if t1 - t0 > __import__("datetime").timedelta(days=10):
-            return (
-                [],
-                "The number of instances (250) exceeds the allowed maximum (100) for data item X",
-            )
+        n = round(250 * (t1 - t0).total_seconds() / (31 * 86400))  # instances grow with the window
+        if n > 100:
+            return [], f"The number of instances ({n}) exceeds the allowed maximum (100) for item X"
         return ["doc"], ""
 
     bc.fetch, orig = fake, bc.fetch
@@ -538,4 +536,4 @@ def test_congestion_windows_and_split_on_too_many_instances() -> None:
         )
     finally:
         bc.fetch = orig
-    assert len(docs) == 4 and len(calls) == 5  # one refusal, then four parts of under ten days
+    assert len(docs) == 3 and len(calls) == 4  # one refusal, then three parts of 83 instances
