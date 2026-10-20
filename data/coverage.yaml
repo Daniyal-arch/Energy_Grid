@@ -754,9 +754,22 @@ families:
       SE:
         status: todo
       GB:
-        status: todo
+        status: built
+        source: NESO Constraint Breakdown Costs and Volume
+        url: https://www.neso.energy/data-portal/constraint-breakdown
+        licence: NESO Open Data Licence
+        dataset: eu/congestion.json
+        checked: '2026-10-20'
+        note: Daily thermal, voltage, inertia and largest-loss constraint costs (GBP) and volumes, summed per month
       US:
-        status: todo
+        status: built
+        source: CAISO production and curtailments data
+        url: https://www.caiso.com/library/production-curtailments-data
+        licence: CAISO public data
+        dataset: eu/congestion.json
+        checked: '2026-10-20'
+        partial: true
+        note: California's wind and solar curtailment (5-min, local and system; CAISO's newest file ends December 2025); ERCOT, MISO, SPP, PJM, NYISO and ISO-NE publish no curtailment file found as data
   prices:
     name: Wholesale prices
     shows: day-ahead and imbalance (or real-time) prices (Prices views, imbalance card)

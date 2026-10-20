@@ -149,7 +149,7 @@ jobs:
     needs: plan
     if: contains(needs.plan.outputs.groups, 'D')
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 300
     env:
       ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
       GITHUB_TOKEN: ${{ github.token }}
