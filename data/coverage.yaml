@@ -1396,7 +1396,14 @@ families:
         dataset: eu/ets.json
         checked: '2026-10-18'
       GB:
-        status: todo
+        status: built
+        source: UK Emissions Trading Registry, Compliance Report Emissions and Surrenders (UK ETS); Northern Ireland power in the EU ETS (XI)
+        url: https://reports.view-emissions-trading-registry.service.gov.uk/ets-reports.html
+        licence: OGL v3.0
+        dataset: eu/ets.json (GB)
+        checked: '2026-10-20'
+        partial: true
+        note: Emissions per installation; the report publishes no position or activity, so GB installations are listed but not on the map
       US:
         status: have
         source: EPA GHGRP

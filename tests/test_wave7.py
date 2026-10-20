@@ -319,3 +319,31 @@ def test_uk_semesters_reads_the_united_kingdom_column() -> None:
         "2025-S1": 27.03,
         "2025-S2": 28.5,
     }
+
+
+# ---------------------------------------------------------------- family 7, UK ETS emitters
+
+import fetch_uk_ets as uk  # noqa: E402
+
+
+def test_uk_ets_merge_keeps_eu_rows_and_adds_unplaced_gb() -> None:
+    ets = {
+        "years": [2024, 2025],
+        "groups": ["Combustion (power, heat, industry)", "Other"],
+        "countries": {"XI": {"n": 1, "placed": 0, "t": [5, 4], "t_placed": 0}},
+        "rows": [["XI", "568", "Ballylumford", 0, [5, 4], None, None]],
+    }
+    rows = [
+        {
+            "id": "1000627",
+            "permit": "UK-W-IN-12612",
+            "name": "Mill",
+            "t": {2024: 18475, 2025: None},
+        },
+        {"id": "1", "permit": "x", "name": "Closed", "t": {2024: None, 2025: None}},
+    ]
+    out = uk.merge(ets, rows, "2026-10-20")
+    assert out["groups"][-1] == uk.GROUP
+    assert out["countries"]["GB"] == {"n": 1, "placed": 0, "t": [18475, 0], "t_placed": 0}
+    assert ["GB", "1000627", "Mill", 2, [18475, None], None, None] in out["rows"]
+    assert len(out["rows"]) == 2

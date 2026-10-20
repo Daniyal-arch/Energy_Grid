@@ -1,0 +1,13 @@
+dataset: uk_ets
+title: Recorded (verified) CO2 per installation in the UK ETS
+licence: Open Government Licence v3.0
+map_file: frontend/public/data/eu/ets.json (rows with registry GB; source in uk)
+api:
+  compliance_report: {call: "GET https://reports.view-emissions-trading-registry.service.gov.uk/ets-reports/section5/section5.html (the linked UK_ETS_Compliance_Report_Emissions_&_Surrenders_<year>.xlsx, sheet Data)", unit: t CO2e, step: year}
+notes:
+  - Operator holding accounts only; aircraft and maritime operators left out.
+  - No positions or activities published; GB rows are not on the map.
+  - Northern Ireland's power stations are in the EU ETS (registry XI), not here.
+examples:
+  - q: How much did UK ETS installations emit in 2025?
+    answer: 71.1 Mt CO2e from 747 installations (sum of the recorded emissions, computed; registry report of 2026-10-20)

@@ -431,7 +431,7 @@ function EtsCard({ iso3 }: { iso3?: string }) {
   const top = rows.slice(0, 10); // the file is sorted by the newest year
   const max = newestT(top[0]) || 1;
   return (
-    <Card title="CO₂ per installation" note={`EU ETS, verified · ${f.newest}`}>
+    <Card title="CO₂ per installation" note={`${iso2 === "GB" ? "UK ETS and EU ETS (NI)" : "EU ETS"}, verified · ${f.newest}`}>
       <div className="text-[22px] font-light text-slate-50">
         {mt(total)}{" "}
         <span className={`text-[11px] ${muted}`}>
@@ -459,6 +459,7 @@ function EtsCard({ iso3 }: { iso3?: string }) {
       <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
         Verified emissions (t CO₂e) as the EU Union Registry lists them on {f.snapshot}; aircraft, shipping and the ETS2 fuel suppliers left out. {placed.toLocaleString("en-US")} of{" "}
         {rows.length.toLocaleString("en-US")} installations are on the map: those the EEA industrial register gives an ETS id for (no placing by name or address).
+        {f.uk && (!iso2 || iso2 === "GB") ? ` Great Britain: ${f.uk.source}, recorded emissions per installation; the report gives no position or activity.` : ""}
       </div>
     </Card>
   );

@@ -370,13 +370,13 @@ function EtsKey() {
   return (
     <>
       <Swatches>
-        {(ets?.groups ?? []).map((g, i) => (
+        {(ets?.groups ?? []).map((g, i) => g.includes("UK ETS") ? null : (
           <Swatch key={g} color={rgbCss(ETS_COLOR[i])} label={g.replace(" (power, heat, industry)", "")} />
         ))}
       </Swatches>
       <Note>
         Dot area = verified CO₂ in {ets?.newest ?? "…"}. Shown: {placed.toLocaleString("en-US")} of {n.toLocaleString("en-US")} installations ({mt(tp)} of {mt(t)}, sums
-        computed), the ones the EEA industrial register gives an ETS id for; the rest are in the panel only. Combustion includes power, heat and industrial boilers. EU Union Registry, {ets?.snapshot ?? "…"}.
+        computed), the ones the EEA industrial register gives an ETS id for; the rest are in the panel only. Combustion includes power, heat and industrial boilers. EU Union Registry, {ets?.snapshot ?? "…"}.{ets?.uk ? " Great Britain: the UK ETS registry's compliance report, listed in the panel (no positions or activities published)." : ""}
       </Note>
     </>
   );

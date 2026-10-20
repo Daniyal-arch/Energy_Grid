@@ -526,6 +526,17 @@ Computed: EUR = pence / 100 / the ECB's average GBP per EUR over the half-year; 
 are kept in `eu.gb`. Card "What consumers pay" (GB says DESNZ). Refresh: Mondays in `eu-days.yml`,
 after `fetch_retail_prices.py`. Ofgem's price cap is a ceiling, not an average, so it is not used.
 
+## UK ETS emissions per installation (`scripts/fetch_uk_ets.py`, GB in `ets.json`)
+
+UK Emissions Trading Registry, public report "Compliance Report Emissions and Surrenders" (OGL
+v3.0, reports.view-emissions-trading-registry.service.gov.uk, section 5): recorded (verified)
+emissions per installation and year, t CO2e, passed through. Operator holding accounts only
+(aircraft and maritime left out). Northern Ireland's power stations stay in the EU ETS (XI). The
+report has no position or activity and the EEA register has no UK site since 2020, so GB's 747
+installations are listed in the panel and the country report (group "Activity not published")
+and are not on the map; sums are computed. Refresh: Mondays in `eu-days.yml`, after
+`fetch_eu_ets.py`.
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

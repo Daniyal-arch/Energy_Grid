@@ -195,13 +195,13 @@ function useSections(code: string) {
     const ct = ctrace ? ctrace.rows.filter((r) => r[2] === iso3) : [];
     if (etc || ct.length) {
       const rows: Row[] = [];
-      if (etc && ets) rows.push(["EU ETS verified emissions", etc.t[etc.t.length - 1], "t CO2", `${ets.newest}; ${etc.n.toLocaleString("en-US")} installations (sum computed)`]);
+      if (etc && ets) rows.push([iso2 === "GB" ? "UK ETS recorded emissions (installations)" : "EU ETS verified emissions", etc.t[etc.t.length - 1], "t CO2", `${ets.newest}; ${etc.n.toLocaleString("en-US")} installations (sum computed)`]);
       if (ct.length && ctrace) {
         rows.push(["Facilities over the Climate TRACE threshold", ct.length, "count", `${(ctrace.threshold_t / 1e6).toFixed(1)} Mt CO2e and more, ${ctrace.year}`]);
         rows.push(["Their emissions", ct.reduce((a, r) => a + r[5], 0), "t CO2e", "modelled, sum computed"]);
         for (const r of ct.slice(0, 5)) rows.push([r[3] || "unnamed", r[5], "t CO2e", "largest modelled emitters"]);
       }
-      out.push({ title: "Emissions", source: `${etc ? `EU Union Registry (${ets?.snapshot}); ` : ""}${ct.length ? "Climate TRACE (modelled, CC BY 4.0)" : ""}`, rows });
+      out.push({ title: "Emissions", source: `${etc ? (iso2 === "GB" && ets?.uk ? `${ets.uk.source}; ` : `EU Union Registry (${ets?.snapshot}); `) : ""}${ct.length ? "Climate TRACE (modelled, CC BY 4.0)" : ""}`, rows });
     }
     // ---- grid, gas, offshore wind (Europe)
     if (europe && iso2 && grid) {

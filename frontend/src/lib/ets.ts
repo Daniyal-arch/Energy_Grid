@@ -17,6 +17,8 @@ export interface EtsFile {
   countries: Record<string, { n: number; placed: number; t: number[]; t_placed: number }>;
   /** largest newest-year emitter first */
   rows: EtsRow[];
+  /** the UK ETS rows (registry GB, scripts/fetch_uk_ets.py): listed, not placed */
+  uk?: { source: string; url: string; fetched: string };
 }
 
 /** One colour per activity group, in the file's order. */
@@ -30,6 +32,7 @@ export const ETS_COLOR: RGB[] = [
   [140, 200, 124], // pulp and paper
   [255, 206, 96], // chemicals
   [160, 164, 176], // other
+  [118, 122, 134], // activity not published (UK ETS rows, never on the map)
 ];
 
 /** The Union Registry's registry codes that are not a map country of their own. */

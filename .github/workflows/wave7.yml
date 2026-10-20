@@ -224,3 +224,21 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family F outputs"
+
+  G:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'G')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx openpyxl
+      - name: 7 emitters, UK ETS installations into the CO2 per installation file
+        continue-on-error: true
+        run: python scripts/fetch_uk_ets.py
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family G outputs"

@@ -186,12 +186,13 @@ jobs:
           AGSI_API_KEY: ${{ secrets.AGSI_API_KEY }}
         run: python scripts/fetch_alsi.py --out store/eu || echo "ALSI fetch failed; keeping yesterday's"
 
-      - name: EU ETS verified CO2 per installation (Union Registry + EEA register; Mondays)
+      - name: EU ETS and UK ETS verified CO2 per installation (Union Registry + EEA register, UK ETS registry; Mondays)
         timeout-minutes: 10
         continue-on-error: true
         run: |
           if [ "$(date -u +%u)" = 1 ] || [ ! -f store/eu/ets.json ]; then
             python scripts/fetch_eu_ets.py --out store/eu || echo "EU ETS fetch failed; keeping the last copy"
+            python scripts/fetch_uk_ets.py --out store/eu || echo "UK ETS fetch failed; GB keeps its last rows"
           fi
 
       - name: What consumers pay (Eurostat half-yearly, DESNZ for GB, EIA monthly; Mondays)
