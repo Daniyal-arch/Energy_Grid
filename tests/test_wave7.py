@@ -404,3 +404,28 @@ def test_gb_outages_keep_active_production_and_drop_closures() -> None:
     }
     out = go.merge(f, units, 0, "2026-10-20T04:00:00+00:00", long_term)
     assert out["total"]["offline_mw"] == 750.0 and out["countries"]["GB"]["forced_mw"] == 740.0
+
+
+# ---------------------------------------------------------------- family 9, EV charging
+
+import build_ev_eu as ev  # noqa: E402
+
+
+def test_ev_cells_sum_points_per_tenth_degree() -> None:
+    cells = ev.cells([(13.41, 52.52, 4), (13.44, 52.58, 2), (2.35, 48.85, 1)])
+    assert cells == [[13.45, 52.55, 6], [2.35, 48.85, 1]]
+
+
+def test_eafo_series_and_classes() -> None:
+    s = ev.eafo_series("YEAR,AC,DC\n2025,82083,21497\n2026,88616,24973\n")
+    assert s == {"years": [2025, 2026], "ac": [82083, 88616], "dc": [21497, 24973]}
+    labels, classes = ev.eafo_classes(
+        'Country,"Slow AC",Fast DC\n"Czech Republic",5,1444\nMalta,,4\n'
+    )
+    assert labels == ["Slow AC", "Fast DC"] and classes == {"CZ": [5, 1444], "MT": [None, 4]}
+
+
+def test_de_register_reads_points_per_facility() -> None:
+    text = "Ladesäulenregister\nLadeeinrichtungs-ID;Status;Anzahl Ladepunkte;Breitengrad;Längengrad;Betreiber\n1;In Betrieb;2;52,52;13,41;X\n2;Außer Betrieb;2;52,5;13,4;Y\n"
+    pts, rows = ev.de_points(text)
+    assert pts == [(13.41, 52.52, 2)] and rows[0]["points"] == 2

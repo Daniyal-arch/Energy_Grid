@@ -32,6 +32,7 @@ export type LayerId =
   | "solarResource"
   | "windResource"
   | "evChargersUS"
+  | "evChargersEU"
   | "usQueue"
   | "gasPipes"
   | "oilPipes"
@@ -164,6 +165,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "cement", label: "Cement plants", desc: "Sized by capacity", group: "Industry & demand", coverage: "World", color: "rgb(206,192,166)" },
   { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & demand", coverage: "World", color: "rgb(230,160,255)" },
   { id: "ironOre", label: "Iron ore mines", desc: "Sized by production", group: "Industry & demand", coverage: "World", color: "rgb(206,112,88)" },
+  { id: "evChargersEU", label: "EV charging", desc: "Public charging points from the national registers, OpenStreetMap stations elsewhere (EAFO counts)", group: "Industry & demand", coverage: "Europe", color: "rgb(96,214,255)" },
   { id: "evChargersUS", label: "EV fast chargers", desc: "Public DC fast charging stations, sized by ports (NREL AFDC)", group: "Industry & demand", coverage: "US", color: "rgb(96,214,255)" },
   { id: "hydrogen", label: "Hydrogen projects", desc: "Electrolysers and other clean-hydrogen plants, operating or being built (European Hydrogen Observatory)", group: "Industry & demand", coverage: "Europe", color: "rgb(96,214,255)" },
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & demand", coverage: "World", color: "rgb(196,150,255)" },
@@ -191,6 +193,7 @@ export const STATS_LAYERS = new Set<LayerId>([
   "tyndp",
   "ghgrpUS",
   "evChargersUS",
+  "evChargersEU",
   "usQueue",
   "cables",
   "gasPipes",

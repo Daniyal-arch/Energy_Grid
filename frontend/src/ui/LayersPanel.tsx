@@ -518,6 +518,12 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <TyndpKey />;
     case "ghgrpUS":
       return <GhgrpKey />;
+    case "evChargersEU":
+      return (
+        <Note>
+          Dot area = public charging points (registers: DE, FR) or mapped stations (OpenStreetMap, paler) summed per 0.1° cell. Counts per country: European Alternative Fuels Observatory.
+        </Note>
+      );
     case "evChargersUS":
       return (
         <Note>

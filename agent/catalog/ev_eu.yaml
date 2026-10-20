@@ -1,0 +1,15 @@
+dataset: ev_eu
+title: EV charging in Europe, counts per country (EAFO) and every point or station (BNetzA, IRVE, OpenStreetMap)
+licence: EAFO (European Commission reuse, CC BY 4.0); BNetzA CC BY 4.0; IRVE Licence Ouverte 2.0; OpenStreetMap ODbL 1.0
+map_file: frontend/public/data/eu/ev_eu.json (eafo.countries, maps, cells per 0.1 degree)
+lake: ev_eu/<cc> (de, fr, and every OSM country; columns id, operator, points|kw|capacity, lon, lat, geometry)
+api:
+  eafo_country: {call: "GET https://alternative-fuels-observatory.ec.europa.eu/sites/default/files/csv/<country-slug>/recharging_points.csv", unit: points, step: year}
+  eafo_classes: {call: "GET .../csv/european-union-eu27/countries_overview_of_recharging_stations.csv", unit: points per power class}
+  osm: {call: "POST https://overpass-api.de/api/interpreter  nwr[amenity=charging_station](area ISO3166-1=<CC>)", unit: stations}
+notes:
+  - Registers count charging points; OpenStreetMap counts stations (one per node or area).
+  - Cells are sums (computed); nothing is placed where a source has no rows.
+examples:
+  - q: How many public charging points does Germany have?
+    answer: 221,646 in 2026 so far (EAFO, AC 164,102 + DC 57,544, sum computed); the BNetzA register lists 209,096 points at 116,422 facilities in operation (1 Sep 2026)

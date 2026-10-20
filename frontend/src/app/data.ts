@@ -152,6 +152,8 @@ const STATIC: Record<string, Loader> = {
   lngTerminals: archive("lng_terminals.json"),
   // EU ETS verified emissions per installation (scripts/fetch_eu_ets.py)
   ets: archive("ets.json"),
+  // EV charging in Europe (scripts/build_ev_eu.py; EAFO, BNetzA, IRVE, OpenStreetMap)
+  evEu: bundled("ev_eu.json"),
   // Climate TRACE modelled emissions per facility (scripts/fetch_climate_trace.py)
   ctrace: archive("ctrace.json"),
   // where new demand or generation can connect: GB, NL, ES (scripts/fetch_connect_here.py)

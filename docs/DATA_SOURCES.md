@@ -548,6 +548,17 @@ event begun over 365 days ago or ending over ten years ahead is left out and cou
 Every ENTSO-E zone that answers is now listed, with 0 MW when nothing is offline (`fetch_outages.py`).
 Refresh: every 30 min in `eu-snapshot.yml`, after `fetch_outages.py`.
 
+## EV charging in Europe (`scripts/build_ev_eu.py`, `ev_eu.json`)
+
+Counts: European Alternative Fuels Observatory (European Commission), public recharging points per
+country and year, AC and DC (`<country>/recharging_points.csv`; the newest year is the year so far),
+and per power class now (EU table), for EU-27 and the UK. Where: Germany, BNetzA Ladesäulenregister
+(CC BY 4.0, points per facility in operation); France, data.gouv.fr consolidated IRVE file (Etalab
+2.0, one row per point); every other country, OpenStreetMap `amenity=charging_station` (ODbL,
+Overpass), one per mapped station, not per point. Computed: points or stations summed per 0.1° cell;
+each country says its source and unit. Layer "EV charging" and card. Refresh: by hand (`wave7.yml`
+family I); lake `ev_eu/<cc>` (every point or station).
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

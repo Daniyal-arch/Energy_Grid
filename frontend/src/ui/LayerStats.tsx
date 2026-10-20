@@ -11,6 +11,8 @@ import { BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCa
 import { UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
 import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
 import { EV_COLOR, type EvChargersFile } from "../lib/evChargers";
+import type { EvEuFile } from "../lib/evEu";
+import { EvEuCard } from "../components/EvEuCards";
 import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
 import { TYNDP_STYLE, type TyndpFile } from "../lib/tyndp";
 import type { FinanceFile } from "../lib/finance";
@@ -667,6 +669,14 @@ function TyndpCard({ iso3 }: { iso3?: string }) {
 }
 
 /** US industrial emitters (EPA GHGRP): total, by sector, the largest. */
+function EvEuStats({ iso3 }: { iso3?: string }) {
+  const f = useFile<EvEuFile>("evEu");
+  if (!f) return <Card title="EV charging">Loading…</Card>;
+  const iso2 = iso2Of(iso3);
+  if (iso3 && !iso2) return null;
+  return <EvEuCard f={f} iso2={iso2} />;
+}
+
 function GhgrpCard() {
   const f = useFile<GhgrpFile>("ghgrp");
   if (!f) return <Card title="US industrial emitters">Loading…</Card>;
@@ -940,6 +950,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "grw") return <GrwCard key={id} iso3={iso3} />;
         if (id === "tyndp") return <TyndpCard key={id} iso3={iso3} />;
         if (id === "ghgrpUS") return iso3 && iso3 !== "USA" ? null : <GhgrpCard key={id} />;
+        if (id === "evChargersEU") return <EvEuStats key={id} iso3={iso3} />;
         if (id === "evChargersUS") return iso3 && iso3 !== "USA" ? null : <EvChargersCard key={id} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;

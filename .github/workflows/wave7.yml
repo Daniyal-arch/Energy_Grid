@@ -283,3 +283,29 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family H outputs"
+
+  I:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'I')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry
+      - name: 9 EV charging, EAFO counts per country
+        continue-on-error: true
+        run: python scripts/build_ev_eu.py eafo
+      - name: 9 EV charging points, Germany (BNetzA) and France (IRVE)
+        continue-on-error: true
+        run: |
+          python scripts/build_ev_eu.py de --upload
+          python scripts/build_ev_eu.py fr --upload
+      - name: 9 EV charging stations elsewhere (OpenStreetMap, Overpass; ~1 h)
+        continue-on-error: true
+        run: python scripts/build_ev_eu.py osm --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family I outputs"

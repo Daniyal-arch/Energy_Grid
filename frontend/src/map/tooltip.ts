@@ -24,6 +24,8 @@ import { MASTR_LABEL, mwText, type MastrMuniFile, type MastrUnitsFile } from "..
 import { OFFSHORE_LABEL, offshoreStatus, type OffshoreWindFile } from "../lib/offshoreWind";
 import { solarCat, type UsSolarFile } from "../lib/usSolar";
 import type { EvChargersFile } from "../lib/evChargers";
+import type { EvEuFile } from "../lib/evEu";
+import type { EvEuCell } from "./evEuLayers";
 import type { GhgrpFile } from "../lib/ghgrp";
 import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
 import { siteHtml } from "./siteLayers";
@@ -370,6 +372,11 @@ function tooltipHtml(id: string, object: unknown): string | null {
     const lines = f.columns.map(([, label, unit], i) => (vals[i] == null || vals[i] === "" ? "" : `<div>${label}: <b>${valueText(vals[i], unit)}</b></div>`)).join("");
     const cls = isArea ? (row as EuArea)[3] : (row as EuPoint)[5];
     return `<b>${row[0]}</b><div style="color:#8d94a1">${f.classes[cls] ?? ""}${kv}</div>${lines}${SRC(`${f.source}${f.updated ? `, ${f.updated}` : ""}`)}`;
+  }
+  if (id === "eu-ev") {
+    const c = object as EvEuCell;
+    const m = fileOf<EvEuFile>("evEu")?.maps[c[3]];
+    return `<b>${c[2].toLocaleString("en-US")} ${m?.unit ?? "chargers"}</b><div style="color:#8d94a1">in this 0.1° cell (sum, computed) · ${c[3]}</div>${SRC(m ? `${m.source}, ${m.fetched}` : "")}`;
   }
   if (id.startsWith("reg:")) {
     const p = object as RegisterPoint;
