@@ -133,12 +133,20 @@ def build_protected(args: argparse.Namespace) -> None:
         "padus": defaultdict(lambda: [0, 0.0]),
     }
     lake_rows: dict[str, list] = {"natura2000": [], "padus": []}
+    failed: dict[str, str] = {}
     with seq.open("w", encoding="utf-8") as f:
         for src, url, fields, props in (
             ("natura2000", N2K, N2K_FIELDS, n2k_props),
             ("padus", PADUS, PADUS_FIELDS, padus_props),
         ):
-            feats = arcgis_pages(url, fields, 500 if src == "natura2000" else 2000)
+            try:
+                feats = arcgis_pages(url, fields, 500 if src == "natura2000" else 250)
+            except (
+                SystemExit
+            ) as e:  # a service that keeps timing out: the other source still builds
+                print(f"  {src}: skipped, {e}", flush=True)
+                failed[src] = str(e)
+                continue
             for ft in feats:
                 if not ft.get("geometry"):
                     continue
@@ -168,6 +176,7 @@ def build_protected(args: argparse.Namespace) -> None:
         "padus": {"source": "PAD-US 4.1 Fee (USGS GAP), via the USGS PAD_US_4_1 service",
                   "by_state": {k: [v[0], round(v[1])] for k, v in sorted(summary["padus"].items(), key=lambda kv: str(kv[0]))}, "unit": "acres"},
         "gap": GAP,
+        "failed": failed,
     })  # fmt: skip
     import duckdb
     import lake
@@ -178,6 +187,8 @@ def build_protected(args: argparse.Namespace) -> None:
     lk = w.lake_for("protected", args.lake, "EEA Natura 2000 (end 2024); USGS PAD-US 4.1 Fee", "EEA re-use with attribution; PAD-US public domain",
                     "scripts/build_constraints.py", "Natura 2000 end 2024; PAD-US 4.1")  # fmt: skip
     for src, rows in lake_rows.items():
+        if not rows:
+            continue
         tmp = TMP / f"{src}.json"
         tmp.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
         iso = "t.MS AS iso2, i.iso3" if src == "natura2000" else "'US' AS iso2, 'USA' AS iso3"
@@ -278,8 +289,10 @@ def build_roads(args: argparse.Namespace) -> None:
 
     rel = newest_release()
     con = duckdb.connect()
+    con.execute("INSTALL httpfs; LOAD httpfs; INSTALL spatial; LOAD spatial")
+    # Overture's bucket is public: an anonymous secret for it, whatever credentials the environment holds
     con.execute(
-        "INSTALL httpfs; LOAD httpfs; INSTALL spatial; LOAD spatial; SET s3_region='us-west-2'"
+        "CREATE SECRET overture (TYPE s3, KEY_ID '', SECRET '', REGION 'us-west-2', SCOPE 's3://overturemaps-us-west-2')"
     )
     path = f"s3://overturemaps-us-west-2/release/{rel}/theme=transportation/type=segment/*"
     TMP.mkdir(parents=True, exist_ok=True)
@@ -289,7 +302,7 @@ def build_roads(args: argparse.Namespace) -> None:
         out = TMP / f"roads_{name}.parquet"
         con.execute(
             f"""COPY (
-                  SELECT id, subtype, class, names.primary AS name, ST_GeomFromWKB(geometry) AS geometry
+                  SELECT id, subtype, class, names.primary AS name, geometry
                   FROM read_parquet('{path}', hive_partitioning = 1)
                   WHERE bbox.xmin < {x1} AND bbox.xmax > {x0} AND bbox.ymin < {y1} AND bbox.ymax > {y0}
                     AND ((subtype = 'road' AND class IN ({", ".join(f"'{c}'" for c in ROAD_CLASSES)}))

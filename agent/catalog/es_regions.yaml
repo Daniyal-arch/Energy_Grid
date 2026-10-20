@@ -1,0 +1,12 @@
+dataset: es_regions
+title: Spain, generation by technology per autonomous community, monthly (REE REData)
+licence: REE terms (open, attribution)
+access: api  # https://apidatos.ree.es/es/datos/generacion/estructura-generacion?time_trunc=month&geo_trunc=electric_system&geo_limit=ccaa&geo_ids={id}
+map_file: frontend/public/data/eu/es_regions.json (card in Spain's Now tab; daily)
+series:
+  geo_ids: {4: Andalucía ES61, 5: Aragón ES24, 6: Cantabria ES13, 7: Castilla-La Mancha ES42, 8: Castilla y León ES41, 9: Cataluña ES51, 10: País Vasco ES21, 11: Asturias ES12, 13: Madrid ES30, 14: Navarra ES22, 15: C. Valenciana ES52, 16: Extremadura ES43, 17: Galicia ES11, 20: La Rioja ES23, 21: Murcia ES62, 8742: Canarias ES70, 8743: Illes Balears ES53, 8744: Ceuta, 8745: Melilla}
+  notes: day resolution answers 500/502; one request every 2 s (Incapsula)
+examples:
+  - q: combined-cycle generation in Andalucía, August 2026
+    call: GET ...estructura-generacion?start_date=2025-10-01T00:00&end_date=2026-10-19T23:59&time_trunc=month&geo_trunc=electric_system&geo_limit=ccaa&geo_ids=4
+    answer: 1412478.264 MWh

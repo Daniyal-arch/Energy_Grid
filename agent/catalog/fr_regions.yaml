@@ -1,0 +1,12 @@
+dataset: fr_regions
+title: France, regional electricity mix every 15 minutes (RTE éCO2mix régional, real time)
+licence: Licence Ouverte v2.0 (Etalab)
+access: api  # https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/eco2mix-regional-tr/records (no key); consolidated history: eco2mix-regional-cons-def
+map_file: frontend/public/data/eu/fr_regions.json ("Regions" card in France's Now tab; every snapshot)
+series:
+  fields: {consommation: consumption MW, nucleaire: nuclear, eolien: wind, solaire: solar, hydraulique: hydro, thermique: fossil thermal, bioenergies: bioenergy, ech_physiques: physical exchanges (+ import)}
+  regions_nuts1: {"11": FR1, "24": FRB, "27": FRC, "28": FRD, "32": FRE, "44": FRF, "52": FRG, "53": FRH, "75": FRI, "76": FRJ, "84": FRK, "93": FRL, "94": FRM}
+examples:
+  - q: consumption of Île-de-France now
+    call: GET .../eco2mix-regional-tr/records?where=code_insee_region="11" and consommation is not null&order_by=date_heure desc&limit=1
+    answer: 8624 MW at 2026-10-19T14:45Z

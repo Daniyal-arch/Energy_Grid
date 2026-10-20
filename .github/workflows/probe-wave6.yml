@@ -4,9 +4,6 @@ name: Probe wave 6
 
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/bold-johnson-figd07]
-    paths: [.github/workflows/probe-wave6.yml, scripts/probe_wave6.py]
 
 permissions:
   contents: read

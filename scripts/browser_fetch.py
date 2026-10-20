@@ -63,6 +63,7 @@ SOURCES: dict[str, dict] = {
         "pages": [
             "https://www.elia.be/en/infrastructure-and-projects/our-infrastructure/capacity-of-decentralized-production",
             "https://www.elia.be/infrastructure-and-projects/our-infrastructure/capacity-of-decentralized-production",
+            "https://www.elia.be/fr/infrastructure-et-projets/notre-infrastructure/capacite-de-production-decentralisee",
         ],
         "links": [r"[^\"'\s>]*\.xlsx", r"[^\"'\s>]*\.csv"],
         "refresh": "quarterly; checked monthly",

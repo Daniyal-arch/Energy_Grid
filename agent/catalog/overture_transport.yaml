@@ -1,0 +1,12 @@
+dataset: overture_transport
+title: Major roads and standard-gauge railways in Europe and the US (Overture Maps transportation)
+licence: ODbL (OpenStreetMap contributors)
+map_file: r2 public grid/roads-rail.pmtiles (layer "Major roads and railways"; Check a site "Constraints")
+tables:
+  segments:
+    grain: one row per Overture segment of class motorway, trunk, primary (roads) or standard_gauge (rail), per release
+    keys: {id: Overture id, subtype: road | rail, class, name}
+    examples:
+      - q: how many major road and rail segments are in the extract
+        sql: SELECT count(*) FROM overture_transport.segments WHERE release = '2026-09-23.1'
+        answer: 5939529

@@ -1,0 +1,13 @@
+dataset: aures
+title: Renewable auctions in the EU and the UK, 2011-2021 (AURES II auction database)
+licence: CC BY 4.0 (Mendeley Data, doi 10.17632/2h9jpzy3wx.1)
+map_file: frontend/public/data/eu/auctions.json (country panel, Prices tab, "Renewable auctions")
+tables:
+  auctions:
+    grain: one row per auction round, every column as published
+    keys: {Country, Year, "Eligible Technologies"}
+    measures: {"Awarded capacity [kW]": {unit: kW}, "Average awarded price [ct/ kWh]": {unit: ct/kWh}}
+    examples:
+      - q: how many auction rounds does Germany have
+        sql: SELECT count(*) FROM aures.auctions WHERE Country = 'Germany'
+        answer: 102

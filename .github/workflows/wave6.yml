@@ -2,7 +2,7 @@ name: Wave 6 datasets
 
 # The builds of brief 21 (docs/tasks/21-datasets-wave6.md): one job per dataset group, each
 # committing its small outputs (frontend/public/data, agent/catalog) back to the branch and
-# uploading lake tables and tiles to R2. A push runs the groups its commit message names: "[w6: A B]".
+# uploading lake tables and tiles to R2.
 # Run by hand from main: Actions > Wave 6 datasets > Run workflow (groups = "A B C ...").
 # Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, EIA_API_KEY.
 
@@ -10,18 +10,15 @@ on:
   workflow_dispatch:
     inputs:
       groups:
-        description: "Groups to build (A B C D E F)"
+        description: "Groups to build (A B C D E F; K = roads and rail only, P = protected areas only)"
         type: string
         default: "A B C D E F"
-  push:
-    branches: [claude/bold-johnson-figd07]
-    paths: [.github/workflows/wave6.yml, "scripts/build_*.py", scripts/wave5_common.py, scripts/browser_fetch.py]
 
 permissions:
   contents: write
 
 env:
-  GROUPS: ${{ inputs.groups || github.event.head_commit.message }}
+  GROUPS: ${{ inputs.groups }}
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
@@ -139,15 +136,6 @@ jobs:
           make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
           sudo mkdir -p "$WORK" && sudo chown "$USER" "$WORK"
           bash scripts/r2_creds.sh
-      - name: 11 protected areas (EEA Natura 2000, USGS PAD-US; ArcGIS services, paged)
-        continue-on-error: true
-        run: |
-          python scripts/build_constraints.py protected --upload
-          tippecanoe -o "$WORK/protected.pmtiles" -l protected -Z0 -z9 --no-feature-limit --no-tile-size-limit --simplification=4 \
-            --attribution='Natura 2000 © EEA; PAD-US (USGS)' --force /tmp/wave6/constraints/protected.geojsons
-          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
-            "$WORK/protected.pmtiles" s3://infraatlas-data/grid/protected.pmtiles --content-type application/vnd.pmtiles
-          ls -la "$WORK/protected.pmtiles"
       - name: 12 river flood hazard (JRC, Europe 171 MB and world 49 MB)
         continue-on-error: true
         run: |
@@ -169,9 +157,43 @@ jobs:
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 6 group C outputs"
 
+
+  C-protected:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C') || contains(needs.plan.outputs.groups, 'P')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      WORK: /mnt/wave6
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Tools (tippecanoe)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
+          pip install httpx duckdb pycountry
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
+          sudo mkdir -p "$WORK" && sudo chown "$USER" "$WORK"
+          bash scripts/r2_creds.sh
+      - name: 11 protected areas (EEA Natura 2000, USGS PAD-US; ArcGIS services, paged)
+        continue-on-error: true
+        run: |
+          python scripts/build_constraints.py protected --upload
+          tippecanoe -o "$WORK/protected.pmtiles" -l protected -Z0 -z9 --no-feature-limit --no-tile-size-limit --simplification=4 \
+            --attribution='Natura 2000 © EEA; PAD-US (USGS)' --force /tmp/wave6/constraints/protected.geojsons
+          aws s3 cp --endpoint-url "https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors \
+            "$WORK/protected.pmtiles" s3://infraatlas-data/grid/protected.pmtiles --content-type application/vnd.pmtiles
+          ls -la "$WORK/protected.pmtiles"
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 protected areas"
+
   C-roads:
     needs: plan
-    if: contains(needs.plan.outputs.groups, 'C')
+    if: contains(needs.plan.outputs.groups, 'C') || contains(needs.plan.outputs.groups, 'K')
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
@@ -182,7 +204,7 @@ jobs:
       - name: Tools (tippecanoe)
         run: |
           sudo apt-get update -q && sudo apt-get install -y -q build-essential libsqlite3-dev zlib1g-dev
-          pip install httpx duckdb pycountry
+          pip install httpx duckdb pycountry shapely
           git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
           make -C /tmp/tippecanoe -j4 && sudo make -C /tmp/tippecanoe install
       - name: 13 major roads and railways (Overture transportation, Europe and the US)
@@ -256,3 +278,30 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 6 group E outputs"
+
+  F:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'F')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - name: 21 France regional mix (éCO2mix régional)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py fr
+      - name: 22 Spain regional mix (REE REData)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py es
+      - name: 23 New Zealand live (Transpower, em6)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py nz
+      - name: 24 South Africa (Eskom data portal, load-shedding)
+        continue-on-error: true
+        run: python scripts/build_regional_live.py za
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 6 group F outputs"

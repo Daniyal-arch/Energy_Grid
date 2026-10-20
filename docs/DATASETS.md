@@ -16,12 +16,12 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 |---|---|---|---|---|---|
 | Eurostat energy balances (`nrg_bal_*`) | supply, transformation, final use by sector and fuel, yearly | API, no key | CC BY 4.0 | country profiles beyond power: heat, transport, industry | have (17) |
 | Eurostat retail prices (`nrg_pc_204/205`, gas `nrg_pc_202/203`) | household and business electricity and gas prices by band, half-yearly | API, no key | CC BY 4.0 | "what consumers pay" next to wholesale | have (13) |
-| EEA greenhouse-gas inventories | national emissions by sector, yearly | download | CC BY 4.0 | context for the transition tab | candidate |
+| EEA greenhouse-gas inventories | national emissions by sector, yearly | Eurostat API (env_air_gge) | CC BY 4.0 | context for the transition tab | have (21) |
 | ACER market monitoring data | cross-border capacity use, convergence, retail | reports/xlsx | reuse with attribution | explains price splits | candidate |
 | ENTSO-E TYNDP projects | planned transmission and storage projects, cost, dates | download (xlsx, shapes) | ENTSO-E terms | "what grid is coming" layer | have (17) |
-| ENTSOG TYNDP | planned gas infrastructure | download | ENTSOG terms | gas future layer | candidate |
-| AURES II / national auction results | renewable auction rounds, prices, winners | download | open (check) | price trend of new capacity | candidate |
-| EU Hydrogen Observatory | electrolysers, H₂ projects, costs | download | check | hydrogen layer | candidate |
+| ENTSOG TYNDP | planned gas infrastructure | download | ENTSOG terms | gas future layer | have (21) |
+| AURES II / national auction results | renewable auction rounds, prices, winners | download (Mendeley Data) | CC BY 4.0 | price trend of new capacity | have (21) |
+| EU Hydrogen Observatory | electrolysers, H₂ projects, costs | download | EC re-use policy | hydrogen layer | have (21) |
 | Ember monthly/yearly, IRENA, GEM | generation, capacity, assets | API/download | CC BY 4.0 | | have |
 
 ### Granular
@@ -34,8 +34,8 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 | **Germany MaStR** (Marktstammdatenregister) | every generating unit, storage, grid connection point (8 M+ records), daily dump | bulk XML + SOAP API (`open-mastr`) | dl-de/by-2-0 (check) | the most complete national asset register in Europe | have (11) |
 | Germany SMARD (Bundesnetzagentur) | market data, generation, consumption, 15 min | API, no key | CC BY 4.0 | German detail beyond ENTSO-E | have (17) |
 | Germany netztransparenz.de | redispatch, curtailment (EinsMan), EEG data | download | check | curtailment = wasted renewables | have (17) |
-| France RTE éCO2mix | 15-min mix, CO₂ intensity, exchanges, regional | API (data.rte-france.com, free key) | Etalab open licence | regional France | candidate |
-| Spain REE REData | real-time mix, regional, prices | API, no key | open, attribution | regional Spain | candidate |
+| France RTE éCO2mix | 15-min mix, CO₂ intensity, exchanges, regional | API (ODRÉ, no key) | Etalab open licence | regional France | have (21, regional) |
+| Spain REE REData | real-time mix, regional, prices | API, no key | open, attribution | regional Spain | have (21, regional monthly) |
 | **Spain grid access capacity per node** (REE / CNMC, monthly) | free capacity for generation and demand at each transmission node | published maps/tables (check format) | public | **site screening**: where can a new plant or data centre connect | have (09) |
 | **Netherlands capaciteitskaart** (Netbeheer Nederland) | grid congestion for feed-in and offtake by area, TenneT HV layer | data export (+ Liander WFS via PDOK) | check | **site screening**; NL is Europe's most congested grid | have (09) |
 | **GB NESO TEC register** | every project holding transmission capacity, twice weekly | CKAN API, no key | NESO Open Data Licence | GB connection queue (like LBNL's) | have (09) |
@@ -43,9 +43,25 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 | Denmark Energinet Energi Data Service | 5-min production, CO₂, prices | API, no key | CC BY 4.0 | | brief 16 |
 | Finland Fingrid open data | 3-min data | API (free `FINGRID_API_KEY`) | CC BY 4.0 | | candidate |
 | Belgium Elia open data | 15-min load, solar/wind incl. forecasts, balancing | API | Elia open data | | candidate |
-| EMODnet human activities | offshore wind farms (polygons, status), cables, pipelines | WFS/download | CC BY 4.0 | offshore layer | wind farms on the map (2026-10-17); cables, pipelines candidate |
+| EMODnet human activities | offshore wind farms (polygons, status), cables, pipelines | WFS/download | CC BY 4.0 | offshore layer | have (wind farms; cables and pipelines 21) |
 | EU ETS / EEA industrial emissions; GIE ALSI | CO₂ per installation; LNG per terminal | | | | wave 2 (08) |
 | EV charging: national registers (DE Ladesäulenregister), EAFO | charge points with power | download | varies | demand-side layer | candidate |
+
+### Wave 6 (brief 21)
+
+| Dataset | Gives | Access | Licence | Status |
+|---|---|---|---|---|
+| Capareseau (FR), Terna Econnextion (IT), E-REDES (PT), ESB Networks (IE), PSE (PL); Elia (BE) blocked | room to connect per substation / requests per region | site JSON, xlsx, APIs | various (see DATA_SOURCES) | have (21) |
+| Substations worldwide (our Overture extract) | every mapped substation | lake | ODbL | have (21) |
+| MaStR grid operators per municipality | who runs the grid here | lake | dl-de/by-2-0 | have (21) |
+| EIA-861 service territories | utilities per county | PUDL | CC BY 4.0 | have (21) |
+| Natura 2000 (PAD-US blocked: service timeouts) | protected areas | ArcGIS services | EEA re-use; public domain | have (21, Europe) |
+| JRC river flood hazard (RP100) | flood depth | download | CC BY 4.0 | have (21) |
+| Overture roads and rail | major roads, railways | Overture S3 | ODbL | have (21) |
+| FERC Form 714 | hourly demand per planning area | PUDL | CC BY 4.0 | have (21) |
+| New Zealand (Transpower/em6) | live generation by fuel, demand | API | Transpower terms | have (21) |
+| South Africa (Eskom data portal) | demand, generation, load-shedding | CSV | Eskom terms | blocked (21: CSVs answer 404) |
+| IRENA renewable cost database | LCOE by technology, world | xlsx behind Azure WAF | IRENA terms | blocked (21) |
 
 ## United States
 
@@ -56,7 +72,7 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 | EIA-861 / 861M | retail sales, revenue, customers, price by utility and state | download / API | public domain | "what Americans pay" by state | have (13) |
 | EIA SEDS | state energy production, consumption, prices, all fuels, yearly | API | public domain | state profiles | have (17) |
 | EIA STEO / AEO | short-term and long-term outlooks | API | public domain | forecasts beside history | have (17) |
-| NREL ATB | technology costs and projections | download | CC BY 4.0 | cost context | candidate |
+| NREL ATB | technology costs and projections | download | CC BY 4.0 | cost context | have (21) |
 | LBNL utility-scale solar / wind market reports | PPA prices, capacity factors, costs by project vintage | xlsx | public | price of new capacity | candidate |
 | EIA-860M, LBNL queue, USWTDB, EIA-930 | | | | | have |
 
@@ -70,7 +86,7 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 | EPA GHGRP (FLIGHT) | GHG per large facility, all sectors, yearly | API/download | public domain | industry emitters | have (17) |
 | PUDL (Catalyst Cooperative) | cleaned, joined EIA 860/923/930, FERC 1/714, EPA CEMS | nightly builds on AWS, Zenodo | open (check terms) | saves building every join ourselves | have (17, queried in place) |
 | **EAGLE-I power outages** (ORNL) | customers out per county every 15 min, 2014– | figshare / ORNL | open (check) | outage map, storms | have (12) |
-| DOE OE-417 | major disturbances and incidents | download | public domain | reliability events | candidate |
+| DOE OE-417 | major disturbances and incidents | download | public domain | reliability events | blocked (21: host unreachable from Actions) |
 | NREL AFDC station locator | every EV charger, power, network | API (free `NREL_API_KEY`) | public | demand-side layer | brief 16 |
 | OpenEI Utility Rate Database | retail tariffs per utility | API | open | tariff explorer (product) | candidate |
 | USGS USPVDB | utility solar farms as polygons | download | public domain | solar footprint | have (2026-10-17) |

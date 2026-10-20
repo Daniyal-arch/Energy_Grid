@@ -12,7 +12,7 @@ export function ProtectedCard({ iso3 }: { iso3?: string }) {
   const f = useFile<ProtectedFile>("protected");
   if (!f) return null;
   const n2k = Object.entries(f.natura2000.by_country).filter(([iso2]) => !iso3 || ISO3[iso2] === iso3);
-  const showUs = !iso3 || iso3 === "USA";
+  const showUs = (!iso3 || iso3 === "USA") && !f.failed?.padus;
   const sites = n2k.reduce((a, [, v]) => a + v[0], 0);
   const km2 = n2k.reduce((a, [, v]) => a + v[1], 0);
   const us = Object.values(f.padus.by_state);

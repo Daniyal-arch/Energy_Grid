@@ -34,6 +34,8 @@ export interface ProtectedFile {
   natura2000: { source: string; by_country: Record<string, [number, number]>; unit: string };
   padus: { source: string; by_state: Record<string, [number, number]>; unit: string };
   gap: Record<string, string>;
+  /** sources that could not be read in the newest build (e.g. PAD-US timing out) */
+  failed?: Record<string, string>;
 }
 
 /** Areas, roads and rail are read within this distance of a site. */

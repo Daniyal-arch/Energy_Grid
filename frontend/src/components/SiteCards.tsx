@@ -12,17 +12,17 @@ import type { CountriesFile, GridFile, PlantsFile, WorldFile } from "../app/type
 import { atlasValue, type AtlasFile } from "../lib/atlas";
 import { POP_CELL, peopleWithin } from "../lib/population";
 import { gbSiteTotals, type ConnectFile } from "../lib/connect";
-import { CONNECT_EU, connectEuKey, valueText, type ConnectEuFile } from "../lib/connectEu";
-import { frNumber, ieRoom, itTotals, type FrFile, type IeFile, type ItFile } from "../lib/connectMore";
 import { FUEL_COLOR, FUEL_LABEL, power } from "../lib/energy";
 import type { PricesFile } from "../lib/prices";
 import { euroCents, newestMonth, newestOf, usCents, type RetailFile } from "../lib/retail";
 import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { SITE_RADII, SITE_RADIUS_KM, areaKey, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, publishSite, searchSiteLines, searchSiteSubstations, siteKey, useSiteLines, useSiteSubstations, type LineSearch, type LonLat, type NearLine, type SitePlant } from "../lib/site";
-import type { MastrMuniFile } from "../lib/mastr";
-import { CONSTRAINT_RADIUS_KM, SHARE_STEP_KM, floodClassAt, floodLabel, protectedAround, roadsAround, type ConstraintsFile, type ProtectedFile, type ProtectedSearch } from "../lib/constraints";
 import { actions } from "../app/store";
 import type { RGB } from "../lib/theme";
+import { CONNECT_EU, connectEuKey, valueText, type ConnectEuFile } from "../lib/connectEu";
+import { frNumber, ieRoom, itTotals, type FrFile, type IeFile, type ItFile } from "../lib/connectMore";
+import type { MastrMuniFile } from "../lib/mastr";
+import { CONSTRAINT_RADIUS_KM, SHARE_STEP_KM, floodClassAt, floodLabel, protectedAround, roadsAround, type ConstraintsFile, type ProtectedFile, type ProtectedSearch } from "../lib/constraints";
 import { ISO3, type TransitionFile } from "../lib/transition";
 import { US_TYPE_COLOR, US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFile, type UsQueuesLiveFile, type UsState, type UsStatesFile } from "../lib/us";
 import type { DataCentresFile } from "../lib/world";
@@ -209,7 +209,7 @@ export function SiteGridCard({ place }: { place: Place }) {
   useEffect(() => {
     if (outside) searchSiteSubstations(site);
   }, [site, outside]);
-  const wsub = useSiteSubstations((s) => (s.key === key ? s : null));
+  const wsub = useSiteSubstations((s) => (s.key === siteKey(site) ? s : null));
   const OSM_SUBS = "OpenStreetMap via Overture Maps (grid/world-substations.pmtiles)";
   // Germany: the grid operator of the municipality (MaStR); US: the utilities serving the county (EIA-861)
   const muni = useFile<MastrMuniFile>(place.iso2 === "DE" ? "mastrMuni" : null);
@@ -534,7 +534,9 @@ export function SiteConstraintsCard({ place }: { place: Place }) {
   const cf = useFile<ConstraintsFile>("constraints");
   const pf = useFile<ProtectedFile>("protected");
   const covered = place.europe || !!place.state;
-  const prot = useAsync<ProtectedSearch>(pf && covered ? `p|${key}` : null, () => protectedAround(pf!.tiles, site));
+  // PAD-US may be missing from the newest build: then no protected-area figures for the US
+  const protCovered = place.europe ? !pf?.failed?.natura2000 : !!place.state && !pf?.failed?.padus;
+  const prot = useAsync<ProtectedSearch>(pf && protCovered ? `p|${key}` : null, () => protectedAround(pf!.tiles, site));
   const roads = useAsync(cf && covered ? `r|${key}` : null, () => roadsAround(cf!.roads.tiles, site));
   const flood = useAsync(cf ? `f|${key}` : null, async () => {
     const eu = await floodClassAt(cf!.flood.maps.eu.lookup, site[0], site[1]);
@@ -562,7 +564,8 @@ export function SiteConstraintsCard({ place }: { place: Place }) {
   const wait = (s: { v: unknown; failed: boolean }, k: string) => (s.failed ? <Row k={k} v="tiles not reachable" /> : !s.v ? <Row k={k} v="…" /> : null);
   return (
     <Card title="Constraints" note={`within ${R} km`} accent={[96, 186, 120]}>
-      {covered && (wait(prot, "Protected areas") ?? (prot.v && (
+      {covered && !protCovered && <Row k="Protected areas" v="not available" sub={place.europe ? "Natura 2000" : "PAD-US could not be read"} />}
+      {protCovered && (wait(prot, "Protected areas") ?? (prot.v && (
         <>
           <Row k={`Protected, share of ${R} km around`} v={`${(100 * prot.v.share).toFixed(1)} %`} sub={`${prot.v.areas.length} areas`} />
           {prot.v.areas.slice(0, 4).map((a) => (

@@ -119,7 +119,7 @@ export interface LayerInfo {
 export const LAYERS: LayerInfo[] = [
   { id: "flows", label: "Cross-border flows", desc: "Power moving between countries now", group: "Electricity now", coverage: "Europe", color: "rgb(120,222,255)", modes: ["live", "day"] },
   { id: "prices", label: "Prices", desc: "Each country rises by its day-ahead price; generation towers stand on top", group: "Electricity now", coverage: "Europe", color: "rgb(255,196,90)", modes: ["live", "day"] },
-  { id: "liveGrids", label: "Live grids", desc: "US, Brazil, Australia, Taiwan, Ontario now", group: "Electricity now", coverage: "World", color: "rgb(255,196,120)", modes: ["live"] },
+  { id: "liveGrids", label: "Live grids", desc: "US, Brazil, Australia, Taiwan, Ontario, New Zealand, South Africa now", group: "Electricity now", coverage: "World", color: "rgb(255,196,120)", modes: ["live"] },
   { id: "usNodePrices", label: "Node prices", desc: "Day-ahead price at each placed node, hour by hour", group: "Electricity now", coverage: "US West", color: "rgb(255,196,90)", modes: ["day"] },
   { id: "towers", label: "Generation towers", desc: "Each country's (or US region's) output by source", group: "Electricity now", coverage: "Europe, US", color: "rgb(255,214,72)", modes: ["day"] },
   { id: "gridEU", label: "Transmission lines", desc: "220–750 kV, by voltage", group: "Power grid", coverage: "Europe", color: "rgb(236,178,120)" },
@@ -173,7 +173,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & demand", coverage: "World", color: "rgb(196,150,255)" },
   { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Risk", coverage: "World", color: "rgb(255,153,0)" },
   { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Risk", coverage: "US", color: "rgb(230,120,80)" },
-  { id: "protectedAreas", label: "Protected areas", desc: "Natura 2000 sites (EEA) and US protected lands (PAD-US)", group: "Risk", coverage: "Europe, US", color: "rgb(96,186,120)" },
+  { id: "protectedAreas", label: "Protected areas", desc: "Natura 2000 sites (EEA)", group: "Risk", coverage: "Europe", color: "rgb(96,186,120)" },
   { id: "flood", label: "River flood hazard", desc: "Water depth in a 100-year flood (JRC)", group: "Risk", coverage: "World", color: "rgb(60,130,210)" },
   { id: "roadsRail", label: "Major roads and railways", desc: "Motorways, trunk and primary roads; standard-gauge rail (OpenStreetMap)", group: "Risk", coverage: "Europe, US", color: "rgb(200,196,186)" },
   { id: "wind", label: "Wind", desc: "Moving wind at turbine height", group: "Weather", coverage: "World", color: "rgb(220,240,255)", modes: ["live", "day"] },
@@ -279,7 +279,7 @@ export const isYearColour = (c: ColourId) => c.startsWith("tr_");
 export type Selection =
   | { kind: "country"; iso2?: string; iso3?: string }
   | { kind: "zone"; id: string }
-  | { kind: "region"; grid: "us" | "br" | "au" | "tw" | "on"; id: string }
+  | { kind: "region"; grid: "us" | "br" | "au" | "tw" | "on" | "nz" | "za"; id: string }
   /** "Check a site": one place, what the map's files say about it (ui/SitePanel.tsx) */
   | { kind: "site"; lon: number; lat: number; r?: number };
 
@@ -707,7 +707,7 @@ export function readUrl(): void {
     const [kind, a, b] = sel.split(":");
     if (kind === "country") patch.selection = a.length === 2 ? { kind, iso2: a } : { kind, iso3: a };
     if (kind === "zone") patch.selection = { kind, id: a };
-    if (kind === "region") patch.selection = { kind, grid: a as "us" | "br" | "au" | "tw" | "on", id: b };
+    if (kind === "region") patch.selection = { kind, grid: a as "us" | "br" | "au" | "tw" | "on" | "nz" | "za", id: b };
     if (kind === "site") {
       const [lon, lat, r] = (a ?? "").split(",").map(Number);
       if (Number.isFinite(lon) && Number.isFinite(lat) && Math.abs(lat) <= 85 && Math.abs(lon) <= 180)

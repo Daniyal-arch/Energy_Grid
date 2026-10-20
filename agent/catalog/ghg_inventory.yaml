@@ -1,0 +1,12 @@
+dataset: ghg_inventory
+title: National greenhouse-gas inventories by CRF sector (EEA data via Eurostat env_air_gge)
+licence: CC BY 4.0
+access: api  # https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/env_air_gge (JSON-stat, no key)
+map_file: frontend/public/data/eu/profiles/ghg_inventory.json ("Greenhouse-gas inventory" in the country report)
+series:
+  src_crf: {TOTX4_MEMO: total excluding LULUCF, TOTXMEMO: total including LULUCF, CRF1: energy, CRF1A1: energy industries, CRF1A3: transport, CRF2: industrial processes, CRF3: agriculture, CRF4: LULUCF, CRF5: waste}
+  unit: MIO_T (Mt CO2e), airpol GHG
+examples:
+  - q: Germany's greenhouse-gas emissions in 2024, excluding LULUCF
+    call: GET env_air_gge?geo=DE&unit=MIO_T&airpol=GHG&src_crf=TOTX4_MEMO&time=2024
+    answer: 649.76952 Mt CO2e

@@ -1,0 +1,9 @@
+dataset: elia_hosting
+title: Belgium, capacity of the Elia grid for new decentralised generation
+licence: Elia terms of use
+status: blocked  # elia.be keeps scripts and Chromium on a Cloudflare check (2026-10-19); built from r2://infraatlas-raw/sources/elia_capacity/manual/ when the owner uploads the file
+map_file: frontend/public/data/eu/connect/be.json (card in "Grid capacity") once built
+tables:
+  capacity:
+    grain: one row per row of each sheet of Elia's file, columns as published
+    examples: []

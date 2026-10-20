@@ -1,0 +1,9 @@
+dataset: oe417
+title: DOE OE-417 electric emergency incident and disturbance events (annual summaries)
+licence: public domain (US government)
+access: download  # https://www.oe.netl.doe.gov/OE417_annual_summary.aspx (xls per year); unreachable from GitHub Actions on 2026-10-19
+map_file: frontend/public/data/us/oe417.json ("Electric disturbances" in the US outages card) when the host answers
+tables:
+  events:
+    grain: one row per reported event (began, restored, area, NERC region, alert criteria, event type, demand loss MW, customers)
+    examples: []

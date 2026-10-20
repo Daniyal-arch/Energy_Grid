@@ -16,9 +16,9 @@ families:
       BE:
         status: not_published
         url: https://www.elia.be/en/customers/connection/grid-hosting-capacity
-        note: Elia publishes hosting capacity per substation as a file behind a browser check (HTTP 403 to scripts); wave 6 (brief 21) fetches it with a browser and its file is not produced yet. Fluvius'
-          open-data portal holds no capacity dataset found
-        checked: '2026-10-19'
+        note: Elia publishes hosting capacity per substation as a file behind Cloudflare's browser check (HTTP 403 to scripts); wave 6 (brief 21) tried a browser in Actions twice and was blocked both times.
+          Fluvius' open-data portal holds no capacity dataset found
+        checked: '2026-10-20'
       BG:
         status: built
         licence: public notice; reuse with the source named

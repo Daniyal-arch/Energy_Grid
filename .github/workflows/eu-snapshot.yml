@@ -70,6 +70,10 @@ jobs:
             python scripts/fetch_brazil.py --out store/eu || echo "ONS fetch failed"
             python scripts/fetch_taiwan.py --out store/eu || echo "Taipower fetch failed"
             python scripts/fetch_ontario.py --out store/eu || echo "IESO fetch failed"
+            # France's regions (RTE éCO2mix), New Zealand (Transpower) and South Africa (Eskom), no keys
+            python scripts/build_regional_live.py fr --out store/eu || echo "éCO2mix regions failed"
+            python scripts/build_regional_live.py nz --out store/eu || echo "Transpower fetch failed"
+            python scripts/build_regional_live.py za --out store/eu || echo "Eskom fetch failed"
             # Great Britain's carbon intensity (NESO) and Denmark every 5 min (Energinet), no keys
             python scripts/fetch_gb_carbon.py --out store/eu || echo "GB carbon fetch failed"
             python scripts/fetch_dk_live.py --out store/eu || echo "Energinet fetch failed"

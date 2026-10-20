@@ -1,0 +1,12 @@
+dataset: nz_live
+title: New Zealand, live generation by fuel and demand (Transpower System Operator, em6); EMI datasets
+licence: Transpower website terms (live page); EMI datasets CC BY 4.0 (Electricity Authority)
+access: api  # https://www.transpower.co.nz/em6/data/current_generation/0 and /so/data/load_data_graph; EMI monthly CSVs https://emidatasets.blob.core.windows.net/publicdata/Datasets/Wholesale/Generation/Generation_MD/{YYYYMM}_Generation_MD.csv
+map_file: frontend/public/data/eu/nz.json ("Live grids"; every snapshot)
+series:
+  fuels: [Battery, Co-Gen, Coal, Gas, Geothermal, Hydro, Diesel/Oil, Solar, Wind]
+  load: {nzPoints: NZ, niPoints: North Island, siPoints: South Island; 5-minute MW, local time, months 0-based}
+examples:
+  - q: New Zealand's hydro generation now
+    call: GET https://www.transpower.co.nz/em6/data/current_generation/0 -> data["New Zealand"].Hydro.generation
+    answer: 2284 MW of 5415 MW at 20 Oct 2026 04:00 NZ time

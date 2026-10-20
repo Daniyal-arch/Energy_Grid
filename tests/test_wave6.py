@@ -334,3 +334,52 @@ def test_ferc714_threshold() -> None:
     # the newest year with demand from 80 planning areas or more (2025: 89; 2014 had 100+)
     assert "WHERE n >= 80" in Path(ur.__file__).read_text(encoding="utf-8")
     assert ur.states_in("Washington, DC; Maryland") == ["MD"]
+
+
+# ---------------------------------------------------------------- F. regional and live
+
+import build_regional_live as rl  # noqa: E402
+
+
+def test_fr_newest() -> None:
+    recs = [{"code_insee_region": "53", "libelle_region": "Bretagne", "date_heure": f"2026-10-19T08:{m:02d}:00+00:00", "consommation": c, "eolien": 173, "pompage": "0"}
+            for m, c in ((15, 2500), (30, 2563), (45, None))]  # fmt: skip
+    out = rl.fr_newest(recs)
+    assert (
+        out["53"]["ts"].endswith("08:30:00+00:00")
+        and out["53"]["mw"]["consommation"] == 2563.0
+        and out["53"]["mw"]["pompage"] == 0.0
+    )
+    assert out["53"]["nuts1"] == "FRH" and len(out["53"]["consumption_24h"]) == 2
+
+
+def test_es_series() -> None:
+    a = {
+        "included": [
+            {
+                "type": "Eólica",
+                "attributes": {
+                    "title": "Eólica",
+                    "values": [{"value": 1234.5678, "datetime": "2026-09-01T00:00:00.000+02:00"}],
+                },
+            }
+        ]
+    }
+    assert rl.es_series(a) == {"Eólica": {"2026-09": 1234.568}}
+    assert rl.ES_CCAA[13] == ("Comunidad de Madrid", "ES30")
+
+
+def test_nz_load() -> None:
+    # Transpower's months are 0-based (JavaScript dates)
+    assert rl.nz_load(
+        [[{"day": 19, "month": 9, "year": 2026, "hour": 22, "minute": 40}, 4463]]
+    ) == [["2026-10-19T22:40", 4463]]
+
+
+def test_eskom_csv_link() -> None:
+    html = '<a href="https://www.eskom.co.za/dataportal/wp-content/uploads/2026/07/Station_Build_Up.csv">Download</a>'
+    assert rl.eskom_csv_link(html).endswith("Station_Build_Up.csv")
+    assert rl.parse_csv("﻿Date,Residual Demand\n2026-10-18 01:00,21000\n") == (
+        ["Date", "Residual Demand"],
+        [["2026-10-18 01:00", "21000"]],
+    )

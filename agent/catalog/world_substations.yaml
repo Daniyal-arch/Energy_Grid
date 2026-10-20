@@ -1,0 +1,13 @@
+dataset: overture_power
+title: Substations worldwide (OpenStreetMap via Overture Maps), tiles for Check a site
+licence: ODbL (OpenStreetMap contributors)
+map_file: r2 public grid/world-substations.pmtiles (layer "substations"; read by Check a site outside Europe)
+tables:
+  sites:
+    grain: one row per mapped power site (substation, transformer, plant ...), per Overture release
+    keys: {id: Overture id, class, iso3}
+    measures: {kv: {unit: kV, how: "highest voltage as tagged in OpenStreetMap"}}
+    examples:
+      - q: how many substations are mapped worldwide
+        sql: SELECT count(*) FROM overture_power.sites WHERE class = 'substation' AND release = '2026-09-23.1'
+        answer: 870774 (32803 of 220 kV or more)

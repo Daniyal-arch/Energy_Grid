@@ -1287,6 +1287,193 @@ land area and people per km² ("People" in the country report); a 0.1° grid of 
 (sum of 12 × 12 source cells, int32, 26 MB on the public bucket) read by "Check a site" for the
 people in the cells whose centre lies within 50 km. Refresh by hand.
 
+## Room to connect: France (`scripts/build_connect_more.py fr`, `connect/fr.json`)
+
+Capareseau (RTE and the distribution operators; re-use allowed with the source named): every
+substation's S3REnR values from the site's region files (position, values by code) and the code
+labels from its CSV export (3,116 substations). Passed through; numbers parsed where a value is a
+number. Shown: "capacity reserved under the S3REnR still to allocate" (MW) in four classes on
+"Grid capacity" (new generation), card (count and sum, computed), Check a site (sum within 50 km,
+computed). Lake `capareseau/substations`. Refresh by hand (`wave6.yml` group A).
+
+## Room to connect: Italy (`build_connect_more.py it`, `connect/it.json`)
+
+Terna Econnextion via the dati.terna.it download center (JSON): requests to connect renewables
+(`FER`) and storage (`Accumuli`) to the transmission grid by region and province, MW and requests
+as published. Regions joined to NUTS-2 2024 (GISCO, simplified 0.01°; Trentino-Alto Adige =
+ITH1 + ITH2). Computed: totals per region (shading in four classes, feed-in side), per source.
+Terms of use not found on dati.terna.it. Lake `econnextion/requests`. Refresh: group A (monthly
+at the source).
+
+## Room to connect: Belgium (`build_connect_more.py be`, `connect/be.json`), blocked
+
+Elia's capacity for new decentralised generation: elia.be answers scripts with HTTP 403 and kept
+Chromium on Cloudflare's "Just a moment..." page in two Actions runs (2026-10-19), and Elia's and
+Fluvius' open-data portals hold no capacity set. `scripts/browser_fetch.py elia_capacity` (monthly
+in `browser-fetch.yml`) builds it from a file the owner uploads to
+`r2://infraatlas-raw/sources/elia_capacity/manual/`; the card and lake table follow.
+
+## Room to connect: Portugal (`build_connect_more.py pt`, `connect/pt.json`)
+
+E-REDES open data `capacidade-rececao-rnd` (CC BY 4.0): reception capacity per HV/MV substation
+(MVA), the RARI and newest-quarter values as published (470 substations, 3T2026). E-REDES gives no
+positions: card only (count with HV capacity left, computed; largest). Lake
+`eredes_capacity/substations`. Refresh: group A (quarterly at the source).
+
+## Room to connect: Ireland (`build_connect_more.py ie`, `connect/ie.json`)
+
+ESB Networks' Available Capacity Heatmap download (xlsx, July 2026; website terms): every
+transformer's installed MVA, demand available (MVA), firm and non-firm generation available (MW),
+parent constraint, comment and position as published (46,527 rows). The map, card and Check a site
+use the 38 kV and 110 kV stations and MV transformers (657); the lake keeps every row
+(`esb_heatmap/transformers`). EirGrid publishes no machine-readable heatmap. Refresh: group A.
+
+## Room to connect: Poland (`build_connect_more.py pl`, `connect/pl.json`)
+
+PSE: the list under Art. 7(8l) of the Energy Law (886 requests, conditions and agreements on the
+transmission grid as of 2026-08-31; MW, type, stage and dates as published) and the list of PSE
+switchgears with no free connection bay (69, 2026-02-04). No positions: card only (counts and MW
+per stage, computed). Lake `pse_capacity/*`. Refresh: group A (PSE updates monthly).
+
+## Substations worldwide (`scripts/build_grid_more.py substations`, R2 `grid/world-substations.pmtiles`)
+
+From our own lake (`overture_power/sites`, release 2026-09-23.1; OpenStreetMap via Overture, ODbL):
+870,774 substations as points (centre of a mapped outline, computed), kV as tagged, name, operator;
+tippecanoe zoom 4-9 (25 MB). Check a site reads the zoom-9 tiles outside Europe: nearest
+substation and the count within the tiles read (distance to their edge). Refresh with the Overture
+extract (group B).
+
+## Germany: grid operator per municipality (`build_grid_more.py operators`, `de_grid_operators.json`)
+
+MaStR in the lake (snapshot 2026-10-17, dl-de/by-2-0): each unit's location -> its grid
+connection points -> the grid operator's MaStR number -> the operator's name. Computed per
+municipality (AGS, 11,179): the operator with most units connected, its units, the number of
+operators. Check a site: "Grid operator of the municipality". Lake `mastr_grid/operators`. Refresh
+after each MaStR snapshot (group B).
+
+## US utility service territories (`build_grid_more.py utilities`, `us/utilities.json`)
+
+EIA-861 service territories via PUDL (`core_eia861__yearly_service_territory`, in place, CC BY 4.0):
+the utilities reporting service in each county, 2025 (3,133 counties, 2,904 utilities), as
+reported. Check a site lists those serving the site's county (county outlines from the outages
+layer); the state card counts utilities per state (computed). No lake copy. Refresh: group B yearly.
+
+## Sea cables and pipelines (`build_grid_more.py emodnet`, `sea_cables.json`)
+
+EMODnet Human Activities (CC BY 4.0, WFS, no key): the national power-cable layers
+(`pcablesbshcontis`, `pcablesnve`, `pcablesrijks`, `pcablesshom`; 1,186 features) on "Undersea power
+cables", and `pipelines` (3,951) with gas, oil and condensate on the pipelines layers (mixed
+hydrocarbons on both; water, chemicals and sewage left off). Lines simplified 0.002°; attributes
+as published. API (no lake copy). Refresh: group B.
+
+## Protected areas (`scripts/build_constraints.py protected`, R2 `grid/protected.pmtiles`, `protected.json`)
+
+Natura 2000 end 2024 (EEA; 27,173 sites) and PAD-US 4.1 Fee (USGS, public domain) from the
+publishers' ArcGIS services, paged GeoJSON with their generalisation (maxAllowableOffset 0.0005°,
+~50 m): the 1.36 GB GeoPackage and 1.01 GB GeoParquet are over the download limit. Passed through:
+code, name, type, area, PAD-US designation, manager, GAP status. Computed: counts and areas per
+country/state; Check a site: areas within 10 km and the share of that circle covered (points 0.5 km
+apart). Lake `protected/*`. Refresh: group P yearly. PAD-US is blocked: its service answered HTTP
+524 (timeout) in two Actions runs, at offsets 0 and 2,500; the build skips it and records that in
+`protected.json`, so the US shows no protected-area figures.
+
+## River flood hazard (`build_constraints.py flood`, R2 `grid/flood-{eu,world}.pmtiles`, lookups)
+
+JRC river flood hazard maps, 100-year return period (CC BY 4.0): Europe at 100 m (171 MB zip), the
+world at 30 arc-seconds (49 MB). Water depth in JRC's five classes (under 0.5, 0.5-1, 1-2, 2-4,
+4 m or more) as PNG tiles (Europe zoom 0-9, world 0-7) and lookup grids of the deepest class per
+cell (computed; Europe 0.01°, world 0.05°; uint8 read by HTTP range in Check a site). Class rasters
+as COG in `lake/flood/`. Refresh: group C when JRC updates.
+
+## Major roads and railways (`build_constraints.py roads`, R2 `grid/roads-rail.pmtiles`)
+
+Overture transportation segments (OpenStreetMap, ODbL), newest release: roads of class motorway,
+trunk and primary and standard-gauge railways in Europe and the US (bounding boxes), simplified
+0.0002°; tiles zoom 4-9 (layers `roads`, `rail`). Check a site: straight-line distance to the
+nearest of each within the tiles read. Lake `overture_transport/segments`. Refresh: group K.
+
+## Hydrogen projects (`scripts/build_coming.py hydrogen`, `hydrogen.json`)
+
+European Hydrogen Observatory, "Hydrogen production and consumption projects" (Dec 2025 xlsx;
+European Commission re-use policy): 238 projects in operation or under construction with name,
+city, country, start year, production capacity (MW), process, end use, consumption (t/year),
+position and stage as published. Layer "Hydrogen projects" (Industry & data), card (counts and MW
+per stage, computed). Lake `hydrogen/projects`. Refresh: group D (the Observatory updates yearly).
+
+## Renewable auctions (`build_coming.py auctions`, `auctions.json`)
+
+AURES II auction database (Mendeley Data, doi 10.17632/2h9jpzy3wx.1, CC BY 4.0): 820 auction rounds
+in 20 countries, 2011-2021, with date, technologies, status, awarded capacity (kW; MW computed) and
+awarded prices in ct/kWh as published. Card "Renewable auctions" in the country's Prices tab
+(newest rounds; awarded MW summed, computed). aures2project.eu answered 520. Lake `aures/auctions`.
+Static (the project ended).
+
+## Technology costs (`build_coming.py atb`, `costs.json`)
+
+NREL Annual Technology Baseline 2025 v1.0.0 (OEDI, CC BY 4.0, 321 MB CSV): LCOE, CAPEX, fixed O&M
+and capacity factor of each technology's default detail, Moderate scenario, R&D case (the edition
+publishes no Market case without tax credits), 30-year cost recovery, 2025/2030/2035/2050, as
+published. Card "What new capacity costs" (World Capacity tab, US Retail tab). Lake
+`atb/electricity` (every row). IRENA's cost data: blocked (below). Refresh: group D yearly.
+
+## Planned gas projects (`build_coming.py gas`, `gas_projects.json`)
+
+ENTSOG TYNDP 2026 Annex A (xlsx): 347 projects with code, name, country, promoter, maturity,
+commissioning years and CAPEX (where not confidential) as published; pipeline km per project summed
+over its sections (computed). No positions: the layer "Planned gas projects" draws one ring per
+country (count, computed) at its label point; card by category and maturity. Lake
+`entsog_tyndp/projects`. Refresh: group D per TYNDP.
+
+## Greenhouse-gas inventories (`build_coming.py ghg`, `profiles/ghg_inventory.json`)
+
+National inventories reported under the UNFCCC and the EU (EEA data) as Eurostat publishes them
+(`env_air_gge`, API, CC BY 4.0): Mt CO2e by CRF sector (totals with and without LULUCF, energy and
+its parts, industrial processes, agriculture, LULUCF, waste), the newest year (2024, 32 countries
+and the EU). The EEA datahub page answered 404. Section in the country report. API only.
+
+## US electric disturbances (`scripts/build_us_reliability.py oe417`), blocked
+
+DOE OE-417 annual summaries on oe.netl.doe.gov: from GitHub Actions the host answered
+"Network is unreachable" (probe, httpx) and "Could not resolve host" (build, curl -4). The script,
+the card ("Electric disturbances" in the US outages card) and the test are in place; it runs when
+the host answers.
+
+## FERC 714 planning-area demand (`build_us_reliability.py ferc714`, `us/ferc714.json`)
+
+FERC Form 714 hourly demand per planning area via PUDL (`out_ferc714__hourly_planning_area_demand`,
+in place, CC BY 4.0): the newest year with 80+ planning areas (2025, 88 with 300+ days), daily mean
+of the hourly demand as reported (computed; PUDL's imputed values not used). Region from the
+planning area's balancing authority (EIA's BA codes); 39 without one show under the whole country.
+US region card "Demand per planning area". No lake copy. Refresh: group E yearly.
+
+## France regional mix (`scripts/build_regional_live.py fr`, `fr_regions.json`)
+
+RTE éCO2mix régional temps réel (ODRÉ `eco2mix-regional-tr`, Licence Ouverte, no key): per region
+the newest 15-minute values (consumption, generation by source, battery, physical exchanges, MW as
+published) and the last 24 hours of consumption; each region's NUTS-1 id for the agent (12
+regions; Corsica is not in the real-time set). Card "Regions" in France's Now tab. Refreshed with
+every snapshot (`eu-snapshot.yml`). API only.
+
+## Spain regional mix (`build_regional_live.py es`, `es_regions.json`)
+
+Red Eléctrica REData `generacion/estructura-generacion` by autonomous community (`geo_limit=ccaa`,
+no key): generation per technology, monthly, the last 13 months, MWh as published (daily answers
+were 500/502; Incapsula refuses fast requests, so one every 2 s). Card in Spain's Now tab (the last
+full month, summed per community, computed). Daily in `eu-days.yml`. API only.
+
+## New Zealand live (`build_regional_live.py nz`, `nz.json`)
+
+Transpower's System Operator live data (generation sourced from em6): generation and capacity by
+fuel (MW) and 5-minute demand for NZ and each island, as published. "Live grids" marker, card in
+the World panel and its region panel. The Electricity Authority's EMI datasets (CC BY 4.0, monthly
+CSVs on emidatasets.blob.core.windows.net) are in the agent catalogue. Every snapshot. API only.
+
+## South Africa live (`build_regional_live.py za`, `za.json`), blocked
+
+Eskom's data portal links its hourly demand and station build-up CSVs, but both answered HTTP 404
+in two Actions runs (2026-10-19); only the load-shedding status (loadshedding.eskom.co.za) answers.
+The snapshot step, marker and card are in place and fill when the files answer.
+
 ## Notes
 
 - ENTSO-E allows 400 requests a minute; the scripts ask four at a time. A full snapshot
