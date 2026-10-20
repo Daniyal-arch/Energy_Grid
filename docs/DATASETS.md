@@ -55,7 +55,7 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 | Substations worldwide (our Overture extract) | every mapped substation | lake | ODbL | have (21) |
 | MaStR grid operators per municipality | who runs the grid here | lake | dl-de/by-2-0 | have (21) |
 | EIA-861 service territories | utilities per county | PUDL | CC BY 4.0 | have (21) |
-| Natura 2000, PAD-US | protected areas | ArcGIS services | EEA re-use; public domain | have (21) |
+| Natura 2000 (PAD-US blocked: service timeouts) | protected areas | ArcGIS services | EEA re-use; public domain | have (21, Europe) |
 | JRC river flood hazard (RP100) | flood depth | download | CC BY 4.0 | have (21) |
 | Overture roads and rail | major roads, railways | Overture S3 | ODbL | have (21) |
 | FERC Form 714 | hourly demand per planning area | PUDL | CC BY 4.0 | have (21) |

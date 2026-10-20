@@ -356,9 +356,9 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | MaStR grid operators (`mastr_grid/operators`) | our `mastr/*` | Parquet, snapshot | 15,213 rows |
 | EIA-861 service territory | PUDL Parquet | in place | 0 |
 | EMODnet cables, pipelines | WFS | API | 0 |
-| Natura 2000, PAD-US (`protected/natura2000`, `protected/padus`) | ArcGIS services, paged | GeoParquet (+ `grid/protected.pmtiles`) | see the PR |
+| Natura 2000 (`protected/natura2000`; PAD-US blocked) | ArcGIS services, paged | GeoParquet (+ `grid/protected.pmtiles`, 29 MB) | 27,173 rows |
 | JRC flood RP100 (`lake/flood/*.tif`) | 171 MB + 49 MB zips | COG (classes) + tiles and lookups (public) | 0.06 GB lookups |
-| Overture roads and rail (`overture_transport/segments`) | Overture S3 | GeoParquet, partition release (+ `grid/roads-rail.pmtiles`) | see the PR |
+| Overture roads and rail (`overture_transport/segments`) | Overture S3 | GeoParquet, partition release (+ `grid/roads-rail.pmtiles`, 150 MB) | 5,939,529 rows, 0.80 GB |
 | Hydrogen Observatory (`hydrogen/projects`) | xlsx | GeoParquet | 238 rows |
 | AURES II (`aures/auctions`) | xlsx (Mendeley) | Parquet | 820 rows |
 | NREL ATB 2025 (`atb/electricity`) | 321 MB CSV | Parquet | 1,161,588 rows, 0.007 GB |

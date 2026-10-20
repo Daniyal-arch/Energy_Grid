@@ -1,0 +1,16 @@
+dataset: protected
+title: Protected areas, Natura 2000 end 2024 (EEA); PAD-US 4.1 blocked (service timeouts)
+licence: EEA re-use with attribution (Natura 2000); public domain (PAD-US)
+map_file: r2 public grid/protected.pmtiles (layer "Protected areas"); frontend/public/data/eu/protected.json (card; Check a site "Constraints")
+tables:
+  natura2000:
+    grain: one row per Natura 2000 site with its generalised outline (~50 m, the EEA service's)
+    keys: {SITECODE, SITENAME, SITETYPE: A SPA | B SCI/SAC | C both, MS: member state}
+    measures: {Area_km2: {unit: km2, how: as published}}
+    examples:
+      - q: how many Natura 2000 sites are in Germany
+        sql: SELECT count(*) FROM protected.natura2000 WHERE MS = 'DE'
+        answer: 5203 sites, 113041.4 km2 as published
+      - q: how many Natura 2000 sites in all
+        sql: SELECT count(*) FROM protected.natura2000
+        answer: 27173
