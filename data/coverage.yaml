@@ -693,66 +693,208 @@ families:
     shows: redispatch, countertrading, congestion-management costs and curtailment (country cards, agent catalogue)
     cells:
       AT:
-        status: todo
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes internal redispatch (A63/A85), cross-border redispatch (A63/A46), countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10)
       BE:
-        status: todo
-      BG:
-        status: todo
-      HR:
-        status: todo
-      CY:
-        status: todo
-      CZ:
-        status: todo
-      DK:
-        status: todo
-      EE:
-        status: todo
-      FI:
-        status: todo
-      FR:
-        status: todo
-      DE:
-        status: have
-        source: netztransparenz.de redispatch archive 2013-2020
-        url: https://www.netztransparenz.de
-        licence: public
-        dataset: eu/de_redispatch.json, lake netztransparenz/*
-        checked: '2026-10-18'
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes internal redispatch (A63/A85), countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for cross-border redispatch (A63/A46)
         partial: true
-        note: 2013-2020; newer years need NETZTRANSPARENZ_CLIENT_ID/_SECRET; ENTSO-E A63/A91/A92 in wave 7
+      BG:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      HR:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      CY:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: Cyprus is an isolated system without a control area on the ENTSO-E platform; its operator publishes no redispatch or curtailment series as data
+      CZ:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes cross-border redispatch (A63/A46), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), countertrading
+          (A91)
+        partial: true
+      DK:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      EE:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      FI:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      FR:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes cross-border redispatch (A63/A46), countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85)
+        partial: true
+      DE:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        partial: true
+        note: ENTSO-E publishes internal redispatch (A63/A85), cross-border redispatch (A63/A46), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for countertrading
+          (A91); the netztransparenz.de archive (2013-2020) stays beside it, newer years need NETZTRANSPARENZ_CLIENT_ID/_SECRET
       GR:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
       HU:
-        status: todo
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46), countertrading
+          (A91)
+        partial: true
       IE:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
       IT:
-        status: todo
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46)
+        partial: true
       LV:
-        status: todo
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46), countertrading
+          (A91)
+        partial: true
       LT:
-        status: todo
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46), countertrading
+          (A91)
+        partial: true
       LU:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
       MT:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: Malta is an isolated system without a control area on the ENTSO-E platform; its operator publishes no redispatch or curtailment series as data
       NL:
-        status: todo
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes internal redispatch (A63/A85), cross-border redispatch (A63/A46), countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10)
       PL:
-        status: todo
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes cross-border redispatch (A63/A46), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), countertrading
+          (A91)
+        partial: true
       PT:
-        status: todo
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46)
+        partial: true
       RO:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
       SK:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
       SI:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
       ES:
-        status: todo
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46)
+        partial: true
       SE:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
       GB:
         status: built
         source: NESO Constraint Breakdown Costs and Volume

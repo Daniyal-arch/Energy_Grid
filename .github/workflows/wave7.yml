@@ -2,8 +2,8 @@ name: Wave 7 datasets
 
 # The builds of brief 22 (docs/tasks/22-coverage-wave7.md): one job per dataset family, each
 # committing its small outputs (frontend/public/data, agent/catalog, data/coverage.yaml) back to
-# the branch and uploading lake tables to R2. A push runs the families its commit message names:
-# "[w7: A B]". Run by hand from main: Actions > Wave 7 datasets > Run workflow.
+# the branch and uploading lake tables to R2. Run by hand from main: Actions > Wave 7 datasets >
+# Run workflow, naming the families (the branch push trigger used while building was removed).
 # A room to connect, B every unit, C live mix and CO2, D redispatch and congestion, E prices,
 # F what consumers pay, G emitters, H plants offline, I EV charging, J gas (US), K reliability,
 # P the probe (scripts/probe_wave7.py).
@@ -16,9 +16,6 @@ on:
         description: "Families to build (A B C D E F G H I J K; P = probe)"
         type: string
         default: "A B C D E F G H I J K"
-  push:
-    branches: [claude/eloquent-heisenberg-dut9ql]
-    paths: [.github/workflows/wave7.yml, "scripts/build_*.py", "scripts/fetch_*.py", "scripts/probe_wave7.py", scripts/wave7_common.py, scripts/wave5_commit.sh]
 
 permissions:
   contents: write
