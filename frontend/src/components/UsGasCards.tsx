@@ -9,6 +9,10 @@ const muted = "text-[#8d94a1]";
 const LINE = "rgb(255,196,96)";
 
 const last = (s?: UsGasSeries | null) => s?.points[s.points.length - 1];
+// EIA's series names, shortened: "Weekly East Region Natural Gas Working ..." -> "East Region"
+const short = (name: string) => name.replace(/^Weekly /, "").replace(/\s+Natural Gas.*$/, "").replace(/\s+/g, " ");
+// "Natural Gas Citygate Price in Alaska (Dollars per Thousand Cubic Feet)" -> "Alaska"
+const gateName = (name: string) => name.replace(/^Natural Gas Citygate Price in /, "").replace(/\s*\(.*$/, "");
 
 function Spark({ s, days }: { s: UsGasSeries; days: number }) {
   const pts = s.points.slice(-days);
@@ -43,7 +47,7 @@ export function UsGasCard() {
       {n && (
         <>
           <div className="text-[22px] font-light text-slate-50">
-            {n[1].toLocaleString("en-US")} {l48.unit} <span className={`text-[11px] ${muted}`}>{l48.name}, week of {n[0]}</span>
+            {n[1].toLocaleString("en-US")} {l48.unit} <span className={`text-[11px] ${muted}`}>working gas, {short(l48.name)}, week of {n[0]}</span>
           </div>
           <div className={`text-[10.5px] ${muted}`}>
             {prev ? `${n[1] - prev[1] >= 0 ? "+" : ""}${(n[1] - prev[1]).toLocaleString("en-US")} on the week (computed)` : ""}
@@ -52,7 +56,7 @@ export function UsGasCard() {
           <div className="mt-2 space-y-[2px] text-[10.5px]">
             {regions.filter((s) => s !== l48).map((s) => (
               <div key={s.name} className="flex justify-between gap-2">
-                <span className={`truncate ${muted}`}>{s.name}</span>
+                <span className={`truncate ${muted}`}>{short(s.name)}</span>
                 <span className="tabular-nums text-slate-200">{last(s)?.[1].toLocaleString("en-US")}</span>
               </div>
             ))}
@@ -75,7 +79,7 @@ export function UsGasCard() {
           <div className={`mb-0.5 text-[9px] uppercase tracking-[0.14em] ${muted}`}>Citygate price, highest states</div>
           {gates.slice(0, 5).map(({ s, p }) => (
             <div key={s.name} className="flex justify-between gap-2">
-              <span className={`truncate ${muted}`}>{s.name}</span>
+              <span className={`truncate ${muted}`}>{gateName(s.name)}</span>
               <span className="tabular-nums text-slate-200">
                 {p?.[1].toFixed(2)} {s.unit} <span className={muted}>{p?.[0]}</span>
               </span>

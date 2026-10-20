@@ -1895,7 +1895,13 @@ families:
         partial: true
         note: Flows and LNG entry from ENTSOG; GB storage is not in the dossier's AGSI set
       US:
-        status: todo
+        status: built
+        source: EIA API v2 (weekly storage, Henry Hub spot, citygate per state); EIA natural gas pipelines
+        url: https://www.eia.gov/opendata/
+        licence: public domain
+        dataset: us/gas.json, us/gas_pipes.json
+        checked: '2026-10-20'
+        note: LNG terminals from GEM's world layer; EIA publishes no regional hub price besides Henry Hub as open data
   reliability:
     name: Reliability
     shows: interruptions per customer (SAIDI, SAIFI) or outages per area
