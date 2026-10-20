@@ -1640,61 +1640,254 @@ families:
     shows: public charge points (EV charging layer) and counts per country
     cells:
       AT:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '7,002 stations on the map (2026-10-20); EAFO counts 30,886 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       BE:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '5,991 stations on the map (2026-10-20); EAFO counts 118,792 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       BG:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '863 stations on the map (2026-10-20); EAFO counts 4,653 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       HR:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '535 stations on the map (2026-10-20); EAFO counts 2,505 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       CY:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '70 stations on the map (2026-10-20); EAFO counts 627 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       CZ:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '3,049 stations on the map (2026-10-20); EAFO counts 7,669 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       DK:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '3,355 stations on the map (2026-10-20); EAFO counts 55,127 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       EE:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '524 stations on the map (2026-10-20); EAFO counts 2,411 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       FI:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '1,391 stations on the map (2026-10-20); EAFO counts 16,972 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       FR:
-        status: todo
+        status: built
+        source: 'EAFO counts; points: data.gouv.fr consolidated IRVE file (charging points)'
+        url: https://static.data.gouv.fr/resources/base-nationale-des-irve-data-gouv-infrastructures-de-recharge-pour-vehicules-electriques-donnees-statiques/20261019-032122/consolidation-etalab-schema-irve-statique-v-2.3.1-20261019.csv
+        licence: EAFO CC BY 4.0; Licence Ouverte / Etalab 2.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: 149,389 charging points on the map (2026-10-20); EAFO counts 203,950 public points in 2026
       DE:
-        status: todo
+        status: built
+        source: 'EAFO counts; points: Bundesnetzagentur Ladesäulenregister'
+        url: https://data.bundesnetzagentur.de/Bundesnetzagentur/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenregister_BNetzA_2026-09-01.csv
+        licence: EAFO CC BY 4.0; CC BY 4.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: 209,096 charging points on the map (2026-10-20); EAFO counts 221,646 public points in 2026
       GR:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '4,495 stations on the map (2026-10-20); EAFO counts 8,528 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       HU:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '1,628 stations on the map (2026-10-20); EAFO counts 4,974 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       IE:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '1,061 stations on the map (2026-10-20); EAFO counts 4,391 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       IT:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '9,640 stations on the map (2026-10-20); EAFO counts 76,511 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       LV:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '401 stations on the map (2026-10-20); EAFO counts 2,350 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       LT:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '430 stations on the map (2026-10-20); EAFO counts 6,125 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       LU:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '544 stations on the map (2026-10-20); EAFO counts 4,124 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       MT:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '43 stations on the map (2026-10-20); EAFO counts 113 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       NL:
-        status: todo
+        status: built
+        source: 'EAFO counts; points: NDW open data, charging point locations (national access point)'
+        url: https://opendata.ndw.nu/charging_point_locations.geojson.gz
+        licence: EAFO CC BY 4.0; NDW open data (no licence named on the page; data.overheid.nl lists NDW downloads as CC0 1.0)
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: 203,551 charging points on the map (2026-10-20); EAFO counts 241,366 public points in 2026
       PL:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '3,020 stations on the map (2026-10-20); EAFO counts 15,892 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       PT:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '6,752 stations on the map (2026-10-20); EAFO counts 17,311 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       RO:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '722 stations on the map (2026-10-20); EAFO counts 10,442 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       SK:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '1,094 stations on the map (2026-10-20); EAFO counts 4,415 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       SI:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '504 stations on the map (2026-10-20); EAFO counts 3,155 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       ES:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '2,757 stations on the map (2026-10-20); EAFO counts 49,768 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       SE:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '3,836 stations on the map (2026-10-20); EAFO counts 61,851 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       GB:
-        status: todo
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '8,391 stations on the map (2026-10-20); EAFO counts 113,589 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
       US:
         status: have
         source: NREL AFDC station locator
