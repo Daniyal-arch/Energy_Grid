@@ -347,3 +347,60 @@ def test_uk_ets_merge_keeps_eu_rows_and_adds_unplaced_gb() -> None:
     assert out["countries"]["GB"] == {"n": 1, "placed": 0, "t": [18475, 0], "t_placed": 0}
     assert ["GB", "1000627", "Mill", 2, [18475, None], None, None] in out["rows"]
     assert len(out["rows"]) == 2
+
+
+# ---------------------------------------------------------------- family 8, GB plants offline
+
+import fetch_gb_outages as go  # noqa: E402
+
+
+def test_gb_outages_keep_active_production_and_drop_closures() -> None:
+    now = datetime(2026, 10, 20, 4, tzinfo=UTC)
+    base = {
+        "eventType": "Production unavailability",
+        "eventStatus": "Active",
+        "fuelType": "Fossil Gas",
+        "normalCapacity": 780.0,
+        "availableCapacity": 0.0,
+        "unavailabilityType": "Unplanned",
+        "assetId": "T_DIDCB5",
+    }
+    msgs = [
+        base
+        | {
+            "unavailableCapacity": 740.0,
+            "eventStartTime": "2026-10-19T22:07:12Z",
+            "eventEndTime": "2026-10-20T05:35:31Z",
+        },
+        base
+        | {
+            "unavailableCapacity": 505.0,
+            "eventStartTime": "2024-09-30T22:00:00Z",
+            "eventEndTime": "2050-09-30T23:00:00Z",
+        },
+        base
+        | {
+            "unavailableCapacity": 50.0,
+            "eventStatus": "Dismissed",
+            "eventStartTime": "2026-10-19T00:00:00Z",
+            "eventEndTime": "2026-10-21T00:00:00Z",
+        },
+        base
+        | {
+            "unavailableCapacity": 50.0,
+            "eventStartTime": "2026-10-21T00:00:00Z",
+            "eventEndTime": "2026-10-22T00:00:00Z",
+        },
+    ]
+    units, left_out, long_term = go.units(msgs, now)
+    assert [(u["offline_mw"], u["fuel"], u["type"]) for u in units] == [(740.0, "gas", "forced")]
+    assert left_out == 0 and long_term == {"n": 1, "mw": 505.0}
+    f = {
+        "countries": {
+            "FR": {"offline_mw": 10.0, "planned_mw": 10.0, "forced_mw": 0.0, "left_out": 0}
+        },
+        "zones": {},
+        "units": [],
+    }
+    out = go.merge(f, units, 0, "2026-10-20T04:00:00+00:00", long_term)
+    assert out["total"]["offline_mw"] == 750.0 and out["countries"]["GB"]["forced_mw"] == 740.0

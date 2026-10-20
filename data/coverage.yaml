@@ -1437,7 +1437,13 @@ families:
         dataset: eu/outages.json
         checked: '2026-10-18'
       HR:
-        status: todo
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-20'
+        note: Zone listed with 0 MW when nothing is offline (fetch_outages.py lists every zone that answers)
       CY:
         status: todo
       CZ:
@@ -1455,7 +1461,13 @@ families:
         dataset: eu/outages.json
         checked: '2026-10-18'
       EE:
-        status: todo
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-20'
+        note: Zone listed with 0 MW when nothing is offline (fetch_outages.py lists every zone that answers)
       FI:
         status: have
         source: ENTSO-E A80 unavailability of generation units
@@ -1515,7 +1527,14 @@ families:
         dataset: eu/outages.json
         checked: '2026-10-18'
       LU:
-        status: todo
+        status: have
+        source: ENTSO-E A80 unavailability of generation units, bidding zone DE-LU
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json (zone DE-LU)
+        checked: '2026-10-20'
+        partial: true
+        note: Luxembourg shares the DE-LU bidding zone; its units (Vianden) report there and are counted under Germany
       MT:
         status: todo
       NL:
@@ -1575,7 +1594,12 @@ families:
         dataset: eu/outages.json
         checked: '2026-10-18'
       GB:
-        status: todo
+        status: built
+        source: Elexon REMIT messages (Insights API), production unavailability
+        url: https://bmrs.elexon.co.uk/remit
+        licence: Elexon BMRS data, free reuse with attribution
+        dataset: eu/outages.json (GB)
+        checked: '2026-10-20'
       US:
         status: have
         source: EPA CAMPD hourly unit output (fossil units)

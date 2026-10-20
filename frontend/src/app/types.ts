@@ -166,6 +166,8 @@ export interface OutagesFile {
   total: OutageTotals;
   countries: Record<string, OutageTotals>;
   units: OutageUnit[];
+  /** Great Britain from Elexon REMIT (scripts/fetch_gb_outages.py); closures published as outages left out */
+  gb?: { source: string; at: string; long_term: { n: number; mw: number } };
 }
 
 /** Output per plant through a day (scripts/build_eu_units.py, units/<date>.json). */

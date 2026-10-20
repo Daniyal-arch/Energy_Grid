@@ -1,0 +1,14 @@
+dataset: gb_outages
+title: Great Britain's generating units offline now (Elexon REMIT)
+licence: Elexon BMRS data (free reuse with attribution)
+map_file: frontend/public/data/eu/outages.json (zone and country GB; units with country GB; gb holds the source and closures left out)
+api:
+  events_now: {call: "GET https://data.elexon.co.uk/bmrs/api/v1/remit/list/by-event?from=<now>&to=<now+1min>&latestRevisionOnly=true", unit: message ids}
+  messages: {call: "GET https://data.elexon.co.uk/bmrs/api/v1/remit?messageId=..&messageId=.. (40 at a time)", unit: MW}
+  history: {call: "GET https://data.elexon.co.uk/bmrs/api/v1/datasets/REMIT?publishDateTimeFrom=..&publishDateTimeTo=.. (1 day at most)", unit: MW}
+notes:
+  - Offline = unavailableCapacity of active production-unavailability messages begun and not ended.
+  - Events begun over 365 days ago or ending over ten years ahead are closures, left out and counted.
+examples:
+  - q: How much GB generating capacity is offline now?
+    answer: 11.6 GW on 2026-10-20 04:00 UTC (48 units, 3.2 GW forced; 27 closures left out)

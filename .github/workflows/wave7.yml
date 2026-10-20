@@ -242,3 +242,44 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family G outputs"
+
+  H:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'H')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx python-dotenv tzdata
+      - name: Wait until no Lake ENTSO-E run is active
+        run: bash scripts/entsoe_idle.sh 30
+      - name: 8 plants offline now, every zone listed (ENTSO-E A80 with Ireland's SEM)
+        continue-on-error: true
+        run: python scripts/fetch_outages.py
+      - name: 8 Great Britain (Elexon REMIT)
+        continue-on-error: true
+        run: python scripts/fetch_gb_outages.py
+      - name: 8 probe, does ENTSO-E carry unit outages for Cyprus and Malta?
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import sys
+          from datetime import UTC, datetime
+          sys.path.insert(0, "scripts")
+          import httpx, entsoe
+          from fetch_outages import documents
+          now = datetime.now(UTC)
+          for zone, eic in {"CY": "10YCY-1001A0003J", "MT": "10Y1001A1001A93C"}.items():
+              entsoe.ZONE_EIC[zone] = eic
+              with httpx.Client(timeout=120) as c:
+                  print(f"::notice title=A80 {zone}::{len(documents(c, zone, now))} outage documents now")
+          PY
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family H outputs"

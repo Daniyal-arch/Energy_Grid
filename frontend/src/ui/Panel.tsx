@@ -291,7 +291,7 @@ function EuropePanel() {
               </div>
             </Card>
           )}
-          {!day && outages && outages.units.length > 0 && <OutageCard totals={outages.total} units={outages.units} at={outages.at} />}
+          {!day && outages && outages.units.length > 0 && <OutageCard totals={outages.total} units={outages.units} at={outages.at} source={outages.gb ? "ENTSO-E, Elexon (GB)" : "ENTSO-E"} />}
           <Hint>Click a country for its figures, a flow for its size.</Hint>
           <SourcesCard items={LIVE_SOURCES} />
         </>
@@ -493,7 +493,17 @@ function CountryPanel({ iso }: { iso: string }) {
           {!day && <CongestionCard iso={iso} />}
           {trade.length > 0 && <TradeCard rows={trade} time={timeOf(trade[0].ts)} />}
           {!day && outages?.countries[iso] && (
-            <OutageCard totals={outages.countries[iso]} units={outages.units.filter((u) => u.country === iso)} at={outages.at} />
+            <OutageCard
+              totals={outages.countries[iso]}
+              units={outages.units.filter((u) => u.country === iso)}
+              at={iso === "GB" && outages.gb ? outages.gb.at : outages.at}
+              source={iso === "GB" ? "Elexon REMIT" : "ENTSO-E"}
+              note={
+                iso === "GB" && outages.gb
+                  ? `${outages.gb.source}; offline = the unavailable capacity each active message gives. ${outages.gb.long_term.n} closures still published as outages (begun over a year ago or ending over ten years ahead, ${(outages.gb.long_term.mw / 1000).toFixed(1)} GW) are left out.`
+                  : undefined
+              }
+            />
           )}
           <CoverageCard iso2={iso} name={name} />
           <SourcesCard items={LIVE_SOURCES} />

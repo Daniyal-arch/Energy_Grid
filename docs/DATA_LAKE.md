@@ -353,6 +353,7 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | Prices: GB market index and system prices (Elexon), SEM day-ahead, US real-time hubs | Elexon API, ENTSO-E API, gridstatus | API (no lake copy; the ENTSO-E lake holds the SEM) | 0 |
 | What UK consumers pay (DESNZ international energy prices) | DESNZ xlsx, four tables | API (no lake copy; three small sheets) | 0 |
 | UK ETS emissions per installation | UK ETS registry xlsx | in `ets.json` (no lake copy; ~800 rows) | 0 |
+| GB plants offline (Elexon REMIT) | Elexon API | API (no lake copy; the API keeps the history) | 0 |
 
 ### Future (docs/DATASETS.md)
 

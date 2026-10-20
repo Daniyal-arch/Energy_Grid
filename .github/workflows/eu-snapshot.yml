@@ -79,6 +79,7 @@ jobs:
             python scripts/fetch_us.py --out store/eu || echo "EIA fetch failed"
             # generating units offline now (ENTSO-E unavailability)
             python scripts/fetch_outages.py --out store/eu || echo "outages fetch failed"
+            python scripts/fetch_gb_outages.py --out store/eu || echo "GB outages (Elexon REMIT) failed"
             if python scripts/fetch_eu_snapshot.py --out store/eu; then
               (
                 cd store

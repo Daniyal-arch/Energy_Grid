@@ -537,6 +537,17 @@ installations are listed in the panel and the country report (group "Activity no
 and are not on the map; sums are computed. Refresh: Mondays in `eu-days.yml`, after
 `fetch_eu_ets.py`.
 
+## Great Britain's plants offline (`scripts/fetch_gb_outages.py`, GB in `outages.json`)
+
+Elexon REMIT messages (Insights API, no key): events running now (`/remit/list/by-event`, latest
+revision), read 40 at a time. Kept: production unavailability, status Active, begun and not ended.
+Offline = the message's unavailable capacity (MW, as published); planned or unplanned (shown as
+forced). Closures stay published as open-ended outages (Ratcliffe, Fiddlers Ferry, to 2050): an
+event begun over 365 days ago or ending over ten years ahead is left out and counted
+(`gb.long_term`, shown on the card). Europe's totals are recomputed as the sum of the countries.
+Every ENTSO-E zone that answers is now listed, with 0 MW when nothing is offline (`fetch_outages.py`).
+Refresh: every 30 min in `eu-snapshot.yml`, after `fetch_outages.py`.
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2
