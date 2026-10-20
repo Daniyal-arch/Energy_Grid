@@ -59,10 +59,17 @@ DE_PAGE = "https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-
 FR_DATASET = "https://www.data.gouv.fr/api/1/datasets/fichier-consolide-des-bornes-de-recharge-pour-vehicules-electriques/"
 NL_FILE = "https://opendata.ndw.nu/charging_point_locations.geojson.gz"
 # two public Overpass servers taken in turn (each country asks the next one first)
+# public Overpass servers taken in turn (each country asks the next one first); queries are POSTed
+# with a User-Agent that names the project (overpass-api.de answered 406 to the scripted GETs)
 OVERPASS = [
     "https://overpass-api.de/api/interpreter",
     "https://overpass.private.coffee/api/interpreter",
+    "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
 ]
+OSM_UA = {
+    "User-Agent": "InfraAtlas/0.7 (+https://github.com/Daniyal-arch/Energy_Grid)",
+    "Accept": "*/*",
+}
 REGISTER = {"DE", "FR", "NL"}
 
 
@@ -219,13 +226,12 @@ def fr_points(text: str) -> tuple[list[tuple[float, float, int]], list[dict]]:
 
 def fr(data: dict, args: argparse.Namespace) -> None:
     res = w7.get(FR_DATASET, timeout=120).json()["resources"]
-    csvs = [
-        r for r in res if r.get("format") == "csv" and "consolid" in (r.get("title") or "").lower()
-    ]
-    pick = max(
-        csvs or [r for r in res if r.get("format") == "csv"],
-        key=lambda r: r.get("last_modified") or "",
-    )
+    # the consolidated file itself (its documentation table is a csv too)
+    name = re.compile(r"/consolidation-etalab-schema-irve-statique[^/]*\.csv$")
+    csvs = [r for r in res if name.search(r.get("url") or "")]
+    if not csvs:
+        raise SystemExit("IRVE: no consolidated csv among the dataset's files")
+    pick = max(csvs, key=lambda r: r.get("last_modified") or "")
     raw = w7.get(pick["url"], timeout=600).content
     pts, rows = fr_points(raw.decode("utf-8-sig", errors="replace"))
     put(data, "FR", {"source": "data.gouv.fr consolidated IRVE file (charging points)", "url": pick["url"],
@@ -282,21 +288,35 @@ def osm_points(elements: list[dict]) -> tuple[list[tuple[float, float, int]], li
 
 
 def overpass(q: str, k: int) -> list[dict]:
-    """Elements of one query from the next server in turn, the other one if it fails."""
+    """Elements of one query from the next server in turn, the others if it fails. An answer
+    whose remark says the query ran out of time or memory is a failure, not an empty country."""
+    import httpx
+
     last: object = None
-    for url in (OVERPASS[k % 2], OVERPASS[(k + 1) % 2]):
+    for i in range(len(OVERPASS)):
+        url = OVERPASS[(k + i) % len(OVERPASS)]
         try:
-            return w7.get(url, params={"data": q}, timeout=420, tries=1).json()["elements"]
-        except (Exception, SystemExit) as e:  # noqa: BLE001 - try the other server
+            r = httpx.post(url, data={"data": q}, headers=OSM_UA, timeout=440)
+            r.raise_for_status()
+            d = r.json()
+            if "remark" in d and not d.get("elements"):
+                raise ValueError(d["remark"][:120])
+            return d["elements"]
+        except Exception as e:  # noqa: BLE001 - try the next server
             last = e
-            print(f"    {url}: {e}", flush=True)
+            print(f"    {url}: {type(e).__name__} {str(e)[:120]}", flush=True)
+            time.sleep(15)
     raise SystemExit(f"Overpass: {last}")
 
 
 def osm(data: dict, args: argparse.Namespace) -> None:
-    for k, cc in enumerate(
-        c for c in SLUG if c not in REGISTER and not (args.only and c not in args.only)
-    ):
+    # a country already read today is kept (a rerun fills the countries that failed)
+    todo = [
+        c for c in SLUG
+        if c not in REGISTER and not (args.only and c not in args.only)
+        and data["maps"].get(c, {}).get("fetched") != w7.TODAY
+    ]  # fmt: skip
+    for k, cc in enumerate(todo):
         q = (f'[out:json][timeout:400];area["ISO3166-1"="{cc}"][admin_level=2]->.a;'
              'nwr["amenity"="charging_station"](area.a);out center tags;')  # fmt: skip
         try:
