@@ -132,7 +132,7 @@ function useSections(code: string) {
           const n = newestOf(retail, retail.eu.series[s][iso2]);
           if (n) rows.push([`${SERIES_LABEL[s].title} (${SERIES_LABEL[s].band})`, n.v, "EUR/kWh", `${n.period}, all taxes${n.flag ? `, ${n.flag}` : ""}`]);
         }
-      if (rows.length) out.push({ title: "What consumers pay", source: "Eurostat nrg_pc_204/205 (electricity), nrg_pc_202/203 (gas), half-yearly", rows });
+      if (rows.length) out.push({ title: "What consumers pay", source: iso2 === "GB" && retail.eu.gb ? `${retail.eu.gb.source}; ${retail.eu.gb.conversion}` : "Eurostat nrg_pc_204/205 (electricity), nrg_pc_202/203 (gas), half-yearly", rows });
       const usp = us ? retail.us?.price.US : undefined;
       if (usp && retail.us) {
         const m = retail.us.months;

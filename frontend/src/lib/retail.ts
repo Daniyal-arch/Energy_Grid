@@ -15,6 +15,8 @@ export type RetailSeries = "elec_household" | "elec_business" | "gas_household" 
 export interface RetailFile {
   fetched: string;
   eu: { source: string; periods: string[]; updated: Record<string, string>; series: Record<RetailSeries, Record<string, RetailRow>> };
+  // Great Britain from DESNZ in the same bands (scripts/fetch_gb_retail.py), converted to EUR
+  gb?: { source: string; conversion: string; pence_per_kwh: Record<string, Record<string, Record<string, number>>>; not_published: Record<string, string> };
   us?: { source: string; months: string[]; names: Record<string, string>; price: Record<string, Record<"RES" | "COM" | "IND" | "ALL", (number | null)[]>> };
 }
 

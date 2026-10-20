@@ -18,7 +18,7 @@ on:
         default: "A B C D E F G H I J K"
   push:
     branches: [claude/eloquent-heisenberg-dut9ql]
-    paths: [.github/workflows/wave7.yml, "scripts/build_*.py", "scripts/probe_wave7.py", scripts/wave7_common.py]
+    paths: [.github/workflows/wave7.yml, "scripts/build_*.py", "scripts/fetch_*.py", "scripts/probe_wave7.py", scripts/wave7_common.py]
 
 permissions:
   contents: write
@@ -204,3 +204,23 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family E outputs"
+
+  F:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'F')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx openpyxl
+      - name: 6 what UK consumers pay (DESNZ, Eurostat's bands)
+        continue-on-error: true
+        run: python scripts/fetch_gb_retail.py
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family F outputs"

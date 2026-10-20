@@ -19,8 +19,9 @@ export function RetailCountryCard({ f, iso, wholesale }: { f: RetailFile; iso: s
   const hh = f.eu.series.elec_household[iso];
   const line = hh?.I_TAX ?? [];
   const top = Math.max(...line.map((v) => v ?? 0), 0.01);
+  const gb = iso === "GB" ? f.eu.gb : undefined;
   return (
-    <Card title="What consumers pay" note="Eurostat · half-yearly">
+    <Card title="What consumers pay" note={gb ? "DESNZ · half-yearly" : "Eurostat · half-yearly"}>
       <div className="space-y-2.5">
         {rows.map(({ s, row }) => {
           const n = newestOf(f, row);
@@ -78,6 +79,7 @@ export function RetailCountryCard({ f, iso, wholesale }: { f: RetailFile; iso: s
       <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
         All taxes and levies included; the bar splits each price by Eurostat's three tax levels (without taxes; without VAT and recoverable taxes; all taxes), differences
         computed. Business prices are usually paid without VAT.
+        {gb ? ` UK figures: ${gb.source}, in pence per kWh; shown in euros (${gb.conversion}). Businesses' electricity: ${gb.not_published.elec_business ?? "not published"}.` : ""}
         {wholesale ? ` Wholesale for comparison: day-ahead average ${wholesale.eur_mwh.toFixed(2)} €/MWh = ${(wholesale.eur_mwh / 10).toFixed(2)} c€/kWh over ${wholesale.period} (ENTSO-E, divided by 10).` : ""}
       </div>
     </Card>
@@ -115,7 +117,7 @@ export function RetailRankingCard({ f, onPick }: { f: RetailFile; onPick: (iso: 
       </div>
       <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
         Electricity, households, band DC (2,500–4,999 kWh a year), all taxes and levies included; each country's newest half-year (an older one is marked). Click a country for
-        its four prices.
+        its four prices.{f.eu.gb ? " GB: DESNZ's figure in the same band, converted at the ECB's half-year average rate." : ""}
       </div>
     </Card>
   );

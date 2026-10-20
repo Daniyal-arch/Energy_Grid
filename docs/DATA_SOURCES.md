@@ -516,6 +516,16 @@ US: real-time LMP at the day-ahead file's hubs (gridstatus: CAISO 15 min, ERCOT 
 NYISO 5 min, ISO-NE hourly), yesterday and today, as published; card "Real time vs day-ahead".
 Refresh: daily in `eu-days.yml`.
 
+## What UK consumers pay (`scripts/fetch_gb_retail.py`, GB in `retail.json`)
+
+DESNZ "International domestic / non-domestic energy prices" (Quarterly Energy Prices, OGL v3.0):
+the UK's price per half-year in Eurostat's own bands, pence per kWh. Electricity households (DC,
+table 5.6.2) and gas households (D2, 5.10.2) with and without taxes; gas businesses (I3, 5.8.2)
+excluding VAT and without taxes. DESNZ has no 500-1,999 MWh electricity band (IC): left empty.
+Computed: EUR = pence / 100 / the ECB's average GBP per EUR over the half-year; the pence figures
+are kept in `eu.gb`. Card "What consumers pay" (GB says DESNZ). Refresh: Mondays in `eu-days.yml`,
+after `fetch_retail_prices.py`. Ofgem's price cap is a ceiling, not an average, so it is not used.
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

@@ -286,3 +286,36 @@ def test_ecb_gbp_reads_the_history_file() -> None:
             "eurofxref-hist.csv", "Date,USD,GBP,\n2026-10-16,1.08,0.8612,\n2026-10-15,1.09,N/A,\n"
         )
     assert gp.ecb_gbp(buf.getvalue()) == {"2026-10-16": 0.8612}
+
+
+# ---------------------------------------------------------------- family 6, what UK consumers pay
+
+import fetch_gb_retail as gr  # noqa: E402
+
+
+def test_semester_rate_averages_the_half_year() -> None:
+    rates = {"2026-01-05": 0.84, "2026-06-30": 0.86, "2026-07-01": 0.9}
+    assert gr.semester_rate(rates, "2026-S1") == 0.85
+    assert gr.semester_rate(rates, "2026-S2") == 0.9
+    assert gr.semester_rate(rates, "2025-S1") is None
+
+
+def test_uk_semesters_reads_the_united_kingdom_column() -> None:
+    import io
+
+    import openpyxl
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "5.6.2 (Medium incl tax)"
+    ws.append(["Table 5.6.2"])
+    ws.append(["Year", "Period", "France", "United Kingdom"])
+    ws.append([2025, "Jan to Jun", 25.1, 27.03])
+    ws.append([2025, "Jul to Dec", 24.0, "28.5 [x]"])
+    ws.append([2026, "Jan to Jun", 24.0, None])
+    buf = io.BytesIO()
+    wb.save(buf)
+    assert gr.uk_semesters(buf.getvalue(), "5.6.2 (Medium incl tax)") == {
+        "2025-S1": 27.03,
+        "2025-S2": 28.5,
+    }

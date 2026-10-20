@@ -350,6 +350,8 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | Redispatch, countertrading, congestion costs (`entsoe/congestion_*`), NESO constraints, CAISO curtailment | ENTSO-E API, NESO CSV, CAISO xlsx | Parquet, snapshot partition | see the catalogue |
 | CO₂ per kWh: RTE éCO2mix, REE, EirGrid, EIA-930 grid monitor | APIs and EIA's xlsx | API (no lake copy) | 0 |
 | Every unit, national registers (`registers/<cc>`: gb, fr, dk, se, ie, be, fi) | CSV, xlsx, ArcGIS, ODRÉ export | GeoParquet where positioned, snapshot partition | ~30,000 positioned rows plus FR's register |
+| Prices: GB market index and system prices (Elexon), SEM day-ahead, US real-time hubs | Elexon API, ENTSO-E API, gridstatus | API (no lake copy; the ENTSO-E lake holds the SEM) | 0 |
+| What UK consumers pay (DESNZ international energy prices) | DESNZ xlsx, four tables | API (no lake copy; three small sheets) | 0 |
 
 ### Future (docs/DATASETS.md)
 

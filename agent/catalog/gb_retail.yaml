@@ -1,0 +1,14 @@
+dataset: gb_retail
+title: What UK consumers pay, in Eurostat's consumption bands (DESNZ international energy prices)
+licence: Open Government Licence v3.0
+map_file: frontend/public/data/eu/retail.json (country GB in eu.series; pence and source in eu.gb)
+api:
+  domestic: {call: "GET https://www.gov.uk/government/statistical-data-sets/international-domestic-energy-prices (tables 5.6.2 electricity, 5.10.2 gas; xlsx)", unit: pence/kWh, step: half-year}
+  non_domestic: {call: "GET https://www.gov.uk/government/statistical-data-sets/international-industrial-energy-prices (table 5.8.2 gas; xlsx)", unit: pence/kWh, step: half-year}
+  ecb_rates: {call: "GET https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip", unit: GBP per EUR, step: day}
+notes:
+  - EUR = pence / 100 / the ECB's average GBP per EUR over the half-year (computed).
+  - No electricity band IC (500-1,999 MWh) for the UK; businesses' electricity is left empty.
+examples:
+  - q: What does a UK household pay for electricity, all taxes included?
+    answer: Read eu.series.elec_household.GB.I_TAX at the newest half-year with a value (EUR/kWh); eu.gb.pence_per_kwh holds the pence figure.
