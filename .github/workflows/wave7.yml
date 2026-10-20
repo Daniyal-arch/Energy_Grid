@@ -298,11 +298,12 @@ jobs:
       - name: 9 EV charging, EAFO counts per country
         continue-on-error: true
         run: python scripts/build_ev_eu.py eafo
-      - name: 9 EV charging points, Germany (BNetzA) and France (IRVE)
+      - name: 9 EV charging points, Germany (BNetzA), France (IRVE), the Netherlands (NDW)
         continue-on-error: true
         run: |
           python scripts/build_ev_eu.py de --upload
           python scripts/build_ev_eu.py fr --upload
+          python scripts/build_ev_eu.py nl --upload
       - name: 9 EV charging stations elsewhere (OpenStreetMap, Overpass; ~1 h)
         continue-on-error: true
         run: python scripts/build_ev_eu.py osm --upload

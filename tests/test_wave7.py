@@ -492,3 +492,22 @@ def test_reliability_rows_to_series() -> None:
         {"countryiso3code": "CHN", "date": "2019", "value": 0.5},
     ]
     assert rel.rows_to_series(rows) == {"DE": [[2018, 0.18], [2019, 0.25]]}
+
+
+def test_nl_points_sum_connector_groups() -> None:
+    feats = [
+        {
+            "id": "a",
+            "geometry": {"coordinates": [6.92, 53.33]},
+            "properties": {
+                "operator_name": "Q",
+                "availabilities": [
+                    {"total": 2, "power_max": 17250.0},
+                    {"total": 1, "power_max": 50000.0},
+                ],
+            },
+        },
+        {"id": "b", "geometry": {"coordinates": [5.0, 52.0]}, "properties": {"availabilities": []}},
+    ]
+    pts, rows = ev.nl_points(feats)
+    assert pts == [(6.92, 53.33, 3)] and rows[0]["kw"] == 50.0

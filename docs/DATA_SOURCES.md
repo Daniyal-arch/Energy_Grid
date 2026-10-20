@@ -554,7 +554,8 @@ Counts: European Alternative Fuels Observatory (European Commission), public rec
 country and year, AC and DC (`<country>/recharging_points.csv`; the newest year is the year so far),
 and per power class now (EU table), for EU-27 and the UK. Where: Germany, BNetzA Ladesäulenregister
 (CC BY 4.0, points per facility in operation); France, data.gouv.fr consolidated IRVE file (Etalab
-2.0, one row per point); every other country, OpenStreetMap `amenity=charging_station` (ODbL,
+2.0, one row per point); the Netherlands, NDW open data charging point locations (points per
+location summed over its connector groups); every other country, OpenStreetMap `amenity=charging_station` (ODbL,
 Overpass), one per mapped station, not per point. Computed: points or stations summed per 0.1° cell;
 each country says its source and unit. Layer "EV charging" and card. Refresh: by hand (`wave7.yml`
 family I); lake `ev_eu/<cc>` (every point or station).

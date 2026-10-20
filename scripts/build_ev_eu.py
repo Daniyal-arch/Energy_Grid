@@ -1,6 +1,6 @@
 """EV charging in Europe (brief 22, family 9): counts per country and where the chargers are.
 
-    python scripts/build_ev_eu.py eafo|de|fr|osm|all [--only CC,CC] [--upload]
+    python scripts/build_ev_eu.py eafo|de|fr|nl|osm|all [--only CC,CC] [--upload]
 
 Counts (every EU country and the UK): the European Alternative Fuels Observatory (European
 Commission, EAFO), public recharging points per country from its published CSVs:
@@ -13,6 +13,8 @@ OpenStreetMap, each country labelled by its source:
   DE  Bundesnetzagentur Ladesäulenregister (CC BY 4.0): charging points ("Anzahl Ladepunkte") per
       facility in operation, with its rated power (kW)
   FR  data.gouv.fr consolidated IRVE file (Etalab open licence): one row per charging point (pdc)
+  NL  NDW open data, charging_point_locations.geojson (the national access point's OCPI feed):
+      points per location = the sum of its connector groups' "total"
   other EU countries and GB: OpenStreetMap (ODbL) amenity=charging_station via the Overpass API,
       one per mapped station (not per point: OSM's capacity tag is too often missing)
 Binned (computed): the points or stations summed in 0.1° cells, [lon, lat] the cell centre; the
@@ -55,8 +57,9 @@ SLUG = {
 CLASS_NAME = {"Czech Republic": "CZ"}  # EAFO's overview table names
 DE_PAGE = "https://www.bundesnetzagentur.de/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenkarte/start.html"
 FR_DATASET = "https://www.data.gouv.fr/api/1/datasets/fichier-consolide-des-bornes-de-recharge-pour-vehicules-electriques/"
+NL_FILE = "https://opendata.ndw.nu/charging_point_locations.geojson.gz"
 OVERPASS = "https://overpass-api.de/api/interpreter"
-REGISTER = {"DE", "FR"}
+REGISTER = {"DE", "FR", "NL"}
 
 
 def load() -> dict:
@@ -227,6 +230,36 @@ def fr(data: dict, args: argparse.Namespace) -> None:
         pts, rows, args)  # fmt: skip
 
 
+# ---------------------------------------------------------------- the Netherlands (NDW)
+
+
+def nl_points(features: list[dict]) -> tuple[list[tuple[float, float, int]], list[dict]]:
+    pts, rows = [], []
+    for f in features:
+        lon, lat = (f.get("geometry") or {}).get("coordinates", [None, None])[:2]
+        p = f.get("properties") or {}
+        n = sum(int(a.get("total") or 0) for a in p.get("availabilities") or [])
+        if lon is None or lat is None or n < 1:
+            continue
+        kw = max((a.get("power_max") or 0 for a in p.get("availabilities") or []), default=0) / 1000
+        pts.append((lon, lat, n))
+        rows.append({"id": f.get("id"), "operator": p.get("operator_name"), "points": n,
+                     "kw": round(kw, 1) or None, "lon": lon, "lat": lat})  # fmt: skip
+    return pts, rows
+
+
+def nl(data: dict, args: argparse.Namespace) -> None:
+    import gzip
+
+    feats = json.loads(gzip.decompress(w7.get(NL_FILE, timeout=300).content))["features"]
+    pts, rows = nl_points(feats)
+    put(data, "NL", {"source": "NDW open data, charging point locations (national access point)", "url": NL_FILE,
+                     "licence": "NDW open data (no licence named on the page; data.overheid.nl lists NDW downloads as CC0 1.0)",
+                     "unit": "charging points", "n_rows": len(rows),
+                     "note": "Points per location = the sum of its connector groups; public and semi-public locations as fed by the operators"},
+        pts, rows, args)  # fmt: skip
+
+
 # ---------------------------------------------------------------- OpenStreetMap elsewhere
 
 
@@ -267,13 +300,13 @@ def osm(data: dict, args: argparse.Namespace) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("part", choices=["eafo", "de", "fr", "osm", "all"])
+    ap.add_argument("part", choices=["eafo", "de", "fr", "nl", "osm", "all"])
     ap.add_argument("--only", type=lambda s: set(s.split(",")), default=None)
     ap.add_argument("--lake", type=Path, default=Path("lake-out"))
     ap.add_argument("--upload", action="store_true")
     args = ap.parse_args()
     data = load()
-    for part, fn in (("eafo", eafo), ("de", de), ("fr", fr), ("osm", osm)):
+    for part, fn in (("eafo", eafo), ("de", de), ("fr", fr), ("nl", nl), ("osm", osm)):
         if args.part in (part, "all"):
             try:
                 fn(data, args)
