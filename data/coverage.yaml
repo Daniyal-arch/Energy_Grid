@@ -1445,7 +1445,10 @@ families:
         checked: '2026-10-20'
         note: Zone listed with 0 MW when nothing is offline (fetch_outages.py lists every zone that answers)
       CY:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E A80 for Cyprus (10YCY-1001A0003J) answered no outage document (wave7 job H, 2026-10-20); TSO Cyprus and EAC publish no list of units offline
       CZ:
         status: have
         source: ENTSO-E A80 unavailability of generation units
@@ -1504,7 +1507,14 @@ families:
         dataset: eu/outages.json
         checked: '2026-10-18'
       IE:
-        status: todo
+        status: have
+        source: ENTSO-E A80 unavailability of generation units, bidding zone IE-SEM
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json (zone IE-SEM)
+        checked: '2026-10-20'
+        partial: true
+        note: The SEM zone (Ireland and Northern Ireland) is queried since wave 7; it reported no unit offline at the first read (2026-10-20 03:55 UTC), listed as 0 MW
       IT:
         status: have
         source: ENTSO-E A80 unavailability of generation units
@@ -1536,7 +1546,10 @@ families:
         partial: true
         note: Luxembourg shares the DE-LU bidding zone; its units (Vianden) report there and are counted under Germany
       MT:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E A80 for Malta (10Y1001A1001A93C) answered no outage document (wave7 job H, 2026-10-20); Enemalta publishes no list of units offline
       NL:
         status: have
         source: ENTSO-E A80 unavailability of generation units

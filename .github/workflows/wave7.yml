@@ -18,7 +18,7 @@ on:
         default: "A B C D E F G H I J K"
   push:
     branches: [claude/eloquent-heisenberg-dut9ql]
-    paths: [.github/workflows/wave7.yml, "scripts/build_*.py", "scripts/fetch_*.py", "scripts/probe_wave7.py", scripts/wave7_common.py]
+    paths: [.github/workflows/wave7.yml, "scripts/build_*.py", "scripts/fetch_*.py", "scripts/probe_wave7.py", scripts/wave7_common.py, scripts/wave5_commit.sh]
 
 permissions:
   contents: write
