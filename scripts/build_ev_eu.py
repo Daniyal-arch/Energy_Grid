@@ -299,8 +299,8 @@ def overpass(q: str, k: int) -> list[dict]:
             r = httpx.post(url, data={"data": q}, headers=OSM_UA, timeout=440)
             r.raise_for_status()
             d = r.json()
-            if "remark" in d and not d.get("elements"):
-                raise ValueError(d["remark"][:120])
+            if not d.get("elements"):  # a timeout remark, or a server without the country's area
+                raise ValueError((d.get("remark") or "no elements")[:120])
             return d["elements"]
         except Exception as e:  # noqa: BLE001 - try the next server
             last = e
