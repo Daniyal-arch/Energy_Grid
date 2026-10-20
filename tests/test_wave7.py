@@ -251,3 +251,38 @@ def test_neso_rows_numbers() -> None:
             "Thermal constraints volume": -59177.0,
         }
     ]
+
+
+# ---------------------------------------------------------------- family 5, prices with the same coverage
+
+from datetime import UTC, date, datetime  # noqa: E402
+
+import build_gb_prices as gp  # noqa: E402
+import entsoe  # noqa: E402
+
+
+def test_rate_on_falls_back_to_the_last_published_day() -> None:
+    rates = {"2026-10-16": 0.86}  # a Friday
+    assert gp.rate_on(rates, date(2026, 10, 18)) == 0.86
+    assert gp.rate_on({}, date(2026, 10, 18)) is None
+
+
+def test_mid_on_grid_fills_both_quarters() -> None:
+    grid = entsoe.Grid(datetime(2026, 10, 1, tzinfo=UTC), datetime(2026, 10, 1, 1, tzinfo=UTC))
+    rows = [
+        {"startTime": "2026-10-01T00:30:00Z", "dataProvider": "APXMIDP", "price": 95.5},
+        {"startTime": "2026-10-01T00:00:00Z", "dataProvider": "N2EXMIDP", "price": 1.0},
+    ]
+    assert gp.mid_on_grid(rows, grid) == [None, None, 95.5, 95.5]
+
+
+def test_ecb_gbp_reads_the_history_file() -> None:
+    import io
+    import zipfile
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr(
+            "eurofxref-hist.csv", "Date,USD,GBP,\n2026-10-16,1.08,0.8612,\n2026-10-15,1.09,N/A,\n"
+        )
+    assert gp.ecb_gbp(buf.getvalue()) == {"2026-10-16": 0.8612}

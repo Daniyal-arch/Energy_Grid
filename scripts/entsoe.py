@@ -58,7 +58,7 @@ ZONE_EIC = {
     "DE-LU": "10Y1001A1001A82H", "DK1": "10YDK-1--------W", "DK2": "10YDK-2--------M",
     "EE": "10Y1001A1001A39I", "ES": "10YES-REE------0", "FI": "10YFI-1--------U",
     "FR": "10YFR-RTE------C", "GR": "10YGR-HTSO-----Y", "HR": "10YHR-HEP------M",
-    "HU": "10YHU-MAVIR----U", "IT-North": "10Y1001A1001A73I",
+    "HU": "10YHU-MAVIR----U", "IE-SEM": "10Y1001A1001A59C", "IT-North": "10Y1001A1001A73I",
     "IT-Centre-North": "10Y1001A1001A70O", "IT-Centre-South": "10Y1001A1001A71M",
     "IT-South": "10Y1001A1001A788", "IT-Calabria": "10Y1001C--00096J",
     "IT-Sicily": "10Y1001A1001A75E", "IT-Sardinia": "10Y1001A1001A74G",

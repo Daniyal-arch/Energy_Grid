@@ -96,6 +96,8 @@ jobs:
           PJM_API_KEY: ${{ secrets.PJM_API_KEY }}
         run: |
           python scripts/fetch_us_prices.py --out store/eu || echo "US prices failed; keeping the last copy"
+          pip install gridstatus
+          python scripts/fetch_us_rt.py --out store/eu || echo "US real-time prices failed; keeping the last copy"
           python scripts/build_us_day.py --prices-only --out store/eu/usday || echo "US day prices failed"
 
       - name: US prices at every node (six markets, CAISO nodes placed; missing days newest first, 8 a run, 30 kept)
@@ -113,7 +115,10 @@ jobs:
         continue-on-error: true
         env:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
-        run: python scripts/build_prices.py --out store/eu || echo "prices failed; keeping yesterday's"
+        run: |
+          python scripts/build_prices.py --out store/eu || echo "prices failed; keeping yesterday's"
+          # Great Britain (Elexon market index, ECB rate), merged in after each monthly rebuild
+          python scripts/build_gb_prices.py --out store/eu || echo "GB prices failed; keeping yesterday's"
 
       - name: Imbalance prices per zone (ENTSO-E A85, the last 30 days)
         timeout-minutes: 15

@@ -6,7 +6,8 @@ as a zip of XML documents; scripts/probe_entsoe_imbalance.py). Two series per ar
 A05 (deficit) and A04 (excess); under single pricing they are equal, and some areas fill one
 with 0 throughout (Italy's A05, 2026-10-17), flagged `all_zero` and not charted. Germany
 (reBAP, published by the four TSOs on netztransparenz.de) and Greece publish none to ENTSO-E
-(probe 2026-10-17); Poland publishes in PLN, kept as published.
+(probe 2026-10-17); Poland publishes in PLN, kept as published. Great Britain, gone from ENTSO-E
+since 2021: Elexon's system buy and sell prices (GBP/MWh, half-hourly, no key), kept in GBP.
 
 Passed through: every price, in the source's currency. Computed (docs/DATA_SOURCES.md): per
 zone, series and complete day (Europe/Brussels days, the app's day clock), and over all the
@@ -41,7 +42,8 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "frontend" / "public" / "data" / "eu"
 BRUSSELS = ZoneInfo("Europe/Brussels")
 CHART_DAYS = 7
-SOURCE = "ENTSO-E Transparency Platform, imbalance prices (A85, 17.1.G)"
+SOURCE = "ENTSO-E Transparency Platform, imbalance prices (A85, 17.1.G); Great Britain: Elexon system prices"
+ELEXON = "https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices/{day}"
 
 
 def fetch(client: httpx.Client, eic: str, grid: entsoe.Grid) -> tuple[list[ET.Element], bool]:
@@ -116,6 +118,33 @@ def series(
     return out, currency
 
 
+def gb_series(
+    grid: entsoe.Grid, client: httpx.Client
+) -> tuple[dict[str, list[float | None]], bool]:
+    """Great Britain (ENTSO-E has none since 2021): Elexon's system buy and sell prices per
+    half-hour settlement period (GBP/MWh), one request per settlement day, on the 15-min grid
+    (each period fills its two quarters). Under single pricing the two are equal."""
+    out = {"deficit": grid.empty(), "excess": grid.empty()}
+    day = datetime.fromtimestamp(grid.start, tz=UTC).date() - timedelta(days=1)
+    answered = True
+    while day <= datetime.now(UTC).date():
+        try:
+            r = client.get(ELEXON.format(day=day.isoformat()), params={"format": "json"})
+            rows = r.json().get("data", []) if r.status_code == 200 else []
+            answered &= r.status_code == 200
+        except (httpx.HTTPError, ValueError):
+            rows, answered = [], False
+        for row in rows:
+            t = int(datetime.fromisoformat(row["startTime"].replace("Z", "+00:00")).timestamp())
+            for half in (0, 900):
+                k = (t + half - grid.start) // entsoe.STEP
+                if 0 <= k < grid.slots:
+                    out["deficit"][k] = row.get("systemBuyPrice")
+                    out["excess"][k] = row.get("systemSellPrice")
+        day += timedelta(days=1)
+    return out, answered
+
+
 def daily(
     values: list[float | None], seconds: list[int], days: list[str]
 ) -> list[list[float | int | None]]:
@@ -163,12 +192,16 @@ def main() -> None:
         got = entsoe.run(
             [(z, lambda eic=eic: fetch(client, eic, grid)) for z, eic in entsoe.ZONE_EIC.items()]
         )
+        gb, gb_answered = gb_series(grid, client)
     zones: dict[str, dict] = {}
     none: list[str] = []
     failed: list[str] = []
-    for zone in entsoe.ZONE_EIC:
-        docs, answered = got.get(zone) or ([], False)
-        s, currency = series(docs, grid) if docs else ({}, None)
+    for zone in [*entsoe.ZONE_EIC, "GB"]:
+        if zone == "GB":
+            s, currency, answered = gb, "GBP", gb_answered
+        else:
+            docs, answered = got.get(zone) or ([], False)
+            s, currency = series(docs, grid) if docs else ({}, None)
         s = {k: v for k, v in s.items() if any(x is not None for x in v)}
         if not answered:
             # not "no data": ENTSO-E did not answer (throttled); the zone waits for the next run

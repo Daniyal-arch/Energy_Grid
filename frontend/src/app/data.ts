@@ -141,6 +141,8 @@ const STATIC: Record<string, Loader> = {
   imbalance: archive("imbalance.json"),
   // US day-ahead prices at one hub per market, today and tomorrow (scripts/fetch_us_prices.py)
   usPrices: archive("us_prices.json"),
+  // real-time prices at the same hubs (scripts/fetch_us_rt.py, daily with us_prices)
+  usRt: archive("us_rt.json"),
   worldStats: archive("world_stats.json"),
   datacentres: archive("datacentres.json"),
   irena: archive("irena.json"),

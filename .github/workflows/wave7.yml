@@ -172,3 +172,35 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family D outputs"
+
+  E:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'E')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl python-dotenv tzdata gridstatus
+      - name: Wait until no Lake ENTSO-E run is active
+        run: bash scripts/entsoe_idle.sh 120
+      - name: 5 twelve months of day-ahead prices with Ireland's SEM (ENTSO-E, rebuilt)
+        continue-on-error: true
+        run: python scripts/build_prices.py --force
+      - name: 5 Great Britain in the Prices tab (Elexon market index, ECB rate)
+        continue-on-error: true
+        run: python scripts/build_gb_prices.py --force
+      - name: 5 imbalance prices with Great Britain (ENTSO-E A85, Elexon system prices)
+        continue-on-error: true
+        run: python scripts/build_imbalance.py
+      - name: 5 US real-time hub prices (gridstatus)
+        continue-on-error: true
+        run: python scripts/fetch_us_rt.py
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family E outputs"

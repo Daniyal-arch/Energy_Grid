@@ -55,6 +55,7 @@ import type { ImbalanceFile } from "../lib/imbalance";
 import type { DkLiveFile, GbCarbonFile } from "../lib/live";
 import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
 import { CoverageCard } from "../components/CoverageCards";
+import { UsRtCard } from "../components/UsRtCards";
 import { CongestionCard, UsCurtailmentCard } from "../components/CongestionCards";
 import { OperatorCo2Card, UsCo2RegionsCard } from "../components/Co2Cards";
 import { RegisterCard } from "../components/RegisterCards";
@@ -938,6 +939,7 @@ function UsPanel() {
         <>
           {us ? <UsCard us={us} /> : <Empty>Loading EIA-930…</Empty>}
           <UsCo2RegionsCard />
+          <UsRtCard />
           <UsCurtailmentCard />
           {pricesNow && <UsHubPricesCard rows={pricesNow.rows} time={`${ET_HOUR.format(new Date(pricesNow.hour))} ET`} />}
           <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === "United States" || (pricesNow != null && k === "US prices"))} />

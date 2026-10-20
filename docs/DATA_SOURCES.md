@@ -504,6 +504,18 @@ tab), "Constraint costs" (GB), "Wind and solar curtailed, California" (US Live t
 in `eu-days.yml` (35 days, merged into the year; ENTSO-E skipped while a Lake ENTSO-E run is
 active); lake `entsoe/congestion_*`, `neso/constraint_breakdown`, `caiso/curtailment`.
 
+## Prices with the same coverage: GB, Ireland's SEM, US real time (`build_gb_prices.py`, `build_imbalance.py`, `fetch_us_rt.py`)
+
+Ireland: the SEM day-ahead price (ENTSO-E A44, zone IE-SEM, EUR) joins `prices.json` and the day
+files. Great Britain (no ENTSO-E prices since 2021): Elexon Market Index Data (APXMIDP, half-hourly,
+GBP/MWh, no key) over the twelve months of `prices.json`, converted to EUR with the ECB euro
+reference rate of the day (the last published rate on days without one; computed), statistics as
+every zone (`build_prices.zone_stats`; no capture prices), the GBP average kept; Elexon system
+buy/sell prices (GBP, half-hourly) as GB's imbalance prices in `imbalance.json`, kept in GBP.
+US: real-time LMP at the day-ahead file's hubs (gridstatus: CAISO 15 min, ERCOT 15 min, MISO, SPP,
+NYISO 5 min, ISO-NE hourly), yesterday and today, as published; card "Real time vs day-ahead".
+Refresh: daily in `eu-days.yml`.
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

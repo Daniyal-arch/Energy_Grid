@@ -792,7 +792,10 @@ families:
         dataset: eu/prices.json, eu/imbalance.json
         checked: '2026-10-18'
       CY:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        note: no price on the ENTSO-E platform; Cyprus's market (TSOC, since 2025) answers scripts with HTTP 403 (https://tsoc.org.cy)
+        checked: '2026-10-19'
       CZ:
         status: have
         source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
@@ -852,7 +855,13 @@ families:
         dataset: eu/prices.json, eu/imbalance.json
         checked: '2026-10-18'
       IE:
-        status: todo
+        status: built
+        source: ENTSO-E day-ahead (A44), SEM zone; imbalance A85
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json (zone IE-SEM), eu/day/*
+        note: the all-island SEM (Ireland and Northern Ireland)
+        checked: '2026-10-19'
       IT:
         status: have
         source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
@@ -886,7 +895,10 @@ families:
         partial: true
         note: ENTSO-E has no imbalance price for this area (imbalance.json 'none')
       MT:
-        status: todo
+        status: not_published
+        url: https://transparency.entsoe.eu
+        note: no price on the ENTSO-E platform; Malta has no wholesale market (single buyer, Enemalta)
+        checked: '2026-10-19'
       NL:
         status: have
         source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
@@ -944,16 +956,43 @@ families:
         dataset: eu/prices.json, eu/imbalance.json
         checked: '2026-10-18'
       GB:
-        status: todo
+        status: built
+        source: Elexon market index (APXMIDP) and system prices
+        url: https://data.elexon.co.uk/bmrs/api/v1
+        licence: Elexon BMRS (attribution)
+        dataset: eu/prices.json (zone GB, EUR at the ECB rate), eu/imbalance.json (zone GB, GBP)
+        note: the market index is a short-term price, the closest published series to a day-ahead price; ENTSO-E has no GB since 2021
+        checked: '2026-10-19'
       US:
-        status: have
-        source: US day-ahead hub and nodal prices (gridstatus)
+        status: built
+        source: day-ahead (have) and real-time hub prices (gridstatus)
         url: https://opensource.gridstatus.io
         licence: per ISO
-        dataset: eu/us_prices.json, us_nodes/*
-        checked: '2026-10-18'
-        partial: true
-        note: real-time hub prices in wave 7
+        dataset: eu/us_prices.json, eu/us_rt.json, us_nodes/*
+        parts:
+        - name: CAISO
+          status: built
+          source: gridstatus
+        - name: ERCOT
+          status: built
+          source: gridstatus
+        - name: MISO
+          status: built
+          source: gridstatus
+        - name: SPP
+          status: built
+          source: gridstatus
+        - name: NYISO
+          status: built
+          source: gridstatus
+        - name: ISO-NE
+          status: built
+          source: gridstatus
+        - name: PJM
+          status: blocked
+          source: PJM_API_KEY (https://dataminer2.pjm.com)
+        note: real-time beside day-ahead at one hub per market
+        checked: '2026-10-19'
   retail:
     name: What consumers pay
     shows: household and business electricity and gas prices (retail colouring, country report)
