@@ -7,7 +7,7 @@ name: Europe power snapshot
 # them from raw.githubusercontent.com and falls back to its bundled copy.
 #
 # Same pattern as rail-realtime.yml: scheduled runs start late or not at all, so
-# each run stays up for ~5 h 45 min and loops itself; the hourly schedule only
+# each run stays up for ~5 h 30 min and loops itself; the hourly schedule only
 # has to fire once in that window.
 
 on:
@@ -27,6 +27,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 355
     steps:
+      - name: Deadline for the snapshot loop
+        # the job stops at 355 min; the reference step takes 7-25 min and a round up to 25 min,
+        # so the loop starts its last round no later than 325 min after the job began
+        run: echo "LOOP_END=$(( $(date +%s) + 325 * 60 ))" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v5
 
       - uses: actions/setup-python@v6
@@ -52,16 +57,22 @@ jobs:
           python scripts/fetch_wind.py --live --out ref || echo "wind fetch failed"
           # wind at 100 m and sunshine for the whole globe (ECMWF open data, every 3 h)
           python scripts/fetch_ecmwf.py --out ref || echo "ECMWF fetch failed"
+          # a file that failed keeps the previous run's copy (each file carries its own times)
+          if git fetch -q --depth=1 origin eu-data; then
+            for f in reference dossier wind wind_world capacity; do
+              [ -f "ref/$f.json" ] && continue
+              if git show "FETCH_HEAD:eu/$f.json" > "ref/$f.json" 2>/dev/null; then echo "$f.json: previous copy kept"; else rm -f "ref/$f.json"; fi
+            done
+          fi
 
-      - name: Snapshot every 30 min for ~5 h 45 min
+      - name: Snapshot every 30 min until the deadline
         env:
           # required: every live figure comes from ENTSO-E
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
           REMOTE: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: |
-          end=$((SECONDS + 20700))
-          while [ "$SECONDS" -lt "$end" ]; do
+          while [ "$(date +%s)" -lt "$LOOP_END" ]; do
             started=$SECONDS
             rm -rf store && mkdir -p store/eu
             cp ref/reference.json ref/dossier.json ref/wind.json ref/wind_world.json ref/capacity.json store/eu/ 2>/dev/null || true
@@ -98,5 +109,5 @@ jobs:
               echo "snapshot failed; retrying next round"
             fi
             wait=$((1800 - (SECONDS - started)))
-            if [ "$wait" -gt 0 ] && [ $((SECONDS + wait)) -lt "$end" ]; then sleep "$wait"; else break; fi
+            if [ "$wait" -gt 0 ] && [ $(( $(date +%s) + wait )) -lt "$LOOP_END" ]; then sleep "$wait"; else break; fi
           done

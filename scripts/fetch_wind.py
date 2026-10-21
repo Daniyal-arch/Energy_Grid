@@ -83,10 +83,16 @@ def fetch(client: httpx.Client, params: dict[str, str]) -> tuple[list[str], dict
                 time.sleep(65 * (attempt + 1))
                 continue
             r.raise_for_status()
+            try:
+                rows = r.json()
+            except ValueError:
+                # seen 2026-10-20: HTTP 200 with an empty body; asked again like a 429
+                print(f"  HTTP 200 without JSON ({len(r.content)} bytes), waiting", flush=True)
+                time.sleep(65 * (attempt + 1))
+                continue
             break
         else:
             raise RuntimeError("Open-Meteo: no answer")
-        rows = r.json()
         rows = rows if isinstance(rows, list) else [rows]
         for row in rows:
             h = row["hourly"]
