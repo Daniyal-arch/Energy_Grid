@@ -1378,7 +1378,11 @@ from offset 2,500 (wave 6 run, 2026-10-19), ~105 s per 50 areas when it answered
 in 1-6 s (2026-10-21). Passed through: code, name, type, area, PAD-US designation, manager, GAP
 status. Computed: counts and areas per country/state; Check a site: areas within 10 km and the
 share of that circle covered (points 0.5 km apart). Lake `protected/*`. Refresh: group P yearly.
-A source that still fails is skipped and named under `failed` in `protected.json`.
+A source that still fails is skipped and named under `failed` in `protected.json`. PAD-US 4.1 Fee
+(296,456 areas, 57 states and territories, 2026-10-21) holds every GAP status, marine monuments at
+their full extent and overlapping records (Papahānaumokuākea under HI and again under `UNKF`, the
+Pacific Remote Islands twice): its acres summed nationally (9.4 million km²) exceed the US land
+area, so the card shows the count of areas and no national area sum.
 
 ## River flood hazard (`build_constraints.py flood`, R2 `grid/flood-{eu,world}.pmtiles`, lookups)
 

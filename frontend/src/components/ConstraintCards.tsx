@@ -37,8 +37,8 @@ export function ProtectedCard({ iso3 }: { iso3?: string }) {
       )}
       {showUs && (
         <div className="mt-1 text-[11px] text-slate-300">
-          PAD-US Fee: {us.reduce((a, v) => a + v[0], 0).toLocaleString("en-US")} areas, {Math.round(us.reduce((a, v) => a + v[1], 0) / 247.105).toLocaleString("en-US")} km² (acres ÷ 247.105,
-          computed)
+          PAD-US Fee: {us.reduce((a, v) => a + v[0], 0).toLocaleString("en-US")} areas (count, computed), every GAP status including 4 (no known mandate for protection). No national area sum:
+          the records include marine monuments and overlap (Papahānaumokuākea is listed under HI and again without a state).
         </div>
       )}
       <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{f.natura2000.source}; {f.padus.source}. Check a site lists the areas near a place and the share they cover.</div>
