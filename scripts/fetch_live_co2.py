@@ -234,7 +234,9 @@ def main() -> None:
         except (SystemExit, Exception) as e:  # one feed down must not stop the others
             print(f"  {what} failed: {type(e).__name__} {str(e)[:300]}", flush=True)
             failed.append(what)
-    if any(k in data for k in ("fr", "es", "ie")):
+    # only when a Europe feed was asked and answered: `us` alone must leave live_co2.json as it is
+    # (us-queues.yml commits only the US files; a rewritten live_co2.json stopped its pull --rebase)
+    if any(k in data and k not in failed for k in todo if k != "us"):
         data["fetched"] = now()
         args.out.mkdir(parents=True, exist_ok=True)
         path.write_text(
