@@ -7,7 +7,7 @@
 
 protected  Natura 2000 (EEA, the network as of end 2024, re-use with attribution) from the EEA's
            ArcGIS service `ProtectedSites/Natura2000Sites` layer 2 (every site once) and PAD-US 4.1
-           Fee (USGS, public domain) from `PAD-US/PAD_US_4_1` layer 0, both paged as GeoJSON in
+           Fee (USGS, public domain) from `PAD-US/PAD_US_4_1` layer 0, both by OBJECTID range as GeoJSON in
            EPSG:4326 with the services' own generalisation (maxAllowableOffset 0.0005 degrees,
            about 50 m): the 1.36 GB GeoPackage and the 1.01 GB GeoParquet are over the 1 GB
            download limit. Passed through: code, name, type, area as published (Natura 2000 km2,
@@ -87,30 +87,45 @@ BOXES = {
 
 
 def arcgis_pages(url: str, fields: list[str], page: int) -> list[dict]:
-    """Every feature of an ArcGIS layer as GeoJSON in EPSG:4326, paged by OBJECTID."""
+    """Every feature of an ArcGIS layer as GeoJSON in EPSG:4326, asked by OBJECTID range.
+
+    resultOffset paging sorts the whole layer for every page: PAD-US (296,456 areas) took ~105 s
+    per 50 areas and its gateway answered 524 at 250 (2026-10-21). Ranges of OBJECTIDs answer in
+    1-6 s, or ~2 min where the big federal areas are; a range that fails is asked again in halves,
+    down to single areas; four ranges at a time."""
+    from concurrent.futures import ThreadPoolExecutor
+
     import httpx
 
-    n = w.get_json(f"{url}/query?where=1%3D1&returnCountOnly=true&f=json")["count"]  # type: ignore[index]
-    out: list[dict] = []
-    for offset in range(0, n, page):
-        params = {"where": "1=1", "outFields": ",".join(fields), "returnGeometry": "true", "outSR": "4326",
-                  "maxAllowableOffset": "0.0005", "geometryPrecision": "5", "orderByFields": "OBJECTID",
-                  "resultOffset": str(offset), "resultRecordCount": str(page), "f": "geojson"}  # fmt: skip
-        for attempt in range(1, 6):
+    ids = sorted(w.get_json(f"{url}/query?where=1%3D1&returnIdsOnly=true&f=json")["objectIds"])  # type: ignore[index]
+    base = {"outFields": ",".join(fields), "returnGeometry": "true", "outSR": "4326",
+            "maxAllowableOffset": "0.0005", "geometryPrecision": "5", "f": "geojson"}  # fmt: skip
+
+    def ask(chunk: list[int], client: httpx.Client) -> list[dict]:
+        where = f"OBJECTID>={chunk[0]} AND OBJECTID<={chunk[-1]}"
+        for attempt in range(1, 4 if len(chunk) == 1 else 3):
             try:
-                r = httpx.post(f"{url}/query", data=params, headers=w.UA, timeout=300)
+                r = client.post(f"{url}/query", data={**base, "where": where})
                 r.raise_for_status()
-                out += r.json()["features"]
-                break
+                return r.json()["features"]
             except (httpx.HTTPError, ValueError, KeyError) as e:
-                print(
-                    f"  {offset}: {type(e).__name__} {str(e)[:120]} (try {attempt}/5)", flush=True
-                )
-                time.sleep(15 * attempt)
-        else:
-            raise SystemExit(f"{url}: page at {offset} failed")
-        if offset // page % 20 == 0:
-            print(f"  {url.split('/')[-3]}: {len(out):,} of {n:,}", flush=True)
+                print(f"  {where}: {type(e).__name__} {str(e)[:100]} (try {attempt})", flush=True)
+                time.sleep(10 * attempt)
+        if len(chunk) == 1:
+            raise SystemExit(f"{url}: OBJECTID {chunk[0]} failed")
+        half = len(chunk) // 2
+        return ask(chunk[:half], client) + ask(chunk[half:], client)
+
+    chunks = [ids[k : k + page] for k in range(0, len(ids), page)]
+    out: list[dict] = []
+    with (
+        httpx.Client(headers=w.UA, timeout=300) as client,
+        ThreadPoolExecutor(4) as pool,
+    ):
+        for n, feats in enumerate(pool.map(lambda c: ask(c, client), chunks), 1):
+            out += feats
+            if n % 50 == 0 or n == len(chunks):
+                print(f"  {url.split('/')[-3]}: {len(out):,} of {len(ids):,}", flush=True)
     return out
 
 

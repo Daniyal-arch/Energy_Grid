@@ -1370,13 +1370,15 @@ as published. API (no lake copy). Refresh: group B.
 ## Protected areas (`scripts/build_constraints.py protected`, R2 `grid/protected.pmtiles`, `protected.json`)
 
 Natura 2000 end 2024 (EEA; 27,173 sites) and PAD-US 4.1 Fee (USGS, public domain) from the
-publishers' ArcGIS services, paged GeoJSON with their generalisation (maxAllowableOffset 0.0005°,
-~50 m): the 1.36 GB GeoPackage and 1.01 GB GeoParquet are over the download limit. Passed through:
-code, name, type, area, PAD-US designation, manager, GAP status. Computed: counts and areas per
-country/state; Check a site: areas within 10 km and the share of that circle covered (points 0.5 km
-apart). Lake `protected/*`. Refresh: group P yearly. PAD-US is blocked: its service answered HTTP
-524 (timeout) in two Actions runs, at offsets 0 and 2,500; the build skips it and records that in
-`protected.json`, so the US shows no protected-area figures.
+publishers' ArcGIS services as GeoJSON with their generalisation (maxAllowableOffset 0.0005°,
+~50 m): the 1.36 GB GeoPackage and 1.01 GB GeoParquet are over the download limit. Asked by
+OBJECTID range, four ranges at a time, a failing range asked again in halves: paging by
+resultOffset sorted the whole layer for every page and PAD-US (296,456 areas) answered HTTP 524
+from offset 2,500 (wave 6 run, 2026-10-19), ~105 s per 50 areas when it answered; ID ranges answer
+in 1-6 s (2026-10-21). Passed through: code, name, type, area, PAD-US designation, manager, GAP
+status. Computed: counts and areas per country/state; Check a site: areas within 10 km and the
+share of that circle covered (points 0.5 km apart). Lake `protected/*`. Refresh: group P yearly.
+A source that still fails is skipped and named under `failed` in `protected.json`.
 
 ## River flood hazard (`build_constraints.py flood`, R2 `grid/flood-{eu,world}.pmtiles`, lookups)
 
