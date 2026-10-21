@@ -25,6 +25,7 @@ import io
 import re
 import time
 from collections import defaultdict
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import wave5_common as w
@@ -149,8 +150,6 @@ def es_series(answer: dict) -> dict[str, dict[str, float]]:
 
 
 def build_es(out: Path) -> None:
-    from datetime import UTC, datetime
-
     import httpx
 
     now = datetime.now(UTC)
@@ -234,6 +233,18 @@ def eskom_csv_link(html: str) -> str | None:
     return hits[0] if hits else None
 
 
+def eskom_candidates(link: str, today: datetime) -> list[str]:
+    """The page's link, then the same file in this month's and last month's upload folder: Eskom
+    re-uploads the CSVs monthly and the pages kept linking uploads/2026/07 after those files were
+    removed (404 since October 2026, the same name answering under uploads/2026/10)."""
+    m = re.match(r"(.*/wp-content/uploads/)\d{4}/\d{2}/([^/]+)$", link)
+    if not m:
+        return [link]
+    last = (today.replace(day=1) - timedelta(days=1)).strftime("%Y/%m")
+    out = [link] + [f"{m.group(1)}{ym}/{m.group(2)}" for ym in (today.strftime("%Y/%m"), last)]
+    return list(dict.fromkeys(out))
+
+
 def parse_csv(text: str) -> tuple[list[str], list[list[str]]]:
     rows = list(csv.reader(io.StringIO(text.lstrip("﻿"))))
     return rows[0], rows[1:]
@@ -254,14 +265,23 @@ def build_za(out: Path) -> None:
             if not link:
                 errors.append(f"{key}: no CSV link on {page}")
                 continue
-            r = httpx.get(
-                link, headers={**w.UA, "Referer": page}, timeout=60, follow_redirects=True
-            )
-            if r.status_code != 200 or r.text.lstrip().startswith("<"):
-                errors.append(f"{key}: {link} HTTP {r.status_code}")
+            tried = []
+            for url in eskom_candidates(link, datetime.now(UTC)):
+                r = httpx.get(
+                    url, headers={**w.UA, "Referer": page}, timeout=60, follow_redirects=True
+                )
+                if r.status_code == 200 and not r.text.lstrip().startswith("<"):
+                    link = url
+                    break
+                tried.append(f"{url} HTTP {r.status_code}")
+            else:
+                errors.append(f"{key}: {tried}")
                 continue
             head, rows = parse_csv(r.text)
-            payload[key] = {"url": link, "columns": head, "rows": rows[-168:]}
+            # the files list hours out of order (the demand file mixes in a week of forecasts);
+            # sorted by the hour, rows without any value left out
+            rows = sorted((x for x in rows if any(v.strip() for v in x[1:])), key=lambda x: x[0])
+            payload[key] = {"url": link, "columns": head, "rows": rows[-336:]}
             print(f"  {key}: {len(rows)} rows, columns {head[:12]}", flush=True)
         except httpx.HTTPError as e:
             errors.append(f"{key}: {type(e).__name__} {e}")

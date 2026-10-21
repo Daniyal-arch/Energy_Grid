@@ -1469,11 +1469,18 @@ fuel (MW) and 5-minute demand for NZ and each island, as published. "Live grids"
 the World panel and its region panel. The Electricity Authority's EMI datasets (CC BY 4.0, monthly
 CSVs on emidatasets.blob.core.windows.net) are in the agent catalogue. Every snapshot. API only.
 
-## South Africa live (`build_regional_live.py za`, `za.json`), blocked
+## South Africa live (`build_regional_live.py za`, `za.json`)
 
-Eskom's data portal links its hourly demand and station build-up CSVs, but both answered HTTP 404
-in two Actions runs (2026-10-19); only the load-shedding status (loadshedding.eskom.co.za) answers.
-The snapshot step, marker and card are in place and fill when the files answer.
+Eskom's data portal pages link its hourly demand and station build-up CSVs under
+`wp-content/uploads/2026/07/`, which answer HTTP 404 since October 2026; the same file names answer
+under the current month's folder (`uploads/2026/10/`, checked 2026-10-21). The script asks the
+page's link first, then the same name in this month's and last month's folder. The files list hours
+out of order and the demand file runs a week of forecasts past its measured hours: rows are sorted
+by hour, rows without any value left out, the last 336 kept. Passthrough: those rows and the
+load-shedding status (loadshedding.eskom.co.za; the answer minus 1 is the stage). The card shows
+the newest hour with a measured (non-forecast) value, MW rounded to whole MW; Eskom publishes
+about two days late (newest measured hour 2026-10-18 23:00 on 2026-10-21). "Live grids" marker and
+card. Every snapshot.
 
 ## Notes
 

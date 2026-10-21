@@ -60,7 +60,7 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 | Overture roads and rail | major roads, railways | Overture S3 | ODbL | have (21) |
 | FERC Form 714 | hourly demand per planning area | PUDL | CC BY 4.0 | have (21) |
 | New Zealand (Transpower/em6) | live generation by fuel, demand | API | Transpower terms | have (21) |
-| South Africa (Eskom data portal) | demand, generation, load-shedding | CSV | Eskom terms | blocked (21: CSVs answer 404) |
+| South Africa (Eskom data portal) | demand, generation, load-shedding | CSV | Eskom terms | have (21; the pages' links answer 404, the same files answer under the current month's folder since 2026-10-21) |
 | IRENA renewable cost database | LCOE by technology, world | xlsx behind Azure WAF | IRENA terms | blocked (21) |
 
 ## United States

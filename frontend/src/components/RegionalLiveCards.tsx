@@ -88,17 +88,32 @@ export function NzCard({ nz }: { nz: NzFile }) {
   );
 }
 
+/** The newest hour with a measured value: the demand file runs a week of forecasts (columns named
+ * "... Forecast") past its measured hours. Rows come sorted by hour (build_regional_live.py). */
+function newestMeasured(f: ZaFile["demand"]): string[] | undefined {
+  if (!f) return undefined;
+  const measured = f.columns.map((c, i) => (i > 0 && !/forecast/i.test(c) ? i : -1)).filter((i) => i > 0);
+  return [...f.rows].reverse().find((r) => measured.some((i) => r[i]?.trim()));
+}
+
+const mwText = (v: string) => {
+  const n = Number(v);
+  return Number.isFinite(n) ? `${Math.round(n).toLocaleString("en-US")} MW` : v;
+};
+
 export function ZaCard({ za }: { za: ZaFile }) {
   const d = za.demand;
-  const lastD = d?.rows[d.rows.length - 1];
+  const lastD = newestMeasured(d);
   const s = za.supply;
-  const lastS = s?.rows[s.rows.length - 1];
+  const lastS = newestMeasured(s);
   return (
     <Card title="South Africa · live" note={`Eskom · ${za.fetched.slice(0, 16).replace("T", " ")} UTC`} accent={[255, 180, 110]}>
       <Line k="Load-shedding stage" v={za.loadshedding_stage == null ? "–" : za.loadshedding_stage === 0 ? "none" : `stage ${za.loadshedding_stage}`} />
-      {d && lastD && d.columns.map((c, i) => (i > 0 && lastD[i] ? <Line key={c} k={c} v={lastD[i]} sub={i === 1 ? lastD[0] : undefined} /> : null))}
-      {s && lastS && s.columns.map((c, i) => (i > 0 && lastS[i] ? <Line key={`s${c}`} k={c} v={lastS[i]} /> : null))}
-      <Note>Eskom's data portal files (the newest hour, MW as published) and its load-shedding status.</Note>
+      {d && lastD && <Line k="Demand, newest measured hour" v={lastD[0].slice(0, 16)} />}
+      {d && lastD && d.columns.map((c, i) => (i > 0 && lastD[i]?.trim() ? <Line key={c} k={c.replace(/_/g, " ")} v={mwText(lastD[i])} /> : null))}
+      {s && lastS && <Line k="Station build-up, newest hour" v={lastS[0].slice(0, 16)} />}
+      {s && lastS && s.columns.map((c, i) => (i > 0 && lastS[i]?.trim() ? <Line key={`s${c}`} k={c.replace(/_/g, " ")} v={mwText(lastS[i])} /> : null))}
+      <Note>Eskom's data portal files (the newest hour with measured values, as the files state it; MW as published, rounded to whole MW) and its load-shedding status.</Note>
     </Card>
   );
 }
