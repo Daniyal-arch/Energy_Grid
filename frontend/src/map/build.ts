@@ -101,7 +101,9 @@ import { riskLayers } from "./riskLayers";
 import type { WaterIndicator } from "../lib/risk";
 import { mastrLayers } from "./mastrLayers";
 import { siteLayers } from "./siteLayers";
+import { inFlatPolygons } from "../lib/site";
 import { offshoreLayers } from "./offshoreLayers";
+import { areaLayers } from "./areaLayers";
 import { usSolarLayers } from "./usSolarLayers";
 import { evLayers } from "./evLayers";
 import { evEuLayers } from "./evEuLayers";
@@ -126,6 +128,10 @@ export interface Frame {
   waterIndicator: WaterIndicator;
   mastrTech: MastrTech;
   selection: Selection | null;
+  /** the dashboard's countries (ISO alpha-3), outlined */
+  area: string[] | null;
+  /** the dataset whose coverage is tinted */
+  coverageOf: string | null;
   files: Record<string, unknown>;
   zoom: number;
   centre: [number, number];
@@ -825,6 +831,7 @@ export function buildLayers(fr: Frame): Layer[] {
   // ---------------------------------------------------------------- price-zone markers, names
   if (facingEurope) layers.push(...zoneMarkers(fr));
   layers.push(...siteLayers(fr));
+  layers.push(...areaLayers(fr));
   if (facingEurope && countries) parts.push(countryLabels(fr, countries));
   // under MapLibre's labels (map/labels.ts), which read well on the globe
   return layers.map((l) => ((l.props as { beforeId?: string }).beforeId ? l : l.clone({ beforeId: LABELS_BELOW } as never)));
@@ -1363,12 +1370,20 @@ function worldLayers(fr: Frame, near: (p: [number, number]) => boolean): Layer[]
       const test = usTester(usStates);
       return wp.points.map((p) => (p[0] < -64 || p[0] > 170) && p[1] > 17 && test(p[0], p[1]));
     });
-    const idx = memo("nearPlants", [wp, st, fr.camKey, inUs], () => {
+    // with Europe's plants on, powerplantmatching wins there for operating plants (GEM keeps the
+    // building, planned and retired ones, which the European file does not hold)
+    const euCountries = fr.layers.plantsEU && fr.plantStatus === "operating" ? (f.countries as CountriesFile | undefined) : undefined;
+    const inEu = memo("gemInEurope", [wp, euCountries], () => {
+      if (!euCountries) return null;
+      const polys = euCountries.countries.flatMap((c) => c.polygons);
+      return wp.points.map((p) => p[0] > -32 && p[0] < 46 && p[1] > 26 && p[1] < 72 && inFlatPolygons([p[0], p[1]], polys));
+    });
+    const idx = memo("nearPlants", [wp, st, fr.camKey, inUs, inEu], () => {
       const c = unitVector(fr.centre[0], fr.centre[1]);
       const keep: number[] = [];
       wp.points.forEach((p, k) => {
         const v = vectors[k];
-        if (p[3] === st && !inUs?.[k] && v[0] * c[0] + v[1] * c[1] + v[2] * c[2] > 0.17) keep.push(k);
+        if (p[3] === st && !inUs?.[k] && !inEu?.[k] && v[0] * c[0] + v[1] * c[1] + v[2] * c[2] > 0.17) keep.push(k);
       });
       return keep;
     });

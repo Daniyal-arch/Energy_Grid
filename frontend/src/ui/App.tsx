@@ -1,4 +1,4 @@
-// The app: one map, a top bar (stories, search, time), Layers on the left, the context panel
+// The app: one map, a top bar (dashboards, search, time), datasets on the left, the dashboard panel
 // on the right, the clock below. Phones get the same pieces as bottom sheets.
 
 import { useEffect, useState } from "react";
@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 import MapCanvas from "../map/MapCanvas";
 import { LIVE_KEYS, ensure, useDataStore } from "../app/data";
 import { MOBILE_QUERY } from "../app/geo";
-import { STORIES, STORY_GROUPS, actions, readUrl, useApp, writeUrl, type StoryGroup } from "../app/store";
+import { actions, readUrl, useApp, writeUrl } from "../app/store";
+import { DashboardBuilder, DashboardList, DashboardsMenu } from "./Dashboards";
+import { Catalogue } from "./Catalogue";
 import LayersPanel from "./LayersPanel";
 import MapLegend from "./MapLegend";
 import MapOptions from "./MapOptions";
@@ -27,92 +29,6 @@ function useNarrow() {
     return () => mq.removeEventListener("change", on);
   }, []);
   return narrow;
-}
-
-/** Stories in three sections (Europe, United States, World); one section open at a time,
- *  first the one holding the current story, else the one the camera faces. */
-function Stories({ onDone }: { onDone?: () => void }) {
-  const story = useApp((s) => s.story);
-  const region = useApp((s) => s.region);
-  const current = STORIES.find((st) => st.id === story)?.group ?? (region === "us" ? "United States" : region === "world" ? "World" : "Europe");
-  const [open, setOpen] = useState<StoryGroup | null>(current);
-  const [copied, setCopied] = useState(false);
-  return (
-    <div className="space-y-1">
-      {STORY_GROUPS.map((g) => {
-        const list = STORIES.filter((st) => st.group === g);
-        const isOpen = open === g;
-        return (
-          <div key={g} className={`rounded-lg ${isOpen ? "bg-white/[0.03]" : ""}`}>
-            <button
-              onClick={() => setOpen(isOpen ? null : g)}
-              className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left hover:bg-white/[0.06]"
-              aria-expanded={isOpen}
-            >
-              <span className="text-[11px] uppercase tracking-[0.18em] text-slate-200">{g}</span>
-              <span className="flex items-center gap-2 text-[10px] text-[#8d94a1]">
-                {list.length}
-                <span className="text-[9px]">{isOpen ? "▲" : "▼"}</span>
-              </span>
-            </button>
-            {isOpen && (
-              <div className="space-y-0.5 pb-1">
-                {list.map((st) => (
-                  <button
-                    key={st.id}
-                    onClick={() => {
-                      actions.applyStory(st.id);
-                      onDone?.();
-                    }}
-                    className={`block w-full rounded-lg px-3 py-1.5 pl-5 text-left hover:bg-white/[0.07] ${story === st.id ? "bg-white/[0.1]" : ""}`}
-                  >
-                    <div className="text-[12.5px] text-slate-100">{st.label}</div>
-                    <div className="text-[10.5px] text-[#8d94a1]">{st.blurb}</div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
-      <button
-        onClick={() => {
-          navigator.clipboard?.writeText(window.location.href).then(() => {
-            setCopied(true);
-            setTimeout(() => setCopied(false), 1500);
-          });
-        }}
-        className="mt-1 w-full rounded-lg border border-white/10 px-3 py-1.5 text-[11px] text-slate-300 hover:bg-white/[0.07]"
-      >
-        {copied ? "Link copied" : "Copy a link to this view"}
-      </button>
-    </div>
-  );
-}
-
-function StoriesMenu() {
-  const [open, setOpen] = useState(false);
-  const story = useApp((s) => s.story);
-  const label = STORIES.find((s) => s.id === story)?.label ?? "Stories";
-  return (
-    <div className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#0b0f16]/90 px-3 py-1.5 text-[12px] text-slate-200 backdrop-blur hover:bg-white/[0.08]"
-        aria-expanded={open}
-      >
-        {label} <span className="text-[9px] text-slate-400">▼</span>
-      </button>
-      {open && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute left-0 top-full z-50 mt-1 w-72 rounded-xl border border-white/10 bg-[#0b0f16]/95 p-1.5 shadow-2xl backdrop-blur">
-            <Stories onDone={() => setOpen(false)} />
-          </div>
-        </>
-      )}
-    </div>
-  );
 }
 
 /** "Check a site": arms the map, the next click picks the place (right-click does it directly). */
@@ -148,7 +64,7 @@ function Desktop() {
     <>
       <header className="absolute inset-x-3 top-3 z-30 flex items-center gap-3">
         <Brand />
-        <StoriesMenu />
+        <DashboardsMenu />
         <div className="mx-auto flex w-full max-w-lg items-center gap-2">
           <Search />
           <CheckSite />
@@ -161,7 +77,7 @@ function Desktop() {
           className="flex items-center justify-between rounded-t-xl border border-b-0 border-white/10 bg-[#0b0f16]/92 px-3 py-2 text-[11px] uppercase tracking-[0.2em] text-slate-300 backdrop-blur"
           style={{ borderRadius: layersOpen ? undefined : 12, borderBottomWidth: layersOpen ? 0 : 1 }}
         >
-          Layers <span className="text-[9px]">{layersOpen ? "▲" : "▼"}</span>
+          Datasets <span className="text-[9px]">{layersOpen ? "▲" : "▼"}</span>
         </button>
         {layersOpen ? (
           <div className="min-h-0 flex-1 overflow-y-auto rounded-b-xl border border-t-0 border-white/10 bg-[#0b0f16]/92 backdrop-blur">
@@ -201,8 +117,8 @@ function Phone() {
         <div className="absolute inset-x-2 top-12 z-40">
           <Search autoFocus onDone={() => useApp.setState({ sheet: "none" })} />
           <div className="mt-2 rounded-xl border border-white/10 bg-[#0b0f16]/95 p-1.5">
-            <div className="px-2 pb-1 text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">Stories</div>
-            <Stories onDone={() => useApp.setState({ sheet: "none" })} />
+            <div className="px-2 pb-1 text-[9px] uppercase tracking-[0.2em] text-[#8d94a1]">Dashboards</div>
+            <DashboardList onDone={() => useApp.setState({ sheet: "none" })} />
           </div>
         </div>
       )}
@@ -219,8 +135,8 @@ function Phone() {
       <nav className="absolute inset-x-0 bottom-0 z-40 flex h-12 border-t border-white/10 bg-[#080b11]/95 backdrop-blur">
         {(
           [
-            ["layers", "Layers"],
-            ["panel", "Figures"],
+            ["layers", "Datasets"],
+            ["panel", "Dashboard"],
           ] as const
         ).map(([id, label]) => (
           <button key={id} onClick={() => set(id)} className={`flex-1 text-[12.5px] ${sheet === id ? "text-sky-300" : "text-slate-300"}`}>
@@ -246,7 +162,7 @@ export default function App() {
   useEffect(
     () =>
       useApp.subscribe((s, prev) => {
-        if (s.story !== prev.story || s.mode !== prev.mode || s.colour !== prev.colour || s.layers !== prev.layers || s.selection !== prev.selection || s.tab !== prev.tab || s.day !== prev.day || s.plantStatus !== prev.plantStatus || s.plantStyle !== prev.plantStyle || s.layersPanel !== prev.layersPanel || s.report !== prev.report)
+        if (s.dashboard !== prev.dashboard || s.edited !== prev.edited || s.area !== prev.area || s.title !== prev.title || s.mode !== prev.mode || s.colour !== prev.colour || s.layers !== prev.layers || s.selection !== prev.selection || s.tab !== prev.tab || s.day !== prev.day || s.plantStatus !== prev.plantStatus || s.plantStyle !== prev.plantStyle || s.layersPanel !== prev.layersPanel || s.report !== prev.report)
           writeUrl();
       }),
     [],
@@ -259,6 +175,10 @@ export default function App() {
         {narrow ? <Phone /> : <Desktop />}
       </div>
       {report && <CountryReport code={report} />}
+      <div className="print:hidden">
+        <DashboardBuilder />
+        <Catalogue />
+      </div>
     </div>
   );
 }

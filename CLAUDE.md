@@ -8,7 +8,8 @@ The earlier Germany atlas (backend, ingestion, agent) is archived in the git tag
 ## Layout
 
 - `frontend/` — React + Vite + TS + MapLibre GL + deck.gl + Tailwind + zustand. One map:
-  `src/app/` state, loaders, colours (`store.ts` holds layers and stories); `src/map/`
+  `src/app/` state, loaders, colours (`store.ts` holds layers and dashboards, `datasets.json` the
+  datasets users browse: layers per region, sources, coverage); `src/map/`
   the map (`MapCanvas.tsx` render loop, `build.ts` every deck.gl layer, `style.ts`
   MapLibre style and labels); `src/ui/` panels (Layers, context panel, time bar).
   `src/components/` cards, `src/lib/` data helpers and custom GPU layers

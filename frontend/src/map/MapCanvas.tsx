@@ -30,7 +30,7 @@ import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection }
 import { memo } from "./memo";
 import { ATLAS_LAYERS, type AtlasFile, type AtlasId } from "../lib/atlas";
 import type { ConstraintsFile, ProtectedFile } from "../lib/constraints";
-import { FLOOD_LAYERS, GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, PROTECTED_LAYERS, ROADS_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addFloodLayers, addGridLayers, addGrwLayers, addProtectedLayers, addRoadsLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, usFrame, worldCamera } from "./style";
+import { FLOOD_LAYERS, GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, PROTECTED_LAYERS, ROADS_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addFloodLayers, addGridLayers, addGrwLayers, addProtectedLayers, addRoadsLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, setWorldGridOutside, usFrame, worldCamera } from "./style";
 import { TIP_STYLE, countryHtml, tooltip } from "./tooltip";
 
 const SEC_PER_YEAR = 0.9;
@@ -50,6 +50,7 @@ function wantedKeys(zoom: number): string[] {
   const s = useApp.getState();
   const L = s.layers;
   const keys = ["countries"];
+  if (s.area || s.coverageOf) keys.push("world");
   if (L.gridEU || L.hvdc || L.substations) keys.push("grid");
   if (L.plantsEU) keys.push("plants");
   if (L.gas) keys.push("gas");
@@ -147,7 +148,7 @@ export default function MapCanvas() {
       // drawn inside the map's own WebGL context: needed for the globe
       interleaved: true,
       layers: [],
-      // deck.gl follows the map's moves only once it has loaded; a link's or a story's first
+      // deck.gl follows the map's moves only once it has loaded; a link's or a dashboard's first
       // camera jump comes earlier, and hover picking would keep the start camera until a pan.
       // One move after its first frame brings it up to date. (onLoad cannot be used: the
       // overlay re-sends its props every frame and would replace deck.gl's own onLoad.)
@@ -283,6 +284,7 @@ export default function MapCanvas() {
     };
     map.on("style.load", applyProjection);
     const fly = (to: NonNullable<ReturnType<typeof useApp.getState>["flyTo"]>) => {
+      if (typeof to === "object" && "area" in to) return frameArea(to.area, 1400);
       applyProjection();
       if (to === "day") return dayFrame(map, 1200);
       if (to === "us" || to === "usQueue" || to === "usDay") return usFrame(map, to !== "us" && wantFlat(), 1400);
@@ -299,6 +301,33 @@ export default function MapCanvas() {
         off();
         run();
       });
+    };
+    /** A dashboard's countries in view, clear of the panels (each by its largest polygon). */
+    const frameArea = (area: string[], duration: number) => {
+      if (!fileOf("world")) return whenFile("world", () => frameArea(area, duration));
+      applyProjection();
+      const w = fileOf<WorldFile>("world");
+      let [x0, y0, x1, y1] = [180, 90, -180, -90];
+      for (const code of area) {
+        const f = w?.features.find((x) => x.properties.iso3 === code);
+        if (!f) continue;
+        const poly = [...f.geometry.coordinates].sort((a, b) => b[0].length - a[0].length)[0][0];
+        for (const [x, y] of poly) {
+          x0 = Math.min(x0, x);
+          x1 = Math.max(x1, x);
+          y0 = Math.min(y0, y);
+          y1 = Math.max(y1, y);
+        }
+      }
+      if (x0 > x1) return;
+      const padding = isNarrow() ? { left: 20, right: 20, top: 80, bottom: 240 } : { left: 300, right: 420, top: 90, bottom: 80 };
+      map.fitBounds(
+        [
+          [x0, y0],
+          [x1, y1],
+        ],
+        { padding, duration, pitch: 0, bearing: 0, maxZoom: 6.5 },
+      );
     };
     const focusCountry = (sel: Selection | null, prev: Selection | null) => {
       if (sel?.kind === "country" && !fileOf("countries")) return whenFile("countries", () => focusCountry(sel, prev));
@@ -358,7 +387,7 @@ export default function MapCanvas() {
         if (map.isStyleLoaded() || map.getLayer("world-land")) fly(to);
         else map.once("style.load", () => fly(to));
       } else if (s.selection !== prev.selection) {
-        // a story sets its camera itself
+        // a dashboard sets its camera itself
         if (s.selection?.kind === "site") focusSite(s.selection.lon, s.selection.lat, s.selection.r ?? SITE_RADIUS_KM);
         else focusCountry(s.selection, prev.selection);
       } else if (s.mode !== prev.mode) applyProjection();
@@ -369,13 +398,14 @@ export default function MapCanvas() {
         if (!flatNow && was) fly("europe");
       } else if (s.mode === "live" && !s.selection && s.layers.usQueue !== prev.layers.usQueue) applyProjection();
     });
-    // a link with a selection or a camera, or a story's first camera
+    // a link with a selection or a camera, or a dashboard's first camera
     map.once("style.load", () => {
       const s = useApp.getState();
       if (s.flyTo) {
         const to = s.flyTo;
         useApp.setState({ flyTo: null });
-        if (typeof to === "object") {
+        if (typeof to === "object" && "area" in to) frameArea(to.area, 0);
+        else if (typeof to === "object") {
           applyProjection();
           // the 24 h view keeps its padding, so a link opens on the same picture
           const padding = s.mode === "day" ? dayPadding() : undefined;
@@ -433,10 +463,24 @@ export default function MapCanvas() {
         // Europe's countries draw their own outline
         map.setFilter("world-pick", ["==", ["get", "iso3"], selectedIso2(s.selection) ? "" : pick]);
       }
-      const gk = `${s.layers.gridWorld}|${s.layers.predicted}|${s.layers.gridUS}`;
+      const countriesFile = fileOf<CountriesFile>("countries");
+      const worldFile = fileOf<WorldFile>("world");
+      const gk = `${s.layers.gridWorld}|${s.layers.predicted}|${s.layers.gridUS}|${s.layers.gridEU}|${!!countriesFile}|${!!worldFile}`;
       if (gk !== gridKey) {
         gridKey = gk;
         if (s.layers.gridWorld) addGridLayers(map, "hv");
+        if (s.layers.gridWorld) {
+          // one line per place: Europe's grid and the US lines where they are on
+          const inside: number[][][][] = [];
+          if (s.layers.gridEU && countriesFile)
+            for (const c of countriesFile.countries) for (const rings of c.polygons) inside.push(rings.map((r) => Array.from({ length: r.length / 2 }, (_, i) => [r[2 * i], r[2 * i + 1]])));
+          if (s.layers.gridUS) {
+            if (!worldFile) ensure("world");
+            const us = worldFile?.features.find((f) => f.properties.iso3 === "USA");
+            if (us) inside.push(...(us.geometry.coordinates as number[][][][]));
+          }
+          setWorldGridOutside(map, inside);
+        }
         if (s.layers.predicted) addGridLayers(map, "predicted");
         if (s.layers.gridUS) addGridLayers(map, "us");
         for (const id of US_GRID_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.gridUS ? "visible" : "none");
@@ -528,13 +572,13 @@ export default function MapCanvas() {
 
       // "Plants through a day" opens on the newest day every big producer has reported
       // (Germany and others publish output per unit about five days late)
-      if (s.story === "plants-day" && !s.day) {
+      if (s.dashboard === "plants-day" && !s.day) {
         const idx = files.unitIndex as { complete: string[] } | undefined;
         const newest = idx?.complete[idx.complete.length - 1];
         if (newest) useApp.setState({ day: newest });
       }
       // the US one opens on the newest day EPA's data are complete for (months back)
-      if (s.story === "us-plants-day" && !s.day) {
+      if (s.dashboard === "us-plants-day" && !s.day) {
         const idx = files.usUnitIndex as { days: string[] } | undefined;
         const newest = idx?.days[idx.days.length - 1];
         if (newest) useApp.setState({ day: newest });
@@ -618,6 +662,8 @@ export default function MapCanvas() {
         waterIndicator: s.waterIndicator,
         mastrTech: s.mastrTech,
         selection: s.selection,
+        area: s.area,
+        coverageOf: s.coverageOf,
         files,
         zoom,
         centre: [c.lng, c.lat],

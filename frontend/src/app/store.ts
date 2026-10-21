@@ -1,4 +1,4 @@
-// What the user has chosen: time mode, layers, colour, selection and story. One store, synced
+// What the user has chosen: time mode, layers, colour, selection, dashboard and area. One store, synced
 // with the URL so every view can be shared as a link. The map reads it without re-rendering
 // React (getState in the render loop); panels subscribe to the parts they show.
 
@@ -113,8 +113,6 @@ export interface LayerInfo {
   color: string;
   /** only in these time modes (all when absent) */
   modes?: TimeMode[];
-  /** listed in the Layers panel only while on: the layer belongs to this story */
-  story?: string;
 }
 export const LAYERS: LayerInfo[] = [
   { id: "flows", label: "Cross-border flows", desc: "Power moving between countries now", group: "Electricity now", coverage: "Europe", color: "rgb(120,222,255)", modes: ["live", "day"] },
@@ -144,7 +142,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "offshoreWind", label: "Offshore wind farms", desc: "Areas at sea: operating, building, approved, planned (EMODnet)", group: "Power plants", coverage: "Europe", color: "rgb(96,190,255)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "solarUS", label: "US solar farms", desc: "Every array of 1 MW and more; outlines zoomed in (USPVDB)", group: "Power plants", coverage: "US", color: "rgb(255,214,72)" },
-  { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Connections & queues", coverage: "US", color: "rgb(196,196,214)", story: "us-queue" },
+  { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Connections & queues", coverage: "US", color: "rgb(196,196,214)" },
   { id: "gasPipesUS", label: "US gas pipelines", desc: "Interstate and intrastate natural gas pipelines (EIA)", group: "Gas, oil & coal", coverage: "US", color: "rgb(255,196,96)" },
   { id: "gasPipes", label: "Gas pipelines", desc: "Operating, under construction, proposed", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,196,96)" },
   { id: "oilPipes", label: "Oil pipelines", desc: "Crude oil and NGL", group: "Gas, oil & coal", coverage: "World", color: "rgb(222,110,82)" },
@@ -173,7 +171,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & demand", coverage: "World", color: "rgb(196,150,255)" },
   { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Risk", coverage: "World", color: "rgb(255,153,0)" },
   { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Risk", coverage: "US", color: "rgb(230,120,80)" },
-  { id: "protectedAreas", label: "Protected areas", desc: "Natura 2000 sites (EEA)", group: "Risk", coverage: "Europe", color: "rgb(96,186,120)" },
+  { id: "protectedAreas", label: "Protected areas", desc: "Natura 2000 sites (EEA), PAD-US (USGS)", group: "Risk", coverage: "Europe, US", color: "rgb(96,186,120)" },
   { id: "flood", label: "River flood hazard", desc: "Water depth in a 100-year flood (JRC)", group: "Risk", coverage: "World", color: "rgb(60,130,210)" },
   { id: "roadsRail", label: "Major roads and railways", desc: "Motorways, trunk and primary roads; standard-gauge rail (OpenStreetMap)", group: "Risk", coverage: "Europe, US", color: "rgb(200,196,186)" },
   { id: "wind", label: "Wind", desc: "Moving wind at turbine height", group: "Weather", coverage: "World", color: "rgb(220,240,255)", modes: ["live", "day"] },
@@ -286,217 +284,83 @@ export type Selection =
 export type PlantStatus = "operating" | "construction" | "planned" | "retired";
 export type Region = "europe" | "world" | "us";
 
-/** A fixed camera, or a frame the map computes for the screen (map/style.ts). */
+/** A fixed camera, a frame the map computes for the screen (map/style.ts), or countries to frame. */
 /** Which day files the 24 h replay reads: Europe (15 min, CET) or the US (hourly, ET). */
 export type DayRegion = "eu" | "us";
-export type CameraPreset = Camera | "europe" | "world" | "day" | "us" | "usQueue" | "usDay";
+export type CameraPreset = Camera | "europe" | "world" | "day" | "us" | "usQueue" | "usDay" | { area: string[] };
 export interface Camera {
   center: [number, number];
   zoom: number;
   pitch?: number;
   bearing?: number;
 }
-/** The Stories menu's sections. */
-export const STORY_GROUPS = ["Europe", "United States", "World"] as const;
-export type StoryGroup = (typeof STORY_GROUPS)[number];
-export interface Story {
+/** The Dashboards menu's sections ("Mine": saved in this browser). */
+export const DASHBOARD_GROUPS = ["Europe", "United States", "Countries", "World", "Mine"] as const;
+export type DashboardGroup = (typeof DASHBOARD_GROUPS)[number];
+/** A saved view: datasets (as their map layers), an area, the time mode and the countries' colour. */
+export interface Dashboard {
   id: string;
-  /** the Stories menu's section */
-  group: StoryGroup;
+  /** the Dashboards menu's section */
+  group: DashboardGroup;
   label: string;
   blurb: string;
   mode: TimeMode;
   colour: ColourId;
   layers: LayerId[];
+  /** the countries it is about (ISO alpha-3); none = wherever the camera looks */
+  area?: string[];
   plantStatus?: PlantStatus;
   camera: CameraPreset;
-  /** the overview panel the story opens on (else from its camera) */
+  /** the overview panel it opens on (else from its camera) */
   region?: Region;
   /** the 24 h replay's day files (else Europe's) */
   dayRegion?: DayRegion;
 }
-export const STORIES: Story[] = [
-  {
-    id: "europe-live",
-    group: "Europe",
-    label: "Europe live",
-    blurb: "Grid, plants and power flows now",
-    mode: "live",
-    colour: "renewable",
-    layers: ["flows", "gridEU", "hvdc", "substations", "plantsEU"],
-    camera: "europe",
-  },
-  {
-    id: "europe-day",
-    group: "Europe",
-    label: "A day in Europe",
-    blurb: "24 hours, every 15 minutes",
-    mode: "day",
-    colour: "none",
-    layers: ["flows", "towers", "prices", "night", "wind", "gridEU"],
-    camera: "day",
-  },
-  {
-    id: "plants-day",
-    group: "Europe",
-    label: "Plants through a day",
-    blurb: "What each large plant produced, every 15 minutes",
-    mode: "day",
-    colour: "none",
-    layers: ["plantOutput", "gridEU", "night"],
-    camera: "day",
-  },
-  {
-    id: "price-year",
-    group: "Europe",
-    label: "The price year",
-    blurb: "Hours below zero, capture prices",
-    mode: "live",
-    colour: "pr_negative",
-    layers: [],
-    camera: "europe",
-  },
-  {
-    id: "transition",
-    group: "World",
-    label: "25 years of transition",
-    blurb: "Every country, 2000–2025",
-    mode: "years",
-    colour: "tr_renewables",
-    layers: [],
-    camera: "europe",
-  },
-  {
-    id: "world-building",
-    group: "World",
-    label: "What the world is building",
-    blurb: "Plants under construction",
-    mode: "live",
-    colour: "none",
-    layers: ["plantsWorld", "gridWorld"],
-    plantStatus: "construction",
-    camera: "world",
-  },
-  {
-    id: "world-live",
-    group: "World",
-    label: "Grids beyond Europe",
-    blurb: "US, Brazil, Australia, Taiwan, Ontario live",
-    mode: "live",
-    colour: "access",
-    layers: ["liveGrids", "gridWorld", "cables", "dataCentres"],
-    camera: "world",
-  },
-  {
-    id: "fuel-routes",
-    group: "World",
-    label: "Fuel routes",
-    blurb: "Gas and oil pipelines, LNG and coal ports",
-    mode: "live",
-    colour: "none",
-    layers: ["gasPipes", "oilPipes", "lngTerminals", "coalTerminals"],
-    camera: "world",
-  },
-  {
-    id: "methane",
-    group: "World",
-    label: "Methane from space",
-    blurb: "Plumes seen by satellites, fields and mines",
-    mode: "live",
-    colour: "none",
-    layers: ["methane", "oilGasFields", "coalMines"],
-    camera: "world",
-  },
-  {
-    id: "money",
-    group: "World",
-    label: "Who pays for fossil power",
-    blurb: "Banks' money flowing to coal and gas",
-    mode: "live",
-    colour: "none",
-    layers: ["financeCoal", "financeGas"],
-    camera: { center: [100, 22], zoom: 2.1 },
-  },
-  {
-    id: "us-live",
-    group: "United States",
-    label: "US live",
-    blurb: "Demand, generation and flows between the 13 grid regions now",
-    mode: "live",
-    colour: "none",
-    layers: ["liveGrids", "gridUS"],
-    camera: "us",
-    region: "us",
-  },
-  {
-    id: "us-day",
-    group: "United States",
-    label: "A day in the US",
-    blurb: "24 hours of demand, generation and flows between the 13 regions",
-    mode: "day",
-    colour: "none",
-    layers: ["towers", "flows", "usNodePrices"],
-    camera: "usDay",
-    region: "us",
-    dayRegion: "us",
-  },
-  {
-    id: "us-plants-day",
-    group: "United States",
-    label: "US fossil plants through a day",
-    blurb: "Every coal, gas and oil unit hour by hour, with its CO₂ (EPA)",
-    mode: "day",
-    colour: "none",
-    layers: ["plantOutput", "gridUS"],
-    camera: "usDay",
-    region: "us",
-    dayRegion: "us",
-  },
-  {
-    id: "us-grid",
-    group: "United States",
-    label: "US grid",
-    blurb: "Every plant, the lines, every wind turbine",
-    mode: "live",
-    colour: "none",
-    layers: ["gridUS", "plantsUS", "turbinesUS"],
-    plantStatus: "operating",
-    camera: "us",
-    region: "us",
-  },
-  {
-    id: "us-queue",
-    group: "United States",
-    label: "US interconnection queue",
-    blurb: "What is waiting to connect, state by state",
-    mode: "live",
-    colour: "none",
-    layers: ["usQueue"],
-    camera: "usQueue",
-    region: "us",
-  },
-  {
-    id: "us-outages",
-    group: "United States",
-    label: "US outages",
-    blurb: "Customer-hours without power per county; the biggest storms",
-    mode: "live",
-    colour: "none",
-    layers: ["usOutages", "gridUS"],
-    camera: "us",
-    region: "us",
-  },
-  {
-    id: "heavy-industry",
-    group: "World",
-    label: "Heavy industry",
-    blurb: "Steel, cement and chemical plants",
-    mode: "live",
-    colour: "none",
-    layers: ["steel", "cement", "chemicals", "ironOre"],
-    camera: "world",
-  },
+export const DASHBOARDS: Dashboard[] = [
+  { id: "europe-live", group: "Europe", label: "Europe now", blurb: "Power flows, renewable share and the grid, every 30 minutes", mode: "live", colour: "renewable", layers: ["flows", "gridEU", "hvdc", "substations", "plantsEU"], camera: "europe" },
+  { id: "europe-day", group: "Europe", label: "Europe's last 24 hours", blurb: "Generation, prices and flows every 15 minutes", mode: "day", colour: "none", layers: ["flows", "towers", "prices", "night", "wind", "gridEU"], camera: "day" },
+  { id: "plants-day", group: "Europe", label: "Power plants hour by hour", blurb: "What each large plant produced through a day", mode: "day", colour: "none", layers: ["plantOutput", "gridEU", "night"], camera: "day" },
+  { id: "price-year", group: "Europe", label: "Europe's price year", blurb: "Hours below zero and capture prices, 12 months", mode: "live", colour: "pr_negative", layers: [], camera: "europe" },
+  { id: "europe-connect", group: "Europe", label: "Where to connect in Europe", blurb: "Grid capacity, lines and substations, protected areas, flood hazard", mode: "live", colour: "none", layers: ["connect", "gridEU", "substations", "protectedAreas", "flood"], camera: "europe" },
+  { id: "europe-emitters", group: "Europe", label: "Europe's emitters", blurb: "Verified CO₂ per installation, steel and cement plants", mode: "live", colour: "none", layers: ["ets", "steel", "cement"], camera: "europe" },
+  { id: "us-live", group: "United States", label: "US grid now", blurb: "Demand, generation and flows between the 13 grid regions", mode: "live", colour: "none", layers: ["liveGrids", "gridUS"], camera: "us", region: "us" },
+  { id: "us-day", group: "United States", label: "US last 24 hours", blurb: "Demand, generation and flows hour by hour", mode: "day", colour: "none", layers: ["towers", "flows", "usNodePrices"], camera: "usDay", region: "us", dayRegion: "us" },
+  { id: "us-plants-day", group: "United States", label: "US fossil plants hour by hour", blurb: "Every coal, gas and oil unit with its CO₂ (EPA)", mode: "day", colour: "none", layers: ["plantOutput", "gridUS"], camera: "usDay", region: "us", dayRegion: "us" },
+  { id: "us-grid", group: "United States", label: "US power infrastructure", blurb: "Every plant, the lines, wind turbines and solar farms", mode: "live", colour: "none", layers: ["gridUS", "plantsUS", "turbinesUS", "solarUS"], plantStatus: "operating", camera: "us", region: "us" },
+  { id: "us-queue", group: "United States", label: "What waits to connect (US)", blurb: "The interconnection queue state by state", mode: "live", colour: "none", layers: ["usQueue"], camera: "usQueue", region: "us" },
+  { id: "us-connect", group: "United States", label: "Where to connect in the US", blurb: "The queue, the lines, protected areas, flood hazard", mode: "live", colour: "none", layers: ["usQueue", "gridUS", "protectedAreas", "flood"], camera: "us", region: "us" },
+  { id: "us-outages", group: "United States", label: "US power outages", blurb: "Customer-hours without power per county", mode: "live", colour: "none", layers: ["usOutages", "gridUS"], camera: "us", region: "us" },
+  { id: "germany", group: "Countries", label: "Germany in detail", blurb: "Every unit (MaStR), the grid, grid capacity, EV charging", mode: "live", colour: "none", layers: ["mastrDE", "gridEU", "substations", "connect", "evChargersEU"], area: ["DEU"], camera: { area: ["DEU"] } },
+  { id: "great-britain", group: "Countries", label: "Great Britain in detail", blurb: "Every project (REPD), the grid, capacity sites, offshore wind", mode: "live", colour: "none", layers: ["regGB", "gridEU", "connect", "offshoreWind"], area: ["GBR"], camera: { area: ["GBR"] } },
+  { id: "nordic-wind", group: "Countries", label: "Nordic wind", blurb: "Every turbine in Denmark and Sweden, offshore farms, the grid", mode: "live", colour: "none", layers: ["regDK", "regSE", "offshoreWind", "gridEU"], area: ["DNK", "SWE"], camera: { area: ["DNK", "SWE"] } },
+  { id: "transition", group: "World", label: "25 years of energy transition", blurb: "Every country's mix, 2000–2025", mode: "years", colour: "tr_renewables", layers: [], camera: "europe" },
+  { id: "world-building", group: "World", label: "What the world is building", blurb: "Plants under construction", mode: "live", colour: "none", layers: ["plantsWorld", "gridWorld"], plantStatus: "construction", camera: "world" },
+  { id: "world-live", group: "World", label: "Grids beyond Europe", blurb: "US, Brazil, Australia, Taiwan, Ontario live", mode: "live", colour: "access", layers: ["liveGrids", "gridWorld", "cables", "dataCentres"], camera: "world" },
+  { id: "fuel-routes", group: "World", label: "Fuel routes", blurb: "Gas and oil pipelines, LNG and coal ports", mode: "live", colour: "none", layers: ["gasPipes", "oilPipes", "lngTerminals", "coalTerminals"], camera: "world" },
+  { id: "methane", group: "World", label: "Methane from space", blurb: "Plumes seen by satellites, fields and mines", mode: "live", colour: "none", layers: ["methane", "oilGasFields", "coalMines"], camera: "world" },
+  { id: "money", group: "World", label: "Who finances fossil power", blurb: "Banks' money flowing to coal and gas", mode: "live", colour: "none", layers: ["financeCoal", "financeGas"], camera: { center: [100, 22], zoom: 2.1 } },
+  { id: "heavy-industry", group: "World", label: "Heavy industry", blurb: "Steel, cement and chemical plants", mode: "live", colour: "none", layers: ["steel", "cement", "chemicals", "ironOre"], camera: "world" },
 ];
+export const DEFAULT_DASHBOARD = "europe-live";
+
+/** Dashboards the user saved, kept in this browser only (localStorage; private windows may refuse). */
+const MINE_KEY = "infraatlas.dashboards";
+function loadMine(): Dashboard[] {
+  try {
+    const v = JSON.parse(window.localStorage.getItem(MINE_KEY) ?? "[]");
+    return Array.isArray(v) ? (v as Dashboard[]).filter((d) => d && typeof d.id === "string" && Array.isArray(d.layers)) : [];
+  } catch {
+    return [];
+  }
+}
+function storeMine(list: Dashboard[]): void {
+  try {
+    window.localStorage.setItem(MINE_KEY, JSON.stringify(list));
+  } catch {
+    // storage refused: the dashboard lives until the page closes
+  }
+}
+export const findDashboard = (id: string | null) => (id ? (DASHBOARDS.find((d) => d.id === id) ?? useApp.getState().mine.find((d) => d.id === id)) : undefined);
 
 interface AppState {
   mode: TimeMode;
@@ -518,10 +382,24 @@ interface AppState {
   mastrTech: MastrTech;
   selection: Selection | null;
   tab: string;
-  story: string | null;
+  /** the dashboard shown (a preset or one of "mine") and whether layers changed since */
+  dashboard: string | null;
+  edited: boolean;
+  /** the dashboard's countries (ISO alpha-3): its figures are for them; null = no area */
+  area: string[] | null;
+  /** a name for a view opened from a link (a dashboard saved elsewhere) */
+  title: string | null;
+  /** dashboards saved in this browser */
+  mine: Dashboard[];
+  /** the dataset whose coverage the map tints (Layers panel details) */
+  coverageOf: string | null;
+  /** the dashboard builder: a new one, or this view (to save or edit one of mine) */
+  builder: { kind: "new" | "save"; id?: string } | null;
+  /** the data catalogue is open over the map */
+  catalogue: boolean;
   /** where the camera looks: decides the default panel */
   region: Region;
-  /** a camera move requested by the UI (story, search); the map consumes it */
+  /** a camera move requested by the UI (dashboard, search); the map consumes it */
   flyTo: CameraPreset | null;
   sheet: "none" | "panel" | "layers" | "search";
   /** the Layers panel is open (desktop) */
@@ -539,7 +417,7 @@ interface AppState {
 export const motion = { daySlot: 0, yearPos: 0 };
 
 const allOff = Object.fromEntries(LAYERS.map((l) => [l.id, false])) as Record<LayerId, boolean>;
-const layersOf = (ids: LayerId[]) => ({ ...allOff, ...Object.fromEntries(ids.map((id) => [id, true])) });
+export const layersOf = (ids: LayerId[]) => ({ ...allOff, ...Object.fromEntries(ids.map((id) => [id, true])) });
 
 export const useApp = create<AppState>(() => ({
   mode: "live",
@@ -547,7 +425,7 @@ export const useApp = create<AppState>(() => ({
   slot: 0,
   yearK: 0,
   playing: false,
-  layers: layersOf(STORIES[0].layers),
+  layers: layersOf(DASHBOARDS[0].layers),
   colour: "renewable",
   plantStatus: "operating",
   plantStyle: "bars",
@@ -555,8 +433,15 @@ export const useApp = create<AppState>(() => ({
   waterIndicator: "bws",
   mastrTech: "solar",
   selection: null,
-  tab: "now",
-  story: "europe-live",
+  tab: "dashboard",
+  dashboard: DEFAULT_DASHBOARD,
+  edited: false,
+  area: null,
+  title: null,
+  mine: loadMine(),
+  coverageOf: null,
+  builder: null,
+  catalogue: false,
   region: "europe",
   flyTo: null,
   sheet: "none",
@@ -570,13 +455,13 @@ export const actions = {
   toggleLayer(id: LayerId) {
     useApp.setState((s) => {
       const on = !s.layers[id];
-      // a layer with figures opens them in the panel
-      return { layers: { ...s.layers, [id]: on }, story: null, tab: on && STATS_LAYERS.has(id) ? "layers" : s.tab };
+      // the dashboard's figures follow the layers
+      return { layers: { ...s.layers, [id]: on }, edited: true, tab: on && !s.selection ? "dashboard" : s.tab };
     });
   },
   setColour(colour: ColourId) {
     const s = useApp.getState();
-    useApp.setState({ colour, story: null, tab: colour.startsWith("pr_") && !s.selection ? "prices" : s.tab });
+    useApp.setState({ colour, edited: true, tab: colour.startsWith("pr_") && !s.selection ? "prices" : s.tab });
   },
   setMode(mode: TimeMode) {
     const s = useApp.getState();
@@ -590,7 +475,7 @@ export const actions = {
       playing: mode !== "live",
       slot: 0,
       yearK: 0,
-      story: null,
+      edited: true,
       layers: mode === "day" ? { ...s.layers, towers: true, night: true } : s.layers,
       tab: mode === "years" ? "years" : s.tab === "years" ? "now" : s.tab,
       flyTo: mode === "day" ? "day" : s.mode === "day" ? "europe" : null,
@@ -598,7 +483,7 @@ export const actions = {
   },
   setPlantStatus(plantStatus: PlantStatus) {
     // the status shows on whichever plants layer is on (GEM's worldwide one by default)
-    useApp.setState((s) => ({ plantStatus, layers: s.layers.plantsUS || s.layers.plantsWorld ? s.layers : { ...s.layers, plantsWorld: true }, story: null }));
+    useApp.setState((s) => ({ plantStatus, layers: s.layers.plantsUS || s.layers.plantsWorld ? s.layers : { ...s.layers, plantsWorld: true }, edited: true }));
   },
   setPlantStyle(plantStyle: "bars" | "beams") {
     useApp.setState({ plantStyle });
@@ -649,20 +534,24 @@ export const actions = {
     const s = useApp.getState().selection;
     if (s?.kind === "site") useApp.setState({ selection: { ...s, r } });
   },
-  applyStory(id: string) {
-    const st = STORIES.find((x) => x.id === id);
+  applyDashboard(id: string) {
+    const st = findDashboard(id);
     if (!st) return;
     motion.daySlot = 0;
     motion.yearPos = 0;
+    const area = st.area?.length ? st.area : null;
     useApp.setState({
-      story: st.id,
+      dashboard: st.id,
+      edited: false,
+      title: null,
+      area,
       mode: st.mode,
       colour: st.colour,
       layers: layersOf(st.layers),
       plantStatus: st.plantStatus ?? useApp.getState().plantStatus,
       selection: null,
-      tab: st.mode === "years" ? "years" : st.colour.startsWith("pr_") ? "prices" : st.layers.some((l) => STATS_LAYERS.has(l)) ? "layers" : "now",
-      region: st.region ?? (st.camera === "world" ? "world" : st.camera === "europe" || st.camera === "day" ? "europe" : useApp.getState().region),
+      tab: st.mode === "years" ? "years" : st.colour.startsWith("pr_") ? "prices" : "dashboard",
+      region: st.region ?? (st.camera === "world" ? "world" : st.camera === "europe" || st.camera === "day" ? "europe" : area?.includes("USA") ? "us" : useApp.getState().region),
       playing: st.mode !== "live",
       slot: 0,
       yearK: 0,
@@ -670,7 +559,48 @@ export const actions = {
       sheet: "none",
       dayRegion: st.dayRegion ?? "eu",
       day: null,
+      coverageOf: null,
     });
+  },
+  /** Keep the view as a dashboard of mine: a new one, or replacing one of mine (same id). */
+  saveDashboard(label: string, blurb: string, id?: string): string {
+    const s = useApp.getState();
+    const d: Dashboard = {
+      id: id && id.startsWith("my-") ? id : `my-${Date.now().toString(36)}`,
+      group: "Mine",
+      label: label.trim() || "My dashboard",
+      blurb,
+      mode: s.mode,
+      colour: s.colour,
+      layers: (Object.keys(s.layers) as LayerId[]).filter((k) => s.layers[k]),
+      ...(s.area ? { area: s.area } : {}),
+      plantStatus: s.plantStatus,
+      camera: s.area ? { area: s.area } : s.region === "us" ? "us" : s.region === "world" ? "world" : "europe",
+      region: s.region,
+      dayRegion: s.dayRegion,
+    };
+    const mine = [...s.mine.filter((x) => x.id !== d.id), d];
+    storeMine(mine);
+    useApp.setState({ mine, dashboard: d.id, edited: false, title: null });
+    return d.id;
+  },
+  deleteDashboard(id: string) {
+    const s = useApp.getState();
+    const mine = s.mine.filter((x) => x.id !== id);
+    storeMine(mine);
+    useApp.setState({ mine, ...(s.dashboard === id ? { dashboard: null, edited: true } : {}) });
+  },
+  /** The dashboard's countries (null: none); the map frames them. */
+  setArea(area: string[] | null) {
+    const a = area?.length ? [...new Set(area)] : null;
+    useApp.setState({ area: a, edited: true, selection: null, tab: "dashboard", ...(a ? { flyTo: { area: a } } : {}) });
+  },
+  openBuilder(builder: AppState["builder"]) {
+    useApp.setState({ builder });
+  },
+  /** Tint where a dataset has data (null: stop). */
+  showCoverage(id: string | null) {
+    useApp.setState({ coverageOf: id });
   },
 };
 
@@ -678,15 +608,28 @@ export const actions = {
 export let yearFromUrl: string | null = null;
 export const clearYearFromUrl = () => (yearFromUrl = null);
 
-/** Old links (?day=, ?view=prices, ?country=FR, ...) and new ones (?story=, ?layers=, ...). */
+/** Old links (?day=, ?view=prices, ?story=, ?country=FR, ...) and new ones (?dash=, ?layers=, ?area=, ...). */
 export function readUrl(): void {
   const p = new URLSearchParams(window.location.search);
   const view = p.get("view");
-  const story = p.get("story") ?? (p.get("day") ? "europe-day" : view === "prices" ? "price-year" : view === "transition" ? "transition" : view === "world" ? "world-live" : null);
-  if (story) actions.applyStory(story);
+  const dash =
+    p.get("dash") ?? p.get("story") ?? (p.get("day") ? "europe-day" : view === "prices" ? "price-year" : view === "transition" ? "transition" : view === "world" ? "world-live" : null);
+  if (dash) actions.applyDashboard(dash);
   const patch: Partial<AppState> = {};
   const mode = p.get("mode");
-  if (!story && (mode === "day" || mode === "years")) actions.setMode(mode);
+  if (!dash && (mode === "day" || mode === "years")) actions.setMode(mode);
+  if (!dash && p.get("layers") !== null) {
+    // a view built by hand (or a dashboard saved in another browser)
+    patch.dashboard = null;
+    patch.edited = true;
+    patch.title = p.get("dname");
+  }
+  const area = p.get("area");
+  if (area !== null) {
+    const codes = area.split(",").filter((c) => /^[A-Z]{3}$/.test(c));
+    patch.area = codes.length ? codes : null;
+    if (codes.length && !p.get("cam")) patch.flyTo = { area: codes };
+  }
   const day = p.get("day");
   if (day && day !== "latest") patch.day = day;
   const colour = p.get("colour");
@@ -745,11 +688,16 @@ export function writeUrl(camera?: Camera): void {
   camera = lastCamera;
   const s = useApp.getState();
   const p = new URLSearchParams();
-  if (s.story) p.set("story", s.story);
+  // a preset as itself; anything else (edited, or one of mine) with its layers, so the link opens anywhere
+  const preset = s.dashboard && !s.edited && DASHBOARDS.some((d) => d.id === s.dashboard);
+  if (preset) p.set("dash", s.dashboard!);
   else {
     if (s.mode !== "live") p.set("mode", s.mode);
     p.set("colour", s.colour);
     p.set("layers", (Object.keys(s.layers) as LayerId[]).filter((k) => s.layers[k]).join(","));
+    if (s.area) p.set("area", s.area.join(","));
+    const name = s.title ?? findDashboard(s.dashboard)?.label;
+    if (name) p.set("dname", name);
   }
   if (s.day) p.set("day", s.day);
   if ((s.layers.plantsWorld || s.layers.plantsUS) && s.plantStatus !== "operating") p.set("status", s.plantStatus);
@@ -761,7 +709,7 @@ export function writeUrl(camera?: Camera): void {
   if (sel?.kind === "zone") p.set("sel", `zone:${sel.id}`);
   if (sel?.kind === "region") p.set("sel", `region:${sel.grid}:${sel.id}`);
   if (sel?.kind === "site") p.set("sel", `site:${sel.lon},${sel.lat}${sel.r ? `,${sel.r}` : ""}`);
-  if (sel && s.tab !== "now" && sel.kind !== "site") p.set("tab", s.tab);
+  if (sel && s.tab !== "now" && s.tab !== "dashboard" && sel.kind !== "site") p.set("tab", s.tab);
   if (camera) {
     const tilt = camera.pitch || camera.bearing ? `,${(camera.pitch ?? 0).toFixed(0)},${(camera.bearing ?? 0).toFixed(0)}` : "";
     p.set("cam", `${camera.center[0].toFixed(2)},${camera.center[1].toFixed(2)},${camera.zoom.toFixed(2)}${tilt}`);

@@ -1,4 +1,5 @@
-// The context panel: what is selected (or the overview of where the camera looks), in tabs.
+// The dashboard panel: the dashboard's figures first, then what is selected (or the overview of
+// where the camera looks), in tabs.
 // Every card is the existing one from components/; this file only picks what to show.
 
 import { useEffect, useMemo, type ReactNode } from "react";
@@ -45,7 +46,9 @@ import { clockOf, dayFileKey, dayIndexKey, dayPower, unitOutKey, utc } from "../
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { actions, useApp } from "../app/store";
 import type { CountriesFile, DayFile, FlowsFile, GasFile, OutagesFile, PlantsFile, ReferenceFile, StatsFile, WorldFile, UnitOutputFile } from "../app/types";
-import { LayerStatsTab, LngTerminalsCard, useStatsLayers } from "./LayerStats";
+import { LngTerminalsCard } from "./LayerStats";
+import { DashboardTab } from "./DashboardTab";
+import { useDashboardName } from "./Dashboards";
 import { RetailCountryCard, RetailRankingCard, UsRetailCard } from "../components/RetailCards";
 import type { RetailFile } from "../lib/retail";
 import type { UsNodesFile } from "../lib/usNodes";
@@ -148,9 +151,8 @@ export default function Panel() {
   return region === "us" ? <UsPanel /> : region === "world" ? <WorldPanel /> : <EuropePanel />;
 }
 
-/** "On the map" first, while layers with figures are on. */
-const withStats = (tabs: Tab[], on: boolean, iso3?: string): Tab[] =>
-  on ? [{ id: "layers", label: "On the map", body: () => <LayerStatsTab iso3={iso3} /> }, ...tabs] : tabs;
+/** The dashboard's figures first: for the country shown, else for the dashboard's area. */
+const withDashboard = (tabs: Tab[], iso3?: string): Tab[] => [{ id: "dashboard", label: "Dashboard", body: () => <DashboardTab iso3={iso3} /> }, ...tabs];
 
 function Frame({ title, sub, tabs, close = true, action }: { title: string; sub?: ReactNode; tabs: Tab[]; close?: boolean; action?: ReactNode }) {
   const tab = useApp((s) => s.tab);
@@ -252,7 +254,6 @@ function EuropePanel() {
     ? Object.values(day.prices).flatMap((z) => (z.values[k] != null ? [z.values[k] as number] : []))
     : Object.values(stats?.day_ahead_prices ?? {}).map((p) => p.eur_mwh);
   const euPrice = zonePrices.length ? { label: `median of ${zonePrices.length} zones`, value: medianOf(zonePrices) } : null;
-  const statsOn = useStatsLayers().length > 0;
   const tabs: Tab[] = [
     {
       id: "now",
@@ -319,7 +320,8 @@ function EuropePanel() {
     },
     { id: "years", label: "25 years", body: () => <YearsTab code="EU" scope="europe" /> },
   ];
-  return <Frame title="European Union" sub={mode === "day" && day ? `${day.date} · ${timeOf(ts(k))}` : "Live · ENTSO-E"} tabs={withStats(tabs, statsOn)} close={false} />;
+  const dash = useDashboardName();
+  return <Frame title={dash.name} sub={`European Union · ${mode === "day" && day ? `${day.date} · ${timeOf(ts(k))}` : "Live · ENTSO-E"}`} tabs={withDashboard(tabs)} close={false} />;
 }
 
 /** A country appears in the gas-flow file (one of its borders, sources or LNG terminals). */
@@ -452,7 +454,6 @@ function CountryPanel({ iso }: { iso: string }) {
   const byGroup = plants ? Object.entries(plants.by_country[iso] ?? {}).sort((x, y) => y[1][1] - x[1][1]) : [];
   const lng = gas?.lng.filter((g) => g[1] === iso) ?? [];
   const storages = gas?.storages.filter((g) => g[1] === iso) ?? [];
-  const statsOn = useStatsLayers().length > 0;
   const tabs: Tab[] = [
     {
       id: "now",
@@ -628,7 +629,7 @@ function CountryPanel({ iso }: { iso: string }) {
       ),
     },
   ];
-  return <Frame title={name} sub={mode === "day" && day ? `${day.date} · ${timeOf(ts(k))}` : undefined} tabs={withStats(tabs, statsOn, ISO3[iso])} action={<ReportButton code={iso} />} />;
+  return <Frame title={name} sub={mode === "day" && day ? `${day.date} · ${timeOf(ts(k))}` : undefined} tabs={withDashboard(tabs, ISO3[iso])} action={<ReportButton code={iso} />} />;
 }
 
 function CountryPrices({ iso }: { iso: string }) {
@@ -718,7 +719,6 @@ function WorldPanel() {
   const access = ws ? latest(ws.access.WLD, ws.years) : null;
   const jepx = useFile<JepxFile>("jepx");
   const cenace = useFile<CenaceFile>("cenace");
-  const statsOn = useStatsLayers().length > 0;
   const tabs: Tab[] = [
     {
       id: "now",
@@ -781,7 +781,8 @@ function WorldPanel() {
     { id: "finance", label: "Finance", body: () => <FinanceTab /> },
     { id: "years", label: "25 years", body: () => <YearsTab code="World" scope="world" /> },
   ];
-  return <Frame title="World" sub={access ? `${access.value.toFixed(1)} % of people have electricity (${access.year}, World Bank)` : undefined} tabs={withStats(tabs, statsOn)} close={false} />;
+  const dash = useDashboardName();
+  return <Frame title={dash.name} sub={`World${access ? ` · ${access.value.toFixed(1)} % of people have electricity (${access.year}, World Bank)` : ""}`} tabs={withDashboard(tabs)} close={false} />;
 }
 
 // ---------------------------------------------------------------- the United States, no selection
@@ -879,6 +880,7 @@ function UsCo2Card({ day, k }: { day: DayFile; k: number }) {
 }
 
 function UsPanel() {
+  const dash = useDashboardName();
   const { day, k, ts, timeOf } = useDayNow();
   const usDay = day?.region === "us" ? day : null;
   const plants = useFile<UsPlantsFile>("usPlants");
@@ -891,7 +893,6 @@ function UsPanel() {
   const pricesNow = usPrices ? hubPricesNow(usPrices) : null;
   const status = useApp((s) => s.plantStatus);
   const names = useStateNames();
-  const statsOn = useStatsLayers().length > 0;
   const plantsOn = useApp((s) => s.layers.plantsUS);
   const queueOn = useApp((s) => s.layers.usQueue);
   const sources = <SourcesCard items={US_SOURCES} />;
@@ -907,7 +908,7 @@ function UsPanel() {
         plants ? (
           <>
             {!plantsOn && (
-              <button onClick={() => actions.applyStory("us-grid")} className="w-full rounded-lg border border-orange-300/30 px-3 py-1.5 text-left text-[11px] text-orange-200 hover:bg-orange-300/10">
+              <button onClick={() => actions.applyDashboard("us-grid")} className="w-full rounded-lg border border-orange-300/30 px-3 py-1.5 text-left text-[11px] text-orange-200 hover:bg-orange-300/10">
                 Show every plant, the lines and the turbines on the map
               </button>
             )}
@@ -930,7 +931,7 @@ function UsPanel() {
         queue ? (
           <>
             {!queueOn && (
-              <button onClick={() => actions.applyStory("us-queue")} className="w-full rounded-lg border border-slate-300/30 px-3 py-1.5 text-left text-[11px] text-slate-200 hover:bg-white/10">
+              <button onClick={() => actions.applyDashboard("us-queue")} className="w-full rounded-lg border border-slate-300/30 px-3 py-1.5 text-left text-[11px] text-slate-200 hover:bg-white/10">
                 Raise the states by what is waiting to connect
               </button>
             )}
@@ -971,9 +972,9 @@ function UsPanel() {
   ];
   return (
     <Frame
-      title="United States"
-      sub={plants ? `EIA-860M ${plants.release}${queue ? ` · queue at the ${queue.through}` : ""}` : undefined}
-      tabs={withStats(tabs, statsOn, "USA")}
+      title={dash.name}
+      sub={`United States${plants ? ` · EIA-860M ${plants.release}${queue ? ` · queue at the ${queue.through}` : ""}` : ""}`}
+      tabs={withDashboard(tabs, "USA")}
       close={false}
     />
   );
@@ -994,7 +995,6 @@ function WorldCountryPanel({ code }: { code: string }) {
   const names = useNames();
   const name = names(code);
   const renewables = t?.entities[code] ? latest(t.entities[code].renewables, t.years) : null;
-  const statsOn = useStatsLayers().length > 0;
   const tabs: Tab[] = [
     {
       id: "now",
@@ -1032,7 +1032,7 @@ function WorldCountryPanel({ code }: { code: string }) {
     { id: "finance", label: "Finance", body: () => <FinanceTab iso3={code} /> },
     { id: "years", label: "25 years", body: () => <YearsTab code={code} scope="one" /> },
   ];
-  return <Frame title={name} tabs={withStats(tabs, statsOn, code)} action={<ReportButton code={code} />} />;
+  return <Frame title={name} tabs={withDashboard(tabs, code)} action={<ReportButton code={code} />} />;
 }
 
 function RegionPanel({ grid, id }: { grid: "us" | "br" | "au" | "tw" | "on" | "nz" | "za"; id: string }) {
@@ -1071,7 +1071,7 @@ function FinanceTab({ iso3 }: { iso3?: string }) {
     <>
       {!showing && (
         <button
-          onClick={() => useApp.setState((s) => ({ layers: { ...s.layers, financeCoal: true, financeGas: true }, story: null }))}
+          onClick={() => useApp.setState((s) => ({ layers: { ...s.layers, financeCoal: true, financeGas: true }, edited: true }))}
           className="w-full rounded-lg border border-amber-300/30 px-3 py-1.5 text-left text-[11px] text-amber-200 hover:bg-amber-300/10"
         >
           Show the money flows on the map

@@ -1,0 +1,1055 @@
+{
+  "about": "The map's datasets as the user sees them: one entry per kind of data, each made of the map layers (app/store.ts LayerId) that hold it for a region, with where it has data, its sources and the docs/DATA_SOURCES.md section that documents it. 'where' lists ISO alpha-2 codes or the regions World, Europe (the ENTSO-E area), EU (the 27 members) and US. 'family' names the coverage registry family (data/coverage.yaml) with per-country status. Read by the Layers panel, the dashboards and the agent.",
+  "datasets": [
+    {
+      "id": "flows",
+      "name": "Cross-border flows",
+      "category": "Electricity now",
+      "description": "Power moving between countries (Europe) and between grid regions (US, 24 h)",
+      "color": "rgb(120,222,255)",
+      "updates": "Europe every 30 min (eu-snapshot.yml); the 24 h replay daily (eu-days.yml)",
+      "parts": [
+        {
+          "layer": "flows",
+          "where": [
+            "Europe",
+            "US"
+          ],
+          "what": "physical flows per border, live and over a day; US regions in the 24 h replay",
+          "source": "ENTSO-E Transparency Platform; EIA-930",
+          "doc": "Live figures"
+        }
+      ]
+    },
+    {
+      "id": "prices",
+      "name": "Wholesale prices",
+      "category": "Electricity now",
+      "description": "Day-ahead prices: each European country raised by its price; US prices at every node",
+      "color": "rgb(255,196,90)",
+      "family": "prices",
+      "updates": "Europe every 30 min (eu-snapshot.yml); US nodes daily (eu-days.yml)",
+      "parts": [
+        {
+          "layer": "prices",
+          "where": [
+            "Europe"
+          ],
+          "what": "day-ahead price per bidding zone, countries raised by it",
+          "source": "ENTSO-E Transparency Platform",
+          "doc": "Live figures"
+        },
+        {
+          "layer": "usNodePrices",
+          "where": [
+            "US"
+          ],
+          "what": "day-ahead price at each node placed on the map (CAISO publishes node positions: the West), hour by hour (24 h)",
+          "source": "CAISO, ERCOT, MISO, SPP, NYISO, ISO-NE (read with gridstatus)",
+          "doc": "US prices at every node"
+        }
+      ]
+    },
+    {
+      "id": "liveGrids",
+      "name": "Live grids beyond Europe",
+      "category": "Electricity now",
+      "description": "Demand, generation and flows now in the US, Brazil, Australia, Taiwan, Ontario, New Zealand and South Africa",
+      "color": "rgb(255,196,120)",
+      "updates": "every 30 min (eu-snapshot.yml)",
+      "parts": [
+        {
+          "layer": "liveGrids",
+          "where": [
+            "US",
+            "BR",
+            "AU",
+            "TW",
+            "CA",
+            "NZ",
+            "ZA"
+          ],
+          "what": "the operators' newest figures",
+          "source": "EIA-930, ONS, AEMO, Taipower, IESO, Transpower, Eskom",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "towers",
+      "name": "Generation towers",
+      "category": "Electricity now",
+      "description": "Each country's (or US region's) output by source, through a day",
+      "color": "rgb(255,214,72)",
+      "updates": "daily (eu-days.yml)",
+      "parts": [
+        {
+          "layer": "towers",
+          "where": [
+            "Europe",
+            "US"
+          ],
+          "what": "generation by source per 15 min (Europe) or hour (US)",
+          "source": "ENTSO-E Transparency Platform; EIA-930",
+          "doc": "One day for the time-lapse"
+        }
+      ]
+    },
+    {
+      "id": "transmission",
+      "name": "Transmission lines",
+      "category": "Power grid",
+      "description": "High-voltage lines by voltage: Europe's grid, the US grid, and lines from 220 kV elsewhere",
+      "color": "rgb(236,178,120)",
+      "parts": [
+        {
+          "layer": "gridEU",
+          "where": [
+            "Europe"
+          ],
+          "what": "220–750 kV by voltage",
+          "source": "PyPSA-Eur prebuilt network from OpenStreetMap",
+          "doc": "Static layers"
+        },
+        {
+          "layer": "gridUS",
+          "where": [
+            "US"
+          ],
+          "what": "100–765 kV by voltage",
+          "source": "OpenStreetMap",
+          "doc": "United States"
+        },
+        {
+          "layer": "gridWorld",
+          "where": [
+            "World"
+          ],
+          "what": "220 kV and more; left out in Europe and the US while their own lines are on",
+          "source": "OpenStreetMap",
+          "doc": "Static layers"
+        }
+      ]
+    },
+    {
+      "id": "hvdc",
+      "name": "HVDC links",
+      "category": "Power grid",
+      "description": "Direct-current links between grids",
+      "color": "rgb(178,146,255)",
+      "parts": [
+        {
+          "layer": "hvdc",
+          "where": [
+            "Europe"
+          ],
+          "what": "direct-current links",
+          "source": "PyPSA-Eur prebuilt network from OpenStreetMap",
+          "doc": "Static layers"
+        }
+      ]
+    },
+    {
+      "id": "substations",
+      "name": "Substations",
+      "category": "Power grid",
+      "description": "220 kV and more, shown zoomed in",
+      "color": "rgb(226,232,240)",
+      "parts": [
+        {
+          "layer": "substations",
+          "where": [
+            "Europe"
+          ],
+          "what": "substations from 220 kV",
+          "source": "PyPSA-Eur prebuilt network from OpenStreetMap",
+          "doc": "Static layers"
+        }
+      ]
+    },
+    {
+      "id": "cables",
+      "name": "Undersea power cables",
+      "category": "Power grid",
+      "description": "HVDC and AC cables at sea",
+      "color": "rgb(110,190,255)",
+      "parts": [
+        {
+          "layer": "cables",
+          "where": [
+            "World"
+          ],
+          "what": "power cables at sea",
+          "source": "OpenStreetMap",
+          "doc": "Sea cables and pipelines"
+        }
+      ]
+    },
+    {
+      "id": "predicted",
+      "name": "Predicted local grid",
+      "category": "Power grid",
+      "description": "Medium-voltage lines estimated from night lights",
+      "color": "rgb(255,190,110)",
+      "parts": [
+        {
+          "layer": "predicted",
+          "where": [
+            "World"
+          ],
+          "what": "estimated, not mapped",
+          "source": "Gridfinder (Arderne et al. 2020)",
+          "doc": "Static layers"
+        }
+      ]
+    },
+    {
+      "id": "tyndp",
+      "name": "Planned grid projects",
+      "category": "Power grid",
+      "description": "ENTSO-E TYNDP 2024: lines and storage by status",
+      "color": "rgb(255,196,96)",
+      "parts": [
+        {
+          "layer": "tyndp",
+          "where": [
+            "Europe"
+          ],
+          "what": "projects by status",
+          "source": "ENTSO-E TYNDP 2024",
+          "doc": "Planned grid projects"
+        }
+      ]
+    },
+    {
+      "id": "capacity",
+      "name": "Grid capacity and queues",
+      "category": "Connections & queues",
+      "description": "Where new demand or generation can still connect; what is waiting to connect in the US",
+      "color": "rgb(206,138,72)",
+      "family": "connect",
+      "parts": [
+        {
+          "layer": "connect",
+          "where": [
+            "GB",
+            "NL",
+            "ES",
+            "FR",
+            "IT",
+            "IE",
+            "PT",
+            "PL",
+            "AT",
+            "BG",
+            "CZ",
+            "DE",
+            "DK",
+            "EE",
+            "LT",
+            "LU",
+            "MT",
+            "SE"
+          ],
+          "what": "free capacity, hosting capacity or queues per substation, node or area, as each operator publishes it",
+          "source": "the grid operators' capacity maps and registers",
+          "doc": "Grid capacity: GB, NL, ES"
+        },
+        {
+          "layer": "usQueue",
+          "where": [
+            "US"
+          ],
+          "what": "each state raised by the GW waiting to connect",
+          "source": "LBNL Queued Up; the markets' live queues",
+          "doc": "US live queues"
+        }
+      ]
+    },
+    {
+      "id": "plants",
+      "name": "Power plants",
+      "category": "Power plants",
+      "description": "Plants by fuel: Europe from 20 MW, every US generator from 1 MW, and the world's plants (operating, building, planned, retired)",
+      "color": "rgb(255,128,72)",
+      "parts": [
+        {
+          "layer": "plantsEU",
+          "where": [
+            "Europe"
+          ],
+          "what": "plants of 20 MW and more by fuel",
+          "source": "powerplantmatching (open energy data)",
+          "doc": "Static layers"
+        },
+        {
+          "layer": "plantsUS",
+          "where": [
+            "US"
+          ],
+          "what": "every generator of 1 MW and more",
+          "source": "EIA-860M",
+          "doc": "United States"
+        },
+        {
+          "layer": "plantsWorld",
+          "where": [
+            "World"
+          ],
+          "what": "operating, building, planned or retired; operating plants left out in Europe and the US while their own plants are on",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "registers",
+      "name": "Every unit (national registers)",
+      "category": "Power plants",
+      "description": "Countries that publish every generating unit: Germany, the UK, Denmark, Sweden, Ireland, Portugal, US wind turbines and solar farms",
+      "color": "rgb(255,214,72)",
+      "family": "units",
+      "parts": [
+        {
+          "layer": "mastrDE",
+          "where": [
+            "DE"
+          ],
+          "what": "MW per municipality of solar, wind or storage; units of 1 MW and more",
+          "source": "Marktstammdatenregister (BNetzA)",
+          "doc": "Germany: every unit"
+        },
+        {
+          "layer": "regGB",
+          "where": [
+            "GB"
+          ],
+          "what": "renewables and storage from 150 kW in planning or operating; gas, coal and nuclear stations",
+          "source": "REPD; DUKES",
+          "doc": "Every unit, national registers"
+        },
+        {
+          "layer": "regDK",
+          "where": [
+            "DK"
+          ],
+          "what": "every wind turbine on land and at sea",
+          "source": "Energistyrelsen",
+          "doc": "Every unit, national registers"
+        },
+        {
+          "layer": "regSE",
+          "where": [
+            "SE"
+          ],
+          "what": "every wind turbine built, permitted or in planning",
+          "source": "Vindbrukskollen",
+          "doc": "Every unit, national registers"
+        },
+        {
+          "layer": "regIE",
+          "where": [
+            "IE"
+          ],
+          "what": "wind farms connected by June 2022, at their grid node",
+          "source": "SEAI",
+          "doc": "Every unit, national registers"
+        },
+        {
+          "layer": "regPT",
+          "where": [
+            "PT"
+          ],
+          "what": "wind, solar, thermal and small hydro in licensing",
+          "source": "DGEG",
+          "doc": "Every unit, national registers"
+        },
+        {
+          "layer": "turbinesUS",
+          "where": [
+            "US"
+          ],
+          "what": "every wind turbine, shown from zoom 5",
+          "source": "USWTDB (USGS)",
+          "doc": "United States"
+        },
+        {
+          "layer": "solarUS",
+          "where": [
+            "US"
+          ],
+          "what": "every solar array of 1 MW and more; outlines zoomed in",
+          "source": "USPVDB (USGS)",
+          "doc": "United States"
+        }
+      ]
+    },
+    {
+      "id": "offshoreWind",
+      "name": "Offshore wind farms",
+      "category": "Power plants",
+      "description": "Areas at sea: operating, building, approved, planned",
+      "color": "rgb(96,190,255)",
+      "parts": [
+        {
+          "layer": "offshoreWind",
+          "where": [
+            "Europe"
+          ],
+          "what": "wind farm areas by status",
+          "source": "EMODnet Human Activities",
+          "doc": "Offshore wind farms"
+        }
+      ]
+    },
+    {
+      "id": "grw",
+      "name": "Wind and solar seen from space",
+      "category": "Power plants",
+      "description": "Every turbine and solar array found in satellite images, 2024 Q2",
+      "color": "rgb(255,214,72)",
+      "parts": [
+        {
+          "layer": "grw",
+          "where": [
+            "World"
+          ],
+          "what": "detected turbines and arrays",
+          "source": "Global Renewables Watch",
+          "doc": "Wind and solar seen from space"
+        }
+      ]
+    },
+    {
+      "id": "plantOutput",
+      "name": "Plant output",
+      "category": "Power plants",
+      "description": "What each large plant produces at the clock (24 h)",
+      "color": "rgb(255,214,140)",
+      "updates": "daily (eu-days.yml)",
+      "parts": [
+        {
+          "layer": "plantOutput",
+          "where": [
+            "Europe",
+            "US"
+          ],
+          "what": "output per unit through the day (Europe); US fossil units hour by hour with CO₂",
+          "source": "ENTSO-E Transparency Platform; EPA CAMPD",
+          "doc": "Output per plant"
+        }
+      ]
+    },
+    {
+      "id": "gasPipes",
+      "name": "Gas pipelines",
+      "category": "Gas, oil & coal",
+      "description": "Operating, under construction and proposed pipelines; every US interstate and intrastate line",
+      "color": "rgb(255,196,96)",
+      "parts": [
+        {
+          "layer": "gasPipes",
+          "where": [
+            "World"
+          ],
+          "what": "operating, under construction, proposed",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        },
+        {
+          "layer": "gasPipesUS",
+          "where": [
+            "US"
+          ],
+          "what": "interstate and intrastate natural gas pipelines",
+          "source": "EIA",
+          "doc": "Gas on the US side"
+        }
+      ]
+    },
+    {
+      "id": "oilPipes",
+      "name": "Oil pipelines",
+      "category": "Gas, oil & coal",
+      "description": "Crude oil and NGL",
+      "color": "rgb(222,110,82)",
+      "parts": [
+        {
+          "layer": "oilPipes",
+          "where": [
+            "World"
+          ],
+          "what": "crude oil and NGL pipelines",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "lngTerminals",
+      "name": "LNG terminals",
+      "category": "Gas, oil & coal",
+      "description": "Import and export, sized by capacity",
+      "color": "rgb(255,150,92)",
+      "parts": [
+        {
+          "layer": "lngTerminals",
+          "where": [
+            "World"
+          ],
+          "what": "terminals by capacity",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "lngSendOut",
+      "name": "LNG send-out",
+      "category": "Gas, oil & coal",
+      "description": "Gas each European terminal sends into the grid, per day",
+      "color": "rgb(120,180,255)",
+      "updates": "daily (eu-days.yml)",
+      "parts": [
+        {
+          "layer": "lngSendOut",
+          "where": [
+            "Europe"
+          ],
+          "what": "send-out per terminal and gas day",
+          "source": "GIE ALSI",
+          "doc": "LNG send-out per terminal"
+        }
+      ]
+    },
+    {
+      "id": "gasFlows",
+      "name": "Gas flows",
+      "category": "Gas, oil & coal",
+      "description": "Gas crossing borders and entering Europe, per gas day",
+      "color": "rgb(255,178,62)",
+      "family": "gas",
+      "updates": "daily (eu-days.yml)",
+      "parts": [
+        {
+          "layer": "gasFlows",
+          "where": [
+            "Europe"
+          ],
+          "what": "net flow per border and entry point, newest complete gas day",
+          "source": "ENTSOG Transparency Platform",
+          "doc": "Gas flows"
+        }
+      ]
+    },
+    {
+      "id": "gas",
+      "name": "Gas storage",
+      "category": "Gas, oil & coal",
+      "description": "Underground storage sites",
+      "color": "rgb(255,150,92)",
+      "parts": [
+        {
+          "layer": "gas",
+          "where": [
+            "Europe"
+          ],
+          "what": "storage sites",
+          "source": "SciGRID_gas IGGIELGN (2021)",
+          "doc": "Static layers"
+        }
+      ]
+    },
+    {
+      "id": "gasProjects",
+      "name": "Planned gas projects",
+      "category": "Gas, oil & coal",
+      "description": "ENTSOG TYNDP 2026: gas and hydrogen projects per country",
+      "color": "rgb(96,214,255)",
+      "parts": [
+        {
+          "layer": "gasProjects",
+          "where": [
+            "Europe"
+          ],
+          "what": "projects per country",
+          "source": "ENTSOG TYNDP 2026",
+          "doc": "Planned gas projects"
+        }
+      ]
+    },
+    {
+      "id": "coalTerminals",
+      "name": "Coal ports",
+      "category": "Gas, oil & coal",
+      "description": "Coal export and import terminals",
+      "color": "rgb(196,182,166)",
+      "parts": [
+        {
+          "layer": "coalTerminals",
+          "where": [
+            "World"
+          ],
+          "what": "terminals",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "oilGasFields",
+      "name": "Oil and gas fields",
+      "category": "Gas, oil & coal",
+      "description": "Where oil and gas are produced",
+      "color": "rgb(214,96,64)",
+      "parts": [
+        {
+          "layer": "oilGasFields",
+          "where": [
+            "World"
+          ],
+          "what": "fields",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "coalMines",
+      "name": "Coal mines",
+      "category": "Gas, oil & coal",
+      "description": "Sized by capacity",
+      "color": "rgb(160,146,132)",
+      "parts": [
+        {
+          "layer": "coalMines",
+          "where": [
+            "World"
+          ],
+          "what": "mines by capacity",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "emitters",
+      "name": "Reported emissions per facility",
+      "category": "Emissions",
+      "description": "Verified CO₂ per installation (EU and UK ETS) and reported CO₂e of large US facilities",
+      "color": "rgb(236,128,92)",
+      "family": "emitters",
+      "parts": [
+        {
+          "layer": "ets",
+          "where": [
+            "Europe"
+          ],
+          "what": "verified emissions per installation and year",
+          "source": "EU ETS Union Registry; EEA; UK ETS",
+          "doc": "CO₂ per installation, EU ETS"
+        },
+        {
+          "layer": "ghgrpUS",
+          "where": [
+            "US"
+          ],
+          "what": "reported CO₂e of large facilities",
+          "source": "EPA GHGRP",
+          "doc": "US industrial emitters"
+        }
+      ]
+    },
+    {
+      "id": "ctrace",
+      "name": "Modelled emissions per facility",
+      "category": "Emissions",
+      "description": "Modelled CO₂e of plants, mills and fields",
+      "color": "rgb(255,196,96)",
+      "parts": [
+        {
+          "layer": "ctrace",
+          "where": [
+            "World"
+          ],
+          "what": "modelled, not reported",
+          "source": "Climate TRACE",
+          "doc": "Emissions per facility worldwide"
+        }
+      ]
+    },
+    {
+      "id": "methane",
+      "name": "Methane plumes",
+      "category": "Emissions",
+      "description": "Leaks seen by satellites",
+      "color": "rgb(255,90,200)",
+      "parts": [
+        {
+          "layer": "methane",
+          "where": [
+            "World"
+          ],
+          "what": "plumes",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "steel",
+      "name": "Steel plants",
+      "category": "Industry & demand",
+      "description": "Electric furnaces stand out",
+      "color": "rgb(120,200,255)",
+      "parts": [
+        {
+          "layer": "steel",
+          "where": [
+            "World"
+          ],
+          "what": "plants by process",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "cement",
+      "name": "Cement plants",
+      "category": "Industry & demand",
+      "description": "Sized by capacity",
+      "color": "rgb(206,192,166)",
+      "parts": [
+        {
+          "layer": "cement",
+          "where": [
+            "World"
+          ],
+          "what": "plants by capacity",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "chemicals",
+      "name": "Chemical plants",
+      "category": "Industry & demand",
+      "description": "Large chemical sites",
+      "color": "rgb(230,160,255)",
+      "parts": [
+        {
+          "layer": "chemicals",
+          "where": [
+            "World"
+          ],
+          "what": "sites",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "ironOre",
+      "name": "Iron ore mines",
+      "category": "Industry & demand",
+      "description": "Sized by production",
+      "color": "rgb(206,112,88)",
+      "parts": [
+        {
+          "layer": "ironOre",
+          "where": [
+            "World"
+          ],
+          "what": "mines by production",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "dataCentres",
+      "name": "Data centres",
+      "category": "Industry & demand",
+      "description": "Mapped in OpenStreetMap",
+      "color": "rgb(196,150,255)",
+      "parts": [
+        {
+          "layer": "dataCentres",
+          "where": [
+            "World"
+          ],
+          "what": "mapped sites",
+          "source": "OpenStreetMap",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "hydrogen",
+      "name": "Hydrogen projects",
+      "category": "Industry & demand",
+      "description": "Electrolysers and other clean-hydrogen plants, operating or being built",
+      "color": "rgb(96,214,255)",
+      "parts": [
+        {
+          "layer": "hydrogen",
+          "where": [
+            "Europe"
+          ],
+          "what": "projects",
+          "source": "European Hydrogen Observatory",
+          "doc": "Hydrogen projects"
+        }
+      ]
+    },
+    {
+      "id": "ev",
+      "name": "EV charging",
+      "category": "Industry & demand",
+      "description": "Public charging points in Europe; DC fast charging stations in the US",
+      "color": "rgb(96,214,255)",
+      "family": "ev",
+      "parts": [
+        {
+          "layer": "evChargersEU",
+          "where": [
+            "Europe"
+          ],
+          "what": "charging points from the national registers, OpenStreetMap stations elsewhere, EAFO counts",
+          "source": "BNetzA, IRVE, NDW, OpenStreetMap, EAFO",
+          "doc": "EV charging in Europe"
+        },
+        {
+          "layer": "evChargersUS",
+          "where": [
+            "US"
+          ],
+          "what": "public DC fast charging stations, sized by ports",
+          "source": "NREL AFDC",
+          "doc": "US EV fast chargers"
+        }
+      ]
+    },
+    {
+      "id": "water",
+      "name": "Water stress",
+      "category": "Risk",
+      "description": "Water stress, flood and drought risk per river basin",
+      "color": "rgb(255,153,0)",
+      "parts": [
+        {
+          "layer": "water",
+          "where": [
+            "World"
+          ],
+          "what": "indicators per basin",
+          "source": "WRI Aqueduct",
+          "doc": "Water risk"
+        }
+      ]
+    },
+    {
+      "id": "flood",
+      "name": "River flood hazard",
+      "category": "Risk",
+      "description": "Water depth in a 100-year flood",
+      "color": "rgb(60,130,210)",
+      "parts": [
+        {
+          "layer": "flood",
+          "where": [
+            "World"
+          ],
+          "what": "depth classes; Europe at 100 m, the world at 30 arc-seconds",
+          "source": "JRC",
+          "doc": "River flood hazard"
+        }
+      ]
+    },
+    {
+      "id": "protectedAreas",
+      "name": "Protected areas",
+      "category": "Risk",
+      "description": "Natura 2000 sites in the EU; PAD-US protected and public lands",
+      "color": "rgb(96,186,120)",
+      "parts": [
+        {
+          "layer": "protectedAreas",
+          "where": [
+            "EU",
+            "US"
+          ],
+          "what": "Natura 2000 sites; PAD-US Fee areas with GAP status",
+          "source": "EEA; USGS",
+          "doc": "Protected areas"
+        }
+      ]
+    },
+    {
+      "id": "roadsRail",
+      "name": "Major roads and railways",
+      "category": "Risk",
+      "description": "Motorways, trunk and primary roads; standard-gauge rail",
+      "color": "rgb(200,196,186)",
+      "parts": [
+        {
+          "layer": "roadsRail",
+          "where": [
+            "Europe",
+            "US"
+          ],
+          "what": "major roads and railways",
+          "source": "OpenStreetMap through Overture Maps",
+          "doc": "Major roads and railways"
+        }
+      ]
+    },
+    {
+      "id": "usOutages",
+      "name": "Power outages",
+      "category": "Risk",
+      "description": "Customer-hours without power per county, newest year",
+      "color": "rgb(230,120,80)",
+      "family": "reliability",
+      "parts": [
+        {
+          "layer": "usOutages",
+          "where": [
+            "US"
+          ],
+          "what": "customer-hours without power per county",
+          "source": "EAGLE-I (ORNL)",
+          "doc": "US outages"
+        }
+      ]
+    },
+    {
+      "id": "solarResource",
+      "name": "Solar resource",
+      "category": "Resources",
+      "description": "PV output per kWp installed, long-term average",
+      "color": "rgb(240,196,112)",
+      "parts": [
+        {
+          "layer": "solarResource",
+          "where": [
+            "World"
+          ],
+          "what": "PVOUT",
+          "source": "Global Solar Atlas",
+          "doc": "Resource atlases"
+        }
+      ]
+    },
+    {
+      "id": "windResource",
+      "name": "Wind resource",
+      "category": "Resources",
+      "description": "Mean wind speed at 100 m",
+      "color": "rgb(128,206,206)",
+      "parts": [
+        {
+          "layer": "windResource",
+          "where": [
+            "World"
+          ],
+          "what": "mean wind speed at 100 m",
+          "source": "Global Wind Atlas",
+          "doc": "Resource atlases"
+        }
+      ]
+    },
+    {
+      "id": "wind",
+      "name": "Wind",
+      "category": "Weather",
+      "description": "Moving wind at turbine height",
+      "color": "rgb(220,240,255)",
+      "parts": [
+        {
+          "layer": "wind",
+          "where": [
+            "World"
+          ],
+          "what": "wind at 100 m",
+          "source": "Open-Meteo; ECMWF open data",
+          "doc": "Wind and sun layers"
+        }
+      ]
+    },
+    {
+      "id": "sun",
+      "name": "Sunshine",
+      "category": "Weather",
+      "description": "Solar radiation reaching the ground",
+      "color": "rgb(255,214,72)",
+      "parts": [
+        {
+          "layer": "sun",
+          "where": [
+            "World"
+          ],
+          "what": "surface solar radiation",
+          "source": "ECMWF open data",
+          "doc": "Wind and sun layers"
+        }
+      ]
+    },
+    {
+      "id": "night",
+      "name": "Night",
+      "category": "Weather",
+      "description": "Where it is dark at that moment (24 h)",
+      "color": "rgb(90,110,160)",
+      "parts": [
+        {
+          "layer": "night",
+          "where": [
+            "World"
+          ],
+          "what": "the night side, computed from the clock",
+          "source": "computed",
+          "doc": "One day for the time-lapse"
+        }
+      ]
+    },
+    {
+      "id": "financeCoal",
+      "name": "Who finances coal power",
+      "category": "Money",
+      "description": "Money from lenders' countries to coal plants",
+      "color": "rgb(232,204,128)",
+      "parts": [
+        {
+          "layer": "financeCoal",
+          "where": [
+            "World"
+          ],
+          "what": "finance per lender country and plant",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "financeGas",
+      "name": "Who finances gas",
+      "category": "Money",
+      "description": "Money to gas plants and LNG terminals",
+      "color": "rgb(255,170,60)",
+      "parts": [
+        {
+          "layer": "financeGas",
+          "where": [
+            "World"
+          ],
+          "what": "finance per lender country and project",
+          "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    }
+  ]
+}

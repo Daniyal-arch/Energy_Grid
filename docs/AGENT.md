@@ -75,6 +75,13 @@ compares the numbers in the text with the tool results and marks any it cannot f
 
 ## 4. The semantic catalogue (what makes the agent good)
 
+The map's own datasets, as the user sees them, are in `frontend/src/app/datasets.json` (the
+Datasets panel, the dashboards and the data catalogue read it): one entry per kind of data with
+its category, the map layers that hold it per region (`where`: ISO codes or World, Europe, EU,
+US), what each shows, the source, the update cadence, the `docs/DATA_SOURCES.md` section and the
+coverage registry family (`data/coverage.yaml`, per-country status for EU-27, the UK and the US).
+`make_map` turns a dataset id into its layers; `search_catalog` searches these entries too.
+
 `lake/_catalog.json` lists files and columns; the agent also needs meaning. One YAML per dataset
 in `agent/catalog/<dataset>.yaml`, kept next to the code that builds the dataset and checked by a
 test (every lake table and every map file has an entry):

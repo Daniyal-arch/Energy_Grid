@@ -347,7 +347,7 @@ function DataCentresStats({ iso3 }: { iso3?: string }) {
 function FinanceStats({ iso3 }: { iso3?: string }) {
   const f = useFile<FinanceFile>("gemFinance");
   if (!f) return null;
-  const pick = (c: string) => actions.select({ kind: "country", iso3: c, iso2: Object.entries(ISO3).find(([, v]) => v === c)?.[0] }, "layers");
+  const pick = (c: string) => actions.select({ kind: "country", iso3: c, iso2: Object.entries(ISO3).find(([, v]) => v === c)?.[0] }, "dashboard");
   return iso3 ? <FinanceCountryCard f={f} iso3={iso3} onPick={pick} /> : <FinanceWorldCard f={f} onPick={pick} />;
 }
 
@@ -911,7 +911,7 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
   return (
     <>
       <div className={`px-1 text-[10.5px] ${muted}`}>
-        Figures for the layers on the map{iso3 ? ", in this country" : ", worldwide"}. Switch layers in the Layers panel.
+        Figures for the datasets on the map{iso3 ? ", in this country" : ", worldwide"}. Switch datasets in the Datasets panel.
       </div>
       {ids.map((id) => {
         if (id in GEM_POINTS) return <GemPointsCard key={id} id={id} iso3={iso3} />;

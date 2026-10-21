@@ -304,6 +304,15 @@ export function addRoadsLayers(map: maplibregl.Map, tiles: string): void {
   );
 }
 export const GRID_LAYERS = ["hv-glow", "hv-lines"];
+const HV_GLOW_FILTER = [">=", kv, 380];
+/** The world's lines left out inside these polygons (GeoJSON coordinates): where Europe's grid or
+ *  the US lines are on, so "Transmission lines" draws each line once. A line crossing the edge stays. */
+export function setWorldGridOutside(map: maplibregl.Map, polygons: number[][][][]): void {
+  if (!map.getLayer("hv-lines")) return;
+  const outside = polygons.length ? ["!", ["within", { type: "MultiPolygon", coordinates: polygons }]] : null;
+  map.setFilter("hv-lines", (outside ?? null) as unknown as maplibregl.FilterSpecification | null);
+  map.setFilter("hv-glow", (outside ? ["all", HV_GLOW_FILTER, outside] : HV_GLOW_FILTER) as unknown as maplibregl.FilterSpecification);
+}
 export const PREDICTED_LAYERS = ["grid-predicted"];
 export const US_GRID_LAYERS = ["us-lines", "us-lines-dc"];
 

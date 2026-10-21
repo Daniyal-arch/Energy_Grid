@@ -1,6 +1,7 @@
-// Layers: what colours the countries, and the map's layers in a few plain groups. Each layer
-// says in one line what it shows; its key appears only while it is on. Layers that need
-// another time mode are not listed (a line under the group says where they are).
+// Datasets: every kind of data on the map by category (app/datasets.json), one entry however
+// many regions and sources it joins ("Transmission lines" = Europe, the US and the world). A name
+// opens where it has data and its sources (the map tints those countries); the switch shows it;
+// its key appears while it is on. What colours the countries is chosen here too.
 
 import { useState, type ReactNode } from "react";
 
@@ -34,19 +35,9 @@ import { useDataStore, useFile } from "../app/data";
 import type { StatsFile } from "../app/types";
 import { priceRange, rampCss } from "../map/priceTerrain";
 import { currentDay } from "../map/tooltip";
-import {
-  COLOURS,
-  LAYERS,
-  LAYER_GROUPS,
-  actions,
-  useApp,
-  type ColourId,
-  type LayerGroup,
-  type LayerId,
-  type LayerInfo,
-  type PlantStatus,
-  type TimeMode,
-} from "../app/store";
+import { COLOURS, actions, useApp, type ColourId, type LayerGroup, type LayerId, type PlantStatus, type TimeMode } from "../app/store";
+import { CATEGORIES, DATASETS, coverageLabel, datasetModes, datasetOn, partsIn, placesText, toggleDataset, type Dataset } from "../app/datasets";
+import type { CoverageFile } from "../lib/coverage";
 
 import type { AtlasFile, AtlasId } from "../lib/atlas";
 import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
@@ -793,54 +784,143 @@ function Toggle({ on }: { on: boolean }) {
   );
 }
 
-function LayerRow({ info }: { info: LayerInfo }) {
-  const on = useApp((s) => s.layers[info.id]);
+const DOCS = "https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/DATA_SOURCES.md";
+const STATUS_ORDER: [string, string][] = [
+  ["have", "On the map"],
+  ["built", "On the map"],
+  ["partly", "Partly"],
+  ["not_published", "Not published by the operator"],
+  ["blocked", "Waits for a key"],
+];
+
+/** The coverage registry's countries for a dataset's family (coverage.json): EU-27, the UK, the US. */
+function FamilyCoverage({ family }: { family: string }) {
+  const f = useFile<CoverageFile>("coverage");
+  if (!f) return null;
+  const fam = f.families.find((x) => x.id === family);
+  if (!fam) return null;
+  const by = new Map<string, string[]>();
+  for (const [cc, cells] of Object.entries(f.countries)) {
+    const cell = cells[family];
+    if (!cell) continue;
+    const k = cell.g === "◐" ? "partly" : cell.status;
+    by.set(k, [...(by.get(k) ?? []), cc]);
+  }
+  const rows = STATUS_ORDER.filter(([k]) => by.get(k)?.length).reduce<[string, string[]][]>((acc, [k, label]) => {
+    const prev = acc.find(([l]) => l === label);
+    if (prev) prev[1].push(...by.get(k)!);
+    else acc.push([label, [...by.get(k)!]]);
+    return acc;
+  }, []);
+  return (
+    <div className="mt-2 rounded-md border border-white/[0.06] bg-white/[0.02] px-2 py-1.5">
+      <div className={`text-[9.5px] uppercase tracking-[0.14em] ${muted}`}>
+        Coverage registry · {fam.name} · checked {f.checked}
+      </div>
+      {rows.map(([label, codes]) => (
+        <div key={label} className="mt-1 text-[10.5px] leading-snug">
+          <span className="text-slate-300">{label}:</span> <span className={muted}>{codes.join(", ")}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** Where a dataset has data and where it comes from; the map tints the countries meanwhile. */
+export function DatasetDetails({ d, tinted = true }: { d: Dataset; tinted?: boolean }) {
+  return (
+    <div className="mx-2 mb-2 rounded-lg border border-white/[0.07] bg-[#0d1119] px-2.5 py-2">
+      <div className="text-[11px] leading-snug text-slate-300">{d.description}</div>
+      <div className="mt-2 space-y-1.5">
+        {d.parts.map((p) => (
+          <div key={p.layer} className="text-[10.5px] leading-snug">
+            <div className="text-slate-200">{placesText(p.where)}</div>
+            <div className={muted}>
+              {p.what}. Source: {p.source}.
+            </div>
+          </div>
+        ))}
+      </div>
+      {d.updates && <div className={`mt-1.5 text-[10.5px] ${muted}`}>Updated: {d.updates}.</div>}
+      {d.family && <FamilyCoverage family={d.family} />}
+      <div className={`mt-2 flex items-center justify-between text-[10px] ${muted}`}>
+        <span>{tinted ? "Tinted on the map: where it has data" : ""}</span>
+        <a href={`${DOCS}`} target="_blank" rel="noreferrer" className="text-sky-300/80 hover:text-sky-200" title={`docs/DATA_SOURCES.md, section "${d.parts[0].doc}"`}>
+          How it is built ↗
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function DatasetRow({ d }: { d: Dataset }) {
+  const mode = useApp((s) => s.mode);
+  const layers = useApp((s) => s.layers);
+  const coverageOf = useApp((s) => s.coverageOf);
+  const on = datasetOn(d, layers);
+  const open = coverageOf === d.id;
+  const shownParts = partsIn(d, mode).filter((p) => layers[p.layer]);
+  const where = coverageLabel(d);
   return (
     <div className={`rounded-lg transition-colors ${on ? "bg-white/[0.05]" : "hover:bg-white/[0.03]"}`}>
-      <button onClick={() => actions.toggleLayer(info.id)} className="flex w-full items-center gap-2.5 px-2 py-1.5 text-left" aria-pressed={on}>
-        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: info.color, opacity: on ? 1 : 0.45 }} />
-        <span className="min-w-0 flex-1">
-          <span className={`flex items-baseline gap-1.5 text-[12.5px] ${on ? "text-slate-50" : "text-slate-300"}`}>
-            <span className="truncate">{info.label}</span>
-            {info.coverage !== "World" && <span className="shrink-0 text-[9.5px] uppercase tracking-wider text-slate-500">{info.coverage}</span>}
+      <div className="flex w-full items-center gap-2.5 px-2 py-1.5">
+        <button onClick={() => actions.showCoverage(open ? null : d.id)} className="flex min-w-0 flex-1 items-center gap-2.5 text-left" aria-expanded={open} title="Where it has data and its sources">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: d.color, opacity: on ? 1 : 0.45 }} />
+          <span className="min-w-0 flex-1">
+            <span className={`flex items-baseline gap-1.5 text-[12.5px] ${on ? "text-slate-50" : "text-slate-300"}`}>
+              <span className="truncate">{d.name}</span>
+              {where && <span className="shrink-0 text-[9.5px] uppercase tracking-wider text-slate-500">{where}</span>}
+            </span>
+            <span className={`block truncate text-[10.5px] ${muted}`}>{d.description}</span>
           </span>
-          <span className={`block truncate text-[10.5px] ${muted}`}>{info.desc}</span>
-        </span>
-        <Toggle on={on} />
-      </button>
-      {on && (
-        <div className="px-2 pb-2 pl-[30px]">
-          <LayerLegend id={info.id} />
+          <span className={`shrink-0 text-[10px] text-slate-500 transition-transform ${open ? "rotate-90" : ""}`}>›</span>
+        </button>
+        <button onClick={() => toggleDataset(d)} aria-pressed={on} title={on ? `Hide ${d.name.toLowerCase()}` : `Show ${d.name.toLowerCase()}`}>
+          <Toggle on={on} />
+        </button>
+      </div>
+      {open && <DatasetDetails d={d} />}
+      {on && shownParts.length > 0 && (
+        <div className="space-y-2 px-2 pb-2 pl-[30px]">
+          {shownParts.map((p) => (
+            <div key={p.layer}>
+              {shownParts.length > 1 && <div className="mb-0.5 text-[9.5px] uppercase tracking-[0.12em] text-slate-500">{placesText(p.where)}</div>}
+              <LayerLegend id={p.layer} />
+            </div>
+          ))}
         </div>
       )}
     </div>
   );
 }
 
-function Group({ group, open, onToggle }: { group: LayerGroup; open: boolean; onToggle: () => void }) {
+const norm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const matches = (d: Dataset, t: string) => !t || norm(`${d.name} ${d.description} ${d.category} ${d.parts.map((p) => `${p.source} ${p.what} ${p.where.join(" ")}`).join(" ")}`).includes(t);
+
+function Category({ group, open, onToggle, q }: { group: LayerGroup; open: boolean; onToggle: () => void; q: string }) {
   const mode = useApp((s) => s.mode);
   const layers = useApp((s) => s.layers);
-  // a story's own layer is listed only while it is on
-  const inGroup = LAYERS.filter((l) => l.group === group && (!l.story || layers[l.id]));
-  const shown = inGroup.filter((l) => !l.modes || l.modes.includes(mode));
-  const elsewhere = inGroup.filter((l) => l.modes && !l.modes.includes(mode));
-  const active = shown.filter((l) => layers[l.id]).length;
-  if (!shown.length) return null;
+  const inGroup = DATASETS.filter((d) => d.category === group && matches(d, q));
+  const shown = inGroup.filter((d) => partsIn(d, mode).length > 0);
+  const elsewhere = inGroup.filter((d) => !partsIn(d, mode).length);
+  const active = shown.filter((d) => datasetOn(d, layers)).length;
+  if (!shown.length && !elsewhere.length) return null;
+  const isOpen = open || !!q;
   return (
     <section className="border-t border-white/[0.06] first:border-t-0">
-      <button onClick={onToggle} className="flex w-full items-center gap-2 px-3 py-2.5 text-left hover:bg-white/[0.03]" aria-expanded={open}>
-        <span className={`text-[10px] text-slate-500 transition-transform ${open ? "rotate-90" : ""}`}>▶</span>
+      <button onClick={onToggle} className="flex w-full items-center gap-2 px-3 py-2.5 text-left hover:bg-white/[0.03]" aria-expanded={isOpen}>
+        <span className={`text-[10px] text-slate-500 transition-transform ${isOpen ? "rotate-90" : ""}`}>▶</span>
         <span className="flex-1 text-[12px] font-medium text-slate-200">{group}</span>
         <span className={`text-[10.5px] ${active ? "text-sky-300" : "text-slate-500"}`}>{active ? `${active} on` : `${shown.length}`}</span>
       </button>
-      {open && (
+      {isOpen && (
         <div className="px-1.5 pb-2">
-          {shown.map((l) => (
-            <LayerRow key={l.id} info={l} />
+          {shown.map((d) => (
+            <DatasetRow key={d.id} d={d} />
           ))}
           {elsewhere.length > 0 && (
             <div className={`px-2 pt-1 text-[10px] ${muted}`}>
-              Also in {[...new Set(elsewhere.flatMap((l) => l.modes ?? []))].map((m) => MODE_LABEL[m]).join(" and ")}: {elsewhere.map((l) => l.label.toLowerCase()).join(", ")}
+              In {[...new Set(elsewhere.flatMap((d) => datasetModes(d)))].map((m) => MODE_LABEL[m]).join(" and ")} only: {elsewhere.map((d) => d.name.toLowerCase()).join(", ")}
             </div>
           )}
         </div>
@@ -854,13 +934,54 @@ export default function LayersPanel() {
   const mode = useApp((s) => s.mode);
   const layers = useApp((s) => s.layers);
   const [open, setOpen] = useState<Partial<Record<LayerGroup, boolean>>>({});
+  const [q, setQ] = useState("");
+  const t = norm(q.trim());
   const colours = COLOURS.filter((c) => c.modes.includes(mode));
   const colourGroups = [...new Set(colours.map((c) => c.group))];
-  const active = LAYERS.filter((l) => layers[l.id] && (!l.modes || l.modes.includes(mode)));
-  const groupHasActive = (g: LayerGroup) => active.some((l) => l.group === g);
+  const active = DATASETS.filter((d) => partsIn(d, mode).some((p) => layers[p.layer]));
+  const groupHasActive = (g: LayerGroup) => active.some((d) => d.category === g);
+  const found = t ? DATASETS.filter((d) => matches(d, t)).length : 0;
   return (
     <div>
-      <section className="px-3 pb-3 pt-2">
+      <section className="px-3 pb-2 pt-2.5">
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={`Find among ${DATASETS.length} datasets…`}
+          className="w-full rounded-md border border-white/10 bg-[#0d1119] px-2 py-1.5 text-[12px] text-slate-100 outline-none placeholder:text-slate-500 focus:border-sky-400/50"
+          aria-label="Find a dataset"
+        />
+        {t && <div className={`mt-1 text-[10px] ${muted}`}>{found ? `${found} found: by name, source or country code` : "Nothing found"}</div>}
+      </section>
+
+      <div className="flex items-center justify-between border-t border-white/[0.06] px-3 pb-1.5 pt-2.5">
+        <span className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">On the map</span>
+        {active.length > 0 && (
+          <button
+            onClick={() => useApp.setState((s) => ({ layers: Object.fromEntries(Object.keys(s.layers).map((k) => [k, false])) as typeof s.layers, edited: true, coverageOf: null }))}
+            className="text-[10.5px] text-slate-400 hover:text-slate-100"
+          >
+            Clear all
+          </button>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-1 px-3 pb-2.5">
+        {active.length === 0 && <span className={`text-[11px] ${muted}`}>Nothing yet: switch a dataset on below, or pick a dashboard.</span>}
+        {active.map((d) => (
+          <button
+            key={d.id}
+            onClick={() => toggleDataset(d)}
+            className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] py-0.5 pl-2 pr-1.5 text-[10.5px] text-slate-200 hover:border-white/25"
+            title={`Hide ${d.name.toLowerCase()}`}
+          >
+            <span className="h-2 w-2 rounded-full" style={{ background: d.color }} />
+            {d.name}
+            <span className="text-slate-500 group-hover:text-slate-200">✕</span>
+          </button>
+        ))}
+      </div>
+
+      <section className="border-t border-white/[0.06] px-3 pb-3 pt-2.5">
         <label className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]" htmlFor="colour-by">
           Colour the countries by
         </label>
@@ -899,32 +1020,15 @@ export default function LayersPanel() {
         )}
       </section>
 
-      <div className="flex items-center justify-between border-t border-white/[0.06] px-3 pb-1.5 pt-2.5">
-        <span className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">On the map</span>
-        {active.length > 0 && (
-          <button onClick={() => active.forEach((l) => actions.toggleLayer(l.id))} className="text-[10.5px] text-slate-400 hover:text-slate-100">
-            Clear all
-          </button>
-        )}
+      <div className="flex items-center justify-between border-t border-white/[0.06] px-3 pb-1 pt-2.5">
+        <span className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">Browse by category</span>
+        <button onClick={() => useApp.setState({ catalogue: true })} className="text-[10.5px] text-sky-300/90 hover:text-sky-200" title="Every dataset with its sources and coverage">
+          Data catalogue ↗
+        </button>
       </div>
-      <div className="flex flex-wrap gap-1 px-3 pb-2.5">
-        {active.length === 0 && <span className={`text-[11px] ${muted}`}>Nothing yet: switch a layer on below.</span>}
-        {active.map((l) => (
-          <button
-            key={l.id}
-            onClick={() => actions.toggleLayer(l.id)}
-            className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] py-0.5 pl-2 pr-1.5 text-[10.5px] text-slate-200 hover:border-white/25"
-            title={`Hide ${l.label.toLowerCase()}`}
-          >
-            <span className="h-2 w-2 rounded-full" style={{ background: l.color }} />
-            {l.label}
-            <span className="text-slate-500 group-hover:text-slate-200">✕</span>
-          </button>
-        ))}
-      </div>
-
-      {LAYER_GROUPS.map((g) => (
-        <Group key={g} group={g} open={open[g] ?? groupHasActive(g)} onToggle={() => setOpen((o) => ({ ...o, [g]: !(o[g] ?? groupHasActive(g)) }))} />
+      <div className={`px-3 pb-1.5 text-[10px] ${muted}`}>Click a name for where it has data (tinted on the map) and its sources.</div>
+      {CATEGORIES.map((g) => (
+        <Category key={g} group={g} q={t} open={open[g] ?? groupHasActive(g)} onToggle={() => setOpen((o) => ({ ...o, [g]: !(o[g] ?? groupHasActive(g)) }))} />
       ))}
       <div className="h-2" />
     </div>
