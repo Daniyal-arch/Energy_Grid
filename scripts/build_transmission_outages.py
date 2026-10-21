@@ -1,8 +1,8 @@
 """Lines out of service: ENTSO-E unavailability of transmission infrastructure (A78, brief 17, 11).
 
 documentType A78 per border (`entsoe.BORDERS`, both directions: In_Domain and Out_Domain are the two
-sides), planned (businessType A53) and forced (A54), the last 30 days and the next 30, asked one
-request at a time in 30-day windows
+sides), planned (businessType A53) and forced (A54), the last 30 days and the next 30, asked in
+30-day windows, four requests at a time
 (ENTSO-E banned the key for a while when this ran beside the lake backfill: `wave5.yml` starts it
 only when no "Lake ENTSO-E" run is active). Answers come zipped like A85
 (scripts/build_imbalance.py); newer revisions of a document replace older ones; withdrawn
@@ -28,6 +28,7 @@ import re
 import time
 import xml.etree.ElementTree as ET
 import zipfile
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
@@ -192,19 +193,28 @@ def main() -> None:
     start, end = now - timedelta(days=30), now + timedelta(days=30)
     rows: list[dict] = []
     failed: list[str] = []
-    with httpx.Client(timeout=120, headers=w.UA) as client:
-        for area, eic_in, eic_out in borders():
-            for btype in KIND:
-                a = start
-                while a < end:
-                    b = min(end, a + timedelta(days=WINDOW_DAYS))
-                    docs, ok = fetch(client, eic_in, eic_out, btype, a, b)
-                    if not ok:
-                        failed.append(f"{area} {btype} {a:%Y-%m-%d}")
-                    for d in docs:
-                        rows += parse(d, area)
-                    a = b
-            print(f"  {area} (in {eic_in}): {len(rows):,} rows so far", flush=True)
+    windows = []
+    a = start
+    while a < end:
+        windows.append((a, min(end, a + timedelta(days=WINDOW_DAYS))))
+        a = windows[-1][1]
+    # one at a time took ~75 min (about 900 requests), longer than the day archive's budget:
+    # four at a time like scripts/entsoe.py, still only when no lake backfill runs (wave5.yml)
+    sides = borders()
+    jobs = [(k, btype, a, b) for k in range(len(sides)) for btype in KIND for a, b in windows]
+    with (
+        httpx.Client(timeout=120, headers=w.UA) as client,
+        ThreadPoolExecutor(entsoe.WORKERS) as pool,
+    ):
+        answers = pool.map(lambda j: fetch(client, sides[j[0]][1], sides[j[0]][2], *j[1:]), jobs)
+        for n, ((k, btype, a, _), (docs, ok)) in enumerate(zip(jobs, answers, strict=True), 1):
+            area, eic_in, _ = sides[k]
+            if not ok:
+                failed.append(f"{area} {btype} {a:%Y-%m-%d}")
+            for d in docs:
+                rows += parse(d, area)
+            if n == len(jobs) or jobs[n][0] != k:
+                print(f"  {area} (in {eic_in}): {len(rows):,} rows so far", flush=True)
     print(f"  answers without documents, by reason: {ACKS}", flush=True)
     if len(failed) > 20:
         raise SystemExit(
