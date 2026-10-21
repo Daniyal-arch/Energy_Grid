@@ -1,0 +1,2516 @@
+# The coverage registry (brief 22): one cell per family x country. scripts/coverage.py renders
+# docs/COVERAGE.md and frontend/public/data/eu/coverage.json and checks every cell.
+families:
+  connect:
+    name: Room to connect
+    shows: free grid capacity, hosting capacity or connection queues per substation, node or area (Grid capacity layer, site analysis)
+    cells:
+      AT:
+        status: built
+        licence: public notice; reuse with the source named
+        source: APG, available connection capacities (monthly, EU 2019/943 Art. 50(4a))
+        url: https://markt.apg.at/netz/netzanschluss/netzanschlusskapazitaeten/
+        dataset: eu/connect/at.json, lake connect_eu/at
+        note: 'transmission substations; no positions (card); DSOs: the common platform ebutilities.at answers with a script-only page, no data file'
+        checked: '2026-10-19'
+      BE:
+        status: not_published
+        url: https://www.elia.be/en/customers/connection/grid-hosting-capacity
+        note: Elia publishes hosting capacity per substation as a file behind Cloudflare's browser check (HTTP 403 to scripts); wave 6 (brief 21) tried a browser in Actions twice and was blocked both times.
+          Fluvius' open-data portal holds no capacity dataset found
+        checked: '2026-10-20'
+      BG:
+        status: built
+        licence: public notice; reuse with the source named
+        source: ESO, electronic map of free capacity
+        url: https://webapps.eso.bg/capacity/
+        dataset: eu/connect/bg.json, lake connect_eu/bg
+        checked: '2026-10-19'
+      HR:
+        status: not_published
+        url: https://www.hops.hr/informacije-o-mogucnosti-prikljucenja
+        note: 'HOPS: yearly PDF ''Mogućnosti priključenja na prijenosnu mrežu''; no data file'
+        checked: '2026-10-19'
+      CY:
+        status: not_published
+        url: https://www.eac.com.cy/EN/RegulatedActivities/Distribution/renewableenergy/Pages/hosting-capacity.aspx
+        note: EAC's hosting-capacity page resets the session's connection and times out from Actions (two tries); no file found
+        checked: '2026-10-19'
+      CZ:
+        status: built
+        licence: public notice; reuse with the source named
+        source: ČEPS, map of available capacity for connection (2031, 2036)
+        url: https://www.ceps.cz/cs/mapa-dostupne-kapacity-pro-pripojeni-k-ps
+        dataset: eu/connect/cz.json, lake connect_eu/cz
+        checked: '2026-10-19'
+      DK:
+        status: built
+        licence: public notice; reuse with the source named
+        source: Energinet and the DSOs, kapacitetskort.dk
+        url: http://www.kapacitetskort.dk
+        dataset: eu/connect/dk.json, lake connect_eu/dk
+        note: transmission and distribution stations
+        checked: '2026-10-19'
+      EE:
+        status: built
+        licence: public notice; reuse with the source named
+        source: Elering e-Gridmap
+        url: https://vla.elering.ee/
+        dataset: eu/connect/ee.json, lake connect_eu/ee
+        note: expandable or not and extra fee; no MW published
+        checked: '2026-10-19'
+      FI:
+        status: not_published
+        url: https://www.fingrid.fi/en/grid/grid-connection-agreement-phases/grid-scope/
+        note: Fingrid Grid Scope is a web map (karttapalaute.fingrid.fi) without a download; it resets the session's connection and times out from Actions
+        checked: '2026-10-19'
+      FR:
+        status: have
+        source: Capareseau (RTE and DSOs)
+        url: https://www.capareseau.fr
+        licence: re-use with the source named
+        dataset: eu/connect/fr.json
+        checked: '2026-10-19'
+        note: wave 6 (brief 21)
+      DE:
+        status: built
+        licence: public notice; reuse with the source named
+        partial: true
+        source: TransnetBW grid connection map
+        url: https://www.transnetbw.de/de/transparenz/netzzugang-und-entgelt/netzanschlusskarte
+        dataset: eu/connect/de.json, lake connect_eu/de
+        note: TransnetBW only (card, no positions); 50Hertz and Amprion publish PDF maps only (https://www.amprion.net/Strommarkt/Netzkunden/Netzanschluss/Darstellung-der-potenziellen-Netzanschlussmoeglichkeiten-und-der-Kundenprojekte.html);
+          TenneT's page answers scripts with HTTP 403 (session and Actions); DSOs (VNBdigital) no open file
+        checked: '2026-10-19'
+      GR:
+        status: not_published
+        url: https://www.admie.gr/en/grid/connection-to-the-system
+        note: IPTO (ADMIE) answers scripts with HTTP 403 (session and Actions); HEDNO's site lists no data file; margins are published as announcements
+        checked: '2026-10-19'
+      HU:
+        status: not_published
+        url: https://www.eon.hu/hu/lakossagi/ugyintezes/kiemelt-informaciok/szabad-kapacitas.html
+        note: free capacities per substation as PDF only (E.ON EDE/EED/ELMŰ, OPUS TITÁSZ https://www.opustitasz.hu/ugyfelek/halozati-szolgaltatas-es-termekek/alallomasok-szabad-kapacitasai); MVM pages hold
+          no file; MAVIR publishes none
+        checked: '2026-10-19'
+      IE:
+        status: have
+        source: ESB Networks capacity heatmap
+        url: https://www.esbnetworks.ie/our-services/tools---maps/generator-availability-capacity-map
+        licence: public
+        dataset: eu/connect/ie.json
+        checked: '2026-10-19'
+        note: wave 6 (brief 21)
+      IT:
+        status: have
+        source: Terna Econnextion
+        url: https://dati.terna.it
+        licence: CC BY 4.0
+        dataset: eu/connect/it.json
+        checked: '2026-10-19'
+        note: wave 6 (brief 21)
+      LV:
+        status: not_published
+        url: https://karte.sadalestikls.lv/lv/briva-jauda
+        note: Sadales tīkls' free-capacity map answers HTTP 451 to a script that names itself (not bypassed); AST's page answers HTTP 403 (session and Actions)
+        checked: '2026-10-19'
+      LT:
+        status: built
+        licence: public notice; reuse with the source named
+        source: Litgrid generation capacity map
+        url: https://experience.arcgis.com/experience/1aa8fb2983c34b7bbc4343d22d9071a5
+        dataset: eu/connect/lt.json, lake connect_eu/lt
+        checked: '2026-10-19'
+      LU:
+        status: built
+        licence: public notice; reuse with the source named
+        source: Creos grid hosting capacity map
+        url: https://www.creos-net.lu/en/pro-space/products-services/grid-hosting-capacity
+        dataset: eu/connect/lu.json, lake connect_eu/lu
+        checked: '2026-10-19'
+      MT:
+        status: built
+        licence: public notice; reuse with the source named
+        source: Enemalta available capacity map
+        url: https://enemalta.com.mt/available-capacity/
+        dataset: eu/connect/mt.json, lake connect_eu/mt
+        checked: '2026-10-19'
+      NL:
+        status: have
+        source: Netbeheer Nederland capaciteitskaart
+        url: https://capaciteitskaart.netbeheernederland.nl
+        licence: public
+        dataset: eu/connect.json (nl)
+        checked: '2026-10-15'
+      PL:
+        status: have
+        source: PSE connection lists
+        url: https://www.pse.pl/obszary-dzialalnosci/krajowy-system-elektroenergetyczny/wykaz-obiektow-planowanych-do-przylaczenia
+        licence: public
+        dataset: eu/connect/pl.json
+        checked: '2026-10-19'
+        note: wave 6 (brief 21)
+      PT:
+        status: have
+        source: E-REDES capacidade de receção
+        url: https://e-redes.opendatasoft.com
+        licence: CC BY 4.0
+        dataset: eu/connect/pt.json
+        checked: '2026-10-19'
+        note: wave 6 (brief 21)
+      RO:
+        status: not_published
+        url: https://www.transelectrica.ro/web/tel/racordare
+        note: Transelectrica's connection-capacity map page answers 404; the 2026 allocation procedure is a PDF (https://www.transelectrica.ro/documents/10179/22805497/)
+        checked: '2026-10-19'
+      SK:
+        status: not_published
+        url: https://installedpower.sepsas.sk/
+        note: 'SEPS: a Power BI report only; ZSD''s connectability map is behind a Cloudflare check; VSD''s refuses connections'
+        checked: '2026-10-19'
+      SI:
+        status: not_published
+        url: https://www.eles.si/Portals/0/Documents/Hosting%20capacity%20ELESovih%20RTP.pdf
+        note: 'ELES: hosting capacity as a PDF; the DSO map (geo-portal.si sodokart) needs a login'
+        checked: '2026-10-19'
+      ES:
+        status: have
+        source: REE access capacity per node
+        url: https://www.ree.es/es/clientes/generador/acceso-conexion/conoce-la-capacidad-de-acceso
+        licence: public
+        dataset: eu/connect.json (es)
+        checked: '2026-10-15'
+        partial: false
+        note: REE transmission nodes (have) and e-distribución's distribution nodes (built, eu/connect/es_dso.json); i-DE answers 503 and UFD 403 to scripts
+        parts:
+        - name: REE transmission
+          status: have
+          source: REE
+        - name: e-distribución
+          status: built
+          source: CNMC monthly CSV
+        - name: i-DE
+          status: not_published
+          source: answers 503 to scripts
+        - name: UFD
+          status: not_published
+          source: answers 403 to scripts
+      SE:
+        status: built
+        licence: public notice; reuse with the source named
+        source: Svenska kraftnät capacity map (per county)
+        url: https://karta.svk.se/pages/kapacitetskartan
+        dataset: eu/connect/se.json, lake connect_eu/se
+        checked: '2026-10-19'
+      GB:
+        status: have
+        source: NESO TEC register
+        url: https://www.neso.energy/data-portal/transmission-entry-capacity-tec-register
+        licence: NESO Open Data Licence
+        dataset: eu/connect.json (gb)
+        checked: '2026-10-15'
+        partial: false
+        note: NESO TEC (transmission, have) and the DNOs' embedded capacity registers (built, eu/connect/gb_dso.json)
+        parts:
+        - name: NESO TEC
+          status: have
+          source: NESO
+        - name: NGED
+          status: built
+          source: ECR CSV
+        - name: SSEN
+          status: built
+          source: ECR CSV
+        - name: NPg
+          status: built
+          source: ECR (Opendatasoft)
+        - name: ENWL
+          status: blocked
+          source: export empty without an account key (ENWL_API_KEY)
+        - name: SPEN
+          status: blocked
+          source: export empty without an account key (SPEN_API_KEY)
+        - name: UKPN
+          status: blocked
+          source: export empty without an account key (UKPN_API_KEY)
+      US:
+        status: have
+        source: ISO queues (gridstatus) and LBNL Queued Up
+        url: https://emp.lbl.gov/queues
+        licence: public
+        dataset: us/queues_live.json, us/queue.json
+        checked: '2026-10-19'
+        parts:
+        - name: CAISO
+          status: have
+          source: gridstatus
+        - name: ERCOT
+          status: have
+          source: gridstatus
+        - name: MISO
+          status: have
+          source: gridstatus
+        - name: SPP
+          status: have
+          source: gridstatus
+        - name: ISO-NE
+          status: have
+          source: gridstatus
+        - name: NYISO
+          status: built
+          source: NYISO queue xlsx via a browser fetch (bot check for scripts)
+        - name: PJM
+          status: blocked
+          source: PJM Data Miner (PJM_API_KEY)
+        - name: non-ISO utilities
+          status: have
+          source: LBNL Queued Up
+  units:
+    name: Every generating unit
+    shows: national registers of generating units (layer per country under Power plants)
+    cells:
+      AT:
+        status: not_published
+        url: https://www.data.gv.at
+        note: no national plant list (E-Control publishes none); data.europa.eu finds operators' and Vorarlberg's layers only; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=at)
+        checked: '2026-10-19'
+      BE:
+        status: built
+        partial: true
+        source: Elia open data ods179, contracted technical units
+        url: https://opendata.elia.be/explore/dataset/ods179/
+        licence: Elia open data terms
+        dataset: eu/registers/be.json (card), lake registers/be
+        note: the large units under contract with Elia, no positions; no register of every unit as data
+        checked: '2026-10-19'
+      BG:
+        status: not_published
+        url: https://data.egov.bg
+        note: no unit register on the open data portal (data.europa.eu search 2026-10-19); searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=bg)
+        checked: '2026-10-19'
+      HR:
+        status: not_published
+        url: https://www.hrote.hr
+        note: HROTE's OIEKPP register is not published as a dataset; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=hr)
+        checked: '2026-10-19'
+      CY:
+        status: not_published
+        url: https://www.data.gov.cy
+        note: only power station locations on a topographic map; no register with capacity; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=cy)
+        checked: '2026-10-19'
+      CZ:
+        status: built
+        source: ERÚ, licensed generation plants (TEZ group 11, monthly XML)
+        url: https://eru.gov.cz/sites/default/files/obsah/prilohy/tez-sk-11-2026-10-01.xml
+        licence: Czech open data (data.gov.cz)
+        dataset: eu/registers/cz.json (card, no positions), lake registers/cz
+        note: every plant under an active licence; municipality and cadastre only, no positions
+        checked: '2026-10-19'
+      DK:
+        status: built
+        partial: true
+        source: Energistyrelsen, master data of wind turbines
+        url: https://ens.dk/analyser-og-statistik/data-oversigt-over-energisektoren
+        licence: free reuse with the source named
+        dataset: 'eu/registers/dk.json (layer Denmark: every wind turbine), lake registers/dk'
+        note: every wind turbine; other technologies have no unit register published as data
+        checked: '2026-10-19'
+      EE:
+        status: not_published
+        url: https://andmed.stat.ee/et/stat/KE032
+        note: statistics of capacity only (Statistikaamet); no unit register as data; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=ee)
+        checked: '2026-10-19'
+      FI:
+        status: not_published
+        url: https://energiavirasto.fi/voimalaitosrekisteri
+        note: the Energy Authority's power plant register page answers scripts with HTTP 403 (session and Actions); no other open copy found
+        checked: '2026-10-19'
+      FR:
+        status: built
+        source: ODRÉ, Registre national des installations de production et de stockage
+        url: https://odre.opendatasoft.com/explore/dataset/registre-national-installation-production-stockage-electricite-agrege/
+        licence: Licence Ouverte v2.0
+        dataset: eu/registers/fr.json (card, no positions), lake registers/fr
+        note: every installation (under 36 kW grouped per commune by the source); no positions published, so a card per region and sector, no map points
+        checked: '2026-10-19'
+      DE:
+        status: have
+        source: Marktstammdatenregister (BNetzA)
+        url: https://www.marktstammdatenregister.de
+        licence: dl-de/by-2-0
+        dataset: eu/mastr/*, lake mastr/*
+        checked: '2026-10-15'
+      GR:
+        status: not_published
+        url: https://www.rae.gr
+        note: RAAEY's licence map is not published as a dataset; data.europa.eu finds none; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=gr)
+        checked: '2026-10-19'
+      HU:
+        status: not_published
+        url: https://www.mekh.hu
+        note: MEKH publishes aggregated system data; no unit register as data; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=hu)
+        checked: '2026-10-19'
+      IE:
+        status: built
+        partial: true
+        source: SEAI, wind farms in Ireland (June 2022)
+        url: https://data.gov.ie/dataset/wind-farms-in-ireland
+        licence: CC BY 4.0
+        dataset: 'eu/registers/ie.json (layer Ireland: wind farms), lake registers/ie'
+        note: wind farms connected by June 2022 at their node; EirGrid's newer lists are PDFs (https://cms.eirgrid.ie/sites/default/files/publications/TSO-Connected-Renewable-Generation.pdf)
+        checked: '2026-10-19'
+      IT:
+        status: not_published
+        url: https://dati.terna.it
+        note: Terna's GAUDÌ register and GSE's Atlaimpianti have no bulk download; data.europa.eu finds regional layers only
+        checked: '2026-10-19'
+      LV:
+        status: not_published
+        url: https://data.gov.lv
+        note: no unit register on the open data portal; the ETS installation list covers combustion only; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=lv)
+        checked: '2026-10-19'
+      LT:
+        status: not_published
+        url: https://data.gov.lt
+        note: production permits are not published with capacity as data; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=lt)
+        checked: '2026-10-19'
+      LU:
+        status: not_published
+        url: https://data.public.lu
+        note: only capacity totals per technology; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=lu)
+        checked: '2026-10-19'
+      MT:
+        status: not_published
+        url: https://data.gov.mt
+        note: no unit register as data; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=mt)
+        checked: '2026-10-19'
+      NL:
+        status: not_published
+        url: https://data.overheid.nl/dataset/16611-hernieuwbare-energie--zonnestroom--windenergie--res-regio
+        note: only aggregates (CBS per region); the grid operators' production-installation register (PIR) is not open
+        checked: '2026-10-19'
+      PL:
+        status: not_published
+        url: https://www.ure.gov.pl
+        note: URE publishes reports (PDF) and a 2018 list per county; no current unit register as data
+        checked: '2026-10-19'
+      PT:
+        status: built
+        source: DGEG, power plants licensed or being licensed
+        url: https://dados.gov.pt/pt/datasets/?organization=dgeg
+        licence: CC BY 4.0 (High Value Dataset)
+        dataset: 'eu/registers/pt.json (layer Portugal: licensed plants), lake registers/pt'
+        note: wind, solar, thermal and small hydro of mainland Portugal in DGEG's licensing; capacity in MVA
+        checked: '2026-10-19'
+      RO:
+        status: not_published
+        url: https://www.anre.ro
+        note: ANRE's licence lists are web tables of companies, not units with capacity; data.gov.ro holds LCP data only; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=ro)
+        checked: '2026-10-19'
+      SK:
+        status: not_published
+        url: https://data.gov.sk
+        note: an old atlas layer of large plants only; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=sk)
+        checked: '2026-10-19'
+      SI:
+        status: not_published
+        url: https://podatki.gov.si
+        note: statistics of power-plant capacity only; searched the national portals through data.europa.eu (https://data.europa.eu/data/datasets?query=power%20plants%20electricity%20generation%20register&country=si)
+        checked: '2026-10-19'
+      ES:
+        status: not_published
+        url: https://www.miteco.gob.es/es/energia/energia-electrica/electricidad/energias-renovables.html
+        note: RAIPEE (MITECO and the regions) is not published as a dataset
+        checked: '2026-10-19'
+      SE:
+        status: built
+        partial: true
+        source: Vindbrukskollen (Länsstyrelserna, Energimyndigheten)
+        url: https://vbk.lansstyrelsen.se/
+        licence: public geodata, reuse with the source named
+        dataset: 'eu/registers/se.json (layer Sweden: every wind turbine), lake registers/se'
+        note: 'every wind turbine built, permitted or in planning; other technologies: no register as data'
+        checked: '2026-10-19'
+      GB:
+        status: built
+        source: DESNZ REPD (quarterly) and DUKES 5.11
+        url: https://www.gov.uk/government/publications/renewable-energy-planning-database-quarterly-extract
+        licence: Open Government Licence v3.0
+        dataset: 'eu/registers/gb.json (layer UK: every project), lake registers/gb'
+        note: renewables and storage from 150 kW (operating to in planning) and the major producers' gas, coal, nuclear and oil stations
+        checked: '2026-10-19'
+      US:
+        status: have
+        source: EIA-860M, USWTDB, USPVDB
+        url: https://www.eia.gov/electricity/data/eia860m/
+        licence: public domain
+        dataset: us/plants.json, us/turbines.json, us/solar.json
+        checked: '2026-10-15'
+  live_mix:
+    name: Live mix and CO₂
+    shows: generation by source at the operator's own time step, and CO₂ per kWh where the operator publishes it (country cards)
+    cells:
+      AT:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: APG's transparency API answers the session with a reset; APG publishes no CO₂ per kWh
+        checked: '2026-10-19'
+      BE:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: Elia's open data repeats the 15-min mix; no CO₂ per kWh found
+        checked: '2026-10-19'
+      BG:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      HR:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      CY:
+        status: not_published
+        url: https://tsoc.org.cy/electrical-system/total-daily-system-generation-on-the-transmission-system/
+        note: Cyprus is not on the ENTSO-E platform; TSO Cyprus's generation pages answer scripts with HTTP 403
+        checked: '2026-10-19'
+      CZ:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      DK:
+        status: have
+        source: Energinet Energi Data Service (5 min, CO₂)
+        url: https://www.energidataservice.dk
+        licence: CC BY 4.0
+        dataset: eu/dk_live.json
+        checked: '2026-10-18'
+      EE:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: Elering's dashboard API gives 15-min production and consumption, no CO₂ per kWh (checked)
+        checked: '2026-10-19'
+      FI:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json
+        note: Fingrid's 3-min data and its CO₂ per kWh need FINGRID_API_KEY (data.fingrid.fi)
+        parts:
+        - name: ENTSO-E mix
+          status: have
+          source: ENTSO-E
+        - name: Fingrid 3 min and CO₂
+          status: blocked
+          source: FINGRID_API_KEY (https://data.fingrid.fi)
+        checked: '2026-10-19'
+      FR:
+        status: built
+        source: RTE éCO2mix national real time (ODRÉ) and ENTSO-E
+        url: https://odre.opendatasoft.com/explore/dataset/eco2mix-national-tr/
+        licence: Licence Ouverte v2.0
+        dataset: eu/live_co2.json (fr), card CO₂ per kWh (RTE)
+        note: 15-min mix and RTE's CO₂ per kWh; regional mix in wave 6
+        checked: '2026-10-19'
+      DE:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: SMARD (BNetzA) publishes the same 15-min mix (catalogue file); no CO₂ per kWh published by the TSOs
+        checked: '2026-10-19'
+      GR:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      HU:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      IE:
+        status: built
+        source: EirGrid Smart Grid Dashboard CO₂ intensity and ENTSO-E
+        url: https://www.smartgriddashboard.com
+        licence: EirGrid terms (attribution)
+        dataset: eu/live_co2.json (ie), card CO₂ per kWh (EirGrid)
+        note: 15-min CO₂ intensity, Ireland and the island
+        checked: '2026-10-19'
+      IT:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: Terna's API needs a key (developer.terna.it) and publishes no CO₂ per kWh
+        checked: '2026-10-19'
+      LV:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      LT:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      LU:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      MT:
+        status: not_published
+        url: https://enemalta.com.mt
+        note: Malta is not on the ENTSO-E platform; Enemalta publishes no live generation data
+        checked: '2026-10-19'
+      NL:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json
+        note: 'NED (Nationaal Energie Dashboard) needs a free key: NED_API_KEY (https://ned.nl)'
+        parts:
+        - name: ENTSO-E mix
+          status: have
+          source: ENTSO-E
+        - name: NED mix and CO₂
+          status: blocked
+          source: NED_API_KEY (https://ned.nl)
+        checked: '2026-10-19'
+      PL:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: PSE's API (api.raporty.pse.pl his-wlk-cal) gives the same 15-min mix; no CO₂ per kWh (checked 2026-10-19)
+        checked: '2026-10-19'
+      PT:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: REN's data hub repeats the mix; no CO₂ per kWh found
+        checked: '2026-10-19'
+      RO:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      SK:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      SI:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: the operator publishes no CO₂ per kWh; ENTSO-E carries its mix at the operator's step
+        checked: '2026-10-19'
+      ES:
+        status: built
+        source: REE REData emission factor and ENTSO-E
+        url: https://apidatos.ree.es/es/datos/generacion/no-renovables-detalle-emisiones-CO2
+        licence: REE terms (attribution)
+        dataset: eu/live_co2.json (es), card CO₂ per kWh (REE)
+        note: REE's daily CO₂ factor of the national system (REE's real-time feed demanda.ree.es is behind a bot check); regional mix in wave 6
+        checked: '2026-10-19'
+      SE:
+        status: have
+        source: ENTSO-E A75 actual generation per type
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/stats.json, eu/day/*
+        note: Svenska kraftnät's control-room feed gives the same 15-min production; no CO₂ per kWh (checked)
+        checked: '2026-10-19'
+      GB:
+        status: have
+        source: Elexon (5 min) and NESO carbon intensity
+        url: https://carbonintensity.org.uk
+        licence: CC BY 4.0
+        dataset: eu/gb_carbon.json, eu/stats.json
+        checked: '2026-10-18'
+      US:
+        status: built
+        source: EIA-930 Hourly Electric Grid Monitor (CO₂ intensity per region)
+        url: https://www.eia.gov/electricity/gridmonitor/
+        licence: public domain
+        dataset: us/co2.json, card CO₂ per kWh generated (US Live tab)
+        note: EIA's hourly CO₂ intensity of generated and consumed electricity per region (EIA's estimate); the mix itself from EIA-930 (have)
+        checked: '2026-10-19'
+  congestion:
+    name: Redispatch and curtailment
+    shows: redispatch, countertrading, congestion-management costs and curtailment (country cards, agent catalogue)
+    cells:
+      AT:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes internal redispatch (A63/A85), cross-border redispatch (A63/A46), countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10)
+      BE:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes internal redispatch (A63/A85), countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for cross-border redispatch (A63/A46)
+        partial: true
+      BG:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      HR:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      CY:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: Cyprus is an isolated system without a control area on the ENTSO-E platform; its operator publishes no redispatch or curtailment series as data
+      CZ:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes cross-border redispatch (A63/A46), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), countertrading
+          (A91)
+        partial: true
+      DK:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      EE:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      FI:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      FR:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes cross-border redispatch (A63/A46), countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85)
+        partial: true
+      DE:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        partial: true
+        note: ENTSO-E publishes internal redispatch (A63/A85), cross-border redispatch (A63/A46), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for countertrading
+          (A91); the netztransparenz.de archive (2013-2020) stays beside it, newer years need NETZTRANSPARENZ_CLIENT_ID/_SECRET
+      GR:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      HU:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46), countertrading
+          (A91)
+        partial: true
+      IE:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      IT:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46)
+        partial: true
+      LV:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46), countertrading
+          (A91)
+        partial: true
+      LT:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46), countertrading
+          (A91)
+        partial: true
+      LU:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      MT:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: Malta is an isolated system without a control area on the ENTSO-E platform; its operator publishes no redispatch or curtailment series as data
+      NL:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes internal redispatch (A63/A85), cross-border redispatch (A63/A46), countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10)
+      PL:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes cross-border redispatch (A63/A46), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), countertrading
+          (A91)
+        partial: true
+      PT:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46)
+        partial: true
+      RO:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      SK:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      SI:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      ES:
+        status: built
+        source: ENTSO-E Transparency Platform (A63, A91, A92)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/congestion.json, lake entsoe/congestion_*
+        checked: '2026-10-20'
+        note: ENTSO-E publishes countertrading (A91), congestion costs (A92) for this control area (2025-09 to 2026-10); nothing published for internal redispatch (A63/A85), cross-border redispatch (A63/A46)
+        partial: true
+      SE:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
+          found as data
+      GB:
+        status: built
+        source: NESO Constraint Breakdown Costs and Volume
+        url: https://www.neso.energy/data-portal/constraint-breakdown
+        licence: NESO Open Data Licence
+        dataset: eu/congestion.json
+        checked: '2026-10-20'
+        note: Daily thermal, voltage, inertia and largest-loss constraint costs (GBP) and volumes, summed per month
+      US:
+        status: built
+        source: CAISO production and curtailments data
+        url: https://www.caiso.com/library/production-curtailments-data
+        licence: CAISO public data
+        dataset: eu/congestion.json
+        checked: '2026-10-20'
+        partial: true
+        note: California's wind and solar curtailment (5-min, local and system; CAISO's newest file ends December 2025); ERCOT, MISO, SPP, PJM, NYISO and ISO-NE publish no curtailment file found as data
+  prices:
+    name: Wholesale prices
+    shows: day-ahead and imbalance (or real-time) prices (Prices views, imbalance card)
+    cells:
+      AT:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      BE:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      BG:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+        partial: true
+        note: ENTSO-E has no imbalance price for this area (imbalance.json 'none')
+      HR:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      CY:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        note: no price on the ENTSO-E platform; Cyprus's market (TSOC, since 2025) answers scripts with HTTP 403 (https://tsoc.org.cy)
+        checked: '2026-10-19'
+      CZ:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      DK:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      EE:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      FI:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      FR:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      DE:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+        partial: true
+        note: ENTSO-E has no imbalance price for this area (imbalance.json 'none')
+      GR:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      HU:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      IE:
+        status: built
+        source: ENTSO-E day-ahead (A44), SEM zone; imbalance A85
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json (zone IE-SEM), eu/day/*
+        note: the all-island SEM (Ireland and Northern Ireland)
+        checked: '2026-10-19'
+      IT:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      LV:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      LT:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+        partial: true
+        note: ENTSO-E has no imbalance price for this area (imbalance.json 'none')
+      LU:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+        partial: true
+        note: ENTSO-E has no imbalance price for this area (imbalance.json 'none')
+      MT:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        note: no price on the ENTSO-E platform; Malta has no wholesale market (single buyer, Enemalta)
+        checked: '2026-10-19'
+      NL:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      PL:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      PT:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      RO:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      SK:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      SI:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      ES:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      SE:
+        status: have
+        source: ENTSO-E day-ahead (A44) and imbalance prices (A85)
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/prices.json, eu/imbalance.json
+        checked: '2026-10-18'
+      GB:
+        status: built
+        source: Elexon market index (APXMIDP) and system prices
+        url: https://data.elexon.co.uk/bmrs/api/v1
+        licence: Elexon BMRS (attribution)
+        dataset: eu/prices.json (zone GB, EUR at the ECB rate), eu/imbalance.json (zone GB, GBP)
+        note: the market index is a short-term price, the closest published series to a day-ahead price; ENTSO-E has no GB since 2021
+        checked: '2026-10-19'
+      US:
+        status: built
+        source: day-ahead (have) and real-time hub prices (gridstatus)
+        url: https://opensource.gridstatus.io
+        licence: per ISO
+        dataset: eu/us_prices.json, eu/us_rt.json, us_nodes/*
+        parts:
+        - name: CAISO
+          status: built
+          source: gridstatus
+        - name: ERCOT
+          status: built
+          source: gridstatus
+        - name: MISO
+          status: built
+          source: gridstatus
+        - name: SPP
+          status: built
+          source: gridstatus
+        - name: NYISO
+          status: built
+          source: gridstatus
+        - name: ISO-NE
+          status: built
+          source: gridstatus
+        - name: PJM
+          status: blocked
+          source: PJM_API_KEY (https://dataminer2.pjm.com)
+        note: real-time beside day-ahead at one hub per market
+        checked: '2026-10-19'
+  retail:
+    name: What consumers pay
+    shows: household and business electricity and gas prices (retail colouring, country report)
+    cells:
+      AT:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      BE:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      BG:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      HR:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      CY:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      CZ:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      DK:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      EE:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      FI:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      FR:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      DE:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      GR:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      HU:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      IE:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      IT:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      LV:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      LT:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      LU:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      MT:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      NL:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      PL:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      PT:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      RO:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      SK:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      SI:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      ES:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      SE:
+        status: have
+        source: Eurostat nrg_pc_202-205
+        url: https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_204/default/table
+        licence: CC BY 4.0
+        dataset: eu/retail.json
+        checked: '2026-10-18'
+      GB:
+        status: built
+        source: DESNZ international domestic and non-domestic energy prices (tables 5.6.2, 5.10.2, 5.8.2)
+        url: https://www.gov.uk/government/statistical-data-sets/international-domestic-energy-prices
+        licence: OGL v3.0
+        dataset: eu/retail.json (GB)
+        checked: '2026-10-20'
+        partial: true
+        note: 'No 500-1,999 MWh electricity band (IC) for businesses: DESNZ''s bands are 20-499 and 2,000-19,999 MWh; left empty'
+      US:
+        status: have
+        source: EIA-861M
+        url: https://www.eia.gov/electricity/data/eia861m/
+        licence: public domain
+        dataset: eu/retail.json (us)
+        checked: '2026-10-18'
+  emitters:
+    name: Emitters per installation
+    shows: verified CO₂ per installation (CO₂ per installation layer)
+    cells:
+      AT:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      BE:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      BG:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      HR:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      CY:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      CZ:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      DK:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      EE:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      FI:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      FR:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      DE:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      GR:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      HU:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      IE:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      IT:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      LV:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      LT:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      LU:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      MT:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      NL:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      PL:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      PT:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      RO:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      SK:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      SI:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      ES:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      SE:
+        status: have
+        source: EU ETS Union Registry (EUTL)
+        url: https://union-registry-data.ec.europa.eu
+        licence: EU reuse (Decision 2011/833/EU)
+        dataset: eu/ets.json
+        checked: '2026-10-18'
+      GB:
+        status: built
+        source: UK Emissions Trading Registry, Compliance Report Emissions and Surrenders (UK ETS); Northern Ireland power in the EU ETS (XI)
+        url: https://reports.view-emissions-trading-registry.service.gov.uk/ets-reports.html
+        licence: OGL v3.0
+        dataset: eu/ets.json (GB)
+        checked: '2026-10-20'
+        partial: true
+        note: Emissions per installation; the report publishes no position or activity, so GB installations are listed but not on the map
+      US:
+        status: have
+        source: EPA GHGRP
+        url: https://www.epa.gov/ghgreporting
+        licence: public domain
+        dataset: us/ghgrp.json
+        checked: '2026-10-18'
+  offline:
+    name: Plants offline now
+    shows: generating units out of service now (planned and forced)
+    cells:
+      AT:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      BE:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      BG:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      HR:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-20'
+        note: Zone listed with 0 MW when nothing is offline (fetch_outages.py lists every zone that answers)
+      CY:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E A80 for Cyprus (10YCY-1001A0003J) answered no outage document (wave7 job H, 2026-10-20); TSO Cyprus and EAC publish no list of units offline
+      CZ:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      DK:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      EE:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-20'
+        note: Zone listed with 0 MW when nothing is offline (fetch_outages.py lists every zone that answers)
+      FI:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      FR:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      DE:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      GR:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      HU:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      IE:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units, bidding zone IE-SEM
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json (zone IE-SEM)
+        checked: '2026-10-20'
+        partial: true
+        note: The SEM zone (Ireland and Northern Ireland) is queried since wave 7; it reported no unit offline at the first read (2026-10-20 03:55 UTC), listed as 0 MW
+      IT:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      LV:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      LT:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      LU:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units, bidding zone DE-LU
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json (zone DE-LU)
+        checked: '2026-10-20'
+        partial: true
+        note: Luxembourg shares the DE-LU bidding zone; its units (Vianden) report there and are counted under Germany
+      MT:
+        status: not_published
+        url: https://transparency.entsoe.eu
+        checked: '2026-10-20'
+        note: ENTSO-E A80 for Malta (10Y1001A1001A93C) answered no outage document (wave7 job H, 2026-10-20); Enemalta publishes no list of units offline
+      NL:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      PL:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      PT:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      RO:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      SK:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      SI:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      ES:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      SE:
+        status: have
+        source: ENTSO-E A80 unavailability of generation units
+        url: https://transparency.entsoe.eu
+        licence: ENTSO-E terms
+        dataset: eu/outages.json
+        checked: '2026-10-18'
+      GB:
+        status: built
+        source: Elexon REMIT messages (Insights API), production unavailability
+        url: https://bmrs.elexon.co.uk/remit
+        licence: Elexon BMRS data, free reuse with attribution
+        dataset: eu/outages.json (GB)
+        checked: '2026-10-20'
+      US:
+        status: have
+        source: EPA CAMPD hourly unit output (fossil units)
+        url: https://campd.epa.gov
+        licence: public domain
+        dataset: usunits/*
+        checked: '2026-10-15'
+        partial: true
+        note: US markets publish no unit outages; fossil units at zero output hour by hour
+  ev:
+    name: EV charging
+    shows: public charge points (EV charging layer) and counts per country
+    cells:
+      AT:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '7,002 stations on the map (2026-10-20); EAFO counts 30,886 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      BE:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '5,991 stations on the map (2026-10-20); EAFO counts 118,792 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      BG:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '863 stations on the map (2026-10-20); EAFO counts 4,653 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      HR:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '535 stations on the map (2026-10-20); EAFO counts 2,505 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      CY:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '70 stations on the map (2026-10-20); EAFO counts 627 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      CZ:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '3,049 stations on the map (2026-10-20); EAFO counts 7,669 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      DK:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '3,355 stations on the map (2026-10-20); EAFO counts 55,127 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      EE:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '524 stations on the map (2026-10-20); EAFO counts 2,411 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      FI:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '1,391 stations on the map (2026-10-20); EAFO counts 16,972 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      FR:
+        status: built
+        source: 'EAFO counts; points: data.gouv.fr consolidated IRVE file (charging points)'
+        url: https://static.data.gouv.fr/resources/base-nationale-des-irve-data-gouv-infrastructures-de-recharge-pour-vehicules-electriques-donnees-statiques/20261019-032122/consolidation-etalab-schema-irve-statique-v-2.3.1-20261019.csv
+        licence: EAFO CC BY 4.0; Licence Ouverte / Etalab 2.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: 149,389 charging points on the map (2026-10-20); EAFO counts 203,950 public points in 2026
+      DE:
+        status: built
+        source: 'EAFO counts; points: Bundesnetzagentur Ladesäulenregister'
+        url: https://data.bundesnetzagentur.de/Bundesnetzagentur/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenregister_BNetzA_2026-09-01.csv
+        licence: EAFO CC BY 4.0; CC BY 4.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: 209,096 charging points on the map (2026-10-20); EAFO counts 221,646 public points in 2026
+      GR:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '4,495 stations on the map (2026-10-20); EAFO counts 8,528 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      HU:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '1,628 stations on the map (2026-10-20); EAFO counts 4,974 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      IE:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '1,061 stations on the map (2026-10-20); EAFO counts 4,391 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      IT:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '9,640 stations on the map (2026-10-20); EAFO counts 76,511 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      LV:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '401 stations on the map (2026-10-20); EAFO counts 2,350 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      LT:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '430 stations on the map (2026-10-20); EAFO counts 6,125 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      LU:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '544 stations on the map (2026-10-20); EAFO counts 4,124 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      MT:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '43 stations on the map (2026-10-20); EAFO counts 113 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      NL:
+        status: built
+        source: 'EAFO counts; points: NDW open data, charging point locations (national access point)'
+        url: https://opendata.ndw.nu/charging_point_locations.geojson.gz
+        licence: EAFO CC BY 4.0; NDW open data (no licence named on the page; data.overheid.nl lists NDW downloads as CC0 1.0)
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: 203,551 charging points on the map (2026-10-20); EAFO counts 241,366 public points in 2026
+      PL:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '3,020 stations on the map (2026-10-20); EAFO counts 15,892 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      PT:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '6,752 stations on the map (2026-10-20); EAFO counts 17,311 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      RO:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '722 stations on the map (2026-10-20); EAFO counts 10,442 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      SK:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '1,094 stations on the map (2026-10-20); EAFO counts 4,415 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      SI:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '504 stations on the map (2026-10-20); EAFO counts 3,155 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      ES:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '2,757 stations on the map (2026-10-20); EAFO counts 49,768 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      SE:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '3,836 stations on the map (2026-10-20); EAFO counts 61,851 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      GB:
+        status: built
+        source: 'EAFO counts; stations: OpenStreetMap, amenity=charging_station (Overpass API)'
+        url: https://www.openstreetmap.org/copyright
+        licence: EAFO CC BY 4.0; ODbL 1.0
+        dataset: eu/ev_eu.json
+        checked: '2026-10-20'
+        note: '8,391 stations on the map (2026-10-20); EAFO counts 113,589 public points in 2026. No open national register of points found: OpenStreetMap stations (one per mapped station) stand in'
+        partial: true
+      US:
+        status: have
+        source: NREL AFDC station locator
+        url: https://developer.nrel.gov/docs/transportation/alt-fuel-stations-v1/
+        licence: public domain
+        dataset: us/ev_chargers.json
+        checked: '2026-10-18'
+  gas:
+    name: Gas
+    shows: gas flows, storage, LNG and prices
+    cells:
+      AT:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      BE:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      BG:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      HR:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      CY:
+        status: not_published
+        url: https://transparency.entsog.eu
+        checked: '2026-10-20'
+        note: 'Cyprus has no natural gas network: no ENTSOG point, no AGSI or ALSI facility (the Vasilikos LNG terminal is not in operation)'
+      CZ:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      DK:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      EE:
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
+      FI:
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
+      FR:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      DE:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      GR:
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
+      HU:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      IE:
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
+      IT:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      LV:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      LT:
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
+      LU:
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
+      MT:
+        status: not_published
+        url: https://transparency.entsog.eu
+        checked: '2026-10-20'
+        note: Malta's Delimara LNG facility feeds one power station; it is in neither ENTSOG nor GIE ALSI, and Malta has no gas network
+      NL:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      PL:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      PT:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      RO:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      SK:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      SI:
+        status: have
+        source: ENTSOG flows (border and LNG entry points); GIE ALSI where a terminal exists
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        note: No underground storage in this country, so nothing in AGSI
+      ES:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      SE:
+        status: have
+        source: ENTSOG flows, GIE AGSI storage and ALSI LNG
+        url: https://transparency.entsog.eu
+        licence: ENTSOG and GIE terms
+        dataset: eu/gas_flows.json, eu/dossier.json
+        checked: '2026-10-18'
+      GB:
+        status: have
+        source: 'ENTSOG flows (UK points: BE, NL, NO, IE borders and LNG entry)'
+        url: https://transparency.entsog.eu
+        licence: ENTSOG terms
+        dataset: eu/gas_flows.json
+        checked: '2026-10-20'
+        partial: true
+        note: Flows and LNG entry from ENTSOG; GB storage is not in the dossier's AGSI set
+      US:
+        status: built
+        source: EIA API v2 (weekly storage, Henry Hub spot, citygate per state); EIA natural gas pipelines
+        url: https://www.eia.gov/opendata/
+        licence: public domain
+        dataset: us/gas.json, us/gas_pipes.json
+        checked: '2026-10-20'
+        note: LNG terminals from GEM's world layer; EIA publishes no regional hub price besides Henry Hub as open data
+  reliability:
+    name: Reliability
+    shows: interruptions per customer (SAIDI, SAIFI) or outages per area
+    cells:
+      AT:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      BE:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      BG:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      HR:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      CY:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      CZ:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      DK:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      EE:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      FI:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      FR:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      DE:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      GR:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      HU:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      IE:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      IT:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      LV:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      LT:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      LU:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      MT:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      NL:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      PL:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      PT:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      RO:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      SK:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      SI:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      ES:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      SE:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: Largest business city, data years 2014-2019 (series ended 2021); CEER's national SAIDI/SAIFI are PDF tables only, BNetzA's a press release
+      GB:
+        status: built
+        source: 'World Bank Doing Business, Getting electricity: SAIDI and SAIFI'
+        url: https://data.worldbank.org/indicator/IC.ELC.SAID.XD.DB1619
+        licence: CC BY 4.0
+        dataset: eu/reliability.json
+        checked: '2026-10-20'
+        partial: true
+        note: London, data years 2014-2019 (series ended 2021); Ofgem's RIIO-ED1 network performance summaries give customer interruptions and minutes lost per DNO as PDF (2018-19 to 2021-22); no data file
+          found
+      US:
+        status: have
+        source: EAGLE-I outages per county (ORNL)
+        url: https://figshare.com/articles/dataset/24237376
+        licence: CC BY 4.0
+        dataset: eu/us_outages.json
+        checked: '2026-10-15'

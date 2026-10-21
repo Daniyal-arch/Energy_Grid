@@ -11,6 +11,9 @@ import { BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCa
 import { UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
 import type { UsPlantsFile, UsQueueFile, UsTurbinesFile } from "../lib/us";
 import { EV_COLOR, type EvChargersFile } from "../lib/evChargers";
+import type { EvEuFile } from "../lib/evEu";
+import { EvEuCard } from "../components/EvEuCards";
+import { UsGasCard } from "../components/UsGasCards";
 import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
 import { TYNDP_STYLE, type TyndpFile } from "../lib/tyndp";
 import type { FinanceFile } from "../lib/finance";
@@ -29,6 +32,10 @@ import { ETS_COLOR, ETS_REGISTRY_NAME, etsIn, mt, newestT, type EtsFile } from "
 import { LNG_SEND, gwhdText, lngDay, type LngTerminalsFile } from "../lib/lngTerminals";
 import { CT_COLOR, subsectorLabel, type CtraceFile } from "../lib/ctrace";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
+import { ConnectEuCard } from "../components/ConnectEuCards";
+import { RegisterCard } from "../components/RegisterCards";
+import { REGISTER_LAYERS } from "../lib/registers";
+import { CONNECT_EU, connectEuCountry } from "../lib/connectEu";
 import { BeConnectCard, FrConnectCard, IeConnectCard, ItConnectCard, PlConnectCard, PtConnectCard } from "../components/ConnectMoreCards";
 import { ProtectedCard } from "../components/ConstraintCards";
 import { GasProjectsCard, HydrogenCard } from "../components/ComingCards";
@@ -427,7 +434,7 @@ function EtsCard({ iso3 }: { iso3?: string }) {
   const top = rows.slice(0, 10); // the file is sorted by the newest year
   const max = newestT(top[0]) || 1;
   return (
-    <Card title="CO₂ per installation" note={`EU ETS, verified · ${f.newest}`}>
+    <Card title="CO₂ per installation" note={`${iso2 === "GB" ? "UK ETS and EU ETS (NI)" : "EU ETS"}, verified · ${f.newest}`}>
       <div className="text-[22px] font-light text-slate-50">
         {mt(total)}{" "}
         <span className={`text-[11px] ${muted}`}>
@@ -455,6 +462,7 @@ function EtsCard({ iso3 }: { iso3?: string }) {
       <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
         Verified emissions (t CO₂e) as the EU Union Registry lists them on {f.snapshot}; aircraft, shipping and the ETS2 fuel suppliers left out. {placed.toLocaleString("en-US")} of{" "}
         {rows.length.toLocaleString("en-US")} installations are on the map: those the EEA industrial register gives an ETS id for (no placing by name or address).
+        {f.uk && (!iso2 || iso2 === "GB") ? ` Great Britain: ${f.uk.source}, recorded emissions per installation; the report gives no position or activity.` : ""}
       </div>
     </Card>
   );
@@ -465,7 +473,7 @@ function ConnectCards({ iso3 }: { iso3?: string }) {
   const f = useFile<ConnectFile>("connect");
   if (!f) return <Card title="Connecting to the grid">Loading…</Card>;
   const show = (code: string) => !iso3 || iso3 === code;
-  const any = ["GBR", "NLD", "ESP", "FRA", "ITA", "BEL", "PRT", "IRL", "POL"].some(show);
+  const any = ["GBR", "NLD", "ESP", "FRA", "ITA", "BEL", "PRT", "IRL", "POL", ...CONNECT_EU.map((c) => ISO3[connectEuCountry(c)])].some(show);
   if (!any) return null;
   return (
     <>
@@ -478,6 +486,9 @@ function ConnectCards({ iso3 }: { iso3?: string }) {
       {show("PRT") && <PtConnectCard />}
       {show("IRL") && <IeConnectCard />}
       {show("POL") && <PlConnectCard />}
+      {CONNECT_EU.filter((c) => show(ISO3[connectEuCountry(c)])).map((c) => (
+        <ConnectEuCard key={c} cc={c} />
+      ))}
     </>
   );
 }
@@ -659,6 +670,14 @@ function TyndpCard({ iso3 }: { iso3?: string }) {
 }
 
 /** US industrial emitters (EPA GHGRP): total, by sector, the largest. */
+function EvEuStats({ iso3 }: { iso3?: string }) {
+  const f = useFile<EvEuFile>("evEu");
+  if (!f) return <Card title="EV charging">Loading…</Card>;
+  const iso2 = iso2Of(iso3);
+  if (iso3 && !iso2) return null;
+  return <EvEuCard f={f} iso2={iso2} />;
+}
+
 function GhgrpCard() {
   const f = useFile<GhgrpFile>("ghgrp");
   if (!f) return <Card title="US industrial emitters">Loading…</Card>;
@@ -924,10 +943,16 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "gasProjects") return <GasProjectsCard key={id} iso3={iso3} />;
         if (id === "mastrDE") return iso3 && iso3 !== "DEU" ? null : <MastrCountryCard key={id} />;
         if (id === "offshoreWind") return <OffshoreWindCard key={id} iso3={iso3} />;
+        if (id in REGISTER_LAYERS) {
+          const cc = REGISTER_LAYERS[id as keyof typeof REGISTER_LAYERS];
+          return iso3 && iso3 !== ISO3[cc] ? null : <RegisterCard key={id} cc={cc} />;
+        }
         if (id === "solarUS") return iso3 && iso3 !== "USA" ? null : <UsSolarCard key={id} />;
         if (id === "grw") return <GrwCard key={id} iso3={iso3} />;
         if (id === "tyndp") return <TyndpCard key={id} iso3={iso3} />;
         if (id === "ghgrpUS") return iso3 && iso3 !== "USA" ? null : <GhgrpCard key={id} />;
+        if (id === "gasPipesUS") return iso3 && iso3 !== "USA" ? null : <UsGasCard key={id} />;
+        if (id === "evChargersEU") return <EvEuStats key={id} iso3={iso3} />;
         if (id === "evChargersUS") return iso3 && iso3 !== "USA" ? null : <EvChargersCard key={id} />;
         if (id === "lngSendOut") return <LngTerminalsCard key={id} iso2={iso2Of(iso3)} />;
         return null;

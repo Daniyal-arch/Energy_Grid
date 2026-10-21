@@ -5,6 +5,10 @@
 import type { RGB } from "./theme";
 
 export interface ZoneStats {
+  /** zones from another source than ENTSO-E (GB: Elexon, converted from GBP) */
+  source?: string;
+  currency_source?: string;
+  mean_gbp?: number;
   country: string;
   mean: number;
   negative_hours: number;

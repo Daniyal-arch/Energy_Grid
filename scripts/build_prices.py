@@ -88,6 +88,50 @@ def profile(values: list, keys: list[str], hours: list[int]) -> dict[str, list]:
     }
 
 
+def zone_stats(
+    values: list, iso: str, seconds: list[int], months: list[str], month_of: list[str],
+    season_of: list[str], hour_of: list[int], slots: int, solar: list | None, wind: list | None,
+) -> dict | None:  # fmt: skip
+    """One zone's figures over the window (see the docstring); None without a price."""
+    known = [(k, v) for k, v in enumerate(values) if v is not None]
+    if not known:
+        return None
+    negative = {m: 0.0 for m in months}
+    for k, v in known:
+        if v < 0:
+            negative[month_of[k]] += STEP_H
+    lo = min(known, key=lambda kv: kv[1])
+    hi = max(known, key=lambda kv: kv[1])
+    mean = sum(v for _, v in known) / len(known)
+    s_cap, s_twh = capture(values, solar)
+    w_cap, w_twh = capture(values, wind)
+
+    def stamp(k: int) -> str:
+        return datetime.fromtimestamp(seconds[k], tz=UTC).isoformat()
+
+    def rate(cap: float | None) -> float | None:
+        return round(100 * cap / mean, 1) if cap is not None and mean > 0 else None
+
+    by_month = profile(values, month_of, hour_of)
+    return {
+        "country": iso,
+        "mean": round(mean, 2),
+        "negative_hours": round(sum(negative.values()), 2),
+        "negative_by_month": [round(negative[m], 2) for m in months],
+        "min": [round(lo[1], 2), stamp(lo[0])],
+        "max": [round(hi[1], 2), stamp(hi[0])],
+        "coverage": round(len(known) / slots, 3),
+        "solar_capture": round(s_cap, 2) if s_cap is not None else None,
+        "solar_capture_rate": rate(s_cap),
+        "solar_twh": round(s_twh, 2) if s_twh is not None else None,
+        "wind_capture": round(w_cap, 2) if w_cap is not None else None,
+        "wind_capture_rate": rate(w_cap),
+        "wind_twh": round(w_twh, 2) if w_twh is not None else None,
+        "by_month_hour": [by_month.get(m, [None] * 24) for m in months],
+        "by_season_hour": profile(values, season_of, hour_of),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=OUT)
@@ -135,47 +179,15 @@ def main() -> None:
         if not isinstance(data, dict):
             print(f"{zone}: no prices")
             continue
-        values: list = data["price"]
-        known = [(k, v) for k, v in enumerate(values) if v is not None]
-        if not known:
-            continue
-        negative = {m: 0.0 for m in months}
-        for k, v in known:
-            if v < 0:
-                negative[month_of[k]] += STEP_H
-        lo = min(known, key=lambda kv: kv[1])
-        hi = max(known, key=lambda kv: kv[1])
-        mean = sum(v for _, v in known) / len(known)
         solar = got.get(f"solar:{zone}")
         wind = got.get(f"wind:{zone}")
-        s_cap, s_twh = capture(values, solar if isinstance(solar, list) else None)
-        w_cap, w_twh = capture(values, wind if isinstance(wind, list) else None)
-
-        def stamp(k: int) -> str:
-            return datetime.fromtimestamp(seconds[k], tz=UTC).isoformat()
-
-        def rate(cap: float | None) -> float | None:
-            return round(100 * cap / mean, 1) if cap is not None and mean > 0 else None
-
-        by_month = profile(values, month_of, hour_of)
-        zones[zone] = {
-            "country": iso,
-            "mean": round(mean, 2),
-            "negative_hours": round(sum(negative.values()), 2),
-            "negative_by_month": [round(negative[m], 2) for m in months],
-            "min": [round(lo[1], 2), stamp(lo[0])],
-            "max": [round(hi[1], 2), stamp(hi[0])],
-            "coverage": round(len(known) / grid.slots, 3),
-            "solar_capture": round(s_cap, 2) if s_cap is not None else None,
-            "solar_capture_rate": rate(s_cap),
-            "solar_twh": round(s_twh, 2) if s_twh is not None else None,
-            "wind_capture": round(w_cap, 2) if w_cap is not None else None,
-            "wind_capture_rate": rate(w_cap),
-            "wind_twh": round(w_twh, 2) if w_twh is not None else None,
-            "by_month_hour": [by_month.get(m, [None] * 24) for m in months],
-            "by_season_hour": profile(values, season_of, hour_of),
-        }
-        z = zones[zone]
+        z = zone_stats(
+            data["price"], iso, seconds, months, month_of, season_of, hour_of, grid.slots,
+            solar if isinstance(solar, list) else None, wind if isinstance(wind, list) else None,
+        )  # fmt: skip
+        if z is None:
+            continue
+        zones[zone] = z
         print(
             f"{zone:16} mean {z['mean']:7.1f}  negative {z['negative_hours']:7.1f} h  "
             f"solar {z['solar_capture_rate']}%  wind {z['wind_capture_rate']}%",

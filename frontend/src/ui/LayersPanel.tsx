@@ -237,7 +237,9 @@ function ConnectKey() {
       <Note>
         Dots, MW (MVA) left as published: France (new generation), each substation's S3REnR capacity still to allocate (Capareseau); Ireland, each 38 kV and 110 kV station's
         and MV transformer's demand or firm generation capacity available (ESB Networks heatmap). Italy (new generation): GW requested to connect per region, renewables and storage
-        (Terna Econnextion). Portugal and Poland publish no positions: see the panel.
+        (Terna Econnextion). Portugal and Poland publish no positions: see the panel. Also Bulgaria (ESO), Czechia (ČEPS, suitability in 2031), Denmark (Energinet and the DSOs),
+        Estonia (Elering, expandable or not), Lithuania (Litgrid), Luxembourg (Creos), Malta (Enemalta) and Sweden (Svenska kraftnät, per county); Austria (APG) and Baden-Württemberg
+        (TransnetBW) publish no positions: see the panel.
       </Note>
     </>
   );
@@ -368,13 +370,13 @@ function EtsKey() {
   return (
     <>
       <Swatches>
-        {(ets?.groups ?? []).map((g, i) => (
+        {(ets?.groups ?? []).map((g, i) => g.includes("UK ETS") ? null : (
           <Swatch key={g} color={rgbCss(ETS_COLOR[i])} label={g.replace(" (power, heat, industry)", "")} />
         ))}
       </Swatches>
       <Note>
         Dot area = verified CO₂ in {ets?.newest ?? "…"}. Shown: {placed.toLocaleString("en-US")} of {n.toLocaleString("en-US")} installations ({mt(tp)} of {mt(t)}, sums
-        computed), the ones the EEA industrial register gives an ETS id for; the rest are in the panel only. Combustion includes power, heat and industrial boilers. EU Union Registry, {ets?.snapshot ?? "…"}.
+        computed), the ones the EEA industrial register gives an ETS id for; the rest are in the panel only. Combustion includes power, heat and industrial boilers. EU Union Registry, {ets?.snapshot ?? "…"}.{ets?.uk ? " Great Britain: the UK ETS registry's compliance report, listed in the panel (no positions or activities published)." : ""}
       </Note>
     </>
   );
@@ -485,6 +487,21 @@ function LayerLegend({ id }: { id: LayerId }) {
       );
     case "mastrDE":
       return <MastrKey />;
+    case "regGB":
+    case "regDK":
+    case "regSE":
+    case "regIE":
+    case "regPT":
+      return (
+        <>
+          <Swatches>
+            {["solar", "wind", "bio", "hydro", "storage", "gas", "nuclear"].map((g) => (
+              <Swatch key={g} color={rgbCss(FUEL_COLOR[g])} label={FUEL_LABEL[g]} kind="dot" />
+            ))}
+          </Swatches>
+          <Note>One dot per unit or project, sized by √MW; paler from operating to being built, permitted and in planning. The national register as published (see the card for its source).</Note>
+        </>
+      );
     case "offshoreWind":
       return <OffshoreKey />;
     case "grw":
@@ -501,6 +518,14 @@ function LayerLegend({ id }: { id: LayerId }) {
       return <TyndpKey />;
     case "ghgrpUS":
       return <GhgrpKey />;
+    case "gasPipesUS":
+      return <Note>Natural gas pipelines, interstate brighter than intrastate; lines generalised to about 1 km. EIA, U.S. Energy Atlas.</Note>;
+    case "evChargersEU":
+      return (
+        <Note>
+          Dot area = public charging points (registers: DE, FR) or mapped stations (OpenStreetMap, paler) summed per 0.1° cell. Counts per country: European Alternative Fuels Observatory.
+        </Note>
+      );
     case "evChargersUS":
       return (
         <Note>

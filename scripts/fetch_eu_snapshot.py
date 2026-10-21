@@ -75,7 +75,7 @@ COUNTRIES = [iso for iso in entsoe.AREA_EIC if iso not in ("GB", "UA", "MD", "XK
 PRICE_ZONES = {
     "AL": "AL", "AT": "AT", "BE": "BE", "BG": "BG", "CH": "CH", "CZ": "CZ", "DE-LU": "DE",
     "DK1": "DK", "DK2": "DK", "EE": "EE", "ES": "ES", "FI": "FI", "FR": "FR", "GR": "GR",
-    "HR": "HR", "HU": "HU", "IT-North": "IT", "IT-Centre-North": "IT", "IT-Centre-South": "IT",
+    "HR": "HR", "HU": "HU", "IE-SEM": "IE", "IT-North": "IT", "IT-Centre-North": "IT", "IT-Centre-South": "IT",
     "IT-South": "IT", "IT-Calabria": "IT", "IT-Sicily": "IT", "IT-Sardinia": "IT", "LT": "LT",
     "LV": "LV", "ME": "ME", "MK": "MK", "NL": "NL", "NO1": "NO", "NO2": "NO", "NO3": "NO",
     "NO4": "NO", "NO5": "NO", "PL": "PL", "PT": "PT", "RO": "RO", "RS": "RS", "SE1": "SE",

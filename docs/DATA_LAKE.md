@@ -367,6 +367,22 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | FERC 714 | PUDL Parquet | in place | 0 |
 | éCO2mix régional, REData by community, Transpower, Eskom | APIs | API | 0 |
 
+### Wave 7 (brief 22, the coverage registry `data/coverage.yaml`)
+
+| Dataset | Access | Kept as | Size (measured) |
+|---|---|---|---|
+| Room to connect, ten countries and two distribution grids (`connect_eu/<cc>`) | operators' JSON, ArcGIS layers, HTML tables, CSV | GeoParquet (Parquet for AT, DE, SE), snapshot partition | ~5,500 rows a snapshot, < 0.001 GB |
+| Redispatch, countertrading, congestion costs (`entsoe/congestion_*`), NESO constraints, CAISO curtailment | ENTSO-E API, NESO CSV, CAISO xlsx | Parquet, snapshot partition | see the catalogue |
+| CO₂ per kWh: RTE éCO2mix, REE, EirGrid, EIA-930 grid monitor | APIs and EIA's xlsx | API (no lake copy) | 0 |
+| Every unit, national registers (`registers/<cc>`: gb, fr, dk, se, ie, be, fi) | CSV, xlsx, ArcGIS, ODRÉ export | GeoParquet where positioned, snapshot partition | ~30,000 positioned rows plus FR's register |
+| Prices: GB market index and system prices (Elexon), SEM day-ahead, US real-time hubs | Elexon API, ENTSO-E API, gridstatus | API (no lake copy; the ENTSO-E lake holds the SEM) | 0 |
+| What UK consumers pay (DESNZ international energy prices) | DESNZ xlsx, four tables | API (no lake copy; three small sheets) | 0 |
+| UK ETS emissions per installation | UK ETS registry xlsx | in `ets.json` (no lake copy; ~800 rows) | 0 |
+| GB plants offline (Elexon REMIT) | Elexon API | API (no lake copy; the API keeps the history) | 0 |
+| US gas: EIA storage, Henry Hub, citygate; EIA pipelines | EIA API v2, ArcGIS | API (no lake copy; EIA keeps the history) | 0 |
+| Power cuts, SAIDI and SAIFI (World Bank) | World Bank API | API (no lake copy; 29 countries × 6 years) | 0 |
+| EV charging points and stations (`ev_eu/<cc>`: BNetzA, IRVE, OpenStreetMap) | CSV, Overpass API | GeoParquet, snapshot partition | DE 116,422 rows (4.7 MB); FR and OSM see the catalogue |
+
 ### Future (docs/DATASETS.md)
 
 | Dataset | Access | Kept as | Size |

@@ -449,7 +449,7 @@ export interface OutageUnit {
   offline_mw: number;
   type: string;
   start: string;
-  end: string;
+  end: string | null;
 }
 export interface OutageTotals {
   offline_mw: number;
@@ -461,11 +461,11 @@ export interface OutageTotals {
 const untilLabel = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
 /** Generating units offline right now (ENTSO-E unavailability), largest first. */
-export function OutageCard({ totals, units, at }: { totals: OutageTotals; units: OutageUnit[]; at: string }) {
+export function OutageCard({ totals, units, at, source = "ENTSO-E", note }: { totals: OutageTotals; units: OutageUnit[]; at: string; source?: string; note?: string }) {
   const [all, setAll] = useState(false);
   const shown = all ? units : units.slice(0, 8);
   return (
-    <Card title="Plants offline now" note={`ENTSO-E · ${new Date(at).toISOString().slice(11, 16)} UTC`} accent={[230, 96, 72]}>
+    <Card title="Plants offline now" note={`${source} · ${new Date(at).toISOString().slice(11, 16)} UTC`} accent={[230, 96, 72]}>
       <div className="flex items-end justify-between">
         <div>
           <div className="text-[26px] font-light leading-none tabular-nums text-slate-100">{power(totals.offline_mw)}</div>
@@ -487,7 +487,7 @@ export function OutageCard({ totals, units, at }: { totals: OutageTotals; units:
               <span className="shrink-0 tabular-nums text-slate-100">{power(u.offline_mw)}</span>
             </div>
             <div className={`pl-3.5 text-[9.5px] ${muted}`}>
-              {u.type === "forced" ? <span className="text-[#f0a07e]">forced</span> : u.type} · {FUEL_LABEL[u.fuel] ?? u.fuel} · until {untilLabel(u.end)}
+              {u.type === "forced" ? <span className="text-[#f0a07e]">forced</span> : u.type} · {FUEL_LABEL[u.fuel] ?? u.fuel}{u.end ? ` · until ${untilLabel(u.end)}` : " · no end given"}
               {u.available_mw > 0 ? ` · ${power(u.available_mw)} of ${power(u.nominal_mw)} still available` : ""}
             </div>
           </div>
@@ -498,6 +498,7 @@ export function OutageCard({ totals, units, at }: { totals: OutageTotals; units:
           {all ? "Show fewer" : `Show all ${units.length}`}
         </button>
       )}
+      {note && <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{note}</div>}
       {totals.left_out > 0 && (
         <div className={`mt-2 text-[10px] leading-snug ${muted}`}>
           {totals.left_out} reports left out: their nominal power exceeds any single unit in Europe (a reporting error at the source).

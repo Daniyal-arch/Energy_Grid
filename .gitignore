@@ -18,7 +18,8 @@ node_modules/
 frontend/dist/
 
 # raw downloads for scripts/ (data/eu/ etc.); the app's files live in frontend/public/data/
-data/
+data/*
+!data/coverage.yaml
 !frontend/public/data/
 
 # editor/os
@@ -36,3 +37,6 @@ recordings/
 
 # Planet probe imagery (licensed, never commit)
 scripts/planet_chips/
+
+# lake tables written locally by the build scripts (uploaded to R2 from Actions)
+lake-out/

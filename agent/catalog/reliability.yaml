@@ -1,0 +1,13 @@
+dataset: reliability
+title: Power cuts per country, SAIDI and SAIFI (World Bank Doing Business)
+licence: CC BY 4.0 (World Bank)
+map_file: frontend/public/data/eu/reliability.json (countries -> saidi, saifi as [year, value])
+api:
+  saidi: {call: "GET https://api.worldbank.org/v2/country/<ISO3;...>/indicator/IC.ELC.SAID.XD.DB1619?format=json", unit: hours per customer a year, step: year}
+  saifi: {call: "GET https://api.worldbank.org/v2/country/<ISO3;...>/indicator/IC.ELC.SAIF.XD.DB1619?format=json", unit: interruptions per customer a year, step: year}
+notes:
+  - Measured in the largest business city (US two cities); data years 2014-2019; discontinued in 2021.
+  - US county outages now are EAGLE-I (us-outages layer), a different measure.
+examples:
+  - q: How long were customers in Germany without power on average?
+    answer: 0.25 hours (15 minutes) per customer in 2019, Berlin as the largest business city (World Bank Doing Business SAIDI)

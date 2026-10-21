@@ -77,10 +77,13 @@ jobs:
             # Great Britain's carbon intensity (NESO) and Denmark every 5 min (Energinet), no keys
             python scripts/fetch_gb_carbon.py --out store/eu || echo "GB carbon fetch failed"
             python scripts/fetch_dk_live.py --out store/eu || echo "Energinet fetch failed"
+            # CO₂ per kWh as France (RTE), Spain (REE) and Ireland (EirGrid) publish it, no keys
+            python scripts/fetch_live_co2.py eu --out store/eu || echo "operator CO2 fetch failed"
             # the US grid (EIA-930); needs the EIA_API_KEY secret
             python scripts/fetch_us.py --out store/eu || echo "EIA fetch failed"
             # generating units offline now (ENTSO-E unavailability)
             python scripts/fetch_outages.py --out store/eu || echo "outages fetch failed"
+            python scripts/fetch_gb_outages.py --out store/eu || echo "GB outages (Elexon REMIT) failed"
             if python scripts/fetch_eu_snapshot.py --out store/eu; then
               (
                 cd store

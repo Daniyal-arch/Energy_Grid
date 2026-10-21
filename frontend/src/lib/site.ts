@@ -231,6 +231,38 @@ export function searchSiteLines(which: keyof SiteLines, site: LonLat, radiusKm: 
     .catch(() => done({ key, result: null, failed: true }));
 }
 
+// ------------------------------------------------------------------ what the panel found in the area, for the map
+
+export interface SitePlant {
+  at: LonLat;
+  mw: number;
+  type: string;
+  color: RGB;
+  name: string | null;
+  status: "operating" | "construction" | "planned";
+  km: number;
+  source: string;
+}
+export interface SiteFeatures {
+  key: string;
+  plants: SitePlant[];
+  /** substations, 220 kV and more (Europe) */
+  subs: { at: LonLat; kv: number; km: number }[];
+  dcs: { at: LonLat; name: string | null; operator: string | null; km: number }[];
+  /** GB: TEC register sites with MW waiting */
+  gb: { at: LonLat; name: string; owner: string; mw: number; km: number; date: string }[];
+  /** NL: the capacity-map area holding the site */
+  nl: { name: string; operator: string | null; offtake: string; feedin: string; offtakeK: number; polygons: [number, number][][][] } | null;
+}
+const empty = (key: string): SiteFeatures => ({ key, plants: [], subs: [], dcs: [], gb: [], nl: null });
+export const useSiteFeatures = create<SiteFeatures>(() => empty(""));
+
+/** A card hands what it found in the area to the map. */
+export function publishSite(key: string, part: Partial<Omit<SiteFeatures, "key">>): void {
+  const s = useSiteFeatures.getState();
+  useSiteFeatures.setState({ ...(s.key === key ? s : empty(key)), ...part, key });
+}
+
 // ------------------------------------------------------------------ substations from the world tiles
 
 /** Every substation mapped in OpenStreetMap (the lake's Overture extract; scripts/build_grid_more.py). */
@@ -300,38 +332,6 @@ export function searchSiteSubstations(site: LonLat): void {
   nearestTileSubstations(SUBSTATION_TILES, "substations", site)
     .then((result) => done({ key, result, failed: false }))
     .catch(() => done({ key, result: null, failed: true }));
-}
-
-// ------------------------------------------------------------------ what the panel found in the area, for the map
-
-export interface SitePlant {
-  at: LonLat;
-  mw: number;
-  type: string;
-  color: RGB;
-  name: string | null;
-  status: "operating" | "construction" | "planned";
-  km: number;
-  source: string;
-}
-export interface SiteFeatures {
-  key: string;
-  plants: SitePlant[];
-  /** substations, 220 kV and more (Europe) */
-  subs: { at: LonLat; kv: number; km: number }[];
-  dcs: { at: LonLat; name: string | null; operator: string | null; km: number }[];
-  /** GB: TEC register sites with MW waiting */
-  gb: { at: LonLat; name: string; owner: string; mw: number; km: number; date: string }[];
-  /** NL: the capacity-map area holding the site */
-  nl: { name: string; operator: string | null; offtake: string; feedin: string; offtakeK: number; polygons: [number, number][][][] } | null;
-}
-const empty = (key: string): SiteFeatures => ({ key, plants: [], subs: [], dcs: [], gb: [], nl: null });
-export const useSiteFeatures = create<SiteFeatures>(() => empty(""));
-
-/** A card hands what it found in the area to the map. */
-export function publishSite(key: string, part: Partial<Omit<SiteFeatures, "key">>): void {
-  const s = useSiteFeatures.getState();
-  useSiteFeatures.setState({ ...(s.key === key ? s : empty(key)), ...part, key });
 }
 
 /** "4.2 km" (one decimal under 10 km). */

@@ -1,0 +1,351 @@
+name: Wave 7 datasets
+
+# The builds of brief 22 (docs/tasks/22-coverage-wave7.md): one job per dataset family, each
+# committing its small outputs (frontend/public/data, agent/catalog, data/coverage.yaml) back to
+# the branch and uploading lake tables to R2. Run by hand from main: Actions > Wave 7 datasets >
+# Run workflow, naming the families (the branch push trigger used while building was removed).
+# A room to connect, B every unit, C live mix and CO2, D redispatch and congestion, E prices,
+# F what consumers pay, G emitters, H plants offline, I EV charging, J gas (US), K reliability,
+# P the probe (scripts/probe_wave7.py).
+# Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, ENTSOE_API_KEY, EIA_API_KEY.
+
+on:
+  workflow_dispatch:
+    inputs:
+      groups:
+        description: "Families to build (A B C D E F G H I J K; P = probe)"
+        type: string
+        default: "A B C D E F G H I J K"
+
+permissions:
+  contents: write
+
+env:
+  GROUPS: ${{ inputs.groups || github.event.head_commit.message }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      groups: ${{ steps.p.outputs.groups }}
+    steps:
+      - id: p
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os, re
+          g = os.environ["GROUPS"]
+          m = re.search(r"\[w7: ([A-Z ]+)\]", g)
+          print("groups=" + (m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""))
+          PY
+
+  P:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'P')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - name: 1 room to connect
+        continue-on-error: true
+        run: python scripts/probe_wave7.py connect
+      - name: 2 every unit
+        continue-on-error: true
+        run: python scripts/probe_wave7.py units
+      - name: 3 live mix and CO2
+        continue-on-error: true
+        run: python scripts/probe_wave7.py live
+      - name: 4 redispatch and congestion
+        continue-on-error: true
+        run: python scripts/probe_wave7.py congestion
+      - name: 5 prices
+        continue-on-error: true
+        run: python scripts/probe_wave7.py prices
+      - name: 6 what consumers pay
+        continue-on-error: true
+        run: python scripts/probe_wave7.py retail
+      - name: 7 emitters
+        continue-on-error: true
+        run: python scripts/probe_wave7.py emitters
+      - name: 8 plants offline
+        continue-on-error: true
+        run: python scripts/probe_wave7.py offline
+      - name: 9 EV charging
+        continue-on-error: true
+        run: python scripts/probe_wave7.py ev
+      - name: 10 gas
+        continue-on-error: true
+        run: python scripts/probe_wave7.py gas
+      - name: 11 reliability
+        continue-on-error: true
+        run: python scripts/probe_wave7.py reliability
+
+  A:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'A')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry pyproj openpyxl
+      - name: 1 room to connect, ten countries
+        continue-on-error: true
+        run: python scripts/build_connect_eu.py all --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family A outputs"
+
+  B:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'B')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry pyproj openpyxl
+      - name: 2 every unit, national registers (GB, FR, DK, SE, IE, BE, FI)
+        continue-on-error: true
+        run: python scripts/build_registers.py all --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family B outputs"
+
+  C:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx openpyxl
+      - name: 3 CO2 per kWh from France, Spain, Ireland (every 30 min in eu-snapshot.yml)
+        continue-on-error: true
+        run: python scripts/fetch_live_co2.py eu
+      - name: 3 CO2 per kWh per US region, EIA-930 grid monitor (~0.5 GB; weekly in us-queues.yml)
+        continue-on-error: true
+        run: python scripts/fetch_live_co2.py us
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family C outputs"
+
+  D:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'D')
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl python-dotenv
+      - name: Wait until no Lake ENTSO-E run is active (the key was banned when both ran)
+        run: bash scripts/entsoe_idle.sh 120
+      - name: 4 redispatch, countertrading, congestion costs (ENTSO-E, 400 days, four requests at a time, each country kept as it arrives)
+        continue-on-error: true
+        timeout-minutes: 240
+        run: python scripts/build_congestion.py entsoe --days 400 --upload
+      - name: 4 GB constraint costs (NESO), CAISO curtailment
+        continue-on-error: true
+        run: |
+          python scripts/build_congestion.py gb --upload
+          python scripts/build_congestion.py caiso --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family D outputs"
+
+  E:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'E')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry openpyxl python-dotenv tzdata gridstatus
+      - name: Wait until no Lake ENTSO-E run is active
+        run: bash scripts/entsoe_idle.sh 120
+      - name: 5 twelve months of day-ahead prices with Ireland's SEM (ENTSO-E, rebuilt)
+        continue-on-error: true
+        run: python scripts/build_prices.py --force
+      - name: 5 Great Britain in the Prices tab (Elexon market index, ECB rate)
+        continue-on-error: true
+        run: python scripts/build_gb_prices.py --force
+      - name: 5 imbalance prices with Great Britain (ENTSO-E A85, Elexon system prices)
+        continue-on-error: true
+        run: python scripts/build_imbalance.py
+      - name: 5 US real-time hub prices (gridstatus)
+        continue-on-error: true
+        run: python scripts/fetch_us_rt.py
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family E outputs"
+
+  F:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'F')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx openpyxl
+      - name: 6 what UK consumers pay (DESNZ, Eurostat's bands)
+        continue-on-error: true
+        run: python scripts/fetch_gb_retail.py
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family F outputs"
+
+  G:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'G')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx openpyxl
+      - name: 7 emitters, UK ETS installations into the CO2 per installation file
+        continue-on-error: true
+        run: python scripts/fetch_uk_ets.py
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family G outputs"
+
+  H:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'H')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx python-dotenv tzdata
+      - name: Wait until no Lake ENTSO-E run is active
+        run: bash scripts/entsoe_idle.sh 30
+      - name: 8 plants offline now, every zone listed (ENTSO-E A80 with Ireland's SEM)
+        continue-on-error: true
+        run: python scripts/fetch_outages.py
+      - name: 8 Great Britain (Elexon REMIT)
+        continue-on-error: true
+        run: python scripts/fetch_gb_outages.py
+      - name: 8 probe, does ENTSO-E carry unit outages for Cyprus and Malta?
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import sys
+          from datetime import UTC, datetime
+          sys.path.insert(0, "scripts")
+          import httpx, entsoe
+          from fetch_outages import documents
+          now = datetime.now(UTC)
+          for zone, eic in {"CY": "10YCY-1001A0003J", "MT": "10Y1001A1001A93C"}.items():
+              entsoe.ZONE_EIC[zone] = eic
+              with httpx.Client(timeout=120) as c:
+                  print(f"::notice title=A80 {zone}::{len(documents(c, zone, now))} outage documents now")
+          PY
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family H outputs"
+
+  I:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'I')
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry
+      - name: 9 EV charging, EAFO counts per country
+        continue-on-error: true
+        run: python scripts/build_ev_eu.py eafo
+      - name: 9 EV charging points, Germany (BNetzA), France (IRVE), the Netherlands (NDW)
+        continue-on-error: true
+        run: |
+          python scripts/build_ev_eu.py de --upload
+          python scripts/build_ev_eu.py fr --upload
+          python scripts/build_ev_eu.py nl --upload
+      - name: 9 EV charging stations elsewhere (OpenStreetMap, Overpass; up to 2 h, each country kept as it arrives)
+        continue-on-error: true
+        timeout-minutes: 120
+        run: python scripts/build_ev_eu.py osm --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family I outputs"
+
+  J:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'J')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - name: 10 gas on the US side (EIA storage, Henry Hub, citygate, pipelines)
+        continue-on-error: true
+        run: |
+          python scripts/fetch_us_gas.py all
+          python3 -c "import json; d=json.load(open('frontend/public/data/us/gas.json')); print('::notice title=gas::' + json.dumps({k: [s['name'] for s in d['storage'].values()] if k == 'storage' else len(d[k] or {}) for k in ('storage', 'citygate')} | {'hh': (d['henry_hub'] or {}).get('points', [None])[-1]}))"
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family J outputs"
+
+  K:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'K')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - name: 11 power cuts, SAIDI and SAIFI (World Bank)
+        continue-on-error: true
+        run: python scripts/fetch_reliability.py
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Wave 7 family K outputs"

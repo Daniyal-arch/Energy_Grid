@@ -449,6 +449,138 @@ Rules:
   only. Nodes sharing a zone share capacity, so the card does not sum them.
 - Refresh: Mondays on `eu-days`.
 
+## Room to connect, ten more countries (`scripts/build_connect_eu.py`, `connect/<cc>.json`)
+
+The operators' own figures, passed through, one file format: Austria (APG, available feed-in and
+offtake per substation, HTML table, monthly; no positions), Bulgaria (ESO, free MW per substation
+for generation and consumption by voltage, and "grid expansion needed"), Czechia (ČEPS,
+suitability per substation for 2031 and 2036), Germany (TransnetBW only: ranges per substation;
+50Hertz and Amprion publish PDFs), Denmark (Energinet and the DSOs, MW per station), Estonia
+(Elering, expandable or not, extra fee), Lithuania (Litgrid, free MW for solar, wind, storage per
+year), Luxembourg (Creos, per station and voltage, 2026/2030/2035), Malta (Enemalta, kVA and kWp
+per substation), Sweden (Svenska kraftnät, per county), Spain's distribution nodes (e-distribución,
+CNMC monthly CSV) and GB's six DNO embedded capacity registers (1 MW and more). Computed: the map
+class (four MW classes on the feed-in value, or the operator's category), WGS84 positions from
+UTM / OSGB / ED50 as each file gives them. Layer "Grid capacity", card per country, site analysis
+rows; lake `connect_eu/<cc>`. Refresh: by hand (`wave7.yml` family A). Coverage: docs/COVERAGE.md.
+
+## Every unit, national registers (`scripts/build_registers.py`, `registers/<cc>.json`)
+
+UK: DESNZ REPD (quarterly CSV, every renewable and storage project from 150 kW, operational to in
+planning; refused, withdrawn, expired left out) and DUKES 5.11 (major power producers) for the
+fuels REPD does not cover (gas, coal, nuclear, oil); OGL v3.0. Denmark: Energistyrelsen's master
+data of every wind turbine (monthly xlsx). Sweden: Vindbrukskollen, every turbine built, permitted
+or in planning (ArcGIS). Ireland: SEAI wind farms connected (June 2022, CC BY 4.0), at their node's
+coordinates. France: ODRÉ national register (Licence Ouverte), no positions: summed per region and
+group. Belgium: Elia ods179 contracted units (no positions). Portugal: DGEG's licensed plants (wind,
+solar, thermal, small hydro; ArcGIS, CC BY 4.0; wind = the turbines' generator kW summed per park,
+others installed kVA, shown as MVA). Czechia: ERÚ's licensed plants (monthly XML), no positions.
+Finland's register page answers scripts with 403 (not built).
+Computed: fuel groups, totals per status and group, WGS84 positions (OSGB, UTM 32, Irish Grid).
+Layers "UK: every project", "Denmark/Sweden: every wind turbine", "Ireland: wind farms" (Power
+plants), a register card in the Plants tab; lake `registers/<cc>`. Refresh by hand (`wave7.yml` B).
+
+## CO₂ per kWh from the operators (`scripts/fetch_live_co2.py`, `live_co2.json`, `us/co2.json`)
+
+France: RTE éCO2mix national real time (ODRÉ `eco2mix-national-tr`, Licence Ouverte), every 15 min,
+`taux_co2` (g/kWh) and the mix, last 48 h. Spain: REE REData, the national system's daily emission
+factor (t CO₂-eq/MWh; shown × 1000 as g/kWh) and emissions per technology, last 30 days. Ireland:
+EirGrid Smart Grid Dashboard CO₂ intensity (g/kWh), every 15 min, Ireland and the island. US:
+EIA-930 grid monitor files per region (14 xlsx, ~0.5 GB), "CO2 Emissions Intensity for Generated /
+Consumed Electricity" (lb/kWh, EIA's estimate; × 453.592 = g/kWh), last 14 days. Passthrough,
+only unit conversions. Cards "CO₂ per kWh" (country Now tab; US Live tab). Refresh: every 30 min
+in `eu-snapshot.yml` (fr, es, ie), weekly in `us-queues.yml` (us). No lake copy (the sources keep
+their history; API-or-Parquet rule).
+
+## Redispatch, countertrading, congestion costs, curtailment (`scripts/build_congestion.py`, `congestion.json`)
+
+ENTSO-E (`ENTSOE_API_KEY`), per control area (Germany per TSO), one request at a time: redispatching
+internal (A63, A85) and cross-border (A63, A46, per border and direction), countertrading (A91) and
+costs of congestion management (A92). GB: NESO "Constraint Breakdown Costs and Volume" (daily, NESO
+Open Data Licence). California: CAISO production and curtailments data (5-min wind and solar
+curtailment, yearly xlsx). Computed: MWh = MW × interval, summed per month (up and down shown
+together); costs and NESO figures summed per month. Card "Redispatch and congestion" (country Now
+tab), "Constraint costs" (GB), "Wind and solar curtailed, California" (US Live tab). Refresh: daily
+in `eu-days.yml` (35 days, merged into the year; ENTSO-E skipped while a Lake ENTSO-E run is
+active); lake `entsoe/congestion_*`, `neso/constraint_breakdown`, `caiso/curtailment`.
+
+## Prices with the same coverage: GB, Ireland's SEM, US real time (`build_gb_prices.py`, `build_imbalance.py`, `fetch_us_rt.py`)
+
+Ireland: the SEM day-ahead price (ENTSO-E A44, zone IE-SEM, EUR) joins `prices.json` and the day
+files. Great Britain (no ENTSO-E prices since 2021): Elexon Market Index Data (APXMIDP, half-hourly,
+GBP/MWh, no key) over the twelve months of `prices.json`, converted to EUR with the ECB euro
+reference rate of the day (the last published rate on days without one; computed), statistics as
+every zone (`build_prices.zone_stats`; no capture prices), the GBP average kept; Elexon system
+buy/sell prices (GBP, half-hourly) as GB's imbalance prices in `imbalance.json`, kept in GBP.
+US: real-time LMP at the day-ahead file's hubs (gridstatus: CAISO 15 min, ERCOT 15 min, MISO, SPP,
+NYISO 5 min, ISO-NE hourly), yesterday and today, as published; card "Real time vs day-ahead".
+Refresh: daily in `eu-days.yml`.
+
+## What UK consumers pay (`scripts/fetch_gb_retail.py`, GB in `retail.json`)
+
+DESNZ "International domestic / non-domestic energy prices" (Quarterly Energy Prices, OGL v3.0):
+the UK's price per half-year in Eurostat's own bands, pence per kWh. Electricity households (DC,
+table 5.6.2) and gas households (D2, 5.10.2) with and without taxes; gas businesses (I3, 5.8.2)
+excluding VAT and without taxes. DESNZ has no 500-1,999 MWh electricity band (IC): left empty.
+Computed: EUR = pence / 100 / the ECB's average GBP per EUR over the half-year; the pence figures
+are kept in `eu.gb`. Card "What consumers pay" (GB says DESNZ). Refresh: Mondays in `eu-days.yml`,
+after `fetch_retail_prices.py`. Ofgem's price cap is a ceiling, not an average, so it is not used.
+
+## UK ETS emissions per installation (`scripts/fetch_uk_ets.py`, GB in `ets.json`)
+
+UK Emissions Trading Registry, public report "Compliance Report Emissions and Surrenders" (OGL
+v3.0, reports.view-emissions-trading-registry.service.gov.uk, section 5): recorded (verified)
+emissions per installation and year, t CO2e, passed through. Operator holding accounts only
+(aircraft and maritime left out). Northern Ireland's power stations stay in the EU ETS (XI). The
+report has no position or activity and the EEA register has no UK site since 2020, so GB's 747
+installations are listed in the panel and the country report (group "Activity not published")
+and are not on the map; sums are computed. Refresh: Mondays in `eu-days.yml`, after
+`fetch_eu_ets.py`.
+
+## Great Britain's plants offline (`scripts/fetch_gb_outages.py`, GB in `outages.json`)
+
+Elexon REMIT messages (Insights API, no key): events running now (`/remit/list/by-event`, latest
+revision), read 40 at a time. Kept: production unavailability, status Active, begun and not ended.
+Offline = the message's unavailable capacity (MW, as published); planned or unplanned (shown as
+forced). Closures stay published as open-ended outages (Ratcliffe, Fiddlers Ferry, to 2050): an
+event begun over 365 days ago or ending over ten years ahead is left out and counted
+(`gb.long_term`, shown on the card). Europe's totals are recomputed as the sum of the countries.
+Every ENTSO-E zone that answers is now listed, with 0 MW when nothing is offline (`fetch_outages.py`).
+Refresh: every 30 min in `eu-snapshot.yml`, after `fetch_outages.py`.
+
+## EV charging in Europe (`scripts/build_ev_eu.py`, `ev_eu.json`)
+
+Counts: European Alternative Fuels Observatory (European Commission), public recharging points per
+country and year, AC and DC (`<country>/recharging_points.csv`; the newest year is the year so far),
+and per power class now (EU table), for EU-27 and the UK. Where: Germany, BNetzA Ladesäulenregister
+(CC BY 4.0, points per facility in operation); France, data.gouv.fr consolidated IRVE file (Etalab
+2.0, one row per point); the Netherlands, NDW open data charging point locations (points per
+location summed over its connector groups); every other country, OpenStreetMap `amenity=charging_station` (ODbL,
+Overpass), one per mapped station, not per point. Computed: points or stations summed per 0.1° cell;
+each country says its source and unit. Layer "EV charging" and card. Refresh: by hand (`wave7.yml`
+family I); lake `ev_eu/<cc>` (every point or station).
+
+## Gas on the US side (`scripts/fetch_us_gas.py`, `us/gas.json`, `us/gas_pipes.json`)
+
+EIA API v2 (`EIA_API_KEY`, public domain): weekly working gas in storage per region (Bcf, Lower 48
+and EIA's regions), Henry Hub spot price (daily, USD/MMBtu), citygate price per state (monthly,
+USD/Mcf; EIA publishes no other regional hub price as open data). Computed: the change on the week
+and the five-year range (min and max of the same ISO week in the five years before), as EIA's
+storage report shows it. Pipelines: EIA "Natural Gas Interstate and Intrastate Pipelines" (U.S.
+Energy Atlas, federal ArcGIS org), generalised by ArcGIS to 0.01° and rounded to 3 decimals; layer
+"US gas pipelines". LNG terminals stay GEM's world layer. Card "Gas" (US Live tab). Refresh: weekly
+in `us-queues.yml`.
+
+## Power cuts, SAIDI and SAIFI (`scripts/fetch_reliability.py`, `reliability.json`)
+
+World Bank, Doing Business "Getting electricity" (API, CC BY 4.0): SAIDI (hours without power per
+customer a year, `IC.ELC.SAID.XD.DB1619`) and SAIFI (interruptions per customer,
+`IC.ELC.SAIF.XD.DB1619`) for EU-27, the UK and the US, data years 2014 to 2019, measured in the
+largest business city (US: New York and Los Angeles); passed through. The series ended with Doing
+Business in 2021. CEER's benchmarking reports give national values as PDF tables only and BNetzA's
+SAIDI is a press release, so neither is read (not_published as data, docs/COVERAGE.md). Card
+"Power cuts" (country Now tab) and the country report. Refresh: on the 1st of the month in `eu-days.yml`.
+
 ## Lake: ENTSO-E (`scripts/build_lake_entsoe.py`, `lake/entsoe/`)
 
 Europe's power data in full detail for the agent, not drawn on the map: Parquet on R2

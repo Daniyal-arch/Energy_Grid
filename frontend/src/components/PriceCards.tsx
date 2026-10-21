@@ -38,7 +38,12 @@ export function ZoneCard({ zone, z, period }: { zone: string; z: ZoneStats; peri
         <Tile label="Highest" value={eur(z.max[0])} sub={when(z.max[1])} />
       </div>
       {z.coverage < 0.99 && (
-        <div className={`mt-2 text-[10px] ${muted}`}>Prices for {Math.round(z.coverage * 100)} % of the intervals; the rest are missing at ENTSO-E.</div>
+        <div className={`mt-2 text-[10px] ${muted}`}>Prices for {Math.round(z.coverage * 100)} % of the intervals; the rest are missing at {z.source ? "the source" : "ENTSO-E"}.</div>
+      )}
+      {z.source && (
+        <div className={`mt-2 text-[10px] ${muted}`}>
+          {z.source}{z.mean_gbp != null ? `; average £${z.mean_gbp.toFixed(2)} per MWh before conversion` : ""}. ENTSO-E has no GB prices since 2021; the market index is a short-term price, not an auction result.
+        </div>
       )}
     </Card>
   );

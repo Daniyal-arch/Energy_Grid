@@ -1,0 +1,23 @@
+dataset: registers
+title: Every generating unit from the national registers (UK REPD and DUKES, Denmark and Sweden wind turbines, Ireland wind farms, Portugal, France, Czechia, Belgium)
+licence: per table (OGL v3.0, CC BY 4.0, Licence Ouverte, the operators' open data terms)
+map_file: frontend/public/data/eu/registers/<cc>.json (layers "UK: every project", "Denmark: every wind turbine", "Sweden: every wind turbine", "Ireland: wind farms")
+tables:
+  gb: {grain: one row per REPD project or DUKES station, keys: {id: REPD Ref ID or DESNZ site code}, measures: {mw: {unit: MW, how: installed capacity as published}}, dims: [status, group, register, country]}
+  dk: {grain: one row per wind turbine (GSRN), measures: {mw: {unit: MW, how: kW / 1000}}, dims: [connected, decommissioned, offshore]}
+  se: {grain: one row per wind turbine (VERKID), measures: {mw: {unit: MW, how: maximum power as given}}, dims: [status, municipality]}
+  ie: {grain: one row per wind farm (June 2022), measures: {mw: {unit: MW}}}
+  fr: {grain: one row per installation (under 36 kW grouped per commune by the source), measures: {mw: {unit: MW, how: puismaxinstallee kW / 1000}}, dims: [region, sector, fuel, technology]}
+  be: {grain: one row per contracted technical unit, measures: {mw: {unit: MW, how: technical Pmax}}}
+  pt: {grain: one row per park in DGEG licensing, measures: {mw: {unit: MVA, how: wind = generator kW summed per park, others installed kVA / 1000}}, dims: [status, group, district]}
+  cz: {grain: one row per licensed plant, measures: {mw: {unit: MW, how: sources output summed as published}}, dims: [region, district, type, fuels]}
+examples:
+  - q: how much onshore and offshore wind is operating in the UK by REPD
+    sql: SELECT "group", round(sum(mw)) FROM registers.gb WHERE status = 'operating' AND "group" LIKE 'wind%' GROUP BY 1
+    answer: wind 15,508 MW, wind_offshore 16,011 MW (REPD Q2 2026)
+  - q: how many wind turbines turn in Denmark
+    sql: SELECT count(*) FROM registers.dk WHERE decommissioned IS NULL
+    answer: 4,858 (Vinddata to the end of September 2026)
+  - q: how much wind operates in mainland Portugal in DGEG's licensing
+    sql: SELECT round(sum(mw)) FROM registers.pt WHERE "group" = 'wind' AND status = 'operating'
+    answer: 5,416 MVA (generator kW summed per park)

@@ -56,6 +56,14 @@ import { SITE_RADIUS_KM, searchSiteLines, type LonLat } from "../lib/site";
 import type { ImbalanceFile } from "../lib/imbalance";
 import type { DkLiveFile, GbCarbonFile } from "../lib/live";
 import { DkLiveCard, GbCarbonCard } from "../components/LiveCards";
+import { CoverageCard } from "../components/CoverageCards";
+import { UsRtCard } from "../components/UsRtCards";
+import { UsGasCard } from "../components/UsGasCards";
+import { PowerCutsCard } from "../components/ReliabilityCards";
+import { CongestionCard, UsCurtailmentCard } from "../components/CongestionCards";
+import { OperatorCo2Card, UsCo2RegionsCard } from "../components/Co2Cards";
+import { RegisterCard } from "../components/RegisterCards";
+import { REGISTERS } from "../lib/registers";
 import { LinesOutCard, RedispatchCard } from "../components/GridCards";
 import { SedsCard, SteoCard, type SedsFile, type SteoFile } from "../components/ProfileCards";
 import { CenaceCard, JepxCard, type CenaceFile, type JepxFile } from "../components/MarketCards";
@@ -287,7 +295,7 @@ function EuropePanel() {
               </div>
             </Card>
           )}
-          {!day && outages && outages.units.length > 0 && <OutageCard totals={outages.total} units={outages.units} at={outages.at} />}
+          {!day && outages && outages.units.length > 0 && <OutageCard totals={outages.total} units={outages.units} at={outages.at} source={outages.gb ? "ENTSO-E, Elexon (GB)" : "ENTSO-E"} />}
           <Hint>Click a country for its figures, a flow for its size.</Hint>
           <SourcesCard items={LIVE_SOURCES} />
         </>
@@ -483,14 +491,28 @@ function CountryPanel({ iso }: { iso: string }) {
           )}
           {!day && gbCarbon && <GbCarbonCard gb={gbCarbon} />}
           {!day && dkLive && <DkLiveCard dk={dkLive} />}
+          {!day && <OperatorCo2Card iso={iso} />}
           {!day && iso === "FR" && <FrRegionsCard />}
           {iso === "ES" && <EsRegionsCard />}
           {!day && linesOut && <LinesOutCard f={linesOut} iso2={iso} />}
           {redispatch && <RedispatchCard f={redispatch} />}
+          {!day && <CongestionCard iso={iso} />}
+          {!day && <PowerCutsCard iso2={iso} />}
           {trade.length > 0 && <TradeCard rows={trade} time={timeOf(trade[0].ts)} />}
           {!day && outages?.countries[iso] && (
-            <OutageCard totals={outages.countries[iso]} units={outages.units.filter((u) => u.country === iso)} at={outages.at} />
+            <OutageCard
+              totals={outages.countries[iso]}
+              units={outages.units.filter((u) => u.country === iso)}
+              at={iso === "GB" && outages.gb ? outages.gb.at : outages.at}
+              source={iso === "GB" ? "Elexon REMIT" : "ENTSO-E"}
+              note={
+                iso === "GB" && outages.gb
+                  ? `${outages.gb.source}; offline = the unavailable capacity each active message gives. ${outages.gb.long_term.n} closures still published as outages (begun over a year ago or ending over ten years ahead, ${(outages.gb.long_term.mw / 1000).toFixed(1)} GW) are left out.`
+                  : undefined
+              }
+            />
           )}
+          <CoverageCard iso2={iso} name={name} />
           <SourcesCard items={LIVE_SOURCES} />
         </>
       ),
@@ -582,6 +604,7 @@ function CountryPanel({ iso }: { iso: string }) {
             </Card>
           )}
           {iso === "DE" && <MastrCountryCard entsoeGw={capacity?.source === "ENTSO-E A68" ? capacity.gw : undefined} />}
+          {(REGISTERS as readonly string[]).includes(iso) && <RegisterCard cc={iso} />}
           {irena && <IrenaCountryCard f={irena} iso3={ISO3[iso]} year={yearLabel} />}
           {reservoir && (
             <Card title="Hydro reservoirs" note={`ENTSO-E · week of ${reservoir.week}`} accent={[84, 156, 255]}>
@@ -891,6 +914,7 @@ function UsPanel() {
             <UsCapacityCard f={plants} />
             <UsPlantsCard f={plants} status={status} onStatus={(st) => actions.setPlantStatus(st as typeof status)} />
             {turbines && <UsTurbinesCard t={turbines} names={names} />}
+            <CoverageCard iso2="US" name="the United States" />
             {sources}
           </>
         ) : (
@@ -935,6 +959,10 @@ function UsPanel() {
       body: () => (
         <>
           {us ? <UsCard us={us} /> : <Empty>Loading EIA-930…</Empty>}
+          <UsCo2RegionsCard />
+          <UsRtCard />
+          <UsCurtailmentCard />
+          <UsGasCard />
           {pricesNow && <UsHubPricesCard rows={pricesNow.rows} time={`${ET_HOUR.format(new Date(pricesNow.hour))} ET`} />}
           <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === "United States" || (pricesNow != null && k === "US prices"))} />
         </>
@@ -950,6 +978,9 @@ function UsPanel() {
     />
   );
 }
+
+// Cyprus and Malta are EU members without a European country panel: their coverage shows here
+const ISO2_OF_3: Record<string, string> = { CYP: "CY", MLT: "MT" };
 
 function WorldCountryPanel({ code }: { code: string }) {
   const ws = useFile<WorldStatsFile>("worldStats");
@@ -978,6 +1009,7 @@ function WorldCountryPanel({ code }: { code: string }) {
             renewables={renewables}
             monthly={monthly?.entities[code] ? { months: monthly.months, ...monthly.entities[code] } : null}
           />
+          {ISO2_OF_3[code] && <CoverageCard iso2={ISO2_OF_3[code]} name={name} />}
           <SourcesCard items={WORLD_SOURCES.filter(([k]) => ["Access to electricity", "Data centres", "Renewables"].includes(k))} />
         </>
       ),

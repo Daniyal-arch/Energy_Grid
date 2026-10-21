@@ -10,7 +10,8 @@ Rules (documented in docs/DATA_SOURCES.md):
     documents are left out
   - offline now = nominal power - available capacity at this moment (computed); units
     with less than 1 MW offline are left out
-  - totals per zone and fuel are sums of the units (computed)
+  - totals per zone and fuel are sums of the units (computed); a zone that answered with no
+    outage is listed with 0 MW
   - a unit reporting a nominal power above 2,000 MW is left out as mis-reported: no
     single generating unit in Europe is that large (Italy's operator sends kW labelled
     as MW); each zone counts the units left out ("left_out")
@@ -174,7 +175,8 @@ def main() -> None:
             "by_fuel": {},
         }
 
-    per_zone: dict[str, dict] = {}
+    # every zone that answered is listed, with 0 MW when nothing is offline there
+    per_zone: dict[str, dict] = {z: blank(z) for z, rows in got.items() if isinstance(rows, list)}
     for u in found:
         if u.get("implausible"):
             per_zone.setdefault(u["zone"], blank(u["zone"]))["left_out"] += 1

@@ -32,8 +32,10 @@ export type LayerId =
   | "solarResource"
   | "windResource"
   | "evChargersUS"
+  | "evChargersEU"
   | "usQueue"
   | "gasPipes"
+  | "gasPipesUS"
   | "oilPipes"
   | "lngTerminals"
   | "coalTerminals"
@@ -63,6 +65,11 @@ export type LayerId =
   | "flood"
   | "roadsRail"
   | "mastrDE"
+  | "regGB"
+  | "regDK"
+  | "regSE"
+  | "regIE"
+  | "regPT"
   | "offshoreWind"
   | "wind"
   | "sun"
@@ -120,7 +127,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "substations", label: "Substations", desc: "220 kV and more, shown zoomed in", group: "Power grid", coverage: "Europe", color: "rgb(226,232,240)" },
   { id: "gridWorld", label: "High-voltage lines", desc: "220 kV and more, mapped in OpenStreetMap", group: "Power grid", coverage: "World", color: "rgb(160,210,255)" },
   { id: "gridUS", label: "US transmission lines", desc: "100–765 kV by voltage, mapped in OpenStreetMap", group: "Power grid", coverage: "US", color: "rgb(236,178,120)" },
-  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Connections & queues", coverage: "GB, NL, ES, FR, IT, IE, PT, PL", color: "rgb(206,138,72)" },
+  { id: "connect", label: "Grid capacity", desc: "Where new demand or generation can still connect", group: "Connections & queues", coverage: "GB, NL, ES, FR, IT, IE, PT, PL, AT, BG, CZ, DE, DK, EE, LT, LU, MT, SE", color: "rgb(206,138,72)" },
   { id: "cables", label: "Undersea power cables", desc: "HVDC and AC cables at sea", group: "Power grid", coverage: "World", color: "rgb(110,190,255)" },
   { id: "predicted", label: "Predicted local grid", desc: "Estimated from night lights (Gridfinder)", group: "Power grid", coverage: "World", color: "rgb(255,190,110)" },
   { id: "plantsEU", label: "Power plants", desc: "20 MW and more, by fuel", group: "Power plants", coverage: "Europe", color: "rgb(255,128,72)" },
@@ -129,10 +136,16 @@ export const LAYERS: LayerInfo[] = [
   { id: "mastrDE", label: "Germany: every unit", desc: "MW per municipality of solar, wind or storage; units of 1 MW and more (Marktstammdatenregister)", group: "Power plants", coverage: "DE", color: "rgb(255,214,72)" },
   { id: "tyndp", label: "Planned grid projects", desc: "ENTSO-E TYNDP 2024: lines and storage by status", group: "Power grid", coverage: "Europe", color: "rgb(255,196,96)" },
   { id: "grw", label: "Wind and solar seen from space", desc: "Every turbine and solar array found in satellite images, 2024 Q2 (Global Renewables Watch)", group: "Power plants", coverage: "World", color: "rgb(255,214,72)" },
+  { id: "regGB", label: "UK: every project", desc: "Renewables and storage from 150 kW in planning or operating (REPD), gas, coal and nuclear stations (DUKES)", group: "Power plants", coverage: "GB", color: "rgb(255,214,72)" },
+  { id: "regDK", label: "Denmark: every wind turbine", desc: "On land and at sea, with capacity and model (Energistyrelsen)", group: "Power plants", coverage: "DK", color: "rgb(72,222,184)" },
+  { id: "regSE", label: "Sweden: every wind turbine", desc: "Built, permitted or in planning (Vindbrukskollen)", group: "Power plants", coverage: "SE", color: "rgb(72,222,184)" },
+  { id: "regIE", label: "Ireland: wind farms", desc: "Connected by June 2022, at their grid node (SEAI)", group: "Power plants", coverage: "IE", color: "rgb(72,222,184)" },
+  { id: "regPT", label: "Portugal: licensed plants", desc: "Wind, solar, thermal and small hydro in DGEG's licensing", group: "Power plants", coverage: "PT", color: "rgb(255,214,72)" },
   { id: "offshoreWind", label: "Offshore wind farms", desc: "Areas at sea: operating, building, approved, planned (EMODnet)", group: "Power plants", coverage: "Europe", color: "rgb(96,190,255)" },
   { id: "turbinesUS", label: "US wind turbines", desc: "Every turbine, shown from zoom 5", group: "Power plants", coverage: "US", color: "rgb(72,222,184)" },
   { id: "solarUS", label: "US solar farms", desc: "Every array of 1 MW and more; outlines zoomed in (USPVDB)", group: "Power plants", coverage: "US", color: "rgb(255,214,72)" },
   { id: "usQueue", label: "US interconnection queue", desc: "Each state raised by the GW waiting to connect", group: "Connections & queues", coverage: "US", color: "rgb(196,196,214)", story: "us-queue" },
+  { id: "gasPipesUS", label: "US gas pipelines", desc: "Interstate and intrastate natural gas pipelines (EIA)", group: "Gas, oil & coal", coverage: "US", color: "rgb(255,196,96)" },
   { id: "gasPipes", label: "Gas pipelines", desc: "Operating, under construction, proposed", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,196,96)" },
   { id: "oilPipes", label: "Oil pipelines", desc: "Crude oil and NGL", group: "Gas, oil & coal", coverage: "World", color: "rgb(222,110,82)" },
   { id: "lngTerminals", label: "LNG terminals", desc: "Import and export, sized by capacity", group: "Gas, oil & coal", coverage: "World", color: "rgb(255,150,92)" },
@@ -154,6 +167,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "cement", label: "Cement plants", desc: "Sized by capacity", group: "Industry & demand", coverage: "World", color: "rgb(206,192,166)" },
   { id: "chemicals", label: "Chemical plants", desc: "Large chemical sites", group: "Industry & demand", coverage: "World", color: "rgb(230,160,255)" },
   { id: "ironOre", label: "Iron ore mines", desc: "Sized by production", group: "Industry & demand", coverage: "World", color: "rgb(206,112,88)" },
+  { id: "evChargersEU", label: "EV charging", desc: "Public charging points from the national registers, OpenStreetMap stations elsewhere (EAFO counts)", group: "Industry & demand", coverage: "Europe", color: "rgb(96,214,255)" },
   { id: "evChargersUS", label: "EV fast chargers", desc: "Public DC fast charging stations, sized by ports (NREL AFDC)", group: "Industry & demand", coverage: "US", color: "rgb(96,214,255)" },
   { id: "hydrogen", label: "Hydrogen projects", desc: "Electrolysers and other clean-hydrogen plants, operating or being built (European Hydrogen Observatory)", group: "Industry & demand", coverage: "Europe", color: "rgb(96,214,255)" },
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & demand", coverage: "World", color: "rgb(196,150,255)" },
@@ -181,6 +195,8 @@ export const STATS_LAYERS = new Set<LayerId>([
   "tyndp",
   "ghgrpUS",
   "evChargersUS",
+  "evChargersEU",
+  "gasPipesUS",
   "usQueue",
   "cables",
   "gasPipes",
@@ -208,6 +224,11 @@ export const STATS_LAYERS = new Set<LayerId>([
   "hydrogen",
   "gasProjects",
   "mastrDE",
+  "regGB",
+  "regDK",
+  "regSE",
+  "regIE",
+  "regPT",
   "offshoreWind",
 ]);
 

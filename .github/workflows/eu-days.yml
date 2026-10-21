@@ -96,6 +96,8 @@ jobs:
           PJM_API_KEY: ${{ secrets.PJM_API_KEY }}
         run: |
           python scripts/fetch_us_prices.py --out store/eu || echo "US prices failed; keeping the last copy"
+          pip install gridstatus
+          python scripts/fetch_us_rt.py --out store/eu || echo "US real-time prices failed; keeping the last copy"
           python scripts/build_us_day.py --prices-only --out store/eu/usday || echo "US day prices failed"
 
       - name: US prices at every node (six markets, CAISO nodes placed; missing days newest first, 8 a run, 30 kept)
@@ -113,7 +115,10 @@ jobs:
         continue-on-error: true
         env:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
-        run: python scripts/build_prices.py --out store/eu || echo "prices failed; keeping yesterday's"
+        run: |
+          python scripts/build_prices.py --out store/eu || echo "prices failed; keeping yesterday's"
+          # Great Britain (Elexon market index, ECB rate), merged in after each monthly rebuild
+          python scripts/build_gb_prices.py --out store/eu || echo "GB prices failed; keeping yesterday's"
 
       - name: Spain's generation per autonomous community (REE REData, monthly, the last 13 months)
         timeout-minutes: 10
@@ -138,6 +143,21 @@ jobs:
           if bash scripts/entsoe_idle.sh 0; then
             python scripts/build_transmission_outages.py --out store/eu || echo "A78 failed; keeping yesterday's"
           fi
+
+      - name: Redispatch, countertrading, congestion costs (ENTSO-E A63/A91/A92), GB constraints (NESO), CAISO curtailment
+        timeout-minutes: 40
+        continue-on-error: true
+        env:
+          ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb pycountry openpyxl
+          [ -f store/eu/congestion.json ] || cp frontend/public/data/eu/congestion.json store/eu/
+          what=all
+          bash scripts/entsoe_idle.sh 0 || what="gb caiso"
+          for w in $what; do python scripts/build_congestion.py $w --days 35 --out store/eu --lake lake-out --upload || echo "$w failed; keeping yesterday's"; done
 
       - name: Japan and Mexico day-ahead prices (JEPX, CENACE)
         timeout-minutes: 20
@@ -171,15 +191,16 @@ jobs:
           AGSI_API_KEY: ${{ secrets.AGSI_API_KEY }}
         run: python scripts/fetch_alsi.py --out store/eu || echo "ALSI fetch failed; keeping yesterday's"
 
-      - name: EU ETS verified CO2 per installation (Union Registry + EEA register; Mondays)
+      - name: EU ETS and UK ETS verified CO2 per installation (Union Registry + EEA register, UK ETS registry; Mondays)
         timeout-minutes: 10
         continue-on-error: true
         run: |
           if [ "$(date -u +%u)" = 1 ] || [ ! -f store/eu/ets.json ]; then
             python scripts/fetch_eu_ets.py --out store/eu || echo "EU ETS fetch failed; keeping the last copy"
+            python scripts/fetch_uk_ets.py --out store/eu || echo "UK ETS fetch failed; GB keeps its last rows"
           fi
 
-      - name: What consumers pay (Eurostat half-yearly, EIA monthly; Mondays)
+      - name: What consumers pay (Eurostat half-yearly, DESNZ for GB, EIA monthly; Mondays)
         timeout-minutes: 5
         continue-on-error: true
         env:
@@ -187,6 +208,15 @@ jobs:
         run: |
           if [ "$(date -u +%u)" = 1 ] || [ ! -f store/eu/retail.json ]; then
             python scripts/fetch_retail_prices.py --out store/eu || echo "retail prices failed; keeping the last copy"
+            python scripts/fetch_gb_retail.py --out store/eu || echo "GB retail prices (DESNZ) failed; GB left out this week"
+          fi
+
+      - name: Power cuts, SAIDI and SAIFI (World Bank; on the 1st of the month)
+        timeout-minutes: 5
+        continue-on-error: true
+        run: |
+          if [ "$(date -u +%d)" = 01 ] || [ ! -f store/eu/reliability.json ]; then
+            python scripts/fetch_reliability.py --out store/eu || echo "reliability failed; keeping the last copy"
           fi
 
       - name: Emissions per facility worldwide (Climate TRACE; on the 1st of the month)

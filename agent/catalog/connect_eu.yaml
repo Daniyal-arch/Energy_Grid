@@ -1,0 +1,24 @@
+dataset: connect_eu
+title: Room to connect in ten more countries and two distribution grids (the operators' capacity maps and registers)
+licence: the operators' public notices and open-data licences (reuse with the source named); see each table's source
+map_file: frontend/public/data/eu/connect/<cc>.json (layer "Grid capacity")
+tables:
+  at: {grain: one row per APG substation, measures: {feedin_mw: {unit: MW, how: as published}, offtake_mw: {unit: MW}}}
+  bg: {grain: one row per ESO substation, measures: {gen_110kv_mw: {unit: MW, how: free for generation at 110 kV, as published}, load_110kv_mw: {unit: MW}}}
+  cz: {grain: one row per ČEPS substation, keys: {code: substation code}, measures: {nonsync_2031: {how: suitable / conditionally suitable / not suitable, as ČEPS classes it}}}
+  de: {grain: one row per TransnetBW substation, measures: {feedin: {how: range as published, text}, load: {how: range as published, text}}}
+  dk: {grain: one row per transmission or distribution station, measures: {production_mw: {unit: MW}, consumption_mw: {unit: MW}}}
+  ee: {grain: one row per Elering substation, measures: {expandable: {how: type A}, extra_fee_eur: {unit: EUR}}}
+  lt: {grain: one row per Litgrid substation (current year), measures: {solar_mw: {unit: MW}, wind_mw: {unit: MW}, storage_mw: {unit: MW}}}
+  lu: {grain: one row per Creos station and year, measures: {available_65kv_mw: {unit: MW}}}
+  mt: {grain: one row per Enemalta substation, measures: {load_kva: {unit: kVA}, res_kwp: {unit: kWp}}}
+  se: {grain: one row per county (län), measures: {feedin_2026_mw: {unit: MW, how: indicative, as published}, offtake_2026_mw: {unit: MW}}}
+  es_dso: {grain: one row per e-distribución substation and voltage, measures: {available_mw: {unit: MW}, occupied_mw: {unit: MW}, pending_mw: {unit: MW}}}
+  gb_dso: {grain: one row per site in the DNOs' embedded capacity registers, measures: {accepted_mw: {unit: MW}, connected_mw: {unit: MW}}}
+examples:
+  - q: how many Bulgarian transmission substations can take a connection without a grid expansion first
+    sql: SELECT count(*) FROM connect_eu.bg WHERE NOT needs_expansion
+    answer: 149
+  - q: which Danish transmission stations have the most room for new production
+    sql: SELECT name, production_mw FROM connect_eu.dk WHERE level = 'transmission' ORDER BY production_mw DESC LIMIT 3
+    answer: Hovegård 2291, Lykkegård 2230, Spanager 1622 (snapshot 2026-10-19)

@@ -24,6 +24,9 @@ import { MASTR_LABEL, mwText, type MastrMuniFile, type MastrUnitsFile } from "..
 import { OFFSHORE_LABEL, offshoreStatus, type OffshoreWindFile } from "../lib/offshoreWind";
 import { solarCat, type UsSolarFile } from "../lib/usSolar";
 import type { EvChargersFile } from "../lib/evChargers";
+import type { EvEuFile } from "../lib/evEu";
+import type { UsGasPipesFile } from "../lib/usGas";
+import type { EvEuCell } from "./evEuLayers";
 import type { GhgrpFile } from "../lib/ghgrp";
 import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
 import type { NzFile, ZaFile } from "../lib/regionalLive";
@@ -33,6 +36,8 @@ import { frValue, itTotals, type FrFile, type FrSite, type IeFile, type IeStatio
 import { siteHtml } from "./siteLayers";
 import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
+import { STATUS_LABEL as REG_STATUS, registerKey, type RegisterFile, type RegisterPoint } from "../lib/registers";
+import { connectEuKey, valueText, type ConnectEuFile, type EuArea, type EuPoint } from "../lib/connectEu";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { useApp, motion } from "../app/store";
@@ -356,6 +361,36 @@ function tooltipHtml(id: string, object: unknown): string | null {
     const p = us.price[d.code];
     return `<b>${d.name}</b><div>Households pay <b>${usCents(n.v)}/kWh</b> on average</div>
       <div>businesses ${usCents(p.COM[n.k])} · industry ${usCents(p.IND[n.k])}</div>${SRC(`EIA retail sales (EIA-861M), ${n.month}`)}`;
+  }
+  if (id.startsWith("eu-connect7")) {
+    // eu-connect7:<id> (points) or eu-connect7-areas:<id> (areas): every published column
+    const cc = id.split(":")[1];
+    const f = fileOf<ConnectEuFile>(connectEuKey(cc));
+    if (!f) return null;
+    const isArea = id.includes("-areas-");
+    const row = isArea ? (object as { a: EuArea }).a : (object as EuPoint);
+    const vals = isArea ? (row as EuArea)[2] : (row as EuPoint)[4];
+    const kv = !isArea && (row as EuPoint)[3] != null ? ` · ${(row as EuPoint)[3]} kV` : "";
+    const lines = f.columns.map(([, label, unit], i) => (vals[i] == null || vals[i] === "" ? "" : `<div>${label}: <b>${valueText(vals[i], unit)}</b></div>`)).join("");
+    const cls = isArea ? (row as EuArea)[3] : (row as EuPoint)[5];
+    return `<b>${row[0]}</b><div style="color:#8d94a1">${f.classes[cls] ?? ""}${kv}</div>${lines}${SRC(`${f.source}${f.updated ? `, ${f.updated}` : ""}`)}`;
+  }
+  if (id === "us-gas-pipes") {
+    const g = fileOf<UsGasPipesFile>("usGasPipes");
+    const l = g?.lines[(object as [unknown, number])[1]];
+    if (!l) return null;
+    return `<b>${l[2] ?? "Operator not given"}</b><div>${l[1] ?? ""}${l[3] ? ` · ${l[3]}` : ""}</div>${SRC("EIA, natural gas pipelines (U.S. Energy Atlas)")}`;
+  }
+  if (id === "eu-ev") {
+    const c = object as EvEuCell;
+    const m = fileOf<EvEuFile>("evEu")?.maps[c[3]];
+    return `<b>${c[2].toLocaleString("en-US")} ${m?.unit ?? "chargers"}</b><div style="color:#8d94a1">in this 0.1° cell (sum, computed) · ${c[3]}</div>${SRC(m ? `${m.source}, ${m.fetched}` : "")}`;
+  }
+  if (id.startsWith("reg:")) {
+    const p = object as RegisterPoint;
+    const f = fileOf<RegisterFile>(registerKey(id.slice(4)));
+    const mw = p[4] != null ? `${p[4].toLocaleString("en-US", { maximumFractionDigits: 2 })} ${f?.unit ?? "MW"}` : "capacity not given";
+    return `<b>${p[0]}</b><div>${FUEL_LABEL[p[3] === "wind_offshore" ? "wind" : p[3]] ?? p[3]}${p[3] === "wind_offshore" ? " at sea" : ""} · ${mw}</div><div style="color:#8d94a1">${REG_STATUS[p[5]] ?? p[5]}${p[6] ? ` · ${p[6]}` : ""}</div>${SRC(f ? `${p[7]} (${f.source})` : p[7])}`;
   }
   if (id.startsWith("gem-")) return gemHtml(id, object);
   if (id.startsWith("us-")) return usHtml(id, object);

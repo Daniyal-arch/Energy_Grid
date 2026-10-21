@@ -238,3 +238,20 @@ export interface UsQueuesLiveFile {
     }
   >;
 }
+
+/** Real-time prices at the same hubs (scripts/fetch_us_rt.py): [UTC interval start, USD/MWh]. */
+export interface UsRtFile {
+  source: string;
+  unit: string;
+  fetched: string;
+  markets: Record<string, { hub: string; step?: string; points?: [string, number][]; error?: string; missing?: string }>;
+}
+
+/** The day-ahead price of the hour holding `t` at `hub`, or null. */
+export function dayAheadAt(f: UsPricesFile | undefined, hub: string, t: number): number | null {
+  for (const d of f?.days ?? []) {
+    const k = Math.floor((t - Date.parse(d.start)) / (f!.step_s * 1000));
+    if (k >= 0 && k < d.slots) return d.prices[hub]?.values[k] ?? null;
+  }
+  return null;
+}

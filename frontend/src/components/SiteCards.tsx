@@ -19,6 +19,7 @@ import { hoursText, newestYear, type UsCountiesFile, type UsOutagesFile, type Wa
 import { SITE_RADII, SITE_RADIUS_KM, areaKey, inFlatPolygons, inGeoJsonPolygons, inPairPolygons, km, kmText, publishSite, searchSiteLines, searchSiteSubstations, siteKey, useSiteLines, useSiteSubstations, type LineSearch, type LonLat, type NearLine, type SitePlant } from "../lib/site";
 import { actions } from "../app/store";
 import type { RGB } from "../lib/theme";
+import { CONNECT_EU, connectEuKey, valueText, type ConnectEuFile } from "../lib/connectEu";
 import { frNumber, ieRoom, itTotals, type FrFile, type IeFile, type ItFile } from "../lib/connectMore";
 import type { MastrMuniFile } from "../lib/mastr";
 import { CONSTRAINT_RADIUS_KM, SHARE_STEP_KM, floodClassAt, floodLabel, protectedAround, roadsAround, type ConstraintsFile, type ProtectedFile, type ProtectedSearch } from "../lib/constraints";
@@ -322,6 +323,13 @@ export function SiteCapacityCard({ place }: { place: Place }) {
     [itf, site],
   );
   const itTot = itf && itReg ? itTotals(itf)[itReg] : undefined;
+  // ten more countries (connect/<cc>.json): the operator's points within the radius, or its area holding the site
+  const euCc = place.iso2 ? (CONNECT_EU.find((c) => c === place.iso2 || c === `${place.iso2}-DSO`) ?? null) : null;
+  const euf = useFile<ConnectEuFile>(euCc ? connectEuKey(euCc) : null);
+  const euNear = useMemo(() => (euf ? within(euf.points, (p) => [p[1], p[2]], site, R) : []), [euf, site, R]);
+  const euArea = useMemo(() => euf?.areas.find((a) => inFlatPolygons(site, a[1])) ?? null, [euf, site]);
+  const euSrc = euf ? `${euf.source}${euf.updated ? `, ${euf.updated}` : ""}` : "";
+  const euCol = euf?.columns[0];
   const capSrc = "Capareseau (RTE and the distribution operators)";
   const esbSrc = ief ? `ESB Networks capacity heatmap (${ief.file})` : "";
   const ternaSrc = "Terna Econnextion (dati.terna.it)";
@@ -378,6 +386,12 @@ export function SiteCapacityCard({ place }: { place: Place }) {
           [`Storage requested in ${itReg}`, round(itTot.storage, 1), "MW", "sum over types, computed", ternaSrc],
         ] as ReportRow[])
       : []),
+    ...(euf && euCol
+      ? ([
+          ...(euArea ? euf.columns.map(([, label, unit], i) => [`${euArea[0]}: ${label}`, euArea[2][i] as number | string | null, unit, "the area holding the site", euSrc]) : []),
+          ...euNear.slice(0, 20).map((x) => [x.row[0], x.row[4][0] as number | string | null, euCol[2], `${round(x.d, 2)} km; ${euCol[1]}; ${euf.classes[x.row[5]] ?? ""}`, euSrc]),
+        ] as ReportRow[])
+      : []),
     ...mine.flatMap((x) =>
       x.types.map(([t, mw]) => [`${x.m}'s own queue, active, ${t}`, round(mw, 1), "MW", "a hybrid counts under each of its types", `${x.m} via gridstatus, ${live?.fetched.slice(0, 10)}`] as ReportRow),
     ),
@@ -410,10 +424,28 @@ export function SiteCapacityCard({ place }: { place: Place }) {
         {gb.slice(0, 5).map((g) => (
           <Row key={g.row.k} k={<span className="truncate">{g.row.site[0]}</span>} v={gwText(g.row.mw)} sub={kmText(g.d)} />
         ))}
+        {euf && euNear.length > 0 && (
+          <Row
+            k={`Distribution register within ${R} km`}
+            v={gwText(sum(euNear.map((x) => (typeof x.row[4][0] === "number" ? x.row[4][0] : 0))))}
+            sub={`accepted, not connected; ${euNear.length} sites (sum, computed)`}
+          />
+        )}
         <Note>
           Transmission Entry Capacity contracted and not yet connected, summed per site (computed); sites placed by NESO's GSP lookup, those without a position left out.
           Contracts, not spare capacity.
         </Note>
+      </Card>
+    );
+  }
+  if (euf && (euNear.length || euArea)) {
+    return (
+      <Card title="Room to connect" note={euf.source.split(",")[0]} accent={[206, 138, 72]}>
+        {euArea && euf.columns.slice(0, 4).map(([k, label, unit], i) => <Row key={k} k={label} v={valueText(euArea[2][i], unit)} sub={i === 0 ? euArea[0] : undefined} />)}
+        {euNear.slice(0, 5).map((x) => (
+          <Row key={`${x.row[0]}${x.d}`} k={<span className="truncate">{x.row[0]}</span>} v={valueText(x.row[4][0], euf.columns[0][2])} sub={`${kmText(x.d)} · ${euf.classes[x.row[5]] ?? ""}`} />
+        ))}
+        <Note>{euf.columns[0][1]}, as published; {euf.note}</Note>
       </Card>
     );
   }

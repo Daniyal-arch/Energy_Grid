@@ -3,6 +3,8 @@
 // only mounts this once. When nothing moves and nothing changed, a frame costs nothing.
 
 import { AmbientLight, DirectionalLight, LightingEffect, MapView, _GlobeView as GlobeView, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
+import { CONNECT_EU, connectEuKey } from "../lib/connectEu";
+import { REGISTER_LAYERS, registerKey } from "../lib/registers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
 import { useEffect, useRef } from "react";
@@ -54,11 +56,12 @@ function wantedKeys(zoom: number): string[] {
   if (L.lngSendOut) keys.push("lngTerminals");
   if (L.ets) keys.push("ets");
   if (L.ctrace) keys.push("ctrace");
-  if (L.connect) keys.push("connect", "connectFR", "connectIT", "connectIE");
+  if (L.connect) keys.push("connect", "connectFR", "connectIT", "connectIE", ...CONNECT_EU.map(connectEuKey));
   if (L.usOutages) keys.push("usOutages", "usCounties");
   if (L.water) keys.push("water");
   if (L.offshoreWind) keys.push("offshoreWind");
   if (L.mastrDE) keys.push("mastrMuni", "mastrUnits");
+  for (const [layer, cc] of Object.entries(REGISTER_LAYERS)) if (L[layer as keyof typeof L]) keys.push(registerKey(cc));
   if (L.cables) keys.push("cables");
   if (L.cables || L.gasPipes || L.oilPipes) keys.push("seaCables");
   if (L.plantsWorld) keys.push("worldPlants");
@@ -71,6 +74,8 @@ function wantedKeys(zoom: number): string[] {
   if (L.plantsUS || L.turbinesUS || L.gridUS || L.usQueue) keys.push("usStates");
   if (L.dataCentres) keys.push("datacentres");
   if (L.evChargersUS) keys.push("evChargers");
+  if (L.evChargersEU) keys.push("evEu");
+  if (L.gasPipesUS) keys.push("usGasPipes");
   if (L.ghgrpUS) keys.push("ghgrp");
   if (L.tyndp) keys.push("tyndp");
   if (L.grw) keys.push("grwCountries");

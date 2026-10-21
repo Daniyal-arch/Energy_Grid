@@ -104,9 +104,13 @@ import { siteLayers } from "./siteLayers";
 import { offshoreLayers } from "./offshoreLayers";
 import { usSolarLayers } from "./usSolarLayers";
 import { evLayers } from "./evLayers";
+import { evEuLayers } from "./evEuLayers";
+import { usGasLayers } from "./usGasLayers";
 import { ghgrpLayers } from "./ghgrpLayers";
 import { tyndpLayers } from "./tyndpLayers";
 import { connectMoreLayers } from "./connectMoreLayers";
+import { connectEuLayers } from "./connectEuLayers";
+import { registerLayers } from "./registerLayers";
 import { comingLayers } from "./comingLayers";
 import { NZ_COLOR, NZ_POINT, ZA_COLOR, ZA_POINT, type NzFile, type ZaFile } from "../lib/regionalLive";
 import { SEA_CABLE_COLOR, seaPipeLayer, type SeaCable, type SeaCablesFile, type SeaPipe } from "../lib/seaCables";
@@ -545,7 +549,7 @@ export function buildLayers(fr: Frame): Layer[] {
   }
 
   // France, Italy, Ireland (scripts/build_connect_more.py)
-  if (facingEurope) layers.push(...connectMoreLayers(fr));
+  if (facingEurope) layers.push(...connectMoreLayers(fr), ...connectEuLayers(fr), ...registerLayers(fr));
   // hydrogen projects and planned gas infrastructure (scripts/build_coming.py)
   if (facingEurope) layers.push(...comingLayers(fr));
 
@@ -719,7 +723,7 @@ export function buildLayers(fr: Frame): Layer[] {
   layers.push(...mastrLayers(fr));
   layers.push(...offshoreLayers(fr));
   layers.push(...usSolarLayers(fr));
-  layers.push(...evLayers(fr));
+  layers.push(...evLayers(fr), ...evEuLayers(fr), ...usGasLayers(fr));
   layers.push(...ghgrpLayers(fr));
   layers.push(...tyndpLayers(fr));
   layers.push(...worldLayers(fr, near));

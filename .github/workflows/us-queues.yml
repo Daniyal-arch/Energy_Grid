@@ -1,6 +1,6 @@
 name: US live queues
 
-# The US markets' own interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE; NYISO and PJM
+# The US markets' own interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO; PJM
 # listed as missing), read with gridstatus (scripts/fetch_us_queues.py): the summary for the
 # US panel's Queue tab is committed to main (frontend/public/data/us/queues_live.json) and every
 # market's full table goes to the lake (r2://infraatlas-raw/lake/iso_queues/, one snapshot a
@@ -46,11 +46,23 @@ jobs:
           fi
           python3 -c "import json; d=json.load(open('frontend/public/data/us/queues_live.json')); print('::notice title=queues::' + json.dumps({k: (v.get('active'), v.get('active_mw'), v.get('error') or v.get('missing')) for k, v in d['markets'].items()}))"
 
+      - name: CO₂ per kWh per US region (EIA-930 grid monitor, 14 xlsx files, ~0.5 GB)
+        continue-on-error: true
+        run: |
+          pip install httpx openpyxl
+          python scripts/fetch_live_co2.py us
+
+      - name: Gas on the US side (EIA weekly storage, Henry Hub, citygate; EIA pipelines)
+        continue-on-error: true
+        env:
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+        run: python scripts/fetch_us_gas.py all
+
       - name: Commit to main
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add frontend/public/data/us/queues_live.json
+          git add frontend/public/data/us/queues_live.json frontend/public/data/us/co2.json frontend/public/data/us/gas.json frontend/public/data/us/gas_pipes.json
           git diff --cached --quiet && exit 0
           git commit -m "US live queues: $(date -u +%Y-%m-%d)"
           git pull --rebase origin main

@@ -1,0 +1,11 @@
+dataset: prices_gb_us_rt
+title: Great Britain's market index and system prices (Elexon), Ireland's SEM day-ahead (ENTSO-E), US real-time hub prices (gridstatus)
+licence: Elexon BMRS data (free reuse with attribution); ENTSO-E terms; the US markets' public data
+map_file: frontend/public/data/eu/prices.json (zone GB, IE-SEM), imbalance.json (zone GB), us_rt.json
+api:
+  gb_mid: {call: "GET https://data.elexon.co.uk/bmrs/api/v1/balancing/pricing/market-index?from=...&to=... (7 days at most)&dataProviders=APXMIDP", unit: GBP/MWh, step: 30 min}
+  gb_system_prices: {call: "GET https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices/{YYYY-MM-DD}", unit: GBP/MWh, step: 30 min}
+  ecb_rates: {call: "GET https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip", unit: GBP per EUR, step: day}
+examples:
+  - q: GB's average wholesale price over the last twelve full months
+    answer: 110.28 EUR/MWh (95.41 GBP/MWh), Elexon market index, Oct 2025 to Sep 2026; 186 hours below zero

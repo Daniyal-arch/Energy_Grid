@@ -77,6 +77,8 @@ const STATIC: Record<string, Loader> = {
   // Global Renewables Watch per country (scripts/build_grw.py)
   grwCountries: bundled("grw_countries.json"),
   deRedispatch: bundled("de_redispatch.json"),
+  // what the map holds per country and dataset family (scripts/coverage.py)
+  coverage: bundled("coverage.json"),
   cities: bundled("cities.json"),
   // Global Energy Monitor trackers (scripts/build_gem_layers.py)
   gemGas: bundled("gem/pipelines_gas.json"),
@@ -106,6 +108,11 @@ const STATIC: Record<string, Loader> = {
   // EPA GHGRP direct emitters; per-plant generation and CO2 (scripts/build_us_perf.py)
   ghgrp: bundledUs("ghgrp.json"),
   plantsPerf: bundledUs("plants_perf.json"),
+  // CO₂ per kWh per US region, EIA-930 grid monitor (scripts/fetch_live_co2.py us, weekly)
+  usCo2: bundledUs("co2.json"),
+  // gas on the US side (scripts/fetch_us_gas.py, EIA): storage, Henry Hub, citygate; pipelines
+  usGas: bundledUs("gas.json"),
+  usGasPipes: bundledUs("gas_pipes.json"),
   flows: snapshot("flows.json"),
   stats: snapshot("stats.json"),
   // transfer capacity per border, today and tomorrow (scripts/fetch_eu_capacity.py)
@@ -127,10 +134,14 @@ const STATIC: Record<string, Loader> = {
   esRegions: archive("es_regions.json"),
   // Great Britain's carbon intensity (NESO) and Denmark every 5 minutes (Energinet)
   gbCarbon: snapshot("gb_carbon.json"),
+  // CO₂ per kWh as France, Spain and Ireland publish it (scripts/fetch_live_co2.py)
+  liveCo2: snapshot("live_co2.json"),
   dkLive: snapshot("dk_live.json"),
   prices: archive("prices.json"),
   // lines out of service (ENTSO-E A78), daily on eu-days (scripts/build_transmission_outages.py)
   linesOut: archive("transmission_outages.json"),
+  // redispatch, countertrading, congestion costs, GB constraints, CAISO curtailment (scripts/build_congestion.py)
+  congestion: archive("congestion.json"),
   // Japan and Mexico day-ahead prices, daily on eu-days (scripts/build_markets.py)
   jepx: archive("jepx.json"),
   cenace: archive("cenace.json"),
@@ -138,6 +149,8 @@ const STATIC: Record<string, Loader> = {
   imbalance: archive("imbalance.json"),
   // US day-ahead prices at one hub per market, today and tomorrow (scripts/fetch_us_prices.py)
   usPrices: archive("us_prices.json"),
+  // real-time prices at the same hubs (scripts/fetch_us_rt.py, daily with us_prices)
+  usRt: archive("us_rt.json"),
   worldStats: archive("world_stats.json"),
   datacentres: archive("datacentres.json"),
   irena: archive("irena.json"),
@@ -147,11 +160,38 @@ const STATIC: Record<string, Loader> = {
   lngTerminals: archive("lng_terminals.json"),
   // EU ETS verified emissions per installation (scripts/fetch_eu_ets.py)
   ets: archive("ets.json"),
+  // EV charging in Europe (scripts/build_ev_eu.py; EAFO, BNetzA, IRVE, OpenStreetMap)
+  evEu: bundled("ev_eu.json"),
+  // SAIDI and SAIFI per country (scripts/fetch_reliability.py, World Bank Doing Business)
+  reliability: bundled("reliability.json"),
   // Climate TRACE modelled emissions per facility (scripts/fetch_climate_trace.py)
   ctrace: archive("ctrace.json"),
   // where new demand or generation can connect: GB, NL, ES (scripts/fetch_connect_here.py)
   connect: archive("connect.json"),
   // France, Italy, Belgium, Portugal, Ireland, Poland (scripts/build_connect_more.py)
+  // every unit from the national registers (scripts/build_registers.py)
+  registerGB: bundled("registers/gb.json"),
+  registerFR: bundled("registers/fr.json"),
+  registerDK: bundled("registers/dk.json"),
+  registerSE: bundled("registers/se.json"),
+  registerIE: bundled("registers/ie.json"),
+  registerBE: bundled("registers/be.json"),
+  registerFI: bundled("registers/fi.json"),
+  registerPT: bundled("registers/pt.json"),
+  registerCZ: bundled("registers/cz.json"),
+  // room to connect in ten more countries (scripts/build_connect_eu.py)
+  connect7AT: bundled("connect/at.json"),
+  connect7BG: bundled("connect/bg.json"),
+  connect7CZ: bundled("connect/cz.json"),
+  connect7DE: bundled("connect/de.json"),
+  connect7DK: bundled("connect/dk.json"),
+  connect7EE: bundled("connect/ee.json"),
+  connect7LT: bundled("connect/lt.json"),
+  connect7LU: bundled("connect/lu.json"),
+  connect7MT: bundled("connect/mt.json"),
+  connect7SE: bundled("connect/se.json"),
+  connect7ESDSO: bundled("connect/es_dso.json"),
+  connect7GBDSO: bundled("connect/gb_dso.json"),
   connectFR: bundled("connect/fr.json"),
   connectIT: bundled("connect/it.json"),
   connectBE: bundled("connect/be.json"),
