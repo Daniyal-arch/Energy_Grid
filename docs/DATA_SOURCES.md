@@ -839,6 +839,22 @@ elsewhere, GW); public charging points (EAFO, newest year, AC + DC); data centre
 (OpenStreetMap, `datacentres.json`); modelled CO₂e (Climate TRACE rows summed per country);
 offshore wind farm areas per country (EMODnet, every status).
 
+## Hexagon maps at country scale (`frontend/src/lib/measures.ts`, `map/hexLayers.ts`)
+
+Below zoom 7.2 (countries and regions) a dataset's records are summed into flat-top hexagons laid
+out on a local grid for the latitude in view (5° steps); the circumradius follows the zoom (45 km at
+zoom 4.5 down to 10 km at zoom 7, said in the key and the tooltip as "about N km across"). From zoom
+7.2 (cities, sites) every record is drawn again. With a dashboard area under 3 million km² only the
+records inside it are summed. One variable: a hexagon is coloured by its largest type, its strength
+the square root of its share of the largest hexagon. Two variables: a 3×3 bivariate colour, each
+variable's classes the thirds of the hexagons with a value (the breaks are in the key). Variables
+(lib/measures.ts): operating capacity (MW; Europe's powerplantmatching file, EIA-860M in the US,
+Global Energy Monitor elsewhere, GEM's points inside the Europe and US boxes left out), units in the
+national registers (MW; MaStR per municipality by its label point, REPD, Energistyrelsen,
+Vindbrukskollen, SEAI, DGEG, USWTDB, USPVDB; operating units), verified CO₂ (EU ETS placed
+installations, newest year; EPA GHGRP), modelled CO₂e (Climate TRACE), charging points (EU per 0.1°
+cell, US DC fast ports), data centres (OpenStreetMap), MW waiting to connect (GB, NESO TEC).
+
 ## Country report (computed in the app: `frontend/src/components/CountryReport.tsx`)
 
 "Report" in a country's panel (or `?report=DE`, `?report=BRA`) opens one printable page of the

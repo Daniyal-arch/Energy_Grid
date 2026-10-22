@@ -11,6 +11,7 @@ import { Card } from "../components/CountryCards";
 import { km2Text } from "../lib/area";
 import { useDashboardName } from "./Dashboards";
 import { LayerStatsTab } from "./LayerStats";
+import { MapVariables } from "./MapVariables";
 
 const muted = "text-[#8d94a1]";
 const RADII = [5, 10, 25, 50, 100];
@@ -120,6 +121,7 @@ export function DashboardTab({ iso3 }: { iso3?: string }) {
         )}
         {shape?.countries && <AlsoHere area={shape.countries} />}
       </Card>
+      <MapVariables />
       {shape && <AreaCards s={shape} />}
       {(!shape || iso3) && on.length > 0 && <LayerStatsTab iso3={iso3} />}
     </>

@@ -105,7 +105,8 @@ import { inside, makeShape } from "../lib/area";
 import { offshoreLayers } from "./offshoreLayers";
 import { areaLayers, clipToArea } from "./areaLayers";
 import { inAreaCountry } from "../app/datasets";
-import { summaryFill, summaryLabels } from "./summaryLayers";
+import { SUMMARY_MAX_ZOOM, summaryFill, summaryLabels, summaryOf } from "./summaryLayers";
+import { hexLayers } from "./hexLayers";
 import type { AreaSpec } from "../lib/area";
 import { usSolarLayers } from "./usSolarLayers";
 import { evLayers } from "./evLayers";
@@ -135,6 +136,8 @@ export interface Frame {
   area: string[] | null;
   /** the dataset whose coverage is tinted */
   coverageOf: string | null;
+  /** the variables drawn as hexagons in this frame (map/hexLayers.ts; empty when zoomed in) */
+  mapVars: string[];
   /** the area as a drawn polygon or a circle, and the corners of one being drawn */
   drawn: AreaSpec | null;
   drawing: [number, number][] | null;
@@ -339,8 +342,9 @@ export function buildLayers(fr: Frame): Layer[] {
       }),
     );
   }
-  // a dataset's per-country figure at country scale (map/summaryLayers.ts)
+  // a dataset's per-country figure at continent scale (map/summaryLayers.ts); hexagons at country scale
   layers.push(...summaryFill(fr));
+  if (!summaryOf(fr) || fr.zoom >= SUMMARY_MAX_ZOOM) layers.push(...hexLayers(fr));
 
   // the night shadow (24 h mode)
   if (day && isOn("night") && fr.night) {
@@ -773,7 +777,10 @@ export function buildLayers(fr: Frame): Layer[] {
 
   // ---------------------------------------------------------------- cross-border flows
   if ((day ? facingDay : facingEurope) && isOn("flows")) {
-    const flat = flowArcs(fr, dayK);
+    // a dashboard of a few countries: the flows across their borders
+    const own = fr.area && fr.area.length < 5 ? new Set(fr.area) : null;
+    const allArcs = flowArcs(fr, dayK);
+    const flat = own ? memo("areaArcs", [allArcs, fr.area], () => allArcs.filter((a) => own.has(ISO3[a.from] ?? a.from) || own.has(ISO3[a.to] ?? a.to))) : allArcs;
     // over the price blocks the flows arc from the top of one to the top of the other
     const arcs = terrain ? memo("liftedArcs", [flat, fr.day ? fr.daySlot : 0, f.stats], () => flat.map((a) => liftArc(a, terrain))) : flat;
     const deep = !!day || !!terrain;

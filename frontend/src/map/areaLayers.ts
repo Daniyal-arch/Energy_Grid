@@ -169,12 +169,26 @@ function anyInside(s: AreaShape, path: unknown): boolean {
   return anyInside(s, path[0]);
 }
 
+/** Country-level layers keep the area's countries (records with a country code; flows touching them). */
+const BY_COUNTRY = /^(price-terrain|eu-tower)/;
+type Coded = { iso?: string; country?: string };
+const codeOf = (d: unknown) => (d && typeof d === "object" ? ((d as Coded).iso ?? (d as Coded).country) : undefined);
+
 /** The layers with only the records inside the area (each layer's own position accessor). */
 export function clipToArea(fr: Frame, layers: Layer[]): Layer[] {
   const w = fr.files.world as WorldFile | undefined;
   const shape = shapeOf(fr.area, fr.drawn, w, fr.files.countries as CountriesFile | undefined);
   if (!shape || shape.km2 > CLIP_MAX_KM2) return layers;
+  const mine = new Set(shape.countries ?? []);
   return layers.map((l) => {
+    if (shape.countries && BY_COUNTRY.test(l.id) && Array.isArray((l.props as { data?: unknown }).data)) {
+      const data = (l.props as { data: unknown[] }).data;
+      const kept = memo(`clipc:${l.id}`, [data, shape.key], () => data.filter((d) => {
+        const c = codeOf(d);
+        return !c || mine.has(ISO3[c] ?? c);
+      }));
+      return l.clone({ data: kept } as never);
+    }
     if (!CLIPPED.test(l.id)) return l;
     const p = l.props as unknown as { data: unknown; getPosition?: unknown; getPath?: unknown; getPolygon?: unknown; getSourcePosition?: unknown; getTargetPosition?: unknown };
     if (!Array.isArray(p.data)) return l;

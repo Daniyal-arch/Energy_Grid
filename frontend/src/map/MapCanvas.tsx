@@ -29,7 +29,9 @@ import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
 import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection } from "./build";
 import { memo } from "./memo";
 import { SUMMARY_FILES, summaryOf } from "./summaryLayers";
-import { inAreaCountry } from "../app/datasets";
+import { DATASET_BY_ID, inAreaCountry } from "../app/datasets";
+import { hexDatasets, mapVariables } from "./hexLayers";
+import { specBounds } from "../app/store";
 import { ATLAS_LAYERS, type AtlasFile, type AtlasId } from "../lib/atlas";
 import type { ConstraintsFile, ProtectedFile } from "../lib/constraints";
 import { FLOOD_LAYERS, GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, PROTECTED_LAYERS, ROADS_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addFloodLayers, addGridLayers, addGrwLayers, addProtectedLayers, addRoadsLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, setWorldGridOutside, usFrame, worldCamera } from "./style";
@@ -448,8 +450,12 @@ export default function MapCanvas() {
       else if (s.mode === "live" && !s.selection && s.layers.prices !== prev.layers.prices) {
         const was = flatNow;
         applyProjection();
-        if (flatNow && !was) dayFrame(map, 1100);
-        if (!flatNow && was) fly("europe");
+        // a dashboard's area stays in view; else the raised prices frame Europe
+        if (s.area || s.drawn) fly(s.area ? { area: s.area } : { bounds: specBounds(s.drawn!) });
+        else {
+          if (flatNow && !was) dayFrame(map, 1100);
+          if (!flatNow && was) fly("europe");
+        }
       } else if (s.mode === "live" && !s.selection && s.layers.usQueue !== prev.layers.usQueue) applyProjection();
     });
     // a link with a selection or a camera, or a dashboard's first camera
@@ -707,9 +713,15 @@ export default function MapCanvas() {
       const night = day && s.layers.night ? nightAt(day, dayK) : null;
       if (day && s.layers.night) nightAt(day, Math.min(day.slots - 1, dayK + 1));
       const c = map.getCenter();
+      // country scale: the mapped variables' datasets as hexagons, not as points (map/hexLayers.ts)
+      const hexing = hexDatasets({ zoom, layers: s.layers, mapVars: s.mapVars });
+      const frameLayers = hexing.size
+        ? { ...s.layers, ...Object.fromEntries([...hexing].flatMap((id) => (DATASET_BY_ID.get(id)?.parts ?? []).flatMap((p) => (p.layer ? [[p.layer, false]] : [])))) }
+        : s.layers;
       const frame: Frame = {
         mode: s.mode,
-        layers: s.layers,
+        layers: frameLayers,
+        mapVars: hexing.size ? mapVariables(s).map((m) => m.id) : [],
         colour: s.colour,
         plantStatus: s.plantStatus,
         plantStyle: s.plantStyle,

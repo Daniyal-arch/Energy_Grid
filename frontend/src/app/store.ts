@@ -422,6 +422,9 @@ interface AppState {
   builder: { kind: "new" | "save"; id?: string } | null;
   /** the data catalogue is open over the map */
   catalogue: boolean;
+  /** the variables drawn as hexagons at country scale (lib/measures.ts ids; two: a bivariate map;
+   *  none: the first dataset on that has one) */
+  mapVars: string[];
   /** where the camera looks: decides the default panel */
   region: Region;
   /** a camera move requested by the UI (dashboard, search); the map consumes it */
@@ -469,6 +472,7 @@ export const useApp = create<AppState>(() => ({
   coverageOf: null,
   builder: null,
   catalogue: false,
+  mapVars: [],
   region: "europe",
   flyTo: null,
   sheet: "none",
@@ -657,6 +661,10 @@ export const actions = {
   openBuilder(builder: AppState["builder"]) {
     useApp.setState({ builder });
   },
+  /** The variables of the hexagon map (two at most: the newest pick replaces the oldest). */
+  setMapVars(mapVars: string[]) {
+    useApp.setState({ mapVars: mapVars.slice(-2), edited: true });
+  },
   /** Tint where a dataset has data (null: stop). */
   showCoverage(id: string | null) {
     useApp.setState({ coverageOf: id });
@@ -695,6 +703,8 @@ export function readUrl(): void {
       patch.drawn = { kind: "circle", at: [Number(lon), Number(lat)], r: Number(r), ...(name.length ? { name: name.join(",") } : {}) };
   }
   if (patch.drawn && !p.get("cam")) patch.flyTo = { bounds: specBounds(patch.drawn) };
+  const vars = p.get("vars");
+  if (vars) patch.mapVars = vars.split(",").filter(Boolean).slice(0, 2);
   const area = p.get("area");
   if (area !== null) {
     const codes = area.split(",").filter((c) => /^[A-Z]{3}$/.test(c));
@@ -776,6 +786,7 @@ export function writeUrl(camera?: Camera): void {
     if (name) p.set("dname", name);
   }
   if (s.day) p.set("day", s.day);
+  if (s.mapVars.length) p.set("vars", s.mapVars.join(","));
   if ((s.layers.plantsWorld || s.layers.plantsUS) && s.plantStatus !== "operating") p.set("status", s.plantStatus);
   if (s.plantStyle === "beams") p.set("style", "beams");
   if (!s.layersPanel) p.set("panel", "closed");
