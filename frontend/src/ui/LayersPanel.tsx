@@ -38,7 +38,7 @@ import { currentDay } from "../map/tooltip";
 import { COLOURS, actions, useApp, type ColourId, type LayerGroup, type LayerId, type PlantStatus, type TimeMode } from "../app/store";
 import { CATEGORIES, DATASETS, coverageLabel, datasetModes, datasetOn, partsIn, placesText, toggleDataset, type Dataset } from "../app/datasets";
 import type { CoverageFile } from "../lib/coverage";
-import { SUMMARIES, summaryOf } from "../map/summaryLayers";
+import { SUMMARIES, SUMMARY_ALPHA, summaryOf, summaryValues } from "../map/summaryLayers";
 
 import type { AtlasFile, AtlasId } from "../lib/atlas";
 import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
@@ -854,6 +854,33 @@ export function DatasetDetails({ d, tinted = true }: { d: Dataset; tinted?: bool
   );
 }
 
+/** The scale of a dataset's per-country figure, as the map shades it (map/summaryLayers.ts). */
+function SummaryKey({ d, files }: { d: Dataset; files: Record<string, unknown> }) {
+  const values = summaryValues(d.id, files);
+  const s = SUMMARIES[d.id];
+  const top = values?.size ? [...values.entries()].sort((a, b) => b[1] - a[1]) : [];
+  const max = top[0]?.[1] ?? 0;
+  const rgb = d.color.replace("rgb(", "rgba(").replace(")", "");
+  return (
+    <div className="px-2 pb-2 pl-[30px]">
+      <div className={`text-[10px] leading-snug ${muted}`}>Zoomed out, the countries carry its figure: {s.text(files)}.</div>
+      {max > 0 && (
+        <>
+          <div className="mt-1.5 h-2 rounded-sm" style={{ background: `linear-gradient(90deg, ${rgb},${(SUMMARY_ALPHA[0] / 255).toFixed(2)}), ${rgb},${(SUMMARY_ALPHA[1] / 255).toFixed(2)}))` }} />
+          <div className={`mt-0.5 flex justify-between text-[9px] ${muted}`}>
+            <span>{s.label(0)}</span>
+            <span>{s.label(max / 4)}</span>
+            <span>{s.label(max)}</span>
+          </div>
+          <div className={`mt-1 text-[9.5px] leading-snug ${muted}`}>
+            Strength: square root of the share of the largest. Largest: {top.slice(0, 3).map(([c, v]) => `${c} ${s.label(v)}`).join(" · ")}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function DatasetRow({ d }: { d: Dataset }) {
   const mode = useApp((s) => s.mode);
   const layers = useApp((s) => s.layers);
@@ -885,11 +912,7 @@ function DatasetRow({ d }: { d: Dataset }) {
         </button>
       </div>
       {open && <DatasetDetails d={d} />}
-      {carried && (
-        <div className={`px-2 pb-1.5 pl-[30px] text-[10px] leading-snug ${muted}`}>
-          Zoomed out, the countries carry its figure: {SUMMARIES[d.id].text(files)}. Shade: the country's rank.
-        </div>
-      )}
+      {carried && <SummaryKey d={d} files={files} />}
       {on && shownParts.length > 0 && (
         <div className="space-y-2 px-2 pb-2 pl-[30px]">
           {shownParts.map((p) => (

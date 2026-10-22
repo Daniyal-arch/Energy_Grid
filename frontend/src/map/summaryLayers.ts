@@ -169,14 +169,21 @@ const rgbOf = (css: string): [number, number, number] => {
 };
 
 /** The shading, under the points. */
+/** Opacity of the dataset's colour for a value: the square root of its share of the largest
+ *  (area-like, so a country with a quarter of the largest value shows half its strength). */
+export const SUMMARY_ALPHA = [28, 210] as const;
+export const summaryAlpha = (v: number, max: number) => Math.round(SUMMARY_ALPHA[0] + (SUMMARY_ALPHA[1] - SUMMARY_ALPHA[0]) * Math.sqrt(Math.max(0, v) / Math.max(1e-12, max)));
+
+/** The figures of a dataset for its key (null while its files load). */
+export function summaryValues(id: string, files: Record<string, unknown>): Map<string, number> | null {
+  return SUMMARIES[id]?.values(files) ?? null;
+}
+
 export function summaryFill(fr: Frame): Layer[] {
   const c = current(fr);
   if (!c) return [];
   const { d, values, geo } = c;
-  const ranked = memo(`summaryRank:${d.id}`, [values], () => {
-    const sorted = [...values.values()].sort((a, b) => a - b);
-    return (v: number) => (sorted.length > 1 ? sorted.findIndex((x) => x >= v) / (sorted.length - 1) : 1);
-  });
+  const max = Math.max(...values.values());
   const col = rgbOf(d.color);
   const data = memo(`summaryShapes:${d.id}`, [geo, values], () => geo.shapes.filter((s) => values.has(s.code)));
   return [
@@ -184,7 +191,7 @@ export function summaryFill(fr: Frame): Layer[] {
       id: "summary-fill",
       data,
       getPolygon: (s) => s.polygon,
-      getFillColor: (s) => [...col, Math.round(25 + 115 * ranked(values.get(s.code)!))],
+      getFillColor: (s) => [...col, summaryAlpha(values.get(s.code)!, max)],
       updateTriggers: { getFillColor: [d.id, values] },
       parameters: ON_TOP,
     }),
@@ -206,14 +213,13 @@ export function summaryLabels(fr: Frame): Layer[] {
       data,
       getPosition: (x) => x.at,
       getText: (x) => x.text,
-      getSize: 11.5,
-      getColor: [236, 240, 246, 235],
-      getPixelOffset: [0, 13],
+      getSize: 11,
+      getColor: [240, 243, 248, 240],
+      getPixelOffset: [0, 14],
       fontFamily: "ui-sans-serif, system-ui, sans-serif",
-      fontWeight: 600,
-      outlineWidth: 3,
-      outlineColor: [8, 10, 14, 230],
-      fontSettings: { sdf: true },
+      background: true,
+      getBackgroundColor: [8, 10, 14, 190],
+      backgroundPadding: [3, 1],
       parameters: ON_TOP,
     }),
   ];
