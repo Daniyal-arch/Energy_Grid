@@ -150,7 +150,7 @@ export async function readGrid(g: GridSpec, s: AreaShape, each: (v: DataView, of
     await Promise.all(
       rows.slice(k, k + 24).map(async (row) => {
         const a = (row * g.width + c0) * g.bytes;
-        const r = await fetch(g.url, { headers: { Range: `bytes=${a}-${a + (c1 - c0 + 1) * g.bytes - 1}` } });
+        const r = await fetch(g.url, { headers: { Range: `bytes=${a}-${a + (c1 - c0 + 1) * g.bytes - 1}` }, cache: "no-store" });
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const v = new DataView(await r.arrayBuffer());
         const lat = g.origin[1] - (row + 0.5) * g.cell;

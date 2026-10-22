@@ -2,10 +2,10 @@
 // this browser. A dashboard is a set of datasets, an area (countries, or wherever the camera looks),
 // a time mode and the countries' colour; the right panel's Dashboard tab gives its figures.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useFile } from "../app/data";
-import { CATEGORIES, DATASETS, EU27, covers, coverageLabel, datasetModes, datasetsOn, iso3Of, layersOfDatasets } from "../app/datasets";
+import { CATEGORIES, DATASETS, DATASET_BY_ID, EU27, colourOfDatasets, covers, coverageLabel, datasetModes, datasetsOn, iso3Of, layersOfDatasets, setCountryNames } from "../app/datasets";
 import { DASHBOARDS, DASHBOARD_GROUPS, actions, findDashboard, layersOf, useApp, type DashboardGroup } from "../app/store";
 import type { WorldFile } from "../app/types";
 import { EUROPE_ISO3 } from "../lib/transition";
@@ -39,8 +39,11 @@ export function useDashboardName(): { name: string; edited: boolean; mineId?: st
   const edited = useApp((s) => s.edited);
   const title = useApp((s) => s.title);
   useApp((s) => s.mine);
+  const names = useCountryNames();
   const d = findDashboard(id);
-  return { name: title ?? d?.label ?? "My view", edited: edited && !!d, mineId: d?.group === "Mine" ? d.id : undefined };
+  // a country's own dashboard is named once the outlines have loaded
+  const label = id?.startsWith("country:") ? `${names(id.slice(8))} in detail` : d?.label;
+  return { name: title ?? label ?? "My view", edited: edited && !!d, mineId: d?.group === "Mine" ? d.id : undefined };
 }
 
 export function DashboardList({ onDone }: { onDone?: () => void }) {
@@ -66,6 +69,7 @@ export function DashboardList({ onDone }: { onDone?: () => void }) {
             </button>
             {isOpen && (
               <div className="space-y-0.5 pb-1">
+                {g === "Countries" && <AnyCountry onDone={onDone} />}
                 {list.map((d) => (
                   <div key={d.id} className={`group flex items-start rounded-lg hover:bg-white/[0.07] ${current === d.id ? "bg-white/[0.1]" : ""}`}>
                     <button
@@ -135,6 +139,38 @@ export function DashboardList({ onDone }: { onDone?: () => void }) {
       >
         {copied ? "Link copied" : "Copy a link to this view"}
       </button>
+    </div>
+  );
+}
+
+/** Any country's dashboard, found by name (the featured ones are listed under it). */
+function AnyCountry({ onDone }: { onDone?: () => void }) {
+  const world = useFile<WorldFile>("world");
+  const [q, setQ] = useState("");
+  const all = useMemo(() => (world?.features ?? []).map((f) => [f.properties.iso3, f.properties.name] as [string, string]).sort((a, b) => a[1].localeCompare(b[1])), [world]);
+  useEffect(() => setCountryNames(all), [all]);
+  const t = norm(q.trim());
+  const hits = t ? all.filter(([, n]) => norm(n).includes(t)).slice(0, 6) : [];
+  return (
+    <div className="px-3 pb-1">
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Any country: type its name…"
+        className="w-full rounded-md border border-white/10 bg-[#0d1119] px-2 py-1.5 text-[12px] text-slate-100 outline-none placeholder:text-slate-500 focus:border-sky-400/50"
+      />
+      {hits.map(([c, n]) => (
+        <button
+          key={c}
+          onClick={() => {
+            actions.applyDashboard(`country:${c}`);
+            onDone?.();
+          }}
+          className="mt-0.5 block w-full rounded-md px-2 py-1 text-left text-[12px] text-slate-200 hover:bg-white/[0.08]"
+        >
+          {n} <span className={`text-[10.5px] ${muted}`}>· its dashboard</span>
+        </button>
+      ))}
     </div>
   );
 }
@@ -251,15 +287,17 @@ function Builder({ kind, id }: { kind: "new" | "save"; id?: string }) {
   const name = useCountryNames();
   const [label, setLabel] = useState(kind === "save" ? (editing?.label ?? "") : "");
   const [area, setArea] = useState<string[] | null>(kind === "save" ? s.area : null);
-  const [chosen, setChosen] = useState<string[]>(kind === "save" ? datasetsOn(s.layers).map((d) => d.id) : []);
+  const [chosen, setChosen] = useState<string[]>(kind === "save" ? datasetsOn(s.layers, s.colour).map((d) => d.id) : []);
   const [q, setQ] = useState("");
   const close = () => actions.openBuilder(null);
-  const toggle = (d: string) => setChosen((c) => (c.includes(d) ? c.filter((x) => x !== d) : [...c, d]));
+  // one colouring at a time: choosing one drops another
+  const toggle = (d: string) =>
+    setChosen((c) => (c.includes(d) ? c.filter((x) => x !== d) : [...c.filter((x) => !(DATASET_BY_ID.get(d)?.colour && DATASET_BY_ID.get(x)?.colour)), d]));
   const t = norm(q.trim());
   const shown = DATASETS.filter((d) => !t || norm(`${d.name} ${d.description} ${d.parts.map((p) => `${p.source} ${p.where.join(" ")}`).join(" ")}`).includes(t));
   const create = () => {
     const blurb = `${areaText(area, name)} · ${chosen.length} dataset${chosen.length === 1 ? "" : "s"}`;
-    useApp.setState({ layers: layersOf(layersOfDatasets(chosen)), selection: null });
+    useApp.setState({ layers: layersOf(layersOfDatasets(chosen)), colour: colourOfDatasets(chosen), selection: null });
     actions.setArea(area);
     if (!area) useApp.setState({ flyTo: s.region === "us" ? "us" : s.region === "world" ? "world" : "europe" });
     actions.saveDashboard(label || (area ? areaText(area, name) : "My dashboard"), blurb, editing?.group === "Mine" ? editing.id : undefined);

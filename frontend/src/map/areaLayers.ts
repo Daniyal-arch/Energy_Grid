@@ -9,6 +9,7 @@ import { shapeOf } from "../app/areaShape";
 import { DATASET_BY_ID, coverageIso3 } from "../app/datasets";
 import type { CountriesFile, WorldFile } from "../app/types";
 import type { AreaShape } from "../lib/area";
+import { ISO3 } from "../lib/transition";
 import type { Frame } from "./build";
 import { memo } from "./memo";
 
@@ -54,6 +55,25 @@ function maskOf(s: AreaShape): Ring[] {
   ];
 }
 
+/** Every other country, dimmed (a country area): no frame around the area, nothing across the date line. */
+function veilOf(s: AreaShape, w: WorldFile, c: CountriesFile | undefined): { polygon: Ring[] }[] {
+  const keep = new Set(s.countries ?? []);
+  const eu = new Map((c?.countries ?? []).map((x) => [ISO3[x.iso] ?? x.iso, x]));
+  const out: { polygon: Ring[] }[] = [];
+  for (const f of w.features) {
+    const code = f.properties.iso3;
+    if (keep.has(code)) continue;
+    const e = eu.get(code);
+    if (e) for (const p of e.polygons) out.push({ polygon: p.map(pairs) });
+    else
+      for (const p of f.geometry.coordinates) {
+        const xs = p[0].map((q) => q[0]);
+        if (Math.max(...xs) - Math.min(...xs) < 180) out.push({ polygon: p as Ring[] });
+      }
+  }
+  return out;
+}
+
 export function areaLayers(fr: Frame): Layer[] {
   const w = fr.files.world as WorldFile | undefined;
   const out: Layer[] = [];
@@ -78,7 +98,8 @@ export function areaLayers(fr: Frame): Layer[] {
   // the area (not while a country is selected: the country panel outlines its own)
   const shape = fr.selection ? null : shapeOf(fr.area, fr.drawn, w, fr.files.countries as CountriesFile | undefined);
   if (shape) {
-    const mask = memo("areaMask", [shape.key], () => [{ polygon: maskOf(shape) }]);
+    const countries = fr.files.countries as CountriesFile | undefined;
+    const mask = memo("areaMask", [shape.key, w, countries], () => (shape.kind === "countries" && w ? veilOf(shape, w, countries) : [{ polygon: maskOf(shape) }]));
     const rings = memo("areaRings", [shape.key], () => holesOf(shape).map((p) => pairs(p[0])));
     out.push(
       new SolidPolygonLayer<{ polygon: Ring[] }>({ id: "area-mask", data: mask, getPolygon: (d) => d.polygon, getFillColor: [5, 7, 11, 150], parameters: ON_TOP }),

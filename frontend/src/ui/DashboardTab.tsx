@@ -3,7 +3,7 @@
 // electricity for countries), then the figures of the datasets switched on. The area is the country
 // clicked on the map, else the dashboard's countries, drawn polygon or circle around a city.
 
-import { DATASETS, partsFor, partsIn, placesText } from "../app/datasets";
+import { DATASETS, datasetOn, partsFor, partsIn, placesText } from "../app/datasets";
 import { useAreaShape } from "../app/areaShape";
 import { actions, useApp } from "../app/store";
 import { AreaCards } from "../components/AreaCards";
@@ -47,7 +47,8 @@ export function DashboardTab({ iso3 }: { iso3?: string }) {
   const mode = useApp((s) => s.mode);
   const { name, edited, mineId } = useDashboardName();
   const { shape, pending } = useAreaShape(iso3);
-  const on = DATASETS.filter((d) => partsIn(d, mode).some((p) => layers[p.layer]));
+  const colour = useApp((s) => s.colour);
+  const on = DATASETS.filter((d) => partsIn(d, mode).length > 0 && datasetOn(d, layers, colour));
   const scope = shape?.countries ?? null;
   return (
     <>

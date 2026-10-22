@@ -78,7 +78,8 @@ export type LayerId =
   | "night";
 
 export type LayerGroup =
-  | "Electricity now"
+  | "Electricity"
+  | "Prices"
   | "Power grid"
   | "Connections & queues"
   | "Power plants"
@@ -90,7 +91,8 @@ export type LayerGroup =
   | "Weather"
   | "Money";
 export const LAYER_GROUPS: LayerGroup[] = [
-  "Electricity now",
+  "Electricity",
+  "Prices",
   "Power grid",
   "Connections & queues",
   "Power plants",
@@ -117,11 +119,11 @@ export interface LayerInfo {
   modes?: TimeMode[];
 }
 export const LAYERS: LayerInfo[] = [
-  { id: "flows", label: "Cross-border flows", desc: "Power moving between countries now", group: "Electricity now", coverage: "Europe", color: "rgb(120,222,255)", modes: ["live", "day"] },
-  { id: "prices", label: "Prices", desc: "Each country rises by its day-ahead price; generation towers stand on top", group: "Electricity now", coverage: "Europe", color: "rgb(255,196,90)", modes: ["live", "day"] },
-  { id: "liveGrids", label: "Live grids", desc: "US, Brazil, Australia, Taiwan, Ontario, New Zealand, South Africa now", group: "Electricity now", coverage: "World", color: "rgb(255,196,120)", modes: ["live"] },
-  { id: "usNodePrices", label: "Node prices", desc: "Day-ahead price at each placed node, hour by hour", group: "Electricity now", coverage: "US West", color: "rgb(255,196,90)", modes: ["day"] },
-  { id: "towers", label: "Generation towers", desc: "Each country's (or US region's) output by source", group: "Electricity now", coverage: "Europe, US", color: "rgb(255,214,72)", modes: ["day"] },
+  { id: "flows", label: "Cross-border flows", desc: "Power moving between countries now", group: "Electricity", coverage: "Europe", color: "rgb(120,222,255)", modes: ["live", "day"] },
+  { id: "prices", label: "Prices", desc: "Each country rises by its day-ahead price; generation towers stand on top", group: "Electricity", coverage: "Europe", color: "rgb(255,196,90)", modes: ["live", "day"] },
+  { id: "liveGrids", label: "Live grids", desc: "US, Brazil, Australia, Taiwan, Ontario, New Zealand, South Africa now", group: "Electricity", coverage: "World", color: "rgb(255,196,120)", modes: ["live"] },
+  { id: "usNodePrices", label: "Node prices", desc: "Day-ahead price at each placed node, hour by hour", group: "Electricity", coverage: "US West", color: "rgb(255,196,90)", modes: ["day"] },
+  { id: "towers", label: "Generation towers", desc: "Each country's (or US region's) output by source", group: "Electricity", coverage: "Europe, US", color: "rgb(255,214,72)", modes: ["day"] },
   { id: "gridEU", label: "Transmission lines", desc: "220–750 kV, by voltage", group: "Power grid", coverage: "Europe", color: "rgb(236,178,120)" },
   { id: "hvdc", label: "HVDC links", desc: "Direct-current links between grids", group: "Power grid", coverage: "Europe", color: "rgb(178,146,255)" },
   { id: "substations", label: "Substations", desc: "220 kV and more, shown zoomed in", group: "Power grid", coverage: "Europe", color: "rgb(226,232,240)" },
@@ -376,7 +378,10 @@ export function specBounds(d: AreaSpec): [number, number, number, number] {
   const ys = d.ring.map((q) => q[1]);
   return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
 }
-export const findDashboard = (id: string | null) => (id ? (DASHBOARDS.find((d) => d.id === id) ?? useApp.getState().mine.find((d) => d.id === id)) : undefined);
+/** A country's dashboard (`country:DEU`), made from the datasets that cover it (app/datasets.ts). */
+export const countryDashboards: { make: ((iso3: string) => Dashboard | undefined) | null } = { make: null };
+export const findDashboard = (id: string | null) =>
+  id ? (DASHBOARDS.find((d) => d.id === id) ?? useApp.getState().mine.find((d) => d.id === id) ?? (id.startsWith("country:") ? countryDashboards.make?.(id.slice(8)) : undefined)) : undefined;
 
 interface AppState {
   mode: TimeMode;

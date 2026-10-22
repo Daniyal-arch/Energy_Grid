@@ -367,7 +367,7 @@ function tooltipHtml(id: string, object: unknown): string | null {
     const cc = id.split(":")[1];
     const f = fileOf<ConnectEuFile>(connectEuKey(cc));
     if (!f) return null;
-    const isArea = id.includes("-areas-");
+    const isArea = id.startsWith("eu-connect7-areas");
     const row = isArea ? (object as { a: EuArea }).a : (object as EuPoint);
     const vals = isArea ? (row as EuArea)[2] : (row as EuPoint)[4];
     const kv = !isArea && (row as EuPoint)[3] != null ? ` · ${(row as EuPoint)[3]} kV` : "";

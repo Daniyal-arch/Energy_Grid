@@ -1,7 +1,8 @@
 // Datasets: every kind of data on the map by category (app/datasets.json), one entry however
 // many regions and sources it joins ("Transmission lines" = Europe, the US and the world). A name
 // opens where it has data and its sources (the map tints those countries); the switch shows it;
-// its key appears while it is on. What colours the countries is chosen here too.
+// its key appears while it is on. Datasets that colour the countries are listed with the others
+// (one colouring at a time).
 
 import { useState, type ReactNode } from "react";
 
@@ -833,8 +834,8 @@ export function DatasetDetails({ d, tinted = true }: { d: Dataset; tinted?: bool
     <div className="mx-2 mb-2 rounded-lg border border-white/[0.07] bg-[#0d1119] px-2.5 py-2">
       <div className="text-[11px] leading-snug text-slate-300">{d.description}</div>
       <div className="mt-2 space-y-1.5">
-        {d.parts.map((p) => (
-          <div key={p.layer} className="text-[10.5px] leading-snug">
+        {d.parts.map((p, i) => (
+          <div key={i} className="text-[10.5px] leading-snug">
             <div className="text-slate-200">{placesText(p.where)}</div>
             <div className={muted}>
               {p.what}. Source: {p.source}.
@@ -885,11 +886,11 @@ function DatasetRow({ d }: { d: Dataset }) {
   const mode = useApp((s) => s.mode);
   const layers = useApp((s) => s.layers);
   const coverageOf = useApp((s) => s.coverageOf);
-  const on = datasetOn(d, layers);
-  const open = coverageOf === d.id;
-  const shownParts = partsIn(d, mode).filter((p) => layers[p.layer]);
-  const where = coverageLabel(d);
   const colour = useApp((s) => s.colour);
+  const on = datasetOn(d, layers, colour);
+  const open = coverageOf === d.id;
+  const shownParts = partsIn(d, mode).filter((p) => !!p.layer && layers[p.layer]);
+  const where = coverageLabel(d);
   const selection = useApp((s) => s.selection);
   const files = useDataStore((s) => s.files);
   const carried = on && summaryOf({ colour, layers, selection })?.id === d.id;
@@ -913,12 +914,17 @@ function DatasetRow({ d }: { d: Dataset }) {
       </div>
       {open && <DatasetDetails d={d} />}
       {carried && <SummaryKey d={d} files={files} />}
+      {on && d.colour && (
+        <div className="px-2 pb-2 pl-[30px]">
+          <ColourLegend colour={d.colour} />
+        </div>
+      )}
       {on && shownParts.length > 0 && (
         <div className="space-y-2 px-2 pb-2 pl-[30px]">
           {shownParts.map((p) => (
             <div key={p.layer}>
               {shownParts.length > 1 && <div className="mb-0.5 text-[9.5px] uppercase tracking-[0.12em] text-slate-500">{placesText(p.where)}</div>}
-              <LayerLegend id={p.layer} />
+              <LayerLegend id={p.layer!} />
             </div>
           ))}
         </div>
@@ -933,10 +939,11 @@ const matches = (d: Dataset, t: string) => !t || norm(`${d.name} ${d.description
 function Category({ group, open, onToggle, q }: { group: LayerGroup; open: boolean; onToggle: () => void; q: string }) {
   const mode = useApp((s) => s.mode);
   const layers = useApp((s) => s.layers);
+  const colour = useApp((s) => s.colour);
   const inGroup = DATASETS.filter((d) => d.category === group && matches(d, q));
   const shown = inGroup.filter((d) => partsIn(d, mode).length > 0);
   const elsewhere = inGroup.filter((d) => !partsIn(d, mode).length);
-  const active = shown.filter((d) => datasetOn(d, layers)).length;
+  const active = shown.filter((d) => datasetOn(d, layers, colour)).length;
   if (!shown.length && !elsewhere.length) return null;
   const isOpen = open || !!q;
   return (
@@ -969,9 +976,7 @@ export default function LayersPanel() {
   const [open, setOpen] = useState<Partial<Record<LayerGroup, boolean>>>({});
   const [q, setQ] = useState("");
   const t = norm(q.trim());
-  const colours = COLOURS.filter((c) => c.modes.includes(mode));
-  const colourGroups = [...new Set(colours.map((c) => c.group))];
-  const active = DATASETS.filter((d) => partsIn(d, mode).some((p) => layers[p.layer]));
+  const active = DATASETS.filter((d) => partsIn(d, mode).length > 0 && datasetOn(d, layers, colour));
   const groupHasActive = (g: LayerGroup) => active.some((d) => d.category === g);
   const found = t ? DATASETS.filter((d) => matches(d, t)).length : 0;
   return (
@@ -991,7 +996,7 @@ export default function LayersPanel() {
         <span className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">On the map</span>
         {active.length > 0 && (
           <button
-            onClick={() => useApp.setState((s) => ({ layers: Object.fromEntries(Object.keys(s.layers).map((k) => [k, false])) as typeof s.layers, edited: true, coverageOf: null }))}
+            onClick={() => useApp.setState((s) => ({ layers: Object.fromEntries(Object.keys(s.layers).map((k) => [k, false])) as typeof s.layers, colour: "none", edited: true, coverageOf: null }))}
             className="text-[10.5px] text-slate-400 hover:text-slate-100"
           >
             Clear all
@@ -1014,44 +1019,7 @@ export default function LayersPanel() {
         ))}
       </div>
 
-      <section className="border-t border-white/[0.06] px-3 pb-3 pt-2.5">
-        <label className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]" htmlFor="colour-by">
-          Colour the countries by
-        </label>
-        <select
-          id="colour-by"
-          value={colour}
-          onChange={(e) => actions.setColour(e.target.value as ColourId)}
-          className="mt-1.5 w-full rounded-md border border-white/10 bg-[#0d1119] px-2 py-1.5 text-[12.5px] text-slate-100 outline-none focus:border-sky-400/50"
-        >
-          {colourGroups.map((g) =>
-            g ? (
-              <optgroup key={g} label={g}>
-                {colours
-                  .filter((c) => c.group === g)
-                  .map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.label}
-                    </option>
-                  ))}
-              </optgroup>
-            ) : (
-              colours
-                .filter((c) => c.group === g)
-                .map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.label === "Plain" ? "Nothing (plain map)" : c.label}
-                  </option>
-                ))
-            ),
-          )}
-        </select>
-        {colour !== "none" && (
-          <div className="mt-2">
-            <ColourLegend colour={colour} />
-          </div>
-        )}
-      </section>
+
 
       <div className="flex items-center justify-between border-t border-white/[0.06] px-3 pb-1 pt-2.5">
         <span className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">Browse by category</span>

@@ -29,6 +29,7 @@ import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
 import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection } from "./build";
 import { memo } from "./memo";
 import { SUMMARY_FILES, summaryOf } from "./summaryLayers";
+import { inAreaCountry } from "../app/datasets";
 import { ATLAS_LAYERS, type AtlasFile, type AtlasId } from "../lib/atlas";
 import type { ConstraintsFile, ProtectedFile } from "../lib/constraints";
 import { FLOOD_LAYERS, GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, PROTECTED_LAYERS, ROADS_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addFloodLayers, addGridLayers, addGrwLayers, addProtectedLayers, addRoadsLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, setWorldGridOutside, usFrame, worldCamera } from "./style";
@@ -62,12 +63,19 @@ function wantedKeys(zoom: number): string[] {
   if (L.lngSendOut) keys.push("lngTerminals");
   if (L.ets) keys.push("ets");
   if (L.ctrace) keys.push("ctrace");
-  if (L.connect) keys.push("connect", "connectFR", "connectIT", "connectIE", ...CONNECT_EU.map(connectEuKey));
+  // a country's own files only for the dashboard's countries
+  const here = (cc: string) => inAreaCountry(s.area, cc);
+  if (L.connect)
+    keys.push(
+      ...(here("GB") || here("NL") ? ["connect"] : []),
+      ...(["FR", "IT", "IE"] as const).filter(here).map((cc) => `connect${cc}`),
+      ...CONNECT_EU.filter((id) => here(id.slice(0, 2))).map(connectEuKey),
+    );
   if (L.usOutages) keys.push("usOutages", "usCounties");
   if (L.water) keys.push("water");
   if (L.offshoreWind) keys.push("offshoreWind");
-  if (L.mastrDE) keys.push("mastrMuni", "mastrUnits");
-  for (const [layer, cc] of Object.entries(REGISTER_LAYERS)) if (L[layer as keyof typeof L]) keys.push(registerKey(cc));
+  if (L.mastrDE && here("DE")) keys.push("mastrMuni", "mastrUnits");
+  for (const [layer, cc] of Object.entries(REGISTER_LAYERS)) if (L[layer as keyof typeof L] && here(cc)) keys.push(registerKey(cc));
   if (L.cables) keys.push("cables");
   if (L.cables || L.gasPipes || L.oilPipes) keys.push("seaCables");
   if (L.plantsWorld) keys.push("worldPlants");

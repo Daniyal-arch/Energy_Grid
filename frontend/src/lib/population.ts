@@ -28,7 +28,7 @@ export async function peopleWithin(lon: number, lat: number, km: number): Promis
     Array.from({ length: r1 - r0 + 1 }, async (_, i) => {
       const row = r0 + i;
       const a = (row * W + c0) * 4;
-      const r = await fetch(POP_URL, { headers: { Range: `bytes=${a}-${a + (c1 - c0 + 1) * 4 - 1}` } });
+      const r = await fetch(POP_URL, { headers: { Range: `bytes=${a}-${a + (c1 - c0 + 1) * 4 - 1}` }, cache: "no-store" });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const v = new DataView(await r.arrayBuffer());
       const clat = 90 - (row + 0.5) * POP_CELL;

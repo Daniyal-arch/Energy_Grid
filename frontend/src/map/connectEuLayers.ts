@@ -6,6 +6,7 @@ import { ScatterplotLayer, SolidPolygonLayer } from "@deck.gl/layers";
 
 import { pairs } from "../app/geo";
 import { CONNECT_EU, classColor, connectEuKey, type ConnectEuFile, type EuArea, type EuPoint } from "../lib/connectEu";
+import { inAreaCountry } from "../app/datasets";
 import type { Frame } from "./build";
 import { memo } from "./memo";
 
@@ -16,7 +17,7 @@ export function connectEuLayers(fr: Frame): Layer[] {
   const out: Layer[] = [];
   for (const cc of CONNECT_EU) {
     const f = fr.files[connectEuKey(cc)] as ConnectEuFile | undefined;
-    if (!f) continue;
+    if (!f || !inAreaCountry(fr.area, cc.slice(0, 2))) continue;
     if (f.areas.length) {
       const areas = memo(`connectEuAreas${cc}`, [f], () => f.areas.flatMap((a) => a[1].map((rings) => ({ a, polygon: rings.map(pairs) }))));
       out.push(

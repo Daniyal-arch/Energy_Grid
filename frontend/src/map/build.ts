@@ -104,6 +104,7 @@ import { siteLayers } from "./siteLayers";
 import { inside, makeShape } from "../lib/area";
 import { offshoreLayers } from "./offshoreLayers";
 import { areaLayers } from "./areaLayers";
+import { inAreaCountry } from "../app/datasets";
 import { summaryFill, summaryLabels } from "./summaryLayers";
 import type { AreaSpec } from "../lib/area";
 import { usSolarLayers } from "./usSolarLayers";
@@ -523,7 +524,7 @@ export function buildLayers(fr: Frame): Layer[] {
 
   // ---------------------------------------------------------------- grid capacity: NL areas, GB connection sites
   const connect = f.connect as ConnectFile | undefined;
-  if (facingEurope && connect && isOn("connect")) {
+  if (facingEurope && connect && isOn("connect") && (inAreaCountry(fr.area, "GB") || inAreaCountry(fr.area, "NL"))) {
     const side = fr.connectSide;
     const areas = memo("nlAreas", [connect], () =>
       connect.nl.areas.flatMap((a) => a.polygons.map((polygon) => ({ a, polygon }))),
@@ -532,7 +533,7 @@ export function buildLayers(fr: Frame): Layer[] {
     layers.push(
       new SolidPolygonLayer<{ a: NlArea; polygon: [number, number][][] }>({
         id: "eu-connect-nl",
-        data: areas,
+        data: inAreaCountry(fr.area, "NL") ? areas : NONE,
         getPolygon: (d) => d.polygon,
         getFillColor: (d) => [...NL_COLOR[Math.max(0, Math.min(3, side === "offtake" ? d.a.offtake : d.a.feedin))], 150],
         updateTriggers: { getFillColor: [side] },
@@ -543,7 +544,7 @@ export function buildLayers(fr: Frame): Layer[] {
       }),
       new ScatterplotLayer<(typeof sites)[number]>({
         id: "eu-connect-gb",
-        data: sites,
+        data: inAreaCountry(fr.area, "GB") ? sites : NONE,
         getPosition: (d) => [d.site[1]!, d.site[2]!],
         getRadius: (d) => Math.min(16, 1.5 + Math.sqrt(d.mw) * 0.16),
         radiusUnits: "pixels",

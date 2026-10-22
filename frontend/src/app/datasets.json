@@ -1,10 +1,10 @@
 {
-  "about": "The map's datasets as the user sees them: one entry per kind of data, each made of the map layers (app/store.ts LayerId) that hold it for a region, with where it has data, its sources and the docs/DATA_SOURCES.md section that documents it. 'where' lists ISO alpha-2 codes or the regions World, Europe (the ENTSO-E area), EU (the 27 members) and US. 'family' names the coverage registry family (data/coverage.yaml) with per-country status. Read by the Layers panel, the dashboards and the agent.",
+  "about": "The map's datasets as the user sees them: one entry per kind of data, each made of the map layers (app/store.ts LayerId) that hold it for a region, with where it has data, its sources and the docs/DATA_SOURCES.md section that documents it. 'where' lists ISO alpha-2 codes or the regions World, Europe (the ENTSO-E area), EU (the 27 members) and US. 'family' names the coverage registry family (data/coverage.yaml) with per-country status. A dataset with `colour` colours the countries (one at a time) instead of drawing layers. Read by the Datasets panel, the dashboards and the agent.",
   "datasets": [
     {
       "id": "flows",
       "name": "Cross-border flows",
-      "category": "Electricity now",
+      "category": "Electricity",
       "description": "Power moving between countries (Europe) and between grid regions (US, 24 h)",
       "color": "rgb(120,222,255)",
       "updates": "Europe every 30 min (eu-snapshot.yml); the 24 h replay daily (eu-days.yml)",
@@ -24,7 +24,7 @@
     {
       "id": "prices",
       "name": "Wholesale prices",
-      "category": "Electricity now",
+      "category": "Prices",
       "description": "Day-ahead prices: each European country raised by its price; US prices at every node",
       "color": "rgb(255,196,90)",
       "family": "prices",
@@ -53,7 +53,7 @@
     {
       "id": "liveGrids",
       "name": "Live grids beyond Europe",
-      "category": "Electricity now",
+      "category": "Electricity",
       "description": "Demand, generation and flows now in the US, Brazil, Australia, Taiwan, Ontario, New Zealand and South Africa",
       "color": "rgb(255,196,120)",
       "updates": "every 30 min (eu-snapshot.yml)",
@@ -78,7 +78,7 @@
     {
       "id": "towers",
       "name": "Generation towers",
-      "category": "Electricity now",
+      "category": "Electricity",
       "description": "Each country's (or US region's) output by source, through a day",
       "color": "rgb(255,214,72)",
       "updates": "daily (eu-days.yml)",
@@ -1047,6 +1047,284 @@
           ],
           "what": "finance per lender country and project",
           "source": "Global Energy Monitor",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "colour-renewable",
+      "name": "Renewable share by country",
+      "category": "Electricity",
+      "description": "Each country coloured by the renewable share of its generation now",
+      "color": "rgb(72,222,184)",
+      "colour": "renewable",
+      "parts": [
+        {
+          "where": [
+            "Europe"
+          ],
+          "what": "share of generation, newest 15-min interval",
+          "source": "ENTSO-E Transparency Platform",
+          "doc": "Live figures"
+        }
+      ],
+      "updates": "every 30 min (eu-snapshot.yml)"
+    },
+    {
+      "id": "colour-tr_renewables",
+      "name": "Renewable share, yearly",
+      "category": "Electricity",
+      "description": "Every country, 2000 to the newest year",
+      "color": "rgb(72,222,184)",
+      "colour": "tr_renewables",
+      "parts": [
+        {
+          "where": [
+            "World"
+          ],
+          "what": "share of generation per year",
+          "source": "Ember",
+          "doc": "Transition tab"
+        }
+      ]
+    },
+    {
+      "id": "colour-tr_wind_solar",
+      "name": "Wind and solar share, yearly",
+      "category": "Electricity",
+      "description": "Every country, 2000 to the newest year",
+      "color": "rgb(255,214,72)",
+      "colour": "tr_wind_solar",
+      "parts": [
+        {
+          "where": [
+            "World"
+          ],
+          "what": "share of generation per year",
+          "source": "Ember",
+          "doc": "Transition tab"
+        }
+      ]
+    },
+    {
+      "id": "colour-tr_coal",
+      "name": "Coal share, yearly",
+      "category": "Electricity",
+      "description": "Every country, 2000 to the newest year",
+      "color": "rgb(160,146,132)",
+      "colour": "tr_coal",
+      "parts": [
+        {
+          "where": [
+            "World"
+          ],
+          "what": "share of generation per year",
+          "source": "Ember",
+          "doc": "Transition tab"
+        }
+      ]
+    },
+    {
+      "id": "colour-tr_intensity",
+      "name": "Carbon intensity, yearly",
+      "category": "Emissions",
+      "description": "gCO₂ per kWh generated, every country, 2000 to the newest year",
+      "color": "rgb(236,128,92)",
+      "colour": "tr_intensity",
+      "parts": [
+        {
+          "where": [
+            "World"
+          ],
+          "what": "gCO₂ per kWh per year",
+          "source": "Ember",
+          "doc": "Transition tab"
+        }
+      ]
+    },
+    {
+      "id": "colour-access",
+      "name": "Access to electricity",
+      "category": "Electricity",
+      "description": "Share of people with electricity, every country",
+      "color": "rgb(255,214,72)",
+      "colour": "access",
+      "parts": [
+        {
+          "where": [
+            "World"
+          ],
+          "what": "% of the population, newest year",
+          "source": "World Bank WDI",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "colour-price",
+      "name": "Day-ahead price by country",
+      "category": "Prices",
+      "description": "Each country coloured by its day-ahead price now",
+      "color": "rgb(255,196,90)",
+      "colour": "price",
+      "parts": [
+        {
+          "where": [
+            "Europe"
+          ],
+          "what": "day-ahead price per bidding zone",
+          "source": "ENTSO-E Transparency Platform",
+          "doc": "Live figures"
+        }
+      ],
+      "updates": "every 30 min (eu-snapshot.yml)"
+    },
+    {
+      "id": "colour-pr_negative",
+      "name": "Hours below zero",
+      "category": "Prices",
+      "description": "Hours with a negative day-ahead price, 12 months",
+      "color": "rgb(120,190,255)",
+      "colour": "pr_negative",
+      "parts": [
+        {
+          "where": [
+            "Europe"
+          ],
+          "what": "hours per bidding zone, 12 months",
+          "source": "ENTSO-E Transparency Platform",
+          "doc": "Prices tab"
+        }
+      ],
+      "updates": "daily (eu-days.yml)"
+    },
+    {
+      "id": "colour-pr_mean",
+      "name": "Average day-ahead price",
+      "category": "Prices",
+      "description": "Mean day-ahead price, 12 months",
+      "color": "rgb(255,196,90)",
+      "colour": "pr_mean",
+      "parts": [
+        {
+          "where": [
+            "Europe"
+          ],
+          "what": "mean per bidding zone, 12 months",
+          "source": "ENTSO-E Transparency Platform",
+          "doc": "Prices tab"
+        }
+      ],
+      "updates": "daily (eu-days.yml)"
+    },
+    {
+      "id": "colour-pr_solar",
+      "name": "Solar capture rate",
+      "category": "Prices",
+      "description": "What solar earns against the average price, 12 months",
+      "color": "rgb(255,214,72)",
+      "colour": "pr_solar",
+      "parts": [
+        {
+          "where": [
+            "Europe"
+          ],
+          "what": "capture rate per bidding zone, 12 months",
+          "source": "ENTSO-E Transparency Platform",
+          "doc": "Prices tab"
+        }
+      ],
+      "updates": "daily (eu-days.yml)"
+    },
+    {
+      "id": "colour-pr_wind",
+      "name": "Wind capture rate",
+      "category": "Prices",
+      "description": "What wind earns against the average price, 12 months",
+      "color": "rgb(72,222,184)",
+      "colour": "pr_wind",
+      "parts": [
+        {
+          "where": [
+            "Europe"
+          ],
+          "what": "capture rate per bidding zone, 12 months",
+          "source": "ENTSO-E Transparency Platform",
+          "doc": "Prices tab"
+        }
+      ],
+      "updates": "daily (eu-days.yml)"
+    },
+    {
+      "id": "colour-rt_household",
+      "name": "Household electricity price",
+      "category": "Prices",
+      "description": "What households pay, all taxes",
+      "color": "rgb(230,160,255)",
+      "colour": "rt_household",
+      "parts": [
+        {
+          "where": [
+            "EU",
+            "US"
+          ],
+          "what": "newest half-year (EU), newest month (US)",
+          "source": "Eurostat; EIA",
+          "doc": "What consumers pay"
+        }
+      ]
+    },
+    {
+      "id": "colour-offline",
+      "name": "Plants offline by country",
+      "category": "Power plants",
+      "description": "Generating capacity out of service now, per country",
+      "color": "rgb(255,128,72)",
+      "colour": "offline",
+      "parts": [
+        {
+          "where": [
+            "Europe"
+          ],
+          "what": "planned and forced outages now",
+          "source": "ENTSO-E Transparency Platform; Elexon (GB)",
+          "doc": "Live figures"
+        }
+      ],
+      "updates": "every 30 min (eu-snapshot.yml)"
+    },
+    {
+      "id": "colour-ir_solar",
+      "name": "Solar PV installed, yearly",
+      "category": "Power plants",
+      "description": "Installed solar capacity per country",
+      "color": "rgb(255,214,72)",
+      "colour": "ir_solar",
+      "parts": [
+        {
+          "where": [
+            "World"
+          ],
+          "what": "MW per year",
+          "source": "IRENA",
+          "doc": "World tab"
+        }
+      ]
+    },
+    {
+      "id": "colour-ir_wind",
+      "name": "Wind installed, yearly",
+      "category": "Power plants",
+      "description": "Installed wind capacity per country",
+      "color": "rgb(72,222,184)",
+      "colour": "ir_wind",
+      "parts": [
+        {
+          "where": [
+            "World"
+          ],
+          "what": "MW per year",
+          "source": "IRENA",
           "doc": "World tab"
         }
       ]

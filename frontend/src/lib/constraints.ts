@@ -66,7 +66,7 @@ export function floodClassAt(l: FloodLookup, lon: number, lat: number): Promise<
   if (!cache.has(key))
     cache.set(
       key,
-      fetch(l.url, { headers: { Range: `bytes=${at}-${at}` } })
+      fetch(l.url, { headers: { Range: `bytes=${at}-${at}` }, cache: "no-store" })
         .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(`HTTP ${r.status}`))))
         .then((b) => new Uint8Array(b)[0]),
     );

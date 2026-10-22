@@ -30,7 +30,7 @@ export function atlasValue(a: AtlasInfo, lon: number, lat: number): Promise<numb
   if (!cache.has(key))
     cache.set(
       key,
-      fetch(url, { headers: { Range: `bytes=${at}-${at + 1}` } })
+      fetch(url, { headers: { Range: `bytes=${at}-${at + 1}` }, cache: "no-store" })
         .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(`HTTP ${r.status}`))))
         .then((b) => {
           const v = new DataView(b).getInt16(0, true);

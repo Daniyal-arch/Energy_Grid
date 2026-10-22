@@ -6,6 +6,7 @@ import { ScatterplotLayer } from "@deck.gl/layers";
 
 import { FUEL_COLOR } from "../lib/energy";
 import { REGISTER_LAYERS, STATUS_ALPHA, registerKey, type RegisterFile, type RegisterPoint } from "../lib/registers";
+import { inAreaCountry } from "../app/datasets";
 import type { Frame } from "./build";
 
 const colourOf = (g: string) => FUEL_COLOR[g === "wind_offshore" ? "wind" : g] ?? FUEL_COLOR.other;
@@ -15,7 +16,7 @@ export function registerLayers(fr: Frame): Layer[] {
   for (const [layer, cc] of Object.entries(REGISTER_LAYERS)) {
     if (!fr.layers[layer as keyof typeof fr.layers]) continue;
     const f = fr.files[registerKey(cc)] as RegisterFile | undefined;
-    if (!f) continue;
+    if (!f || !inAreaCountry(fr.area, cc)) continue;
     out.push(
       new ScatterplotLayer<RegisterPoint>({
         id: `reg:${cc}`,

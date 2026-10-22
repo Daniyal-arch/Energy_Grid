@@ -8,6 +8,7 @@ import { stopColor } from "../app/colors";
 import { pairs } from "../app/geo";
 import { MASTR_COLOR, MASTR_STOPS, MASTR_UNIT_ZOOM, type MastrMuniFile, type MastrTech, type MastrUnitsFile } from "../lib/mastr";
 import type { RGB } from "../lib/theme";
+import { inAreaCountry } from "../app/datasets";
 import type { Frame } from "./build";
 import { memo } from "./memo";
 
@@ -19,7 +20,7 @@ export interface GemeindeShape {
 }
 
 export function mastrLayers(fr: Frame): Layer[] {
-  if (!fr.layers.mastrDE) return [];
+  if (!fr.layers.mastrDE || !inAreaCountry(fr.area, "DE")) return [];
   const out: Layer[] = [];
   const muni = fr.files.mastrMuni as MastrMuniFile | undefined;
   const tech: MastrTech = fr.mastrTech;

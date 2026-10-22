@@ -801,20 +801,24 @@ export function AreaRiskCard({ s }: { s: AreaShape }) {
   );
 }
 
-/** Every area card, in reading order. */
+const CARDS = [AreaOverviewCard, AreaElectricityCard, AreaEmissionsCard, AreaPlantsCard, AreaGridCard, AreaCapacityCard, AreaRegistersCard, AreaDemandCard, AreaFuelsCard, AreaRiskCard];
+
+/** Every area card, in reading order, one after another (each loads its files and counts in turn,
+ *  so the map keeps drawing meanwhile). */
 export function AreaCards({ s }: { s: AreaShape }) {
+  const [shown, setShown] = useState<{ key: string; n: number }>({ key: s.key, n: 2 });
+  const n = shown.key === s.key ? shown.n : 2;
+  useEffect(() => {
+    if (n >= CARDS.length) return;
+    const t = setTimeout(() => setShown({ key: s.key, n: n + 1 }), 450);
+    return () => clearTimeout(t);
+  }, [n, s.key]);
   return (
     <>
-      <AreaOverviewCard s={s} />
-      <AreaElectricityCard s={s} />
-      <AreaEmissionsCard s={s} />
-      <AreaPlantsCard s={s} />
-      <AreaGridCard s={s} />
-      <AreaCapacityCard s={s} />
-      <AreaRegistersCard s={s} />
-      <AreaDemandCard s={s} />
-      <AreaFuelsCard s={s} />
-      <AreaRiskCard s={s} />
+      {CARDS.slice(0, n).map((Card, i) => (
+        <Card key={i} s={s} />
+      ))}
+      {n < CARDS.length && <div className={`px-1 text-[10.5px] ${muted}`}>More figures follow…</div>}
     </>
   );
 }

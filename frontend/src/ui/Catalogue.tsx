@@ -15,6 +15,7 @@ const MODE: Record<string, string> = { live: "live", day: "24 h", years: "years"
 export function Catalogue() {
   const open = useApp((s) => s.catalogue);
   const layers = useApp((s) => s.layers);
+  const colour = useApp((s) => s.colour);
   const [cat, setCat] = useState<LayerGroup | "all">("all");
   const [q, setQ] = useState("");
   if (!open) return null;
@@ -63,7 +64,7 @@ export function Catalogue() {
             {list.length === 0 && <div className={`text-[12px] ${muted}`}>Nothing found.</div>}
             <div className="space-y-2">
               {list.map((d) => {
-                const on = datasetOn(d, layers);
+                const on = datasetOn(d, layers, colour);
                 const where = coverageLabel(d) || "World";
                 return (
                   <div key={d.id} className="rounded-xl border border-white/[0.07] bg-white/[0.02]">

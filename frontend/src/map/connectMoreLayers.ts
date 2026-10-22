@@ -7,6 +7,7 @@ import { ScatterplotLayer, SolidPolygonLayer } from "@deck.gl/layers";
 
 import { pairs } from "../app/geo";
 import { IT_COLOR, frNumber, ieRoom, itClass, itTotals, roomColor, type FrFile, type FrSite, type IeFile, type IeStation, type ItFile } from "../lib/connectMore";
+import { inAreaCountry } from "../app/datasets";
 import type { Frame } from "./build";
 import { memo } from "./memo";
 
@@ -16,7 +17,7 @@ export function connectMoreLayers(fr: Frame): Layer[] {
   if (!fr.layers.connect) return [];
   const side = fr.connectSide;
   const out: Layer[] = [];
-  const it = fr.files.connectIT as ItFile | undefined;
+  const it = (inAreaCountry(fr.area, "IT") ? fr.files.connectIT : undefined) as ItFile | undefined;
   if (it && side === "feedin") {
     const areas = memo("itAreas", [it], () => {
       const tot = itTotals(it);
@@ -37,7 +38,7 @@ export function connectMoreLayers(fr: Frame): Layer[] {
       }),
     );
   }
-  const frf = fr.files.connectFR as FrFile | undefined;
+  const frf = (inAreaCountry(fr.area, "FR") ? fr.files.connectFR : undefined) as FrFile | undefined;
   if (frf && side === "feedin")
     out.push(
       new ScatterplotLayer<FrSite>({
@@ -56,7 +57,7 @@ export function connectMoreLayers(fr: Frame): Layer[] {
         parameters: ON_TOP,
       }),
     );
-  const ie = fr.files.connectIE as IeFile | undefined;
+  const ie = (inAreaCountry(fr.area, "IE") ? fr.files.connectIE : undefined) as IeFile | undefined;
   if (ie)
     out.push(
       new ScatterplotLayer<IeStation>({
