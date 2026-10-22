@@ -151,7 +151,7 @@ export function areaLayers(fr: Frame): Layer[] {
 /** Data layers drawn only inside a dashboard's area (a country, a drawn polygon, a circle): plants,
  *  grid, emitters, charging, capacity maps, registers, industry... Flows, prices, towers, the
  *  countries and the area's own layers are left whole. */
-const CLIPPED = /^(eu-grid-|eu-hvdc|eu-substations|eu-plants|eu-plant-glow|eu-ets|eu-ev|eu-gas-storage|eu-gas-projects|eu-hydrogen|eu-lng-|eu-offshore-wind|eu-tyndp|eu-connect|reg:|de-mastr-|w-plants|w-datacentres|w-dc-|label-dc|w-ctrace|gem-|us-plants|us-turbines|us-solar|us-ev|us-ghgrp|us-gas-pipes|fin-projects)/;
+const CLIPPED = /^(eu-grid-|eu-hvdc|eu-substations|eu-plants|eu-plant-glow|eu-ets|eu-ev|eu-gas-storage|eu-gas-projects|eu-hydrogen|eu-lng-|eu-offshore-wind|eu-tyndp|eu-connect|reg:|de-mastr-|w-plants|w-datacentres|w-dc-|label-dc|w-ctrace|gem-|us-plants|us-turbines|us-solar|us-ev|us-ghgrp|us-gas-pipes|fin-projects|w-cables|w-sea-cables|w-sea-pipes)/;
 /** Continents are not clipped: the dimmed world around them says enough. */
 const CLIP_MAX_KM2 = 3_000_000;
 

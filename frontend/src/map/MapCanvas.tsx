@@ -30,11 +30,12 @@ import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection }
 import { memo } from "./memo";
 import { SUMMARY_FILES, summaryOf } from "./summaryLayers";
 import { DATASET_BY_ID, inAreaCountry } from "../app/datasets";
+import { shapeOf } from "../app/areaShape";
 import { hexDatasets, mapVariables } from "./hexLayers";
 import { specBounds } from "../app/store";
 import { ATLAS_LAYERS, type AtlasFile, type AtlasId } from "../lib/atlas";
 import type { ConstraintsFile, ProtectedFile } from "../lib/constraints";
-import { FLOOD_LAYERS, GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, PROTECTED_LAYERS, ROADS_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addFloodLayers, addGridLayers, addGrwLayers, addProtectedLayers, addRoadsLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, setWorldGridOutside, usFrame, worldCamera } from "./style";
+import { FLOOD_LAYERS, GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, PROTECTED_LAYERS, ROADS_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addFloodLayers, addGridLayers, addGrwLayers, addProtectedLayers, addRoadsLayers, dayFrame, dayPadding, europeCamera, europeView, setAreaWithin, setProjection, setWorldGridOutside, usFrame, worldCamera } from "./style";
 import { TIP_STYLE, countryHtml, tooltip } from "./tooltip";
 
 const SEC_PER_YEAR = 0.9;
@@ -487,6 +488,7 @@ export default function MapCanvas() {
     let gridKey = "";
     let atlasKey = "";
     let consKey = "";
+    let areaFilterKey = "";
     let skyKey = "";
     const applyMapLibre = (dayFile: DayFile | null, sunAlt: number) => {
       if (!map.getLayer("world-land")) return;
@@ -547,6 +549,14 @@ export default function MapCanvas() {
         for (const id of US_GRID_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.gridUS ? "visible" : "none");
         for (const id of GRID_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.gridWorld ? "visible" : "none");
         for (const id of PREDICTED_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.predicted ? "visible" : "none");
+      }
+      // a dashboard's area: the map's own line layers keep to it (map/style.ts)
+      const areaShape = shapeOf(s.area, s.drawn, worldFile, countriesFile);
+      const afk = `${areaShape && areaShape.km2 <= 3_000_000 ? areaShape.key : ""}|${gk}|${!!map.getLayer("roads-major")}|${!!map.getLayer("protected-line")}|${!!map.getLayer("grw-wind")}`;
+      if (afk !== areaFilterKey) {
+        areaFilterKey = afk;
+        const polys = areaShape && areaShape.km2 <= 3_000_000 ? areaShape.polygons.map((p) => p.map((r) => Array.from({ length: r.length / 2 }, (_, i) => [r[2 * i], r[2 * i + 1]]))) : null;
+        setAreaWithin(map, polys);
       }
       // Global Renewables Watch (vector tiles)
       if (s.layers.grw) addGrwLayers(map);

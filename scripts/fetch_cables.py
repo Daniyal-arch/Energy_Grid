@@ -7,9 +7,12 @@ put in one class (computed from its tags):
   hv     110 kV or more
   field  below 110 kV, mostly offshore wind farm export and inter-array cables
   other  no voltage tagged
-Some ways are tagged underwater although they run mostly over land (tagging errors),
-so a cable is kept, whole and with its landfall, only when at least half of its length
-lies outside the land outlines (Eurostat GISCO 1:20M; computed). Cables in lakes and
+OpenStreetMap splits a cable into many ways; ways of the same class that meet end to end
+(a shared end node, no third way there) are joined into one line first (computed; its kV
+the highest of its ways, its name the most common), so a cable draws whole. Some ways are
+tagged underwater although they run mostly over land (tagging errors), so a joined cable is
+kept, whole and with its landfall, only when at least half of its length lies outside the
+land outlines (Eurostat GISCO 1:20M; computed). Cables in lakes and
 narrow fjords fall inside those outlines and drop out with them. Geometry simplified to
 about 500 m (shapely), coordinates to 3 decimals. OpenStreetMap is a
 mapped subset: well mapped around Europe, sparse elsewhere.
@@ -25,7 +28,7 @@ from __future__ import annotations
 import argparse
 import json
 import time
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -64,6 +67,57 @@ def kilovolts(tag: str | None) -> int | None:
     return max(values) if values else None
 
 
+Way = tuple[str, int | None, str | None, list[tuple[float, float]]]
+
+
+def join_ways(ways: list[Way]) -> list[Way]:
+    """Ways of one class meeting end to end (exactly two ways at the shared end) become one line."""
+    ends: dict[tuple[str, tuple[float, float]], list[int]] = defaultdict(list)
+    for i, (cls, _, _, pts) in enumerate(ways):
+        ends[(cls, pts[0])].append(i)
+        ends[(cls, pts[-1])].append(i)
+    used: set[int] = set()
+    out: list[Way] = []
+
+    def next_way(cls: str, at: tuple[float, float], came: int) -> int | None:
+        here = ends[(cls, at)]
+        if len(here) != 2:
+            return None
+        other = here[0] if here[1] == came else here[1]
+        return None if other in used or other == came else other
+
+    for i, (cls, _kv, _name, pts) in enumerate(ways):
+        if i in used:
+            continue
+        used.add(i)
+        line = list(pts)
+        members = [i]
+        for forward in (True, False):
+            came = i
+            while True:
+                at = line[-1] if forward else line[0]
+                j = next_way(cls, at, came)
+                if j is None:
+                    break
+                used.add(j)
+                members.append(j)
+                seg = ways[j][3]
+                # orient the next way so it continues from `at`
+                if forward:
+                    seg = seg if seg[0] == at else seg[::-1]
+                    line.extend(seg[1:])
+                else:
+                    seg = seg if seg[-1] == at else seg[::-1]
+                    line[:0] = seg[:-1]
+                came = j
+        kvs = [ways[m][1] for m in members if ways[m][1] is not None]
+        names = Counter(ways[m][2] for m in members if ways[m][2])
+        out.append(
+            (cls, max(kvs) if kvs else None, names.most_common(1)[0][0] if names else None, line)
+        )
+    return out
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=Path, default=OUT)
@@ -83,7 +137,7 @@ def main() -> None:
             raise RuntimeError("Overpass: no answer")
     ground = land()
     on_land = prep(ground)
-    cables = []
+    ways = []
     for e in r.json()["elements"]:
         pts = [(p["lon"], p["lat"]) for p in e.get("geometry", [])]
         if len(pts) < 2:
@@ -99,6 +153,10 @@ def main() -> None:
             if kv
             else "other"
         )
+        ways.append((cls, kv, tags.get("name"), pts))
+    joined = join_ways(ways)
+    cables = []
+    for cls, kv, name, pts in joined:
         line = LineString(pts)
         if line.length == 0:
             continue
@@ -108,7 +166,8 @@ def main() -> None:
             continue
         simple = line.simplify(TOLERANCE, preserve_topology=False)
         flat = [round(v, 3) for xy in simple.coords for v in xy]
-        cables.append([cls, kv, tags.get("name"), flat])
+        cables.append([cls, kv, name, flat])
+    print(f"{len(ways)} ways joined into {len(joined)} lines", flush=True)
     out.mkdir(parents=True, exist_ok=True)
     path = out / "cables.json"
     path.write_text(

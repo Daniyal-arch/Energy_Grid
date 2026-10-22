@@ -917,7 +917,7 @@ export interface GasArc {
 function gasFlowLayers(fr: Frame, sel: string | null): Layer[] {
   const g = fr.files.gasFlows as GasFlowsFile | undefined;
   if (!g) return [];
-  const arcs = memo("gasArcs", [g], () => {
+  const allArcs = memo("gasArcs", [g], () => {
     const out: GasArc[] = [];
     g.pairs.forEach((p, n) => {
       const net = latestOf(p.net);
@@ -932,6 +932,9 @@ function gasFlowLayers(fr: Frame, sel: string | null): Layer[] {
     // transit first, imports drawn over it
     return out.sort((x, y) => Number(x.pair.kind !== "border") - Number(y.pair.kind !== "border") || x.gwh - y.gwh);
   });
+  // a dashboard of a few countries: the gas crossing into or out of them
+  const own = fr.area && fr.area.length < 5 ? new Set(fr.area) : null;
+  const arcs = own ? memo("gasArcsArea", [allArcs, fr.area], () => allArcs.filter((a) => [a.from, a.to, a.country].some((c) => own.has(ISO3[c] ?? c)))) : allArcs;
   const entry = (a: GasArc) => a.pair.kind !== "border";
   const touches = (a: GasArc) => a.from === sel || a.to === sel || a.country === sel;
   // each source's total into Europe on the gas day (sum of its arcs, computed); LNG per country
@@ -1337,6 +1340,8 @@ function worldLayers(fr: Frame, near: (p: [number, number]) => boolean): Layer[]
         id: "w-cables",
         data: memo("nearCables", [cables, fr.camKey], () => cables.filter((c) => near([c[3][0], c[3][1]]))),
         getPath: (c) => pairs(c[3]),
+        capRounded: true,
+        jointRounded: true,
         getColor: (c) => (CABLE_STYLE[c[0]] ?? CABLE_STYLE.other).color,
         getWidth: (c) => (CABLE_STYLE[c[0]] ?? CABLE_STYLE.other).width,
         widthUnits: "pixels",
