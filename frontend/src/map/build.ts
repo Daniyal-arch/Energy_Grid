@@ -103,7 +103,7 @@ import { mastrLayers } from "./mastrLayers";
 import { siteLayers } from "./siteLayers";
 import { inside, makeShape } from "../lib/area";
 import { offshoreLayers } from "./offshoreLayers";
-import { areaLayers } from "./areaLayers";
+import { areaLayers, clipToArea } from "./areaLayers";
 import { inAreaCountry } from "../app/datasets";
 import { summaryFill, summaryLabels } from "./summaryLayers";
 import type { AreaSpec } from "../lib/area";
@@ -843,7 +843,8 @@ export function buildLayers(fr: Frame): Layer[] {
   layers.push(...summaryLabels(fr));
   if (facingEurope && countries) parts.push(countryLabels(fr, countries));
   // under MapLibre's labels (map/labels.ts), which read well on the globe
-  return layers.map((l) => ((l.props as { beforeId?: string }).beforeId ? l : l.clone({ beforeId: LABELS_BELOW } as never)));
+  // a dashboard's area: its data only (map/areaLayers.ts)
+  return clipToArea(fr, layers).map((l) => ((l.props as { beforeId?: string }).beforeId ? l : l.clone({ beforeId: LABELS_BELOW } as never)));
 }
 
 /** Items on the side of the globe that faces the camera (redone when the camera turns). */

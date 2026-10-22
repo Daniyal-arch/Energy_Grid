@@ -37,7 +37,8 @@ import type { StatsFile } from "../app/types";
 import { priceRange, rampCss } from "../map/priceTerrain";
 import { currentDay } from "../map/tooltip";
 import { COLOURS, actions, useApp, type ColourId, type LayerGroup, type LayerId, type PlantStatus, type TimeMode } from "../app/store";
-import { CATEGORIES, DATASETS, coverageLabel, datasetModes, datasetOn, partsIn, placesText, toggleDataset, type Dataset } from "../app/datasets";
+import { CATEGORIES, DATASETS, coverageLabel, covers, datasetModes, datasetOn, partsIn, placesText, toggleDataset, type Dataset } from "../app/datasets";
+import { useCountryNames } from "./Dashboards";
 import type { CoverageFile } from "../lib/coverage";
 import { SUMMARIES, SUMMARY_ALPHA, summaryOf, summaryValues } from "../map/summaryLayers";
 
@@ -893,7 +894,9 @@ function DatasetRow({ d }: { d: Dataset }) {
   const where = coverageLabel(d);
   const selection = useApp((s) => s.selection);
   const files = useDataStore((s) => s.files);
-  const carried = on && summaryOf({ colour, layers, selection })?.id === d.id;
+  const area = useApp((s) => s.area);
+  const drawn = useApp((s) => s.drawn);
+  const carried = on && summaryOf({ colour, layers, selection, area, drawn })?.id === d.id;
   return (
     <div className={`rounded-lg transition-colors ${on ? "bg-white/[0.05]" : "hover:bg-white/[0.03]"}`}>
       <div className="flex w-full items-center gap-2.5 px-2 py-1.5">
@@ -936,11 +939,11 @@ function DatasetRow({ d }: { d: Dataset }) {
 const norm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const matches = (d: Dataset, t: string) => !t || norm(`${d.name} ${d.description} ${d.category} ${d.parts.map((p) => `${p.source} ${p.what} ${p.where.join(" ")}`).join(" ")}`).includes(t);
 
-function Category({ group, open, onToggle, q }: { group: LayerGroup; open: boolean; onToggle: () => void; q: string }) {
+function Category({ group, open, onToggle, q, show }: { group: LayerGroup; open: boolean; onToggle: () => void; q: string; show: (d: Dataset) => boolean }) {
   const mode = useApp((s) => s.mode);
   const layers = useApp((s) => s.layers);
   const colour = useApp((s) => s.colour);
-  const inGroup = DATASETS.filter((d) => d.category === group && matches(d, q));
+  const inGroup = DATASETS.filter((d) => d.category === group && matches(d, q) && show(d));
   const shown = inGroup.filter((d) => partsIn(d, mode).length > 0);
   const elsewhere = inGroup.filter((d) => !partsIn(d, mode).length);
   const active = shown.filter((d) => datasetOn(d, layers, colour)).length;
@@ -976,9 +979,17 @@ export default function LayersPanel() {
   const [open, setOpen] = useState<Partial<Record<LayerGroup, boolean>>>({});
   const [q, setQ] = useState("");
   const t = norm(q.trim());
+  const area = useApp((s) => s.area);
+  const [onlyHere, setOnlyHere] = useState(true);
+  const names = useCountryNames();
   const active = DATASETS.filter((d) => partsIn(d, mode).length > 0 && datasetOn(d, layers, colour));
   const groupHasActive = (g: LayerGroup) => active.some((d) => d.category === g);
   const found = t ? DATASETS.filter((d) => matches(d, t)).length : 0;
+  // the categories list what is not on the map yet; with an area, what has data there
+  const here = (d: Dataset) => !area || !onlyHere || covers(d, area);
+  const show = (d: Dataset) => !datasetOn(d, layers, colour) && here(d);
+  const elsewhere = area ? DATASETS.filter((d) => !covers(d, area)).length : 0;
+  const areaName = area ? (area.length <= 2 ? area.map(names).join(" and ") : `${area.length} countries`) : "";
   return (
     <div>
       <section className="px-3 pb-2 pt-2.5">
@@ -1003,19 +1014,11 @@ export default function LayersPanel() {
           </button>
         )}
       </div>
-      <div className="flex flex-wrap gap-1 px-3 pb-2.5">
-        {active.length === 0 && <span className={`text-[11px] ${muted}`}>Nothing yet: switch a dataset on below, or pick a dashboard.</span>}
+      {/* what the map shows now, each with its key */}
+      <div className="px-1.5 pb-2">
+        {active.length === 0 && <div className={`px-1.5 text-[11px] ${muted}`}>Nothing yet: switch a dataset on below, or pick a dashboard.</div>}
         {active.map((d) => (
-          <button
-            key={d.id}
-            onClick={() => toggleDataset(d)}
-            className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] py-0.5 pl-2 pr-1.5 text-[10.5px] text-slate-200 hover:border-white/25"
-            title={`Hide ${d.name.toLowerCase()}`}
-          >
-            <span className="h-2 w-2 rounded-full" style={{ background: d.color }} />
-            {d.name}
-            <span className="text-slate-500 group-hover:text-slate-200">✕</span>
-          </button>
+          <DatasetRow key={d.id} d={d} />
         ))}
       </div>
 
@@ -1027,9 +1030,23 @@ export default function LayersPanel() {
           Data catalogue ↗
         </button>
       </div>
-      <div className={`px-3 pb-1.5 text-[10px] ${muted}`}>Click a name for where it has data (tinted on the map) and its sources.</div>
+      <div className={`px-3 pb-1.5 text-[10px] ${muted}`}>
+        {area ? (
+          <>
+            {onlyHere ? `With data in ${areaName}` : "Every dataset"}
+            {elsewhere > 0 && (
+              <button onClick={() => setOnlyHere(!onlyHere)} className="ml-1 text-sky-300/90 hover:text-sky-200">
+                {onlyHere ? `· show all (${elsewhere} more)` : `· only those with data in ${areaName}`}
+              </button>
+            )}
+            . Click a name for where it has data and its sources.
+          </>
+        ) : (
+          "Click a name for where it has data (tinted on the map) and its sources."
+        )}
+      </div>
       {CATEGORIES.map((g) => (
-        <Category key={g} group={g} q={t} open={open[g] ?? groupHasActive(g)} onToggle={() => setOpen((o) => ({ ...o, [g]: !(o[g] ?? groupHasActive(g)) }))} />
+        <Category key={g} group={g} q={t} show={show} open={open[g] ?? false} onToggle={() => setOpen((o) => ({ ...o, [g]: !(o[g] ?? false) }))} />
       ))}
       <div className="h-2" />
     </div>

@@ -8,7 +8,7 @@ import { PathLayer, ScatterplotLayer, SolidPolygonLayer } from "@deck.gl/layers"
 import { shapeOf } from "../app/areaShape";
 import { DATASET_BY_ID, coverageIso3 } from "../app/datasets";
 import type { CountriesFile, WorldFile } from "../app/types";
-import type { AreaShape } from "../lib/area";
+import { inside, type AreaShape } from "../lib/area";
 import { ISO3 } from "../lib/transition";
 import type { Frame } from "./build";
 import { memo } from "./memo";
@@ -144,4 +144,60 @@ export function areaLayers(fr: Frame): Layer[] {
     );
   }
   return out;
+}
+
+// ------------------------------------------------------------------ the data inside the area only
+
+/** Data layers drawn only inside a dashboard's area (a country, a drawn polygon, a circle): plants,
+ *  grid, emitters, charging, capacity maps, registers, industry... Flows, prices, towers, the
+ *  countries and the area's own layers are left whole. */
+const CLIPPED = /^(eu-grid-|eu-hvdc|eu-substations|eu-plants|eu-plant-glow|eu-ets|eu-ev|eu-gas-storage|eu-gas-projects|eu-hydrogen|eu-lng-|eu-offshore-wind|eu-tyndp|eu-connect|reg:|de-mastr-|w-plants|w-datacentres|w-dc-|label-dc|w-ctrace|gem-|us-plants|us-turbines|us-solar|us-ev|us-ghgrp|us-gas-pipes|fin-projects)/;
+/** Continents are not clipped: the dimmed world around them says enough. */
+const CLIP_MAX_KM2 = 3_000_000;
+
+type Pos = number[];
+type Fn = (d: unknown, info: { index: number; data: unknown; target: unknown[] }) => unknown;
+
+function anyInside(s: AreaShape, path: unknown): boolean {
+  if (!Array.isArray(path) || !path.length) return false;
+  if (typeof path[0] === "number") {
+    for (let i = 0; i + 1 < path.length; i += 2) if (inside(s, path[i] as number, path[i + 1] as number)) return true;
+    return false;
+  }
+  if (Array.isArray(path[0]) && typeof path[0][0] === "number") return (path as Pos[]).some((p) => inside(s, p[0], p[1]));
+  // rings of a polygon: its outline decides
+  return anyInside(s, path[0]);
+}
+
+/** The layers with only the records inside the area (each layer's own position accessor). */
+export function clipToArea(fr: Frame, layers: Layer[]): Layer[] {
+  const w = fr.files.world as WorldFile | undefined;
+  const shape = shapeOf(fr.area, fr.drawn, w, fr.files.countries as CountriesFile | undefined);
+  if (!shape || shape.km2 > CLIP_MAX_KM2) return layers;
+  return layers.map((l) => {
+    if (!CLIPPED.test(l.id)) return l;
+    const p = l.props as unknown as { data: unknown; getPosition?: unknown; getPath?: unknown; getPolygon?: unknown; getSourcePosition?: unknown; getTargetPosition?: unknown };
+    if (!Array.isArray(p.data)) return l;
+    const data = p.data as unknown[];
+    const test =
+      typeof p.getPosition === "function"
+        ? (d: unknown, i: number) => {
+            const q = (p.getPosition as Fn)(d, { index: i, data, target: [] }) as Pos;
+            return !!q && inside(shape, q[0], q[1]);
+          }
+        : typeof p.getPath === "function"
+          ? (d: unknown, i: number) => anyInside(shape, (p.getPath as Fn)(d, { index: i, data, target: [] }))
+          : typeof p.getPolygon === "function"
+            ? (d: unknown, i: number) => anyInside(shape, (p.getPolygon as Fn)(d, { index: i, data, target: [] }))
+            : typeof p.getSourcePosition === "function"
+              ? (d: unknown, i: number) => {
+                  const a = (p.getSourcePosition as Fn)(d, { index: i, data, target: [] }) as Pos;
+                  const b = (p.getTargetPosition as Fn)(d, { index: i, data, target: [] }) as Pos;
+                  return inside(shape, a[0], a[1]) || inside(shape, b[0], b[1]);
+                }
+              : null;
+    if (!test) return l;
+    const kept = memo(`clip:${l.id}`, [data, shape.key], () => data.filter((d, i) => test(d, i)));
+    return l.clone({ data: kept } as never);
+  });
 }

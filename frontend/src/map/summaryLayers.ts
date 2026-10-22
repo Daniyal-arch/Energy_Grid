@@ -120,8 +120,9 @@ export const SUMMARY_FILES: Record<string, string[]> = {
 };
 
 /** The dataset whose figure the countries carry: the first one on that has one, on a plain map. */
-export function summaryOf(fr: { colour: string; layers: Frame["layers"]; selection: Frame["selection"] }): Dataset | null {
-  if (fr.colour !== "none" || fr.selection) return null;
+export function summaryOf(fr: { colour: string; layers: Frame["layers"]; selection: Frame["selection"]; area?: string[] | null; drawn?: unknown }): Dataset | null {
+  // a few countries or a drawn area: their own data says more than a shade
+  if (fr.colour !== "none" || fr.selection || fr.drawn || (fr.area && fr.area.length < 5)) return null;
   return DATASETS.find((d) => SUMMARIES[d.id] && datasetOn(d, fr.layers)) ?? null;
 }
 

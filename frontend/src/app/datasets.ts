@@ -115,14 +115,17 @@ export const colourOfDatasets = (ids: string[]): ColourId => ids.map((id) => DAT
 // ------------------------------------------------------------------ a dashboard for any country
 
 /** What a country's dashboard shows: these datasets, the parts that cover the country. */
-const COUNTRY_SET = ["plants", "registers", "transmission", "substations", "capacity", "offshoreWind", "emitters", "ev", "dataCentres"];
+// a calm first picture: the grid and the plants; the rest is one click away (Dashboard tab)
+const COUNTRY_SET = ["transmission", "substations", "plants", "registers"];
 const NAMES: Record<string, string> = {};
 /** Country names for the generated dashboards (set once the world outlines have loaded). */
 export const setCountryNames = (pairs: [string, string][]) => pairs.forEach(([c, n]) => (NAMES[c] = n));
 countryDashboards.make = (code: string): Dashboard | undefined => {
   if (!/^[A-Z]{3}$/.test(code)) return undefined;
   const area = [code];
-  const ds = COUNTRY_SET.map((id) => DATASET_BY_ID.get(id)!).filter((d) => d && covers(d, area));
+  // one picture of the plants: the national register where one lists every unit, else the plants file
+  const hasRegister = covers(DATASET_BY_ID.get("registers")!, area);
+  const ds = COUNTRY_SET.map((id) => DATASET_BY_ID.get(id)!).filter((d) => d && covers(d, area) && !(hasRegister && d.id === "plants"));
   const layers = ds.flatMap((d) => partsFor(d, area).flatMap((p) => (p.layer && layerIn(p.layer, "live") ? [p.layer] : [])));
   const name = NAMES[code] ?? code;
   return {
