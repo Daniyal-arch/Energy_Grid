@@ -28,6 +28,7 @@ import { actions, clearYearFromUrl, motion, useApp, writeUrl, yearFromUrl, type 
 import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
 import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection } from "./build";
 import { memo } from "./memo";
+import { SUMMARY_FILES, summaryOf } from "./summaryLayers";
 import { ATLAS_LAYERS, type AtlasFile, type AtlasId } from "../lib/atlas";
 import type { ConstraintsFile, ProtectedFile } from "../lib/constraints";
 import { FLOOD_LAYERS, GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, PROTECTED_LAYERS, ROADS_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addFloodLayers, addGridLayers, addGrwLayers, addProtectedLayers, addRoadsLayers, dayFrame, dayPadding, europeCamera, europeView, setProjection, setWorldGridOutside, usFrame, worldCamera } from "./style";
@@ -51,6 +52,9 @@ function wantedKeys(zoom: number): string[] {
   const L = s.layers;
   const keys = ["countries"];
   if (s.area || s.coverageOf) keys.push("world");
+  // the countries carry a dataset's per-country figure (map/summaryLayers.ts)
+  const summary = summaryOf(s);
+  if (summary) keys.push("world", ...(SUMMARY_FILES[summary.id] ?? []));
   if (s.area) keys.push("countries");
   if (L.gridEU || L.hvdc || L.substations) keys.push("grid");
   if (L.plantsEU) keys.push("plants");
@@ -194,8 +198,15 @@ export default function MapCanvas() {
     // ------------------------------------------------------------ clicks: deck objects first, then the world's land
     map.on("click", (e) => {
       const s = useApp.getState();
-      // drawing an area: each click a corner
-      if (s.drawing) return actions.addCorner([e.lngLat.wrap().lng, e.lngLat.wrap().lat]);
+      // drawing an area: each click a corner (a double click's second click lands on the last one)
+      if (s.drawing) {
+        const last = s.drawing[s.drawing.length - 1];
+        if (last) {
+          const q = map.project(last);
+          if (Math.hypot(q.x - e.point.x, q.y - e.point.y) < 8) return;
+        }
+        return actions.addCorner([e.lngLat.wrap().lng, e.lngLat.wrap().lat]);
+      }
       // "Check a site" armed: this click picks the place
       if (s.picking) return actions.checkSite(e.lngLat.wrap().lng, e.lngLat.wrap().lat);
       const info = overlay.pickObject({ x: e.point.x, y: e.point.y, radius: 4 });

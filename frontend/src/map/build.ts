@@ -104,6 +104,7 @@ import { siteLayers } from "./siteLayers";
 import { inside, makeShape } from "../lib/area";
 import { offshoreLayers } from "./offshoreLayers";
 import { areaLayers } from "./areaLayers";
+import { summaryFill, summaryLabels } from "./summaryLayers";
 import type { AreaSpec } from "../lib/area";
 import { usSolarLayers } from "./usSolarLayers";
 import { evLayers } from "./evLayers";
@@ -337,6 +338,8 @@ export function buildLayers(fr: Frame): Layer[] {
       }),
     );
   }
+  // a dataset's per-country figure at country scale (map/summaryLayers.ts)
+  layers.push(...summaryFill(fr));
 
   // the night shadow (24 h mode)
   if (day && isOn("night") && fr.night) {
@@ -836,6 +839,7 @@ export function buildLayers(fr: Frame): Layer[] {
   if (facingEurope) layers.push(...zoneMarkers(fr));
   layers.push(...siteLayers(fr));
   layers.push(...areaLayers(fr));
+  layers.push(...summaryLabels(fr));
   if (facingEurope && countries) parts.push(countryLabels(fr, countries));
   // under MapLibre's labels (map/labels.ts), which read well on the globe
   return layers.map((l) => ((l.props as { beforeId?: string }).beforeId ? l : l.clone({ beforeId: LABELS_BELOW } as never)));

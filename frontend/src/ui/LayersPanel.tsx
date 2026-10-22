@@ -38,6 +38,7 @@ import { currentDay } from "../map/tooltip";
 import { COLOURS, actions, useApp, type ColourId, type LayerGroup, type LayerId, type PlantStatus, type TimeMode } from "../app/store";
 import { CATEGORIES, DATASETS, coverageLabel, datasetModes, datasetOn, partsIn, placesText, toggleDataset, type Dataset } from "../app/datasets";
 import type { CoverageFile } from "../lib/coverage";
+import { SUMMARIES, summaryOf } from "../map/summaryLayers";
 
 import type { AtlasFile, AtlasId } from "../lib/atlas";
 import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
@@ -861,6 +862,10 @@ function DatasetRow({ d }: { d: Dataset }) {
   const open = coverageOf === d.id;
   const shownParts = partsIn(d, mode).filter((p) => layers[p.layer]);
   const where = coverageLabel(d);
+  const colour = useApp((s) => s.colour);
+  const selection = useApp((s) => s.selection);
+  const files = useDataStore((s) => s.files);
+  const carried = on && summaryOf({ colour, layers, selection })?.id === d.id;
   return (
     <div className={`rounded-lg transition-colors ${on ? "bg-white/[0.05]" : "hover:bg-white/[0.03]"}`}>
       <div className="flex w-full items-center gap-2.5 px-2 py-1.5">
@@ -880,6 +885,11 @@ function DatasetRow({ d }: { d: Dataset }) {
         </button>
       </div>
       {open && <DatasetDetails d={d} />}
+      {carried && (
+        <div className={`px-2 pb-1.5 pl-[30px] text-[10px] leading-snug ${muted}`}>
+          Zoomed out, the countries carry its figure: {SUMMARIES[d.id].text(files)}. Shade: the country's rank.
+        </div>
+      )}
       {on && shownParts.length > 0 && (
         <div className="space-y-2 px-2 pb-2 pl-[30px]">
           {shownParts.map((p) => (

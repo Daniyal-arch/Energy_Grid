@@ -4,6 +4,7 @@
 
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { actions, useApp } from "../app/store";
+import { km2Text, makeShape } from "../lib/area";
 
 const box = "pointer-events-auto rounded-xl border border-white/10 bg-[#0b0f16]/90 px-2.5 py-1.5 backdrop-blur";
 
@@ -21,7 +22,9 @@ export default function MapOptions() {
       {drawing && (
         <div className={`${box} flex items-center gap-2.5`}>
           <span className="text-[11.5px] text-slate-200">
-            {drawing.length < 3 ? `Click the map to add corners (${drawing.length} of at least 3)` : `${drawing.length} corners · double-click or Enter to finish`}
+            {drawing.length < 3
+              ? `Click the map to add corners (${drawing.length} of at least 3)`
+              : `${drawing.length} corners · ${km2Text(makeShape("polygon", "", "", [[drawing.flat()]]).km2)} · double-click or Enter to finish`}
             <span className="ml-1.5 text-[10.5px] text-[#8d94a1]">Backspace: undo · Esc: cancel</span>
           </span>
           {drawing.length >= 3 && (

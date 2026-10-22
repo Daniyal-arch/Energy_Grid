@@ -807,7 +807,10 @@ The Dashboard tab counts what the map's files hold inside an area: the country c
 dashboard's countries (Europe's GISCO outlines from `countries.json`, the world's coarse ones from
 `world.json` elsewhere), a polygon drawn on the map (`?poly=`) or a circle around a place
 (`?circle=`; a city from the search opens 25 km around it). Nothing is estimated; each card says how
-it counts.
+it counts. Countries are counted by the records' own country (a code or a name on each record, or
+the file's per-country totals): fast, and it includes records without a position (EU ETS: Germany
+1,818 installations, 78 placed on the map). A drawn polygon or a circle counts by position. The
+grids read by range request (people, resources, flood) are read only for areas under 2 million km².
 
 | Card | Files | Computed |
 |---|---|---|
@@ -824,6 +827,17 @@ it counts.
 
 Files load only when an area needs them: a country's register or capacity map when the area
 reaches that country (its outline's box), Europe's files when the area reaches Europe.
+
+## Country figures at continent scale (`frontend/src/map/summaryLayers.ts`)
+
+While the countries are not coloured by something else and the map is zoomed out (below zoom
+5.4), the first dataset on that has a per-country figure shades each country by its rank and
+writes the figure under its name; zoomed in, the points take over. The Datasets panel's key says
+which figure. Figures: verified CO₂ per country, every installation (EU ETS registry totals, newest
+year); installed capacity (ENTSO-E A68 in Europe, Global Energy Monitor's operating plants
+elsewhere, GW); public charging points (EAFO, newest year, AC + DC); data centres per country
+(OpenStreetMap, `datacentres.json`); modelled CO₂e (Climate TRACE rows summed per country);
+offshore wind farm areas per country (EMODnet, every status).
 
 ## Country report (computed in the app: `frontend/src/components/CountryReport.tsx`)
 
