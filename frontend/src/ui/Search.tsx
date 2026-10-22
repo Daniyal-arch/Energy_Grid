@@ -107,8 +107,8 @@ export default function Search({ onDone, autoFocus = false }: { onDone?: () => v
         out.push({
           key: `city:${name}:${lon}`,
           label: `${name}, ${iso2}`,
-          kind: `City · ${people.toLocaleString("en-US")} people (GeoNames)`,
-          go: done(null, () => fly([lon, lat], 8)),
+          kind: `City · ${people.toLocaleString("en-US")} people (GeoNames) · its dashboard: 25 km around`,
+          go: done(null, () => actions.setDrawn({ kind: "circle", at: [lon, lat], r: 25, name })),
         });
       }
     }

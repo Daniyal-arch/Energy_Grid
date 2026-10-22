@@ -101,9 +101,10 @@ import { riskLayers } from "./riskLayers";
 import type { WaterIndicator } from "../lib/risk";
 import { mastrLayers } from "./mastrLayers";
 import { siteLayers } from "./siteLayers";
-import { inFlatPolygons } from "../lib/site";
+import { inside, makeShape } from "../lib/area";
 import { offshoreLayers } from "./offshoreLayers";
 import { areaLayers } from "./areaLayers";
+import type { AreaSpec } from "../lib/area";
 import { usSolarLayers } from "./usSolarLayers";
 import { evLayers } from "./evLayers";
 import { evEuLayers } from "./evEuLayers";
@@ -132,6 +133,9 @@ export interface Frame {
   area: string[] | null;
   /** the dataset whose coverage is tinted */
   coverageOf: string | null;
+  /** the area as a drawn polygon or a circle, and the corners of one being drawn */
+  drawn: AreaSpec | null;
+  drawing: [number, number][] | null;
   files: Record<string, unknown>;
   zoom: number;
   centre: [number, number];
@@ -1375,8 +1379,8 @@ function worldLayers(fr: Frame, near: (p: [number, number]) => boolean): Layer[]
     const euCountries = fr.layers.plantsEU && fr.plantStatus === "operating" ? (f.countries as CountriesFile | undefined) : undefined;
     const inEu = memo("gemInEurope", [wp, euCountries], () => {
       if (!euCountries) return null;
-      const polys = euCountries.countries.flatMap((c) => c.polygons);
-      return wp.points.map((p) => p[0] > -32 && p[0] < 46 && p[1] > 26 && p[1] < 72 && inFlatPolygons([p[0], p[1]], polys));
+      const eu = makeShape("countries", "europe", "Europe", euCountries.countries.flatMap((c) => c.polygons));
+      return wp.points.map((p) => inside(eu, p[0], p[1]));
     });
     const idx = memo("nearPlants", [wp, st, fr.camKey, inUs, inEu], () => {
       const c = unitVector(fr.centre[0], fr.centre[1]);

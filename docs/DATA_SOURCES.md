@@ -801,6 +801,30 @@ data; the link (`?sel=site:lon,lat,radius`) opens the same analysis.
 | Data centres within the radius | `datacentres.json` (OpenStreetMap) | count and distance |
 | Solar resource (PVOUT), mean wind speed at 100 m | `grid/atlas-pvout-0.1deg.i16`, `grid/atlas-wind100-0.1deg.i16` on R2 (Global Solar Atlas, Global Wind Atlas; "Resource atlases" below) | the mean of the source pixels in the site's 0.1° cell (built in Actions), read with one range request; a year of PV = the daily total × 365, as the atlas gives it |
 
+## Area dashboard (computed in the app: `frontend/src/lib/area.ts`, `components/AreaCards.tsx`)
+
+The Dashboard tab counts what the map's files hold inside an area: the country clicked, a
+dashboard's countries (Europe's GISCO outlines from `countries.json`, the world's coarse ones from
+`world.json` elsewhere), a polygon drawn on the map (`?poly=`) or a circle around a place
+(`?circle=`; a city from the search opens 25 km around it). Nothing is estimated; each card says how
+it counts.
+
+| Card | Files | Computed |
+|---|---|---|
+| The area | outline; `grid/population-0.1deg.i32`; atlas lookups | size on the sphere from the outline (Germany: 355,268 km² from the 1:20M outline, 357,600 official); people: sum of the GHSL 0.1° cells whose centre lies inside (every row, one range request per row; not summed when the area spans more than 900 rows); solar and wind: mean of the atlases' 0.1° cells inside (every n-th row and column past 240 rows, said on the tile) |
+| Electricity (country areas) | `stats.json`, `reference.json`, `transition.json` | demand and generation by source now: sums of the countries' newest intervals; renewable share = Σ(country share × its generation) / Σ generation; installed capacity (ENTSO-E A68) summed; Ember TWh by source summed for the newest year all countries have |
+| Power plants | `plants.json`, `us/plants.json`, `world_plants.json` | MW and map points inside by type and status. Europe: powerplantmatching (operating, 20 MW+); the US: EIA-860M (every status); elsewhere, and building or planned in Europe: GEM. GEM points inside the US, and GEM operating points inside Europe's outlines, are left out (no double count). Checked 2026-10-22: 679 points / 99,444 MW inside Germany's outline vs 678 rows / 99,443 MW tagged DE |
+| Transmission grid | `grid.json` (Europe) | km of AC lines per voltage band and of HVDC links: segments whose midpoint lies inside; substations of 220 kV+ inside. Germany: 25,610 km, 779 substations (2026-10-22) |
+| Room to connect | `connect.json` (GB), `connect/<cc>.json` | GB: MW of TEC projects not yet connected, summed per site inside; other operators: the count of published points inside (their values stay on the map) |
+| Every unit | `registers/<cc>.json`, `mastr/municipalities.json`, `us/turbines.json`, `us/solar.json` | units and MW inside per register group; Germany per municipality by its label point |
+| Demand and industry | `datacentres.json`, `ev_eu.json`, `us/ev_chargers.json`, `hydrogen.json`, `gem/*` | counts inside; EV points in Europe summed over the 0.1° cells whose centre lies inside; GEM capacity summed over operating records |
+| Emissions | `ets.json`, `us/ghgrp.json`, `ctrace.json` | sums over the facilities placed inside; reported and modelled kept apart |
+| Gas, oil and coal | `gem/pipelines_*.json`, `gem/*`, `gas.json` | operating pipeline km by segment midpoints; counts inside |
+| Land and risk | flood lookups (`constraints.json`), `protected.json`, `offshore_wind.json` | flood: share of the lookup cells inside with any depth mapped (every n-th row and column past 120 rows, said on the tile); Natura 2000 for country areas: the EEA's per-country counts and km² summed |
+
+Files load only when an area needs them: a country's register or capacity map when the area
+reaches that country (its outline's box), Europe's files when the area reaches Europe.
+
 ## Country report (computed in the app: `frontend/src/components/CountryReport.tsx`)
 
 "Report" in a country's panel (or `?report=DE`, `?report=BRA`) opens one printable page of the

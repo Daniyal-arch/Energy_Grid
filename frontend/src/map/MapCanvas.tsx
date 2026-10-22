@@ -51,6 +51,7 @@ function wantedKeys(zoom: number): string[] {
   const L = s.layers;
   const keys = ["countries"];
   if (s.area || s.coverageOf) keys.push("world");
+  if (s.area) keys.push("countries");
   if (L.gridEU || L.hvdc || L.substations) keys.push("grid");
   if (L.plantsEU) keys.push("plants");
   if (L.gas) keys.push("gas");
@@ -193,6 +194,8 @@ export default function MapCanvas() {
     // ------------------------------------------------------------ clicks: deck objects first, then the world's land
     map.on("click", (e) => {
       const s = useApp.getState();
+      // drawing an area: each click a corner
+      if (s.drawing) return actions.addCorner([e.lngLat.wrap().lng, e.lngLat.wrap().lat]);
       // "Check a site" armed: this click picks the place
       if (s.picking) return actions.checkSite(e.lngLat.wrap().lng, e.lngLat.wrap().lat);
       const info = overlay.pickObject({ x: e.point.x, y: e.point.y, radius: 4 });
@@ -223,10 +226,29 @@ export default function MapCanvas() {
       const at = e.lngLat.wrap();
       actions.checkSite(at.lng, at.lat);
     });
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && useApp.getState().picking && actions.setPicking(false);
+    // a double click ends the drawing (and does not zoom meanwhile)
+    map.on("dblclick", (e) => {
+      if (!useApp.getState().drawing) return;
+      e.preventDefault();
+      actions.finishDrawing();
+    });
+    const onKey = (e: KeyboardEvent) => {
+      const s = useApp.getState();
+      if (s.drawing) {
+        if (e.key === "Escape") actions.cancelDrawing();
+        if (e.key === "Enter") actions.finishDrawing();
+        if (e.key === "Backspace" && !(e.target instanceof HTMLInputElement)) actions.undoCorner();
+        return;
+      }
+      if (e.key === "Escape" && s.picking) actions.setPicking(false);
+    };
     window.addEventListener("keydown", onKey);
     const unsubCursor = useApp.subscribe((s, prev) => {
-      if (s.picking !== prev.picking) map.getCanvas().style.cursor = s.picking ? "crosshair" : "";
+      if (s.picking !== prev.picking || !!s.drawing !== !!prev.drawing) map.getCanvas().style.cursor = s.picking || s.drawing ? "crosshair" : "";
+      if (!!s.drawing !== !!prev.drawing) {
+        if (s.drawing) map.doubleClickZoom.disable();
+        else map.doubleClickZoom.enable();
+      }
     });
     // the site's line search and what the panel found in the area draw on the map
     const unsubSiteLines = useSiteLines.subscribe(touch);
@@ -285,6 +307,7 @@ export default function MapCanvas() {
     map.on("style.load", applyProjection);
     const fly = (to: NonNullable<ReturnType<typeof useApp.getState>["flyTo"]>) => {
       if (typeof to === "object" && "area" in to) return frameArea(to.area, 1400);
+      if (typeof to === "object" && "bounds" in to) return frameBounds(to.bounds, 1400);
       applyProjection();
       if (to === "day") return dayFrame(map, 1200);
       if (to === "us" || to === "usQueue" || to === "usDay") return usFrame(map, to !== "us" && wantFlat(), 1400);
@@ -301,6 +324,18 @@ export default function MapCanvas() {
         off();
         run();
       });
+    };
+    /** A box in view, clear of the panels. */
+    const frameBounds = (b: [number, number, number, number], duration: number) => {
+      applyProjection();
+      const padding = isNarrow() ? { left: 20, right: 20, top: 80, bottom: 240 } : { left: 300, right: 420, top: 90, bottom: 80 };
+      map.fitBounds(
+        [
+          [b[0], b[1]],
+          [b[2], b[3]],
+        ],
+        { padding, duration, pitch: 0, bearing: 0, maxZoom: 11 },
+      );
     };
     /** A dashboard's countries in view, clear of the panels (each by its largest polygon). */
     const frameArea = (area: string[], duration: number) => {
@@ -405,6 +440,7 @@ export default function MapCanvas() {
         const to = s.flyTo;
         useApp.setState({ flyTo: null });
         if (typeof to === "object" && "area" in to) frameArea(to.area, 0);
+        else if (typeof to === "object" && "bounds" in to) frameBounds(to.bounds, 0);
         else if (typeof to === "object") {
           applyProjection();
           // the 24 h view keeps its padding, so a link opens on the same picture
@@ -664,6 +700,8 @@ export default function MapCanvas() {
         selection: s.selection,
         area: s.area,
         coverageOf: s.coverageOf,
+        drawn: s.drawn,
+        drawing: s.drawing,
         files,
         zoom,
         centre: [c.lng, c.lat],

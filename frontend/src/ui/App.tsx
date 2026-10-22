@@ -51,6 +51,23 @@ function CheckSite({ small = false }: { small?: boolean }) {
   );
 }
 
+/** "Draw an area": click corners on the map; the dashboard counts everything inside. */
+function DrawArea({ small = false }: { small?: boolean }) {
+  const drawing = useApp((s) => s.drawing);
+  return (
+    <button
+      onClick={() => (drawing ? actions.cancelDrawing() : actions.startDrawing())}
+      className={`shrink-0 rounded-lg border px-2.5 py-1.5 text-[12px] backdrop-blur ${
+        drawing ? "border-sky-400/50 bg-sky-400/15 text-sky-200" : "border-white/10 bg-[#0b0f16]/90 text-slate-200 hover:bg-white/[0.08]"
+      }`}
+      title="Draw an area: click its corners on the map; the dashboard counts what lies inside"
+      aria-pressed={!!drawing}
+    >
+      {small ? "⬠ Area" : "⬠ Draw an area"}
+    </button>
+  );
+}
+
 const Brand = () => (
   <div className="flex items-baseline gap-2">
     <span className="text-[14px] font-semibold tracking-[0.18em] text-slate-100">INFRAATLAS</span>
@@ -68,6 +85,7 @@ function Desktop() {
         <div className="mx-auto flex w-full max-w-lg items-center gap-2">
           <Search />
           <CheckSite />
+          <DrawArea />
         </div>
         <TimeControl />
       </header>
@@ -110,6 +128,7 @@ function Phone() {
           ⌕
         </button>
         <CheckSite small />
+        <DrawArea small />
         <div className="flex-1" />
         <TimeControl small />
       </header>

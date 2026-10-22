@@ -6,6 +6,8 @@ import { create } from "zustand";
 
 import type { WaterIndicator } from "../lib/risk";
 import type { MastrTech } from "../lib/mastr";
+import type { AreaSpec, LonLat } from "../lib/area";
+import { EUROPE_ISO3 } from "../lib/transition";
 
 export type TimeMode = "live" | "day" | "years";
 
@@ -287,7 +289,7 @@ export type Region = "europe" | "world" | "us";
 /** A fixed camera, a frame the map computes for the screen (map/style.ts), or countries to frame. */
 /** Which day files the 24 h replay reads: Europe (15 min, CET) or the US (hourly, ET). */
 export type DayRegion = "eu" | "us";
-export type CameraPreset = Camera | "europe" | "world" | "day" | "us" | "usQueue" | "usDay" | { area: string[] };
+export type CameraPreset = Camera | "europe" | "world" | "day" | "us" | "usQueue" | "usDay" | { area: string[] } | { bounds: [number, number, number, number] };
 export interface Camera {
   center: [number, number];
   zoom: number;
@@ -309,6 +311,8 @@ export interface Dashboard {
   layers: LayerId[];
   /** the countries it is about (ISO alpha-3); none = wherever the camera looks */
   area?: string[];
+  /** or a polygon drawn on the map, or a circle around a place */
+  drawn?: AreaSpec;
   plantStatus?: PlantStatus;
   camera: CameraPreset;
   /** the overview panel it opens on (else from its camera) */
@@ -316,20 +320,21 @@ export interface Dashboard {
   /** the 24 h replay's day files (else Europe's) */
   dayRegion?: DayRegion;
 }
+const EUROPE = [...EUROPE_ISO3];
 export const DASHBOARDS: Dashboard[] = [
-  { id: "europe-live", group: "Europe", label: "Europe now", blurb: "Power flows, renewable share and the grid, every 30 minutes", mode: "live", colour: "renewable", layers: ["flows", "gridEU", "hvdc", "substations", "plantsEU"], camera: "europe" },
+  { id: "europe-live", group: "Europe", label: "Europe now", blurb: "Power flows, renewable share and the grid, every 30 minutes", mode: "live", colour: "renewable", layers: ["flows", "gridEU", "hvdc", "substations", "plantsEU"], area: EUROPE, camera: "europe" },
   { id: "europe-day", group: "Europe", label: "Europe's last 24 hours", blurb: "Generation, prices and flows every 15 minutes", mode: "day", colour: "none", layers: ["flows", "towers", "prices", "night", "wind", "gridEU"], camera: "day" },
   { id: "plants-day", group: "Europe", label: "Power plants hour by hour", blurb: "What each large plant produced through a day", mode: "day", colour: "none", layers: ["plantOutput", "gridEU", "night"], camera: "day" },
-  { id: "price-year", group: "Europe", label: "Europe's price year", blurb: "Hours below zero and capture prices, 12 months", mode: "live", colour: "pr_negative", layers: [], camera: "europe" },
-  { id: "europe-connect", group: "Europe", label: "Where to connect in Europe", blurb: "Grid capacity, lines and substations, protected areas, flood hazard", mode: "live", colour: "none", layers: ["connect", "gridEU", "substations", "protectedAreas", "flood"], camera: "europe" },
-  { id: "europe-emitters", group: "Europe", label: "Europe's emitters", blurb: "Verified CO₂ per installation, steel and cement plants", mode: "live", colour: "none", layers: ["ets", "steel", "cement"], camera: "europe" },
-  { id: "us-live", group: "United States", label: "US grid now", blurb: "Demand, generation and flows between the 13 grid regions", mode: "live", colour: "none", layers: ["liveGrids", "gridUS"], camera: "us", region: "us" },
+  { id: "price-year", group: "Europe", label: "Europe's price year", blurb: "Hours below zero and capture prices, 12 months", mode: "live", colour: "pr_negative", layers: [], area: EUROPE, camera: "europe" },
+  { id: "europe-connect", group: "Europe", label: "Free grid capacity (Europe)", blurb: "Where new demand or generation can still connect, as each grid operator publishes it, on the high-voltage grid", mode: "live", colour: "none", layers: ["connect", "gridEU", "substations"], area: EUROPE, camera: "europe" },
+  { id: "europe-emitters", group: "Europe", label: "Europe's biggest emitters", blurb: "Verified CO₂ per installation, steel and cement plants", mode: "live", colour: "none", layers: ["ets", "steel", "cement"], area: EUROPE, camera: "europe" },
+  { id: "us-live", group: "United States", label: "US grid now", blurb: "Demand, generation and flows between the 13 grid regions", mode: "live", colour: "none", layers: ["liveGrids", "gridUS"], area: ["USA"], camera: "us", region: "us" },
   { id: "us-day", group: "United States", label: "US last 24 hours", blurb: "Demand, generation and flows hour by hour", mode: "day", colour: "none", layers: ["towers", "flows", "usNodePrices"], camera: "usDay", region: "us", dayRegion: "us" },
   { id: "us-plants-day", group: "United States", label: "US fossil plants hour by hour", blurb: "Every coal, gas and oil unit with its CO₂ (EPA)", mode: "day", colour: "none", layers: ["plantOutput", "gridUS"], camera: "usDay", region: "us", dayRegion: "us" },
-  { id: "us-grid", group: "United States", label: "US power infrastructure", blurb: "Every plant, the lines, wind turbines and solar farms", mode: "live", colour: "none", layers: ["gridUS", "plantsUS", "turbinesUS", "solarUS"], plantStatus: "operating", camera: "us", region: "us" },
-  { id: "us-queue", group: "United States", label: "What waits to connect (US)", blurb: "The interconnection queue state by state", mode: "live", colour: "none", layers: ["usQueue"], camera: "usQueue", region: "us" },
-  { id: "us-connect", group: "United States", label: "Where to connect in the US", blurb: "The queue, the lines, protected areas, flood hazard", mode: "live", colour: "none", layers: ["usQueue", "gridUS", "protectedAreas", "flood"], camera: "us", region: "us" },
-  { id: "us-outages", group: "United States", label: "US power outages", blurb: "Customer-hours without power per county", mode: "live", colour: "none", layers: ["usOutages", "gridUS"], camera: "us", region: "us" },
+  { id: "us-grid", group: "United States", label: "US power infrastructure", blurb: "Every plant, the lines, wind turbines and solar farms", mode: "live", colour: "none", layers: ["gridUS", "plantsUS", "turbinesUS", "solarUS"], plantStatus: "operating", area: ["USA"], camera: "us", region: "us" },
+  { id: "us-queue", group: "United States", label: "US interconnection queue", blurb: "What waits to connect to the grid, state by state", mode: "live", colour: "none", layers: ["usQueue"], area: ["USA"], camera: "usQueue", region: "us" },
+  { id: "us-outages", group: "United States", label: "US power outages", blurb: "Customer-hours without power per county", mode: "live", colour: "none", layers: ["usOutages", "gridUS"], area: ["USA"], camera: "us", region: "us" },
+  { id: "site-screening", group: "World", label: "Site screening", blurb: "Lines, substations, free capacity, protected areas and flood hazard: draw an area or search a city", mode: "live", colour: "none", layers: ["gridEU", "gridUS", "substations", "connect", "protectedAreas", "flood"], camera: "europe" },
   { id: "germany", group: "Countries", label: "Germany in detail", blurb: "Every unit (MaStR), the grid, grid capacity, EV charging", mode: "live", colour: "none", layers: ["mastrDE", "gridEU", "substations", "connect", "evChargersEU"], area: ["DEU"], camera: { area: ["DEU"] } },
   { id: "great-britain", group: "Countries", label: "Great Britain in detail", blurb: "Every project (REPD), the grid, capacity sites, offshore wind", mode: "live", colour: "none", layers: ["regGB", "gridEU", "connect", "offshoreWind"], area: ["GBR"], camera: { area: ["GBR"] } },
   { id: "nordic-wind", group: "Countries", label: "Nordic wind", blurb: "Every turbine in Denmark and Sweden, offshore farms, the grid", mode: "live", colour: "none", layers: ["regDK", "regSE", "offshoreWind", "gridEU"], area: ["DNK", "SWE"], camera: { area: ["DNK", "SWE"] } },
@@ -360,6 +365,17 @@ function storeMine(list: Dashboard[]): void {
     // storage refused: the dashboard lives until the page closes
   }
 }
+/** The box around a drawn polygon or circle [west, south, east, north]. */
+export function specBounds(d: AreaSpec): [number, number, number, number] {
+  if (d.kind === "circle") {
+    const dLat = d.r / 111.2;
+    const dLon = dLat / Math.max(0.05, Math.cos((d.at[1] * Math.PI) / 180));
+    return [d.at[0] - dLon, d.at[1] - dLat, d.at[0] + dLon, d.at[1] + dLat];
+  }
+  const xs = d.ring.map((q) => q[0]);
+  const ys = d.ring.map((q) => q[1]);
+  return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
+}
 export const findDashboard = (id: string | null) => (id ? (DASHBOARDS.find((d) => d.id === id) ?? useApp.getState().mine.find((d) => d.id === id)) : undefined);
 
 interface AppState {
@@ -387,6 +403,10 @@ interface AppState {
   edited: boolean;
   /** the dashboard's countries (ISO alpha-3): its figures are for them; null = no area */
   area: string[] | null;
+  /** the dashboard's area as a drawn polygon or a circle around a place (then `area` is null) */
+  drawn: AreaSpec | null;
+  /** corners clicked so far while drawing an area on the map */
+  drawing: LonLat[] | null;
   /** a name for a view opened from a link (a dashboard saved elsewhere) */
   title: string | null;
   /** dashboards saved in this browser */
@@ -437,6 +457,8 @@ export const useApp = create<AppState>(() => ({
   dashboard: DEFAULT_DASHBOARD,
   edited: false,
   area: null,
+  drawn: null,
+  drawing: null,
   title: null,
   mine: loadMine(),
   coverageOf: null,
@@ -545,6 +567,8 @@ export const actions = {
       edited: false,
       title: null,
       area,
+      drawn: st.drawn ?? null,
+      drawing: null,
       mode: st.mode,
       colour: st.colour,
       layers: layersOf(st.layers),
@@ -574,8 +598,9 @@ export const actions = {
       colour: s.colour,
       layers: (Object.keys(s.layers) as LayerId[]).filter((k) => s.layers[k]),
       ...(s.area ? { area: s.area } : {}),
+      ...(s.drawn ? { drawn: s.drawn } : {}),
       plantStatus: s.plantStatus,
-      camera: s.area ? { area: s.area } : s.region === "us" ? "us" : s.region === "world" ? "world" : "europe",
+      camera: s.area ? { area: s.area } : s.drawn ? { bounds: specBounds(s.drawn) } : s.region === "us" ? "us" : s.region === "world" ? "world" : "europe",
       region: s.region,
       dayRegion: s.dayRegion,
     };
@@ -593,7 +618,36 @@ export const actions = {
   /** The dashboard's countries (null: none); the map frames them. */
   setArea(area: string[] | null) {
     const a = area?.length ? [...new Set(area)] : null;
-    useApp.setState({ area: a, edited: true, selection: null, tab: "dashboard", ...(a ? { flyTo: { area: a } } : {}) });
+    useApp.setState({ area: a, drawn: null, edited: true, selection: null, tab: "dashboard", ...(a ? { flyTo: { area: a } } : {}) });
+  },
+  /** A polygon or a circle as the area (null: none); the map frames it. */
+  setDrawn(drawn: AreaSpec | null) {
+    useApp.setState({ drawn, area: null, drawing: null, picking: false, edited: true, selection: null, tab: "dashboard", sheet: "panel", ...(drawn ? { flyTo: { bounds: specBounds(drawn) } } : {}) });
+  },
+  /** Drawing an area: each click adds a corner; three or more make the polygon. */
+  startDrawing() {
+    useApp.setState({ drawing: [], picking: false });
+  },
+  addCorner(p: LonLat) {
+    const d = useApp.getState().drawing;
+    if (!d) return;
+    const last = d[d.length - 1];
+    // the two clicks of a double click land on the same spot: one corner
+    if (last && Math.abs(last[0] - p[0]) < 1e-6 && Math.abs(last[1] - p[1]) < 1e-6) return;
+    useApp.setState({ drawing: [...d, [Number(p[0].toFixed(4)), Number(p[1].toFixed(4))]] });
+  },
+  undoCorner() {
+    const d = useApp.getState().drawing;
+    if (d?.length) useApp.setState({ drawing: d.slice(0, -1) });
+  },
+  finishDrawing() {
+    const d = useApp.getState().drawing;
+    if (!d) return;
+    if (d.length < 3) return useApp.setState({ drawing: null });
+    actions.setDrawn({ kind: "polygon", ring: d });
+  },
+  cancelDrawing() {
+    useApp.setState({ drawing: null });
   },
   openBuilder(builder: AppState["builder"]) {
     useApp.setState({ builder });
@@ -624,6 +678,18 @@ export function readUrl(): void {
     patch.edited = true;
     patch.title = p.get("dname");
   }
+  // ?poly=lon,lat;lon,lat;... (a drawn area), ?circle=lon,lat,km[,name]
+  const poly = p.get("poly");
+  const circle = p.get("circle");
+  if (poly) {
+    const ring = poly.split(";").map((xy) => xy.split(",").map(Number) as LonLat).filter((q) => q.length === 2 && q.every(Number.isFinite));
+    if (ring.length >= 3) patch.drawn = { kind: "polygon", ring, ...(p.get("aname") ? { name: p.get("aname")! } : {}) };
+  } else if (circle) {
+    const [lon, lat, r, ...name] = circle.split(",");
+    if ([lon, lat, r].map(Number).every(Number.isFinite) && Number(r) > 0 && Number(r) <= 500)
+      patch.drawn = { kind: "circle", at: [Number(lon), Number(lat)], r: Number(r), ...(name.length ? { name: name.join(",") } : {}) };
+  }
+  if (patch.drawn && !p.get("cam")) patch.flyTo = { bounds: specBounds(patch.drawn) };
   const area = p.get("area");
   if (area !== null) {
     const codes = area.split(",").filter((c) => /^[A-Z]{3}$/.test(c));
@@ -696,6 +762,11 @@ export function writeUrl(camera?: Camera): void {
     p.set("colour", s.colour);
     p.set("layers", (Object.keys(s.layers) as LayerId[]).filter((k) => s.layers[k]).join(","));
     if (s.area) p.set("area", s.area.join(","));
+    if (s.drawn?.kind === "polygon") {
+      p.set("poly", s.drawn.ring.map((q) => `${q[0]},${q[1]}`).join(";"));
+      if (s.drawn.name) p.set("aname", s.drawn.name);
+    }
+    if (s.drawn?.kind === "circle") p.set("circle", [s.drawn.at[0], s.drawn.at[1], s.drawn.r, ...(s.drawn.name ? [s.drawn.name] : [])].join(","));
     const name = s.title ?? findDashboard(s.dashboard)?.label;
     if (name) p.set("dname", name);
   }

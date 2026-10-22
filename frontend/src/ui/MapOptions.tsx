@@ -1,5 +1,6 @@
 // Switches that change how something on the map draws, shown on the map while it matters:
-// bars or beams for a selected country's plants (live mode); the hint while "Check a site" is armed.
+// bars or beams for a selected country's plants (live mode); the hint while "Check a site" is armed
+// or an area is being drawn.
 
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { actions, useApp } from "../app/store";
@@ -12,10 +13,27 @@ export default function MapOptions() {
   const plantStyle = useApp((s) => s.plantStyle);
   const sel = useApp((s) => s.selection);
   const picking = useApp((s) => s.picking);
+  const drawing = useApp((s) => s.drawing);
   const showPlants = mode === "live" && plantsOn && sel?.kind === "country" && !!sel.iso2;
-  if (!showPlants && !picking) return null;
+  if (!showPlants && !picking && !drawing) return null;
   return (
     <div className="pointer-events-none absolute left-1/2 top-14 z-20 flex max-w-[92vw] -translate-x-1/2 flex-col items-center gap-1.5 md:top-16">
+      {drawing && (
+        <div className={`${box} flex items-center gap-2.5`}>
+          <span className="text-[11.5px] text-slate-200">
+            {drawing.length < 3 ? `Click the map to add corners (${drawing.length} of at least 3)` : `${drawing.length} corners · double-click or Enter to finish`}
+            <span className="ml-1.5 text-[10.5px] text-[#8d94a1]">Backspace: undo · Esc: cancel</span>
+          </span>
+          {drawing.length >= 3 && (
+            <button onClick={() => actions.finishDrawing()} className="rounded-md border border-sky-400/50 bg-sky-400/15 px-2 py-0.5 text-[11px] text-sky-100 hover:bg-sky-400/25">
+              Finish
+            </button>
+          )}
+          <button onClick={() => actions.cancelDrawing()} className="rounded-md border border-white/10 px-2 py-0.5 text-[11px] text-slate-300 hover:bg-white/[0.07]">
+            Cancel
+          </button>
+        </div>
+      )}
       {picking && (
         <div className={`${box} flex items-center gap-2.5`}>
           <span className="text-[11.5px] text-slate-200">Click a place to check it as a site</span>
