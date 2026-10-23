@@ -106,7 +106,7 @@ import { offshoreLayers } from "./offshoreLayers";
 import { areaLayers, clipToArea } from "./areaLayers";
 import { inAreaCountry } from "../app/datasets";
 import { SUMMARY_MAX_ZOOM, summaryFill, summaryLabels, summaryOf } from "./summaryLayers";
-import { hexLayers } from "./hexLayers";
+import { hexLayers, type MapStyle } from "./hexLayers";
 import type { AreaSpec } from "../lib/area";
 import { usSolarLayers } from "./usSolarLayers";
 import { evLayers } from "./evLayers";
@@ -138,6 +138,10 @@ export interface Frame {
   coverageOf: string | null;
   /** the variables drawn as hexagons in this frame (map/hexLayers.ts; empty when zoomed in) */
   mapVars: string[];
+  /** each variable's style at country scale (hexagons, bubbles, columns) */
+  mapStyles: Record<string, MapStyle>;
+  /** the view [west, south, east, north] */
+  bounds: [number, number, number, number];
   /** the area as a drawn polygon or a circle, and the corners of one being drawn */
   drawn: AreaSpec | null;
   drawing: [number, number][] | null;

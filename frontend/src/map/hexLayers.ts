@@ -4,7 +4,7 @@
 // one by one again. Every figure is a sum of the file's own values (lib/measures.ts), said in the key.
 
 import type { Layer } from "@deck.gl/core";
-import { SolidPolygonLayer } from "@deck.gl/layers";
+import { ColumnLayer, ScatterplotLayer, SolidPolygonLayer } from "@deck.gl/layers";
 import { create } from "zustand";
 
 import { shapeOf } from "../app/areaShape";
@@ -35,14 +35,19 @@ export function mapVariables(st: { layers: Frame["layers"]; colour?: string; map
   return auto ? [auto] : [];
 }
 
-/** The datasets drawn as hexagons in this frame (their points are not drawn). */
-export function hexDatasets(fr: { zoom: number; layers: Frame["layers"]; colour?: string; mapVars?: string[] }): Set<string> {
-  if (fr.zoom >= POINTS_ZOOM) return new Set();
-  return new Set(mapVariables(fr).map((m) => m.dataset));
+/** At country scale: the datasets drawn as hexagons, and the other datasets with a variable,
+ *  which wait for city scale (one clean picture; side by side shows them all). Their points are
+ *  not drawn meanwhile. */
+export function hexDatasets(fr: { zoom: number; layers: Frame["layers"]; colour?: string; mapVars?: string[] }): { hex: Set<string>; later: Set<string> } {
+  if (fr.zoom >= POINTS_ZOOM) return { hex: new Set(), later: new Set() };
+  const hex = new Set(mapVariables(fr).map((m) => m.dataset));
+  const later = new Set(MEASURES.filter((m) => !hex.has(m.dataset) && m.id !== "gb-waiting" && datasetOn(DATASET_BY_ID.get(m.dataset)!, fr.layers)).map((m) => m.dataset));
+  return { hex, later };
 }
 
 export interface Hex {
   key: string;
+  centre: [number, number];
   polygon: [number, number][];
   v: number;
   v2: number;
@@ -53,9 +58,16 @@ export interface Hex {
 }
 
 /** What the key needs (published when it changes). */
-export const useHexInfo = create<{ rKm: number; vars: string[]; max: number; breaks: [number[], number[]] | null; count: number }>(() => ({ rKm: 0, vars: [], max: 0, breaks: null, count: 0 }));
+export const useHexInfo = create<{ rKm: number; vars: string[]; max: number; breaks: [number[], number[]] | null; count: number; later: string[] }>(() => ({
+  rKm: 0,
+  vars: [],
+  max: 0,
+  breaks: null,
+  count: 0,
+  later: [],
+}));
 
-function bin(points: Pt[], rKm: number, lat0: number, keep: ((lon: number, lat: number) => boolean) | null) {
+export function binPoints(points: Pt[], rKm: number, lat0: number, keep: ((lon: number, lat: number) => boolean) | null) {
   const kx = 111.32 * Math.cos((lat0 * Math.PI) / 180);
   const ky = 110.57;
   const bins = new Map<string, { q: number; r: number; v: number; types: Map<string, number> }>();
@@ -91,7 +103,7 @@ function bin(points: Pt[], rKm: number, lat0: number, keep: ((lon: number, lat: 
     const cy = rKm * Math.sqrt(3) * (b.r + b.q / 2);
     const polygon = [0, 1, 2, 3, 4, 5, 0].map((k) => corner(cx, cy, k));
     const types = [...b.types.entries()].sort((a, c) => c[1] - a[1]);
-    out.set(key, { key, polygon, v: b.v, v2: 0, top: types[0]?.[0] ?? "", types });
+    out.set(key, { key, centre: [cx / kx, cy / ky], polygon, v: b.v, v2: 0, top: types[0]?.[0] ?? "", types });
   }
   return out;
 }
@@ -136,9 +148,9 @@ export function hexLayers(fr: Frame): Layer[] {
   const pts = vars.map((m) => memo(`hexPts:${m.id}`, m.files.map((k) => fr.files[k]), () => m.points(fr.files)));
   if (pts.some((p) => !p)) return [];
   const hexes = memo(`hexes:${vars.map((m) => m.id).join("+")}`, [...pts, rKm, lat0, shape?.key ?? ""], () => {
-    const a = bin(pts[0]!, rKm, lat0, keep);
+    const a = binPoints(pts[0]!, rKm, lat0, keep);
     if (vars.length === 1) return [...a.values()];
-    const b = bin(pts[1]!, rKm, lat0, keep);
+    const b = binPoints(pts[1]!, rKm, lat0, keep);
     for (const [key, h] of b) {
       const x = a.get(key);
       if (x) x.v2 = h.v;
@@ -150,17 +162,60 @@ export function hexLayers(fr: Frame): Layer[] {
     for (const h of all) h.cls = [cls(h.v, bx), cls(h.v2, by)];
     return Object.assign(all, { breaks: [bx, by] as [number[], number[]] });
   });
-  const max = Math.max(1e-9, ...hexes.map((h) => h.v));
+  // the colour scale follows what is in view: a city spreads its own range, a continent its own
+  const [bw, bs, be, bn] = fr.bounds;
+  const seen = hexes.filter((h) => h.centre[0] >= bw && h.centre[0] <= be && h.centre[1] >= bs && h.centre[1] <= bn);
+  const max = Math.max(1e-9, ...(seen.length ? seen : hexes).map((h) => h.v));
   const breaks = (hexes as Hex[] & { breaks?: [number[], number[]] }).breaks ?? null;
   const info = useHexInfo.getState();
   const ids = vars.map((m) => m.id);
   if (info.rKm !== rKm || info.max !== max || info.count !== hexes.length || info.vars.join() !== ids.join()) useHexInfo.setState({ rKm, vars: ids, max, breaks, count: hexes.length });
   const m = vars[0];
+  const colourOf = (h: Hex): RGB => (m.types && m.types[h.top]) ?? m.color;
   const fill = (h: Hex): [number, number, number, number] => {
     if (vars.length === 2 && h.cls) return [...BIVARIATE[h.cls[1]][h.cls[0]], 225];
-    const c = (m.types && m.types[h.top]) ?? m.color;
-    return [...c, Math.round(45 + 190 * Math.sqrt(h.v / max))];
+    return [...colourOf(h), Math.round(45 + 190 * Math.sqrt(h.v / max))];
   };
+  const style = vars.length === 2 ? "hex" : (fr.mapStyles[m.id] ?? "hex");
+  const share = (h: Hex) => Math.sqrt(Math.min(1, h.v / max));
+  if (style === "bubbles")
+    return [
+      new ScatterplotLayer<Hex>({
+        id: "hex-map",
+        data: [...hexes].sort((a, b) => b.v - a.v),
+        getPosition: (h) => h.centre,
+        radiusUnits: "pixels",
+        getRadius: (h) => 2 + 20 * share(h),
+        getFillColor: (h) => [...colourOf(h), 190],
+        stroked: true,
+        getLineColor: [8, 10, 14, 220],
+        lineWidthUnits: "pixels",
+        getLineWidth: 0.8,
+        updateTriggers: { getRadius: [max], getFillColor: [ids.join()] },
+        pickable: true,
+        autoHighlight: true,
+        highlightColor: [255, 255, 255, 60],
+        parameters: ON_TOP,
+      }),
+    ];
+  if (style === "columns")
+    return [
+      new ColumnLayer<Hex>({
+        id: "hex-map",
+        data: hexes,
+        getPosition: (h) => h.centre,
+        diskResolution: 6,
+        radius: rKm * 1000 * 0.86,
+        extruded: true,
+        getElevation: (h) => share(h) * rKm * 1000 * 9,
+        getFillColor: (h) => [...colourOf(h), 230],
+        updateTriggers: { getElevation: [max, rKm], getFillColor: [ids.join()] },
+        pickable: true,
+        autoHighlight: true,
+        highlightColor: [255, 255, 255, 60],
+        material: { ambient: 0.75, diffuse: 0.4, shininess: 8, specularColor: [30, 30, 30] },
+      }),
+    ];
   return [
     new SolidPolygonLayer<Hex>({
       id: vars.length === 2 ? "hex-bivariate" : "hex-map",
@@ -175,6 +230,14 @@ export function hexLayers(fr: Frame): Layer[] {
     }),
   ];
 }
+
+/** How a variable is drawn at country scale. */
+export type MapStyle = "hex" | "bubbles" | "columns";
+export const MAP_STYLES: [MapStyle, string][] = [
+  ["hex", "Hexagons"],
+  ["bubbles", "Bubbles"],
+  ["columns", "3D columns"],
+];
 
 /** The measures of a dataset that is on (for the variable picker). */
 export const pickable = (layers: Frame["layers"]) => MEASURES.filter((m) => datasetOn(DATASET_BY_ID.get(m.dataset)!, layers));

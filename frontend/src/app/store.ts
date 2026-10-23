@@ -425,6 +425,12 @@ interface AppState {
   /** the variables drawn as hexagons at country scale (lib/measures.ts ids; two: a bivariate map;
    *  none: the first dataset on that has one) */
   mapVars: string[];
+  /** side by side: one small map per variable, the same camera (ui/CompareView.tsx) */
+  compare: boolean;
+  /** the variables of the side-by-side maps (empty: every variable of the datasets on), six at most */
+  panels: string[];
+  /** how each variable is drawn at country scale */
+  mapStyles: Record<string, "hex" | "bubbles" | "columns">;
   /** where the camera looks: decides the default panel */
   region: Region;
   /** a camera move requested by the UI (dashboard, search); the map consumes it */
@@ -473,6 +479,9 @@ export const useApp = create<AppState>(() => ({
   builder: null,
   catalogue: false,
   mapVars: [],
+  compare: false,
+  panels: [],
+  mapStyles: {},
   region: "europe",
   flyTo: null,
   sheet: "none",
@@ -665,6 +674,25 @@ export const actions = {
   setMapVars(mapVars: string[]) {
     useApp.setState({ mapVars: mapVars.slice(-2), edited: true });
   },
+  setCompare(compare: boolean) {
+    useApp.setState({ compare });
+  },
+  /** A variable as a map of its own beside the others (side by side, six at most). */
+  addPanel(id: string, current: string[]) {
+    const s = useApp.getState();
+    const base = s.panels.length ? s.panels : current;
+    useApp.setState({ panels: [...base.filter((x) => x !== id), id].slice(-6), compare: true, edited: true });
+  },
+  setPanels(panels: string[]) {
+    useApp.setState({ panels: panels.slice(0, 6), edited: true });
+  },
+  setMapStyle(id: string, style: "hex" | "bubbles" | "columns") {
+    const s = useApp.getState();
+    useApp.setState({ mapStyles: { ...s.mapStyles, [id]: style }, edited: true });
+    // columns stand up when the map leans
+    const c = currentCamera();
+    if (style === "columns" && c && !c.pitch) useApp.setState({ flyTo: { ...c, pitch: 50 } });
+  },
   /** Tint where a dataset has data (null: stop). */
   showCoverage(id: string | null) {
     useApp.setState({ coverageOf: id });
@@ -703,6 +731,17 @@ export function readUrl(): void {
       patch.drawn = { kind: "circle", at: [Number(lon), Number(lat)], r: Number(r), ...(name.length ? { name: name.join(",") } : {}) };
   }
   if (patch.drawn && !p.get("cam")) patch.flyTo = { bounds: specBounds(patch.drawn) };
+  if (p.get("compare") === "1") patch.compare = true;
+  const panels = p.get("panels");
+  if (panels) patch.panels = panels.split(",").filter(Boolean).slice(0, 6);
+  const styles = p.get("styles");
+  if (styles)
+    patch.mapStyles = Object.fromEntries(
+      styles
+        .split(",")
+        .map((x) => x.split(":"))
+        .filter(([, v]) => v === "bubbles" || v === "columns" || v === "hex"),
+    ) as AppState["mapStyles"];
   const vars = p.get("vars");
   if (vars) patch.mapVars = vars.split(",").filter(Boolean).slice(0, 2);
   const area = p.get("area");
@@ -764,6 +803,8 @@ export function readUrl(): void {
 
 /** Keep the address bar in step (replaceState: no history entries). */
 let lastCamera: Camera | undefined;
+/** The map's camera as last written to the address bar. */
+export const currentCamera = () => lastCamera;
 export function writeUrl(camera?: Camera): void {
   if (camera) lastCamera = camera;
   camera = lastCamera;
@@ -787,6 +828,10 @@ export function writeUrl(camera?: Camera): void {
   }
   if (s.day) p.set("day", s.day);
   if (s.mapVars.length) p.set("vars", s.mapVars.join(","));
+  if (s.compare) p.set("compare", "1");
+  if (s.panels.length) p.set("panels", s.panels.join(","));
+  const styled = Object.entries(s.mapStyles).filter(([, v]) => v !== "hex");
+  if (styled.length) p.set("styles", styled.map(([k, v]) => `${k}:${v}`).join(","));
   if ((s.layers.plantsWorld || s.layers.plantsUS) && s.plantStatus !== "operating") p.set("status", s.plantStatus);
   if (s.plantStyle === "beams") p.set("style", "beams");
   if (!s.layersPanel) p.set("panel", "closed");

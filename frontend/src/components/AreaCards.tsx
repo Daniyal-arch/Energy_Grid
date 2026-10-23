@@ -33,6 +33,8 @@ import type { UsSolarFile } from "../lib/usSolar";
 import type { DataCentresFile } from "../lib/world";
 import { PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, type WorldPlantsFile } from "../lib/worldPlants";
 import { Card } from "./CountryCards";
+import { DATASETS, datasetOn } from "../app/datasets";
+import { useApp } from "../app/store";
 
 const muted = "text-[#8d94a1]";
 const GREY: RGB = [150, 154, 166];
@@ -95,6 +97,60 @@ export function Bars({ rows, unit }: { rows: Bar[]; unit?: string }) {
     </div>
   );
 }
+/** Parts of a whole: a donut (six parts at most, the rest as "Other") with a legend of shares.
+ *  Thin ring, a gap of the card between parts; text in text colours, the colours on the marks. */
+export function Donut({ rows, fmt }: { rows: Bar[]; fmt: (v: number) => string }) {
+  const sorted = [...rows].filter((r) => r.value > 0).sort((a, b) => b.value - a.value);
+  const head = sorted.slice(0, 6);
+  const rest = sorted.slice(6).reduce((a, r) => a + r.value, 0);
+  const parts = rest > 0 ? [...head, { key: "other", label: "Other", value: rest, color: GREY }] : head;
+  const total = parts.reduce((a, r) => a + r.value, 0);
+  if (!total) return null;
+  const R = 30;
+  const C = 2 * Math.PI * R;
+  let at = 0;
+  return (
+    <div className="flex items-center gap-3">
+      <svg width={76} height={76} viewBox="0 0 76 76" className="shrink-0" role="img" aria-label="shares">
+        <g transform="rotate(-90 38 38)">
+          {parts.map((r) => {
+            const len = (C * r.value) / total;
+            const el = (
+              <circle
+                key={r.key}
+                cx={38}
+                cy={38}
+                r={R}
+                fill="none"
+                stroke={rgbCss(r.color ?? GREY)}
+                strokeWidth={9}
+                strokeDasharray={`${Math.max(0, len - (parts.length > 1 ? 2 : 0))} ${C}`}
+                strokeDashoffset={-at}
+              >
+                <title>{`${r.label}: ${fmt(r.value)} (${((100 * r.value) / total).toFixed(1)} %)`}</title>
+              </circle>
+            );
+            at += len;
+            return el;
+          })}
+        </g>
+        <text x={38} y={41} textAnchor="middle" className="fill-slate-200 text-[9.5px]">
+          {fmt(total)}
+        </text>
+      </svg>
+      <div className="min-w-0 flex-1 space-y-[3px]">
+        {parts.map((r) => (
+          <div key={r.key} className="flex items-center gap-1.5 text-[10.5px]">
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: rgbCss(r.color ?? GREY) }} />
+            <span className="min-w-0 flex-1 truncate text-slate-300">{r.label}</span>
+            <span className="tabular-nums text-slate-200">{((100 * r.value) / total).toFixed(0)} %</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const Head = ({ children }: { children: ReactNode }) => <div className={`mb-1 mt-2.5 text-[9.5px] uppercase tracking-[0.16em] ${muted}`}>{children}</div>;
 const Note = ({ children }: { children: ReactNode }) => <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{children}</div>;
 const Loading = ({ what }: { what: string }) => <div className={`text-[11px] ${muted}`}>Counting {what}…</div>;
@@ -288,7 +344,7 @@ export function AreaElectricityCard({ s }: { s: AreaShape }) {
             <Tile label="Renewable share now" value={total > 0 ? `${((100 * green) / total).toFixed(1)} %` : "–"} sub="each country's share × its generation, summed" />
           </Tiles>
           <Head>Generation now by source</Head>
-          <Bars rows={FUEL_ORDER.filter((k) => gen[k] > 0).map((k) => ({ key: k, label: FUEL_LABEL[k] ?? k, value: gen[k], color: FUEL_COLOR[k], text: power(gen[k]) }))} />
+          <Donut rows={FUEL_ORDER.filter((k) => gen[k] > 0).map((k) => ({ key: k, label: FUEL_LABEL[k] ?? k, value: gen[k], color: FUEL_COLOR[k] }))} fmt={power} />
           <Note>ENTSO-E, each country's newest complete interval ({[...new Set(now.map(([, p]) => p.ts.slice(11, 16)))].slice(0, 4).join(", ")} UTC).</Note>
         </>
       )}
@@ -432,7 +488,7 @@ export function AreaPlantsCard({ s }: { s: AreaShape }) {
       {data.op.length > 0 && (
         <>
           <Head>Operating, by type</Head>
-          <Bars rows={data.op.slice(0, 9)} />
+          <Donut rows={data.op} fmt={power} />
         </>
       )}
       {data.coming.length > 0 && (
@@ -802,10 +858,42 @@ export function AreaRiskCard({ s }: { s: AreaShape }) {
 }
 
 const CARDS = [AreaOverviewCard, AreaElectricityCard, AreaEmissionsCard, AreaPlantsCard, AreaGridCard, AreaCapacityCard, AreaRegistersCard, AreaDemandCard, AreaFuelsCard, AreaRiskCard];
+/** The card that holds a dataset's figures: the datasets on the map come first. */
+const CARD_OF: Record<string, (typeof CARDS)[number]> = {
+  emitters: AreaEmissionsCard,
+  ctrace: AreaEmissionsCard,
+  plants: AreaPlantsCard,
+  transmission: AreaGridCard,
+  substations: AreaGridCard,
+  hvdc: AreaGridCard,
+  capacity: AreaCapacityCard,
+  registers: AreaRegistersCard,
+  ev: AreaDemandCard,
+  dataCentres: AreaDemandCard,
+  hydrogen: AreaDemandCard,
+  steel: AreaDemandCard,
+  cement: AreaDemandCard,
+  chemicals: AreaDemandCard,
+  ironOre: AreaDemandCard,
+  gasPipes: AreaFuelsCard,
+  oilPipes: AreaFuelsCard,
+  lngTerminals: AreaFuelsCard,
+  coalTerminals: AreaFuelsCard,
+  oilGasFields: AreaFuelsCard,
+  coalMines: AreaFuelsCard,
+  methane: AreaFuelsCard,
+  gas: AreaFuelsCard,
+  protectedAreas: AreaRiskCard,
+  flood: AreaRiskCard,
+  offshoreWind: AreaRiskCard,
+};
 
 /** Every area card, in reading order, one after another (each loads its files and counts in turn,
  *  so the map keeps drawing meanwhile). */
 export function AreaCards({ s }: { s: AreaShape }) {
+  const layers = useApp((st) => st.layers);
+  const first = [...new Set(DATASETS.filter((d) => datasetOn(d, layers) && CARD_OF[d.id]).map((d) => CARD_OF[d.id]))];
+  const CARDS_NOW = [AreaOverviewCard, ...first.filter((c) => c !== AreaOverviewCard), ...CARDS.filter((c) => c !== AreaOverviewCard && !first.includes(c))];
   const [shown, setShown] = useState<{ key: string; n: number }>({ key: s.key, n: 2 });
   const n = shown.key === s.key ? shown.n : 2;
   useEffect(() => {
@@ -815,8 +903,8 @@ export function AreaCards({ s }: { s: AreaShape }) {
   }, [n, s.key]);
   return (
     <>
-      {CARDS.slice(0, n).map((Card, i) => (
-        <Card key={i} s={s} />
+      {CARDS_NOW.slice(0, n).map((Card) => (
+        <Card key={CARDS.indexOf(Card)} s={s} />
       ))}
       {n < CARDS.length && <div className={`px-1 text-[10.5px] ${muted}`}>More figures follow…</div>}
     </>

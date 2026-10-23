@@ -41,6 +41,8 @@ import { CATEGORIES, DATASETS, coverageLabel, covers, datasetModes, datasetOn, p
 import { useCountryNames } from "./Dashboards";
 import type { CoverageFile } from "../lib/coverage";
 import { SUMMARIES, SUMMARY_ALPHA, summaryOf, summaryValues } from "../map/summaryLayers";
+import { measuresOf } from "../lib/measures";
+import { mapVariables } from "../map/hexLayers";
 
 import type { AtlasFile, AtlasId } from "../lib/atlas";
 import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
@@ -883,11 +885,50 @@ function SummaryKey({ d, files }: { d: Dataset; files: Record<string, unknown> }
   );
 }
 
+/** Where a variable just switched on goes: onto this map (two make a bivariate map) or a map of its own. */
+function AddChoice({ d, onDone }: { d: Dataset; onDone: () => void }) {
+  const m = measuresOf(d.id)[0];
+  const layers = useApp((s) => s.layers);
+  const mapVars = useApp((s) => s.mapVars);
+  const current = mapVariables({ layers, mapVars }).map((x) => x.id).filter((x) => x !== m.id);
+  return (
+    <div className="mx-2 mb-2 rounded-lg border border-sky-400/25 bg-sky-400/[0.06] px-2.5 py-2 text-[10.5px] text-slate-300">
+      <div>Show {m.label.toLowerCase()}:</div>
+      <div className="mt-1.5 flex flex-wrap gap-1">
+        <button
+          onClick={() => {
+            actions.setMapVars([...current.slice(-1), m.id]);
+            onDone();
+          }}
+          className="rounded-md border border-white/15 px-2 py-0.5 text-slate-100 hover:bg-white/[0.08]"
+          title="With the variable on the map now: a map of both (3×3 colours)"
+        >
+          On this map
+        </button>
+        <button
+          onClick={() => {
+            actions.addPanel(m.id, current);
+            onDone();
+          }}
+          className="rounded-md border border-white/15 px-2 py-0.5 text-slate-100 hover:bg-white/[0.08]"
+          title="Side by side: one small map per variable, one camera (six at most)"
+        >
+          As a new map
+        </button>
+        <button onClick={onDone} className={`px-1 ${muted} hover:text-slate-200`}>
+          later
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function DatasetRow({ d }: { d: Dataset }) {
   const mode = useApp((s) => s.mode);
   const layers = useApp((s) => s.layers);
   const coverageOf = useApp((s) => s.coverageOf);
   const colour = useApp((s) => s.colour);
+  const [ask, setAsk] = useState(false);
   const on = datasetOn(d, layers, colour);
   const open = coverageOf === d.id;
   const shownParts = partsIn(d, mode).filter((p) => !!p.layer && layers[p.layer]);
@@ -911,10 +952,22 @@ function DatasetRow({ d }: { d: Dataset }) {
           </span>
           <span className={`shrink-0 text-[10px] text-slate-500 transition-transform ${open ? "rotate-90" : ""}`}>›</span>
         </button>
-        <button onClick={() => toggleDataset(d)} aria-pressed={on} title={on ? `Hide ${d.name.toLowerCase()}` : `Show ${d.name.toLowerCase()}`}>
+        <button
+          onClick={() => {
+            // a variable joining others: on this map, or a map of its own beside them
+            const mine = measuresOf(d.id);
+            const before = mapVariables({ layers, mapVars: useApp.getState().mapVars });
+            toggleDataset(d);
+            if (!on && mine.length && before.length) setAsk(true);
+            else setAsk(false);
+          }}
+          aria-pressed={on}
+          title={on ? `Hide ${d.name.toLowerCase()}` : `Show ${d.name.toLowerCase()}`}
+        >
           <Toggle on={on} />
         </button>
       </div>
+      {ask && on && <AddChoice d={d} onDone={() => setAsk(false)} />}
       {open && <DatasetDetails d={d} />}
       {carried && <SummaryKey d={d} files={files} />}
       {on && d.colour && (

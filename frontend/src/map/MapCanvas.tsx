@@ -31,7 +31,7 @@ import { memo } from "./memo";
 import { SUMMARY_FILES, summaryOf } from "./summaryLayers";
 import { DATASET_BY_ID, inAreaCountry } from "../app/datasets";
 import { shapeOf } from "../app/areaShape";
-import { hexDatasets, mapVariables } from "./hexLayers";
+import { hexDatasets, mapVariables, useHexInfo } from "./hexLayers";
 import { specBounds } from "../app/store";
 import { ATLAS_LAYERS, type AtlasFile, type AtlasId } from "../lib/atlas";
 import type { ConstraintsFile, ProtectedFile } from "../lib/constraints";
@@ -724,14 +724,23 @@ export default function MapCanvas() {
       if (day && s.layers.night) nightAt(day, Math.min(day.slots - 1, dayK + 1));
       const c = map.getCenter();
       // country scale: the mapped variables' datasets as hexagons, not as points (map/hexLayers.ts)
-      const hexing = hexDatasets({ zoom, layers: s.layers, mapVars: s.mapVars });
-      const frameLayers = hexing.size
-        ? { ...s.layers, ...Object.fromEntries([...hexing].flatMap((id) => (DATASET_BY_ID.get(id)?.parts ?? []).flatMap((p) => (p.layer ? [[p.layer, false]] : [])))) }
+      const { hex: hexing, later } = hexDatasets({ zoom, layers: s.layers, mapVars: s.mapVars });
+      const off = [...hexing, ...later];
+      const frameLayers = off.length
+        ? { ...s.layers, ...Object.fromEntries(off.flatMap((id) => (DATASET_BY_ID.get(id)?.parts ?? []).flatMap((p) => (p.layer ? [[p.layer, false]] : [])))) }
         : s.layers;
+      // the key says which datasets wait for city scale
+      const laterIds = [...later].sort();
+      if (useHexInfo.getState().later.join() !== laterIds.join()) useHexInfo.setState({ later: laterIds });
       const frame: Frame = {
         mode: s.mode,
         layers: frameLayers,
         mapVars: hexing.size ? mapVariables(s).map((m) => m.id) : [],
+        mapStyles: s.mapStyles,
+        bounds: (() => {
+          const b = map.getBounds();
+          return [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] as [number, number, number, number];
+        })(),
         colour: s.colour,
         plantStatus: s.plantStatus,
         plantStyle: s.plantStyle,
