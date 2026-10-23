@@ -51,7 +51,8 @@ jobs:
           mkdir -p store/eu/day
 
       - name: Build missing days
-        timeout-minutes: 35
+        # about 34 min on 2026-10-21 (ENTSO-E slower than in early October)
+        timeout-minutes: 60
         continue-on-error: true
         env:
           ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}

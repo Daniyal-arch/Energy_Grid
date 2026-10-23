@@ -272,8 +272,24 @@ def write_weeks(day_dir: Path, days: int = 7) -> int:
     return len(isos) + 1
 
 
+# a day with fewer ENTSO-E countries is a failed fetch, not a day (2026-10-21 was written with
+# Great Britain alone, from Elexon, and became the replay's newest day)
+MIN_COUNTRIES = 20
+
+
+def entsoe_countries(payload: dict) -> int:
+    return sum(1 for c in payload.get("countries", {}) if c != "GB")
+
+
+def is_complete(path: Path) -> bool:
+    try:
+        return entsoe_countries(json.loads(path.read_text(encoding="utf-8"))) >= MIN_COUNTRIES
+    except (OSError, ValueError):
+        return False
+
+
 def write_index(out: Path) -> list[str]:
-    days = sorted(p.stem for p in out.glob("20*.json"))
+    days = sorted(p.stem for p in out.glob("20*.json") if is_complete(p))
     (out / "index.json").write_text(json.dumps({"days": days}), encoding="utf-8")
     return days
 
@@ -304,7 +320,8 @@ def main() -> None:
     if args.recent:
         yesterday = datetime.now(TZ).date() - timedelta(days=1)
         wanted = [yesterday - timedelta(days=i) for i in range(args.recent)]
-        have = {p.stem for p in args.out.glob("20*.json")}
+        # an incomplete file counts as missing: it is built again
+        have = {p.stem for p in args.out.glob("20*.json") if is_complete(p)}
         todo = sorted(
             d for i, d in enumerate(wanted) if i < args.refresh or d.isoformat() not in have
         )
@@ -320,9 +337,12 @@ def main() -> None:
         raw = fetch_window(todo[0], todo[-1])
         for day in todo:
             payload = day_payload(day, raw)
-            if not payload["countries"] and not payload["prices"]:
+            if entsoe_countries(payload) < MIN_COUNTRIES:
                 # a failed fetch must not replace a good day already in the archive
-                print(f"{day}: no data fetched, keeping the existing file", flush=True)
+                print(
+                    f"{day}: {entsoe_countries(payload)} countries from ENTSO-E, keeping the existing file",
+                    flush=True,
+                )
                 continue
             path = args.out / f"{day.isoformat()}.json"
             path.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
