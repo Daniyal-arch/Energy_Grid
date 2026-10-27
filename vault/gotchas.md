@@ -30,3 +30,5 @@ updated: 2026-10-27
 - **Range requests in Edge** need `cache: "no-store"` (else `ERR_CACHE_OPERATION_NOT_SUPPORTED`).
 - **GitHub CLI** is not installed on the laptop; Actions are dispatched through the REST API with
   the git credential token.
+- **Backend**: DuckDB 2.0's lockdown needs the CA bundle allowed; catalogue YAML values with
+  ": " must be quoted; see [[backend-service]] and [[agent-tools]].

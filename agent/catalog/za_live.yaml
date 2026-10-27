@@ -6,4 +6,4 @@ map_file: frontend/public/data/eu/za.json ("Live grids"; every snapshot)
 examples:
   - q: is there load-shedding now
     call: GET https://loadshedding.eskom.co.za/LoadShedding/GetStatus
-    answer: "1" -> stage 0, none (2026-10-19)
+    answer: "\"1\" -> stage 0, none (2026-10-19)"

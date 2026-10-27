@@ -1,0 +1,62 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EcrLogin",
+      "Effect": "Allow",
+      "Action": "ecr:GetAuthorizationToken",
+      "Resource": "*"
+    },
+    {
+      "Sid": "EcrRepository",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:CreateRepository", "ecr:DescribeRepositories", "ecr:PutLifecyclePolicy",
+        "ecr:BatchCheckLayerAvailability", "ecr:InitiateLayerUpload", "ecr:UploadLayerPart",
+        "ecr:CompleteLayerUpload", "ecr:PutImage", "ecr:BatchGetImage", "ecr:GetDownloadUrlForLayer",
+        "ecr:SetRepositoryPolicy", "ecr:GetRepositoryPolicy"
+      ],
+      "Resource": "arn:aws:ecr:<REGION>:<ACCOUNT_ID>:repository/infraatlas-backend"
+    },
+    {
+      "Sid": "Stack",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:CreateChangeSet", "cloudformation:ExecuteChangeSet", "cloudformation:DescribeChangeSet",
+        "cloudformation:DeleteChangeSet", "cloudformation:DescribeStacks", "cloudformation:DescribeStackEvents",
+        "cloudformation:GetTemplateSummary", "cloudformation:ListStackResources"
+      ],
+      "Resource": [
+        "arn:aws:cloudformation:<REGION>:<ACCOUNT_ID>:stack/infraatlas-backend/*",
+        "arn:aws:cloudformation:<REGION>:aws:transform/Serverless-2016-10-31"
+      ]
+    },
+    {
+      "Sid": "StackResources",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:*Function*", "lambda:GetFunctionUrlConfig", "lambda:CreateFunctionUrlConfig",
+        "lambda:UpdateFunctionUrlConfig", "lambda:DeleteFunctionUrlConfig", "lambda:AddPermission",
+        "lambda:RemovePermission", "lambda:PutFunctionConcurrency", "lambda:DeleteFunctionConcurrency",
+        "lambda:TagResource", "lambda:ListTags",
+        "dynamodb:CreateTable", "dynamodb:DescribeTable", "dynamodb:UpdateTable", "dynamodb:UpdateTimeToLive",
+        "dynamodb:DescribeTimeToLive", "dynamodb:TagResource",
+        "logs:CreateLogGroup", "logs:PutRetentionPolicy", "logs:DescribeLogGroups", "logs:TagResource",
+        "cloudwatch:PutDashboard", "cloudwatch:GetDashboard", "cloudwatch:PutMetricAlarm",
+        "cloudwatch:DescribeAlarms", "cloudwatch:DeleteAlarms", "cloudwatch:TagResource",
+        "sns:CreateTopic", "sns:GetTopicAttributes", "sns:Subscribe", "sns:TagResource"
+      ],
+      "Resource": "*",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "<REGION>"}}
+    },
+    {
+      "Sid": "FunctionRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole", "iam:GetRole", "iam:PutRolePolicy", "iam:GetRolePolicy", "iam:DeleteRolePolicy",
+        "iam:AttachRolePolicy", "iam:DetachRolePolicy", "iam:PassRole", "iam:TagRole"
+      ],
+      "Resource": "arn:aws:iam::<ACCOUNT_ID>:role/infraatlas-backend-*"
+    }
+  ]
+}

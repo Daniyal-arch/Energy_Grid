@@ -4,7 +4,7 @@ licence: European Commission re-use policy (Decision 2011/833/EU)
 map_file: frontend/public/data/eu/hydrogen.json (layer "Hydrogen projects"; card)
 tables:
   projects:
-    grain: one row per project, every column as published (Dec 2025 file: operating and under construction)
+    grain: "one row per project, every column as published (Dec 2025 file: operating and under construction)"
     keys: {Name, Country, "Project stage"}
     measures: {"Production capacity MW/MWel": {unit: MW}, "Consumption capacity (tonnes/year)": {unit: t/year}}
     examples:

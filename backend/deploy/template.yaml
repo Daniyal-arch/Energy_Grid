@@ -1,0 +1,202 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  InfraAtlas backend (brief 25): the data service and the agent on AWS Lambda from a container
+  image, behind the Lambda Web Adapter in response-streaming mode, with a Function URL
+  (RESPONSE_STREAM), DynamoDB counters, SSM secrets, CloudWatch logs, dashboard and alarms.
+
+Parameters:
+  ImageUri:
+    Type: String
+    Description: ECR image URI with tag (pushed by .github/workflows/backend.yml)
+  GitSha:
+    Type: String
+    Default: dev
+  SsmPrefix:
+    Type: String
+    Default: /infraatlas/
+  SiteOrigins:
+    Type: String
+    Default: https://energy-grid.infraatlas.workers.dev,http://localhost:5173
+    Description: Comma-separated browser origins allowed by CORS (the site's origin)
+  AgentModel:
+    Type: String
+    Default: anthropic:claude-opus-5-5
+  AgentModelFast:
+    Type: String
+    Default: anthropic:claude-haiku-5-5
+  AgentModelsAllowed:
+    Type: String
+    Default: claude-opus-5-5,claude-haiku-5-5
+  DailySpendCapUsd:
+    Type: Number
+    Default: 20
+  RequireProxy:
+    Type: String
+    Default: "false"
+    AllowedValues: ["true", "false"]
+  AlarmEmail:
+    Type: String
+    Default: ""
+
+Conditions:
+  HasAlarmEmail: !Not [!Equals [!Ref AlarmEmail, ""]]
+
+Resources:
+  Counters:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - {AttributeName: pk, AttributeType: S}
+      KeySchema:
+        - {AttributeName: pk, KeyType: HASH}
+      TimeToLiveSpecification: {AttributeName: ttl, Enabled: true}
+
+  Logs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/infraatlas-backend
+      RetentionInDays: 30
+
+  Backend:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: infraatlas-backend
+      PackageType: Image
+      ImageUri: !Ref ImageUri
+      Architectures: [arm64]
+      MemorySize: 3008
+      EphemeralStorage: {Size: 2048}
+      Timeout: 300
+      ReservedConcurrentExecutions: 10
+      LoggingConfig: {LogGroup: !Ref Logs, LogFormat: Text}
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: RESPONSE_STREAM
+      Environment:
+        Variables:
+          ENVIRONMENT: production
+          GIT_SHA: !Ref GitSha
+          SSM_PREFIX: !Ref SsmPrefix
+          DYNAMODB_TABLE: !Ref Counters
+          CORS_ORIGINS: !Ref SiteOrigins
+          AGENT_MODEL: !Ref AgentModel
+          AGENT_MODEL_FAST: !Ref AgentModelFast
+          AGENT_MODELS_ALLOWED: !Ref AgentModelsAllowed
+          DAILY_SPEND_CAP_USD: !Ref DailySpendCapUsd
+          REQUIRE_PROXY: !Ref RequireProxy
+      Policies:
+        - Statement:
+            - Sid: ReadSecrets
+              Effect: Allow
+              Action: [ssm:GetParametersByPath, ssm:GetParameters, ssm:GetParameter]
+              Resource:
+                - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/infraatlas
+                - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/infraatlas/*
+            - Sid: DecryptSecrets
+              Effect: Allow
+              Action: kms:Decrypt
+              Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
+              Condition:
+                StringEquals: {kms:ViaService: !Sub "ssm.${AWS::Region}.amazonaws.com"}
+            - Sid: Counters
+              Effect: Allow
+              Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:UpdateItem]
+              Resource: !GetAtt Counters.Arn
+
+  AlarmTopic:
+    Type: AWS::SNS::Topic
+
+  AlarmEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasAlarmEmail
+    Properties: {TopicArn: !Ref AlarmTopic, Protocol: email, Endpoint: !Ref AlarmEmail}
+
+  FunctionErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: The backend function fails (5 errors in 5 minutes)
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions: [{Name: FunctionName, Value: !Ref Backend}]
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 5
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+
+  AgentErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Tool errors and refusals (10 in 15 minutes)
+      Namespace: InfraAtlas/Agent
+      MetricName: Errors
+      Statistic: Sum
+      Period: 900
+      EvaluationPeriods: 1
+      Threshold: 10
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+
+  SpendAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Model spend reaches the daily cap (the agent then refuses new questions)
+      Namespace: InfraAtlas/Agent
+      MetricName: CostUSD
+      Statistic: Sum
+      Period: 86400
+      EvaluationPeriods: 1
+      Threshold: !Ref DailySpendCapUsd
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+
+  LatencyAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Answers slower than 60 s (p90 over 15 minutes)
+      Namespace: InfraAtlas/Agent
+      MetricName: LatencyMs
+      ExtendedStatistic: p90
+      Period: 900
+      EvaluationPeriods: 1
+      Threshold: 60000
+      ComparisonOperator: GreaterThanThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref AlarmTopic]
+
+  Dashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: infraatlas-backend
+      DashboardBody: !Sub |
+        {"widgets": [
+          {"type": "metric", "x": 0, "y": 0, "width": 12, "height": 6, "properties": {
+            "title": "Function: invocations, errors, throttles", "region": "${AWS::Region}", "stat": "Sum", "period": 300,
+            "metrics": [["AWS/Lambda", "Invocations", "FunctionName", "${Backend}"], [".", "Errors", ".", "."], [".", "Throttles", ".", "."]]}},
+          {"type": "metric", "x": 12, "y": 0, "width": 12, "height": 6, "properties": {
+            "title": "Answer latency (ms)", "region": "${AWS::Region}", "period": 300,
+            "metrics": [["InfraAtlas/Agent", "LatencyMs", {"stat": "p50"}], ["...", {"stat": "p90"}]]}},
+          {"type": "metric", "x": 0, "y": 6, "width": 12, "height": 6, "properties": {
+            "title": "Cost (USD) per model", "region": "${AWS::Region}", "stat": "Sum", "period": 3600,
+            "metrics": [[{"expression": "SEARCH('{InfraAtlas/Agent,Model} MetricName=\"CostUSD\"', 'Sum', 3600)", "id": "cost"}]]}},
+          {"type": "metric", "x": 12, "y": 6, "width": 12, "height": 6, "properties": {
+            "title": "Tokens: input, cached, output", "region": "${AWS::Region}", "stat": "Sum", "period": 3600,
+            "metrics": [["InfraAtlas/Agent", "InputTokens"], [".", "CachedTokens"], [".", "OutputTokens"]]}},
+          {"type": "metric", "x": 0, "y": 12, "width": 12, "height": 6, "properties": {
+            "title": "Tool calls, errors, ungrounded numbers", "region": "${AWS::Region}", "stat": "Sum", "period": 3600,
+            "metrics": [["InfraAtlas/Agent", "ToolCalls"], [".", "Errors"], [".", "Ungrounded"]]}}
+        ]}
+
+Outputs:
+  FunctionUrl:
+    Value: !GetAtt BackendUrl.FunctionUrl
+  FunctionName:
+    Value: !Ref Backend
+  CountersTable:
+    Value: !Ref Counters

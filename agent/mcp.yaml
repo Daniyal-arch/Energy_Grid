@@ -1,0 +1,10 @@
+# External MCP servers attached to the agent as extra tools (backend/mcp_server/client.py,
+# langchain-mcp-adapters). Empty by default. Each entry: a name and the connection; ${VARS} in
+# headers are read from the environment (SSM in Lambda). Their results are marked as external.
+servers: {}
+# servers:
+#   example:
+#     transport: streamable_http
+#     url: https://mcp.example.org/mcp
+#     headers:
+#       Authorization: "Bearer ${EXAMPLE_MCP_KEY}"

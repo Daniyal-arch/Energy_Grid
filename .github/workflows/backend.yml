@@ -1,0 +1,134 @@
+name: backend
+
+# The backend (brief 25): checks and the image on pull requests; on main the image goes to ECR,
+# SAM deploys the Lambda, a smoke test runs, and the Cloudflare Worker routes /api/* and /mcp.
+# Without the AWS role (secret AWS_DEPLOY_ROLE_ARN) the deploy job prints the setup and skips.
+
+on:
+  pull_request:
+    paths: ["backend/**", "agent/**", ".github/workflows/backend.yml"]
+  push:
+    branches: [main]
+    paths: ["backend/**", "agent/**", ".github/workflows/backend.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: backend}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: {version: "0.9.5"}
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run python scripts/gen_mapspec.py --check
+      - run: uv run pytest -q
+
+  image:
+    needs: check
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the arm64 image
+        run: docker build -f backend/deploy/Dockerfile --build-arg GIT_SHA=${{ github.sha }} -t infraatlas-backend:${{ github.sha }} .
+      - name: Smoke test the image (fake model, no keys)
+        run: |
+          docker run -d --name api -p 8080:8080 -e AGENT_MODEL=fake -e AGENT_MODEL_FAST=fake -e LAKE_DB= infraatlas-backend:${{ github.sha }}
+          for i in $(seq 1 30); do curl -sf localhost:8080/api/health && break; sleep 1; done
+          curl -sN -X POST localhost:8080/api/ask -H 'content-type: application/json' \
+            -d '{"question": "Show the largest power plants in Germany on a map"}' | tee ask.txt | grep -c '^event:'
+          grep -q '^event: map' ask.txt && grep -q '^event: done' ask.txt
+          docker stats --no-stream api
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: check
+    runs-on: ubuntu-24.04-arm
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION || 'eu-central-1' }}
+      ROLE: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+    steps:
+      - name: Setup needed?
+        id: gate
+        run: |
+          if [ -z "$ROLE" ]; then
+            cat <<'TXT' >> "$GITHUB_STEP_SUMMARY"
+          ### Backend deploy skipped: AWS is not set up
+          1. AWS IAM: add the identity provider token.actions.githubusercontent.com (audience sts.amazonaws.com).
+          2. Create a role with the trust policy backend/deploy/iam/github-oidc-trust.json and the
+             permissions in backend/deploy/iam/deploy-policy.json (replace <ACCOUNT_ID> and <REGION>).
+          3. Repo secret AWS_DEPLOY_ROLE_ARN = the role's ARN; repo variable AWS_REGION (default eu-central-1).
+          4. SSM Parameter Store (SecureString) under /infraatlas/: anthropic_api_key, r2_account_id,
+             r2_access_key_id, r2_secret_access_key, langfuse_public_key, langfuse_secret_key,
+             langfuse_host, mcp_api_keys, admin_api_key, proxy_secret. See backend/README.md.
+          TXT
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.gate.outputs.skip != 'true'
+        uses: actions/checkout@v4
+      - if: steps.gate.outputs.skip != 'true'
+        uses: aws-actions/configure-aws-credentials@v4
+        with: {role-to-assume: "${{ secrets.AWS_DEPLOY_ROLE_ARN }}", aws-region: "${{ env.AWS_REGION }}"}
+      - if: steps.gate.outputs.skip != 'true'
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - if: steps.gate.outputs.skip != 'true'
+        name: Build and push the image
+        id: push
+        run: |
+          aws ecr describe-repositories --repository-names infraatlas-backend >/dev/null 2>&1 || \
+            aws ecr create-repository --repository-name infraatlas-backend --image-scanning-configuration scanOnPush=true >/dev/null
+          IMAGE=${{ steps.ecr.outputs.registry }}/infraatlas-backend:${{ github.sha }}
+          docker build -f backend/deploy/Dockerfile --build-arg GIT_SHA=${{ github.sha }} -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+      - if: steps.gate.outputs.skip != 'true'
+        uses: aws-actions/setup-sam@v2
+        with: {use-installer: true}
+      - if: steps.gate.outputs.skip != 'true'
+        name: SAM deploy
+        working-directory: backend/deploy
+        run: |
+          sam deploy --config-file samconfig.toml --region "$AWS_REGION" --no-progressbar \
+            --image-repository "${{ steps.ecr.outputs.registry }}/infraatlas-backend" \
+            --parameter-overrides ImageUri=${{ steps.push.outputs.image }} GitSha=${{ github.sha }} \
+              SiteOrigins="${{ vars.SITE_ORIGINS || 'https://energy-grid.infraatlas.workers.dev,http://localhost:5173' }}" \
+              RequireProxy=${{ vars.REQUIRE_PROXY || 'false' }}
+          URL=$(aws cloudformation describe-stacks --stack-name infraatlas-backend \
+            --query "Stacks[0].Outputs[?OutputKey=='FunctionUrl'].OutputValue" --output text)
+          echo "FUNCTION_URL=${URL%/}" >> "$GITHUB_ENV"
+      - if: steps.gate.outputs.skip != 'true'
+        name: Smoke test (health and one cheap question on the fast model)
+        env: {PROXY_SECRET: "${{ secrets.PROXY_SECRET }}"}
+        run: |
+          H="x-atlas-proxy: ${PROXY_SECRET}"
+          curl -sf -H "$H" "$FUNCTION_URL/api/health"
+          curl -sN -m 120 -X POST "$FUNCTION_URL/api/ask" -H "$H" -H 'content-type: application/json' \
+            -d '{"question": "What was the average day-ahead price in NL over the newest 12 months?", "model": "claude-haiku-5-5"}' \
+            | tee ask.txt | tail -3
+          grep -q '^event: done' ask.txt
+      - if: steps.gate.outputs.skip != 'true'
+        name: Cloudflare Worker (same origin for /api/* and /mcp)
+        continue-on-error: true  # blocked until the token has Workers Scripts edit rights
+        working-directory: backend/deploy/worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PROXY_SECRET: ${{ secrets.PROXY_SECRET }}
+          SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
+        run: |
+          ROUTES=""
+          if [ -n "$SITE_DOMAIN" ]; then ROUTES="--route ${SITE_DOMAIN}/api/* --route ${SITE_DOMAIN}/mcp*"; fi
+          npx --yes wrangler@4 deploy $ROUTES
+          echo "$FUNCTION_URL" | npx --yes wrangler@4 secret put FUNCTION_URL
+          echo "$PROXY_SECRET" | npx --yes wrangler@4 secret put PROXY_SECRET

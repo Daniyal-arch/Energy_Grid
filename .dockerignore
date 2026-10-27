@@ -1,0 +1,8 @@
+# the backend image (backend/deploy/Dockerfile) copies only what it names; keep the context small
+**/.venv
+**/node_modules
+**/__pycache__
+frontend/dist
+data
+recordings
+.git

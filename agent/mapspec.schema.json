@@ -1,0 +1,672 @@
+{
+  "$defs": {
+    "AppState": {
+      "additionalProperties": false,
+      "description": "The app's own state: layers switched on (store.ts LayerId), colouring, mode, selection.",
+      "properties": {
+        "layers": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Layers",
+          "type": "array"
+        },
+        "colour": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "a dataset id that colours the countries, or 'none'",
+          "title": "Colour"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "live",
+                "day",
+                "year"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mode"
+        },
+        "selection": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "a country (ISO alpha-2) or place code",
+          "title": "Selection"
+        }
+      },
+      "title": "AppState",
+      "type": "object"
+    },
+    "Camera": {
+      "additionalProperties": false,
+      "description": "A preset, or a centre and zoom, or a bounding box [west, south, east, north].",
+      "properties": {
+        "preset": {
+          "anyOf": [
+            {
+              "enum": [
+                "europe",
+                "world",
+                "us"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Preset"
+        },
+        "center": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "[lon, lat]",
+          "title": "Center"
+        },
+        "zoom": {
+          "anyOf": [
+            {
+              "maximum": 14,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Zoom"
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "maxItems": 4,
+              "minItems": 4,
+              "prefixItems": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bbox"
+        }
+      },
+      "title": "Camera",
+      "type": "object"
+    },
+    "ChartAxis": {
+      "additionalProperties": false,
+      "properties": {
+        "column": {
+          "title": "Column",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        }
+      },
+      "required": [
+        "column"
+      ],
+      "title": "ChartAxis",
+      "type": "object"
+    },
+    "ChartSeries": {
+      "additionalProperties": false,
+      "properties": {
+        "column": {
+          "title": "Column",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 60,
+          "title": "Label",
+          "type": "string"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "column",
+        "label",
+        "unit"
+      ],
+      "title": "ChartSeries",
+      "type": "object"
+    },
+    "ChartSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "line",
+            "bar",
+            "stacked"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 120,
+          "title": "Title",
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/$defs/DataRef"
+        },
+        "x": {
+          "$ref": "#/$defs/ChartAxis"
+        },
+        "series": {
+          "items": {
+            "$ref": "#/$defs/ChartSeries"
+          },
+          "maxItems": 2,
+          "minItems": 1,
+          "title": "Series",
+          "type": "array"
+        },
+        "source": {
+          "maxLength": 300,
+          "minLength": 3,
+          "title": "Source",
+          "type": "string"
+        },
+        "how": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "How"
+        }
+      },
+      "required": [
+        "kind",
+        "title",
+        "data",
+        "x",
+        "series",
+        "source"
+      ],
+      "title": "ChartSpec",
+      "type": "object"
+    },
+    "DataRef": {
+      "additionalProperties": false,
+      "description": "Where the overlay's rows come from and how they are placed.",
+      "properties": {
+        "result_id": {
+          "anyOf": [
+            {
+              "pattern": "^r_[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result Id"
+        },
+        "inline": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "object"
+              },
+              "maxItems": 5000,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Inline"
+        },
+        "key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "column holding the shape key (choropleth)",
+          "title": "Key"
+        },
+        "shapes": {
+          "anyOf": [
+            {
+              "enum": [
+                "countries",
+                "us_states",
+                "us_counties",
+                "nuts0",
+                "nuts1",
+                "nuts2",
+                "nuts3",
+                "bidding_zones",
+                "admin1"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shapes"
+        },
+        "lon": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lon"
+        },
+        "lat": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lat"
+        },
+        "from_lon": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "From Lon"
+        },
+        "from_lat": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "From Lat"
+        },
+        "to_lon": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "To Lon"
+        },
+        "to_lat": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "To Lat"
+        }
+      },
+      "title": "DataRef",
+      "type": "object"
+    },
+    "Legend": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "maxLength": 80,
+          "title": "Title",
+          "type": "string"
+        },
+        "how": {
+          "description": "how the value was computed, e.g. 'sum of units commissioned in 2025'",
+          "maxLength": 200,
+          "title": "How",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "how"
+      ],
+      "title": "Legend",
+      "type": "object"
+    },
+    "MapSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "maxLength": 120,
+          "title": "Title",
+          "type": "string"
+        },
+        "camera": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Camera"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "app": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AppState"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "overlays": {
+          "items": {
+            "$ref": "#/$defs/Overlay"
+          },
+          "maxItems": 4,
+          "title": "Overlays",
+          "type": "array"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "title": "MapSpec",
+      "type": "object"
+    },
+    "Overlay": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-z0-9_]{1,40}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "points",
+            "lines",
+            "arcs",
+            "choropleth",
+            "columns",
+            "labels"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/$defs/DataRef"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ValueEncoding"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "size": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SizeEncoding"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "column with the label text (labels)",
+          "title": "Label"
+        },
+        "legend": {
+          "$ref": "#/$defs/Legend"
+        },
+        "tooltip": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Tooltip",
+          "type": "array"
+        },
+        "source": {
+          "maxLength": 300,
+          "minLength": 3,
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "data",
+        "legend",
+        "source"
+      ],
+      "title": "Overlay",
+      "type": "object"
+    },
+    "SizeEncoding": {
+      "additionalProperties": false,
+      "properties": {
+        "column": {
+          "title": "Column",
+          "type": "string"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "max_px": {
+          "default": 18,
+          "maximum": 40,
+          "minimum": 2,
+          "title": "Max Px",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "column",
+        "unit"
+      ],
+      "title": "SizeEncoding",
+      "type": "object"
+    },
+    "ValueEncoding": {
+      "additionalProperties": false,
+      "properties": {
+        "column": {
+          "title": "Column",
+          "type": "string"
+        },
+        "unit": {
+          "title": "Unit",
+          "type": "string"
+        },
+        "scale": {
+          "default": "sequential",
+          "enum": [
+            "sequential",
+            "diverging",
+            "categorical"
+          ],
+          "title": "Scale",
+          "type": "string"
+        },
+        "palette": {
+          "default": "neutral",
+          "enum": [
+            "share",
+            "price",
+            "price_glow",
+            "offline",
+            "solar",
+            "wind",
+            "fuel",
+            "plant_type",
+            "voltage",
+            "neutral"
+          ],
+          "title": "Palette",
+          "type": "string"
+        }
+      },
+      "required": [
+        "column",
+        "unit"
+      ],
+      "title": "ValueEncoding",
+      "type": "object"
+    }
+  },
+  "title": "InfraAtlas MapSpec and ChartSpec",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Generated from backend/agent/mapspec.py; do not edit by hand."
+}

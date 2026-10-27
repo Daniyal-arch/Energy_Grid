@@ -1,7 +1,7 @@
 dataset: registers
 title: Every generating unit from the national registers (UK REPD and DUKES, Denmark and Sweden wind turbines, Ireland wind farms, Portugal, France, Czechia, Belgium)
 licence: per table (OGL v3.0, CC BY 4.0, Licence Ouverte, the operators' open data terms)
-map_file: frontend/public/data/eu/registers/<cc>.json (layers "UK: every project", "Denmark: every wind turbine", "Sweden: every wind turbine", "Ireland: wind farms")
+map_file: "frontend/public/data/eu/registers/<cc>.json (layers \"UK: every project\", \"Denmark: every wind turbine\", \"Sweden: every wind turbine\", \"Ireland: wind farms\")"
 tables:
   gb: {grain: one row per REPD project or DUKES station, keys: {id: REPD Ref ID or DESNZ site code}, measures: {mw: {unit: MW, how: installed capacity as published}}, dims: [status, group, register, country]}
   dk: {grain: one row per wind turbine (GSRN), measures: {mw: {unit: MW, how: kW / 1000}}, dims: [connected, decommissioned, offshore]}
