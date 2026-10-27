@@ -56,3 +56,34 @@ def test_every_row_has_a_known_class_and_operator() -> None:
         assert r[f["class"]] in (None, *h.CLASSES) and r[f["class_load"]] in (None, *h.CLASSES)
         assert 0 <= r[f["op"]] < len(d["operators"])
         assert r[f["kind"]] in ("node", "area")
+
+
+# ---------------------------------------------------------------- brief-23 operators
+
+import build_connect_h23 as h23  # noqa: E402
+
+
+def test_mvm_rows_read_both_printed_layouts() -> None:
+    demasz = [
+        "DÉMÁSZ Baja BAJA 40 40 132 kV 28.60 11.40 31.58 8.42",
+        "Hálózati Állomás header line",
+    ]
+    emasz = ["BABR Bükkábrány 10.5 10.5 25 25 14.5 14.5", "(MW)"]
+    assert h23.mvm_rows(demasz, "demasz") == [
+        {"name": "Baja", "id": "BAJA", "kv": 132.0, "mw_load": 11.4}
+    ]
+    assert h23.mvm_rows(emasz, "emasz") == [{"name": "Bükkábrány", "id": "BABR", "mw_load": 14.5}]
+
+
+def test_operator_classes_map_one_to_one() -> None:
+    assert set(h23.HOPS_CLASS.values()) <= set(h.CLASSES)
+    assert h23.HOPS_CLASS["/"] == "none" and h23.HOPS_CLASS["A"] == "limited"
+    assert h23.RAG == {"green": "available", "amber": "limited", "red": "none"}
+    assert set(h23.HEDNO_CLASS.values()) == {"available", "limited", "none"}
+    assert h23.mw_class(0.0) == "none" and h23.mw_class(None) is None
+
+
+def test_extra_files_join_the_harmonised_rows() -> None:
+    d = h.build(osm=False)
+    ops = {o["operator"] for o in d["operators"]}
+    assert {"50Hertz", "HOPS", "Elenia", "HEDNO"} <= ops
