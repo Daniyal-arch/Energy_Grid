@@ -103,7 +103,7 @@ import { mastrLayers } from "./mastrLayers";
 import { siteLayers } from "./siteLayers";
 import { inside, makeShape } from "../lib/area";
 import { offshoreLayers } from "./offshoreLayers";
-import { areaLayers, clipToArea } from "./areaLayers";
+import { areaLayers, clipToArea, coverageLayers } from "./areaLayers";
 import { inAreaCountry } from "../app/datasets";
 import { summaryFill, summaryLabels } from "./summaryLayers";
 import { hexLayers } from "./hexLayers";
@@ -358,7 +358,7 @@ export function buildLayers(fr: Frame): Layer[] {
   }
   // a dataset's per-country figure at continent scale (map/summaryLayers.ts); the datasets drawn in a
   // style of their own (map/hexLayers.ts, map/styleLayers.ts)
-  layers.push(...summaryFill(fr));
+  layers.push(...summaryFill(fr), ...coverageLayers(fr));
   layers.push(...hexLayers(fr), ...styleLayers(fr));
 
   // the night shadow (24 h mode)

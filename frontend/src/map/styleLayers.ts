@@ -86,12 +86,16 @@ export interface StyleInfo {
   count: number;
   /** the largest types in view and their colours (records) */
   types: [string, RGB][];
+  /** records with a position in the area (records) */
+  total: number;
+  /** why nothing is drawn, when nothing is */
+  note?: string;
 }
 /** Per map (`scope`) and dataset: what its key says. Published when it changes. */
 export const useStyleInfo = create<Record<string, StyleInfo>>(() => ({}));
 const publish = (key: string, info: StyleInfo) => {
   const was = useStyleInfo.getState()[key];
-  if (was && was.style === info.style && was.max === info.max && was.min === info.min && was.rKm === info.rKm && was.count === info.count && was.types.join() === info.types.join()) return;
+  if (was && was.style === info.style && was.max === info.max && was.min === info.min && was.rKm === info.rKm && was.count === info.count && was.types.join() === info.types.join() && was.total === info.total && was.note === info.note) return;
   useStyleInfo.setState({ [key]: info });
 };
 /** The largest value of many records (no spread: a long array would overflow the call stack). */
@@ -106,6 +110,9 @@ const round2 = (v: number) => {
   const p = 10 ** (Math.floor(Math.log10(v)) - 1);
   return Math.round(v / p) * p;
 };
+
+/** Metres per screen pixel at the centre of the view (MapLibre's 512-pixel tiles). */
+const metresPerPixel = (fr: Frame) => (40_075_016.686 * Math.cos((fr.centre[1] * Math.PI) / 180)) / (512 * 2 ** fr.zoom);
 
 function areaShape(fr: Frame): AreaShape | null {
   const shape = shapeOf(fr.area, fr.drawn, fr.files.world as WorldFile | undefined, fr.files.countries as CountriesFile | undefined);
@@ -145,7 +152,7 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
       .slice(0, 6)
       .map(([t]) => [t, typeColour(m, t)] as [string, RGB]);
   });
-  publish(`${fr.scope}:${dataset}`, { style: st, max, min: 0, rKm, count: seen.length, types });
+  publish(`${fr.scope}:${dataset}`, { style: st, max, min: 0, rKm, count: seen.length, types, total: pts.length, note: pts.length ? undefined : "no record in the file has a position in this area" });
   const share = (p: Pt) => Math.sqrt(Math.min(1, Math.max(0, p[2]) / max));
   const colour = (p: Pt): RGB => typeColour(m, p[3]);
   const id = `st-${dataset}`;
@@ -171,8 +178,10 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
         parameters: ON_TOP,
       }),
     ];
-  // 3D: height by value (square root of the share of the largest in view), a few hexagons tall
-  const tall = rKm * 1000 * 8;
+  // 3D: height by value (square root of the share of the largest in view); the tallest about 90
+  // pixels and the bars about 5 pixels wide at every zoom, so a small map stays readable
+  const mpp = metresPerPixel(fr);
+  const tall = 90 * mpp;
   if (st === "bars")
     return [
       new ColumnLayer<Pt>({
@@ -180,11 +189,11 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
         data: sorted,
         getPosition: (p) => [p[0], p[1]],
         diskResolution: 10,
-        radius: rKm * 1000 * 0.22,
+        radius: 2.5 * mpp,
         extruded: true,
-        getElevation: (p) => Math.max(rKm * 40, share(p) * tall),
+        getElevation: (p) => Math.max(2 * mpp, share(p) * tall),
         getFillColor: (p) => [...colour(p), 235],
-        updateTriggers: { getElevation: [max, rKm] },
+        updateTriggers: { getElevation: [max, tall] },
         pickable: true,
         autoHighlight: true,
         highlightColor: [255, 255, 255, 70],
@@ -220,7 +229,7 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
             getColor: (p) => [...colour(p), alpha],
             getWidth: (p) => 1.5 + 3.5 * share(p),
             widthUnits: "pixels",
-            updateTriggers: { getSourcePosition: [max, rKm], getTargetPosition: [max, rKm], getWidth: [max] },
+            updateTriggers: { getSourcePosition: [max, tall], getTargetPosition: [max, tall], getWidth: [max] },
             pickable: i === 0,
             parameters: ON_TOP,
           }),
@@ -233,14 +242,14 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
 // ------------------------------------------------------------------ continuous data
 
 /** Raster cells averaged into hexagons: [hexagons, the mean's range in view]. */
-function rasterHexes(fr: Frame, r: RasterMeasure, shape: AreaShape | null): { hexes: Hex[]; rKm: number; min: number; max: number; step: number } | null {
+function rasterHexes(fr: Frame, r: RasterMeasure, shape: AreaShape | null): { hexes: Hex[]; rKm: number; min: number; max: number; step: number } | "loading" | "failed" | null {
   const [bw, bs, be, bn] = fr.bounds;
   const box: [number, number, number, number] = shape
     ? [Math.max(bw, shape.bbox[0]), Math.max(bs, shape.bbox[1]), Math.min(be, shape.bbox[2]), Math.min(bn, shape.bbox[3])]
     : [bw, bs, be, bn];
   if (box[2] <= box[0] || box[3] <= box[1]) return null;
   const cells = rasterCells(r, fr.files, box);
-  if (!cells) return null;
+  if (typeof cells === "string") return cells;
   // a hexagon holds a few of the cells read
   const rKm = Math.max(hexKm(fr.zoom), cells.cell * 111 * 0.9);
   const lat0 = Math.round(fr.centre[1] / 5) * 5;
@@ -276,10 +285,12 @@ function rasterLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
   const r = RASTER_BY_DATASET.get(dataset);
   if (!r) return [];
   const got = rasterHexes(fr, r, shape);
-  if (!got) return [];
+  if (got === "failed") publish(`${fr.scope}:${dataset}`, { style: st, max: 0, min: 0, rKm: 0, count: 0, types: [], total: 0, note: "the grid could not be read just now; trying again" });
+  if (!got || typeof got === "string") return [];
   const { hexes, rKm, min, max } = got;
-  publish(`${fr.scope}:${dataset}`, { style: st, max, min, rKm, count: hexes.length, types: [] });
+  publish(`${fr.scope}:${dataset}`, { style: st, max, min, rKm, count: hexes.length, types: [], total: hexes.length });
   const t = (h: Hex) => (max > min ? (h.v - min) / (max - min) : 0.5);
+  const mpp = metresPerPixel(fr);
   if (st === "terrain")
     return [
       new ColumnLayer<Hex>({
@@ -289,9 +300,9 @@ function rasterLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
         diskResolution: 6,
         radius: rKm * 1000 * 0.95,
         extruded: true,
-        getElevation: (h) => (0.04 + t(h)) * rKm * 1000 * 5,
+        getElevation: (h) => (0.04 + t(h)) * 70 * mpp,
         getFillColor: (h) => [...ramp(r, t(h)), 245],
-        updateTriggers: { getElevation: [min, max], getFillColor: [min, max] },
+        updateTriggers: { getElevation: [min, max, mpp], getFillColor: [min, max] },
         pickable: true,
         autoHighlight: true,
         highlightColor: [255, 255, 255, 60],

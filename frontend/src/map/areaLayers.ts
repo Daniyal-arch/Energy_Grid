@@ -74,7 +74,8 @@ function veilOf(s: AreaShape, w: WorldFile, c: CountriesFile | undefined): { pol
   return out;
 }
 
-export function areaLayers(fr: Frame): Layer[] {
+/** Where a dataset has data: its countries tinted and outlined, under the data itself. */
+export function coverageLayers(fr: Frame): Layer[] {
   const w = fr.files.world as WorldFile | undefined;
   const out: Layer[] = [];
   const ds = fr.coverageOf ? DATASET_BY_ID.get(fr.coverageOf) : undefined;
@@ -83,7 +84,7 @@ export function areaLayers(fr: Frame): Layer[] {
     const shapes = memo("coverageShapes", [w, ds], () => shapesOf(w, codes));
     const c = rgbOf(ds.color);
     out.push(
-      new SolidPolygonLayer<{ polygon: Ring[] }>({ id: "coverage-fill", data: shapes, getPolygon: (d) => d.polygon, getFillColor: [...c, 46], parameters: ON_TOP }),
+      new SolidPolygonLayer<{ polygon: Ring[] }>({ id: "coverage-fill", data: shapes, getPolygon: (d) => d.polygon, getFillColor: [...c, 30], parameters: ON_TOP }),
       new PathLayer<Ring>({
         id: "coverage-outline",
         data: memo("coverageRings", [shapes], () => shapes.map((s) => s.polygon[0])),
@@ -95,6 +96,12 @@ export function areaLayers(fr: Frame): Layer[] {
       }),
     );
   }
+  return out;
+}
+
+export function areaLayers(fr: Frame): Layer[] {
+  const w = fr.files.world as WorldFile | undefined;
+  const out: Layer[] = [];
   // the area (not while a country is selected: the country panel outlines its own)
   const shape = fr.selection ? null : shapeOf(fr.area, fr.drawn, w, fr.files.countries as CountriesFile | undefined);
   if (shape) {

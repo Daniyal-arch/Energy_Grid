@@ -131,9 +131,28 @@ export interface GridSpec {
   cell: number;
 }
 
-/** Every cell of a row-major grid whose centre lies in the area: one range request per grid row
- *  the area spans, every `step`-th row and column when it spans more than `maxRows` rows (the
- *  result says which). Calls `each(view, offset, lon, lat)` per cell inside. */
+/** Up to this many bytes, the area's rows are read in one request (fewer requests: the bucket's
+ *  public address limits how many it answers at once). */
+const BLOCK_MAX = 4_000_000;
+
+/** One byte range, tried three times (a busy bucket answers 429 or 5xx now and then). */
+async function fetchRange(url: string, a: number, b: number): Promise<ArrayBuffer> {
+  for (let k = 0; ; k++) {
+    try {
+      const r = await fetch(url, { headers: { Range: `bytes=${a}-${b}` }, cache: "no-store" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return await r.arrayBuffer();
+    } catch (e) {
+      if (k >= 2) throw e;
+      await new Promise((done) => setTimeout(done, 500 * 3 ** k));
+    }
+  }
+}
+
+/** Every cell of a row-major grid whose centre lies in the area: the rows the area spans in one
+ *  range request when they are small enough, else one request per row; every `step`-th row and
+ *  column when it spans more than `maxRows` rows (the result says which). Calls
+ *  `each(view, offset, lon, lat)` per cell inside. */
 export async function readGrid(g: GridSpec, s: AreaShape, each: (v: DataView, off: number, lon: number, lat: number) => void, maxRows = 240): Promise<{ cells: number; step: number }> {
   const [x0, y0, x1, y1] = s.bbox;
   const r0 = Math.max(0, Math.floor((g.origin[1] - y1) / g.cell));
@@ -145,21 +164,28 @@ export async function readGrid(g: GridSpec, s: AreaShape, each: (v: DataView, of
   let cells = 0;
   const rows: number[] = [];
   for (let r = r0; r <= r1; r += step) rows.push(r);
+  const cellsOf = (v: DataView, row: number, base: number) => {
+    const lat = g.origin[1] - (row + 0.5) * g.cell;
+    for (let c = c0; c <= c1; c += step) {
+      const lon = g.origin[0] + (c + 0.5) * g.cell;
+      if (!inside(s, lon, lat)) continue;
+      cells++;
+      each(v, base + (c - c0) * g.bytes, lon, lat);
+    }
+  };
+  const span = ((r1 - r0) * g.width + (c1 - c0 + 1)) * g.bytes;
+  if (span <= BLOCK_MAX) {
+    const a = (r0 * g.width + c0) * g.bytes;
+    const v = new DataView(await fetchRange(g.url, a, a + span - 1));
+    for (const row of rows) cellsOf(v, row, (row - r0) * g.width * g.bytes);
+    return { cells, step };
+  }
   // a few rows at a time: the bucket answers many small requests well, but not hundreds at once
-  for (let k = 0; k < rows.length; k += 24) {
+  for (let k = 0; k < rows.length; k += 8) {
     await Promise.all(
-      rows.slice(k, k + 24).map(async (row) => {
+      rows.slice(k, k + 8).map(async (row) => {
         const a = (row * g.width + c0) * g.bytes;
-        const r = await fetch(g.url, { headers: { Range: `bytes=${a}-${a + (c1 - c0 + 1) * g.bytes - 1}` }, cache: "no-store" });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const v = new DataView(await r.arrayBuffer());
-        const lat = g.origin[1] - (row + 0.5) * g.cell;
-        for (let c = c0; c <= c1; c += step) {
-          const lon = g.origin[0] + (c + 0.5) * g.cell;
-          if (!inside(s, lon, lat)) continue;
-          cells++;
-          each(v, (c - c0) * g.bytes, lon, lat);
-        }
+        cellsOf(new DataView(await fetchRange(g.url, a, a + (c1 - c0 + 1) * g.bytes - 1)), row, 0);
       }),
     );
   }

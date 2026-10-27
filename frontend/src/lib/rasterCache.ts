@@ -17,19 +17,24 @@ export interface RasterCells {
 
 /** Bumped when a box has been read: subscribers redraw. */
 export const useRasterCache = create<{ v: number }>(() => ({ v: 0 }));
-const cache = new Map<string, RasterCells | "loading" | "failed">();
+const cache = new Map<string, RasterCells | "loading" | { failed: number }>();
+/** A failed read is tried again after this long (ms). */
+const RETRY_MS = 10_000;
 
-/** The cells of a raster in a box [west, south, east, north]; null while reading. */
-export function rasterCells(r: RasterMeasure, files: Files, box: [number, number, number, number], maxRows = 140): RasterCells | null {
+/** The cells of a raster in a box [west, south, east, north]; "loading" while reading (or while
+ *  its file loads), "failed" until the next try. */
+export function rasterCells(r: RasterMeasure, files: Files, box: [number, number, number, number], maxRows = 140): RasterCells | "loading" | "failed" {
   const def = r.grid(files);
-  if (!def) return null;
+  if (!def) return "loading";
   // a box rounded out to whole degrees, so small pans read nothing new
   const q = (v: number, up: boolean) => (up ? Math.ceil(v) : Math.floor(v));
   const b: [number, number, number, number] = [Math.max(-180, q(box[0], false)), Math.max(-85, q(box[1], false)), Math.min(180, q(box[2], true)), Math.min(85, q(box[3], true))];
   const key = `${r.id}|${b.join(",")}|${maxRows}`;
   const hit = cache.get(key);
-  if (hit && hit !== "loading" && hit !== "failed") return hit;
-  if (hit) return null;
+  if (hit === "loading") return hit;
+  if (hit && "failed" in hit) {
+    if (performance.now() - hit.failed < RETRY_MS) return "failed";
+  } else if (hit) return hit;
   cache.set(key, "loading");
   const shape = makeShape("polygon", key, "", [[[b[0], b[1], b[2], b[1], b[2], b[3], b[0], b[3]]]]);
   const pts: Pt[] = [];
@@ -48,8 +53,10 @@ export function rasterCells(r: RasterMeasure, files: Files, box: [number, number
       useRasterCache.setState((s) => ({ v: s.v + 1 }));
     })
     .catch(() => {
-      cache.set(key, "failed");
+      cache.set(key, { failed: performance.now() });
       useRasterCache.setState((s) => ({ v: s.v + 1 }));
+      // the map asks again once the wait is over
+      setTimeout(() => useRasterCache.setState((s) => ({ v: s.v + 1 })), RETRY_MS + 50);
     });
-  return null;
+  return "loading";
 }

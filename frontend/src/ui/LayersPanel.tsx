@@ -414,7 +414,7 @@ function StatusButtons() {
   );
 }
 
-function LayerLegend({ id }: { id: LayerId }) {
+export function LayerLegend({ id }: { id: LayerId }) {
   const usPlantsOn = useApp((s) => s.layers.plantsUS);
   switch (id) {
     case "prices":
@@ -957,10 +957,25 @@ function DatasetRow({ d }: { d: Dataset }) {
   const own = styleOf(mapStyles, d.id);
   const ownDrawing = !own || own === "points" || own === "raster";
   const carried = on && ownDrawing && summaryOf({ colour, layers, selection, area, drawn })?.id === d.id;
+  // a dataset joining others: on this map, or a map of its own beside them
+  const switchOn = () => {
+    const before = datasetsOn(layers, colour).filter((x) => !x.colour).length;
+    toggleDataset(d);
+    setAsk(!d.colour && (before > 0 || compare));
+  };
   return (
     <div className={`rounded-lg transition-colors ${on ? "bg-white/[0.05]" : "hover:bg-white/[0.03]"}`}>
       <div className="flex w-full items-center gap-2.5 px-2 py-1.5">
-        <button onClick={() => actions.showCoverage(open ? null : d.id)} className="flex min-w-0 flex-1 items-center gap-2.5 text-left" aria-expanded={open} title="Where it has data and its sources">
+        <button
+          onClick={() => {
+            // a name switches its dataset on (the data, not only where it has data) and opens its details
+            if (!on) switchOn();
+            actions.showCoverage(open ? null : d.id);
+          }}
+          className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
+          aria-expanded={open}
+          title={on ? "Where it has data and its sources" : `Show ${d.name.toLowerCase()}, where it has data and its sources`}
+        >
           <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: d.color, opacity: on ? 1 : 0.45 }} />
           <span className="min-w-0 flex-1">
             <span className={`flex items-baseline gap-1.5 text-[12.5px] ${on ? "text-slate-50" : "text-slate-300"}`}>
@@ -973,10 +988,10 @@ function DatasetRow({ d }: { d: Dataset }) {
         </button>
         <button
           onClick={() => {
-            // a dataset joining others: on this map, or a map of its own beside them
-            const before = datasetsOn(layers, colour).filter((x) => !x.colour).length;
-            toggleDataset(d);
-            setAsk(!on && !d.colour && (before > 0 || compare));
+            if (on) {
+              toggleDataset(d);
+              setAsk(false);
+            } else switchOn();
           }}
           aria-pressed={on}
           title={on ? `Hide ${d.name.toLowerCase()}` : `Show ${d.name.toLowerCase()}`}
@@ -988,7 +1003,7 @@ function DatasetRow({ d }: { d: Dataset }) {
       {on && stylesOf(d.id).length > 0 && (
         <div className="px-2 pb-1.5 pl-[30px]">
           <StyleChips dataset={d.id} value={styleOf(mapStyles, d.id)} onChange={(st) => actions.setMapStyle(d.id, st)} />
-          <StyleKey scope="main" dataset={d.id} style={styleOf(mapStyles, d.id)} />
+          <StyleKey scope="main" dataset={d.id} style={styleOf(mapStyles, d.id)} compact />
         </div>
       )}
       {open && <DatasetDetails d={d} />}

@@ -41,6 +41,8 @@ export interface HexInfo {
   max: number;
   breaks: [number[], number[]] | null;
   count: number;
+  /** records with a position in the area */
+  total: number;
 }
 /** What each map's key needs (published when it changes), by hexInfoKey. */
 export const useHexInfo = create<Record<string, HexInfo>>(() => ({}));
@@ -157,8 +159,9 @@ export function hexLayers(fr: Frame): Layer[] {
   const ids = vars.map((m) => m.id);
   const key = `${fr.scope}:${vars.map((m) => m.dataset).join("+")}`;
   const info = useHexInfo.getState()[key];
-  if (!info || info.rKm !== rKm || info.max !== max || info.count !== view.count || info.breaks !== breaks)
-    useHexInfo.setState({ [key]: { rKm, vars: ids, max, breaks, count: view.count } });
+  const total = pts.reduce((a, p) => a + p!.length, 0);
+  if (!info || info.rKm !== rKm || info.max !== max || info.count !== view.count || info.breaks !== breaks || info.total !== total)
+    useHexInfo.setState({ [key]: { rKm, vars: ids, max, breaks, count: view.count, total } });
   const m = vars[0];
   const colourOf = (h: Hex): RGB => typeColour(m, h.top);
   const fill = (h: Hex): [number, number, number, number] => {

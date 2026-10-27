@@ -19,10 +19,12 @@ import { useRasterCache } from "../lib/rasterCache";
 import { buildLayers, labelsOf, type Frame } from "../map/build";
 import { wantedKeys } from "../map/MapCanvas";
 import { STYLE } from "../map/style";
-import { applyStyles, is3D, styleOf, stylesOf } from "../map/styleLayers";
+import { hexInfoKey, useHexInfo } from "../map/hexLayers";
+import { applyStyles, is3D, styleOf, stylesOf, useStyleInfo } from "../map/styleLayers";
 import { tileSync } from "../map/tiles";
 import { tooltip } from "../map/tooltip";
-import { BivariateKey, StyleChips, StyleKey } from "./StyleControls";
+import { LayerLegend } from "./LayersPanel";
+import { BivariateKey, StyleKey, StyleSelect, StyleText } from "./StyleControls";
 
 const muted = "text-[#8d94a1]";
 /** The main map's style, flat, with the country names only. */
@@ -335,6 +337,7 @@ function PanelMap({
         hexes={hexes}
         onStyle={(d, st) => setItems(panel.items.map((x) => (x.dataset === d ? { ...x, style: st } : x)))}
         onRemoveItem={(d) => setItems(panel.items.filter((x) => x.dataset !== d))}
+        onReplace={(from, to) => setItems(panel.items.map((x) => (x.dataset === from ? { dataset: to, style: x.style } : x)))}
       />
       {count > 1 && (
         <button
@@ -349,7 +352,13 @@ function PanelMap({
   );
 }
 
-/** A map's title, its datasets with their style and key, and the sources. */
+/** Where a dataset has no placed record in the area, a dataset that may: suggested on its map. */
+const INSTEAD: Record<string, { dataset: string; text: string }> = {
+  emitters: { dataset: "ctrace", text: "Show modelled emissions (Climate TRACE) here" },
+};
+
+/** A map's key: small, at its top left. Its title; each dataset with its style and a one-line key;
+ *  the explanation, the layers' own keys and the sources on request. */
 function PanelKey({
   index,
   panel,
@@ -357,6 +366,7 @@ function PanelKey({
   hexes,
   onStyle,
   onRemoveItem,
+  onReplace,
 }: {
   index: number;
   panel: MapPanel;
@@ -364,42 +374,74 @@ function PanelKey({
   hexes: string[];
   onStyle: (dataset: string, st: Style) => void;
   onRemoveItem: (dataset: string) => void;
+  onReplace: (from: string, to: string) => void;
 }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const sources = [...new Set(panel.items.flatMap((x) => DATASET_BY_ID.get(x.dataset)?.parts.map((p) => p.source) ?? []))];
+  const mode = useApp((s) => s.mode);
   return (
-    <div className="absolute left-1.5 top-1.5 max-h-[calc(100%-12px)] w-[min(300px,calc(100%-44px))] overflow-y-auto rounded-lg border border-white/[0.08] bg-[#0b0f16]/88 px-2 py-1.5 backdrop-blur-[2px]">
-      <button onClick={() => setOpen(!open)} className="flex w-full items-center gap-1.5 text-left" aria-expanded={open}>
+    <div className="absolute left-1.5 top-1.5 max-h-[calc(100%-40px)] w-[min(240px,calc(100%-44px))] overflow-y-auto rounded-md border border-white/[0.08] bg-[#0b0f16]/85 px-2 py-1">
+      <div className="flex items-center gap-1.5">
         <span className="text-[10px] tabular-nums text-slate-500">{index + 1}</span>
-        <span className="flex-1 truncate text-[11.5px] font-medium text-slate-100">{panel.title}</span>
-        <span className={`text-[9px] text-slate-500 transition-transform ${open ? "rotate-90" : ""}`}>▶</span>
-      </button>
-      {open && (
-        <div className="mt-1 space-y-1.5">
-          {panel.items.map((x) => {
-            const d = DATASET_BY_ID.get(x.dataset);
-            return (
-              <div key={x.dataset}>
-                <div className="flex items-center gap-1.5 text-[10.5px] text-slate-200">
-                  <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: d?.color ?? "#999" }} />
-                  <span className="flex-1 truncate">{d?.name ?? x.dataset}</span>
-                  {panel.items.length > 1 && (
-                    <button onClick={() => onRemoveItem(x.dataset)} className="text-[10px] text-slate-500 hover:text-slate-200" title="Take off this map">
-                      ✕
-                    </button>
+        <span className="flex-1 truncate text-[11px] font-medium text-slate-100">{panel.title}</span>
+        <button onClick={() => setOpen(!open)} className={`text-[10px] ${open ? "text-sky-200" : "text-slate-500 hover:text-slate-200"}`} aria-expanded={open} title="What the map shows and its sources">
+          {open ? "less" : "about"}
+        </button>
+      </div>
+      <div className="mt-0.5 space-y-1">
+        {panel.items.map((x) => {
+          const d = DATASET_BY_ID.get(x.dataset);
+          const own = !stylesOf(x.dataset).length || x.style === "points" || x.style === "raster" || x.style === "lines";
+          return (
+            <div key={x.dataset}>
+              <div className="flex items-center gap-1 text-[10px] text-slate-300">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: d?.color ?? "#999" }} />
+                <span className="min-w-0 flex-1 truncate">{d?.name ?? x.dataset}</span>
+                <StyleSelect dataset={x.dataset} value={x.style} onChange={(st) => onStyle(x.dataset, st)} />
+                {panel.items.length > 1 && (
+                  <button onClick={() => onRemoveItem(x.dataset)} className="text-[10px] text-slate-500 hover:text-slate-200" title="Take off this map">
+                    ✕
+                  </button>
+                )}
+              </div>
+              {!(hexes.length === 2 && hexes.includes(x.dataset)) && <StyleKey scope={scope} dataset={x.dataset} style={x.style} compact />}
+              <Instead scope={scope} dataset={x.dataset} style={x.style} onReplace={onReplace} />
+              {open && (
+                <div className={`mt-0.5 text-[9.5px] leading-snug ${muted}`}>
+                  <StyleText dataset={x.dataset} style={x.style} />
+                  {own && d && (
+                    <div className="mt-0.5 space-y-1">
+                      {partsIn(d, mode)
+                        .filter((p) => p.layer)
+                        .map((p) => (
+                          <LayerLegend key={p.layer} id={p.layer!} />
+                        ))}
+                    </div>
                   )}
                 </div>
-                <div className="mt-0.5">
-                  <StyleChips dataset={x.dataset} value={x.style} onChange={(st) => onStyle(x.dataset, st)} />
-                </div>
-                {!(hexes.length === 2 && hexes.includes(x.dataset)) && <StyleKey scope={scope} dataset={x.dataset} style={x.style} />}
-              </div>
-            );
-          })}
-          {hexes.length === 2 && <BivariateKey scope={scope} a={hexes[0]} b={hexes[1]} />}
-          <div className={`border-t border-white/[0.06] pt-1 text-[9px] leading-snug ${muted}`}>Source: {sources.join("; ")}</div>
-        </div>
-      )}
+              )}
+            </div>
+          );
+        })}
+        {hexes.length === 2 && <BivariateKey scope={scope} a={hexes[0]} b={hexes[1]} compact />}
+      </div>
+      <div className={`mt-0.5 border-t border-white/[0.06] pt-0.5 text-[9px] leading-snug ${muted} ${open ? "" : "truncate"}`} title={sources.join("; ")}>
+        Source: {sources.join("; ")}
+      </div>
     </div>
+  );
+}
+
+/** A dataset with no placed record here: a dataset that has some, one click away. */
+function Instead({ scope, dataset, style, onReplace }: { scope: string; dataset: string; style: Style; onReplace: (from: string, to: string) => void }) {
+  const info = useStyleInfo((s) => s[`${scope}:${dataset}`]);
+  const hex = useHexInfo((s) => s[hexInfoKey(scope, [dataset])]);
+  const alt = INSTEAD[dataset];
+  const empty = style === "hex" ? hex && !hex.total : info && !info.total && style !== "points";
+  if (!alt || !empty) return null;
+  return (
+    <button onClick={() => onReplace(dataset, alt.dataset)} className="mt-0.5 rounded border border-white/10 px-1.5 text-[9.5px] text-sky-200 hover:bg-white/[0.07]">
+      {alt.text}
+    </button>
   );
 }
