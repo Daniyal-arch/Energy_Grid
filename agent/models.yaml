@@ -1,0 +1,90 @@
+# The model registry (backend/agent/models.py). Prices in US dollars per million tokens, from
+# the providers' pricing pages on the date given; `cached` = cache read (hit), `cache_write` =
+# writing the 5-minute cache (Anthropic) where the provider charges it. Costs in traces and the
+# daily spend cap are usage x these prices. Context windows: the providers' model pages.
+# Select with AGENT_MODEL / AGENT_MODEL_FAST (the `id`, or `provider:model`); a request may pick
+# a model only from AGENT_MODELS_ALLOWED.
+models:
+  - id: claude-opus-5-5
+    model: anthropic:claude-opus-5-5
+    role: main
+    prices: {input: 4.00, output: 20.00, cache_read: 0.20, cache_write: 5.00}
+    price_source: https://platform.claude.com/docs/en/about-claude/pricing (read 2026-10-27)
+    context: 1000000
+    tool_calling: true
+    caching: anthropic_breakpoints
+    effort: medium
+  - id: claude-sonnet-5-5
+    model: anthropic:claude-sonnet-5-5
+    role: main
+    prices: {input: 2.00, output: 10.00, cache_read: 0.10, cache_write: 2.50}
+    price_source: https://platform.claude.com/docs/en/about-claude/pricing (read 2026-10-27)
+    context: 1000000
+    tool_calling: true
+    caching: anthropic_breakpoints
+    effort: medium
+  - id: claude-haiku-5-5
+    model: anthropic:claude-haiku-5-5
+    role: fast
+    # prompts up to 100,000 tokens (above: 0.50 / 2.50 / 0.05 / 0.625)
+    prices: {input: 0.10, output: 0.50, cache_read: 0.01, cache_write: 0.125}
+    price_source: https://platform.claude.com/docs/en/about-claude/pricing (read 2026-10-27)
+    context: 1000000
+    tool_calling: true
+    caching: anthropic_breakpoints
+    effort: low
+  - id: gpt-6.1-sol
+    model: openai:gpt-6.1-sol
+    role: main
+    # short context; the 30-minute cache write is charged at 2.50
+    prices: {input: 2.00, output: 10.00, cache_read: 0.10, cache_write: 2.50}
+    price_source: https://developers.openai.com/api/docs/pricing (read 2026-10-27)
+    context: null  # not on the pricing page; see the model page before relying on it
+    tool_calling: true
+    caching: openai_automatic
+    effort: medium
+  - id: gpt-6-luna
+    model: openai:gpt-6-luna
+    role: fast
+    prices: {input: 0.10, output: 0.50, cache_read: 0.01, cache_write: 0.125}
+    price_source: https://developers.openai.com/api/docs/pricing (read 2026-10-27)
+    context: null
+    tool_calling: true
+    caching: openai_automatic
+    effort: low
+  - id: gemini-3.8-flash
+    model: google_genai:gemini-3.8-flash
+    role: main
+    # paid tier through 2026-12-31; from 2027-01-01: 1.50 / 7.50 / 0.15
+    prices: {input: 0.75, output: 3.75, cache_read: 0.075}
+    price_source: https://ai.google.dev/gemini-api/docs/pricing (read 2026-10-27)
+    context: null
+    tool_calling: true
+    caching: google_implicit
+    temperature: null
+  # Bedrock (non-Claude models, paid by AWS credits): add an entry with the Converse model id and
+  # the prices from https://aws.amazon.com/bedrock/pricing/ for the region, e.g.
+  # - id: bedrock-example
+  #   model: bedrock_converse:<model id>
+  #   prices: {input: ..., output: ...}
+  #   price_source: https://aws.amazon.com/bedrock/pricing/ (read YYYY-MM-DD)
+  #   tool_calling: true
+  #   caching: none
+  # Local models (Ollama) cost nothing per token:
+  - id: ollama-local
+    model: ollama:qwen3
+    role: main
+    prices: {input: 0, output: 0}
+    price_source: local model (no per-token price)
+    context: null
+    tool_calling: true
+    caching: none
+  # The scripted test model (backend/agent/fake.py): no network, no cost.
+  - id: fake
+    model: fake:scripted
+    role: main
+    prices: {input: 0, output: 0}
+    price_source: test model
+    context: null
+    tool_calling: true
+    caching: none
