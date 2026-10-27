@@ -182,9 +182,10 @@ class Build:
         self.matchers: dict[str, Callable[[str], tuple[float, float] | None]] = {}
 
     def op(self, cc: str, operator: str, level: str, *, source: str, url: str, licence: str,
-           as_of: str | None, mapping: str, note: str = "") -> int:  # fmt: skip
+           as_of: str | None, mapping: str, note: str = "", summable: bool = True) -> int:  # fmt: skip
+        """`summable`: False where the operator says its nodes share capacity (a sum would count it twice)."""
         self.operators.append({"cc": cc, "operator": operator, "level": level, "source": source, "url": url,
-                               "licence": licence, "as_of": as_of, "mapping": mapping, "note": note,
+                               "licence": licence, "as_of": as_of, "mapping": mapping, "note": note, "summable": summable,
                                "rows": 0, "placed": 0, "matched": 0})  # fmt: skip
         return len(self.operators) - 1
 
@@ -279,7 +280,8 @@ def from_here(b: Build) -> None:
         k = b.op("ES", "Red Eléctrica (transmission nodes)", "transmission", source=es["source"], url=es["url"],
                  licence="REE terms of use (reuse with the source named)", as_of=es.get("date"),
                  mapping=f"{MW_RULE} (demand: CEP with ride-through, the first column)",
-                 note="No coordinates published: nodes matched to OpenStreetMap by name where unique")  # fmt: skip
+                 note="No coordinates published: nodes matched to OpenStreetMap by name where unique. Nodes in one zone share capacity: not summed",
+                 summable=False)  # fmt: skip
         for n in es["nodes"]:
             kv = (
                 num(re.findall(r"(\d{2,3})\s*$", n[0])[0])

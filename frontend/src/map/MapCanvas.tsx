@@ -3,7 +3,6 @@
 // only mounts this once. When nothing moves and nothing changed, a frame costs nothing.
 
 import { AmbientLight, DirectionalLight, LightingEffect, MapView, _GlobeView as GlobeView, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
-import { CONNECT_EU, connectEuKey } from "../lib/connectEu";
 import { REGISTER_LAYERS, registerKey } from "../lib/registers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
@@ -56,7 +55,7 @@ function wantedKeys(zoom: number): string[] {
   if (L.lngSendOut) keys.push("lngTerminals");
   if (L.ets) keys.push("ets");
   if (L.ctrace) keys.push("ctrace");
-  if (L.connect) keys.push("connect", "connectFR", "connectIT", "connectIE", ...CONNECT_EU.map(connectEuKey));
+  if (L.connect) keys.push("connectH");
   if (L.usOutages) keys.push("usOutages", "usCounties");
   if (L.water) keys.push("water");
   if (L.offshoreWind) keys.push("offshoreWind");
@@ -98,6 +97,7 @@ function wantedKeys(zoom: number): string[] {
   if (s.colour.startsWith("pr_")) keys.push("prices", "zones");
   if (s.colour === "access") keys.push("worldStats");
   if (s.colour === "rt_household") keys.push("retail", "usStates");
+  if (s.colour === "cn_gen" || s.colour === "cn_load") keys.push("connectH");
   if (s.colour.startsWith("ir_")) keys.push("irena");
   if (s.mode === "years" || s.colour.startsWith("tr_")) keys.push("transition");
   if (s.mode === "day") {

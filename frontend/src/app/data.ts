@@ -166,6 +166,8 @@ const STATIC: Record<string, Loader> = {
   reliability: bundled("reliability.json"),
   // Climate TRACE modelled emissions per facility (scripts/fetch_climate_trace.py)
   ctrace: archive("ctrace.json"),
+  // room to connect in one schema, every operator (scripts/build_connect_harmonised.py, brief 23)
+  connectH: bundled("connect/harmonised.json"),
   // where new demand or generation can connect: GB, NL, ES (scripts/fetch_connect_here.py)
   connect: archive("connect.json"),
   // France, Italy, Belgium, Portugal, Ireland, Poland (scripts/build_connect_more.py)

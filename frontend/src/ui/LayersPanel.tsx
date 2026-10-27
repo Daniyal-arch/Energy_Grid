@@ -13,6 +13,7 @@ import { CT_COLOR, type CtraceFile } from "../lib/ctrace";
 import { OUTAGE_STOPS, OUTAGE_TICKS, WATER_COLOR, WATER_INDICATORS, newestYear, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, type MastrMuniFile } from "../lib/mastr";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
+import { H_CLASSES, H_COLOR, H_LABEL, H_NO_CLASS, ROOM_STOPS, ROOM_TICKS, countryRoom, type HFile } from "../lib/connectH";
 import { IT_CLASSES, IT_COLOR, ROOM_CLASSES } from "../lib/connectMore";
 import { SEA_CABLE_COLOR } from "../lib/seaCables";
 import { GAS_CAT_COLOR, H2_STAGE_COLOR } from "../lib/coming";
@@ -133,6 +134,14 @@ export function ColourLegend({ colour }: { colour: ColourId }) {
       />
     );
   if (colour === "access") return <Scale gradient={gradientCss(ACCESS_STOPS)} ticks={ACCESS_TICKS} note="newest year per country (World Bank)" />;
+  if (colour === "cn_gen" || colour === "cn_load")
+    return (
+      <Scale
+        gradient={gradientCss(ROOM_STOPS)}
+        ticks={ROOM_TICKS}
+        note={`Free capacity for new ${colour === "cn_gen" ? "generation" : "demand"} the grid operators publish, MW summed per country (computed; operators that publish classes only, or say their nodes share capacity, are not summed). Grey: no MW published.`}
+      />
+    );
   if (colour.startsWith("pr_")) {
     const m = PRICE_METRICS.find((x) => x.id === colour.slice(3))!;
     return <Scale gradient={stopGradient(m.stops)} ticks={m.ticks} note={`${m.note} · 12 months · zone markers where a country has several zones`} />;
@@ -189,16 +198,13 @@ function UsNodesKey() {
 }
 
 function ConnectKey() {
-  const cf = useDataStore((d) => d.files.connect as ConnectFile | undefined);
+  const hf = useDataStore((d) => d.files.connectH as HFile | undefined);
   const side = useApp((s) => s.connectSide);
-  const gb = cf?.gb;
-  const total = gb ? gb.projects.reduce((a, p) => a + Math.max(0, p[2] - p[3]), 0) : 0;
-  const placed = gb ? gb.projects.reduce((a, p) => a + (gb.sites[p[1]][1] != null ? Math.max(0, p[2] - p[3]) : 0), 0) : 0;
+  const room = hf ? countryRoom(hf) : {};
   return (
     <>
       <div className="mb-1 flex items-center gap-1.5">
-        <span className="text-[10px] text-slate-400">Netherlands, Ireland:</span>
-        {(["offtake", "feedin"] as const).map((s) => (
+        {(["feedin", "offtake"] as const).map((s) => (
           <button
             key={s}
             onClick={() => actions.setConnectSide(s)}
@@ -209,38 +215,34 @@ function ConnectKey() {
         ))}
       </div>
       <Swatches>
-        {(cf?.nl.status ?? ["available", "limited", "under study", "shortage"]).map((label, i) => (
-          <Swatch key={label} color={rgbCss(NL_COLOR[i])} label={label} />
+        {H_CLASSES.map((c) => (
+          <Swatch key={c} color={rgbCss(H_COLOR[c])} label={H_LABEL[c]} />
         ))}
-      </Swatches>
-      <Swatches>
-        {["Storage", "Solar", "Wind onshore", "Wind offshore", "Demand"].map((t) => (
-          <Swatch key={t} color={rgbCss(GB_TYPE_COLOR[t])} label={t.toLowerCase()} />
-        ))}
+        <Swatch color={rgbCss(H_NO_CLASS)} label="value only" />
+        <Swatch color="rgba(128,132,144,0.3)" label="nothing for this side" />
       </Swatches>
       <Note>
-        Netherlands: each supply area as the regional operators' capacity map shows it. Great Britain: MW waiting to connect at each site (TEC register, {gb?.date ?? "…"}), coloured by the largest
-        type; {gwText(placed)} of {gwText(total)} placed, at sites named after a GSP in NESO's lookup; the rest are in the panel. Spain publishes no positions: see the panel.
+        Every operator&apos;s own classes mapped to these four (the mapping per operator in the tooltip). Dot area = free MW published for the chosen side; a small fixed dot where the
+        operator publishes no MW. Outlines: operators that publish areas. Nodes without coordinates are placed on an OpenStreetMap substation of the same name only where the
+        name is unique.
       </Note>
-      <Swatches>
-        {ROOM_CLASSES.map((label, i) => (
-          <Swatch key={label} color={rgbCss(NL_COLOR[i])} label={label} kind="dot" />
-        ))}
-      </Swatches>
-      {side === "feedin" && (
-        <Swatches>
-          {IT_CLASSES.map((label, i) => (
-            <Swatch key={label} color={rgbCss(IT_COLOR[i])} label={label} />
-          ))}
-        </Swatches>
+      {hf && (
+        <details className="mt-1">
+          <summary className={`cursor-pointer text-[9.5px] ${muted}`}>
+            {hf.operators.length} operators in {Object.keys(room).length} countries
+          </summary>
+          <div className="mt-1 space-y-[1px] text-[9.5px] leading-snug">
+            {Object.entries(room)
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .map(([cc, c]) => (
+                <div key={cc} className="flex gap-1.5">
+                  <span className="w-5 shrink-0 text-slate-300">{cc}</span>
+                  <span className={muted}>{c.operators.map((o) => `${o.operator}${o.as_of ? ` (${o.as_of})` : ""}`).join("; ")}</span>
+                </div>
+              ))}
+          </div>
+        </details>
       )}
-      <Note>
-        Dots, MW (MVA) left as published: France (new generation), each substation's S3REnR capacity still to allocate (Capareseau); Ireland, each 38 kV and 110 kV station's
-        and MV transformer's demand or firm generation capacity available (ESB Networks heatmap). Italy (new generation): GW requested to connect per region, renewables and storage
-        (Terna Econnextion). Portugal and Poland publish no positions: see the panel. Also Bulgaria (ESO), Czechia (ČEPS, suitability in 2031), Denmark (Energinet and the DSOs),
-        Estonia (Elering, expandable or not), Lithuania (Litgrid), Luxembourg (Creos), Malta (Enemalta) and Sweden (Svenska kraftnät, per county); Austria (APG) and Baden-Württemberg
-        (TransnetBW) publish no positions: see the panel.
-      </Note>
     </>
   );
 }
