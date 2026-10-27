@@ -18,8 +18,8 @@ and colours relative to what is in view. Rendering basics in [[map-rendering]].
   per hexagon), 3D terrain. Lines: their own drawing.
 - `lib/measures.ts`: one figure per record per dataset (`MEASURES`, `measureOfDataset`):
   plants MW, registers MW, verified CO₂, Climate TRACE CO₂e, EV points, data centres, GEM
-  industry and fuels, hydrogen, offshore wind, substations, room to connect (free MW for
-  generation from `connect/harmonised.json`). `RASTERS`: solar, wind, flood lookup grids.
+  industry and fuels, hydrogen, offshore wind, substations, room to connect (free MW for the
+  chosen side from `connect/harmonised.json`). `RASTERS`: solar, wind, flood lookup grids.
 - `map/styleLayers.ts`: `applyStyles(layers, styles)` (a styled dataset's own layers step aside),
   `styleLayers(frame)`, `useStyleInfo` (each map's key figures), empty notes. 3D bars and beams
   draw only records with a figure. A measure's `points(files, ctx)` gets the frame's
