@@ -10,7 +10,9 @@ grounding check passes). `script=[...]` replays fixed replies instead (unit test
 from __future__ import annotations
 
 import json
+import os
 import re
+import time
 from collections.abc import Iterator, Sequence
 from typing import Any
 
@@ -83,6 +85,9 @@ class FakeChatModel(BaseChatModel):
     role: str = "analyst"
     variant: str = "scripted"
     script: list[AIMessage] = Field(default_factory=list)
+    # seconds to wait per streamed piece (FAKE_STREAM_DELAY_S): the streaming probe sees events
+    # arrive one by one
+    delay: float = Field(default_factory=lambda: float(os.environ.get("FAKE_STREAM_DELAY_S", "0")))
 
     @property
     def _llm_type(self) -> str:
@@ -257,6 +262,7 @@ class FakeChatModel(BaseChatModel):
     ) -> Iterator[ChatGenerationChunk]:
         msg = self._generate(messages).generations[0].message
         assert isinstance(msg, AIMessage)
+        time.sleep(self.delay * 5)
         if msg.tool_calls:
             chunk = AIMessageChunk(
                 content="",
@@ -272,6 +278,7 @@ class FakeChatModel(BaseChatModel):
         text = msg.content if isinstance(msg.content, str) else _text(msg)
         words = re.findall(r"\S+\s*", text) or [""]
         for i, w in enumerate(words):
+            time.sleep(self.delay)
             last = i == len(words) - 1
             chunk = AIMessageChunk(
                 content=w,

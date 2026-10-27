@@ -1,0 +1,787 @@
+about: 'Evaluation questions (backend/evals/run.py). Built by backend/scripts/build_eval_questions.py from the catalogue''s
+  examples (answers as published there), questions on the app tables (answers computed from the map files when built) and
+  map questions with the expected overlay kind and key. ''needs'' says what must be reachable: app (the map files), lake (R2),
+  api (a live API), catalog (the catalogue text).'
+questions:
+- id: admin1-1
+  q: how many admin-1 regions are in the lake
+  answer: '3224'
+  numbers:
+  - '3224'
+  dataset: shapes.admin1
+  needs: lake
+  source: agent/catalog/admin1.yaml
+- id: atb-1
+  q: LCOE of utility PV, class 5, 2030, moderate, R&D case, 30-year recovery
+  answer: 34.93 $/MWh
+  numbers:
+  - '34.93'
+  dataset: atb.electricity
+  needs: lake
+  source: agent/catalog/atb.yaml
+- id: aures-1
+  q: how many auction rounds does Germany have
+  answer: '102'
+  numbers:
+  - '102'
+  dataset: aures.auctions
+  needs: lake
+  source: agent/catalog/aures.yaml
+- id: capareseau-1
+  q: how many French substations have S3REnR capacity left to allocate
+  answer: 1640 of 3116 (snapshot 2026-10-19)
+  numbers:
+  - '1640'
+  - '3116'
+  dataset: capareseau.substations
+  needs: lake
+  source: agent/catalog/capareseau.yaml
+- id: capareseau-2
+  q: total S3REnR capacity left to allocate
+  answer: 25904.1 MW
+  numbers:
+  - '25904.1'
+  dataset: capareseau.substations
+  needs: lake
+  source: agent/catalog/capareseau.yaml
+- id: cenace-1
+  q: how many SIN nodes were priced on 2026-10-18
+  answer: '2458'
+  numbers:
+  - '2458'
+  dataset: cenace.pml
+  needs: lake
+  source: agent/catalog/cenace.yaml
+- id: cenace-2
+  q: highest SIN node price in hour 1 of 2026-10-18
+  answer: 9774.57 MXN/MWh
+  numbers:
+  - '9774.57'
+  dataset: cenace.pml
+  needs: lake
+  source: agent/catalog/cenace.yaml
+- id: cities-1
+  q: the largest city in Germany and its population
+  answer: Berlin, 3426354
+  numbers:
+  - '3426354'
+  dataset: places.cities
+  needs: lake
+  source: agent/catalog/cities.yaml
+- id: congestion-1
+  q: what did GB's thermal constraints cost in September 2026
+  answer: £469.3 M (NESO daily figures summed)
+  numbers:
+  - '469.3'
+  dataset: congestion
+  needs: lake
+  source: agent/catalog/congestion.yaml
+- id: congestion-2
+  q: how much solar did CAISO curtail in December 2025
+  answer: 23,925 MWh (local 14,294, system 9,631)
+  numbers:
+  - 23,925
+  - 14,294
+  - 9,631
+  dataset: congestion
+  needs: lake
+  source: agent/catalog/congestion.yaml
+- id: connect_eu-1
+  q: how many Bulgarian transmission substations can take a connection without a grid expansion first
+  answer: '149'
+  numbers:
+  - '149'
+  dataset: connect_eu
+  needs: lake
+  source: agent/catalog/connect_eu.yaml
+- id: connect_eu-2
+  q: which Danish transmission stations have the most room for new production
+  answer: Hovegård 2291, Lykkegård 2230, Spanager 1622 (snapshot 2026-10-19)
+  numbers:
+  - '2291'
+  - '2230'
+  - '1622'
+  dataset: connect_eu
+  needs: lake
+  source: agent/catalog/connect_eu.yaml
+- id: connect_harmonised-1
+  q: Where can a new 50 MW solar park connect in Slovenia?
+  answer: Rows with cc SI and mw_gen >= 50 (ELES transmission substations, free injection MW as published).
+  numbers:
+  - '50'
+  dataset: connect_harmonised
+  needs: catalog
+  source: agent/catalog/connect_harmonised.yaml
+- id: econnextion-1
+  q: renewables requested to connect in Italy
+  answer: 346742 MW (snapshot 2026-10-19)
+  numbers:
+  - '346742'
+  dataset: econnextion.requests
+  needs: lake
+  source: agent/catalog/econnextion.yaml
+- id: econnextion-2
+  q: renewables requested in Puglia
+  answer: 96376 MW
+  numbers:
+  - '96376'
+  dataset: econnextion.requests
+  needs: lake
+  source: agent/catalog/econnextion.yaml
+- id: edgar-1
+  q: Germany's GHG emissions in 2024
+  answer: 674.4 Mt CO2e
+  numbers:
+  - '674.4'
+  dataset: edgar.ghg_by_sector
+  needs: lake
+  source: agent/catalog/edgar.yaml
+- id: edgar-2
+  q: Germany's largest emitting sector in 2024
+  answer: Power Industry, 173.1 Mt CO2e
+  numbers:
+  - '173.1'
+  dataset: edgar.ghg_by_sector
+  needs: lake
+  source: agent/catalog/edgar.yaml
+- id: egrid-1
+  q: annual CO2 of Martin Lake (EIA 6146) in eGRID2023
+  answer: 13996318 short tons (rounded)
+  numbers:
+  - '13996318'
+  dataset: egrid.plants
+  needs: lake
+  source: agent/catalog/egrid.yaml
+- id: egrid-2
+  q: how many plants are in eGRID2023
+  answer: '12612'
+  numbers:
+  - '12612'
+  dataset: egrid.plants
+  needs: lake
+  source: agent/catalog/egrid.yaml
+- id: ei_review-1
+  q: Germany's total energy supply in 2025
+  answer: 10.0436 Exajoules
+  numbers:
+  - '10.0436'
+  dataset: ei_review.series
+  needs: lake
+  source: agent/catalog/ei_review.yaml
+- id: ei_review-2
+  q: Germany's CO2 emissions from energy in 2025
+  answer: 557.6044 million tonnes of CO2
+  numbers:
+  - '557.6044'
+  dataset: ei_review.series
+  needs: lake
+  source: agent/catalog/ei_review.yaml
+- id: eia861_territory-1
+  q: how many utilities report service in Texas
+  answer: '150'
+  numbers:
+  - '150'
+  dataset: eia861_territory.core_eia861__yearly_service_territory
+  needs: lake
+  source: agent/catalog/eia861_territory.yaml
+- id: eia923-1
+  q: net generation of W A Parish (EIA 3470) in 2025
+  answer: 15578685 MWh (plants_perf.json, rounded)
+  numbers:
+  - '15578685'
+  dataset: pudl.core_eia923__monthly_generation_fuel
+  needs: lake
+  source: agent/catalog/eia923.yaml
+- id: eia923-2
+  q: capacity factor of Labadie (EIA 2103) in 2025
+  answer: 0.799 (PUDL's)
+  numbers:
+  - '0.799'
+  dataset: pudl.plants_perf (map file)
+  needs: catalog
+  source: agent/catalog/eia923.yaml
+- id: emodnet_sea-1
+  q: how many gas pipelines at sea does EMODnet list
+  answer: 944 features (2026-10-19)
+  numbers:
+  - '944'
+  dataset: emodnet_sea
+  needs: api
+  source: agent/catalog/emodnet_sea.yaml
+- id: entsog_tyndp-1
+  q: how many TYNDP 2026 projects are in Germany
+  answer: 88 of 347
+  numbers:
+  - '88'
+  - '347'
+  dataset: entsog_tyndp.projects
+  needs: lake
+  source: agent/catalog/entsog_tyndp.yaml
+- id: eredes_capacity-1
+  q: how many substations have HV reception capacity left
+  answer: 172 of 470 (3T2026)
+  numbers:
+  - '172'
+  - '470'
+  dataset: eredes_capacity.substations
+  needs: lake
+  source: agent/catalog/eredes_capacity.yaml
+- id: es_regions-1
+  q: combined-cycle generation in Andalucía, August 2026
+  answer: 1412478.264 MWh
+  numbers:
+  - '1412478.264'
+  dataset: es_regions
+  needs: api
+  source: agent/catalog/es_regions.yaml
+- id: esb_heatmap-1
+  q: how many rows are in the heatmap
+  answer: 46527 (July 2026 file)
+  numbers:
+  - '46527'
+  dataset: esb_heatmap.transformers
+  needs: lake
+  source: agent/catalog/esb_heatmap.yaml
+- id: esb_heatmap-2
+  q: how many 38 kV and 110 kV stations or MV transformers have firm generation capacity available
+  answer: 453 of 657
+  numbers:
+  - '453'
+  - '657'
+  dataset: esb_heatmap.transformers
+  needs: lake
+  source: agent/catalog/esb_heatmap.yaml
+- id: eurostat_balances-1
+  q: Germany's final energy consumption in 2024
+  answer: 177745.064 ktoe
+  numbers:
+  - '177745.064'
+  dataset: eurostat_balances
+  needs: api
+  source: agent/catalog/eurostat_balances.yaml
+- id: eurostat_balances-2
+  q: Germany's final energy use in industry, 2024
+  answer: 48368.387 ktoe
+  numbers:
+  - '48368.387'
+  dataset: eurostat_balances
+  needs: api
+  source: agent/catalog/eurostat_balances.yaml
+- id: ev_eu-1
+  q: How many public charging points does Germany have?
+  answer: 221,646 in 2026 so far (EAFO, AC 164,102 + DC 57,544, sum computed); the BNetzA register lists 209,096 points at
+    116,422 facilities in operation (1 Sep 2026)
+  numbers:
+  - 221,646
+  - 164,102
+  - 57,544
+  - 209,096
+  - 116,422
+  dataset: ev_eu
+  needs: catalog
+  source: agent/catalog/ev_eu.yaml
+- id: ferc714-1
+  q: PJM's highest daily mean demand in 2025
+  answer: 134755 MW
+  numbers:
+  - '134755'
+  dataset: ferc714.out_ferc714__hourly_planning_area_demand
+  needs: lake
+  source: agent/catalog/ferc714.yaml
+- id: fr_regions-1
+  q: consumption of Île-de-France now
+  answer: 8624 MW at 2026-10-19T14:45Z
+  numbers:
+  - '8624'
+  dataset: fr_regions
+  needs: api
+  source: agent/catalog/fr_regions.yaml
+- id: gb_outages-1
+  q: How much GB generating capacity is offline now?
+  answer: 11.6 GW on 2026-10-20 04:00 UTC (48 units, 3.2 GW forced; 27 closures left out)
+  numbers:
+  - '11.6'
+  - '48'
+  - '3.2'
+  - '27'
+  dataset: gb_outages
+  needs: catalog
+  source: agent/catalog/gb_outages.yaml
+- id: ghg_inventory-1
+  q: Germany's greenhouse-gas emissions in 2024, excluding LULUCF
+  answer: 649.76952 Mt CO2e
+  numbers:
+  - '649.76952'
+  dataset: ghg_inventory
+  needs: api
+  source: agent/catalog/ghg_inventory.yaml
+- id: ghgrp-1
+  q: the largest direct emitter in 2023
+  answer: James H Miller Jr, AL, 16558380.818 t CO2e
+  numbers:
+  - '16558380.818'
+  dataset: ghgrp.facilities
+  needs: lake
+  source: agent/catalog/ghgrp.yaml
+- id: ghgrp-2
+  q: direct emitters in Texas and their emissions, 2023
+  answer: 855 facilities, 379849251 t CO2e
+  numbers:
+  - '855'
+  - '379849251'
+  dataset: ghgrp.facilities
+  needs: lake
+  source: agent/catalog/ghgrp.yaml
+- id: ghsl-1
+  q: people in Germany in 2025 (GHSL)
+  answer: '83232416'
+  numbers:
+  - '83232416'
+  dataset: ghsl.population
+  needs: lake
+  source: agent/catalog/ghsl.yaml
+- id: ghsl-2
+  q: how many regions were summed
+  answer: '4569'
+  numbers:
+  - '4569'
+  dataset: ghsl.population
+  needs: lake
+  source: agent/catalog/ghsl.yaml
+- id: grw-1
+  q: how many turbines does GRW find worldwide
+  answer: '375197'
+  numbers:
+  - '375197'
+  dataset: grw.wind
+  needs: lake
+  source: agent/catalog/grw.yaml
+- id: grw-2
+  q: how many solar arrays does GRW find worldwide
+  answer: '86345'
+  numbers:
+  - '86345'
+  dataset: grw.solar
+  needs: lake
+  source: agent/catalog/grw.yaml
+- id: hydrogen-1
+  q: the largest hydrogen project
+  answer: H2 Green Steel (H2GS)/Stegra (Phase 1), 740 MW
+  numbers:
+  - '740'
+  dataset: hydrogen.projects
+  needs: lake
+  source: agent/catalog/hydrogen.yaml
+- id: hydrogen-2
+  q: production capacity of all projects listed
+  answer: 5052 MW (238 projects)
+  numbers:
+  - '5052'
+  - '238'
+  dataset: hydrogen.projects
+  needs: lake
+  source: agent/catalog/hydrogen.yaml
+- id: jepx-1
+  q: average JEPX system price on 2026-10-19
+  answer: 29.9 JPY/kWh
+  numbers:
+  - '29.9'
+  dataset: jepx.spot
+  needs: lake
+  source: agent/catalog/jepx.yaml
+- id: jepx-2
+  q: lowest Shikoku price on 2026-10-19
+  answer: 0.02 JPY/kWh
+  numbers:
+  - '0.02'
+  dataset: jepx.spot
+  needs: lake
+  source: agent/catalog/jepx.yaml
+- id: live_co2-1
+  q: what was Spain's CO₂ factor on 18 October 2026
+  answer: 0.1025 t CO₂-eq per MWh, 103 g per kWh (REE, national system)
+  numbers:
+  - '0.1025'
+  - '103'
+  dataset: live_co2
+  needs: catalog
+  source: agent/catalog/live_co2.yaml
+- id: live_co2-2
+  q: California's CO₂ per kWh generated on the morning of 19 October 2026
+  answer: 0.505 lb/kWh at 07:00 UTC = 229 g/kWh (EIA-930 grid monitor)
+  numbers:
+  - '0.505'
+  - '229'
+  - '930'
+  dataset: live_co2
+  needs: catalog
+  source: agent/catalog/live_co2.yaml
+- id: mastr_grid-1
+  q: which grid operator serves Berlin
+  answer: Stromnetz Berlin GmbH, 94370 units (snapshot 2026-10-17)
+  numbers:
+  - '94370'
+  dataset: mastr_grid.operators
+  needs: lake
+  source: agent/catalog/mastr_grid.yaml
+- id: netztransparenz-1
+  q: redispatch energy reduced in 2020
+  answer: 4128644 MWh
+  numbers:
+  - '4128644'
+  dataset: netztransparenz.redispatch
+  needs: lake
+  source: agent/catalog/netztransparenz.yaml
+- id: nuts-1
+  q: how many NUTS 3 regions are there
+  answer: '1345'
+  numbers:
+  - '1345'
+  dataset: shapes.nuts
+  needs: lake
+  source: agent/catalog/nuts.yaml
+- id: nz_live-1
+  q: New Zealand's hydro generation now
+  answer: 2284 MW of 5415 MW at 20 Oct 2026 04:00 NZ time
+  numbers:
+  - '2284'
+  - '5415'
+  - '20'
+  dataset: nz_live
+  needs: api
+  source: agent/catalog/nz_live.yaml
+- id: overture_transport-1
+  q: how many major road and rail segments are in the extract
+  answer: '5939529'
+  numbers:
+  - '5939529'
+  dataset: overture_transport.segments
+  needs: lake
+  source: agent/catalog/overture_transport.yaml
+- id: prices_gb_us_rt-1
+  q: GB's average wholesale price over the last twelve full months
+  answer: 110.28 EUR/MWh (95.41 GBP/MWh), Elexon market index, Oct 2025 to Sep 2026; 186 hours below zero
+  numbers:
+  - '110.28'
+  - '95.41'
+  - '186'
+  dataset: prices_gb_us_rt
+  needs: catalog
+  source: agent/catalog/prices_gb_us_rt.yaml
+- id: protected-1
+  q: how many Natura 2000 sites are in Germany
+  answer: 5203 sites, 113041.4 km2 as published
+  numbers:
+  - '5203'
+  - '113041.4'
+  dataset: protected.natura2000
+  needs: lake
+  source: agent/catalog/protected.yaml
+- id: protected-2
+  q: how many Natura 2000 sites in all
+  answer: '27173'
+  numbers:
+  - '27173'
+  dataset: protected.natura2000
+  needs: lake
+  source: agent/catalog/protected.yaml
+- id: pse_capacity-1
+  q: how many requests have connection conditions issued
+  answer: 537 of 886 (as of 2026-08-31)
+  numbers:
+  - '537'
+  - '886'
+  dataset: pse_capacity.requests
+  needs: lake
+  source: agent/catalog/pse_capacity.yaml
+- id: pse_capacity-2
+  q: how many PSE switchgears have no free bay
+  answer: 69 (list of 2026-02-04)
+  numbers:
+  - '69'
+  dataset: pse_capacity.full_substations
+  needs: lake
+  source: agent/catalog/pse_capacity.yaml
+- id: registers-1
+  q: how much onshore and offshore wind is operating in the UK by REPD
+  answer: wind 15,508 MW, wind_offshore 16,011 MW (REPD Q2 2026)
+  numbers:
+  - 15,508
+  - 16,011
+  dataset: registers
+  needs: lake
+  source: agent/catalog/registers.yaml
+- id: registers-2
+  q: how many wind turbines turn in Denmark
+  answer: 4,858 (Vinddata to the end of September 2026)
+  numbers:
+  - 4,858
+  dataset: registers
+  needs: lake
+  source: agent/catalog/registers.yaml
+- id: registers-3
+  q: how much wind operates in mainland Portugal in DGEG's licensing
+  answer: 5,416 MVA (generator kW summed per park)
+  numbers:
+  - 5,416
+  dataset: registers
+  needs: lake
+  source: agent/catalog/registers.yaml
+- id: reliability-1
+  q: How long were customers in Germany without power on average?
+  answer: 0.25 hours (15 minutes) per customer in 2019, Berlin as the largest business city (World Bank Doing Business SAIDI)
+  numbers:
+  - '0.25'
+  - '15'
+  dataset: reliability
+  needs: catalog
+  source: agent/catalog/reliability.yaml
+- id: seds-1
+  q: US total energy consumption in 2024
+  answer: 94543438 billion Btu
+  numbers:
+  - '94543438'
+  dataset: seds
+  needs: api
+  source: agent/catalog/seds.yaml
+- id: seds-2
+  q: Texas total primary energy production in 2024
+  answer: 28288241 billion Btu
+  numbers:
+  - '28288241'
+  dataset: seds
+  needs: api
+  source: agent/catalog/seds.yaml
+- id: smard-1
+  q: Electricity consumption (grid load), Germany, hour starting 2026-10-18T12:00+00:00
+  answer: 49690.48 MWh per interval (read 2026-10-18)
+  numbers:
+  - '49690.48'
+  dataset: smard
+  needs: api
+  source: agent/catalog/smard.yaml
+- id: smard-2
+  q: Residual load, Germany, hour starting 2026-10-18T12:00+00:00
+  answer: 20641.73 MWh per interval (read 2026-10-18)
+  numbers:
+  - '20641.73'
+  dataset: smard
+  needs: api
+  source: agent/catalog/smard.yaml
+- id: steo-1
+  q: STEO residential electricity price forecast for December 2027
+  answer: 18.22717 cents/kWh (forecast, release of 2026-10)
+  numbers:
+  - '18.22717'
+  dataset: steo
+  needs: api
+  source: agent/catalog/steo.yaml
+- id: steo-2
+  q: US residential electricity price, October 2025
+  answer: 17.97 cents/kWh
+  numbers:
+  - '17.97'
+  dataset: steo
+  needs: api
+  source: agent/catalog/steo.yaml
+- id: transmission_outages-1
+  q: distinct forced line outages ENTSO-E listed on 2026-10-19 (window 2026-09-19 to 2026-11-18)
+  answer: '17'
+  numbers:
+  - '17'
+  dataset: entsoe/transmission_outages.transmission_outages
+  needs: lake
+  source: agent/catalog/transmission_outages.yaml
+- id: transmission_outages-2
+  q: distinct outages on the Czech-German border listed on 2026-10-19
+  answer: '410'
+  numbers:
+  - '410'
+  dataset: entsoe/transmission_outages.transmission_outages
+  needs: lake
+  source: agent/catalog/transmission_outages.yaml
+- id: tyndp-1
+  q: how many investments are under consideration
+  answer: '116'
+  numbers:
+  - '116'
+  dataset: tyndp.projects
+  needs: lake
+  source: agent/catalog/tyndp.yaml
+- id: uk_ets-1
+  q: How much did UK ETS installations emit in 2025?
+  answer: 71.1 Mt CO2e from 747 installations (sum of the recorded emissions, computed; registry report of 2026-10-20)
+  numbers:
+  - '71.1'
+  - '747'
+  dataset: uk_ets
+  needs: catalog
+  source: agent/catalog/uk_ets.yaml
+- id: us_gas-1
+  q: How full is US gas storage against the five-year range?
+  answer: Read storage (the Lower 48 series), its newest point and range_5y at that week (computed from EIA's weekly values).
+  numbers:
+  - '48'
+  dataset: us_gas
+  needs: catalog
+  source: agent/catalog/us_gas.yaml
+- id: world_substations-1
+  q: how many substations are mapped worldwide
+  answer: 870774 (32803 of 220 kV or more)
+  numbers:
+  - '870774'
+  - '32803'
+  - '220'
+  dataset: overture_power.sites
+  needs: lake
+  source: agent/catalog/world_substations.yaml
+- id: app-neg-hours-top
+  q: Which European bidding zone had the most hours with a negative day-ahead price in the newest 12 months, and how many?
+  answer: ES, 700.75
+  numbers:
+  - '700.75'
+  dataset: app
+  needs: app
+  sql: SELECT zone, negative_hours FROM app.eu_prices ORDER BY negative_hours DESC LIMIT 1
+  source: computed from the app's map files by this script
+- id: app-nl-mean
+  q: What was the average day-ahead price in the Netherlands over the newest 12 months?
+  answer: '103.03'
+  numbers:
+  - '103.03'
+  dataset: app
+  needs: app
+  sql: SELECT mean_eur_mwh FROM app.eu_prices WHERE zone = 'NL'
+  source: computed from the app's map files by this script
+- id: app-dk1-neg
+  q: How many hours below zero did DK1 have in the newest 12 months?
+  answer: '234.75'
+  numbers:
+  - '234.75'
+  dataset: app
+  needs: app
+  sql: SELECT negative_hours FROM app.eu_prices WHERE zone = 'DK1'
+  source: computed from the app's map files by this script
+- id: app-de-coal
+  q: How much coal capacity (plants of 20 MW and more) operates in Germany?
+  answer: 39,655
+  numbers:
+  - 39,655
+  dataset: app
+  needs: app
+  sql: SELECT round(sum(mw)) FROM app.eu_plants WHERE country = 'DE' AND fuel = 'coal'
+  source: computed from the app's map files by this script
+- id: app-fr-nuclear
+  q: How much nuclear capacity operates in France (plants of 20 MW and more)?
+  answer: 65,690
+  numbers:
+  - 65,690
+  dataset: app
+  needs: app
+  sql: SELECT round(sum(mw)) FROM app.eu_plants WHERE country = 'FR' AND fuel = 'nuclear'
+  source: computed from the app's map files by this script
+- id: app-es-solar-count
+  q: How many solar plants of 20 MW and more operate in Spain?
+  answer: '384'
+  numbers:
+  - '384'
+  dataset: app
+  needs: app
+  sql: SELECT count(*) FROM app.eu_plants WHERE country = 'ES' AND fuel = 'solar'
+  source: computed from the app's map files by this script
+- id: app-largest-eu
+  q: Which is the largest power plant in Europe in the map's plant list and how big is it?
+  answer: Belchatow Phase, 5,400
+  numbers:
+  - 5,400
+  dataset: app
+  needs: app
+  sql: SELECT name, mw FROM app.eu_plants ORDER BY mw DESC LIMIT 1
+  source: computed from the app's map files by this script
+- id: app-subs-380-de
+  q: How many substations of 380 kV are in Germany's transmission grid on the map?
+  answer: '450'
+  numbers:
+  - '450'
+  dataset: app
+  needs: app
+  sql: SELECT count(*) FROM app.eu_substations WHERE country = 'DE' AND kv = 380
+  source: computed from the app's map files by this script
+- id: app-us-tx-operating
+  q: How much generating capacity operates in Texas by EIA-860M?
+  answer: 196,421
+  numbers:
+  - 196,421
+  dataset: app
+  needs: app
+  sql: SELECT round(sum(mw)) FROM app.us_plants WHERE state = 'TX' AND status = 'operating'
+  source: computed from the app's map files by this script
+- id: app-world-coal-construction
+  q: How much coal capacity is under construction worldwide in Global Energy Monitor's tracker?
+  answer: 260,301
+  numbers:
+  - 260,301
+  dataset: app
+  needs: app
+  sql: SELECT round(sum(mw)) FROM app.world_plants WHERE type = 'coal' AND status = 'construction'
+  source: computed from the app's map files by this script
+- id: map-de-plants
+  q: Show Germany's power plants of 20 MW and more on a map, sized by capacity.
+  map:
+    kind: points
+    key: lon/lat
+  needs: app
+- id: map-neg-hours-zones
+  q: Map the hours with negative day-ahead prices per bidding zone.
+  map:
+    kind: choropleth
+    key: zone
+  needs: app
+- id: map-price-zones
+  q: Shade Europe's bidding zones by their average day-ahead price.
+  map:
+    kind: choropleth
+    key: zone
+  needs: app
+- id: map-coal-country
+  q: Map operating coal capacity per European country.
+  map:
+    kind: choropleth
+    key: country
+  needs: app
+- id: map-es-solar
+  q: Where are Spain's large solar plants? Show them on the map.
+  map:
+    kind: points
+    key: lon/lat
+  needs: app
+- id: map-tx-plants
+  q: Show the operating power plants in Texas on a map.
+  map:
+    kind: points
+    key: lon/lat
+  needs: app
+- id: map-uk-wind
+  q: Map the UK's operating wind projects from the REPD.
+  map:
+    kind: points
+    key: lon/lat
+  needs: lake
+- id: map-subs-nl
+  q: Show the 380 kV substations in the Netherlands.
+  map:
+    kind: points
+    key: lon/lat
+  needs: app
+- id: map-nuclear-country
+  q: Map nuclear capacity per European country.
+  map:
+    kind: choropleth
+    key: country
+  needs: app
+- id: map-world-coal-building
+  q: Show the coal plants under construction worldwide.
+  map:
+    kind: points
+    key: lon/lat
+  needs: app

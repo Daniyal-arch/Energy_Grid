@@ -4,7 +4,7 @@ Measures the cold open and a typical query, and checks the security settings the
 on: extensions loadable from a local directory, `allowed_directories` / `allowed_paths` with
 `enable_external_access = false`, and `lock_configuration`.
 
-    uv run python probes/probe_lake.py
+    uv run python -m probes.probe_lake
 """
 
 from __future__ import annotations
