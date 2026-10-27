@@ -108,12 +108,26 @@ def test_eval_questions_and_scorers():
 
     from evals.scorers import map_correct, number_correct
 
-    qs = yaml.safe_load((Path(get_settings().agent_dir) / "evals" / "questions.yaml").read_text())["questions"]
+    qs = yaml.safe_load((Path(get_settings().agent_dir) / "evals" / "questions.yaml").read_text())[
+        "questions"
+    ]
     assert sum(1 for q in qs if "numbers" in q) >= 40 and sum(1 for q in qs if "map" in q) >= 10
     assert len({q["id"] for q in qs}) == len(qs)
     assert number_correct(["15,508", "16,011"], "wind 15,508 MW and offshore 16.0 GW") == 0.5
     assert number_correct(["176042304.25"], "176,042,304.25 customer-hours") == 1.0
     assert number_correct(["700.75"], "ES had 700.75 hours") == 1.0
-    spec = {"title": "t", "overlays": [{"id": "a", "kind": "choropleth", "data": {"result_id": "r_0123456789ab", "key": "zone", "shapes": "bidding_zones"}, "value": {"column": "h", "unit": "h"}, "legend": {"title": "t", "how": "h"}, "source": "ENTSO-E"}]}
+    spec = {
+        "title": "t",
+        "overlays": [
+            {
+                "id": "a",
+                "kind": "choropleth",
+                "data": {"result_id": "r_0123456789ab", "key": "zone", "shapes": "bidding_zones"},
+                "value": {"column": "h", "unit": "h"},
+                "legend": {"title": "t", "how": "h"},
+                "source": "ENTSO-E",
+            }
+        ],
+    }
     assert map_correct({"kind": "choropleth", "key": "zone"}, [{"spec": spec}]) == 1.0
     assert map_correct({"kind": "points", "key": "lon/lat"}, [{"spec": spec}]) == 0.0

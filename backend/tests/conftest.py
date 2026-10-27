@@ -44,7 +44,7 @@ os.environ.update(
         "LOCAL_STORE_DIR": str(TMP / "store"),
         "RESULTS_DIR": str(TMP / "results"),
         "ADMIN_API_KEY": "test-admin",
-        "MCP_API_KEYS": '["test-mcp"]',
+        "MCP_API_KEYS": "test-mcp",
         "IP_REQUESTS_PER_HOUR": "1000",
         "ENVIRONMENT": "test",
     }

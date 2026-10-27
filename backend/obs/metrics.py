@@ -1,7 +1,7 @@
 """CloudWatch Embedded Metric Format: one JSON log line per question becomes metrics.
 
-Namespace `InfraAtlas/Agent`, dimension `Model`. The SAM template's dashboard and alarms read
-these (deploy/template.yaml).
+Namespace `InfraAtlas/Agent`, per `Model` and without dimensions (for the alarms). The SAM
+template's dashboard and alarms read these (deploy/template.yaml).
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ def emit(model: str, values: dict[str, float], route: str = "") -> str:
             "CloudWatchMetrics": [
                 {
                     "Namespace": NAMESPACE,
-                    "Dimensions": [["Model"]],
+                    "Dimensions": [["Model"], []],
                     "Metrics": [{"Name": k, "Unit": UNITS.get(k, "None")} for k in values],
                 }
             ],

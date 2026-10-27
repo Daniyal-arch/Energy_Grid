@@ -7,13 +7,15 @@ start and fill only the variables the environment does not already set.
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from functools import lru_cache
 from pathlib import Path
+from typing import Annotated
 
-from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
 log = logging.getLogger(__name__)
@@ -38,13 +40,13 @@ class Settings(BaseSettings):
     )
     snapshot_remote: str = "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-data/eu/"
 
-    # CORS: the site and the dev server
-    cors_origins: list[str] = ["https://infraatlas.pages.dev", "http://localhost:5173"]
+    # CORS: the dev server; production adds the site origin (CORS_ORIGINS, template SiteOrigins)
+    cors_origins: Annotated[list[str], NoDecode] = ["http://localhost:5173"]
 
     # models (agent/models.yaml); "fake:*" runs the scripted test model
     agent_model: str = "anthropic:claude-opus-5-5"
     agent_model_fast: str = "anthropic:claude-haiku-5-5"
-    agent_models_allowed: list[str] = []
+    agent_models_allowed: Annotated[list[str], NoDecode] = []
     anthropic_api_key: str | None = None
     openai_api_key: str | None = None
     google_api_key: str | None = None
@@ -81,7 +83,7 @@ class Settings(BaseSettings):
 
     # keys (SSM in Lambda)
     admin_api_key: str | None = None
-    mcp_api_keys: list[str] = []
+    mcp_api_keys: Annotated[list[str], NoDecode] = []
     proxy_secret: str | None = None
     require_proxy: bool = False
     ip_hash_salt: str = "infraatlas"
@@ -96,6 +98,17 @@ class Settings(BaseSettings):
     otel_exporter_otlp_endpoint: str | None = None
     otel_console: bool = False
     run_records: bool = True
+
+    @field_validator("cors_origins", "agent_models_allowed", "mcp_api_keys", mode="before")
+    @classmethod
+    def _list(cls, v: object) -> object:
+        """A JSON list or a comma-separated string (SAM parameters, SSM values)."""
+        if isinstance(v, str):
+            v = v.strip()
+            if v.startswith("["):
+                return json.loads(v)
+            return [x.strip() for x in v.split(",") if x.strip()]
+        return v
 
     @property
     def agent_dir(self) -> Path:

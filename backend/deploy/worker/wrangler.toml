@@ -1,0 +1,14 @@
+# The same-origin proxy (brief 25 stage 13): /api/* and /mcp on the site's domain go to the
+# Lambda Function URL with the shared secret header; Server-Sent Events pass through unbuffered.
+# Deployed by .github/workflows/backend.yml: routes from the repo variable SITE_DOMAIN
+# (wrangler deploy --route), secrets FUNCTION_URL and PROXY_SECRET (wrangler secret put).
+name = "infraatlas-api"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+# Workers rate limiting binding: the first, cheap limit per client IP before the Lambda
+[[ratelimits]]
+name = "ASK_LIMIT"
+namespace_id = "2501"
+simple = { limit = 10, period = 60 }

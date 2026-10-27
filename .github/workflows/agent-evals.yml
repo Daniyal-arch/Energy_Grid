@@ -1,0 +1,57 @@
+name: agent-evals
+
+# The agent's evaluation (backend/evals/run.py): a 10-question sample on pull requests that touch
+# backend/ or agent/ (cost-capped), the full set weekly. Skipped without ANTHROPIC_API_KEY.
+
+on:
+  pull_request:
+    paths: ["backend/**", "agent/**", ".github/workflows/agent-evals.yml"]
+  schedule:
+    - cron: "17 5 * * 1"  # Mondays 05:17 UTC
+  workflow_dispatch:
+    inputs:
+      model: {description: "model id from agent/models.yaml", default: "claude-opus-5-5"}
+      sample: {description: "questions (0 = all)", default: "10"}
+
+permissions:
+  contents: read
+
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: backend}}
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+      LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+      LANGFUSE_HOST: ${{ secrets.LANGFUSE_HOST || 'https://cloud.langfuse.com' }}
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_READ_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_READ_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Key present?
+        id: gate
+        working-directory: .
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "Evals skipped: repo secret ANTHROPIC_API_KEY is not set." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: steps.gate.outputs.skip != 'true'
+        uses: actions/checkout@v4
+      - if: steps.gate.outputs.skip != 'true'
+        uses: astral-sh/setup-uv@v6
+        with: {version: "0.9.5"}
+      - if: steps.gate.outputs.skip != 'true'
+        run: uv sync --frozen
+      - if: steps.gate.outputs.skip != 'true'
+        name: Run
+        run: |
+          SAMPLE=${{ github.event_name == 'schedule' && '0' || inputs.sample || '10' }}
+          CAP=${{ github.event_name == 'schedule' && '10' || '1' }}
+          uv run python -m evals.run --model "${{ inputs.model || 'claude-opus-5-5' }}" --sample "$SAMPLE" \
+            --cost-cap "$CAP" --out evals.json | tee out.txt
+          sed -n '/^| model/,$p' out.txt >> "$GITHUB_STEP_SUMMARY"
+      - if: steps.gate.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with: {name: evals, path: backend/evals.json}
