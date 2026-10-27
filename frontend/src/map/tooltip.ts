@@ -41,6 +41,7 @@ import { CABLE_STYLE } from "../app/colors";
 import { ensure, fileOf } from "../app/data";
 import { STATUS_LABEL as REG_STATUS, registerKey, type RegisterFile, type RegisterPoint } from "../lib/registers";
 import { connectEuKey, valueText, type ConnectEuFile, type EuArea, type EuPoint } from "../lib/connectEu";
+import { H, H_LABEL, countryRoom, mwText as hMw, type HClass, type HFile, type HRow } from "../lib/connectH";
 import { clockOf, dayFileKey, dayIndexKey, dayPower, marketTime, unitOutKey, utc } from "../app/day";
 import { BEAM_MIN_MW, HEX_KM } from "../app/geo";
 import { useApp, motion } from "../app/store";
@@ -104,6 +105,16 @@ export function countryHtml(name: string, iso2: string | null, iso3: string | nu
     const flag = n.flag ? ` (${FLAG_TEXT[n.flag] ?? n.flag})` : "";
     return `<b>${name}</b><div>Households pay <b>${euroCents(n.v)}/kWh</b>${flag}</div>
       <div>without VAT ${euroCents(row.X_VAT[n.k])} · without taxes and levies ${euroCents(row.X_TAX[n.k])}</div>${SRC(`Eurostat nrg_pc_204, ${n.period}, band DC (2,500–4,999 kWh a year)`)}`;
+  }
+  if (s.colour === "cn_gen" || s.colour === "cn_load") {
+    const hf = fileOf<HFile>("connectH");
+    const c = hf && iso2 ? countryRoom(hf)[iso2] : undefined;
+    const gen = s.colour === "cn_gen";
+    if (!c) return `<b>${name}</b>${SRC("no operator publishes room to connect here (see the registry card)")}`;
+    const [mw, n] = gen ? [c.gen, c.genRows] : [c.load, c.loadRows];
+    const ops = c.operators.map((o) => `${o.operator}${o.as_of ? ` (${o.as_of})` : ""}`).join("; ");
+    return `<b>${name}</b><div>Free capacity for new ${gen ? "generation" : "demand"}: <b>${n ? hMw(mw) : "no MW published"}</b></div>
+      ${n ? `<div style="color:#8d94a1">sum over ${n.toLocaleString("en-US")} nodes and areas (computed)</div>` : ""}${SRC(ops)}`;
   }
   if (s.colour === "access") {
     const ws = fileOf<WorldStatsFile>("worldStats");
@@ -556,6 +567,20 @@ function tooltipHtml(id: string, object: unknown): string | null {
       return `<b>${name}</b><div>${area} · CAISO day-ahead market</div>
         <div>${hour}: <b>${usdMwh(f.prices[i][k])}/MWh</b></div>
         ${vals.length ? `<div style="color:#8d94a1">day: ${usdMwh(Math.min(...vals))} to ${usdMwh(Math.max(...vals))}</div>` : ""}${SRC(`CAISO day-ahead LMP, ${f.date}; position from CAISO's price map`)}`;
+    }
+    case "eu-connect-h":
+    case "eu-connect-h-areas": {
+      const hf = fileOf<HFile>("connectH");
+      const r = (id === "eu-connect-h" ? object : (object as { r: HRow }).r) as HRow;
+      if (!hf || !r) return null;
+      const o = hf.operators[r[H.op]];
+      const cls = (c: HClass | null) => (c ? H_LABEL[c] : "no class published");
+      const val = (mw: number | null, mva: number | null) => (mw != null ? ` · <b>${hMw(mw)}</b> free` : mva != null ? ` · <b>${mva.toLocaleString("en-US", { maximumFractionDigits: 1 })} MVA</b> free` : "");
+      const q = r[H.mwQueue] != null ? `<div>Waiting: <b>${hMw(r[H.mwQueue])}</b></div>` : "";
+      return `<b>${r[H.name]}</b><div style="color:#8d94a1">${o.operator} · ${o.level}${r[H.kv] ? ` · ${r[H.kv]} kV` : ""}</div>
+        <div>New generation: ${cls(r[H.cls])}${val(r[H.mwGen], r[H.mvaGen])}</div>
+        <div>New demand: ${cls(r[H.clsLoad])}${val(r[H.mwLoad], r[H.mvaLoad])}</div>${q}
+        ${SRC(`${o.source}${o.as_of ? `, ${o.as_of}` : ""}. Classes: ${o.mapping}`)}`;
     }
     case "eu-connect-nl": {
       const a = (object as { a: NlArea }).a;

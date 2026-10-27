@@ -76,6 +76,7 @@ touch different files. The owner merges; the next phase starts when its inputs a
 | Brief | What |
 |---|---|
 | **22 Coverage wave 7** ([22-coverage-wave7.md](docs/tasks/22-coverage-wave7.md)) | a coverage registry (family × country, shown per country), then 11 families made consistent: room to connect, every unit, live mix and CO₂, redispatch and curtailment, GB prices, GB retail, UK ETS, GB plants offline, EV charging, US gas, reliability |
+| **23 Room to connect, one map** ([23-grid-capacity-harmonised.md](docs/tasks/23-grid-capacity-harmonised.md)) | every grid operator's capacity records in one schema (`connect/harmonised.json`), one symbology, free capacity per country as a colouring, the Room to connect card; added 50Hertz, Amprion, the Spanish DSOs, NGED/SSEN/NPg headroom, HOPS, MAVIR and MVM, ELES, ZSD/VSD, Elenia, HEDNO, SCE/PG&E/SDG&E |
 
 ### Phase 2: the agent that draws
 

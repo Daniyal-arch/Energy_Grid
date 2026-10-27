@@ -40,6 +40,7 @@ ignore = ["ANN401"]
 "**/tests/**" = ["ANN"]
 # wave 7 fixtures quote the operators' rows as published
 "tests/test_wave7.py" = ["ANN", "E501"]
+"tests/test_connect_harmonised.py" = ["ANN", "E501"]
 # probe/one-off scripts are exploratory: allow long lines and lambda-in-loop
 "scripts/**" = ["ANN", "E501", "B023"]
 

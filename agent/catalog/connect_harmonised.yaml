@@ -1,0 +1,26 @@
+dataset: connect_harmonised
+title: Room to connect, every grid operator's published record in one schema (EU-27, UK, US utilities)
+licence: per operator (column licence); see docs/DATA_SOURCES.md "Room to connect in one schema"
+map_file: frontend/public/data/eu/connect/harmonised.json (fields, operators, rows as arrays)
+lake: connect/harmonised (one full row per record, snapshot partition)
+fields:
+  cc: ISO alpha-2 (US-<utility> for US distribution)
+  operator: the grid operator
+  level: transmission or distribution
+  kind: node (a point) or area (an outline, label point in lon/lat)
+  mw_gen: free capacity for new generation, MW as published (null when the operator gives none)
+  mw_load: free capacity for new demand, MW as published
+  mva_gen: free capacity published in MVA (or kVA / 1000), not converted
+  mva_load: the same for demand
+  mw_queue: MW waiting (registers, queues)
+  class: available | limited | queue | none for generation, the operator's own class mapped one to one
+  class_load: the same for demand
+notes:
+  - Nothing is estimated; an operator that publishes MW only is classed available above 0 MW, none at 0.
+  - Nodes without coordinates are matched to OpenStreetMap substations by name only where unique.
+  - Red Eléctrica's transmission nodes share capacity within a zone: do not sum them.
+examples:
+  - q: Where can a new 50 MW solar park connect in Slovenia?
+    answer: Rows with cc SI and mw_gen >= 50 (ELES transmission substations, free injection MW as published).
+  - q: How much free capacity for new demand do the Dutch operators publish?
+    answer: The Netherlands publishes classes per area, not MW; count areas by class_load (available, limited, queue, none).

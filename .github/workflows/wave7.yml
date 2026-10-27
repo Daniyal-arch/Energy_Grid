@@ -6,14 +6,14 @@ name: Wave 7 datasets
 # Run workflow, naming the families (the branch push trigger used while building was removed).
 # A room to connect, B every unit, C live mix and CO2, D redispatch and congestion, E prices,
 # F what consumers pay, G emitters, H plants offline, I EV charging, J gas (US), K reliability,
-# P the probe (scripts/probe_wave7.py).
+# P the probe (scripts/probe_wave7.py), R room to connect in one schema (brief 23).
 # Needs CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, ENTSOE_API_KEY, EIA_API_KEY.
 
 on:
   workflow_dispatch:
     inputs:
       groups:
-        description: "Families to build (A B C D E F G H I J K; P = probe)"
+        description: "Families to build (A B C D E F G H I J K; P = probe; R = room to connect, harmonised)"
         type: string
         default: "A B C D E F G H I J K"
 
@@ -349,3 +349,25 @@ jobs:
       - name: Commit outputs
         if: ${{ !cancelled() }}
         run: bash scripts/wave5_commit.sh "Wave 7 family K outputs"
+
+  R:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'R')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install httpx duckdb pycountry pyproj openpyxl pdfplumber
+      - name: Room to connect, the brief-23 operators (Opendatasoft and the rest)
+        continue-on-error: true
+        run: python scripts/build_connect_h23.py all
+      - name: Room to connect in one schema, nodes without positions matched to OpenStreetMap by name
+        continue-on-error: true
+        timeout-minutes: 60
+        run: python scripts/build_connect_harmonised.py --osm --upload
+      - name: Commit outputs
+        if: ${{ !cancelled() }}
+        run: bash scripts/wave5_commit.sh "Room to connect, harmonised outputs"

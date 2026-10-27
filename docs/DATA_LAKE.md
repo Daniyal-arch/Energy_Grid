@@ -383,6 +383,12 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 | Power cuts, SAIDI and SAIFI (World Bank) | World Bank API | API (no lake copy; 29 countries × 6 years) | 0 |
 | EV charging points and stations (`ev_eu/<cc>`: BNetzA, IRVE, OpenStreetMap) | CSV, Overpass API | GeoParquet, snapshot partition | DE 116,422 rows (4.7 MB); FR and OSM see the catalogue |
 
+### Brief 23 (room to connect, one schema)
+
+| Dataset | Access | Kept as | Size (measured) |
+|---|---|---|---|
+| Room to connect, every operator in one schema (`connect/harmonised`) | the operators' files, ArcGIS layers, PDF tables, Opendatasoft, JSON | GeoParquet (point = node position or area label point; outline as JSON text), snapshot partition | 19,266 rows, 1.7 MB (2026-10-27) |
+
 ### Future (docs/DATASETS.md)
 
 | Dataset | Access | Kept as | Size |

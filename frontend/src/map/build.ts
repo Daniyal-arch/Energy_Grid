@@ -16,7 +16,7 @@ import { GEM_PIPES, GEM_POINTS, IDLE, type GemPipesFile, type GemPointsFile, typ
 import { ETS_COLOR, etsRadius, newestT, type EtsFile, type EtsRow } from "../lib/ets";
 import { RETAIL_STOPS, euroCents, newestOf, type RetailFile } from "../lib/retail";
 import { CT_COLOR, ctRadius, type CtRow, type CtraceFile } from "../lib/ctrace";
-import { GB_TYPE_COLOR, NL_COLOR, gbSiteTotals, type ConnectFile, type NlArea } from "../lib/connect";
+import { ROOM_STOPS, countryRoom, type HFile } from "../lib/connectH";
 import type { UsNodesFile } from "../lib/usNodes";
 import { LNG_SEND, lngDay, lngRadius, type LngTerminal, type LngTerminalsFile } from "../lib/lngTerminals";
 import { IRENA_STOPS, irenaK, irenaMetricById, irenaScale, irenaValue, formatGw, type IrenaFile, type IrenaMetricId } from "../lib/irena";
@@ -116,8 +116,7 @@ import { evEuLayers } from "./evEuLayers";
 import { usGasLayers } from "./usGasLayers";
 import { ghgrpLayers } from "./ghgrpLayers";
 import { tyndpLayers } from "./tyndpLayers";
-import { connectMoreLayers } from "./connectMoreLayers";
-import { connectEuLayers } from "./connectEuLayers";
+import { connectHLayers } from "./connectHLayers";
 import { registerLayers } from "./registerLayers";
 import { comingLayers } from "./comingLayers";
 import { NZ_COLOR, NZ_POINT, ZA_COLOR, ZA_POINT, type NzFile, type ZaFile } from "../lib/regionalLive";
@@ -241,6 +240,14 @@ export function countryColour(fr: Frame, iso: string): RGB {
     case "offline": {
       const o = f.outages as OutagesFile | undefined;
       return o ? (stopColor(OFFLINE_STOPS, (o.countries[iso]?.offline_mw ?? 0) / 1000) ?? NO_DATA) : NO_DATA;
+    }
+    case "cn_gen":
+    case "cn_load": {
+      const hf = f.connectH as HFile | undefined;
+      const c = hf ? memo("countryRoom", [hf], () => countryRoom(hf))[iso] : undefined;
+      if (!c) return TR_NO_DATA;
+      const [mw, n] = fr.colour === "cn_gen" ? [c.gen, c.genRows] : [c.load, c.loadRows];
+      return (n > 0 && stopColor(ROOM_STOPS, mw / 1000)) || TR_NO_DATA;
     }
     case "rt_household": {
       const rf = f.retail as RetailFile | undefined;
@@ -534,48 +541,9 @@ export function buildLayers(fr: Frame): Layer[] {
     );
   }
 
-  // ---------------------------------------------------------------- grid capacity: NL areas, GB connection sites
-  const connect = f.connect as ConnectFile | undefined;
-  if (facingEurope && connect && isOn("connect") && (inAreaCountry(fr.area, "GB") || inAreaCountry(fr.area, "NL"))) {
-    const side = fr.connectSide;
-    const areas = memo("nlAreas", [connect], () =>
-      connect.nl.areas.flatMap((a) => a.polygons.map((polygon) => ({ a, polygon }))),
-    );
-    const sites = memo("gbSites", [connect], () => gbSiteTotals(connect.gb));
-    layers.push(
-      new SolidPolygonLayer<{ a: NlArea; polygon: [number, number][][] }>({
-        id: "eu-connect-nl",
-        data: inAreaCountry(fr.area, "NL") ? areas : NONE,
-        getPolygon: (d) => d.polygon,
-        getFillColor: (d) => [...NL_COLOR[Math.max(0, Math.min(3, side === "offtake" ? d.a.offtake : d.a.feedin))], 150],
-        updateTriggers: { getFillColor: [side] },
-        pickable: true,
-        autoHighlight: true,
-        highlightColor: [255, 255, 255, 40],
-        parameters: ON_TOP,
-      }),
-      new ScatterplotLayer<(typeof sites)[number]>({
-        id: "eu-connect-gb",
-        data: inAreaCountry(fr.area, "GB") ? sites : NONE,
-        getPosition: (d) => [d.site[1]!, d.site[2]!],
-        getRadius: (d) => Math.min(16, 1.5 + Math.sqrt(d.mw) * 0.16),
-        radiusUnits: "pixels",
-        getFillColor: (d) => {
-          const top = d.byType.indexOf(Math.max(...d.byType));
-          return [...(GB_TYPE_COLOR[connect.gb.types[top]] ?? GB_TYPE_COLOR.Other), 170];
-        },
-        stroked: true,
-        getLineColor: [6, 7, 10, 200],
-        lineWidthUnits: "pixels",
-        getLineWidth: 0.6,
-        pickable: true,
-        parameters: ON_TOP,
-      }),
-    );
-  }
-
-  // France, Italy, Ireland (scripts/build_connect_more.py)
-  if (facingEurope) layers.push(...connectMoreLayers(fr), ...connectEuLayers(fr), ...registerLayers(fr));
+  // room to connect: every operator in one schema and one symbology (scripts/build_connect_harmonised.py)
+  layers.push(...connectHLayers(fr));
+  if (facingEurope) layers.push(...registerLayers(fr));
   // hydrogen projects and planned gas infrastructure (scripts/build_coming.py)
   if (facingEurope) layers.push(...comingLayers(fr));
 

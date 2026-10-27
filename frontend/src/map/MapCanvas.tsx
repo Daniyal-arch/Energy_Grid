@@ -3,7 +3,6 @@
 // only mounts this once. When nothing moves and nothing changed, a frame costs nothing.
 
 import { AmbientLight, DirectionalLight, LightingEffect, MapView, _GlobeView as GlobeView, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
-import { CONNECT_EU, connectEuKey } from "../lib/connectEu";
 import { REGISTER_LAYERS, registerKey } from "../lib/registers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import maplibregl from "maplibre-gl";
@@ -66,12 +65,7 @@ export function wantedKeys(zoom: number, L: Record<LayerId, boolean> = useApp.ge
   if (L.ctrace) keys.push("ctrace");
   // a country's own files only for the dashboard's countries
   const here = (cc: string) => inAreaCountry(s.area, cc);
-  if (L.connect)
-    keys.push(
-      ...(here("GB") || here("NL") ? ["connect"] : []),
-      ...(["FR", "IT", "IE"] as const).filter(here).map((cc) => `connect${cc}`),
-      ...CONNECT_EU.filter((id) => here(id.slice(0, 2))).map(connectEuKey),
-    );
+  if (L.connect) keys.push("connectH");
   if (L.usOutages) keys.push("usOutages", "usCounties");
   if (L.water) keys.push("water");
   if (L.offshoreWind) keys.push("offshoreWind");
@@ -113,6 +107,7 @@ export function wantedKeys(zoom: number, L: Record<LayerId, boolean> = useApp.ge
   if (s.colour.startsWith("pr_")) keys.push("prices", "zones");
   if (s.colour === "access") keys.push("worldStats");
   if (s.colour === "rt_household") keys.push("retail", "usStates");
+  if (s.colour === "cn_gen" || s.colour === "cn_load") keys.push("connectH");
   if (s.colour.startsWith("ir_")) keys.push("irena");
   if (s.mode === "years" || s.colour.startsWith("tr_")) keys.push("transition");
   if (s.mode === "day") {

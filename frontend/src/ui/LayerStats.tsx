@@ -33,6 +33,7 @@ import { LNG_SEND, gwhdText, lngDay, type LngTerminalsFile } from "../lib/lngTer
 import { CT_COLOR, subsectorLabel, type CtraceFile } from "../lib/ctrace";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 import { ConnectEuCard } from "../components/ConnectEuCards";
+import { RoomCard } from "../components/RoomCards";
 import { RegisterCard } from "../components/RegisterCards";
 import { REGISTER_LAYERS } from "../lib/registers";
 import { CONNECT_EU, connectEuCountry } from "../lib/connectEu";
@@ -929,7 +930,13 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
         if (id === "cables") return iso3 ? null : <CablesCard key={id} />;
         if (id === "ets") return <EtsCard key={id} iso3={iso3} />;
         if (id === "ctrace") return <CtraceCard key={id} iso3={iso3} />;
-        if (id === "connect") return <ConnectCards key={id} iso3={iso3} />;
+        if (id === "connect")
+          return (
+            <div key={id} className="contents">
+              <RoomCard iso2={iso3 === "USA" ? "US" : iso2Of(iso3)} />
+              <ConnectCards iso3={iso3} />
+            </div>
+          );
         if (id === "usOutages")
           return iso3 && iso3 !== "USA" ? null : (
             <div key={id} className="space-y-3">
