@@ -21,6 +21,9 @@ def test_norm_drops_station_words_voltage_and_accents() -> None:
     assert h.norm("UW Mattersburg 220 kV") == "mattersburg"
     assert h.norm("Subestación de Abadés 400") == "abades"
     assert h.norm("SÃO BRÁS DE ALPORTEL (*)") == "sao bras alportel"
+    assert h.norm("TS Beli Manastir") == h.norm("BELI MANASTIR") == "beli manastir"
+    assert h.norm("Stacja elektroenergetyczna Mikułowa") == "mikulowa"
+    assert h.norm("Baja alállomás") == "baja"
 
 
 def test_matcher_places_only_unique_names(tmp_path: Path, monkeypatch: object) -> None:

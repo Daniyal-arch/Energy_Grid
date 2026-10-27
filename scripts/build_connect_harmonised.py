@@ -107,6 +107,11 @@ STOP = {
     "subestacao", "se", "set", "st", "de", "del", "la", "el", "los", "las", "do", "da", "dos",
     "gsp", "kv", "rozdzielnia", "gpz", "sous", "poste", "s", "stn", "unterwerk", "schaltanlage",
     "schaltwerk", "trafostation", "at", "mt", "rnd",
+    # Croatian, Polish, Hungarian, Slovenian, Slovak station words (OSM names carry them, the
+    # operators' lists mostly not): "TS Beli Manastir", "Stacja elektroenergetyczna Mikułowa"
+    "ts", "rp", "trafostanica", "transformatorska", "stanica", "stacja", "elektroenergetyczna",
+    "alallomas", "allomas", "kapcsoloallomas", "rtp", "razdelilna", "postaja", "rozvodna",
+    "transformovna", "elektrarna",
 }  # fmt: skip
 
 
