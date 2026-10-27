@@ -1305,43 +1305,43 @@ Red Eléctrica's nodes share capacity and are not summed) and the card "Room to 
 `build_connect_h23.py` (the operators added by brief 23, one `connect/h_<key>.json` each) and the
 earlier per-operator scripts. Lake `connect/harmonised`. Refresh: by hand (`wave7.yml` job R).
 
-| cc | Operator | Level | Rows | Licence | Class mapping |
-|---|---|---|---|---|---|
-| AT | Austrian Power Grid (APG) | transmission | 83 | public notice (Regulation (EU) 2019/943 Art. 50(4a)); reuse with the source named | MW free > 0 -> available; 0 MW, flexible connection possible -> limited; 0 MW, no flexible connection -> none |
-| BG | Elektroenergien Sistemen Operator (ESO) | transmission | 447 | public web map; reuse with the source named | connection possible -> available; grid expansion needed first -> none |
-| CZ | ČEPS | transmission | 36 | public web map; reuse with the source named | suitable -> available; conditionally suitable -> limited; not suitable -> none |
-| DE | 50Hertz | transmission | 75 | 50Hertz website terms (public information under §14e EnWG); reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none; a location without a published MW has no class |
-| DE | Amprion | transmission | 10 | Amprion website (information only, without warranty) | a potential connection point with an earliest commissioning year (2032-2035) -> limited; 'only load connections possible' -> generation none |
-| DE | TransnetBW | transmission | 52 | public web map; reuse with the source named | medium-term -> limited; long-term -> limited; not available -> none |
-| DK | Energinet and the Danish DSOs | transmission | 1,261 | public web map; reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none |
-| EE | Elering | transmission | 163 | public web map; reuse with the source named | expandable (type A) -> available; not expandable (type B) -> none |
-| ES | Red Eléctrica (transmission nodes) | transmission | 937 | REE terms of use (reuse with the source named) | MW only: more than 0 MW free -> available, 0 MW -> none (demand: CEP with ride-through, the first column) |
-| ES | e-distribución (Endesa) | distribution | 1,859 | published under CNMC Circular 1/2024; reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none (demand: firm capacity available); joined by substation code and voltage |
-| FI | Elenia | distribution | 169 | Elenia public web map (no licence stated) | MW only: more than 0 MW free -> available, 0 MW -> none |
-| FR | RTE and the distribution operators (Capareseau) | transmission | 3,116 | Capareseau: reuse allowed with the source named | MW only: more than 0 MW free -> available, 0 MW -> none, on 'capacité réservée au titre du S3REnR qui reste à affecter' (INFO_NA) |
-| GB | NESO (TEC register) | transmission | 1,053 | NESO Open Data Licence | a site with MW waiting (cumulative capacity - MW connected, summed per site, computed) -> queue |
-| GB | National Grid Electricity Distribution (NGED) | distribution | 1,182 | WPD Open Data Licence | NGED's constraint colour: green -> available, amber -> limited, red -> none (generation and demand each) |
-| GB | Scottish and Southern Electricity Networks (SSEN) | distribution | 998 | CC BY 4.0 | SSEN's RAG status: Green -> available, Amber -> limited, Red -> none; demand headroom is MVA, kept as MVA |
-| GR | HEDNO | distribution | 454 | HEDNO public web application (no licence stated) | HEDNO's availability colour: green (over 2 MVA on both criteria) -> available, orange (about 2 MVA on one) -> limited, red (zero) -> none; mva_gen = the smaller of the thermal and the short-circuit margin (both published, the binding one taken) |
-| HR | HOPS | transmission | 199 | HOPS website (public information) | HOPS's categories: A (up to 50 MW) -> limited, B (up to 100 MW) -> available, C (over 100 MW) -> available, / (0 MW or no free bay) -> none |
-| HU | MAVIR and the DSOs (station list) | transmission | 168 | MAVIR website (disclaimer sheet in the file) | spare bays + free bays/cells offered > 0 -> available, 0 -> none; injection capacity kept as published (MVA) |
-| HU | MVM Démász | distribution | 43 | operator website (public information) | MW only: more than 0 MW free -> available, 0 MW -> none, for load only (the table is 'vételezési célú', for withdrawal); no generation figure published |
-| HU | MVM Émász | distribution | 32 | operator website (public information) | MW only: more than 0 MW free -> available, 0 MW -> none, for load only (the table is 'vételezési célú', for withdrawal); no generation figure published |
-| IE | ESB Networks | distribution | 657 | ESB Networks website terms | MW only: more than 0 MW free -> available, 0 MW -> none, on firm generation available (MW); demand available is MVA, kept as published |
-| IT | Terna (Econnextion) | transmission | 21 | dati.terna.it (terms of use not found; figures shown with the source named) | requests to connect renewables per region -> queue (MW requested, summed per region, computed) |
-| LT | Litgrid | transmission | 309 | public web map; reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none, on the larger of the free MW for solar and for wind (both published) |
-| LU | Creos | transmission | 43 | public web map; reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none, on the largest free MW of the station's voltage levels |
-| MT | Enemalta | distribution | 1,332 | public notice (Regulation (EU) 2019/943 Art. 57(3)); reuse with the source named | kWp for renewables and kVA for load as published (shown as MVA/MWp, divided by 1,000); class: more than 0 -> available, 0 -> none |
-| NL | Netbeheer Nederland (regional operators) | distribution | 923 | Esri Nederland terms of use | 0 capacity available, no queue -> available; 1 capacity limited, no queue -> limited; 2 under study, with a queue -> queue; 3 shortage of capacity, with a queue -> none |
-| PL | PSE | transmission | 182 | PSE website (public information under the Energy Law) | requests in the Art. 7(8l) list -> queue; switchgear without a free connection bay -> none |
-| PT | E-REDES | distribution | 470 | CC BY 4.0 | MVA only (reception capacity, HV): more than 0 -> available, 0 -> none |
-| SE | Svenska kraftnät | transmission | 21 | public web map; reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none |
-| SI | ELES | transmission | 46 | ELES public web map (no licence stated) | MW only: more than 0 MW free -> available, 0 MW -> none |
-| SK | Východoslovenská distribučná (VSD) | distribution | 32 | operator website (public information) | MW only: more than 0 MW free -> available, 0 MW -> none |
-| SK | Západoslovenská distribučná (ZSD) | distribution | 63 | operator website (public information) | MW only: more than 0 MW free -> available, 0 MW -> none |
-| US-PGE | Pacific Gas and Electric (GRIP) | distribution | 776 | PG&E: 'available for general public consumption' | a substation with queued distributed generation -> queue; PG&E publishes hosting capacity per line section, not per substation |
-| US-SCE | Southern California Edison (DRPEP) | distribution | 884 | SCE DRPEP (information purposes only; no use restriction stated) | MW only: more than 0 MW free -> available, 0 MW -> none |
-| US-SDGE | San Diego Gas & Electric (ICA) | distribution | 107 | SDG&E public ICA map (no licence stated) | a substation with queued generation -> queue; SDG&E publishes hosting capacity per grid cell, not per substation |
+| cc | Operator | Level | Rows | On the map | Licence | Class mapping |
+|---|---|---|---|---|---|---|
+| AT | Austrian Power Grid (APG) | transmission | 83 | 0 | public notice (Regulation (EU) 2019/943 Art. 50(4a)); reuse with the source named | MW free > 0 -> available; 0 MW, flexible connection possible -> limited; 0 MW, no flexible connection -> none |
+| BG | Elektroenergien Sistemen Operator (ESO) | transmission | 447 | 447 | public web map; reuse with the source named | connection possible -> available; grid expansion needed first -> none |
+| CZ | ČEPS | transmission | 36 | 36 | public web map; reuse with the source named | suitable -> available; conditionally suitable -> limited; not suitable -> none |
+| DE | 50Hertz | transmission | 75 | 75 | 50Hertz website terms (public information under §14e EnWG); reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none; a location without a published MW has no class |
+| DE | Amprion | transmission | 10 | 0 | Amprion website (information only, without warranty) | a potential connection point with an earliest commissioning year (2032-2035) -> limited; 'only load connections possible' -> generation none |
+| DE | TransnetBW | transmission | 52 | 0 | public web map; reuse with the source named | medium-term -> limited; long-term -> limited; not available -> none |
+| DK | Energinet and the Danish DSOs | transmission | 1,261 | 1,261 | public web map; reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none |
+| EE | Elering | transmission | 163 | 163 | public web map; reuse with the source named | expandable (type A) -> available; not expandable (type B) -> none |
+| ES | Red Eléctrica (transmission nodes) | transmission | 937 | 0 | REE terms of use (reuse with the source named) | MW only: more than 0 MW free -> available, 0 MW -> none (demand: CEP with ride-through, the first column) |
+| ES | e-distribución (Endesa) | distribution | 1,859 | 1,859 | published under CNMC Circular 1/2024; reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none (demand: firm capacity available); joined by substation code and voltage |
+| FI | Elenia | distribution | 169 | 169 | Elenia public web map (no licence stated) | MW only: more than 0 MW free -> available, 0 MW -> none |
+| FR | RTE and the distribution operators (Capareseau) | transmission | 3,116 | 3,116 | Capareseau: reuse allowed with the source named | MW only: more than 0 MW free -> available, 0 MW -> none, on 'capacité réservée au titre du S3REnR qui reste à affecter' (INFO_NA) |
+| GB | NESO (TEC register) | transmission | 1,053 | 294 | NESO Open Data Licence | a site with MW waiting (cumulative capacity - MW connected, summed per site, computed) -> queue |
+| GB | National Grid Electricity Distribution (NGED) | distribution | 1,182 | 1,182 | WPD Open Data Licence | NGED's constraint colour: green -> available, amber -> limited, red -> none (generation and demand each) |
+| GB | Scottish and Southern Electricity Networks (SSEN) | distribution | 998 | 998 | CC BY 4.0 | SSEN's RAG status: Green -> available, Amber -> limited, Red -> none; demand headroom is MVA, kept as MVA |
+| GR | HEDNO | distribution | 454 | 446 | HEDNO public web application (no licence stated) | HEDNO's availability colour: green (over 2 MVA on both criteria) -> available, orange (about 2 MVA on one) -> limited, red (zero) -> none; mva_gen = the smaller of the thermal and the short-circuit margin (both published, the binding one taken) |
+| HR | HOPS | transmission | 199 | 0 | HOPS website (public information) | HOPS's categories: A (up to 50 MW) -> limited, B (up to 100 MW) -> available, C (over 100 MW) -> available, / (0 MW or no free bay) -> none |
+| HU | MAVIR and the DSOs (station list) | transmission | 168 | 168 | MAVIR website (disclaimer sheet in the file) | spare bays + free bays/cells offered > 0 -> available, 0 -> none; injection capacity kept as published (MVA) |
+| HU | MVM Démász | distribution | 43 | 0 | operator website (public information) | MW only: more than 0 MW free -> available, 0 MW -> none, for load only (the table is 'vételezési célú', for withdrawal); no generation figure published |
+| HU | MVM Émász | distribution | 32 | 0 | operator website (public information) | MW only: more than 0 MW free -> available, 0 MW -> none, for load only (the table is 'vételezési célú', for withdrawal); no generation figure published |
+| IE | ESB Networks | distribution | 657 | 657 | ESB Networks website terms | MW only: more than 0 MW free -> available, 0 MW -> none, on firm generation available (MW); demand available is MVA, kept as published |
+| IT | Terna (Econnextion) | transmission | 21 | 21 | dati.terna.it (terms of use not found; figures shown with the source named) | requests to connect renewables per region -> queue (MW requested, summed per region, computed) |
+| LT | Litgrid | transmission | 309 | 309 | public web map; reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none, on the larger of the free MW for solar and for wind (both published) |
+| LU | Creos | transmission | 43 | 43 | public web map; reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none, on the largest free MW of the station's voltage levels |
+| MT | Enemalta | distribution | 1,332 | 1,332 | public notice (Regulation (EU) 2019/943 Art. 57(3)); reuse with the source named | kWp for renewables and kVA for load as published (shown as MVA/MWp, divided by 1,000); class: more than 0 -> available, 0 -> none |
+| NL | Netbeheer Nederland (regional operators) | distribution | 923 | 923 | Esri Nederland terms of use | 0 capacity available, no queue -> available; 1 capacity limited, no queue -> limited; 2 under study, with a queue -> queue; 3 shortage of capacity, with a queue -> none |
+| PL | PSE | transmission | 182 | 0 | PSE website (public information under the Energy Law) | requests in the Art. 7(8l) list -> queue; switchgear without a free connection bay -> none |
+| PT | E-REDES | distribution | 470 | 0 | CC BY 4.0 | MVA only (reception capacity, HV): more than 0 -> available, 0 -> none |
+| SE | Svenska kraftnät | transmission | 21 | 21 | public web map; reuse with the source named | MW only: more than 0 MW free -> available, 0 MW -> none |
+| SI | ELES | transmission | 46 | 46 | ELES public web map (no licence stated) | MW only: more than 0 MW free -> available, 0 MW -> none |
+| SK | Východoslovenská distribučná (VSD) | distribution | 32 | 32 | operator website (public information) | MW only: more than 0 MW free -> available, 0 MW -> none |
+| SK | Západoslovenská distribučná (ZSD) | distribution | 63 | 56 | operator website (public information) | MW only: more than 0 MW free -> available, 0 MW -> none |
+| US-PGE | Pacific Gas and Electric (GRIP) | distribution | 776 | 776 | PG&E: 'available for general public consumption' | a substation with queued distributed generation -> queue; PG&E publishes hosting capacity per line section, not per substation |
+| US-SCE | Southern California Edison (DRPEP) | distribution | 884 | 884 | SCE DRPEP (information purposes only; no use restriction stated) | MW only: more than 0 MW free -> available, 0 MW -> none |
+| US-SDGE | San Diego Gas & Electric (ICA) | distribution | 107 | 107 | SDG&E public ICA map (no licence stated) | a substation with queued generation -> queue; SDG&E publishes hosting capacity per grid cell, not per substation |
 
 Not added (evidence in data/coverage.yaml): TenneT DE and the E.ON DSOs, Elia, AST, Delgaz,
 E-Distribuție and TSO Cyprus behind Cloudflare's check (HTTP 403); i-DE (503), UFD (403); OPUS
