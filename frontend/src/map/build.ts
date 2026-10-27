@@ -105,8 +105,10 @@ import { inside, makeShape } from "../lib/area";
 import { offshoreLayers } from "./offshoreLayers";
 import { areaLayers, clipToArea } from "./areaLayers";
 import { inAreaCountry } from "../app/datasets";
-import { SUMMARY_MAX_ZOOM, summaryFill, summaryLabels, summaryOf } from "./summaryLayers";
-import { hexLayers, type MapStyle } from "./hexLayers";
+import { summaryFill, summaryLabels } from "./summaryLayers";
+import { hexLayers } from "./hexLayers";
+import { styleLayers } from "./styleLayers";
+import type { Style } from "../app/maps";
 import type { AreaSpec } from "../lib/area";
 import { usSolarLayers } from "./usSolarLayers";
 import { evLayers } from "./evLayers";
@@ -136,10 +138,11 @@ export interface Frame {
   area: string[] | null;
   /** the dataset whose coverage is tinted */
   coverageOf: string | null;
-  /** the variables drawn as hexagons in this frame (map/hexLayers.ts; empty when zoomed in) */
-  mapVars: string[];
-  /** each variable's style at country scale (hexagons, bubbles, columns) */
-  mapStyles: Record<string, MapStyle>;
+  /** the datasets drawn in a style of their own (bubbles, hexagons, 3D bars or beams, choropleth,
+   *  3D terrain: map/styleLayers.ts); their own layers are off in `layers` */
+  styled: [string, Style][];
+  /** which map: "main" or one of the Maps view's (keys its legend's figures) */
+  scope: string;
   /** the view [west, south, east, north] */
   bounds: [number, number, number, number];
   /** the area as a drawn polygon or a circle, and the corners of one being drawn */
@@ -346,9 +349,10 @@ export function buildLayers(fr: Frame): Layer[] {
       }),
     );
   }
-  // a dataset's per-country figure at continent scale (map/summaryLayers.ts); hexagons at country scale
+  // a dataset's per-country figure at continent scale (map/summaryLayers.ts); the datasets drawn in a
+  // style of their own (map/hexLayers.ts, map/styleLayers.ts)
   layers.push(...summaryFill(fr));
-  if (!summaryOf(fr) || fr.zoom >= SUMMARY_MAX_ZOOM) layers.push(...hexLayers(fr));
+  layers.push(...hexLayers(fr), ...styleLayers(fr));
 
   // the night shadow (24 h mode)
   if (day && isOn("night") && fr.night) {

@@ -36,13 +36,14 @@ import { useDataStore, useFile } from "../app/data";
 import type { StatsFile } from "../app/types";
 import { priceRange, rampCss } from "../map/priceTerrain";
 import { currentDay } from "../map/tooltip";
-import { COLOURS, actions, useApp, type ColourId, type LayerGroup, type LayerId, type PlantStatus, type TimeMode } from "../app/store";
-import { CATEGORIES, DATASETS, coverageLabel, covers, datasetModes, datasetOn, partsIn, placesText, toggleDataset, type Dataset } from "../app/datasets";
+import { COLOURS, actions, findDashboard, useApp, type ColourId, type LayerGroup, type LayerId, type PlantStatus, type TimeMode } from "../app/store";
+import { panelOf, type MapPanel, type Style } from "../app/maps";
+import { CATEGORIES, DATASETS, coverageLabel, covers, datasetModes, datasetOn, datasetsOn, partsIn, placesText, toggleDataset, type Dataset } from "../app/datasets";
 import { useCountryNames } from "./Dashboards";
 import type { CoverageFile } from "../lib/coverage";
 import { SUMMARIES, SUMMARY_ALPHA, summaryOf, summaryValues } from "../map/summaryLayers";
-import { measuresOf } from "../lib/measures";
-import { mapVariables } from "../map/hexLayers";
+import { styleOf, stylesOf } from "../map/styleLayers";
+import { StyleChips, StyleKey } from "./StyleControls";
 
 import type { AtlasFile, AtlasId } from "../lib/atlas";
 import { ghgrpColor, type GhgrpFile } from "../lib/ghgrp";
@@ -885,38 +886,50 @@ function SummaryKey({ d, files }: { d: Dataset; files: Record<string, unknown> }
   );
 }
 
-/** Where a variable just switched on goes: onto this map (two make a bivariate map) or a map of its own. */
+/** Where a dataset just switched on goes: onto this map (on top of what is there; two as
+ *  hexagons make a bivariate map) or a map of its own beside the others (six maps at most). */
 function AddChoice({ d, onDone }: { d: Dataset; onDone: () => void }) {
-  const m = measuresOf(d.id)[0];
-  const layers = useApp((s) => s.layers);
-  const mapVars = useApp((s) => s.mapVars);
-  const current = mapVariables({ layers, mapVars }).map((x) => x.id).filter((x) => x !== m.id);
+  const compare = useApp((s) => s.compare);
+  const maps = useApp((s) => s.maps);
+  const style = (): Style => styleOf(useApp.getState().mapStyles, d.id) ?? stylesOf(d.id)[0] ?? "lines";
+  const asNewMap = () => {
+    const s = useApp.getState();
+    if (!compare) {
+      // this map becomes the first of the Maps view, the dataset the next
+      const others = datasetsOn(s.layers, s.colour).filter((x) => x.id !== d.id && !x.colour);
+      const first: MapPanel | null = others.length
+        ? { title: s.title ?? findDashboard(s.dashboard)?.label ?? "This map", items: others.map((x) => ({ dataset: x.id, style: styleOf(s.mapStyles, x.id) ?? stylesOf(x.id)[0] ?? "lines" })) }
+        : null;
+      actions.setMaps([...(s.maps.length ? s.maps : first ? [first] : []), panelOf(d.id, style())].slice(-6));
+      actions.setCompare(true);
+    } else actions.addMap(panelOf(d.id, style()));
+    onDone();
+  };
+  const onMap = (k: number) => {
+    actions.setMaps(maps.map((m, i) => (i === k && !m.items.some((x) => x.dataset === d.id) ? { ...m, items: [...m.items, { dataset: d.id, style: style() }] } : m)));
+    onDone();
+  };
   return (
     <div className="mx-2 mb-2 rounded-lg border border-sky-400/25 bg-sky-400/[0.06] px-2.5 py-2 text-[10.5px] text-slate-300">
-      <div>Show {m.label.toLowerCase()}:</div>
+      <div>Show {d.name.toLowerCase()}:</div>
       <div className="mt-1.5 flex flex-wrap gap-1">
+        {!compare ? (
+          <button onClick={onDone} className="rounded-md border border-white/15 px-2 py-0.5 text-slate-100 hover:bg-white/[0.08]" title="On top of the datasets on the map now">
+            On this map
+          </button>
+        ) : (
+          maps.map((m, k) => (
+            <button key={k} onClick={() => onMap(k)} className="rounded-md border border-white/15 px-2 py-0.5 text-slate-100 hover:bg-white/[0.08]" title={`On top of “${m.title}”`}>
+              On map {k + 1}
+            </button>
+          ))
+        )}
         <button
-          onClick={() => {
-            actions.setMapVars([...current.slice(-1), m.id]);
-            onDone();
-          }}
+          onClick={asNewMap}
           className="rounded-md border border-white/15 px-2 py-0.5 text-slate-100 hover:bg-white/[0.08]"
-          title="With the variable on the map now: a map of both (3×3 colours)"
+          title={maps.length >= 6 ? "A map of its own: the oldest of the six maps goes" : "A map of its own beside the others, one camera (six at most)"}
         >
-          On this map
-        </button>
-        <button
-          onClick={() => {
-            actions.addPanel(m.id, current);
-            onDone();
-          }}
-          className="rounded-md border border-white/15 px-2 py-0.5 text-slate-100 hover:bg-white/[0.08]"
-          title="Side by side: one small map per variable, one camera (six at most)"
-        >
-          As a new map
-        </button>
-        <button onClick={onDone} className={`px-1 ${muted} hover:text-slate-200`}>
-          later
+          As a new map{compare ? ` (${Math.min(6, maps.length + 1)} of 6)` : ""}
         </button>
       </div>
     </div>
@@ -937,7 +950,11 @@ function DatasetRow({ d }: { d: Dataset }) {
   const files = useDataStore((s) => s.files);
   const area = useApp((s) => s.area);
   const drawn = useApp((s) => s.drawn);
-  const carried = on && summaryOf({ colour, layers, selection, area, drawn })?.id === d.id;
+  const mapStyles = useApp((s) => s.mapStyles);
+  const compare = useApp((s) => s.compare);
+  const own = styleOf(mapStyles, d.id);
+  const ownDrawing = !own || own === "points" || own === "raster";
+  const carried = on && ownDrawing && summaryOf({ colour, layers, selection, area, drawn })?.id === d.id;
   return (
     <div className={`rounded-lg transition-colors ${on ? "bg-white/[0.05]" : "hover:bg-white/[0.03]"}`}>
       <div className="flex w-full items-center gap-2.5 px-2 py-1.5">
@@ -954,12 +971,10 @@ function DatasetRow({ d }: { d: Dataset }) {
         </button>
         <button
           onClick={() => {
-            // a variable joining others: on this map, or a map of its own beside them
-            const mine = measuresOf(d.id);
-            const before = mapVariables({ layers, mapVars: useApp.getState().mapVars });
+            // a dataset joining others: on this map, or a map of its own beside them
+            const before = datasetsOn(layers, colour).filter((x) => !x.colour).length;
             toggleDataset(d);
-            if (!on && mine.length && before.length) setAsk(true);
-            else setAsk(false);
+            setAsk(!on && !d.colour && (before > 0 || compare));
           }}
           aria-pressed={on}
           title={on ? `Hide ${d.name.toLowerCase()}` : `Show ${d.name.toLowerCase()}`}
@@ -968,6 +983,12 @@ function DatasetRow({ d }: { d: Dataset }) {
         </button>
       </div>
       {ask && on && <AddChoice d={d} onDone={() => setAsk(false)} />}
+      {on && stylesOf(d.id).length > 0 && (
+        <div className="px-2 pb-1.5 pl-[30px]">
+          <StyleChips dataset={d.id} value={styleOf(mapStyles, d.id)} onChange={(st) => actions.setMapStyle(d.id, st)} />
+          <StyleKey scope="main" dataset={d.id} style={styleOf(mapStyles, d.id)} />
+        </div>
+      )}
       {open && <DatasetDetails d={d} />}
       {carried && <SummaryKey d={d} files={files} />}
       {on && d.colour && (

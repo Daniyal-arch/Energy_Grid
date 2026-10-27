@@ -9,7 +9,7 @@ import { MOBILE_QUERY } from "../app/geo";
 import { actions, readUrl, useApp, writeUrl } from "../app/store";
 import { DashboardBuilder, DashboardList, DashboardsMenu } from "./Dashboards";
 import { Catalogue } from "./Catalogue";
-import { CompareView } from "./CompareView";
+import { MapsButton, MapsView } from "./MapsView";
 import LayersPanel from "./LayersPanel";
 import MapLegend from "./MapLegend";
 import MapOptions from "./MapOptions";
@@ -87,6 +87,7 @@ function Desktop() {
           <Search />
           <CheckSite />
           <DrawArea />
+          <MapsButton />
         </div>
         <TimeControl />
       </header>
@@ -113,7 +114,7 @@ function Desktop() {
       <div className="absolute bottom-3 left-[290px] right-[396px] z-20">
         <TimeBar />
       </div>
-      <CompareView />
+      <MapsView />
       <MapOptions />
       <div className="pointer-events-none absolute bottom-1 left-3 z-10 max-w-[260px] text-[8.5px] leading-tight text-slate-500">{CREDITS}</div>
     </>

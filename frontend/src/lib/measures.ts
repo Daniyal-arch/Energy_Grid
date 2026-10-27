@@ -16,7 +16,15 @@ import { US_TYPE_COLOR, US_TYPE_LABEL, type UsPlantsFile, type UsTurbinesFile } 
 import type { UsSolarFile } from "./usSolar";
 import type { DataCentresFile } from "./world";
 import { PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, type WorldPlantsFile } from "./worldPlants";
-import type { PlantsFile } from "../app/types";
+import type { GridFile, PlantsFile } from "../app/types";
+import type { AtlasFile } from "./atlas";
+import type { HydrogenFile } from "./coming";
+import { NL_COLOR } from "./connect";
+import { CONNECT_EU, connectEuKey, type ConnectEuFile } from "./connectEu";
+import type { ConstraintsFile } from "./constraints";
+import { GEM_POINTS, type GemPointsFile } from "./gem";
+import type { OffshoreWindFile } from "./offshoreWind";
+import type { GridSpec } from "./area";
 
 /** [lon, lat, value, type label] */
 export type Pt = [number, number, number, string];
@@ -35,6 +43,9 @@ export interface Measure {
   color: RGB;
   /** type colours, when the hexagons are coloured by their largest type */
   types?: Record<string, RGB>;
+  typeColor?: (type: string) => RGB;
+  /** the unit from the file, when it varies by file */
+  unitOf?: (f: Files) => string;
   points: (f: Files) => Pt[] | null;
   fmt: (v: number) => string;
 }
@@ -194,5 +205,224 @@ export const MEASURES: Measure[] = [
     fmt: mw,
   },
 ];
+
+
+// ------------------------------------------------------------------ every point dataset has a figure
+
+const SUM_SIZES: Record<string, string> = { gemChemicals: "", gemFields: "" };
+function gemMeasure(dataset: string, label: string, plural: string): Measure {
+  const style = GEM_POINTS[dataset];
+  const sized = !(style.file in SUM_SIZES);
+  return {
+    id: `${dataset}-gem`,
+    dataset,
+    label,
+    unit: sized ? "" : plural,
+    sums: sized ? `${label.toLowerCase()} of the operating ${plural} (Global Energy Monitor)` : `operating ${plural} (Global Energy Monitor, a count)`,
+    files: [style.file],
+    color: style.color(""),
+    typeColor: (t) => style.color(t),
+    points: (f) => {
+      const g = f[style.file] as GemPointsFile | undefined;
+      if (!g) return null;
+      const op = g.classes.indexOf("operating");
+      return g.points.filter((p) => p[3] === op).map((p) => [p[0], p[1], sized ? (p[4] ?? 0) : 1, g.kinds[p[2]] ?? ""] as Pt);
+    },
+    fmt: (v) => (sized ? `${v >= 100 ? Math.round(v).toLocaleString("en-US") : v.toFixed(1)}` : n(v)),
+    unitOf: (f) => ((f[style.file] as GemPointsFile | undefined)?.unit ?? ""),
+  };
+}
+
+MEASURES.push(
+  gemMeasure("steel", "Crude steel capacity", "steel plants"),
+  gemMeasure("cement", "Cement capacity", "cement plants"),
+  gemMeasure("chemicals", "Chemical plants", "chemical plants"),
+  gemMeasure("ironOre", "Iron ore production", "iron ore mines"),
+  gemMeasure("lngTerminals", "LNG capacity", "LNG terminals"),
+  gemMeasure("coalTerminals", "Coal port capacity", "coal ports"),
+  gemMeasure("oilGasFields", "Oil and gas fields", "fields"),
+  gemMeasure("coalMines", "Coal mine capacity", "coal mines"),
+  gemMeasure("methane", "Methane emission rate", "plumes"),
+  {
+    id: "h2-mw",
+    dataset: "hydrogen",
+    label: "Electrolysis",
+    unit: "MW",
+    sums: "MW of the hydrogen projects where given (European Hydrogen Observatory)",
+    files: ["hydrogen"],
+    color: [96, 214, 255],
+    points: (f) => {
+      const h = f.hydrogen as HydrogenFile | undefined;
+      return h ? h.projects.map((p) => [p[8], p[9], p[4] ?? 0, p[10] != null ? (h.stages[p[10]] ?? "") : ""] as Pt) : null;
+    },
+    fmt: mw,
+  },
+  {
+    id: "offshore-mw",
+    dataset: "offshoreWind",
+    label: "Offshore wind",
+    unit: "MW",
+    sums: "MW of the offshore wind farm areas where given, every status (EMODnet)",
+    files: ["offshoreWind"],
+    color: [96, 190, 255],
+    points: (f) => {
+      const o = f.offshoreWind as OffshoreWindFile | undefined;
+      return o ? o.farms.map((x) => [x.at[0], x.at[1], x.mw ?? 0, x.status != null ? (o.statuses[x.status] ?? "") : ""] as Pt) : null;
+    },
+    fmt: mw,
+  },
+  {
+    id: "subs-n",
+    dataset: "substations",
+    label: "Substations",
+    unit: "",
+    sums: "substations of 220 kV and more (PyPSA-Eur from OpenStreetMap, a count)",
+    files: ["grid"],
+    color: [226, 232, 240],
+    points: (f) => {
+      const g = f.grid as GridFile | undefined;
+      return g ? g.substations.map((x) => [x[1], x[2], 1, x[0] >= 380 ? "380 kV and more" : "220–379 kV"] as Pt) : null;
+    },
+    typeColor: (t) => (t.startsWith("380") ? [236, 178, 120] : [176, 120, 82]),
+    fmt: n,
+  },
+  {
+    id: "connect-points",
+    dataset: "capacity",
+    label: "Grid capacity points",
+    unit: "",
+    sums: "points each grid operator publishes, in its class (the operators' capacity maps, a count)",
+    files: CONNECT_EU.map(connectEuKey),
+    color: [206, 138, 72],
+    typeColor: (t) => NL_COLOR[CAPACITY_CLASSES.indexOf(t)] ?? [150, 154, 166],
+    points: (f) => {
+      const out: Pt[] = [];
+      for (const id of CONNECT_EU) {
+        const c = f[connectEuKey(id)] as ConnectEuFile | undefined;
+        if (!c) continue;
+        for (const p of c.points) {
+          const k = p[5];
+          const n4 = c.classes.length;
+          const idx = k < 0 ? -1 : n4 === 4 ? k : n4 === 2 ? (k === 0 ? 0 : 3) : n4 === 3 ? [0, 1, 3][k] : Math.min(3, k);
+          out.push([p[1], p[2], 1, CAPACITY_CLASSES[idx] ?? "no class"]);
+        }
+      }
+      return out.length ? out : null;
+    },
+    fmt: n,
+  },
+);
+
+/** The four classes every capacity map is drawn in (most room first). */
+export const CAPACITY_CLASSES = ["room", "some room", "little room", "no room"];
+
+// ------------------------------------------------------------------ continuous data (rasters)
+
+/** A lookup grid read by range request for an area (lib/rasterCache.ts). */
+export interface RasterDef {
+  spec: GridSpec;
+  /** a cell's value in the source unit; null where the grid has none */
+  value: (v: DataView, off: number) => number | null;
+}
+export interface RasterMeasure {
+  id: string;
+  dataset: string;
+  label: string;
+  unit: string;
+  sums: string;
+  files: string[];
+  color: RGB;
+  /** low to high */
+  ramp: RGB[];
+  grid: (f: Files) => RasterDef | null;
+  fmt: (v: number) => string;
+}
+const atlasGrid =
+  (k: "pvout" | "wind") =>
+  (f: Files): RasterDef | null => {
+    const a = (f.atlas as AtlasFile | undefined)?.[k];
+    if (!a) return null;
+    const l = a.lookup;
+    return {
+      spec: { url: l.url, bytes: 2, width: l.width, height: l.height, origin: l.origin, cell: l.cell_deg },
+      value: (v, off) => {
+        const x = v.getInt16(off, true);
+        return x === l.nodata ? null : x / a.scale;
+      },
+    };
+  };
+export const RASTERS: RasterMeasure[] = [
+  {
+    id: "pvout",
+    dataset: "solarResource",
+    label: "Solar resource",
+    unit: "kWh/kWp per day",
+    sums: "PV output per kWp installed, long-term average (Global Solar Atlas, 0.1° cells)",
+    files: ["atlas"],
+    color: [240, 196, 112],
+    ramp: [
+      [70, 52, 40],
+      [150, 96, 52],
+      [214, 150, 70],
+      [246, 206, 112],
+      [255, 240, 180],
+    ],
+    grid: atlasGrid("pvout"),
+    fmt: (v) => v.toFixed(2),
+  },
+  {
+    id: "wind100",
+    dataset: "windResource",
+    label: "Wind speed at 100 m",
+    unit: "m/s",
+    sums: "mean wind speed at 100 m (Global Wind Atlas, 0.1° cells)",
+    files: ["atlas"],
+    color: [128, 206, 206],
+    ramp: [
+      [36, 52, 64],
+      [44, 98, 116],
+      [64, 150, 160],
+      [118, 200, 196],
+      [200, 240, 230],
+    ],
+    grid: atlasGrid("wind"),
+    fmt: (v) => v.toFixed(1),
+  },
+  {
+    id: "flood",
+    dataset: "flood",
+    label: "River flood hazard",
+    unit: "% of cells",
+    sums: "share of the hazard map's cells with any water depth in a 100-year flood (JRC)",
+    files: ["constraints"],
+    color: [60, 130, 210],
+    ramp: [
+      [30, 40, 60],
+      [40, 70, 120],
+      [56, 104, 176],
+      [90, 150, 220],
+      [170, 210, 250],
+    ],
+    grid: (f) => {
+      const c = f.constraints as ConstraintsFile | undefined;
+      if (!c) return null;
+      const l = c.flood.maps.world.lookup;
+      return {
+        spec: { url: l.url, bytes: 1, width: l.width, height: l.height, origin: l.origin, cell: l.cell_deg },
+        value: (v, off) => {
+          const x = v.getUint8(off);
+          return x === 255 ? null : x > 0 ? 100 : 0;
+        },
+      };
+    },
+    fmt: (v) => `${v.toFixed(0)} %`,
+  },
+];
+export const RASTER_BY_DATASET = new Map(RASTERS.map((r) => [r.dataset, r]));
+/** A dataset's figure for the styles (capacity: the operators' points, not the GB queue). */
+export const measureOfDataset = (d: string) => MEASURES.find((m) => m.dataset === d && m.id !== "gb-waiting") ?? MEASURES.find((m) => m.dataset === d);
+
 export const MEASURE_BY_ID = new Map(MEASURES.map((m) => [m.id, m]));
 export const measuresOf = (dataset: string) => MEASURES.filter((m) => m.dataset === dataset);
+/** The colour of a record's type for a measure. */
+export const typeColour = (m: Measure, t: string): RGB => m.typeColor?.(t) ?? m.types?.[t] ?? m.color;

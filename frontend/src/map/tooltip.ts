@@ -1,6 +1,7 @@
 // Hover cards for everything on the map. Values are the files' own; each card names its source.
 
-import { useHexInfo, type Hex as MapHex } from "./hexLayers";
+import type { Hex as MapHex } from "./hexLayers";
+import { styleTip } from "./styleLayers";
 import { MEASURE_BY_ID } from "../lib/measures";
 import type { PickingInfo } from "@deck.gl/core";
 
@@ -300,13 +301,17 @@ function mastrHtml(id: string, object: unknown): string | null {
 
 function tooltipHtml(id: string, object: unknown): string | null {
   if (id.startsWith("site-")) return siteHtml(id, object);
-  if (id === "hex-map" || id === "hex-bivariate") {
+  if (id.startsWith("hex-map|") || id.startsWith("hex-bivariate|")) {
     const h = object as MapHex;
-    const info = useHexInfo.getState();
-    const [a, b] = info.vars.map((v) => MEASURE_BY_ID.get(v)!);
+    const [, vars, rKm] = id.split("|");
+    const [a, b] = vars.split("+").map((v) => MEASURE_BY_ID.get(v)!);
     if (!a) return null;
     const parts = h.types.slice(0, 3).map(([t, v]) => `<div>${t}: <b>${a.fmt(v)}</b></div>`).join("");
-    return `<b>${a.label}: ${a.fmt(h.v)}</b>${b ? `<div>${b.label}: <b>${b.fmt(h.v2)}</b></div>` : parts}${SRC(`sum over a hexagon of about ${info.rKm * 2} km across (computed)`)}`;
+    return `<b>${a.label}: ${a.fmt(h.v)}</b>${b ? `<div>${b.label}: <b>${b.fmt(h.v2)}</b></div>` : parts}${SRC(`sum over a hexagon of about ${Number(rKm) * 2} km across (computed)`)}`;
+  }
+  if (id.startsWith("st-")) {
+    const html = styleTip(id, object);
+    if (html) return html;
   }
   if (id === "us-outages" || id === "w-water") return riskHtml(id, object);
   if (id.startsWith("de-mastr-")) return mastrHtml(id, object);

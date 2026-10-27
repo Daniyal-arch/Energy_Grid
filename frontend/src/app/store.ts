@@ -7,6 +7,8 @@ import { create } from "zustand";
 import type { WaterIndicator } from "../lib/risk";
 import type { MastrTech } from "../lib/mastr";
 import type { AreaSpec, LonLat } from "../lib/area";
+import type { MapPanel, Style } from "./maps";
+import { DEFAULT_STYLE, styleOf } from "./styleDefaults";
 import { EUROPE_ISO3 } from "../lib/transition";
 
 export type TimeMode = "live" | "day" | "years";
@@ -378,6 +380,8 @@ export function specBounds(d: AreaSpec): [number, number, number, number] {
   const ys = d.ring.map((q) => q[1]);
   return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
 }
+/** The Maps view's default themes for an area, and a dataset's title (set by app/maps.ts). */
+export const mapsFor: { make: ((area: string[]) => MapPanel[]) | null; title: ((dataset: string) => string) | null } = { make: null, title: null };
 /** A country's dashboard (`country:DEU`), made from the datasets that cover it (app/datasets.ts). */
 export const countryDashboards: { make: ((iso3: string) => Dashboard | undefined) | null } = { make: null };
 export const findDashboard = (id: string | null) =>
@@ -422,15 +426,13 @@ interface AppState {
   builder: { kind: "new" | "save"; id?: string } | null;
   /** the data catalogue is open over the map */
   catalogue: boolean;
-  /** the variables drawn as hexagons at country scale (lib/measures.ts ids; two: a bivariate map;
-   *  none: the first dataset on that has one) */
-  mapVars: string[];
-  /** side by side: one small map per variable, the same camera (ui/CompareView.tsx) */
+  /** the Maps view is open: several maps of the place, one camera (ui/MapsView.tsx) */
   compare: boolean;
-  /** the variables of the side-by-side maps (empty: every variable of the datasets on), six at most */
-  panels: string[];
-  /** how each variable is drawn at country scale */
-  mapStyles: Record<string, "hex" | "bubbles" | "columns">;
+  /** the Maps view: several maps of the place, one theme each (app/maps.ts), six at most */
+  maps: MapPanel[];
+  /** how each dataset is drawn on the main map (dataset id -> style; none: its own drawing);
+   *  two datasets as hexagons make a bivariate map (map/styleLayers.ts) */
+  mapStyles: Record<string, Style>;
   /** where the camera looks: decides the default panel */
   region: Region;
   /** a camera move requested by the UI (dashboard, search); the map consumes it */
@@ -478,9 +480,8 @@ export const useApp = create<AppState>(() => ({
   coverageOf: null,
   builder: null,
   catalogue: false,
-  mapVars: [],
   compare: false,
-  panels: [],
+  maps: [],
   mapStyles: {},
   region: "europe",
   flyTo: null,
@@ -602,6 +603,8 @@ export const actions = {
       dayRegion: st.dayRegion ?? "eu",
       day: null,
       coverageOf: null,
+      // a country's dashboard: several maps of it, one theme each (app/maps.ts)
+      ...(st.group === "Countries" && area ? { compare: true, maps: mapsFor.make?.(area) ?? [] } : { compare: false, maps: [] }),
     });
   },
   /** Keep the view as a dashboard of mine: a new one, or replacing one of mine (same id). */
@@ -670,28 +673,38 @@ export const actions = {
   openBuilder(builder: AppState["builder"]) {
     useApp.setState({ builder });
   },
-  /** The variables of the hexagon map (two at most: the newest pick replaces the oldest). */
-  setMapVars(mapVars: string[]) {
-    useApp.setState({ mapVars: mapVars.slice(-2), edited: true });
-  },
   setCompare(compare: boolean) {
     useApp.setState({ compare });
   },
-  /** A variable as a map of its own beside the others (side by side, six at most). */
-  addPanel(id: string, current: string[]) {
+  /** A map of its own for a panel (the Maps view opens; six maps at most, the oldest goes). */
+  addMap(panel: MapPanel) {
     const s = useApp.getState();
-    const base = s.panels.length ? s.panels : current;
-    useApp.setState({ panels: [...base.filter((x) => x !== id), id].slice(-6), compare: true, edited: true });
+    useApp.setState({ maps: [...s.maps, panel].slice(-6), compare: true, edited: true });
   },
-  setPanels(panels: string[]) {
-    useApp.setState({ panels: panels.slice(0, 6), edited: true });
+  setMaps(maps: MapPanel[]) {
+    useApp.setState({ maps: maps.slice(0, 6), edited: true });
   },
-  setMapStyle(id: string, style: "hex" | "bubbles" | "columns") {
+  /** How a dataset is drawn on the map (its own points, bubbles, hexagons, 3D bars or beams...). */
+  setMapStyle(dataset: string, style: Style) {
+    actions.setMapStyles({ [dataset]: style });
+  },
+  /** Several datasets' styles at once (the newest last: two hexagon datasets at most, a third
+   *  sends the oldest back to its own drawing). */
+  setMapStyles(patch: Record<string, Style>) {
     const s = useApp.getState();
-    useApp.setState({ mapStyles: { ...s.mapStyles, [id]: style }, edited: true });
-    // columns stand up when the map leans
+    const next = { ...s.mapStyles };
+    for (const [d, st] of Object.entries(patch)) {
+      delete next[d];
+      next[d] = st;
+    }
+    // the defaults count too (app/styleDefaults.ts), the oldest first
+    const hexes = [...Object.keys(DEFAULT_STYLE).filter((d) => !(d in next)), ...Object.keys(next)].filter((d) => styleOf(next, d) === "hex");
+    for (const d of hexes.slice(0, Math.max(0, hexes.length - 2))) next[d] = "points";
+    useApp.setState({ mapStyles: next, edited: true });
+    const style = Object.values(patch).find((st) => st === "bars" || st === "beams" || st === "terrain");
+    // 3D stands up when the map leans
     const c = currentCamera();
-    if (style === "columns" && c && !c.pitch) useApp.setState({ flyTo: { ...c, pitch: 50 } });
+    if (style && c && !c.pitch) useApp.setState({ flyTo: { ...c, pitch: 50 } });
   },
   /** Tint where a dataset has data (null: stop). */
   showCoverage(id: string | null) {
@@ -732,18 +745,20 @@ export function readUrl(): void {
   }
   if (patch.drawn && !p.get("cam")) patch.flyTo = { bounds: specBounds(patch.drawn) };
   if (p.get("compare") === "1") patch.compare = true;
-  const panels = p.get("panels");
-  if (panels) patch.panels = panels.split(",").filter(Boolean).slice(0, 6);
+  const maps = p.get("maps");
+  if (maps)
+    patch.maps = maps
+      .split(",")
+      .slice(0, 6)
+      .map((m) => {
+        const items = m.split("+").map((x) => {
+          const [dataset, style] = x.split(":");
+          return { dataset, style: style as Style };
+        });
+        return { title: mapsFor.title?.(items[0].dataset) ?? items[0].dataset, items };
+      });
   const styles = p.get("styles");
-  if (styles)
-    patch.mapStyles = Object.fromEntries(
-      styles
-        .split(",")
-        .map((x) => x.split(":"))
-        .filter(([, v]) => v === "bubbles" || v === "columns" || v === "hex"),
-    ) as AppState["mapStyles"];
-  const vars = p.get("vars");
-  if (vars) patch.mapVars = vars.split(",").filter(Boolean).slice(0, 2);
+  if (styles) patch.mapStyles = Object.fromEntries(styles.split(",").map((x) => x.split(":"))) as AppState["mapStyles"];
   const area = p.get("area");
   if (area !== null) {
     const codes = area.split(",").filter((c) => /^[A-Z]{3}$/.test(c));
@@ -827,10 +842,9 @@ export function writeUrl(camera?: Camera): void {
     if (name) p.set("dname", name);
   }
   if (s.day) p.set("day", s.day);
-  if (s.mapVars.length) p.set("vars", s.mapVars.join(","));
   if (s.compare) p.set("compare", "1");
-  if (s.panels.length) p.set("panels", s.panels.join(","));
-  const styled = Object.entries(s.mapStyles).filter(([, v]) => v !== "hex");
+  if (s.compare && s.maps.length) p.set("maps", s.maps.map((m) => m.items.map((i) => `${i.dataset}:${i.style}`).join("+")).join(","));
+  const styled = Object.entries(s.mapStyles).filter(([, v]) => v !== "points");
   if (styled.length) p.set("styles", styled.map(([k, v]) => `${k}:${v}`).join(","));
   if ((s.layers.plantsWorld || s.layers.plantsUS) && s.plantStatus !== "operating") p.set("status", s.plantStatus);
   if (s.plantStyle === "beams") p.set("style", "beams");

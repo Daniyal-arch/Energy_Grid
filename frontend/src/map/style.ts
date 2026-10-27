@@ -315,25 +315,31 @@ const BASE_FILTERS: Record<string, unknown[] | null> = {
 };
 /** Line and point layers kept to a dashboard's area (MapLibre's `within` tests lines and points). */
 const AREA_FILTERED = ["hv-glow", "hv-lines", "us-lines", "us-lines-dc", "grid-predicted", "roads-major", "rail-lines", "protected-line", "grw-wind"];
-let worldOutside: unknown[] | null = null;
-let areaWithin: unknown[] | null = null;
+// each map's own (the main map and the Maps view's maps)
+const filters = new WeakMap<maplibregl.Map, { outside: unknown[] | null; within: unknown[] | null }>();
+const filtersOf = (map: maplibregl.Map) => {
+  let f = filters.get(map);
+  if (!f) filters.set(map, (f = { outside: null, within: null }));
+  return f;
+};
 function refilter(map: maplibregl.Map): void {
+  const f = filtersOf(map);
   for (const id of AREA_FILTERED) {
     if (!map.getLayer(id)) continue;
     if (!(id in BASE_FILTERS)) BASE_FILTERS[id] = (map.getFilter(id) as unknown[] | null) ?? null;
-    const parts = [BASE_FILTERS[id], id.startsWith("hv-") ? worldOutside : null, areaWithin].filter(Boolean) as unknown[][];
+    const parts = [BASE_FILTERS[id], id.startsWith("hv-") ? f.outside : null, f.within].filter(Boolean) as unknown[][];
     map.setFilter(id, (parts.length === 0 ? null : parts.length === 1 ? parts[0] : ["all", ...parts]) as unknown as maplibregl.FilterSpecification | null);
   }
 }
 /** The world's lines left out inside these polygons (GeoJSON coordinates): where Europe's grid or
  *  the US lines are on, so "Transmission lines" draws each line once. A line crossing the edge stays. */
 export function setWorldGridOutside(map: maplibregl.Map, polygons: number[][][][]): void {
-  worldOutside = polygons.length ? ["!", ["within", { type: "MultiPolygon", coordinates: polygons }]] : null;
+  filtersOf(map).outside = polygons.length ? ["!", ["within", { type: "MultiPolygon", coordinates: polygons }]] : null;
   refilter(map);
 }
 /** Only what lies wholly inside the dashboard's area (null: everything). */
 export function setAreaWithin(map: maplibregl.Map, polygons: number[][][][] | null): void {
-  areaWithin = polygons?.length ? ["within", { type: "MultiPolygon", coordinates: polygons }] : null;
+  filtersOf(map).within = polygons?.length ? ["within", { type: "MultiPolygon", coordinates: polygons }] : null;
   refilter(map);
 }
 export const PREDICTED_LAYERS = ["grid-predicted"];

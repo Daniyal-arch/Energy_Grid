@@ -29,13 +29,11 @@ import type { CountriesFile, DayFile, Shape, WorldFile } from "../app/types";
 import { buildLayers, labelsOf, selectedIso2, type Frame, type LabelCollection } from "./build";
 import { memo } from "./memo";
 import { SUMMARY_FILES, summaryOf } from "./summaryLayers";
-import { DATASET_BY_ID, inAreaCountry } from "../app/datasets";
-import { shapeOf } from "../app/areaShape";
-import { hexDatasets, mapVariables, useHexInfo } from "./hexLayers";
+import { inAreaCountry } from "../app/datasets";
+import { applyStyles, is3D } from "./styleLayers";
+import { tileSync } from "./tiles";
 import { specBounds } from "../app/store";
-import { ATLAS_LAYERS, type AtlasFile, type AtlasId } from "../lib/atlas";
-import type { ConstraintsFile, ProtectedFile } from "../lib/constraints";
-import { FLOOD_LAYERS, GRID_LAYERS, GRW_LAYERS, LAND, OCEAN, PREDICTED_LAYERS, PROTECTED_LAYERS, ROADS_LAYERS, STYLE, US_GRID_LAYERS, addAtlasLayer, addFloodLayers, addGridLayers, addGrwLayers, addProtectedLayers, addRoadsLayers, dayFrame, dayPadding, europeCamera, europeView, setAreaWithin, setProjection, setWorldGridOutside, usFrame, worldCamera } from "./style";
+import { LAND, OCEAN, STYLE, dayFrame, dayPadding, europeCamera, europeView, setProjection, usFrame, worldCamera } from "./style";
 import { TIP_STYLE, countryHtml, tooltip } from "./tooltip";
 
 const SEC_PER_YEAR = 0.9;
@@ -50,10 +48,10 @@ function globeBox(c: maplibregl.LngLat, zoom: number): [number, number, number, 
   return [c.lng - half, Math.max(-80, c.lat - half * 0.6), c.lng + half, Math.min(80, c.lat + half * 0.6)];
 }
 
-/** Files the map needs for what is switched on (panels load their own). */
-function wantedKeys(zoom: number): string[] {
+/** Files a map needs for what is switched on (panels load their own); the Maps view asks for
+ *  each of its maps' layers. */
+export function wantedKeys(zoom: number, L: Record<LayerId, boolean> = useApp.getState().layers): string[] {
   const s = useApp.getState();
-  const L = s.layers;
   const keys = ["countries"];
   if (s.area || s.coverageOf) keys.push("world");
   // the countries carry a dataset's per-country figure (map/summaryLayers.ts)
@@ -319,7 +317,9 @@ export default function MapCanvas() {
     const zoomedIn = () => map.getZoom() >= (flatNow ? FLAT_ZOOM - 0.25 : FLAT_ZOOM);
     const wantFlat = () => {
       const s = useApp.getState();
-      return s.mode === "day" || zoomedIn() || (s.mode === "live" && (!!selectedIso2(s.selection) || raisedPrices()));
+      // a dataset in 3D (bars, beams, terrain) stands up too
+      const raised = applyStyles(s.layers, s.mapStyles).styled.some(([, st]) => is3D(st));
+      return s.mode === "day" || zoomedIn() || raised || (s.mode === "live" && (!!selectedIso2(s.selection) || raisedPrices()));
     };
     const applyProjection = () => {
       const flat = wantFlat();
@@ -458,6 +458,8 @@ export default function MapCanvas() {
           if (!flatNow && was) fly("europe");
         }
       } else if (s.mode === "live" && !s.selection && s.layers.usQueue !== prev.layers.usQueue) applyProjection();
+      // a dataset in 3D stands up on a flat map
+      else if (s.mapStyles !== prev.mapStyles || s.layers !== prev.layers) applyProjection();
     });
     // a link with a selection or a camera, or a dashboard's first camera
     map.once("style.load", () => {
@@ -485,12 +487,9 @@ export default function MapCanvas() {
 
     // ------------------------------------------------------------ MapLibre's land and grid
     let landKey = "";
-    let gridKey = "";
-    let atlasKey = "";
-    let consKey = "";
-    let areaFilterKey = "";
     let skyKey = "";
-    const applyMapLibre = (dayFile: DayFile | null, sunAlt: number) => {
+    const syncTiles = tileSync(map);
+    const applyMapLibre = (dayFile: DayFile | null, sunAlt: number, layers: Record<LayerId, boolean>) => {
       if (!map.getLayer("world-land")) return;
       const s = useApp.getState();
       const t = fileOf<TransitionFile>("transition");
@@ -526,64 +525,8 @@ export default function MapCanvas() {
         // Europe's countries draw their own outline
         map.setFilter("world-pick", ["==", ["get", "iso3"], selectedIso2(s.selection) ? "" : pick]);
       }
-      const countriesFile = fileOf<CountriesFile>("countries");
-      const worldFile = fileOf<WorldFile>("world");
-      const gk = `${s.layers.gridWorld}|${s.layers.predicted}|${s.layers.gridUS}|${s.layers.gridEU}|${!!countriesFile}|${!!worldFile}`;
-      if (gk !== gridKey) {
-        gridKey = gk;
-        if (s.layers.gridWorld) addGridLayers(map, "hv");
-        if (s.layers.gridWorld) {
-          // one line per place: Europe's grid and the US lines where they are on
-          const inside: number[][][][] = [];
-          if (s.layers.gridEU && countriesFile)
-            for (const c of countriesFile.countries) for (const rings of c.polygons) inside.push(rings.map((r) => Array.from({ length: r.length / 2 }, (_, i) => [r[2 * i], r[2 * i + 1]])));
-          if (s.layers.gridUS) {
-            if (!worldFile) ensure("world");
-            const us = worldFile?.features.find((f) => f.properties.iso3 === "USA");
-            if (us) inside.push(...(us.geometry.coordinates as number[][][][]));
-          }
-          setWorldGridOutside(map, inside);
-        }
-        if (s.layers.predicted) addGridLayers(map, "predicted");
-        if (s.layers.gridUS) addGridLayers(map, "us");
-        for (const id of US_GRID_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.gridUS ? "visible" : "none");
-        for (const id of GRID_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.gridWorld ? "visible" : "none");
-        for (const id of PREDICTED_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.predicted ? "visible" : "none");
-      }
-      // a dashboard's area: the map's own line layers keep to it (map/style.ts)
-      const areaShape = shapeOf(s.area, s.drawn, worldFile, countriesFile);
-      const afk = `${areaShape && areaShape.km2 <= 3_000_000 ? areaShape.key : ""}|${gk}|${!!map.getLayer("roads-major")}|${!!map.getLayer("protected-line")}|${!!map.getLayer("grw-wind")}`;
-      if (afk !== areaFilterKey) {
-        areaFilterKey = afk;
-        const polys = areaShape && areaShape.km2 <= 3_000_000 ? areaShape.polygons.map((p) => p.map((r) => Array.from({ length: r.length / 2 }, (_, i) => [r[2 * i], r[2 * i + 1]]))) : null;
-        setAreaWithin(map, polys);
-      }
-      // Global Renewables Watch (vector tiles)
-      if (s.layers.grw) addGrwLayers(map);
-      for (const id of GRW_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", s.layers.grw ? "visible" : "none");
-      // what stops a build: protected areas, flood depth, roads and rail (scripts/build_constraints.py)
-      const cons = fileOf<ConstraintsFile>("constraints");
-      const prot = fileOf<ProtectedFile>("protected");
-      const ck = `${s.layers.protectedAreas}|${s.layers.flood}|${s.layers.roadsRail}|${!!cons}|${!!prot}`;
-      if (ck !== consKey) {
-        consKey = ck;
-        if (s.layers.protectedAreas && prot) addProtectedLayers(map, prot.tiles);
-        if (s.layers.flood && cons) addFloodLayers(map, cons.flood.maps, cons.flood.source);
-        if (s.layers.roadsRail && cons) addRoadsLayers(map, cons.roads.tiles);
-        for (const [ids, on] of [[PROTECTED_LAYERS, s.layers.protectedAreas], [FLOOD_LAYERS, s.layers.flood], [ROADS_LAYERS, s.layers.roadsRail]] as const)
-          for (const id of ids) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
-      }
-      // the resource atlases (raster tiles), once their description has loaded
-      const atlas = fileOf<AtlasFile>("atlas");
-      const ak = `${s.layers.solarResource}|${s.layers.windResource}|${!!atlas}`;
-      if (ak !== atlasKey && atlas) {
-        atlasKey = ak;
-        for (const [k, on] of [["pvout", s.layers.solarResource], ["wind", s.layers.windResource]] as [AtlasId, boolean][]) {
-          const id = ATLAS_LAYERS[k];
-          if (on) addAtlasLayer(map, id, atlas[k].tiles, atlas[k].max_zoom, atlas[k].source);
-          if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
-        }
-      }
+      // the tiles of what is on (map/tiles.ts)
+      syncTiles(layers, s.area, s.drawn);
       // 24 h: near-black at night, deep blue by day (sun height over Central Europe)
       const light = dayFile ? Math.max(0, Math.min(1, (sunAlt + 4) / 24)) : -1;
       const sky = light < 0 ? OCEAN : `rgb(${[5 + 9 * light, 7 + 17 * light, 11 + 29 * light].map(Math.round).join(",")})`;
@@ -687,6 +630,11 @@ export default function MapCanvas() {
       const windOn = !!field && s.layers.wind;
       const flowsOn = s.layers.flows && (s.mode === "live" ? !!files.flows : !!day);
       const animating = (day && s.playing) || (s.mode === "years" && s.playing) || windOn || flowsOn || s.layers.liveGrids || s.layers.financeCoal || s.layers.financeGas || s.layers.prices;
+      // the Maps view covers this map and draws its own (ui/MapsView.tsx): drawn again once it closes
+      if (s.compare) {
+        dirty = true;
+        return;
+      }
       if (!animating && !dirty) return;
       // phones: animations at half rate
       if (mobile && !dirty && (odd = !odd)) return;
@@ -707,7 +655,6 @@ export default function MapCanvas() {
       const slotMs = day ? Date.parse(day.start) + dayK * day.step_s * 1000 : 0;
       // the sun over the replayed region (Central Europe, or the middle of the US)
       const sunAlt = day ? (day.region === "us" ? sunAltAt(-95, 38, new Date(slotMs)) : centralSun(new Date(slotMs))) : 0;
-      applyMapLibre(day, sunAlt);
 
       let sun: Frame["sun"] = null;
       if (s.layers.sun && field && windFile?.ghi) {
@@ -723,20 +670,14 @@ export default function MapCanvas() {
       const night = day && s.layers.night ? nightAt(day, dayK) : null;
       if (day && s.layers.night) nightAt(day, Math.min(day.slots - 1, dayK + 1));
       const c = map.getCenter();
-      // country scale: the mapped variables' datasets as hexagons, not as points (map/hexLayers.ts)
-      const { hex: hexing, later } = hexDatasets({ zoom, layers: s.layers, mapVars: s.mapVars });
-      const off = [...hexing, ...later];
-      const frameLayers = off.length
-        ? { ...s.layers, ...Object.fromEntries(off.flatMap((id) => (DATASET_BY_ID.get(id)?.parts ?? []).flatMap((p) => (p.layer ? [[p.layer, false]] : [])))) }
-        : s.layers;
-      // the key says which datasets wait for city scale
-      const laterIds = [...later].sort();
-      if (useHexInfo.getState().later.join() !== laterIds.join()) useHexInfo.setState({ later: laterIds });
+      // a dataset drawn in a style of its own (bubbles, hexagons, 3D...): its own layers step aside (map/styleLayers.ts)
+      const { layers: frameLayers, styled } = applyStyles(s.layers, s.mapStyles);
+      applyMapLibre(day, sunAlt, frameLayers);
       const frame: Frame = {
         mode: s.mode,
         layers: frameLayers,
-        mapVars: hexing.size ? mapVariables(s).map((m) => m.id) : [],
-        mapStyles: s.mapStyles,
+        styled,
+        scope: "main",
         bounds: (() => {
           const b = map.getBounds();
           return [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] as [number, number, number, number];
