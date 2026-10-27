@@ -5,6 +5,15 @@ cross-border flows, prices, generation mix). **Read [PLAN.md](PLAN.md) first.**
 The earlier Germany atlas (backend, ingestion, agent) is archived in the git tag
 `germany-atlas-final`; do not reintroduce it.
 
+## Every session: vault first, terse chat
+
+- **Start from the vault, not the repo.** Read `vault/index.md`, then only the notes and files the
+  task needs (skill `.claude/skills/atlas-vault`). Before the commit or pull request, update the
+  notes the work changed, `vault/index.md` for new notes and `vault/log.md` (notes in Obsidian
+  Markdown: skill `.claude/skills/obsidian-markdown`).
+- **Chat in the caveman style** (skill `.claude/skills/caveman`, level full) to save tokens.
+  Code, comments, commits, docs, PR text and the vault stay in normal English.
+
 ## Layout
 
 - `frontend/` — React + Vite + TS + MapLibre GL + deck.gl + Tailwind + zustand. One map:
@@ -20,6 +29,10 @@ The earlier Germany atlas (backend, ingestion, agent) is archived in the git tag
 - `scripts/` — data fetch/build scripts and probes (Python).
 - `frontend/scripts/record-video.mjs` — video recorder (virtual clock, see docs/VIDEO.md).
 - `.github/workflows/eu-snapshot.yml` — refreshes live figures onto the `eu-data` branch.
+- `vault/` — the project's knowledge vault (Obsidian notes, kept current by every session).
+- `.claude/skills/` — project skills: `atlas-vault`, `caveman`, `obsidian-markdown`.
+- `backend/` (brief 25) — the data service and the agent (FastAPI, LangGraph) on AWS Lambda;
+  `agent/` its catalogue, skills, model registry and evals.
 - `docs/` — AGENT.md (the agent and its backend: tools, MapSpec, hosting, evals), DATA_SOURCES.md (every file and its source), DATA_LAKE.md (full-detail Parquet on R2
   for the agent: API-or-Parquet rule, file standard, schemas, sizes), VIDEO.md (recording + rules).
 
