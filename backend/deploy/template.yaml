@@ -17,7 +17,7 @@ Parameters:
     Default: /infraatlas/
   SiteOrigins:
     Type: String
-    Default: http://localhost:5173
+    Default: https://energy-grid.infraatlas.workers.dev,http://localhost:5173
     Description: Comma-separated browser origins allowed by CORS (the site's origin)
   AgentModel:
     Type: String

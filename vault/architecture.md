@@ -26,7 +26,8 @@ number is passthrough from a named source or computed in a build script ([[rules
   They own the data branches.
 - **Lake** (R2 bucket `infraatlas-raw`, prefix `lake/`): full-detail Parquet for the agent. See [[lake]].
 - **Agent catalogue** (`agent/catalog/*.yaml`, 56 files): the meaning of each dataset for the agent.
-- **Backend** (planned, `backend/`): FastAPI service and LangGraph agent on AWS Lambda. See [[agent-backend]].
+- **Backend** (`backend/`, built 2026-10-27; deploy waits on AWS setup): FastAPI data service,
+  LangGraph agent and MCP server on AWS Lambda. See [[agent-backend]].
 
 ## Docs
 `docs/DATA_SOURCES.md` (every file and source), `docs/DATA_LAKE.md`, `docs/AGENT.md`,

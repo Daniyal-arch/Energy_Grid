@@ -23,3 +23,5 @@ use of it is in [[agent-backend]].
   units, time range, joins, example questions with answers that double as evals).
 - Shapes for joins: countries, US states and counties, NUTS 0–3, bidding zones, world admin-1,
   GeoNames cities (lake `shapes/`).
+- The backend attaches `lake.duckdb` read-only as catalog `lake` (default) and adds the map
+  files' rows as `app.*` tables; see [[backend-service]].

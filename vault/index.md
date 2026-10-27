@@ -28,3 +28,9 @@ Read this first, then only the notes your task needs (`.claude/skills/atlas-vaul
 
 ## Backend
 - [[agent-backend]]: the agent and the backend service (brief 25; AWS Lambda, LangGraph, any model).
+- [[backend-service]]: FastAPI app, routes, SSE, DuckDB lake and SQL guard, caps, MCP server.
+- [[agent-tools]]: tools, catalogue, site figures, MapSpec, skills.
+- [[agent-graph]]: the LangGraph flow, prompts, grounding check.
+- [[agent-models]]: model registry, providers, the fake model, evals.
+- [[backend-observability]]: spans, Langfuse, run records, EMF metrics, cost.
+- [[backend-deploy]]: Docker image, SAM template, workflows, Worker, owner setup.

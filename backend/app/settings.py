@@ -40,8 +40,11 @@ class Settings(BaseSettings):
     )
     snapshot_remote: str = "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-data/eu/"
 
-    # CORS: the dev server; production adds the site origin (CORS_ORIGINS, template SiteOrigins)
-    cors_origins: Annotated[list[str], NoDecode] = ["http://localhost:5173"]
+    # CORS: the site and the dev server (CORS_ORIGINS; template parameter SiteOrigins)
+    cors_origins: Annotated[list[str], NoDecode] = [
+        "https://energy-grid.infraatlas.workers.dev",
+        "http://localhost:5173",
+    ]
 
     # models (agent/models.yaml); "fake:*" runs the scripted test model
     agent_model: str = "anthropic:claude-opus-5-5"

@@ -2,33 +2,26 @@
 title: Agent and backend service
 tags: [backend, agent]
 updated: 2026-10-27
-paths: [docs/AGENT.md, docs/tasks/25-agent-backend.md, agent/]
-status: planned
+paths: [backend/, agent/, docs/AGENT.md, docs/tasks/25-agent-backend.md]
+status: built (brief 25); deploy waits on the owner's AWS setup
 ---
 
 # Agent and backend service
 
-> [!info] Planned
-> Not built yet. Brief 25 (`docs/tasks/25-agent-backend.md`) builds it in one cloud session.
-> The session replaces this note with notes per part (service, graph, tools, models,
-> observability, deploy) and links them from [[index]].
+`backend/`: one FastAPI service (Python 3.12, own uv project) with three faces: the data
+service (no agent), `/api/ask` (the LangGraph agent over SSE) and `/mcp` (the same read-only
+tools for other agents). Runs on AWS Lambda from a container image. Contract: `docs/AGENT.md`
+(section 11 describes what was built); how to run and deploy: `backend/README.md`.
 
-## What it will be
-- `backend/`: a FastAPI service with the data endpoints the app can use without the agent
-  (catalogue, places, "Check a site" figures, saved maps) and `/api/ask`, the agent, streamed as
-  Server-Sent Events.
-- The agent: a LangGraph graph (guard, router, analyst, cartographer, grounding, finish); tools of
-  `docs/AGENT.md` §3 over the [[lake]] with DuckDB; skills in `agent/skills/` loaded on demand;
-  every number checked against the turn's tool results.
-- Any model: `init_chat_model("<provider>:<model>")` with the registry `agent/models.yaml`
-  (Anthropic by default; see [[decisions]] 2026-10-18 and 2026-10-27).
-- MCP: the same tools at `/mcp`; external MCP servers attachable from `agent/mcp.yaml`.
-- Traced: OpenTelemetry spans and Langfuse traces per question; run records on R2
-  `agent/logs/`; CloudWatch logs, metrics, dashboard.
-- Hosted: AWS Lambda container image with the Lambda Web Adapter (streaming), Function URL,
-  SAM, DynamoDB counters, SSM secrets, GitHub Actions deploy with OIDC; a Cloudflare Worker
-  routes `/api/*` from the site's domain.
+## Parts
+- [[backend-service]]: FastAPI app, settings, routes, SSE, data layer, SQL guard, caps.
+- [[agent-tools]]: the tools, the catalogue, site figures, MapSpec, skills.
+- [[agent-graph]]: guard, router, analyst, cartographer, grounding, finish.
+- [[agent-models]]: the registry, providers, the fake model, evals.
+- [[backend-observability]]: spans, Langfuse, run records, metrics.
+- [[backend-deploy]]: Docker image, SAM, workflows, the Worker, what the owner sets up.
 
-## Contract
-`docs/AGENT.md`: what the agent answers, the tools and their limits, the semantic catalogue
-(`agent/catalog/*.yaml`), the MapSpec, the SSE events, costs and caps, evals.
+## Shared files outside backend/
+- `agent/catalog/*.yaml` (meaning; see [[lake]]), `agent/skills/<name>/SKILL.md`,
+  `agent/models.yaml`, `agent/mcp.yaml`, `agent/mapspec.schema.json` (generated),
+  `agent/evals/questions.yaml` (generated), `frontend/src/lib/mapspec.ts` (generated).

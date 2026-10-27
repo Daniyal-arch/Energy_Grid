@@ -102,7 +102,7 @@ jobs:
           sam deploy --config-file samconfig.toml --region "$AWS_REGION" --no-progressbar \
             --image-repository "${{ steps.ecr.outputs.registry }}/infraatlas-backend" \
             --parameter-overrides ImageUri=${{ steps.push.outputs.image }} GitSha=${{ github.sha }} \
-              SiteOrigins="${{ vars.SITE_ORIGINS || 'http://localhost:5173' }}" \
+              SiteOrigins="${{ vars.SITE_ORIGINS || 'https://energy-grid.infraatlas.workers.dev,http://localhost:5173' }}" \
               RequireProxy=${{ vars.REQUIRE_PROXY || 'false' }}
           URL=$(aws cloudformation describe-stacks --stack-name infraatlas-backend \
             --query "Stacks[0].Outputs[?OutputKey=='FunctionUrl'].OutputValue" --output text)
