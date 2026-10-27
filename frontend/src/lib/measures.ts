@@ -19,8 +19,7 @@ import { PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, type WorldPlantsFile } from "./worl
 import type { GridFile, PlantsFile } from "../app/types";
 import type { AtlasFile } from "./atlas";
 import type { HydrogenFile } from "./coming";
-import { NL_COLOR } from "./connect";
-import { CONNECT_EU, connectEuKey, type ConnectEuFile } from "./connectEu";
+import { H, H_CLASSES, H_COLOR, H_LABEL, H_NO_CLASS, type HFile } from "./connectH";
 import type { ConstraintsFile } from "./constraints";
 import { GEM_POINTS, type GemPointsFile } from "./gem";
 import type { OffshoreWindFile } from "./offshoreWind";
@@ -287,34 +286,44 @@ MEASURES.push(
     fmt: n,
   },
   {
-    id: "connect-points",
+    id: "connect-room",
     dataset: "capacity",
-    label: "Grid capacity points",
-    unit: "",
-    sums: "points each grid operator publishes, in its class (the operators' capacity maps, a count)",
-    files: CONNECT_EU.map(connectEuKey),
-    color: [206, 138, 72],
-    typeColor: (t) => NL_COLOR[CAPACITY_CLASSES.indexOf(t)] ?? [150, 154, 166],
+    label: "Free capacity for generation",
+    unit: "MW",
+    sums: "MW free for new generation as each grid operator publishes it, summed only where the operator allows (its nodes do not share capacity); colour: the operator's class mapped to four (scripts/build_connect_harmonised.py)",
+    files: ["connectH"],
+    color: [120, 178, 150],
+    typeColor: (t) => H_COLOR[H_CLASSES.find((c) => H_LABEL[c] === t) ?? "none"] ?? H_NO_CLASS,
     points: (f) => {
+      const h = f.connectH as HFile | undefined;
+      if (!h) return null;
       const out: Pt[] = [];
-      for (const id of CONNECT_EU) {
-        const c = f[connectEuKey(id)] as ConnectEuFile | undefined;
-        if (!c) continue;
-        for (const p of c.points) {
-          const k = p[5];
-          const n4 = c.classes.length;
-          const idx = k < 0 ? -1 : n4 === 4 ? k : n4 === 2 ? (k === 0 ? 0 : 3) : n4 === 3 ? [0, 1, 3][k] : Math.min(3, k);
-          out.push([p[1], p[2], 1, CAPACITY_CLASSES[idx] ?? "no class"]);
+      for (const r of h.rows) {
+        let lon = r[H.lon];
+        let lat = r[H.lat];
+        // an area without a point: the middle of its outline's box
+        if ((lon == null || lat == null) && r[H.polygon]?.[0]?.[0]) {
+          const ring = r[H.polygon]![0][0];
+          let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+          for (let i = 0; i + 1 < ring.length; i += 2) {
+            x0 = Math.min(x0, ring[i]);
+            x1 = Math.max(x1, ring[i]);
+            y0 = Math.min(y0, ring[i + 1]);
+            y1 = Math.max(y1, ring[i + 1]);
+          }
+          lon = (x0 + x1) / 2;
+          lat = (y0 + y1) / 2;
         }
+        if (lon == null || lat == null) continue;
+        const summable = h.operators[r[H.op]]?.summable !== false;
+        out.push([lon, lat, summable ? (r[H.mwGen] ?? 0) : 0, r[H.cls] ? H_LABEL[r[H.cls]!] : "no class"]);
       }
-      return out.length ? out : null;
+      return out;
     },
-    fmt: n,
+    fmt: mw,
   },
 );
 
-/** The four classes every capacity map is drawn in (most room first). */
-export const CAPACITY_CLASSES = ["room", "some room", "little room", "no room"];
 
 // ------------------------------------------------------------------ continuous data (rasters)
 
