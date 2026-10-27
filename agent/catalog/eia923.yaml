@@ -2,7 +2,7 @@ dataset: pudl
 title: EIA-923 generation per US plant, read in place from PUDL's public Parquet
 licence: CC BY 4.0 (Catalyst Cooperative); EIA data public domain
 access: parquet in place (s3://pudl.catalyst.coop/stable/), no lake copy
-map_file: frontend/public/data/us/plants_perf.json (US plant hover: net generation, capacity factor)
+map_file: "frontend/public/data/us/plants_perf.json (US plant hover: net generation, capacity factor)"
 tables:
   core_eia923__monthly_generation_fuel:
     grain: one row per plant, month, fuel and prime mover

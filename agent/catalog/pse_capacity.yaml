@@ -1,7 +1,7 @@
 dataset: pse_capacity
 title: Poland, connection requests to PSE (Art. 7(8l) Energy Law) and switchgears without free bays
 licence: PSE terms (public information under Art. 7(8l) of the Energy Law)
-map_file: frontend/public/data/eu/connect/pl.json (card only: PSE publishes no positions)
+map_file: "frontend/public/data/eu/connect/pl.json (card only: PSE publishes no positions)"
 tables:
   requests:
     grain: one row per object (project) in PSE's list, every column as published (text)

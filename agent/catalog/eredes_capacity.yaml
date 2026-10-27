@@ -2,7 +2,7 @@ dataset: eredes_capacity
 title: Portugal, reception capacity of the distribution grid per substation (E-REDES)
 licence: CC BY 4.0
 access: also an API (e-redes.opendatasoft.com, dataset capacidade-rececao-rnd)
-map_file: frontend/public/data/eu/connect/pt.json (card only: E-REDES publishes no positions)
+map_file: "frontend/public/data/eu/connect/pt.json (card only: E-REDES publishes no positions)"
 tables:
   substations:
     grain: one row per HV/MV substation, every column as published (quarterly values), per snapshot
