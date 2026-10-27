@@ -19,7 +19,9 @@ of `docs/tasks/`.
   countries); no operator data for AL, BA, BE, CH, LV, MD, ME, MK, NO, RO, RS, UA (drawn dark,
   labelled with the reason from the registry, `capacityGapLayers` in `map/connectHLayers.ts`;
   probe `scripts/probe_connect_gaps.py`: most answer Cloudflare checks, Sadales tīkls HTTP 451,
-  Statnett and Elvia 404). Brief 26 fills what can be filled. ENWL, SPEN, UKPN wait for keys.
+  Statnett and Elvia 404). Brief 26 (`docs/tasks/26-room-to-connect-everywhere.md`) researches and
+  builds every EU-27 country, the neighbours, the UK and the US (FERC Order 2023 heatmaps: CAISO's
+  JSON, MISO's CartoVista API; DOE hosting capacity atlas). ENWL, SPEN, UKPN wait for keys.
 - **Keys the owner still has to provide** (`PLAN.md`): Anthropic API key for the agent, AWS
   account and deploy role for the backend (brief 25), PJM, AESO, data.go.kr, EPIAS, RTE,
   Fingrid, NREL; `EPA_API_KEY` reached Actions empty on 2026-10-18.

@@ -37,7 +37,7 @@ rules apply to every task. Start from the vault (`vault/index.md`, skill
 | 23 | [23-grid-capacity-harmonised.md](23-grid-capacity-harmonised.md) room to connect in one schema and one symbology for EU-27, UK and US; probe and add every operator that publishes data; free capacity per country | `ENWL_API_KEY`, `SPEN_API_KEY`, `UKPN_API_KEY` (listed as blocked) |
 | 24 | [24-emitter-positions.md](24-emitter-positions.md) EU ETS and UK ETS installations placed on the map from published positions (EUTL, EEA register by permit, NAEI and UK permit registers) | no |
 | 25 | [25-agent-backend.md](25-agent-backend.md) the backend: data service and agent on AWS Lambda (FastAPI, LangGraph, any model, skills, MCP, OpenTelemetry + Langfuse, evals, SAM deploy) | `ANTHROPIC_API_KEY`, AWS deploy role, R2 tokens, Langfuse (builds with fakes until then) |
-| 26 | [26-room-to-connect-gaps.md](26-room-to-connect-gaps.md) room to connect: the countries with no operator data (BE, LV, RO, CY, NO, CH, the Western Balkans, MD, UA) and the operators missing inside covered countries; browser fetch in Actions, never past an explicit refusal | `ENWL_API_KEY`, `SPEN_API_KEY`, `UKPN_API_KEY` (blocked) |
+| 26 | [26-room-to-connect-everywhere.md](26-room-to-connect-everywhere.md) room to connect for every EU-27 country, the EU's neighbours, the UK and the US: research every operator (EU 2024/1711 and 2024/1747 obligations, FERC Order 2023 heatmaps, US hosting capacity maps), build what is published, document the rest | `ENWL_API_KEY`, `SPEN_API_KEY`, `UKPN_API_KEY` (blocked) |
 
 Several sessions run at once and touch the same files (store, layers, panels, docs,
 workflows): before opening a pull request, merge `origin/main` into the branch and resolve

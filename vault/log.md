@@ -8,6 +8,10 @@ updated: 2026-10-27
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-10-27** (main): room-to-connect research handed to a cloud session: brief 26 rewritten for
+  EU-27, neighbours, UK and US with every finding (probes `probe_connect_gaps.py`,
+  `probe_connect_us_heatmaps.py`). Notes: coverage-and-gaps.
+
 - **2026-10-27** (main, local): every room-to-connect record kept (3D draws unsized ones as flat
   dots; "nothing published for this side" in grey); a class share bar in the key; dark countries
   say why (registry); probe of the missing countries and brief 26; planned gas projects as a donut
