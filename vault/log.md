@@ -8,6 +8,11 @@ updated: 2026-10-27
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-10-27** (main, local): every room-to-connect record kept (3D draws unsized ones as flat
+  dots; "nothing published for this side" in grey); a class share bar in the key; dark countries
+  say why (registry); probe of the missing countries and brief 26; planned gas projects as a donut
+  per country with the count; "Also with data here" chips removed. Notes: coverage-and-gaps.
+
 - **2026-10-27** (main, local): Layers panel rows reduced to name and an ON/OFF switch, details on
   click; room to connect asks its question ("Where can new generation connect?"), follows the
   side switch in every style, greys the countries with no published data; 3D only for records

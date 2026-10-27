@@ -65,7 +65,7 @@ export function wantedKeys(zoom: number, L: Record<LayerId, boolean> = useApp.ge
   if (L.ctrace) keys.push("ctrace");
   // a country's own files only for the dashboard's countries
   const here = (cc: string) => inAreaCountry(s.area, cc);
-  if (L.connect) keys.push("connectH");
+  if (L.connect) keys.push("connectH", "coverage");
   if (L.usOutages) keys.push("usOutages", "usCounties");
   if (L.water) keys.push("water");
   if (L.offshoreWind) keys.push("offshoreWind");

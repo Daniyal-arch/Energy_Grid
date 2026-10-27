@@ -614,8 +614,13 @@ function tooltipHtml(id: string, object: unknown): string | null {
         <div>${p[4] != null ? `<b>${p[4].toLocaleString("en-US")} MW</b> · ` : ""}${[part(p[5], hf.processes), part(p[6], hf.end_uses)].filter(Boolean).join(" · ")}</div>
         ${p[7] != null ? `<div>${p[7].toLocaleString("en-US")} t/year</div>` : ""}${SRC(`European Hydrogen Observatory (${hf.file})`)}`;
     }
+    case "connect-gaps": {
+      const g = (object as { g: { name: string; why: string; note: string } }).g;
+      return `<b>${g.name}: ${g.why}</b><div style="max-width:280px">${g.note}</div>${SRC("coverage registry, data/coverage.yaml (room to connect)")}`;
+    }
     case "eu-gas-projects": {
-      const d = object as { name: string; n: number; byCat: Record<string, number> };
+      // an arc of a country's donut
+      const d = (object as { d: { name: string; n: number; byCat: Record<string, number> } }).d;
       const gf = fileOf<GasProjectsFile>("gasProjects");
       if (!gf) return null;
       const parts = Object.entries(d.byCat)

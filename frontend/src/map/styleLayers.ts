@@ -157,8 +157,19 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
   const colour = (p: Pt): RGB => typeColour(m, p[3]);
   const id = `st-${dataset}`;
   const sorted = memo(`stSorted:${m.id}`, [pts], () => [...pts].sort((a, b) => b[2] - a[2]));
-  // 3D: only records with a figure stand up (a bar of no height says nothing)
+  // 3D: records with a figure stand up; the others stay on the map as flat dots in their colour
   const sized = memo(`stSized:${m.id}`, [sorted], () => sorted.filter((p) => p[2] > 0));
+  const flat = memo(`stFlat:${m.id}`, [sorted], () => sorted.filter((p) => !(p[2] > 0)));
+  const flatDots = new ScatterplotLayer<Pt>({
+    id: `${id}-flat`,
+    data: flat,
+    getPosition: (p) => [p[0], p[1]],
+    radiusUnits: "pixels",
+    getRadius: 2,
+    getFillColor: (p) => [...colour(p), 200],
+    pickable: true,
+    parameters: ON_TOP,
+  });
   if (st === "bubbles")
     return [
       new ScatterplotLayer<Pt>({
@@ -186,6 +197,7 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
   const tall = 90 * mpp;
   if (st === "bars")
     return [
+      flatDots,
       new ColumnLayer<Pt>({
         id: `${id}-bars`,
         data: sized,
@@ -210,6 +222,7 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
       [0.72, 1, 75],
     ] as const;
     return [
+      flatDots,
       new ScatterplotLayer<Pt>({
         id: `${id}-beam-glow`,
         data: sized,
@@ -340,7 +353,7 @@ export function styleLayers(fr: Frame): Layer[] {
 
 /** The value under the cursor, for the hover card. */
 export function styleTip(layerId: string, object: unknown): string | null {
-  const m = layerId.match(/^st-([A-Za-z0-9]+)-(bubbles|bars|beam-glow|beam-0|choropleth|terrain)/);
+  const m = layerId.match(/^st-([A-Za-z0-9]+)-(bubbles|bars|flat|beam-glow|beam-0|choropleth|terrain)/);
   if (!m || !object) return null;
   const d = m[1];
   const r = RASTER_BY_DATASET.get(d);

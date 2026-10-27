@@ -43,32 +43,6 @@ function AreaControls() {
   );
 }
 
-/** The datasets with data in the area that are not on the map: one click adds one. */
-function AlsoHere({ area }: { area: string[] }) {
-  const layers = useApp((s) => s.layers);
-  const mode = useApp((s) => s.mode);
-  const colour = useApp((s) => s.colour);
-  const more = DATASETS.filter((d) => partsIn(d, mode).length > 0 && !datasetOn(d, layers, colour) && covers(d, area) && !d.colour);
-  if (!more.length) return null;
-  return (
-    <div className="mt-2.5 border-t border-white/[0.06] pt-2">
-      <div className={`mb-1 text-[9.5px] uppercase tracking-[0.16em] ${muted}`}>Also with data here · add to the map</div>
-      <div className="flex flex-wrap gap-1">
-        {more.map((d) => (
-          <button
-            key={d.id}
-            onClick={() => toggleDataset(d)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 py-0.5 pl-2 pr-2 text-[10.5px] text-slate-300 hover:border-white/25 hover:text-slate-100"
-            title={d.description}
-          >
-            <span className="h-2 w-2 rounded-full" style={{ background: d.color }} />+ {d.name}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function DashboardTab({ iso3 }: { iso3?: string }) {
   const layers = useApp((s) => s.layers);
   const mode = useApp((s) => s.mode);
@@ -119,7 +93,6 @@ export function DashboardTab({ iso3 }: { iso3?: string }) {
             })}
           </div>
         )}
-        {shape?.countries && <AlsoHere area={shape.countries} />}
       </Card>
       <MapVariables />
       {shape && <AreaCards s={shape} />}

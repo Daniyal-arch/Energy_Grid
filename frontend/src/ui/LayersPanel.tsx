@@ -4,7 +4,7 @@
 // its key appears while it is on. Datasets that colour the countries are listed with the others
 // (one colouring at a time).
 
-import { useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 
 import { FUEL_COLOR, FUEL_LABEL } from "../lib/energy";
 import { GAS_FLOW, GAS_TRANSIT, GAS_TRANSIT_LABEL_GWH, type GasFlowsFile } from "../lib/gasFlows";
@@ -15,7 +15,10 @@ import { CT_COLOR, type CtraceFile } from "../lib/ctrace";
 import { OUTAGE_STOPS, OUTAGE_TICKS, WATER_COLOR, WATER_INDICATORS, newestYear, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, type MastrMuniFile } from "../lib/mastr";
 import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
-import { H_CLASSES, H_COLOR, H_LABEL, H_NO_CLASS, ROOM_STOPS, ROOM_TICKS, countryRoom, type HFile } from "../lib/connectH";
+import { H, H_CLASSES, H_COLOR, H_LABEL, H_NO_CLASS, ROOM_STOPS, ROOM_TICKS, countryRoom, type HClass, type HFile } from "../lib/connectH";
+import { shapeOf } from "../app/areaShape";
+import { inAreaCountry } from "../app/datasets";
+import { inside } from "../lib/area";
 import { IT_CLASSES, IT_COLOR, ROOM_CLASSES } from "../lib/connectMore";
 import { SEA_CABLE_COLOR } from "../lib/seaCables";
 import { GAS_CAT_COLOR, H2_STAGE_COLOR } from "../lib/coming";
@@ -34,7 +37,7 @@ import { PLANT_DETAIL_ZOOM, PLANT_MIN_MW, QUEUE_M_PER_GW } from "../map/usLayers
 import { CABLE_STYLE, FLOW, GAS, HVDC, MULTI_ZONE, OFFLINE_STOPS, PRICE_STOPS, SHARE_STOPS, SUBSTATION, VOLTAGE_BANDS, gradientCss } from "../app/colors";
 import { BEAM_MIN_MW } from "../app/geo";
 import { useDataStore, useFile } from "../app/data";
-import type { CountriesFile, StatsFile } from "../app/types";
+import type { CountriesFile, StatsFile, WorldFile } from "../app/types";
 import { priceRange, rampCss } from "../map/priceTerrain";
 import { currentDay } from "../map/tooltip";
 import { COLOURS, actions, findDashboard, useApp, type ColourId, type LayerGroup, type LayerId, type PlantStatus, type TimeMode } from "../app/store";
@@ -219,12 +222,13 @@ function ConnectKey() {
           ))}
         </div>
       </div>
+      <RoomMix hf={hf} side={side} />
       <Swatches>
         {H_CLASSES.map((c) => (
           <Swatch key={c} color={rgbCss(H_COLOR[c])} label={H_LABEL[c]} />
         ))}
         <Swatch color={rgbCss(H_NO_CLASS)} label="MW only, no class" />
-        <Swatch color="rgb(10,12,17)" label={`no published data${gaps.length ? ` (${gaps.join(", ")})` : ""}`} />
+        <Swatch color="rgb(10,12,17)" label={`no operator data${gaps.length ? ` (${gaps.join(", ")}): hover for why` : ""}`} />
       </Swatches>
       <details className="mt-1">
         <summary className={`cursor-pointer text-[9.5px] ${muted}`}>How to read it</summary>
@@ -253,6 +257,54 @@ function ConnectKey() {
         </details>
       )}
     </>
+  );
+}
+
+/** The area's records by class for the side chosen: one stacked bar, so the picture reads at a
+ *  glance (a share of the records operators publish, not of MW; computed). */
+function RoomMix({ hf, side }: { hf: HFile | undefined; side: "offtake" | "feedin" }) {
+  const area = useApp((s) => s.area);
+  const drawn = useApp((s) => s.drawn);
+  const world = useDataStore((d) => d.files.world as WorldFile | undefined);
+  const countries = useDataStore((d) => d.files.countries as CountriesFile | undefined);
+  const mix = useMemo(() => {
+    if (!hf) return null;
+    const shape = drawn ? shapeOf(area, drawn, world, countries) : null;
+    const n: Record<HClass | "mw" | "nothing", number> = { available: 0, limited: 0, queue: 0, none: 0, mw: 0, nothing: 0 };
+    let all = 0;
+    for (const r of hf.rows) {
+      const cc = hf.operators[r[H.op]].cc;
+      if (shape) {
+        if (r[H.lon] == null || r[H.lat] == null || !inside(shape, r[H.lon]!, r[H.lat]!)) continue;
+      } else if (area ? !inAreaCountry(area, cc.slice(0, 2)) : cc.startsWith("US-")) continue;
+      const cls = side === "feedin" ? r[H.cls] : r[H.clsLoad];
+      const mw = side === "feedin" ? r[H.mwGen] : r[H.mwLoad];
+      n[cls ?? (mw != null ? "mw" : "nothing")]++;
+      all++;
+    }
+    return { n, all };
+  }, [hf, side, area, drawn, world, countries]);
+  if (!mix || !mix.all) return null;
+  const parts: [string, number, string][] = [
+    ...H_CLASSES.map((c) => [H_LABEL[c], mix.n[c], rgbCss(H_COLOR[c])] as [string, number, string]),
+    ["MW only, no class", mix.n.mw, rgbCss(H_NO_CLASS)],
+    ["nothing for this side", mix.n.nothing, "rgba(70,74,84,1)"],
+  ];
+  const pct = (v: number) => `${Math.round((100 * v) / mix.all)} %`;
+  return (
+    <div className="mt-1.5">
+      <div className="flex h-2.5 w-full overflow-hidden rounded-sm bg-white/[0.04]">
+        {parts.map(([label, v, c]) => (v ? <span key={label} style={{ width: `${(100 * v) / mix.all}%`, background: c }} title={`${label}: ${v.toLocaleString("en-US")} (${pct(v)})`} /> : null))}
+      </div>
+      <div className={`mt-0.5 text-[9.5px] leading-snug ${muted}`}>
+        {parts
+          .filter(([, v]) => v)
+          .slice(0, 4)
+          .map(([label, v]) => `${pct(v)} ${label}`)
+          .join(" · ")}{" "}
+        of {mix.all.toLocaleString("en-US")} points and areas published {area || drawn ? "in this area" : "in Europe"} (share of records, computed).
+      </div>
+    </div>
   );
 }
 
@@ -478,12 +530,26 @@ export function LayerLegend({ id }: { id: LayerId }) {
     case "gasProjects":
       return (
         <>
+          <div className="text-[11px] text-slate-200">Planned projects per country, not their routes</div>
           <Swatches>
             {(["TRA", "LNG", "UGS", "H2T", "H2S", "H2E", "H2L"] as const).map((k) => (
-              <Swatch key={k} color={rgbCss(GAS_CAT_COLOR[k])} kind="ring" label={GAS_LABEL[k]} />
+              <Swatch key={k} color={rgbCss(GAS_CAT_COLOR[k])} kind="line" label={GAS_LABEL[k]} />
             ))}
           </Swatches>
-          <Note>ENTSOG publishes no positions: one ring per country, sized by its number of projects, coloured by the most common kind. The panel lists them.</Note>
+          <Note>
+            ENTSOG&apos;s list (TYNDP 2026, 347 projects) gives each project&apos;s country but no position or route, so each country carries one ring: its size grows with the
+            number of projects, its parts show the kinds, the number under the name counts them. The routes of planned and building gas pipelines are in Gas pipelines (Global
+            Energy Monitor).
+          </Note>
+          <button
+            onClick={() => {
+              const d = DATASETS.find((x) => x.id === "gasPipes");
+              if (d && !datasetOn(d, useApp.getState().layers)) toggleDataset(d);
+            }}
+            className="mt-1 rounded-md border border-white/10 px-1.5 py-[1px] text-[10px] text-slate-300 hover:bg-white/[0.07]"
+          >
+            Show pipeline routes (Gas pipelines)
+          </button>
         </>
       );
     case "roadsRail":
