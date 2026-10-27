@@ -117,7 +117,23 @@ STOP = {
 
 def norm(name: str) -> str:
     """Lower case, no accents, no voltage or station words: 'UW Mattersburg 220 kV' -> 'mattersburg'."""
-    s = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode().lower()
+    # letters without a decomposition first (ł, đ, ø, æ, ß), then accents off
+    s = name.translate(
+        str.maketrans(
+            {
+                "ł": "l",
+                "Ł": "L",
+                "đ": "d",
+                "Đ": "D",
+                "ø": "o",
+                "Ø": "O",
+                "æ": "ae",
+                "Æ": "AE",
+                "ß": "ss",
+            }
+        )
+    )
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
     s = re.sub(r"\(.*?\)", " ", s)
     words = [t for t in re.split(r"[^a-z0-9]+", s) if t and t not in STOP and not t.isdigit()]
     return " ".join(words)
