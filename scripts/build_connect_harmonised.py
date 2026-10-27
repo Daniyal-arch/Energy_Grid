@@ -73,7 +73,7 @@ MAPPINGS: dict[str, dict[str, str]] = {
         "2 under study, with a queue": "queue", "3 shortage of capacity, with a queue": "none",
     },
     "CZ": {"suitable": "available", "conditionally suitable": "limited", "not suitable": "none"},
-    "DE-TransnetBW": {"medium-term": "limited", "long-term": "none", "not available": "none"},
+    "DE-TransnetBW": {"medium-term": "limited", "long-term": "limited", "not available": "none"},
     "AT": {"MW free > 0": "available", "0 MW, flexible connection possible": "limited", "0 MW, no flexible connection": "none"},
     "BG": {"connection possible": "available", "grid expansion needed first": "none"},
     "EE": {"expandable (type A)": "available", "not expandable (type B)": "none"},
@@ -479,8 +479,8 @@ EU_FILES = [
     ("LU", "lu", "Creos", "transmission"),
     ("MT", "mt", "Enemalta", "distribution"),
     ("SE", "se", "Svenska kraftnät", "transmission"),
-    ("ES-DSO", "es_dso", "e-distribución (Endesa)", "distribution"),
 ]
+# e-distribución: connect/h_es_edis.json (build_connect_h23.py: generation and demand) replaces es_dso
 
 
 def extra_files(b: Build) -> None:
