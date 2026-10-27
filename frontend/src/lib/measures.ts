@@ -28,6 +28,10 @@ import type { GridSpec } from "./area";
 /** [lon, lat, value, type label] */
 export type Pt = [number, number, number, string];
 type Files = Record<string, unknown>;
+/** What a figure can depend on besides the files: the side of room to connect (new generation or new demand). */
+export interface MeasureCtx {
+  connectSide: "offtake" | "feedin";
+}
 
 export interface Measure {
   id: string;
@@ -45,7 +49,7 @@ export interface Measure {
   typeColor?: (type: string) => RGB;
   /** the unit from the file, when it varies by file */
   unitOf?: (f: Files) => string;
-  points: (f: Files) => Pt[] | null;
+  points: (f: Files, ctx: MeasureCtx) => Pt[] | null;
   fmt: (v: number) => string;
 }
 
@@ -288,14 +292,15 @@ MEASURES.push(
   {
     id: "connect-room",
     dataset: "capacity",
-    label: "Free capacity for generation",
+    label: "Free capacity",
     unit: "MW",
-    sums: "MW free for new generation as each grid operator publishes it, summed only where the operator allows (its nodes do not share capacity); colour: the operator's class mapped to four (scripts/build_connect_harmonised.py)",
+    sums: "MW free for the chosen side (new generation or new demand) as each grid operator publishes it, summed only where the operator allows (its nodes do not share capacity); colour: the operator's class mapped to four; records without a published MW have no size (scripts/build_connect_harmonised.py)",
     files: ["connectH"],
     color: [120, 178, 150],
     typeColor: (t) => H_COLOR[H_CLASSES.find((c) => H_LABEL[c] === t) ?? "none"] ?? H_NO_CLASS,
-    points: (f) => {
+    points: (f, ctx) => {
       const h = f.connectH as HFile | undefined;
+      const gen = ctx.connectSide === "feedin";
       if (!h) return null;
       const out: Pt[] = [];
       for (const r of h.rows) {
@@ -316,7 +321,10 @@ MEASURES.push(
         }
         if (lon == null || lat == null) continue;
         const summable = h.operators[r[H.op]]?.summable !== false;
-        out.push([lon, lat, summable ? (r[H.mwGen] ?? 0) : 0, r[H.cls] ? H_LABEL[r[H.cls]!] : "no class"]);
+        const mwSide = gen ? r[H.mwGen] : r[H.mwLoad];
+        const cls = gen ? r[H.cls] : r[H.clsLoad];
+        if (mwSide == null && cls == null) continue;
+        out.push([lon, lat, summable ? (mwSide ?? 0) : 0, cls ? H_LABEL[cls] : "no class"]);
       }
       return out;
     },

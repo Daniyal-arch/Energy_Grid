@@ -12,9 +12,12 @@ One Layers panel on the left, one context panel on the right, a time bar at the 
 ## Where
 - `ui/App.tsx`: desktop and phone layouts; top bar (dashboards menu, search, Check a site, Draw an
   area, Maps button, Live / Years).
-- `ui/LayersPanel.tsx` ("Datasets"): datasets on the map first, then categories; a dataset's name
-  switches it on and opens its details (coverage, sources); the switch turns it off; style chips
-  and a one-line key under each dataset on; `LayerLegend` per layer.
+- `ui/LayersPanel.tsx` ("Datasets"): datasets on the map first, then categories. A row is only
+  the name, a region tag and an ON/OFF switch (`Toggle`); clicking the name opens the details:
+  "Draw as" style chips with a one-line key, the layers' own keys (`LayerLegend`, e.g.
+  `ConnectKey` with the new generation / new demand switch), the summary key, then
+  `DatasetDetails` (sources, coverage registry, "Show where it has data" tint button).
+  Switching a dataset on while others are on asks where it goes (`AddChoice`).
 - `ui/Panel.tsx`: the context panel's tabs (Dashboard, Now, 7 days, Prices, Gas & LNG, 25 years...).
 - `ui/DashboardTab.tsx`: the dashboard's area, "also with data here" chips, `MapVariables`
   ("On the map": every styled dataset with its key, "All as"), and `AreaCards`.

@@ -34,7 +34,7 @@ import { PLANT_DETAIL_ZOOM, PLANT_MIN_MW, QUEUE_M_PER_GW } from "../map/usLayers
 import { CABLE_STYLE, FLOW, GAS, HVDC, MULTI_ZONE, OFFLINE_STOPS, PRICE_STOPS, SHARE_STOPS, SUBSTATION, VOLTAGE_BANDS, gradientCss } from "../app/colors";
 import { BEAM_MIN_MW } from "../app/geo";
 import { useDataStore, useFile } from "../app/data";
-import type { StatsFile } from "../app/types";
+import type { CountriesFile, StatsFile } from "../app/types";
 import { priceRange, rampCss } from "../map/priceTerrain";
 import { currentDay } from "../map/tooltip";
 import { COLOURS, actions, findDashboard, useApp, type ColourId, type LayerGroup, type LayerId, type PlantStatus, type TimeMode } from "../app/store";
@@ -196,33 +196,45 @@ function UsNodesKey() {
 
 function ConnectKey() {
   const hf = useDataStore((d) => d.files.connectH as HFile | undefined);
+  const countries = useDataStore((d) => d.files.countries as CountriesFile | undefined);
   const side = useApp((s) => s.connectSide);
   const room = hf ? countryRoom(hf) : {};
+  const gaps = hf && countries ? countries.countries.filter((c) => !hf.operators.some((o) => o.cc === c.iso)).map((c) => c.iso) : [];
   return (
     <>
-      <div className="mb-1 flex items-center gap-1.5">
-        {(["feedin", "offtake"] as const).map((s) => (
-          <button
-            key={s}
-            onClick={() => actions.setConnectSide(s)}
-            className={`rounded-md border px-2 py-0.5 text-[10.5px] ${side === s ? "border-white/30 bg-white/15 text-slate-100" : "border-white/10 text-slate-300 hover:bg-white/[0.07]"}`}
-          >
-            {s === "offtake" ? "new demand" : "new generation"}
-          </button>
-        ))}
+      <div className="text-[11px] text-slate-200">Where can new {side === "offtake" ? "demand" : "generation"} connect to the grid?</div>
+      <div className="mt-1 flex items-center gap-1.5">
+        <span className={`text-[10px] ${muted}`}>Room for</span>
+        <div className="inline-flex overflow-hidden rounded-md border border-white/15" role="radiogroup" aria-label="Room for">
+          {(["feedin", "offtake"] as const).map((s) => (
+            <button
+              key={s}
+              role="radio"
+              aria-checked={side === s}
+              onClick={() => actions.setConnectSide(s)}
+              className={`px-2 py-0.5 text-[10.5px] ${side === s ? "bg-sky-400/80 text-[#06101c]" : "text-slate-300 hover:bg-white/[0.07]"}`}
+            >
+              {s === "offtake" ? "new demand" : "new generation"}
+            </button>
+          ))}
+        </div>
       </div>
       <Swatches>
         {H_CLASSES.map((c) => (
           <Swatch key={c} color={rgbCss(H_COLOR[c])} label={H_LABEL[c]} />
         ))}
-        <Swatch color={rgbCss(H_NO_CLASS)} label="value only" />
-        <Swatch color="rgba(128,132,144,0.3)" label="nothing for this side" />
+        <Swatch color={rgbCss(H_NO_CLASS)} label="MW only, no class" />
+        <Swatch color="rgb(10,12,17)" label={`no published data${gaps.length ? ` (${gaps.join(", ")})` : ""}`} />
       </Swatches>
-      <Note>
-        Every operator&apos;s own classes mapped to these four (the mapping per operator in the tooltip). Dot area = free MW published for the chosen side; a small fixed dot where the
-        operator publishes no MW. Outlines: operators that publish areas. Nodes without coordinates are placed on an OpenStreetMap substation of the same name only where the
-        name is unique.
-      </Note>
+      <details className="mt-1">
+        <summary className={`cursor-pointer text-[9.5px] ${muted}`}>How to read it</summary>
+        <Note>
+          Each dot is a substation or connection point an operator publishes; outlines are areas. Colour: the operator&apos;s own class for the chosen side, mapped to these four
+          (the mapping per operator in the tooltip). Dot area: the free MW published; a small fixed dot where only a class is published; a faint dot where the operator publishes
+          nothing for this side. Inside a country, no dot means its operators publish nothing there. Nodes without coordinates are placed on an OpenStreetMap substation of the
+          same name only where the name is unique.
+        </Note>
+      </details>
       {hf && (
         <details className="mt-1">
           <summary className={`cursor-pointer text-[9.5px] ${muted}`}>
@@ -784,10 +796,14 @@ function AtlasKey({ id }: { id: AtlasId }) {
   );
 }
 
+/** On or off, said in words as well as by the knob. */
 function Toggle({ on }: { on: boolean }) {
   return (
-    <span className={`relative h-[16px] w-[28px] shrink-0 rounded-full transition-colors ${on ? "bg-sky-400/80" : "bg-white/15"}`}>
-      <span className={`absolute top-[2px] h-[12px] w-[12px] rounded-full bg-white shadow transition-all ${on ? "left-[14px]" : "left-[2px]"}`} />
+    <span
+      className={`relative inline-flex h-[18px] w-[42px] shrink-0 items-center rounded-full border text-[8.5px] font-semibold tracking-[0.08em] transition-colors ${on ? "border-sky-300/70 bg-sky-400/85 text-[#06101c]" : "border-white/15 bg-white/[0.05] text-slate-400"}`}
+    >
+      <span className={`absolute ${on ? "left-[6px]" : "right-[6px]"}`}>{on ? "ON" : "OFF"}</span>
+      <span className={`absolute top-[2px] h-[12px] w-[12px] rounded-full shadow transition-all ${on ? "left-[26px] bg-white" : "left-[2px] bg-slate-300"}`} />
     </span>
   );
 }
@@ -834,10 +850,23 @@ function FamilyCoverage({ family }: { family: string }) {
   );
 }
 
-/** Where a dataset has data and where it comes from; the map tints the countries meanwhile. */
-export function DatasetDetails({ d, tinted = true }: { d: Dataset; tinted?: boolean }) {
+/** Tint on the map the countries where a dataset has data (and stop). */
+function CoverageButton({ d }: { d: Dataset }) {
+  const tinted = useApp((s) => s.coverageOf === d.id);
   return (
-    <div className="mx-2 mb-2 rounded-lg border border-white/[0.07] bg-[#0d1119] px-2.5 py-2">
+    <button
+      onClick={() => actions.showCoverage(tinted ? null : d.id)}
+      className={`rounded-md border px-1.5 py-[1px] ${tinted ? "border-sky-300/50 bg-sky-400/15 text-sky-100" : "border-white/10 text-slate-300 hover:bg-white/[0.07]"}`}
+    >
+      {tinted ? "Hide where it has data" : "Show where it has data"}
+    </button>
+  );
+}
+
+/** Where a dataset has data and where it comes from. */
+export function DatasetDetails({ d, tinted = true, inset = true }: { d: Dataset; tinted?: boolean; inset?: boolean }) {
+  return (
+    <div className={`${inset ? "mx-2 mb-2 " : ""}rounded-lg border border-white/[0.07] bg-[#0d1119] px-2.5 py-2`}>
       <div className="text-[11px] leading-snug text-slate-300">{d.description}</div>
       <div className="mt-2 space-y-1.5">
         {d.parts.map((p, i) => (
@@ -852,7 +881,7 @@ export function DatasetDetails({ d, tinted = true }: { d: Dataset; tinted?: bool
       {d.updates && <div className={`mt-1.5 text-[10.5px] ${muted}`}>Updated: {d.updates}.</div>}
       {d.family && <FamilyCoverage family={d.family} />}
       <div className={`mt-2 flex items-center justify-between text-[10px] ${muted}`}>
-        <span>{tinted ? "Tinted on the map: where it has data" : ""}</span>
+        {tinted ? <CoverageButton d={d} /> : <span />}
         <a href={`${DOCS}`} target="_blank" rel="noreferrer" className="text-sky-300/80 hover:text-sky-200" title={`docs/DATA_SOURCES.md, section "${d.parts[0].doc}"`}>
           How it is built ↗
         </a>
@@ -869,7 +898,7 @@ function SummaryKey({ d, files }: { d: Dataset; files: Record<string, unknown> }
   const max = top[0]?.[1] ?? 0;
   const rgb = d.color.replace("rgb(", "rgba(").replace(")", "");
   return (
-    <div className="px-2 pb-2 pl-[30px]">
+    <div>
       <div className={`text-[10px] leading-snug ${muted}`}>Zoomed out, the countries carry its figure: {s.text(files)}.</div>
       {max > 0 && (
         <>
@@ -938,14 +967,15 @@ function AddChoice({ d, onDone }: { d: Dataset; onDone: () => void }) {
   );
 }
 
+/** A dataset: its name and an on/off switch; everything else (style, key, sources, coverage)
+ *  only when its name is clicked. */
 function DatasetRow({ d }: { d: Dataset }) {
   const mode = useApp((s) => s.mode);
   const layers = useApp((s) => s.layers);
-  const coverageOf = useApp((s) => s.coverageOf);
   const colour = useApp((s) => s.colour);
   const [ask, setAsk] = useState(false);
+  const [open, setOpen] = useState(false);
   const on = datasetOn(d, layers, colour);
-  const open = coverageOf === d.id;
   const shownParts = partsIn(d, mode).filter((p) => !!p.layer && layers[p.layer]);
   const where = coverageLabel(d);
   const selection = useApp((s) => s.selection);
@@ -957,70 +987,54 @@ function DatasetRow({ d }: { d: Dataset }) {
   const own = styleOf(mapStyles, d.id);
   const ownDrawing = !own || own === "points" || own === "raster";
   const carried = on && ownDrawing && summaryOf({ colour, layers, selection, area, drawn })?.id === d.id;
-  // a dataset joining others: on this map, or a map of its own beside them
-  const switchOn = () => {
-    const before = datasetsOn(layers, colour).filter((x) => !x.colour).length;
-    toggleDataset(d);
-    setAsk(!d.colour && (before > 0 || compare));
-  };
   return (
     <div className={`rounded-lg transition-colors ${on ? "bg-white/[0.05]" : "hover:bg-white/[0.03]"}`}>
-      <div className="flex w-full items-center gap-2.5 px-2 py-1.5">
-        <button
-          onClick={() => {
-            // a name switches its dataset on (the data, not only where it has data) and opens its details
-            if (!on) switchOn();
-            actions.showCoverage(open ? null : d.id);
-          }}
-          className="flex min-w-0 flex-1 items-center gap-2.5 text-left"
-          aria-expanded={open}
-          title={on ? "Where it has data and its sources" : `Show ${d.name.toLowerCase()}, where it has data and its sources`}
-        >
-          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: d.color, opacity: on ? 1 : 0.45 }} />
-          <span className="min-w-0 flex-1">
-            <span className={`flex items-baseline gap-1.5 text-[12.5px] ${on ? "text-slate-50" : "text-slate-300"}`}>
-              <span className="truncate">{d.name}</span>
-              {where && <span className="shrink-0 text-[9.5px] uppercase tracking-wider text-slate-500">{where}</span>}
-            </span>
-            <span className={`block truncate text-[10.5px] ${muted}`}>{d.description}</span>
-          </span>
-          <span className={`shrink-0 text-[10px] text-slate-500 transition-transform ${open ? "rotate-90" : ""}`}>›</span>
+      <div className="flex w-full items-center gap-2 px-2 py-1.5">
+        <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-center gap-2 text-left" aria-expanded={open} title={d.description}>
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: d.color, opacity: on ? 1 : 0.4 }} />
+          <span className={`truncate text-[12.5px] ${on ? "text-slate-50" : "text-slate-300"}`}>{d.name}</span>
+          {where && <span className="shrink-0 text-[9px] uppercase tracking-wider text-slate-500">{where}</span>}
+          <span className={`ml-auto shrink-0 text-[10px] text-slate-500 transition-transform ${open ? "rotate-90" : ""}`}>›</span>
         </button>
         <button
           onClick={() => {
             if (on) {
               toggleDataset(d);
               setAsk(false);
-            } else switchOn();
+            } else {
+              // a dataset joining others: on this map, or a map of its own beside them
+              const before = datasetsOn(layers, colour).filter((x) => !x.colour).length;
+              toggleDataset(d);
+              setAsk(!d.colour && (before > 0 || compare));
+            }
           }}
           aria-pressed={on}
-          title={on ? `Hide ${d.name.toLowerCase()}` : `Show ${d.name.toLowerCase()}`}
+          aria-label={on ? `Turn off ${d.name}` : `Turn on ${d.name}`}
+          title={on ? "On the map: click to turn off" : "Off: click to show on the map"}
         >
           <Toggle on={on} />
         </button>
       </div>
       {ask && on && <AddChoice d={d} onDone={() => setAsk(false)} />}
-      {on && stylesOf(d.id).length > 0 && (
-        <div className="px-2 pb-1.5 pl-[30px]">
-          <StyleChips dataset={d.id} value={styleOf(mapStyles, d.id)} onChange={(st) => actions.setMapStyle(d.id, st)} />
-          <StyleKey scope="main" dataset={d.id} style={styleOf(mapStyles, d.id)} compact />
-        </div>
-      )}
-      {open && <DatasetDetails d={d} />}
-      {carried && <SummaryKey d={d} files={files} />}
-      {on && d.colour && (
-        <div className="px-2 pb-2 pl-[30px]">
-          <ColourLegend colour={d.colour} />
-        </div>
-      )}
-      {on && shownParts.length > 0 && (
-        <div className="space-y-2 px-2 pb-2 pl-[30px]">
-          {shownParts.map((p) => (
-            <div key={p.layer}>
-              {shownParts.length > 1 && <div className="mb-0.5 text-[9.5px] uppercase tracking-[0.12em] text-slate-500">{placesText(p.where)}</div>}
-              <LayerLegend id={p.layer!} />
+      {open && (
+        <div className="space-y-2 px-2 pb-2 pl-[26px]">
+          {on && stylesOf(d.id).length > 0 && (
+            <div>
+              <div className={`mb-0.5 text-[9.5px] uppercase tracking-[0.12em] ${muted}`}>Draw as</div>
+              <StyleChips dataset={d.id} value={own} onChange={(st) => actions.setMapStyle(d.id, st)} />
+              <StyleKey scope="main" dataset={d.id} style={own} compact />
             </div>
-          ))}
+          )}
+          {on && d.colour && <ColourLegend colour={d.colour} />}
+          {on &&
+            shownParts.map((p) => (
+              <div key={p.layer}>
+                {shownParts.length > 1 && <div className="mb-0.5 text-[9.5px] uppercase tracking-[0.12em] text-slate-500">{placesText(p.where)}</div>}
+                <LayerLegend id={p.layer!} />
+              </div>
+            ))}
+          {carried && <SummaryKey d={d} files={files} />}
+          <DatasetDetails d={d} inset={false} />
         </div>
       )}
     </div>
@@ -1130,10 +1144,10 @@ export default function LayersPanel() {
                 {onlyHere ? `· show all (${elsewhere} more)` : `· only those with data in ${areaName}`}
               </button>
             )}
-            . Click a name for where it has data and its sources.
+            . Click a name for its key, style and sources; the switch shows it.
           </>
         ) : (
-          "Click a name for where it has data (tinted on the map) and its sources."
+          "Click a name for its key, style and sources; the switch shows it on the map."
         )}
       </div>
       {CATEGORIES.map((g) => (

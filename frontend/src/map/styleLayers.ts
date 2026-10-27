@@ -121,7 +121,7 @@ function areaShape(fr: Frame): AreaShape | null {
 
 /** A dataset's records inside the area. */
 export function recordsOf(m: Measure, fr: Frame, shape: AreaShape | null): Pt[] | null {
-  const pts = memo(`stPts:${m.id}`, m.files.map((k) => fr.files[k]), () => m.points(fr.files));
+  const pts = memo(`stPts:${m.id}`, [...m.files.map((k) => fr.files[k]), fr.connectSide], () => m.points(fr.files, { connectSide: fr.connectSide }));
   if (!pts) return null;
   if (!shape) return pts;
   return memo(`stPtsIn:${m.id}`, [pts, shape.key], () => pts.filter((p) => inside(shape, p[0], p[1])));
@@ -157,6 +157,8 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
   const colour = (p: Pt): RGB => typeColour(m, p[3]);
   const id = `st-${dataset}`;
   const sorted = memo(`stSorted:${m.id}`, [pts], () => [...pts].sort((a, b) => b[2] - a[2]));
+  // 3D: only records with a figure stand up (a bar of no height says nothing)
+  const sized = memo(`stSized:${m.id}`, [sorted], () => sorted.filter((p) => p[2] > 0));
   if (st === "bubbles")
     return [
       new ScatterplotLayer<Pt>({
@@ -186,7 +188,7 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
     return [
       new ColumnLayer<Pt>({
         id: `${id}-bars`,
-        data: sorted,
+        data: sized,
         getPosition: (p) => [p[0], p[1]],
         diskResolution: 10,
         radius: 2.5 * mpp,
@@ -210,7 +212,7 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
     return [
       new ScatterplotLayer<Pt>({
         id: `${id}-beam-glow`,
-        data: sorted,
+        data: sized,
         getPosition: (p) => [p[0], p[1]],
         radiusUnits: "pixels",
         getRadius: (p) => 2 + 6 * share(p),
@@ -223,7 +225,7 @@ function recordLayers(fr: Frame, dataset: string, st: Style, shape: AreaShape | 
         ([a, b, alpha], i) =>
           new LineLayer<Pt>({
             id: `${id}-beam-${i}`,
-            data: sorted,
+            data: sized,
             getSourcePosition: (p) => [p[0], p[1], share(p) * tall * 1.15 * a],
             getTargetPosition: (p) => [p[0], p[1], share(p) * tall * 1.15 * b],
             getColor: (p) => [...colour(p), alpha],
@@ -349,5 +351,7 @@ export function styleTip(layerId: string, object: unknown): string | null {
   const ms = measureOfDataset(d);
   if (!ms) return null;
   const p = object as Pt;
-  return `<b>${ms.label}: ${ms.fmt(p[2])}${ms.unit && !ms.fmt(p[2]).includes(ms.unit) ? ` ${ms.unit}` : ""}</b>${p[3] ? `<div>${p[3]}</div>` : ""}<div style="color:#8d94a1;font-size:10px;margin-top:3px">${ms.sums}</div>`;
+  const t = ms.fmt(p[2]);
+  const figure = p[2] > 0 ? (ms.unit && /^[\d.,\s−-]+$/.test(t) ? `${t} ${ms.unit}` : t) : "no figure published";
+  return `<b>${ms.label}: ${figure}</b>${p[3] ? `<div>${p[3]}</div>` : ""}<div style="color:#8d94a1;font-size:10px;margin-top:3px">${ms.sums}</div>`;
 }

@@ -56,9 +56,10 @@ export function StyleSelect({ dataset, value, onChange }: { dataset: string; val
   );
 }
 
+/** A figure with its unit, unless the format already carries one (GW, Mt...). */
 const unitText = (fmt: (v: number) => string, unit: string, v: number) => {
   const t = fmt(v);
-  return unit && !t.includes(unit) ? `${t} ${unit}` : t;
+  return unit && /^[\d.,\s−-]+$/.test(t) ? `${t} ${unit}` : t;
 };
 
 /** What a styled dataset shows in view: the scale, its largest figure, what it sums and the source. */

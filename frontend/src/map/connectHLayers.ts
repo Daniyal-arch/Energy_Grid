@@ -4,9 +4,11 @@
 // or new demand), a fixed small dot where none is published.
 
 import type { Layer } from "@deck.gl/core";
-import { PathLayer, ScatterplotLayer, SolidPolygonLayer } from "@deck.gl/layers";
+import { PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
 
 import { H, H_COLOR, H_NO_CLASS, hRadius, pairsOf, sideOf, type HFile, type HRow } from "../lib/connectH";
+import { inAreaCountry } from "../app/datasets";
+import type { CountriesFile } from "../app/types";
 import type { Frame } from "./build";
 import { memo } from "./memo";
 
@@ -70,6 +72,47 @@ export function connectHLayers(fr: Frame): Layer[] {
       pickable: true,
       autoHighlight: true,
       highlightColor: [255, 255, 255, 120],
+      parameters: ON_TOP,
+    }),
+  ];
+}
+
+type Gap = { iso: string; polygons: [number, number][][][]; at: [number, number] | null };
+/** Grey for "no data": darker than the land, so it reads as absent, not as a class. */
+const GAP_FILL: [number, number, number, number] = [10, 12, 17, 215];
+
+/** Where no grid operator publishes room to connect: Europe's countries without a row in the
+ *  harmonised file, darkened and labelled, so an empty country is not read as "no capacity". */
+export function capacityGapLayers(fr: Frame): Layer[] {
+  const on = fr.layers.connect || fr.styled.some(([d]) => d === "capacity");
+  const f = fr.files.connectH as HFile | undefined;
+  const c = fr.files.countries as CountriesFile | undefined;
+  if (!on || !f || !c) return [];
+  const gaps = memo("connectHGaps", [f, c], () => {
+    const have = new Set(f.operators.map((o) => o.cc));
+    return c.countries
+      .filter((x) => !have.has(x.iso))
+      .map<Gap>((x) => ({ iso: x.iso, polygons: x.polygons.map((rings) => rings.map(pairsOf)), at: (x.label as [number, number] | undefined) ?? null }));
+  });
+  const shown = memo("connectHGapsShown", [gaps, fr.area], () => (fr.area ? gaps.filter((g) => inAreaCountry(fr.area, g.iso)) : gaps));
+  const polys = memo("connectHGapPolys", [shown], () => shown.flatMap((g) => g.polygons.map((polygon) => ({ polygon }))));
+  return [
+    new SolidPolygonLayer<{ polygon: [number, number][][] }>({
+      id: "connect-gaps",
+      data: polys,
+      getPolygon: (d) => d.polygon,
+      getFillColor: GAP_FILL,
+      parameters: ON_TOP,
+    }),
+    new TextLayer<Gap>({
+      id: "connect-gaps-label",
+      data: shown.filter((g) => g.at),
+      getPosition: (g) => g.at!,
+      getText: () => "no published data",
+      getSize: 10,
+      getColor: [150, 156, 170, 220],
+      getPixelOffset: [0, 14],
+      fontFamily: "ui-sans-serif, system-ui, sans-serif",
       parameters: ON_TOP,
     }),
   ];

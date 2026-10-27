@@ -116,7 +116,7 @@ import { evEuLayers } from "./evEuLayers";
 import { usGasLayers } from "./usGasLayers";
 import { ghgrpLayers } from "./ghgrpLayers";
 import { tyndpLayers } from "./tyndpLayers";
-import { connectHLayers } from "./connectHLayers";
+import { capacityGapLayers, connectHLayers } from "./connectHLayers";
 import { registerLayers } from "./registerLayers";
 import { comingLayers } from "./comingLayers";
 import { NZ_COLOR, NZ_POINT, ZA_COLOR, ZA_POINT, type NzFile, type ZaFile } from "../lib/regionalLive";
@@ -358,7 +358,7 @@ export function buildLayers(fr: Frame): Layer[] {
   }
   // a dataset's per-country figure at continent scale (map/summaryLayers.ts); the datasets drawn in a
   // style of their own (map/hexLayers.ts, map/styleLayers.ts)
-  layers.push(...summaryFill(fr), ...coverageLayers(fr));
+  layers.push(...summaryFill(fr), ...coverageLayers(fr), ...capacityGapLayers(fr));
   layers.push(...hexLayers(fr), ...styleLayers(fr));
 
   // the night shadow (24 h mode)

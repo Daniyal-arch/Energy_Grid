@@ -21,7 +21,9 @@ and colours relative to what is in view. Rendering basics in [[map-rendering]].
   industry and fuels, hydrogen, offshore wind, substations, room to connect (free MW for
   generation from `connect/harmonised.json`). `RASTERS`: solar, wind, flood lookup grids.
 - `map/styleLayers.ts`: `applyStyles(layers, styles)` (a styled dataset's own layers step aside),
-  `styleLayers(frame)`, `useStyleInfo` (each map's key figures), empty notes.
+  `styleLayers(frame)`, `useStyleInfo` (each map's key figures), empty notes. 3D bars and beams
+  draw only records with a figure. A measure's `points(files, ctx)` gets the frame's
+  `connectSide`, so room to connect follows the new generation / new demand switch in every style.
 - `map/hexLayers.ts`: hexagons; two hexagon datasets make a 3×3 bivariate map (terciles in view).
 - `lib/rasterCache.ts`: raster cells for a box (one range request, retried after 10 s on failure).
 
