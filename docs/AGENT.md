@@ -25,34 +25,41 @@ says what is missing and which dataset would answer it).
 
 ## 2. Architecture
 
+Decided 2026-10-27 (replaces the Cloudflare Containers plan of 2026-10-18); built by brief 25
+(`docs/tasks/25-agent-backend.md`).
+
 ```
-browser (React app)                      backend (FastAPI, Python 3.12)               data
------------------------------------     ------------------------------------------   ---------------------------
-context panel, tab "Ask"   --SSE-->      /api/ask  (agent loop, Claude API)  ------>  lake on R2 (Parquet, DuckDB)
-map/agentLayers.ts  <-- MapSpec --       tools: catalog, sql, places, live,          map files (eu-data, eu-days,
-?map=<id>  ---------------------->       site, make_map, make_chart                   bundled JSON)
-                                         /api/maps/<id> (saved MapSpecs on R2)       live APIs (API-or-Parquet rule)
+browser (React app)                 Cloudflare Worker          AWS Lambda (container, streamed)                data
+--------------------------------    -----------------          ---------------------------------------------   ---------------------------
+context panel, tab "Ask" --SSE-->   /api/*, /mcp on the  --->  FastAPI: data service + /api/ask + /mcp   --->   lake on R2 (Parquet, DuckDB)
+map/agentLayers.ts <-- MapSpec --   site's domain              LangGraph agent, tools, skills                  map files (eu-data, eu-days,
+?map=<id> ---------------------->   (rate limit, secret)       OpenTelemetry + Langfuse, CloudWatch            bundled JSON)
+                                                               DynamoDB counters, SSM secrets                  live APIs (API-or-Parquet rule)
+                                                               saved maps and run records on R2 agent/
 ```
 
-- **Backend:** one FastAPI app in `backend/` (Python 3.12, `uv`, ruff, pytest), DuckDB with
-  `httpfs` and `spatial`. Stateless; conversation history is sent by the browser each turn.
-- **Hosting: Cloudflare, next to the site and the lake.** The backend runs as a **Cloudflare
-  Container** (the FastAPI image, scaled to zero, woken per request, sleeping after a short idle
-  time) behind a small **Worker** on the site's own domain that routes `/api/*` (same origin, no
-  CORS), applies the per-IP limit (Workers rate-limiting binding) and holds the R2 bindings.
-  Needs the Workers Paid plan ($5 a month), which includes 25 GiB-hours of container memory,
-  375 vCPU-minutes and 200 GB-hours of disk a month (Cloudflare's pricing page, 2026); R2 reads
-  from the container stay inside Cloudflare (no egress fees). Deployed with wrangler from
-  GitHub Actions using the existing `CLOUDFLARE_API_TOKEN` secret (with Workers and Containers
-  edit rights). AWS is not used: its credits expire and do not pay for Claude.
-- **Model:** Claude through the Anthropic API (first-party key `ANTHROPIC_API_KEY`), funded by the
-  Claude Startups credits once granted, else pay-as-you-go under the caps of section 7. Default
-  `claude-opus-5-5` ($4 / $20 per million input / output tokens, cache reads $0.20; 1M context)
-  at effort `medium`; `claude-sonnet-5-5` ($2 / $10) is the owner's choice if cost requires it.
-  One model per conversation (caches are per model).
-- **State:** saved MapSpecs and usage logs on R2 (`agent/maps/<id>.json`,
-  `agent/logs/<date>.jsonl`); the daily spend counter in one Durable Object (strongly consistent,
-  included in Workers Paid).
+- **Backend:** one FastAPI app in `backend/` (Python 3.12, its own uv project, ruff, pytest),
+  DuckDB with `httpfs` and `spatial`. Two faces: the **data service** (catalogue, places, "Check a
+  site" figures, saved maps; usable by the app without the agent) and the **agent**
+  (`/api/ask`, Server-Sent Events). Stateless; the browser sends the conversation each turn.
+- **Orchestration: LangGraph** (section 6), LangChain core message and tool types.
+- **Any model:** `init_chat_model("<provider>:<model>")` with a registry in `agent/models.yaml`
+  (prices, context, tool calling, caching). Default Claude through the Anthropic API
+  (`ANTHROPIC_API_KEY`; Claude Startups credits once granted): `claude-opus-5-5` for the analyst,
+  `claude-haiku-5-5` for the router and the cartographer; OpenAI, Google, Bedrock (non-Claude
+  models, paid by AWS credits) and local models by configuration. One model per conversation
+  (caches are per model).
+- **Hosting: AWS Lambda.** A container image in ECR with the AWS Lambda Web Adapter in
+  response-streaming mode behind a Function URL (`RESPONSE_STREAM`); AWS SAM; secrets in SSM
+  Parameter Store; DynamoDB for the per-IP limit and the daily spend counter; CloudWatch logs,
+  metrics, dashboard and alarms; deployed by GitHub Actions with OIDC. AWS credits pay for the
+  compute; they do not pay for Claude (decision of 2026-10-18). A small Cloudflare Worker routes
+  `/api/*` and `/mcp` from the site's domain (same origin, first rate limit, a shared secret
+  header).
+- **State:** saved MapSpecs and run records on R2 (`agent/maps/<id>.json`,
+  `agent/logs/<date>/<trace>.json`); counters in DynamoDB.
+- **Traceability:** OpenTelemetry spans (GenAI semantic conventions) and Langfuse traces per
+  question: graph nodes, model calls with tokens and cost, tool calls, SQL.
 
 ## 3. Tools (what the model can call)
 
@@ -151,30 +158,35 @@ A MapSpec is plain JSON, validated against a schema shared by backend and fronte
 - **Saved maps:** `/api/maps` stores the spec and its result data on R2; `?map=<id>` opens it for
   anyone; the owner can promote one to a story (later: the recorder renders it for LinkedIn).
 
-## 6. The loop
+## 6. The loop (LangGraph)
 
-- Claude API with user-defined tools; the SDK's tool runner (`client.beta.messages.tool_runner`)
-  drives the loop, with per-turn hooks for logging, the step limit and the spend check; streamed
-  (`messages.stream`) so text, tool progress and the MapSpec reach the browser as SSE events
-  (`text`, `tool`, `map`, `chart`, `sources`, `done`, `error`). A hand-written loop replaces the
-  runner only if its hooks cannot carry the SSE events.
-- **Prompt caching:** tools and system prompt are frozen and ordered (tool list sorted, no dates
-  in the system prompt) with a cache breakpoint at the end of the system prompt; the volatile
-  parts (today's date, the current view, the question) come after it. Check
-  `usage.cache_read_input_tokens` in the logs.
+- **Graph:** `guard` (caps, input size) → `router` (fast model: the kind of answer and the
+  specialists it needs) → `analyst` (main model: tools and skills, at most 12 tool calls) →
+  `cartographer` (fast model, only for maps and charts: a MapSpec from result ids, validated) →
+  `grounding` (deterministic number check, one repair round) → `finish` (sources, cost, trace
+  id). The analyst answers most questions alone; parallel analyst runs (`Send`) for comparisons
+  only where the evals show a gain.
+- **Skills:** `agent/skills/<name>/SKILL.md` (Agent Skills format). The system prompt lists names
+  and descriptions; the model loads a skill's body and references with tools when it needs them,
+  so any model can use them.
+- **Streaming:** `graph.astream` (messages, updates and custom events) becomes the SSE events
+  `text`, `tool`, `map`, `chart`, `sources`, `done`, `error`, with a heartbeat.
+- **Prompt caching:** tools and system prompt frozen and ordered (tool list sorted, no dates in
+  the system prompt), a cache breakpoint after them for providers that take one (Anthropic);
+  the volatile parts (today's date, the current view, the question) come after it. Cached tokens
+  are in the traces.
 - **System prompt:** the house rules (every number from a tool, cite sources, say what is
   missing, prefer existing layers, calm maps, the units and precision rules of CLAUDE.md), the
-  catalogue's dataset list (titles and one line each), the MapSpec schema.
-- **Refusals:** check `stop_reason` before reading content; server-side fallback as the SDK
-  documents for the chosen model.
-- **Limits per question:** at most 12 tool calls, 25 s per SQL query, a task budget, and the
+  catalogue's dataset list (titles and one line each), the MapSpec schema, the skill index.
+- **Refusals and stop reasons:** handled per provider before reading content.
+- **Limits per question:** at most 12 tool calls, 25 s per SQL query, a token budget, and the
   answer streams within about 60 s or stops with what it has.
 
 ## 7. Cost, abuse and safety
 
-- Caps: per IP (the Worker's rate-limiting binding plus a per-IP daily count), a global daily
-  spend cap from `usage` tokens × price (the counter in a Durable Object); over the cap the Ask
-  tab says so.
+- Caps: per IP (the Worker's rate-limiting binding plus a per-IP count in DynamoDB), a global
+  daily spend cap from `usage` tokens × the registry's prices (an atomic DynamoDB counter); over
+  the cap the Ask tab says so.
 - Planning figure (an estimate, not shown in the app): with caching, a typical question reads
   20–40 k tokens (mostly cached) and writes 1–3 k, roughly $0.03–0.10 on Opus 5.5.
 - Read-only everywhere: the R2 token can only read `lake/`; DuckDB runs with external access
@@ -195,16 +207,23 @@ A MapSpec is plain JSON, validated against a schema shared by backend and fronte
 - Runs in Actions on PRs that touch `backend/agent/` or `agent/` (a 10-question sample, cost
   capped), the full set weekly.
 
-## 9. Also exposed as an MCP server (later)
+## 9. MCP
 
-The same tools behind an MCP endpoint (`/mcp`, read-only, key-protected) so Claude Code, Claude
-Desktop or other agents can query InfraAtlas's data directly. Same limits and logs.
+- **Server:** the same tools at `/mcp` (streamable HTTP, the official `mcp` Python SDK), read-only
+  and key-protected (`MCP_API_KEYS`), so Claude Code, Claude Desktop or other agents can query
+  InfraAtlas's data directly. Same limits and logs.
+- **Client:** external MCP servers listed in `agent/mcp.yaml` become tools of the agent through
+  `langchain-mcp-adapters` (none by default).
 
 ## 10. Keys and accounts the owner provides
 
+The full table, with where to register, is in `docs/tasks/25-agent-backend.md`.
+
 | What | Where | Used by |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | console.anthropic.com (Claude Startups programme credits when granted) | backend (Lambda env, from a GitHub secret) |
-| R2 read-only token for `infraatlas-raw/lake/`, read-write for `agent/` | Cloudflare dashboard → R2 → API tokens | backend |
-| Workers Paid plan ($5 a month; enables Containers and Durable Objects) | Cloudflare dashboard → Workers & Pages → Plans | backend |
-| `CLOUDFLARE_API_TOKEN` with Workers Scripts, Containers and R2 edit rights (extend the existing secret) | Cloudflare dashboard → My Profile → API Tokens | deploy workflow |
+| `ANTHROPIC_API_KEY` (other providers optional) | console.anthropic.com (Claude Startups programme credits when granted) | backend (SSM) |
+| AWS account, region, GitHub OIDC deploy role (`AWS_DEPLOY_ROLE_ARN`, `AWS_REGION`) | aws.amazon.com, IAM | deploy workflow |
+| R2 read-only token for `infraatlas-raw/lake/`, read-write for `agent/` | Cloudflare dashboard → R2 → API tokens | backend (SSM) |
+| Langfuse keys | cloud.langfuse.com or self-hosted | backend (SSM) |
+| `ADMIN_API_KEY`, `MCP_API_KEYS`, `PROXY_SECRET` | generated by the owner | backend (SSM), Worker |
+| `CLOUDFLARE_API_TOKEN` with Workers Scripts edit (extend the existing secret) | Cloudflare dashboard → My Profile → API Tokens | the Worker in the deploy workflow |

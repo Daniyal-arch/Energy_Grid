@@ -9,7 +9,9 @@ Each file here is one self-contained piece of work for a Claude Code cloud sessi
 
 Every brief has the same parts: goal, sources (probe first), files, map, panels,
 refresh, done-check, out of scope. Read CLAUDE.md first: its hard rules and working
-rules apply to every task.
+rules apply to every task. Start from the vault (`vault/index.md`, skill
+`.claude/skills/atlas-vault`) instead of reading the repository, chat in the caveman style
+(`.claude/skills/caveman`), and update the vault before the pull request.
 
 | # | Brief | Needs a key in the environment |
 |---|---|---|
@@ -34,6 +36,7 @@ rules apply to every task.
 | 22 | [22-coverage-wave7.md](22-coverage-wave7.md) the same datasets for EU-27, UK and US: coverage registry, room to connect, every unit, live mix and CO₂, redispatch, GB prices, retail, emitters, plants offline, EV charging, US gas, reliability | `ENTSOE_API_KEY`, `EIA_API_KEY`; keyed sources listed as blocked |
 | 23 | [23-grid-capacity-harmonised.md](23-grid-capacity-harmonised.md) room to connect in one schema and one symbology for EU-27, UK and US; probe and add every operator that publishes data; free capacity per country | `ENWL_API_KEY`, `SPEN_API_KEY`, `UKPN_API_KEY` (listed as blocked) |
 | 24 | [24-emitter-positions.md](24-emitter-positions.md) EU ETS and UK ETS installations placed on the map from published positions (EUTL, EEA register by permit, NAEI and UK permit registers) | no |
+| 25 | [25-agent-backend.md](25-agent-backend.md) the backend: data service and agent on AWS Lambda (FastAPI, LangGraph, any model, skills, MCP, OpenTelemetry + Langfuse, evals, SAM deploy) | `ANTHROPIC_API_KEY`, AWS deploy role, R2 tokens, Langfuse (builds with fakes until then) |
 
 Several sessions run at once and touch the same files (store, layers, panels, docs,
 workflows): before opening a pull request, merge `origin/main` into the branch and resolve

@@ -39,8 +39,9 @@ The earlier Germany atlas is archived in the git tag `germany-atlas-final`.
 
 - **Anthropic API key** for the agent (console.anthropic.com), ideally with Claude Startups
   credits: needs a custom domain and an email on it (Cloudflare can register both).
-- **Cloudflare Workers Paid plan** ($5 a month; the backend runs as a Cloudflare Container) and
-  the token rights and R2 tokens of docs/AGENT.md section 10.
+- **AWS account** for the backend (brief 25): region, a GitHub OIDC deploy role
+  (`AWS_DEPLOY_ROLE_ARN`), the SSM parameters; R2 tokens and a Langfuse project (docs/AGENT.md
+  section 10).
 - **PJM** (`PJM_API_KEY`), **Alberta** (`AESO_API_KEY`), **South Korea** (`DATA_GO_KR_KEY`),
   **Turkey** (`EPIAS_USERNAME`, `EPIAS_PASSWORD`), **France RTE** (free key), **Finland**
   (`FINGRID_API_KEY`).
@@ -63,7 +64,7 @@ touch different files. The owner merges; the next phase starts when its inputs a
 |---|---|
 | **16** (pull request) | ✅ imbalance prices, ✅ GB carbon intensity, ✅ Denmark every 5 minutes, ✅ solar and wind atlases; US EV fast chargers wait for `NREL_API_KEY` |
 | **17 Datasets wave 5** ([17-datasets-wave5.md](docs/tasks/17-datasets-wave5.md)) | 22 datasets in one session: NUTS 0–3, bidding-zone outlines, world admin-1, GeoNames cities; EIA-923, eGRID, GHGRP; netztransparenz redispatch and curtailment, SMARD; TYNDP projects, ENTSO-E transmission outages; Global Renewables Watch; Eurostat balances, EIA SEDS, EIA STEO, Energy Institute review, EDGAR; JEPX, CENACE, Grid-India; GHSL population, NASA Black Marble |
-| **18 Backend skeleton** | `backend/` FastAPI + DuckDB (read-only lake, SQL guard, limits), saved maps on R2; hosting chosen by the owner (docs/AGENT.md §2) |
+| **18 Backend skeleton** | folded into brief 25 |
 
 ### Phase 1b: datasets wave 6 (after wave 5 merges)
 
@@ -82,7 +83,7 @@ touch different files. The owner merges; the next phase starts when its inputs a
 
 | Brief | What |
 |---|---|
-| **19 Agent core** | the loop on the Claude API (tools of docs/AGENT.md §3), the semantic catalogue completed, MapSpec schema shared with the frontend, grounding check, SSE events, caps and logs, `agent/evals/` in CI |
+| **25 Backend and agent** ([25-agent-backend.md](docs/tasks/25-agent-backend.md)) | one session: the data service and the agent on AWS Lambda (FastAPI, LangGraph, any model through a registry, skills, MCP server and client, OpenTelemetry and Langfuse tracing, evals in CI, SAM deploy with OIDC, a Cloudflare Worker for same origin); replaces briefs 18 and 19 |
 | **20 Ask in the app** | an "Ask" tab in the context panel, `map/agentLayers.ts` rendering MapSpec overlays with the app's palettes, legends in the existing key, "Explain this map", `?map=<id>` links, "Ask about this area" from the site analysis |
 
 ### Phase 4: products on top (after phase 2)
