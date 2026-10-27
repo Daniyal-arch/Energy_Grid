@@ -387,7 +387,7 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 
 | Dataset | Access | Kept as | Size (measured) |
 |---|---|---|---|
-| Room to connect, every operator in one schema (`connect/harmonised`) | the operators' files, ArcGIS layers, PDF tables, Opendatasoft, JSON | GeoParquet (point = node position or area label point; outline as JSON text), snapshot partition | ~15,000 rows, < 0.01 GB |
+| Room to connect, every operator in one schema (`connect/harmonised`) | the operators' files, ArcGIS layers, PDF tables, Opendatasoft, JSON | GeoParquet (point = node position or area label point; outline as JSON text), snapshot partition | 19,266 rows, 1.7 MB (2026-10-27) |
 
 ### Future (docs/DATASETS.md)
 
