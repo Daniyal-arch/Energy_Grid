@@ -360,10 +360,13 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - run: pip install httpx duckdb pycountry pyproj openpyxl pdfplumber
+      - run: pip install httpx brotli duckdb pycountry pyproj openpyxl pdfplumber
       - name: Room to connect, the brief-23 operators (Opendatasoft and the rest)
         continue-on-error: true
         run: python scripts/build_connect_h23.py all
+      - name: Room to connect, the brief-26 operators (neighbours, Northern Ireland, US heatmaps)
+        continue-on-error: true
+        run: python scripts/build_connect_h26.py all
       - name: Room to connect in one schema, nodes without positions matched to OpenStreetMap by name
         continue-on-error: true
         timeout-minutes: 60
