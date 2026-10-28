@@ -80,10 +80,10 @@ export function connectHLayers(fr: Frame): Layer[] {
 
 type Gap = { iso: string; name: string; polygons: [number, number][][][]; at: [number, number] | null; why: string; note: string };
 
-/** Why a country has no rows, from the coverage registry (data/coverage.yaml; EU-27, the UK, the US). */
+/** Why a country has no rows, from the coverage registry (data/coverage.yaml; EU-27, the UK, the US, the neighbours). */
 function gapReason(cov: CoverageFile | undefined, iso: string): { why: string; note: string } {
   const cell = cov?.countries[iso]?.connect;
-  if (!cell) return { why: "no published data found", note: "Outside the coverage registry (EU-27, UK, US); no operator file found so far." };
+  if (!cell) return { why: "no published data found", note: "Outside the coverage registry (EU-27, the UK, the US and the EU's neighbours); no operator file found so far." };
   const note = cell.note ?? "";
   if (/(403|451)|Cloudflare|bot check|resets the connection/i.test(note)) return { why: "operators' sites refuse automated downloads", note };
   return { why: "not published by its operators", note };

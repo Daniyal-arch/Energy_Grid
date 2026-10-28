@@ -8,7 +8,9 @@
 wave 7, built = added in wave 7, not_published = the operator publishes nothing machine-readable,
 blocked = waits for a key), `source`, `url`, `licence`, `dataset` (app file or lake table),
 `checked` (date), `note`; `partial: true` when only part of the family is covered (shown ◐).
-US cells may list `parts` (per market or state), each with its own status.
+US cells may list `parts` (per market or state), each with its own status. A family with
+`regions: [neighbours]` also holds a cell for each neighbour of the EU (NEIGHBOURS: Norway,
+Switzerland, Iceland, the Western Balkans, Moldova, Ukraine, Turkey).
 """
 
 from __future__ import annotations
@@ -31,6 +33,7 @@ EU27 = [
     "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE",
 ]  # fmt: skip
 COUNTRIES = [*EU27, "GB", "US"]
+NEIGHBOURS = ["NO", "CH", "IS", "RS", "BA", "ME", "MK", "AL", "XK", "MD", "UA", "TR"]
 STATUSES = ("have", "built", "not_published", "blocked")
 # what each status needs besides itself
 NEEDS = {
@@ -54,6 +57,12 @@ def glyph(cell: dict[str, Any]) -> str:
     return {"not_published": "—", "blocked": "⛔"}.get(str(s), "?")
 
 
+def countries(f: dict[str, Any]) -> list[str]:
+    """The registry countries of a family: EU-27, the UK, the US, plus the neighbours when it
+    lists them under `regions`."""
+    return [*COUNTRIES, *(NEIGHBOURS if "neighbours" in (f.get("regions") or []) else [])]
+
+
 def problems(reg: dict[str, Any]) -> list[str]:
     """Every missing cell, unknown status or missing evidence, as one line each."""
     out = []
@@ -62,7 +71,7 @@ def problems(reg: dict[str, Any]) -> list[str]:
             if not f.get(key):
                 out.append(f"{fam}: no {key}")
         cells = f.get("cells") or {}
-        for cc in COUNTRIES:
+        for cc in countries(f):
             c = cells.get(cc)
             if not c:
                 out.append(f"{fam}/{cc}: missing")
@@ -75,12 +84,13 @@ def problems(reg: dict[str, Any]) -> list[str]:
             for p in c.get("parts") or []:
                 if p.get("status") not in STATUSES or not p.get("name"):
                     out.append(f"{fam}/{cc}/{p.get('name')}: part status {p.get('status')!r}")
-        out += [f"{fam}/{cc}: not a registry country" for cc in cells if cc not in COUNTRIES]
+        out += [f"{fam}/{cc}: not a registry country" for cc in cells if cc not in countries(f)]
     return out
 
 
 def to_json(reg: dict[str, Any]) -> dict[str, Any]:
-    """The app's copy: per country, per family the status, glyph, source and dataset."""
+    """The app's copy: per country, per family the status, glyph, source and dataset (a
+    neighbour holds only the families that list the neighbours)."""
     fams = reg["families"]
     keep = ("status", "source", "url", "licence", "dataset", "checked", "note")
     return {
@@ -100,8 +110,9 @@ def to_json(reg: dict[str, Any]) -> dict[str, Any]:
                     ),
                 }
                 for fam, f in fams.items()
+                if cc in f["cells"]
             }
-            for cc in COUNTRIES
+            for cc in [*COUNTRIES, *NEIGHBOURS]
         },
     }
 
@@ -123,6 +134,15 @@ def to_markdown(reg: dict[str, Any]) -> str:
         lines.append(
             "| " + " | ".join([cc, *[glyph(f["cells"][cc]) for f in fams.values()]]) + " |"
         )
+    with_n = {k: f for k, f in fams.items() if "neighbours" in (f.get("regions") or [])}
+    if with_n:
+        head = ["Neighbour", *[f["name"] for f in with_n.values()]]
+        lines += ["", "The EU's neighbours, for the families that cover them:", "",
+                  "| " + " | ".join(head) + " |", "|" + "---|" * len(head)]  # fmt: skip
+        for cc in NEIGHBOURS:
+            lines.append(
+                "| " + " | ".join([cc, *[glyph(f["cells"][cc]) for f in with_n.values()]]) + " |"
+            )
     lines += ["", "## Families", ""]
     for k, f in fams.items():
         n = {s: sum(c.get("status") == s for c in f["cells"].values()) for s in STATUSES}
@@ -133,7 +153,7 @@ def to_markdown(reg: dict[str, Any]) -> str:
         )
     lines += ["", "## Cells that are not on the map", ""]
     for f in fams.values():
-        for cc in COUNTRIES:
+        for cc in countries(f):
             c = f["cells"][cc]
             if c.get("status") in ("not_published", "blocked") or glyph(c) == "◐":
                 lines.append(
