@@ -1,27 +1,32 @@
 ---
 title: Coverage and gaps
 tags: [data, coverage]
-updated: 2026-10-27
-paths: [data/coverage.yaml, docs/COVERAGE.md, frontend/public/data/eu/coverage.json, docs/tasks/]
+updated: 2026-10-28
+paths: [data/coverage.yaml, docs/COVERAGE.md, frontend/public/data/eu/coverage.json, docs/tasks/, docs/research/room-to-connect.md]
 ---
 
 # Coverage and gaps
 
 What each dataset family covers per country (EU-27, UK, US) is in `data/coverage.yaml`
-(rendered in `docs/COVERAGE.md`, read by the app as `coverage.json`). Open work is in the briefs
+(rendered in `docs/COVERAGE.md`, read by the app as `coverage.json`). A family with
+`regions: [neighbours]` (room to connect) also has a cell for each EU neighbour (NO, CH, IS, RS,
+BA, ME, MK, AL, XK, MD, UA, TR); the app's copy lists only those families for a neighbour. Open work is in the briefs
 of `docs/tasks/`.
 
 ## Known gaps (2026-10-27)
 - **Emitters with a position**: EU ETS 2,234 of 9,668 installations placed (Germany 78 of
   1,818); UK ETS 747 installations, none placed. Brief 24 (`docs/tasks/24-emitter-positions.md`).
   Until then the Maps view offers Climate TRACE's modelled emissions where none is placed.
-- **Room to connect**: one schema since PR #13 (`connect/harmonised.json`, 39 operators in 25
-  countries); no operator data for AL, BA, BE, CH, LV, MD, ME, MK, NO, RO, RS, UA (drawn dark,
-  labelled with the reason from the registry, `capacityGapLayers` in `map/connectHLayers.ts`;
-  probe `scripts/probe_connect_gaps.py`: most answer Cloudflare checks, Sadales tīkls HTTP 451,
-  Statnett and Elvia 404). Brief 26 (`docs/tasks/26-room-to-connect-everywhere.md`) researches and
-  builds every EU-27 country, the neighbours, the UK and the US (FERC Order 2023 heatmaps: CAISO's
-  JSON, MISO's CartoVista API; DOE hosting capacity atlas). ENWL, SPEN, UKPN wait for keys.
+- **Room to connect** (brief 26, 2026-10-28): 53 operators, 24,696 rows in
+  `connect/harmonised.json`; brief 26 added HEP ODS, Vattenfall Eldistribution (regional and
+  local), NIE Networks, TEİAŞ, Energienetze Steiermark, PREdistribuce, Helen, Swissgrid and the
+  Order 2023 heatmaps of CAISO, Portland General, Idaho Power, LG&E-KU and Avista
+  (`scripts/build_connect_h26.py`). Every operator checked, with status and evidence:
+  `docs/research/room-to-connect.md` (data requests at its end). Still dark, with a registry
+  reason: BE, CY, LV, RO (Cloudflare checks, HTTP 451, no tables) and NO, IS, RS, BA, ME, MK, AL,
+  XK, MD, UA (nothing published or behind checks). Open: the browser fetch in Actions for the
+  Cloudflare-checked operators; feeder lines (National Grid NY, Eversource) need a `line` kind
+  and PMTiles; ENWL, SPEN, UKPN wait for keys.
 - **Keys the owner still has to provide** (`PLAN.md`): Anthropic API key for the agent, AWS
   account and deploy role for the backend (brief 25), PJM, AESO, data.go.kr, EPIAS, RTE,
   Fingrid, NREL; `EPA_API_KEY` reached Actions empty on 2026-10-18.

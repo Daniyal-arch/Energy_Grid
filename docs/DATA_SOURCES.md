@@ -1407,6 +1407,42 @@ TITÁSZ (its PDF does not say load or generation); ELES's DSO layer (upper bound
 National Grid, Xcel, Duke and Dominion (per feeder line or grid cell, not nodes); ENWL, SPEN and
 UKPN (keys: `ENWL_API_KEY`, `SPEN_API_KEY`, `UKPN_API_KEY`).
 
+## Room to connect, brief 26 (`scripts/build_connect_h26.py`, `connect/h_<key>.json`)
+
+The operators brief 26 adds, in the same harmonised rows (one `connect/h_<key>.json` each, read
+by `build_connect_harmonised.py`). Research and every operator checked:
+`docs/research/room-to-connect.md`; probe `scripts/probe_connect_h26.py`, its output in
+`docs/research/probe_connect_h26.txt`. Nodes without published coordinates are placed on an
+OpenStreetMap substation of the same unique name in the Actions job (`wave7.yml` job R); a file's
+`osm_area` names the area searched when the operator's code is not a country (`US-CA` for CAISO),
+and `match_name` the name looked up when it differs from the label (TEİAŞ: the transformer centre
+without its busbar). `summable: false` marks figures that share the grid (the US Order 2023
+heatmaps study each bus alone), so no country sum adds them.
+
+| cc | Operator | Level | Rows | Positions | Licence | Values and class mapping |
+|---|---|---|---|---|---|---|
+| AT | Energienetze Steiermark | distribution | 53 | OSM name match | operator website (public information) | free feed-in capacity (FEK) per substation, available MW (booked MW not drawn); MW only: more than 0 MW free -> available, 0 MW -> none |
+| CH | Swissgrid | transmission | 151 | OSM name match | Swissgrid public PDF (no licence stated) | additional generation and load per 220/380 kV substation, 2026 base case, MVA as published (capped at 300 MVA); more than 0 MVA -> available, 0 -> none; 2030-2040 and the flexibility cases not drawn |
+| CZ | PREdistribuce | distribution | 25 | middle of each area's bounding box (computed) | public web map (no licence stated) | 'Volná kapacita' per 110 kV supply area: more than 0 -> available, 0 -> none; the layer states no unit, so no figure is drawn |
+| FI | Helen Sähköverkko | distribution | 25 | middle of each area's bounding box | public web map (no licence stated) | free MV capacity for consumption (MVA, data 05/2025); more than 0 MVA -> available, 0 -> none |
+| GB | NIE Networks (Northern Ireland) | distribution | 265 | as published | capacity map terms & conditions | demand and generation headroom per BSP and primary (MVA; dual primaries one row per transformation); more than 0 MVA -> available, 0 -> none; 'Contact for Info' stays empty |
+| HR | HEP ODS | distribution | 488 | as published (440), the rest OSM name match | public web map (no licence stated) | free capacity for RES (kW, shown in MW) and pending applications (`mw_queue`) per substation, data date 2026-10-01; MW only |
+| SE | Vattenfall Eldistribution (regional network) | distribution | 775 | as published | public web map (no licence stated) | MW per technology and years to a possible connection; mw_gen = wind, mw_load = 'medium' consumption, for the earliest horizon each station lists (in the name); more than 0 MW within 1-2 years -> available, only in 2-3 or 3-5 years -> limited, 0 MW -> none |
+| SE | Vattenfall Eldistribution (local networks) | distribution | 282 | middle of each area's bounding box; areas simplified to ~200 m | public web map (no licence stated) | the same, per local supply area |
+| TR | TEİAŞ | transmission | 1,132 | OSM name match (the centre's name) | public announcement (no licence stated) | remaining unlicensed solar and wind capacity allocatable from the distribution level per transformer centre, busbar and EDAŞ/OSB (MWe, 01.10.2026, EPDK decision 14353); MW only |
+| US-AVA | Avista | transmission | 214 | as published | public heatmap (no licence stated) | per bus the largest tested injection (20-300 MW steps) with no overloaded element (computed from MW_Available per step and element; a lower bound); MW only; not summable |
+| US-CAISO | CAISO | transmission | 833 | OSM name match in California (the heatmap encodes its coordinates: not decoded) | public heatmap (no licence stated) | `trlim` (transmission capacity, MW) per bus, study `2025_TPD` (`C15_Reassessment`, `Cluster15` not drawn); MW only, a negative value -> none; not summable |
+| US-IPC | Idaho Power | transmission | 216 | as published | public heatmap (no licence stated) | maximum injection per substation (MW); MW only; not summable |
+| US-LGEKU | LG&E and KU | transmission | 745 | as published | public heatmap (no licence stated) | transfer limit per bus: the newest study year, the lowest over its seasons (computed); MW only; not summable |
+| US-PGE-OR | Portland General Electric | transmission | 226 | as published (multipoint, first point) | public heatmap (terms on the item page) | available capacity per point of interconnection (MW); MW only; not summable |
+
+Not added: the four small Finnish DSOs on Rejlers-hosted maps (MVA bands, no side), Elenia's
+storage layer and Vattenfall's other technologies (fields the schema has no place for), National
+Grid NY and Eversource MA/NH feeder hosting capacity (lines: a `line` kind and PMTiles, next step),
+and every operator listed in the research file as interactive, refused, login or behind a browser
+check (data requests there). The Brotli-encoded CAISO file needs the `brotli` package (a project
+dependency). Refresh: by hand (`wave7.yml` job R, after `build_connect_h23.py`).
+
 ## Room to connect: France (`scripts/build_connect_more.py fr`, `connect/fr.json`)
 
 Capareseau (RTE and the distribution operators; re-use allowed with the source named): every

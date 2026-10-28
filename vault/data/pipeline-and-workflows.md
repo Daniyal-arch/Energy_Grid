@@ -1,7 +1,7 @@
 ---
 title: Pipeline and workflows
 tags: [data, ci]
-updated: 2026-10-27
+updated: 2026-10-28
 paths: [scripts/, .github/workflows/, frontend/public/data/, docs/DATA_SOURCES.md]
 ---
 
@@ -28,6 +28,10 @@ the data branches. Every file and its source: `docs/DATA_SOURCES.md`. The lake: 
   `us-grid.yml` monthly, `us-queues.yml` weekly, `browser-fetch.yml` monthly.
 - On demand: `atlas.yml`, `world-grid.yml`, `world-hv.yml`, `water-risk.yml`, `us-outages.yml`,
   `wave5/6/7.yml` (dataset waves), `probe-*.yml`, `diag-entsoe.yml`.
+- Room to connect: `wave7.yml` job R runs `build_connect_h23.py all`, `build_connect_h26.py all`,
+  then `build_connect_harmonised.py --osm --upload` (Overpass name matching, unreliable from a
+  cloud sandbox: never regenerate `harmonised.json` locally without the OSM cache, the matched
+  positions would be lost).
 
 ## How to run things
 - Locally: `uv run python scripts/<script>.py`; frontend `cd frontend && npm run dev`.
