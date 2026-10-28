@@ -47,11 +47,22 @@ jobs:
           pip install playwright httpx duckdb pycountry openpyxl
           python -m playwright install --with-deps chromium
           bash scripts/r2_creds.sh
+      - name: Discover the data behind checked capacity pages (sources "discover [CODE ...]")
+        if: ${{ startsWith(inputs.sources, 'discover') }}
+        run: |
+          codes="${{ inputs.sources }}"
+          xvfb-run -a python scripts/browser_discover.py ${codes#discover} | tee discover.jsonl
+      - uses: actions/upload-artifact@v4
+        if: ${{ startsWith(inputs.sources, 'discover') && !cancelled() }}
+        with:
+          name: browser-discover
+          path: discover.jsonl
       - name: Fetch, keep in R2, build what changed
+        if: ${{ !startsWith(inputs.sources, 'discover') }}
         run: |
           args="${{ inputs.sources }}"
           [ "${{ inputs.force }}" = "true" ] && args="$args --force"
           xvfb-run -a python scripts/browser_fetch.py $args
       - name: Commit outputs
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && !startsWith(inputs.sources, 'discover') }}
         run: bash scripts/wave5_commit.sh "Browser fetch, rebuilt files"
