@@ -249,7 +249,16 @@
             "LT",
             "LU",
             "MT",
-            "SE"
+            "SE",
+            "HR",
+            "HU",
+            "SI",
+            "SK",
+            "GR",
+            "FI",
+            "CH",
+            "TR",
+            "US"
           ],
           "what": "free capacity, hosting capacity or queues per substation, node or area, as each operator publishes it",
           "source": "the grid operators' capacity maps and registers",
