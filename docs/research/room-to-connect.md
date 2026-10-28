@@ -27,9 +27,16 @@ state hosting-capacity rules named.
 
 | | Before (PR 23) | After (this brief) |
 |---|---:|---:|
-| Countries or US codes with rows | 25 (+3 US utilities) | 29 (+8 US codes) |
+| Countries with rows (Europe) | 24 | 26 (+CH, TR; Northern Ireland under GB) |
+| US operator codes with rows | 3 | 8 |
 | Operators | 39 | 53 |
-| Rows | 19,266 | 24,758 |
+| Rows | 19,266 | 24,696 |
+| Placed on the map | 17,666 | 22,016 |
+| Rows with a free-MW figure (generation or load) | 12,681 | 17,599 |
+| Rows with an MVA figure | 4,435 | 4,839 |
+| Free MW for new generation, summed over summable operators (computed) | 329,714 | 359,636 |
+
+The US heatmaps are not summable (each bus studied alone), so their MW are not in the sum.
 
 Placed rows and MW published per operator are in `docs/DATA_SOURCES.md` (section "Room to
 connect, brief 26") and in the pull request.
