@@ -1,7 +1,7 @@
 ---
 title: Rules in short
 tags: [rules]
-updated: 2026-10-27
+updated: 2026-10-28
 paths: [CLAUDE.md]
 ---
 
@@ -17,6 +17,8 @@ CLAUDE.md is the full text; this is the checklist.
 - Type hints everywhere; `uv run ruff check . && uv run ruff format .`, `uv run pytest`,
   `cd frontend && npm run build` before a commit or a pull request.
 - Small commits; no AI attribution in commits or PRs; never commit videos, images or secrets.
+- Never put a link to a Claude Code session (claude.ai/code) anywhere on GitHub (PRs, commits,
+  comments, files); the owner's decision of 2026-10-28.
 - Cloud sessions work on their own branch and open a pull request; the owner merges. Never
   commit to or force-push `eu-data` or `eu-days`.
 - Raw licensed GEM files only in the private R2 bucket; never republish them.
