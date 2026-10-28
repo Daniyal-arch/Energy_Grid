@@ -8,6 +8,11 @@ updated: 2026-10-28
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-10-28** (claude/room-to-connect-everywhere): browser discovery for the Cloudflare-checked
+  operators (`scripts/browser_discover.py`, browser-fetch.yml sources "discover"): only
+  Transelectrica passed, and it publishes requested capacity as an image; the rest stay data
+  requests. Notes: coverage-and-gaps.
+
 - **2026-10-28** (claude/room-to-connect-everywhere): brief 26: research of every operator in
   the EU-27, the neighbours, the UK and the US (`docs/research/room-to-connect.md`, probe
   `scripts/probe_connect_h26.py`); 14 new operators in the harmonised rows

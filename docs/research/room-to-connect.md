@@ -12,8 +12,8 @@ probes (`scripts/probe_connect_gaps.py`, `scripts/probe_connect_us_heatmaps.py`,
 **Status:** *built* (rows in `connect/harmonised.json`; "PR 23" = before this brief, "new" = this
 brief) · *not harmonised* (published, but not as figures the schema can hold without guessing:
 said why) · *browser check* (a Cloudflare JavaScript check answers scripts; brief rule 2 allows
-`scripts/browser_fetch.py` in Actions; not run in this session, the data URL behind the check is
-unknown until a browser passes it) · *refused* (HTTP 451, a block page or a refusal: data
+a real browser in Actions; `scripts/browser_discover.py` ran on 2026-10-28 (run 40684342322):
+*browser check (not passed)* means an honest browser did not get past it either) · *refused* (HTTP 451, a block page or a refusal: data
 request) · *login* / *key* (an account: data request or a key) · *interactive* (a map or Power BI
 report that computes per click, no table or service: data request) · *not published* (the
 operator's pages hold no capacity map, file or service).
@@ -49,14 +49,14 @@ connect, brief 26") and in the pull request.
 | AT | Energienetze Steiermark | D | free feed-in capacity (FEK) per substation, booked and available MW, "Stand 01.07.2026" | https://www.e-netze.at/Service/FEK/Default.aspx | HTML table (53 rows) | operator website | Art. 31(3) | **built (new)**, positions by OSM name | 10-28 | AT-ENETZE 200 |
 | AT | Netz Niederösterreich | D | transformer map for feeders (Trafokarte); capacities of substations as pages | https://netz-noe.at/strom/versorgungsgebiete-und-kapazitaeten/trafokarte-fuer-einspeiser | QGIS WMS (`webgis.evn.at`, GetFeatureInfo per click) | operator website | Art. 31(3) | interactive (no table; the WMS certificate chain fails for scripts) | 10-28 | AT-NETZNOE 200, AT-NETZNOE-WMS SSL error |
 | AT | Wiener Netze, Netz Oberösterreich, Kärnten Netz | D | no capacity map or file found | wienernetze.at, netzooe.at, kaerntennetz.at | | | Art. 31(3) | not published | 10-28 | AT-WIENERNETZE, AT-NETZOOE, AT-KNG 200 |
-| BE | Elia | T | hosting capacity map 2026 and 2031; Wallonia remaining capacity per substation | https://www.elia.be/en/customers/connection/grid-hosting-capacity | behind the check | | Art. 50(4a) | browser check | 10-28 | BE-ELIA 403 Cloudflare |
+| BE | Elia | T | hosting capacity map 2026 and 2031; Wallonia remaining capacity per substation | https://www.elia.be/en/customers/connection/grid-hosting-capacity | behind the check | | Art. 50(4a) | browser check (not passed) | 10-28 | BE-ELIA 403 Cloudflare |
 | BE | Fluvius | D | connection pages only | https://www.fluvius.be/nl/aansluitingen | | | Art. 31(3) | not published (no capacity map found) | 10-28 | BE-FLUVIUS 200 |
-| BE | ORES, Sibelga, RESA | D | ORES no capacity page found; Sibelga behind the check; RESA resets the connection | ores.be, sibelga.be, resa.be | | | Art. 31(3) | not published / browser check / refused | 10-28 | BE-ORES 200, BE-SIBELGA 403, BE-RESA reset |
+| BE | ORES, Sibelga, RESA | D | ORES no capacity page found; Sibelga behind the check; RESA resets the connection | ores.be, sibelga.be, resa.be | | | Art. 31(3) | not published / browser check (not passed) / refused | 10-28 | BE-ORES 200, BE-SIBELGA 403, BE-RESA reset |
 | BG | ESO | T | free capacity map | https://webapps.eso.bg/capacity/ | JSON | public notice | Art. 50(4a) | built (PR 23) | 10-19 | registry |
 | BG | ERP Sever (Energo-Pro), ERM Zapad, EVN Bulgaria | D | capacity check pages (form or document lists, no table) | erpsever.bg, ermzapad.bg | HTML, PDF forms | | Art. 31(3) | interactive (ERP, ERMZ); EVN 502 through the proxy | 10-28 | BG-ERP, BG-ERMZ 200, BG-EVN 502 |
 | HR | HOPS | T | connection possibility per substation (categories) | https://www.hops.hr/informacije-o-mogucnosti-prikljucenja | PDF table | operator website | Art. 50(4a) | built (PR 23) | 10-27 | registry |
 | HR | HEP ODS | D | free capacity for RES, pending and contracted users per substation (488), data date 2026-10-01 | https://kapaciteti.hep.hr | JSON behind the map (`/api/substations/with-data`) | public web map (no licence stated) | Art. 31(3) | **built (new)** | 10-28 | HR-HEPODS 488 records |
-| CY | TSO Cyprus | T | | https://www.tsoc.org.cy/ | | | Art. 50(4a) | browser check | 10-28 | CY-TSO 403 Cloudflare |
+| CY | TSO Cyprus | T | | https://www.tsoc.org.cy/ | | | Art. 50(4a) | browser check (not passed) | 10-28 | CY-TSO 403 Cloudflare |
 | CY | EAC (DSO) | D | hosting capacity page | eac.com.cy hosting-capacity | | | Art. 31(3) | refused (connection reset) | 10-28 | CY-EAC reset |
 | CZ | ČEPS | T | available capacity per substation (2031, 2036) | https://www.ceps.cz/cs/mapa-dostupne-kapacity-pro-pripojeni-k-ps | JSON | public notice | Art. 50(4a) | built (PR 23) | 10-19 | registry |
 | CZ | PREdistribuce | D | free capacity for generators per 110 kV area (133 pieces, 25 areas), requests received/approved/refused, LV feeders (5,134) | ArcGIS `Mapa_Pripojitelnosti_PREdistribuce` | ArcGIS FeatureServer | public web map | Art. 31(3) | **built (new)**: class only, the layer states no unit | 10-28 | CZ-PRE layers and counts |
@@ -88,7 +88,7 @@ connect, brief 26") and in the pull request.
 | IE | ESB Networks | D | available capacity heatmap download | esbnetworks.ie | xlsx | website terms | Art. 31(3) | built (PR 23) | 10-27 | IE-ESBN 200 |
 | IT | Terna | T | Econnextion: requests per region | dati.terna.it | xlsx | terms not found | Art. 50(4a) | built (PR 23, queue per region) | 10-27 | IT-TERNA 200 |
 | IT | e-distribuzione, Areti, Unareti | D | connection guides and a connection simulator; no capacity file | as probed | HTML | | Art. 31(3) | not published | 10-28 | IT-EDIS, IT-ARETI, IT-UNARETI 200 |
-| LV | AST | T | | ast.lv | | | Art. 50(4a) | browser check | 10-28 | LV-AST 403 |
+| LV | AST | T | connection page "Pieslēgumi pārvades sistēmai" | https://www.ast.lv/lv/content/pieslegumi-parvades-sistemai | | | Art. 50(4a) | browser check (not passed): the home page opened, every inner page answered "Attention Required" (a block) | 10-28 | LV-AST 403; browser discovery |
 | LV | Sadales tīkls | D | free capacity map `karte.sadalestikls.lv/lv/briva-jauda` | | map | | Art. 31(3) | refused (HTTP 451 to a named client; reset today): data request | 10-28 | LV-ST reset; registry 451 |
 | LT | Litgrid | T | generation capacity map | ArcGIS experience | ArcGIS | public | Art. 50(4a) | built (PR 23) | 10-19 | registry |
 | LT | ESO | D | | eso.lt | | | Art. 31(3) | browser check | 10-28 | LT-ESO 403 |
@@ -103,8 +103,8 @@ connect, brief 26") and in the pull request.
 | PL | PGE Dystrybucja, Stoen | D | PGE certificate chain fails for scripts; Stoen connection page only | pgedystrybucja.pl, stoen.pl | | | Art. 7(8l) | not published (Stoen); PGE unreachable | 10-28 | PL-PGE SSL, PL-STOEN 200 |
 | PT | REN | T | reception capacity indicators page (moved, 404) | ren.pt | | | Art. 50(4a) | not published | 10-28 | PT-REN 200 |
 | PT | E-REDES | D | reception capacity (CC BY 4.0) | e-redes.opendatasoft.com | Opendatasoft | CC BY 4.0 | Art. 31(3) | built (PR 23) | 10-27 | registry |
-| RO | Transelectrica | T | capacity allocation procedure (June 2026), auction notices | transelectrica.ro | PDF procedure | | Art. 50(4a); ANRE | browser check (challenge on some pages); no capacity table found | 10-28 | RO-TEL [Cloudflare] |
-| RO | Delgaz Grid, E-Distribuție | D | | delgaz.ro, e-distributie.com | | | ANRE (110 kV, weekly) | browser check | 10-28 | RO-DELGAZ, RO-EDIS 403 |
+| RO | Transelectrica | T | capacity allocation procedure (June 2026); auction notice of 27.10.2026 (available capacity per grid zone and allocation year "published on the website and the auction platform"); on the site only a map and table of the *requested* capacity per zone A-J (12 applications) as a PNG, and the grid map as a JPEG | https://www.transelectrica.ro/procesul-de-alocare-a-capacitatii-retelei-electrice | PNG, JPEG, PDF notice | | Art. 50(4a); ANRE Order 53/2024 | not harmonised (requested capacity as an image, zones without published borders); the available capacity per zone is on the auction platform: data request | 10-28 | RO-TEL [Cloudflare]; browser discovery passed, image read |
+| RO | Delgaz Grid, E-Distribuție | D | | delgaz.ro, e-distributie.com | | | ANRE (110 kV, weekly) | browser check (not passed) | 10-28 | RO-DELGAZ, RO-EDIS 403 |
 | RO | Distribuție Energie Electrică, Rețele Electrice | D | DEER home only; Rețele 403 | distributie-energie.ro, reteleelectrice.ro | | | ANRE | not published / refused | 10-28 | RO-DEER 200, RO-RETELE 403 |
 | SK | SEPS | T | Power BI report | sepsas.sk | Power BI | | Art. 50(4a) | interactive | 10-27 | registry |
 | SK | ZSD, VSD | D | connectability map CSVs | zsdis.sk | CSV, JSON | operator website | Art. 31(3) | built (PR 23) | 10-27 | registry |
@@ -143,10 +143,10 @@ connect, brief 26") and in the pull request.
 | BA | NOS BiH, Elektroprenos BiH | T | NOS BiH timed out; Elektroprenos no capacity file | nosbih.ba, elprenos.ba | | | Energy Community | not published (NOS BiH unreachable) | 10-28 | BA-NOSBIH timeout, BA-ELPRENOS 200 |
 | ME | CGES, CEDIS | T, D | connection procedure pages | cges.me, cedis.me | | | Energy Community | not published | 10-28 | ME-CGES, ME-CEDIS 200 |
 | MK | MEPSO, Elektrodistribucija (EVN) | T, D | connection procedure pages | mepso.com.mk, elektrodistribucija.mk | | | Energy Community | not published | 10-28 | MK-MEPSO, MK-EVN 200 |
-| AL | OST, OSHEE | T, D | OST behind the check; OSHEE new-connection pages | ost.al, oshee.al | | | Energy Community | browser check (OST) / not published (OSHEE) | 10-28 | AL-OST 403, AL-OSHEE 200 |
+| AL | OST, OSHEE | T, D | OST behind the check; OSHEE new-connection pages | ost.al, oshee.al | | | Energy Community | browser check, not passed (OST) / not published (OSHEE) | 10-28 | AL-OST 403, AL-OSHEE 200 |
 | XK | KOSTT, KEDS | T, D | KOSTT's certificate chain fails for scripts; KEDS no capacity file | kostt.com, keds-energy.com | | | Energy Community | not published (KOSTT unreachable) | 10-28 | XK-KOSTT SSL, XK-KEDS 200 |
-| MD | Moldelectrica, Premier Energy Distribution | T, D | both behind the check | moldelectrica.md, premierenergy.md | | | Energy Community | browser check | 10-28 | MD-MOLDELECTRICA 403, MD-PREMIER Cloudflare |
-| UA | Ukrenergo, NEURC | T, regulator | Ukrenergo behind the check; NEURC connection rules | ua.energy, nerc.gov.ua | | | Energy Community | browser check (Ukrenergo) / not published | 10-28 | UA-UKRENERGO 403, UA-NEURC 200 |
+| MD | Moldelectrica, Premier Energy Distribution | T, D | both behind the check | moldelectrica.md, premierenergy.md | | | Energy Community | browser check (not passed) | 10-28 | MD-MOLDELECTRICA 403, MD-PREMIER Cloudflare |
+| UA | Ukrenergo, NEURC | T, regulator | Ukrenergo behind the check; NEURC connection rules | ua.energy, nerc.gov.ua | | | Energy Community | browser check, not passed (Ukrenergo) / not published | 10-28 | UA-UKRENERGO 403, UA-NEURC 200 |
 | TR | TEİAŞ | T (distribution-level allocation per TM) | remaining unlicensed solar and wind capacity allocatable from the distribution level per transformer centre, busbar and EDAŞ/OSB, 01.10.2026 (1,132 rows); a transmission-level map ("Kalan" PDF) as an image | https://www.teias.gov.tr/duyurular/2026-yili-agustos-ayi-lisanssiz-kapasite-tahsisleri-hakkinda | PDF tables (19 pages) | public announcement | EPDK decision 14353 (26.02.2026) | **built (new)**, positions by OSM name | 10-28 | TR-TEIAS PDF 19 pages |
 | TR | EPDK, the 21 EDAŞ | regulator, D | no capacity files found | epdk.gov.tr | | | | not published | 10-28 | TR-EPDK 200 |
 
@@ -218,7 +218,11 @@ Each: who, which dataset, the licence question. Files received go to
    Energy Distribution, Ukrenergo, E.ON Energidistribution**: first the browser fetch in Actions
    (brief rule 2) to find the data URL behind the check; where that fails, "May we receive your
    published capacity map's data as a file?".
-10. **i-DE, UFD, Stromnetz Hamburg, EG.D, Rețele Electrice, VELCO, EAC**: these refuse or block
+10. **Transelectrica**: "Your notice of 27.10.2026 says the available capacity per grid zone and
+    allocation year is published on the website and the auction platform. May we receive that
+    table (zone, year, MW available) and the zone borders, and show them with Transelectrica named
+    as the source? (Regulation (EU) 2019/943 Art. 50(4a), ANRE Order 53/2024.)"
+11. **i-DE, UFD, Stromnetz Hamburg, EG.D, Rețele Electrice, VELCO, EAC**: these refuse or block
     scripts (503, 403, block pages, resets): "May we receive the capacity data you publish under
     (the operator's obligation) as a file, and under which terms?"
 
@@ -226,6 +230,9 @@ Each: who, which dataset, the licence question. Files received go to
 
 - Feeder lines (National Grid NY, Eversource, PG&E and SCE line sections, ConEd): a `line` kind
   and PMTiles built in Actions (brief 26, "Schema and map").
-- The browser fetch in Actions for the Cloudflare-checked operators listed above.
+- The browser discovery (2026-10-28) did not pass the checks of Elia, Sibelga, AST's inner pages,
+  Delgaz, E-Distribuție, TSO Cyprus, OST, Moldelectrica, Premier Energy and Ukrenergo ("Just a
+  moment" stayed, or "Attention Required", a block): no further automated route; the data
+  requests above are the way. Transelectrica passed but publishes no table of free capacity.
 - Swissgrid 2030-2040 and the flexibility cases; Vattenfall's other technologies; Elenia's
   storage layer: fields the schema does not hold yet.

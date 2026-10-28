@@ -24,8 +24,9 @@ of `docs/tasks/`.
   (`scripts/build_connect_h26.py`). Every operator checked, with status and evidence:
   `docs/research/room-to-connect.md` (data requests at its end). Still dark, with a registry
   reason: BE, CY, LV, RO (Cloudflare checks, HTTP 451, no tables) and NO, IS, RS, BA, ME, MK, AL,
-  XK, MD, UA (nothing published or behind checks). Open: the browser fetch in Actions for the
-  Cloudflare-checked operators; feeder lines (National Grid NY, Eversource) need a `line` kind
+  XK, MD, UA (nothing published or behind checks). The browser discovery in Actions (2026-10-28) passed
+  none of those checks except Transelectrica's (no free-capacity table there): data requests.
+  Open: feeder lines (National Grid NY, Eversource) need a `line` kind
   and PMTiles; ENWL, SPEN, UKPN wait for keys.
 - **Keys the owner still has to provide** (`PLAN.md`): Anthropic API key for the agent, AWS
   account and deploy role for the backend (brief 25), PJM, AESO, data.go.kr, EPIAS, RTE,

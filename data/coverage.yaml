@@ -19,8 +19,9 @@ families:
       BE:
         status: not_published
         url: https://www.elia.be/en/customers/connection/grid-hosting-capacity
-        note: Elia and Sibelga answer HTTP 403 behind Cloudflare's check (2026-10-27); Elia's open-data portal holds no hosting-capacity set; Fluvius and ORES pages answer 404
-        checked: '2026-10-27'
+        note: Elia and Sibelga answer HTTP 403 behind Cloudflare's check (2026-10-27); Elia's open-data portal holds no hosting-capacity set; Fluvius and ORES pages answer 404. Browser discovery in Actions
+          (2026-10-28, an honest Chromium) did not pass the check.
+        checked: '2026-10-28'
       BG:
         status: built
         licence: public notice; reuse with the source named
@@ -39,8 +40,9 @@ families:
       CY:
         status: not_published
         url: https://www.eac.com.cy/EN/RegulatedActivities/Distribution/renewableenergy/Pages/hosting-capacity.aspx
-        note: TSO Cyprus answers HTTP 403 behind Cloudflare; EAC's hosting-capacity page resets the connection (2026-10-27)
-        checked: '2026-10-27'
+        note: TSO Cyprus answers HTTP 403 behind Cloudflare; EAC's hosting-capacity page resets the connection (2026-10-27). Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the
+          check.
+        checked: '2026-10-28'
       CZ:
         status: built
         licence: public notice; reuse with the source named
@@ -130,8 +132,9 @@ families:
       LV:
         status: not_published
         url: https://karte.sadalestikls.lv/lv/briva-jauda
-        note: AST answers HTTP 403 behind Cloudflare; Sadales tīkls' free-capacity map loads from an obfuscated host and answers HTTP 451 to a script that names itself (not bypassed)
-        checked: '2026-10-27'
+        note: AST answers HTTP 403 behind Cloudflare; Sadales tīkls' free-capacity map loads from an obfuscated host and answers HTTP 451 to a script that names itself (not bypassed). Browser discovery
+          in Actions (2026-10-28, an honest Chromium) did not pass the check.
+        checked: '2026-10-28'
       LT:
         status: built
         licence: public notice; reuse with the source named
@@ -179,8 +182,9 @@ families:
       RO:
         status: not_published
         url: https://www.transelectrica.ro/web/tel/racordare
-        note: Transelectrica's capacity pages answer 404; Delgaz and E-Distribuție answer HTTP 403 behind Cloudflare; Distribuție Energie Electrică and PPC Rețele publish no capacity file (2026-10-27)
-        checked: '2026-10-27'
+        note: 'Transelectrica (browser discovery passed, 2026-10-28) publishes only the requested capacity per grid zone A-J as an image and says the available capacity per zone is on its auction platform
+          (data request); Delgaz and E-Distribuție: the browser did not pass the check; Distribuție Energie Electrică publishes no capacity file; Rețele Electrice 403'
+        checked: '2026-10-28'
       SK:
         status: built
         url: https://www.zsdis.sk/Uvod/Online-sluzby/Mapa-pripojitelnosti
@@ -389,7 +393,7 @@ families:
       AL:
         status: not_published
         url: https://www.ost.al/
-        note: OST answers a Cloudflare challenge (403); OSHEE describes new connections only
+        note: OST answers a Cloudflare challenge (403); OSHEE describes new connections only. Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the check.
         checked: '2026-10-28'
       XK:
         status: not_published
@@ -399,12 +403,12 @@ families:
       MD:
         status: not_published
         url: https://moldelectrica.md/
-        note: Moldelectrica answers a Cloudflare challenge (403); Premier Energy Distribution no capacity file
+        note: Moldelectrica answers a Cloudflare challenge (403); Premier Energy Distribution no capacity file. Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the check.
         checked: '2026-10-28'
       UA:
         status: not_published
         url: https://ua.energy/
-        note: Ukrenergo answers a Cloudflare challenge (403); NEURC publishes connection rules only
+        note: Ukrenergo answers a Cloudflare challenge (403); NEURC publishes connection rules only. Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the check.
         checked: '2026-10-28'
   units:
     name: Every generating unit
