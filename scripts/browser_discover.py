@@ -22,6 +22,7 @@ sources "discover" (or "discover BE-ELIA ...").
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import re
 import time
@@ -87,10 +88,9 @@ def visit(page: object, url: str, requests: list[str]) -> dict:
         if not re.search(r"just a moment|attention required|checking", title, re.I):
             break
         time.sleep(2)
-    try:
+    # pages with endless analytics never go idle: read what has loaded
+    with contextlib.suppress(Exception):
         page.wait_for_load_state("networkidle", timeout=30_000)  # type: ignore[attr-defined]
-    except Exception:  # noqa: BLE001 - pages with endless analytics never go idle
-        pass
     title = page.title()  # type: ignore[attr-defined]
     out["title"] = title
     out["passed"] = not re.search(r"just a moment|attention required", title, re.I)
