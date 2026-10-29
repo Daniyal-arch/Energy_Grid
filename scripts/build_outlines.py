@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import time
 from pathlib import Path
@@ -408,10 +409,11 @@ def grid(args: argparse.Namespace) -> None:
 
 
 # national census small areas found open (docs/research/small-area-energy.md): one row per set
-NATIONAL: list[dict[str, str]] = [
+NATIONAL: list[dict] = [
     {
         "iso3": "BEL", "level": "be_sector", "label": "Statbel statistical sectors 2024",
         "url": "https://statbel.fgov.be/sites/default/files/files/opendata/Statistische%20sectoren/sh_statbel_statistical_sectors_31370_20240101.geojson.zip",
+        "drop": ["ogc_fid", "OGC_FID"],
         "id": "cd_sector", "name": "tx_sector_descr_nl", "crs": "EPSG:31370", "licence": "Licence Ouverte (Statbel open data)",
     },
     {
@@ -445,6 +447,14 @@ def national(args: argparse.Namespace) -> None:
                     for p in w.unzip(f).rglob("*")
                     if p.is_file() and p.suffix.lower() in (".geojson", ".json", ".shp", ".gpkg")
                 )
+            if s.get("drop"):
+                # properties that clash with the column GDAL adds (Statbel's ogc_fid)
+                d = json.loads(f.read_text(encoding="utf-8"))
+                for feat in d.get("features", []):
+                    for k in s["drop"]:
+                        feat.get("properties", {}).pop(k, None)
+                f = f.with_name(f"{f.stem}_clean.geojson")
+                f.write_text(json.dumps(d), encoding="utf-8")
             cols = {
                 c[0].lower(): c[0]
                 for c in con.execute(f"DESCRIBE SELECT * FROM ST_Read('{f}')").fetchall()
@@ -468,19 +478,48 @@ def national(args: argparse.Namespace) -> None:
         w.lake_done(lk, args.upload)
 
 
+OUTLINE_SETS = (
+    "adm2", "divisions", "fr_iris", "geostat_grid", "nl_cbs", "small_areas", "uk_ons",
+    "urban_centres", "us_cousub", "us_places", "us_tracts",
+)  # fmt: skip
+
+
 def names(args: argparse.Namespace) -> None:
-    """The search index: every outline's name, level, country, parent, population and box."""
+    """The search index: every outline's name, level, country, parent, population and box.
+
+    Sets built in this run are read locally; the others from the lake on R2 (when the R2 keys
+    are set), so a run that rebuilds one set still indexes them all.
+    """
     con = con_spatial()
     root = Path(args.lake) / "outlines"
-    parts = []
-    for t in sorted(
-        p for p in root.iterdir() if p.is_dir() and p.name != "names" and any(p.rglob("*.parquet"))
-    ):
-        parts.append(
-            f"""SELECT '{t.name}' AS "set", id, name, level, subtype, iso3, parent_name, population,
-                       bbox.xmin AS xmin, bbox.ymin AS ymin, bbox.xmax AS xmax, bbox.ymax AS ymax
-                FROM read_parquet('{t}/**/*.parquet', hive_partitioning = false)"""
+    local = {
+        p.name: f"{p}/**/*.parquet"
+        for p in (root.iterdir() if root.exists() else [])
+        if p.is_dir() and p.name != "names" and any(p.rglob("*.parquet"))
+    }
+    key, secret = os.environ.get("AWS_ACCESS_KEY_ID"), os.environ.get("AWS_SECRET_ACCESS_KEY")
+    acct = os.environ.get("CLOUDFLARE_ACCOUNT_ID")
+    if key and secret and acct:
+        con.execute("INSTALL httpfs; LOAD httpfs")
+        con.execute(
+            f"CREATE SECRET lake (TYPE r2, KEY_ID '{key}', SECRET '{secret}', ACCOUNT_ID '{acct}')"
         )
+        for t in OUTLINE_SETS:
+            if t in local:
+                continue
+            src = f"r2://infraatlas-raw/lake/outlines/{t}/**/*.parquet"
+            try:
+                con.execute(f"SELECT 1 FROM read_parquet('{src}') LIMIT 0")
+                local[t] = src
+            except duckdb.Error as e:
+                print(f"  {t}: not in the lake ({type(e).__name__})", flush=True)
+    print(f"  indexing: {', '.join(sorted(local))}", flush=True)
+    parts = [
+        f"""SELECT '{t}' AS "set", id, name, level, subtype, iso3, parent_name, population,
+                   bbox.xmin AS xmin, bbox.ymin AS ymin, bbox.xmax AS xmax, bbox.ymax AS ymax
+            FROM read_parquet('{src}', hive_partitioning = false)"""
+        for t, src in sorted(local.items())
+    ]
     lk = lake(args, "search index over the outline sets", "as each set")
     lk.write(con, "names", " UNION ALL ".join(parts), sort=["name"], bloom=["name"])
     w.lake_done(lk, args.upload)

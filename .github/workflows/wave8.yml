@@ -75,6 +75,7 @@ jobs:
       - uses: actions/setup-python@v6
         with: {python-version: "3.12"}
       - run: pip install httpx duckdb pycountry
+      - run: bash scripts/r2_creds.sh
       - name: Outline sets (each continues when one fails)
         working-directory: scripts
         run: |
