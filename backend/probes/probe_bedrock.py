@@ -17,22 +17,26 @@ import sys
 import time
 
 import boto3
+from botocore.config import Config
 
 REGIONS = sys.argv[1:] or ["us-east-1", "us-west-2", "eu-central-1", "eu-west-1"]
 # candidates by family; inference-profile prefixes (us., eu.) are tried per region
 CANDIDATES = [
-    "amazon.nova-pro-v1:0",
-    "amazon.nova-lite-v1:0",
     "amazon.nova-micro-v1:0",
-    "amazon.nova-premier-v1:0",
-    "meta.llama3-3-70b-instruct-v1:0",
-    "meta.llama4-maverick-17b-instruct-v1:0",
-    "mistral.mistral-large-2407-v1:0",
-    "openai.gpt-oss-120b-1:0",
+    "amazon.nova-lite-v1:0",
+    "amazon.nova-pro-v1:0",
     "openai.gpt-oss-20b-1:0",
-    "qwen.qwen3-235b-a22b-2507-v1:0",
+    "openai.gpt-oss-120b-1:0",
     "qwen.qwen3-32b-v1:0",
-    "deepseek.v3-v1:0",
+    "qwen.qwen3-235b-a22b-2507-v1:0",
+    "deepseek.v3.2",
+    "mistral.ministral-3-14b-instruct",
+    "mistral.mistral-large-3-675b-instruct",
+    "moonshotai.kimi-k2.5",
+    "minimax.minimax-m2.5",
+    "google.gemma-3-27b-it",
+    "nvidia.nemotron-super-3-120b",
+    "zai.glm-4.7-flash",
 ]
 TOOL = {
     "tools": [
@@ -76,7 +80,10 @@ for region in REGIONS:
         print(f"   listed {len(names)} on-demand text models (non-Claude): {names[:40]}")
     except Exception as e:  # an API key may not allow listing
         print(f"   list_foundation_models: {type(e).__name__}: {str(e)[:120]}")
-    rt = boto3.client("bedrock-runtime", region_name=region)
+    # one attempt per model: a throttled model is reported, not retried
+    rt = boto3.client(
+        "bedrock-runtime", region_name=region, config=Config(retries={"max_attempts": 1})
+    )
     for model in CANDIDATES:
         for mid in ids_for(region, model):
             t0 = time.perf_counter()

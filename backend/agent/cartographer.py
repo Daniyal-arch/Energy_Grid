@@ -132,6 +132,22 @@ async def cartographer(state: AgentState, config: RunnableConfig) -> dict[str, A
                 ]
                 continue
             note = str(out.get("note") or "")[:300]
+            if out.get("map"):
+                spec = out["map"]
+                panels = spec.get("panels") or []
+                kinds = [o.get("kind") for o in spec.get("overlays") or []] + [
+                    o.get("kind") for p in panels for o in p.get("overlays") or []
+                ]
+                d.ctx.emit(
+                    "design",
+                    {
+                        "styles": kinds,
+                        "maps": len(panels) or 1,
+                        "edit": bool(spec.get("replaces")),
+                        "note": note,
+                        "tries": len(errors) + 1,
+                    },
+                )
             if route.get("map") and out.get("map"):
                 r = make_map(d.ctx, out["map"])
                 if "map_id" in r["data"]:

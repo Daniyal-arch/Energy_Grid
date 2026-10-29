@@ -10,7 +10,7 @@ import { actions, readUrl, useApp, writeUrl } from "../app/store";
 import { DashboardBuilder, DashboardList, DashboardsMenu } from "./Dashboards";
 import { Catalogue } from "./Catalogue";
 import { MapsButton, MapsView } from "./MapsView";
-import { AskButton } from "./AskTab";
+import { AskButton, AskPanel } from "./AskTab";
 import LayersPanel from "./LayersPanel";
 import MapLegend from "./MapLegend";
 import MapOptions from "./MapOptions";
@@ -117,6 +117,7 @@ function Desktop() {
         <TimeBar />
       </div>
       <MapsView />
+      <AskPanel />
       <MapOptions />
       <div className="pointer-events-none absolute bottom-1 left-3 z-10 max-w-[260px] text-[8.5px] leading-tight text-slate-500">{CREDITS}</div>
     </>

@@ -104,7 +104,10 @@ def test_ask_streams_text_tool_map_sources_done(client):
         assert r.headers["content-type"].startswith("text/event-stream")
         events = sse(r.read().decode())
     kinds = [e for e, _ in events]
-    assert kinds[0] == "tool" and "text" in kinds and "map" in kinds
+    # the router's plan first, then the steps, the map design and the map
+    assert kinds[0] == "plan" and kinds[1] == "tool" and "text" in kinds and "map" in kinds
+    assert "design" in kinds and kinds.index("design") < kinds.index("map")
+    assert events[0][1]["map"] is True
     assert kinds[-2:] == ["sources", "done"]
     done = events[-1][1]
     assert len(done["trace_id"]) == 32 and done["grounding"]["score"] == 1.0 and done["maps"]

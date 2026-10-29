@@ -51,10 +51,28 @@ export interface Done {
   model?: string;
   stop?: string | null;
 }
+/** The router's plan: what kind of answer, a map, a chart, an edit, the skills it loads. */
+export interface Plan {
+  kind?: string;
+  map?: boolean;
+  chart?: boolean;
+  edit?: boolean;
+  skills?: string[];
+}
+/** The cartographer's design: the styles it chose, how many maps, and why. */
+export interface Design {
+  styles: string[];
+  maps: number;
+  edit: boolean;
+  note: string;
+  tries: number;
+}
 export interface Msg {
   id: string;
   role: "user" | "assistant";
   text: string;
+  plan?: Plan;
+  design?: Design;
   tools: ToolStep[];
   maps: string[];
   charts: ChartMsg[];
@@ -70,6 +88,8 @@ interface AgentState {
   /** the agent map drawn on the main map (one map); panels go to the Maps view */
   onMap: string | null;
   busy: boolean;
+  /** the Ask chat is open at the side (ui/AskTab.tsx) */
+  open: boolean;
   conversationId: string;
 }
 
@@ -78,6 +98,7 @@ export const useAgent = create<AgentState>(() => ({
   maps: {},
   onMap: null,
   busy: false,
+  open: false,
   conversationId: `c_${Math.random().toString(36).slice(2, 10)}`,
 }));
 
@@ -192,6 +213,10 @@ function onEvent(name: string, data: Record<string, unknown>): void {
       if (i >= 0) tools[i] = { ...tools[i], status: "done", ms: t.ms, rows: t.rows, error: t.error };
       return { ...m, tools };
     });
+  } else if (name === "plan") {
+    patchLast((m) => ({ ...m, plan: data as Plan }));
+  } else if (name === "design") {
+    patchLast((m) => ({ ...m, design: data as unknown as Design }));
   } else if (name === "map") {
     void loadMap(String(data.id), data.spec as MapSpec);
   } else if (name === "chart") {

@@ -62,7 +62,7 @@ async def graph_events(stream: AsyncIterator[tuple[str, Any]]) -> AsyncIterator[
                 yield event("text", {"reset": True, **data})
             elif name == "text":
                 yield event("text", data)
-            elif name in ("tool", "map", "chart"):
+            elif name in ("tool", "map", "chart", "plan", "design"):
                 yield event(name, data)
         elif mode == "updates" and "finish" in chunk:
             run = chunk["finish"]["run"]

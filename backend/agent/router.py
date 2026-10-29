@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
 import re
 import time
@@ -9,6 +10,7 @@ from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
+from langgraph.config import get_stream_writer
 
 from agent.deps import deps_of, prompt
 from agent.models import text_of
@@ -16,6 +18,7 @@ from agent.state import AgentState
 from agent.usage import record
 from obs.tracing import span
 
+PLAN_KEYS = ("kind", "map", "chart", "edit", "skills")
 MAP_WORDS = re.compile(r"\b(maps?|show|where|draw|shade|plot)\b", re.I)
 # a change to the map on screen, without new data
 EDIT_WORDS = re.compile(
@@ -73,6 +76,8 @@ async def router(state: AgentState, config: RunnableConfig) -> dict[str, Any]:
     if route.get("edit"):
         route["map"] = True
     route["skills"] = [s for s in route["skills"] if s in d.skills.skills]
+    with contextlib.suppress(Exception):  # outside a graph run (tests) there is no stream
+        get_stream_writer()({"event": "plan", "data": {k: route.get(k) for k in PLAN_KEYS}})
     return {
         "route": route,
         "usage": [record("router", d.fast_entry, resp, time.perf_counter() - t0)],

@@ -1,11 +1,12 @@
-// The Ask tab: a conversation with the agent (app/agent.ts). Each answer streams in with the
-// tool steps it took, its maps (each with its key and source, shown on the map or side by side
-// in the Maps view), its charts and its sources. The maps on screen go back with the next
-// question, so "make it 3D" or "split it into two maps" changes them.
+// Ask: a conversation with the agent (app/agent.ts) in a chat at the side, opened by the top
+// bar's Ask button. Each answer streams in with how the agent worked (its plan, every search and
+// query, the map design it chose and why), the answer, its maps (each with its key and source,
+// shown on the map or side by side in the Maps view), its charts and its sources. The maps on
+// screen go back with the next question, so "make it 3D" or "split it into two maps" changes them.
 
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 
-import { ask, clearConversation, removeAgentMap, showAgentMap, useAgent, type ChartMsg, type Msg } from "../app/agent";
+import { ask, clearConversation, removeAgentMap, showAgentMap, useAgent, type ChartMsg, type Msg, type ToolStep } from "../app/agent";
 import { useApp } from "../app/store";
 import type { Overlay } from "../lib/mapspec";
 import { rgbCss } from "../lib/theme";
@@ -21,14 +22,14 @@ const EXAMPLES = [
   "Map the room to connect new generation in Great Britain",
 ];
 
-/** The top bar's way to the agent: opens the Ask tab of the context panel. */
+/** The top bar's way to the agent: opens or closes the Ask dock. */
 export function AskButton() {
-  const on = useApp((s) => s.tab === "ask");
+  const open = useAgent((s) => s.open);
   const busy = useAgent((s) => s.busy);
   return (
     <button
-      onClick={() => useApp.setState({ tab: on ? "dashboard" : "ask", sheet: "panel" })}
-      className={`shrink-0 rounded-lg border px-2.5 py-1.5 text-[12px] ${on ? "border-sky-400/50 bg-sky-400/15 text-sky-100" : "border-sky-300/30 bg-[#0b0f16]/90 text-sky-200 hover:bg-sky-400/10"}`}
+      onClick={() => useAgent.setState({ open: !open })}
+      className={`shrink-0 rounded-lg border px-2.5 py-1.5 text-[12px] ${open ? "border-sky-400/50 bg-sky-400/15 text-sky-100" : "border-sky-300/30 bg-[#0b0f16]/90 text-sky-200 hover:bg-sky-400/10"}`}
       title="Ask the agent: answers from the atlas's data, with maps"
     >
       ✦ Ask{busy ? " …" : ""}
@@ -36,30 +37,86 @@ export function AskButton() {
   );
 }
 
-export function AskTab() {
-  const messages = useAgent((s) => s.messages);
+/** The input: Enter sends, Shift+Enter a new line. */
+function AskInput({ autoFocus = false }: { autoFocus?: boolean }) {
   const busy = useAgent((s) => s.busy);
   const [q, setQ] = useState("");
-  const end = useRef<HTMLDivElement>(null);
-  useEffect(() => end.current?.scrollIntoView({ block: "end" }), [messages]);
   const send = (text: string) => {
     if (!text.trim() || busy) return;
+    useAgent.setState({ open: true });
     void ask(text);
     setQ("");
   };
   return (
-    <div className="flex h-full min-h-[60vh] flex-col">
-      <div className="flex-1 space-y-3">
+    <div className="flex items-end gap-1.5 rounded-xl border border-sky-300/25 bg-[#0b0f16]/95 px-2.5 py-1.5 shadow-lg shadow-black/40">
+      <span className="pb-1 text-[12px] text-sky-300">✦</span>
+      <textarea
+        value={q}
+        autoFocus={autoFocus}
+        onChange={(e) => setQ(e.target.value)}
+        onFocus={() => useAgent.setState({ open: true })}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            send(q);
+          }
+          if (e.key === "Escape") useAgent.setState({ open: false });
+        }}
+        rows={1}
+        placeholder={busy ? "Answering…" : "Ask the atlas, or ask to change the map"}
+        className="min-w-0 flex-1 resize-none bg-transparent py-0.5 text-[12.5px] text-slate-100 placeholder:text-slate-500 focus:outline-none"
+      />
+      <button
+        onClick={() => send(q)}
+        disabled={busy || !q.trim()}
+        className="shrink-0 rounded-md bg-sky-400/85 px-2.5 py-1 text-[11px] font-medium text-[#06101c] disabled:bg-white/10 disabled:text-slate-500"
+      >
+        Ask
+      </button>
+    </div>
+  );
+}
+
+/** The chat at the side: opened by the top bar's Ask button, over the right side of the map. */
+export function AskPanel() {
+  const open = useAgent((s) => s.open);
+  const messages = useAgent((s) => s.messages);
+  const scroller = useRef<HTMLDivElement>(null);
+  // follow the answer as it streams: scroll only the conversation, never the page
+  useEffect(() => {
+    const el = scroller.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [messages, open]);
+  if (!open) return null;
+  return (
+    <aside className="absolute bottom-14 right-3 top-16 z-[24] flex w-[400px] flex-col overflow-hidden rounded-xl border border-sky-300/20 bg-[#080b11]/97 shadow-2xl shadow-black/50 backdrop-blur">
+      <div className="flex items-center gap-2 border-b border-white/[0.07] px-3.5 py-2.5">
+        <span className="text-[13px] text-sky-200">✦</span>
+        <div className="min-w-0 flex-1">
+          <div className="text-[14px] font-light tracking-wide text-slate-100">Ask the atlas</div>
+          <div className={`truncate text-[10px] ${muted}`}>answers from the atlas&apos;s own data, with its steps and maps</div>
+        </div>
+        {messages.length > 0 && (
+          <button onClick={clearConversation} className="rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] text-slate-300 hover:bg-white/[0.07]" title="Clears the conversation and the agent's maps">
+            New
+          </button>
+        )}
+        <button onClick={() => useAgent.setState({ open: false })} className="rounded-md border border-white/10 px-2 py-0.5 text-[11px] text-slate-300 hover:bg-white/10" aria-label="Close the chat">
+          ✕
+        </button>
+      </div>
+      <div ref={scroller} className="min-h-0 flex-1 space-y-2.5 overflow-y-auto px-3 py-3">
         {messages.length === 0 && (
           <div className="rounded-xl border border-white/[0.07] bg-[#0b0f16]/90 px-3 py-3">
-            <div className="text-[12px] text-slate-200">Ask about the power system. Answers come from the atlas&apos;s own data, with maps when they help.</div>
+            <div className="text-[12px] text-slate-200">Ask about the power system: grids, plants, prices, flows, emissions, room to connect.</div>
             <div className={`mt-1 text-[10.5px] leading-snug ${muted}`}>
-              The agent picks the map design for the question (flat or 3D, one map or several side by side) and can change a map on request: &ldquo;make it 3D&rdquo;, &ldquo;use hexagons&rdquo;, &ldquo;split
-              into two maps&rdquo;.
+              Each answer shows how the agent worked (what it searched, the queries it ran, the map design it chose) and every number&apos;s source. It picks the map design for
+              the question (flat or 3D, one map or several side by side) and changes a map on request: &ldquo;make it 3D&rdquo;, &ldquo;use hexagons&rdquo;, &ldquo;split into
+              two maps&rdquo;.
             </div>
             <div className="mt-2 flex flex-col gap-1">
               {EXAMPLES.map((e) => (
-                <button key={e} onClick={() => send(e)} className="rounded-md border border-white/10 px-2 py-1 text-left text-[11px] text-slate-300 hover:bg-white/[0.06]">
+                <button key={e} onClick={() => void ask(e)} className="rounded-md border border-white/10 px-2 py-1 text-left text-[11px] text-slate-300 hover:bg-white/[0.06]">
                   {e}
                 </button>
               ))}
@@ -67,38 +124,11 @@ export function AskTab() {
           </div>
         )}
         {messages.map((m) => (m.role === "user" ? <UserMsg key={m.id} m={m} /> : <AgentMsg key={m.id} m={m} />))}
-        <div ref={end} />
       </div>
-      <div className="sticky bottom-0 mt-2 bg-[#080b11] pt-2">
-        <div className="flex items-end gap-1.5 rounded-xl border border-white/10 bg-[#0b0f16] px-2 py-1.5">
-          <textarea
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                send(q);
-              }
-            }}
-            rows={2}
-            placeholder={busy ? "Answering…" : "Ask a question, or ask to change the map"}
-            className="min-w-0 flex-1 resize-none bg-transparent text-[12px] text-slate-100 placeholder:text-slate-500 focus:outline-none"
-          />
-          <button
-            onClick={() => send(q)}
-            disabled={busy || !q.trim()}
-            className="shrink-0 rounded-md bg-sky-400/85 px-2.5 py-1 text-[11px] font-medium text-[#06101c] disabled:bg-white/10 disabled:text-slate-500"
-          >
-            Ask
-          </button>
-        </div>
-        {messages.length > 0 && (
-          <button onClick={clearConversation} className={`mt-1 text-[10px] ${muted} hover:text-slate-200`}>
-            New conversation (clears the agent&apos;s maps)
-          </button>
-        )}
+      <div className="border-t border-white/[0.07] px-3 py-2.5">
+        <AskInput autoFocus />
       </div>
-    </div>
+    </aside>
   );
 }
 
@@ -106,19 +136,95 @@ function UserMsg({ m }: { m: Msg }) {
   return <div className="ml-6 rounded-xl bg-sky-400/[0.12] px-3 py-2 text-[12px] text-slate-100">{m.text}</div>;
 }
 
+const KIND_TEXT: Record<string, string> = {
+  answer: "an answer from the data",
+  map: "an answer with a map",
+  chart: "an answer with a chart",
+  explain: "an explanation of the view",
+  site: "figures for one site",
+  out_of_scope: "outside what the atlas holds",
+};
+
+/** One step, in words: what the agent did with the tool and what came back. */
+function stepText(t: ToolStep): { what: string; detail?: string } {
+  const a = (t.args ?? {}) as Record<string, unknown>;
+  switch (t.name) {
+    case "search_catalog":
+      return { what: `Searched the catalogue for \u201c${String(a.query ?? "")}\u201d` };
+    case "describe_table":
+      return { what: `Read the columns and units of ${String(a.name ?? "a table")}` };
+    case "run_sql":
+      return { what: `Queried the data${t.rows != null ? `: ${t.rows.toLocaleString("en-US")} rows` : ""}`, detail: String(a.sql ?? "") };
+    case "find_place":
+      return { what: `Looked up the place \u201c${String(a.text ?? "")}\u201d` };
+    case "site_figures":
+      return { what: "Computed the site figures around a point" };
+    case "live":
+      return { what: `Read live figures (${String(a.source ?? "")})` };
+    case "load_skill":
+      return { what: `Loaded the rules for ${String(a.name ?? "")}` };
+    case "list_skills":
+      return { what: "Listed its skills" };
+    case "read_skill_file":
+      return { what: `Read ${String(a.path ?? "a reference")} of ${String(a.name ?? "a skill")}` };
+    default:
+      return { what: t.name.replace(/_/g, " ") };
+  }
+}
+
+/** How the agent worked: its plan, every step with the query, the map design and why. */
+function Reasoning({ m }: { m: Msg }) {
+  const [open, setOpen] = useState(true);
+  const steps = m.tools.length + (m.plan ? 1 : 0) + (m.design ? 1 : 0);
+  // open while it works, folded once the answer is there
+  useEffect(() => {
+    if (m.done) setOpen(false);
+  }, [m.done]);
+  if (!steps) return null;
+  return (
+    <div className="mb-2 rounded-lg border border-white/[0.06] bg-white/[0.015]">
+      <button onClick={() => setOpen(!open)} className="flex w-full items-center gap-1.5 px-2 py-1 text-left" aria-expanded={open}>
+        <span className={`text-[9px] text-slate-500 transition-transform ${open ? "rotate-90" : ""}`}>▶</span>
+        <span className="flex-1 text-[10.5px] text-slate-300">How the agent worked</span>
+        <span className={`text-[9.5px] ${muted}`}>{m.pending ? "working…" : `${steps} steps`}</span>
+      </button>
+      {open && (
+        <ol className="space-y-1 px-2 pb-2 text-[10.5px] leading-snug text-slate-300">
+          {m.plan && (
+            <li>
+              <span className="text-slate-500">1.</span> Understood the question as {KIND_TEXT[m.plan.kind ?? ""] ?? m.plan.kind}
+              {m.plan.edit ? ", a change to the map on screen" : ""}
+              {m.plan.skills?.length ? `; rules loaded: ${m.plan.skills.join(", ")}` : ""}.
+            </li>
+          )}
+          {m.tools.map((t, i) => {
+            const s = stepText(t);
+            return (
+              <li key={i}>
+                <span className="text-slate-500">{i + (m.plan ? 2 : 1)}.</span> {t.status === "running" ? <span className="text-sky-300">…</span> : t.error ? <span className="text-red-300">✕</span> : null} {s.what}
+                {t.ms != null ? <span className={muted}> ({Math.round(t.ms)} ms)</span> : null}
+                {s.detail && <pre className="mt-0.5 overflow-x-auto whitespace-pre-wrap rounded bg-black/30 px-1.5 py-1 text-[9.5px] text-slate-400">{s.detail}</pre>}
+                {t.error && <div className="text-[9.5px] text-red-300">{t.error}</div>}
+              </li>
+            );
+          })}
+          {m.design && (
+            <li>
+              <span className="text-slate-500">{m.tools.length + (m.plan ? 2 : 1)}.</span> {m.design.edit ? "Changed the map: " : "Designed "}
+              {m.design.maps > 1 ? `${m.design.maps} maps side by side` : "one map"} as {m.design.styles.map((x) => STYLE_NAME[x] ?? x).join(" + ")}
+              {m.design.note ? <span className={muted}>: {m.design.note}</span> : null}
+            </li>
+          )}
+        </ol>
+      )}
+    </div>
+  );
+}
+
 function AgentMsg({ m }: { m: Msg }) {
   return (
     <div className="rounded-xl border border-white/[0.07] bg-[#0b0f16]/90 px-3 py-2.5">
-      {m.tools.length > 0 && (
-        <div className="mb-1.5 flex flex-wrap gap-1">
-          {m.tools.map((t, i) => (
-            <span key={i} className={`rounded-full border px-1.5 py-[1px] text-[9.5px] ${t.error ? "border-red-400/40 text-red-200" : "border-white/10 text-slate-400"}`} title={t.args ? JSON.stringify(t.args).slice(0, 400) : undefined}>
-              {t.status === "running" ? "…" : t.error ? "✕" : "✓"} {t.name.replace(/_/g, " ")}
-              {t.rows != null ? ` · ${t.rows.toLocaleString("en-US")} rows` : ""}
-            </span>
-          ))}
-        </div>
-      )}
+      <Reasoning m={m} />
       {m.text ? <Markdown text={m.text} /> : m.pending ? <div className={`text-[11px] ${muted}`}>Thinking…</div> : null}
       {m.maps.map((id) => (
         <MapCard key={id} id={id} />
