@@ -58,13 +58,29 @@ def write_fixture_lake(root: Path) -> None:
     (root / "_catalog.json").write_text('{"updated": "2026-10-27T00:00:00Z"}')
 
 
+def write_fixture_rasters(root: Path) -> None:
+    """A population grid of 0.01 degrees, one person per cell, over 10-14 E, 46-50 N."""
+    import numpy as np
+    import rasterio
+    from rasterio.transform import from_origin
+
+    root.mkdir(parents=True, exist_ok=True)
+    with rasterio.open(
+        root / "ghsl_pop_e2025_3ss.tif", "w", driver="GTiff", width=400, height=400, count=1,
+        dtype="float32", crs="EPSG:4326", transform=from_origin(10, 50, 0.01, 0.01), nodata=-200,
+    ) as dst:  # fmt: skip
+        dst.write(np.ones((1, 400, 400), dtype="float32"))
+
+
 write_fixture_lake(LAKE)
+write_fixture_rasters(TMP / "rasters")
 os.environ.update(
     {
         "AGENT_MODEL": "fake",
         "AGENT_MODEL_FAST": "fake",
         "LAKE_DB": "",
         "LAKE_DIR": str(LAKE),
+        "RASTERS_DIR": str(TMP / "rasters"),
         "LOCAL_STORE_DIR": str(TMP / "store"),
         "RESULTS_DIR": str(TMP / "results"),
         "ADMIN_API_KEY": "test-admin",

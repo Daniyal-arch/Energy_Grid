@@ -131,6 +131,11 @@ def build_server(settings: Settings) -> FastMCP:
         )
         return specs["resolve_area"].run(ctx, **args.model_dump(exclude={"from_view"}))
 
+    @mcp.tool(name="area_stats", description=doc("area_stats"))
+    def area_stats(area_id: str, measures: list[str]) -> dict[str, Any]:
+        args = registry.AreaStatsArgs.model_validate({"area_id": area_id, "measures": measures})
+        return specs["area_stats"].run(ctx, **args.model_dump())
+
     @mcp.tool(name="site_figures", description=doc("site_figures"))
     def site_figures(lon: float, lat: float, radius_km: int = 50) -> dict[str, Any]:
         return specs["site_figures"].run(ctx, lon=lon, lat=lat, radius_km=radius_km)

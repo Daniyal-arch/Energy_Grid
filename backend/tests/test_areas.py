@@ -133,3 +133,16 @@ def test_area_routes():
         s = c.get("/api/shapes/nuts2/DEU").json()
         assert list(s["features"]) == ["DE21"]
         assert c.get("/api/shapes/nope/DEU").status_code == 404
+
+
+def test_area_stats_people_by_cell_centres(ctx):
+    from tools.area_stats import area_stats
+
+    a = area(ctx, names=["Oberbayern"])
+    # the fixture box 10.7-13.1 E, 47.4-49.1 N holds 240 x 170 cells of 0.01 degrees, one person each
+    assert a["area"]["figures"]["people"]["value"] == 240 * 170
+    r = area_stats(ctx, a["area"]["area_id"], ["people", "solar"])
+    f = r["data"]["figures"]
+    assert f["people"]["value"] == 40800 and "centre lies inside" in f["people"]["how"]
+    assert f["solar"]["value"] is None and "R2" in f["solar"]["error"]
+    assert r["sources"][0]["licence"].startswith("CC BY 4.0")
