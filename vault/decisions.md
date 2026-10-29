@@ -1,7 +1,7 @@
 ---
 title: Decisions
 tags: [decisions]
-updated: 2026-10-27
+updated: 2026-10-28
 ---
 
 # Decisions
@@ -23,3 +23,6 @@ updated: 2026-10-27
   the model is configuration (Anthropic by default; OpenAI, Google, Bedrock non-Claude, local
   models possible). Tracing with OpenTelemetry and Langfuse. Brief 25; replaces the Cloudflare
   Containers plan of `docs/AGENT.md` (2026-10-18). See [[agent-backend]].
+- **2026-10-28 No session links on GitHub.** Pull requests, commits, comments and files never
+  link a Claude Code session; the links in PRs #1-#14 were removed. Replaces the CLAUDE.md rule
+  that asked for the session link in every PR.

@@ -20,6 +20,9 @@ Newest first. One entry per session or merged pull request.
   in the operator files; the registry's neighbours (`regions: [neighbours]`). Notes:
   coverage-and-gaps, pipeline-and-workflows.
 
+- **2026-10-28** (claude/no-session-links): no Claude Code session links on GitHub; removed from
+  the bodies of PRs #1-#14; CLAUDE.md's PR rule changed. Notes: rules, decisions.
+
 - **2026-10-27** (main): room-to-connect research handed to a cloud session: brief 26 rewritten for
   EU-27, neighbours, UK and US with every finding (probes `probe_connect_gaps.py`,
   `probe_connect_us_heatmaps.py`). Notes: coverage-and-gaps.
