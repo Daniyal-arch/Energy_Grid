@@ -366,7 +366,7 @@ def hotmaps(args: argparse.Namespace) -> None:
         "CC BY 4.0 (Hotmaps project)",
         SCRIPT,
     )
-    lk.write(con, "industrial_sites", "SELECT * FROM s", sort=[first_col(con)])
+    lk.write(con, "industrial_sites", "SELECT * FROM s", sort=[first_col(con, "s")])
     geom = next((c for c in cols if c.lower() in ("geom", "geometry", "wkt")), None)
     exc = [c for c in cols if "excess" in c.lower()]
     if geom:
@@ -486,29 +486,56 @@ def tri(args: argparse.Namespace) -> None:
 
 
 def ukpi(args: argparse.Namespace) -> None:
+    """The newest Pollution Inventory year: substances released per permitted site (England)."""
+    import csv
+    import zipfile
+
+    import openpyxl
+
     meta = w.get_json(
-        "https://www.data.gov.uk/api/action/package_show?id=cfd94301-a2f2-48a2-9915-e477ca6d8b7e"
+        "https://ckan.publishing.service.gov.uk/api/action/package_show?id=cfd94301-a2f2-48a2-9915-e477ca6d8b7e"
     )
-    res = [
-        r
-        for r in meta["result"]["resources"]
-        if str(r.get("format", "")).lower() in ("csv", "xlsx")
-    ]  # type: ignore[index]
-    print(f"  EA Pollution Inventory files: {[r.get('name') for r in res]}", flush=True)
-    con = duckdb.connect()
+    res = [r for r in meta["result"]["resources"] if str(r.get("format", "")).lower() == "zip"]  # type: ignore[index]
+    newest = max(res, key=lambda r: r.get("name", "")[:4])
+    year = int(newest["name"][:4])
+    print(f"  EA Pollution Inventory: {newest['name']} ({len(res)} years listed)", flush=True)
+    z = w.download(newest["url"].replace(" ", "%20"), TMP / "ukpi.zip")
+    out = TMP / "ukpi_substances.csv"
+    with zipfile.ZipFile(z) as zf:
+        name = next(n for n in zf.namelist() if n.lower().endswith(".xlsx"))
+        (TMP / "ukpi.xlsx").write_bytes(zf.read(name))
+    wb = openpyxl.load_workbook(TMP / "ukpi.xlsx", read_only=True, data_only=True)
+    ws = next(s for s in wb.worksheets if "substances" in s.title.lower())
+    n = 0
+    with out.open("w", newline="", encoding="utf-8") as fh:
+        wr = csv.writer(fh)
+        header = None
+        for r in ws.iter_rows(values_only=True):
+            if header is None:
+                if r and r[0] and "PERMIT ID" in str(r[0]).upper():
+                    header = [" ".join(str(c).split()).lower() for c in r if c is not None]
+                    wr.writerow(header)
+                continue
+            if r and r[0]:
+                wr.writerow(list(r[: len(header)]))
+                n += 1
+    print(f"  substances sheet: {n:,} rows", flush=True)
+    con = con_spatial()
+    con.execute(
+        f"""CREATE TABLE t AS SELECT {year} AS year, *,
+                ST_Transform(ST_Point(TRY_CAST(easting AS DOUBLE), TRY_CAST(northing AS DOUBLE)),
+                             'EPSG:27700', 'EPSG:4326') AS geometry
+            FROM read_csv('{out}', header = true, all_varchar = true)"""
+    )
     lk = w.lake_for(
-        "uk_pi", args.lake, "Environment Agency Pollution Inventory (England)", "OGL v3", SCRIPT
+        "uk_pi",
+        args.lake,
+        "Environment Agency Pollution Inventory (England)",
+        "Environment Agency conditional licence (commercial use allowed; attribution "
+        "'Contains Environment Agency information © Environment Agency and/or database right')",
+        SCRIPT,
     )
-    newest = sorted(res, key=lambda r: r.get("name", ""))[-1]
-    f = w.download(newest["url"], TMP / f"ukpi{Path(newest['url']).suffix or '.csv'}")
-    if f.suffix == ".xlsx":
-        con.execute("INSTALL excel; LOAD excel")
-        con.execute(f"CREATE TABLE t AS SELECT * FROM read_xlsx('{f}', all_varchar = true)")
-    else:
-        con.execute(
-            f"CREATE TABLE t AS SELECT * FROM read_csv('{f}', header = true, all_varchar = true, ignore_errors = true)"
-        )
-    lk.write(con, "releases", "SELECT * FROM t", sort=[first_col(con)])
+    lk.write(con, "releases", "SELECT * FROM t", sort=['"authorisation id / permit id"'])
     w.lake_done(lk, args.upload)
 
 

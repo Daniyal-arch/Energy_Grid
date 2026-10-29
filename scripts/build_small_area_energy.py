@@ -35,6 +35,7 @@ import json
 import os
 import re
 import time
+import traceback
 import zipfile
 from pathlib import Path
 from typing import Any
@@ -113,8 +114,8 @@ def fr(cons: Rows, heat: Rows, pov: Rows) -> None:
         (
             "consommation-annuelle-d-electricite-et-gaz-par-commune",
             "fr_commune",
-            "code_commune",
-            "nom_commune",
+            "Code Commune",
+            "Nom Commune",
         ),
     ):
         f = w.download(ORE.format(ds), TMP / f"{ds}.csv", timeout=1800)
@@ -208,9 +209,9 @@ def xlsx_tables(path: Path, header_words: tuple[str, ...]):  # noqa: ANN201
             r = next(rows, None)
             if r is None:
                 break
-            cells = [str(c or "").strip() for c in r]
+            cells = [" ".join(str(c or "").split()) for c in r]
             low = " | ".join(cells).lower()
-            if all(h in low for h in header_words):
+            if sum(1 for c in cells if c) >= 3 and all(h in low for h in header_words):
                 header = cells
                 break
         if header:
@@ -240,7 +241,21 @@ def gb(cons: Rows, heat: Rows, pov: Rows) -> None:
             n = 0
             for sheet, header, rows in xlsx_tables(f, (f"{level} code", "consumption")):
                 year = int(m.group(0)) if (m := re.search(r"(19|20)\d\d", sheet)) else None
-                ic, iname = col(header, f"{level} code"), col(header, f"{level} name")
+                ic = col(header, f"{level} code")
+                long = {
+                    "lsoa": "lower layer super output area",
+                    "msoa": "middle layer super output area",
+                }
+                iname = next(
+                    (
+                        i
+                        for i, h in enumerate(header)
+                        if h.lower() in (f"{level} name", long[level])
+                    ),
+                    None,
+                )
+                if iname is None:
+                    iname = col(header, f"{level} name")
                 it, im = col(header, "total consumption"), col(header, "number of meters")
                 for r in rows:
                     if r is None or r[ic] is None:
@@ -317,8 +332,22 @@ def gb(cons: Rows, heat: Rows, pov: Rows) -> None:
                     n += 1
         print(f"  GB local authorities {carrier}: {n:,} rows", flush=True)
     try:
-        fp = attachments("sub-regional-fuel-poverty-report-2025-2023-data")
-        f = w.download(fp[0]["url"], TMP / "fuel_poverty_2023.xlsx")
+        # the newest "sub-regional fuel poverty data <report year> (<data year> data)" release
+        found = w.get_json(
+            "https://www.gov.uk/api/search.json?q=sub-regional+fuel+poverty+data&count=20&fields=link"
+        )
+        slug = max(
+            (
+                r["link"].rsplit("/", 1)[-1]
+                for r in found["results"]  # type: ignore[index]
+                if re.search(r"/sub-regional-fuel-poverty-data-\d{4}-\d{4}-data$", r["link"])
+            ),
+            key=lambda x: x[-9:],
+        )
+        fy = int(slug[-9:-5])
+        fsrc = f"DESNZ sub-regional fuel poverty, {fy} data ({slug}; OGL v3; modelled by DESNZ)"
+        fp = attachments(slug)
+        f = w.download(fp[0]["url"], TMP / f"fuel_poverty_{fy}.xlsx")
         n = 0
         for _sheet, header, rows in xlsx_tables(f, ("lsoa code", "fuel poor")):
             ic, iname = col(header, "lsoa code"), col(header, "lsoa name")
@@ -327,9 +356,7 @@ def gb(cons: Rows, heat: Rows, pov: Rows) -> None:
                 next(i for i, h in enumerate(header) if "proportion" in h.lower()),
             )
             ifp = next(
-                i
-                for i, h in enumerate(header)
-                if "fuel poor" in h.lower() and "number" in h.lower()
+                i for i, h in enumerate(header) if "fuel pov" in h.lower() and "number" in h.lower()
             )
             for r in rows:
                 if r is None or not r[ic]:
@@ -339,56 +366,65 @@ def gb(cons: Rows, heat: Rows, pov: Rows) -> None:
                     "lsoa",
                     r[ic],
                     r[iname],
-                    2023,
+                    fy,
                     "households in fuel poverty (LILEE, modelled by DESNZ)",
                     num(r[ifp]),
                     "households",
-                    "DESNZ sub-regional fuel poverty 2025 report, 2023 data (OGL v3; official statistics in development)",
+                    fsrc,
                 )
                 pov.add(
                     "GBR",
                     "lsoa",
                     r[ic],
                     r[iname],
-                    2023,
+                    fy,
                     "share of households in fuel poverty (LILEE, modelled by DESNZ)",
                     num(r[ip]),
                     "%",
-                    "DESNZ sub-regional fuel poverty 2025 report, 2023 data (OGL v3)",
+                    fsrc,
                 )
                 pov.add(
                     "GBR",
                     "lsoa",
                     r[ic],
                     r[iname],
-                    2023,
+                    fy,
                     "households",
                     num(r[ih]),
                     "households",
-                    "DESNZ sub-regional fuel poverty 2025 report, 2023 data (OGL v3)",
+                    fsrc,
                 )
                 n += 1
         print(f"  GB fuel poverty: {n:,} LSOA", flush=True)
     except (SystemExit, StopIteration, KeyError, IndexError) as e:
         print(f"  GB fuel poverty: not built ({type(e).__name__}: {e})", flush=True)
     # ONS Census 2021 TS046 central heating, per LSOA (Nomis)
+    # Nomis returns at most 25,000 rows a request: page with recordoffset
     url = "https://www.nomisweb.co.uk/api/v01/dataset/NM_2064_1.data.csv?date=latest&geography=TYPE151&measures=20100&select=geography_code,geography_name,c2021_heating_13_name,obs_value"
-    f = w.download(url, TMP / "ts046_lsoa.csv", timeout=1200)
-    n = 0
-    with f.open(encoding="utf-8") as fh:
-        for r in csv.DictReader(fh):
-            heat.add(
-                "GBR",
-                "lsoa",
-                r["GEOGRAPHY_CODE"],
-                r["GEOGRAPHY_NAME"],
-                2021,
-                r["C2021_HEATING_13_NAME"],
-                num(r["OBS_VALUE"]),
-                "households",
-                "ONS Census 2021 TS046 central heating (OGL v3), via Nomis",
-            )
-            n += 1
+    n, page = 0, 0
+    while True:
+        f = w.download(
+            f"{url}&recordoffset={page * 25000}", TMP / f"ts046_lsoa_{page}.csv", timeout=1200
+        )
+        got = 0
+        with f.open(encoding="utf-8") as fh:
+            for r in csv.DictReader(fh):
+                heat.add(
+                    "GBR",
+                    "lsoa",
+                    r["GEOGRAPHY_CODE"],
+                    r["GEOGRAPHY_NAME"],
+                    2021,
+                    r["C2021_HEATING_13_NAME"],
+                    num(r["OBS_VALUE"]),
+                    "households",
+                    "ONS Census 2021 TS046 central heating (OGL v3), via Nomis",
+                )
+                got += 1
+        n += got
+        if got < 25000:
+            break
+        page += 1
     print(f"  GB TS046: {n:,} rows", flush=True)
 
 
@@ -856,10 +892,12 @@ def us(cons: Rows, heat: Rows, pov: Rows) -> None:
         print(f"  LEAD {st}: done", flush=True)
     key = os.environ.get("CENSUS_API_KEY", "").strip()
     if not key:
+        # the Census API now redirects keyless requests to missing_key.html
         print(
-            "  ACS B25040: CENSUS_API_KEY not set; requests run without a key (limited to 500 a day)",
+            "  ACS B25040: skipped, CENSUS_API_KEY not set (free key: https://api.census.gov/data/key_signup.html)",
             flush=True,
         )
+        return
     labels = {
         "B25040_002E": "utility gas", "B25040_003E": "bottled, tank, or LP gas", "B25040_004E": "electricity",
         "B25040_005E": "fuel oil, kerosene, etc.", "B25040_006E": "coal or coke", "B25040_007E": "wood",
@@ -868,11 +906,11 @@ def us(cons: Rows, heat: Rows, pov: Rows) -> None:
     for st, fp in FIPS.items():
         url = (
             f"https://api.census.gov/data/2023/acs/acs5?get=NAME,{','.join(labels)}&for=tract:*&in=state:{fp}"
-            + (f"&key={key}" if key else "")
+            + f"&key={key}"
         )
         try:
             data = w.get_json(url, timeout=300)
-        except SystemExit as e:
+        except (SystemExit, ValueError) as e:
             print(f"  ACS {st}: {e}", flush=True)
             continue
         head, *rows = data  # type: ignore[misc]
@@ -970,6 +1008,7 @@ def main() -> None:
         except (SystemExit, Exception) as e:  # one source failing does not stop the others
             status[name] = f"failed: {type(e).__name__}: {str(e)[:300]}"
             print(f"  {name}: {status[name]}", flush=True)
+            traceback.print_exc()
     con = duckdb.connect()
     lk = w.lake_for(
         "small_area_energy",
