@@ -55,6 +55,14 @@ def write_fixture_lake(root: Path) -> None:
         ) t(id, name, level, iso3, parent_name, population, geometry))
         TO '{root}/outlines/divisions.parquet' (FORMAT parquet)"""
     )
+    # the name index over the outline sets (scripts/build_outlines.py names)
+    con.execute(
+        f"""COPY (SELECT 'divisions' AS "set", id, name, level, NULL AS subtype, iso3, parent_name,
+                  population, ST_XMin(geometry) AS xmin, ST_YMin(geometry) AS ymin,
+                  ST_XMax(geometry) AS xmax, ST_YMax(geometry) AS ymax
+           FROM read_parquet('{root}/outlines/divisions.parquet'))
+        TO '{root}/outlines/names.parquet' (FORMAT parquet)"""
+    )
     (root / "_catalog.json").write_text('{"updated": "2026-10-27T00:00:00Z"}')
 
 

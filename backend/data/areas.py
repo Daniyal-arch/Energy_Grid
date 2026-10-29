@@ -710,9 +710,12 @@ class Areas:
         tables = self.tables()
         out: list[Candidate] = []
         sets = [s for s in OUTLINE_SETS if s.table in tables and s.key != "zones"]
+        cur = self.lake.cursor()
+        if "outlines.names" in tables:  # the name index covers every brief-27 set
+            sets = [s for s in sets if s.key not in B1_SETS]
+            out += self._names_index(cur, q)
         if not sets:
             return out
-        cur = self.lake.cursor()
         for s in sets:
             # the same normal form as norm(): no accents or apostrophes, other signs as spaces
             nn = (
@@ -748,6 +751,43 @@ class Areas:
                         r,
                     )
                 )
+        return out
+
+    def _names_index(self, cur: Any, q: str) -> list[Candidate]:
+        nn = (
+            "trim(regexp_replace(replace(lower(strip_accents(name)), chr(39), ''), "
+            "'[^a-z0-9]+', ' ', 'g'))"
+        )
+        try:
+            rows = cur.execute(
+                f"""SELECT "set", CAST(id AS VARCHAR), name, level, iso3, parent_name, population,
+                           xmin, ymin, xmax, ymax, CASE WHEN {nn} = $q THEN 0 ELSE 1 END
+                    FROM outlines.names WHERE {nn} = $q OR lower(CAST(id AS VARCHAR)) = $q
+                    LIMIT 400""",
+                {"q": q},
+            ).fetchall()
+        except Exception as e:
+            log.warning("name index search failed", extra={"error": str(e)[:200]})
+            return []
+        out = []
+        for st, rid, name, lv, iso, parent, pop, x0, y0, x1, y1, r in rows:
+            s = SET_BY_KEY.get(st)
+            if s is None:
+                continue
+            i3 = iso3_of(iso)
+            out.append(
+                Candidate(
+                    f"{st}:{rid}",
+                    name,
+                    lv,
+                    [i3] if i3 else [],
+                    parent or self.country_names.get(i3 or ""),
+                    float(pop) if pop is not None else None,
+                    [x0, y0, x1, y1],
+                    {"dataset": s.dataset, "licence": s.licence},
+                    r,
+                )
+            )
         return out
 
     # ---------------------------------------------------------------- geometry
