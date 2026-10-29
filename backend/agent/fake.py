@@ -14,8 +14,11 @@ import os
 import re
 import time
 from collections.abc import Iterator, Sequence
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
+import yaml
 from langchain_core.callbacks import CallbackManagerForLLMRun
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import (
@@ -27,6 +30,19 @@ from langchain_core.messages import (
 )
 from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResult
 from pydantic import Field
+
+AREA_EVALS = Path(__file__).resolve().parents[2] / "agent" / "evals" / "areas.yaml"
+
+
+@lru_cache
+def area_cases() -> dict[str, dict[str, Any]]:
+    """The area questions (agent/evals/areas.yaml) and the tool calls that answer them: the fake
+    plays them so the graph runs every area case end to end in CI."""
+    if not AREA_EVALS.exists():
+        return {}
+    qs = yaml.safe_load(AREA_EVALS.read_text(encoding="utf-8"))["questions"]
+    return {q["q"].strip().lower(): q for q in qs}
+
 
 COUNTRIES = {
     "germany": "DE",
@@ -146,6 +162,16 @@ class FakeChatModel(BaseChatModel):
                 content="",
                 tool_calls=[{"name": "load_skill", "args": {"name": name}, "id": "call_0"}],
             )
+        case = area_cases().get(ql.strip())
+        if case and len(tools_done) < 2:
+            if not tools_done:
+                call = {"name": "resolve_area", "args": case["resolve"], "id": "call_a"}
+            else:
+                body = _text(tools_done[0])
+                area_id = re.search(r"a_[0-9a-f]{12}", body)
+                sql = case["sql"].replace("{area}", area_id.group(0) if area_id else "")
+                call = {"name": "run_sql", "args": {"sql": sql}, "id": "call_b"}
+            return AIMessage(content="", tool_calls=[call])
         if not tools_done:
             return AIMessage(
                 content="",
@@ -228,10 +254,13 @@ class FakeChatModel(BaseChatModel):
                 "tooltip": [key, val],
                 "source": src,
             }
-        return {
-            "map": {"title": "Answer", "camera": {"preset": "europe"}, "overlays": [overlay]},
-            "chart": None,
-        }
+        spec: dict[str, Any] = {"title": "Answer", "overlays": [overlay]}
+        if "AREAS (resolved this turn):" in body:
+            areas = json.loads(body.split("AREAS (resolved this turn):", 1)[1].split("\n\n")[0])
+            spec["area"] = {"area_id": areas[-1]["area_id"]}
+        else:
+            spec["camera"] = {"preset": "europe"}
+        return {"map": spec, "chart": None}
 
     # ------------------------------------------------------------------ chat model API
     def _generate(

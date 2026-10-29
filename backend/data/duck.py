@@ -186,7 +186,7 @@ class Lake:
             spec = ", ".join(f"'{c}': '{t}'" for c, t in cols)
             con.execute(
                 f"CREATE TABLE app.{name} AS SELECT * FROM read_csv('{path}', header = false, "
-                f"columns = {{{spec}}}, nullstr = '')"
+                f"columns = {{{spec}}}, nullstr = '', quote = '\"', escape = '\"')"
             )
             self.sources[f"app.{name}"] = src
 
@@ -223,6 +223,47 @@ class Lake:
                 [("kv", "INTEGER"), ("lon", "DOUBLE"), ("lat", "DOUBLE"), ("country", "VARCHAR")],
                 [s[:4] for s in grid["substations"]],
                 Source("grid", "frontend/public/data/eu/grid.json", "ODbL", grid["source"]),
+            )
+        if grid:
+            # the lines as geometries (km inside an area: km_inside, brief 27 A2)
+            path = tmp / "eu_lines.csv"
+            with path.open("w", newline="", encoding="utf-8") as f:
+                csv.writer(f).writerows(
+                    [
+                        ln[0],
+                        "LINESTRING("
+                        + ", ".join(
+                            f"{ln[1][i]} {ln[1][i + 1]}" for i in range(0, len(ln[1]) - 1, 2)
+                        )
+                        + ")",
+                    ]
+                    for ln in grid["lines"]
+                    if len(ln[1]) >= 4
+                )
+            try:
+                con.execute(
+                    f"CREATE TABLE app.eu_lines AS SELECT kv, ST_GeomFromText(wkt) AS geometry, "
+                    "ST_Length_Spheroid(ST_GeomFromText(wkt)) / 1000 AS km "
+                    f"FROM read_csv('{path}', "
+                    "header = false, columns = {'kv': 'INTEGER', 'wkt': 'VARCHAR'})"
+                )
+                self.sources["app.eu_lines"] = Source(
+                    "grid", "frontend/public/data/eu/grid.json", "ODbL", grid["source"]
+                )
+            except duckdb.Error:
+                log.warning("app.eu_lines not built (spatial not loaded)")
+        dcs = load("eu/datacentres.json")
+        if dcs:
+            table(
+                "data_centres",
+                [("lon", "DOUBLE"), ("lat", "DOUBLE"), ("code", "VARCHAR"), ("name", "VARCHAR")],
+                [p[:4] for p in dcs["points"]],
+                Source(
+                    "datacentres",
+                    "frontend/public/data/eu/datacentres.json",
+                    "ODbL",
+                    f"{dcs['source']} (fetched {dcs.get('fetched', '')[:10]})",
+                ),
             )
         prices = load("eu/prices.json")
         if prices:

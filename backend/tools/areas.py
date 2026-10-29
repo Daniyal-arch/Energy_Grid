@@ -234,6 +234,12 @@ def resolve_area(
         "use": f"run_sql: WHERE in_area(lon, lat, '{area.area_id}'); "
         f"area_stats(area_id='{area.area_id}'); MapSpec area: {{'area_id': '{area.area_id}'}}",
     }
+    if area.level in ("country", "group", "nuts0"):
+        data["use"] += (
+            "; tables with a country key: filter by the area's iso3 codes instead (generalised "
+            "outlines leave coastal and offshore records outside)"
+        )
+    data["datasets_at_level"] = ctx.areas.datasets_at(area.level)
     if candidates and (ambiguous or len(candidates) > 1):
         data["candidates"] = [c.as_dict() for c in candidates[:6]]
     if ambiguous:

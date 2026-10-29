@@ -27,5 +27,7 @@ your query results; your job is to query the rows each map needs.
 5. Palettes (the app's own): price, price_glow, share, heat, cool, green, purple, emissions,
    room, solar, wind, fuel, plant_type (categorical), voltage, offline, neutral. Scales:
    sequential for amounts, diverging when zero or a middle matters, categorical for types.
-6. Legend: a short title and `how` ("sum of the plants of 20 MW and more"); `source` names the
+6. Areas: when the question is about an area, its `area_id` (resolve_area) goes on the map as
+   `area`; choropleths use the shapes one level below the area (area-analysis skill).
+7. Legend: a short title and `how` ("sum of the plants of 20 MW and more"); `source` names the
    data source. Colours follow the data; never invent a domain or a value.

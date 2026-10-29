@@ -57,6 +57,7 @@ def test_every_skill_parses_and_names_its_catalogue_entries():
         "grid-capacity",
         "emissions",
         "places-and-shapes",
+        "area-analysis",
     }
     for sk in s.skills.values():
         assert sk.description and "Relies on" in sk.body

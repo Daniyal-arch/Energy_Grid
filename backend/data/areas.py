@@ -397,6 +397,26 @@ class Areas:
         return (yaml.safe_load(p.read_text(encoding="utf-8")) or {}).get("groups") or {}
 
     @cached_property
+    def levels(self) -> dict[str, dict[str, str]]:
+        p = self.agent_dir / "areas" / "levels.yaml"
+        if not p.exists():
+            return {}
+        return (yaml.safe_load(p.read_text(encoding="utf-8")) or {}).get("datasets") or {}
+
+    def datasets_at(self, level: str) -> dict[str, str]:
+        """The datasets that answer inside an area of this level (agent/areas/levels.yaml)."""
+        ladder = {0: "country", 1: "region", 2: "county", 3: "municipality", 4: "small_area"}
+        rung = "world" if level == "world" else ladder.get(LEVEL_CLASS.get(level, 9), "")
+        out = {}
+        for name, at in self.levels.items():
+            hit = [
+                f"{k}: {v}" for k, v in at.items() if k in (rung, "point", "line", "polygon", "any")
+            ]
+            if hit:
+                out[name] = "; ".join(hit)
+        return out
+
+    @cached_property
     def us_counties(self) -> list[dict[str, Any]]:
         p = self.gaz.public / "us" / "counties.json"
         if not p.exists():
@@ -467,6 +487,7 @@ class Areas:
                 lv if (want >= 0 or exact_level) else 0,
                 0 if c.outline else 1,  # an outline before a point-only place of the same name
                 seen,
+                0 if c.ref.split(":", 1)[0] in SET_BY_KEY else 1,  # the lake's detailed outline
                 -(c.population or 0),
                 pref,
             )

@@ -84,6 +84,7 @@ async def cartographer(state: AgentState, config: RunnableConfig) -> dict[str, A
             if o.data.result_id and o.data.result_id not in rids:
                 rids.append(o.data.result_id)
     summaries = [x for rid in rids if (x := d.ctx.results.summary(rid))]
+    areas = [a.summary() for i in d.ctx.turn_areas if (a := d.ctx.area_store.get(i))]
     schema = {"MapSpec": MapSpec.model_json_schema(), "ChartSpec": ChartSpec.model_json_schema()}
     sys = prompt(
         "cartographer.md",
@@ -96,6 +97,11 @@ async def cartographer(state: AgentState, config: RunnableConfig) -> dict[str, A
     ask = (
         f"Question: {state['question']}\nAnswer so far: {state.get('answer', '')[:1500]}\n"
         f"Wanted: {wanted}\n\nRESULTS: {json.dumps(summaries, default=str)}\n\n"
+        + (
+            f"AREAS (resolved this turn): {json.dumps(areas, default=str)[:3000]}\n\n"
+            if areas
+            else ""
+        )
         + (
             f"CURRENT MAPS (on screen): {json.dumps(current, default=str)[:6000]}\n\n"
             if current
