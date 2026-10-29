@@ -290,23 +290,31 @@ def co2stop(args: argparse.Namespace) -> None:
         print(
             f"  {table}: {con.execute('SELECT count(*) FROM t').fetchone()[0]:,} rows", flush=True
         )
+    # the map shows the 2013 storage units, their daughter units (traps) and the CCS projects;
+    # the base maps and the 2012 drafts in the same folder are left out
+    kinds = {
+        "StorageUnits_March13": "storage unit (2013)",
+        "DaughterUnits_March13": "daughter unit, trap (2013)",
+        "Existing__CCS__MIT": "CCS project (MIT list in CO2StoP)",
+    }
     pts = []
-    for kml in [p for p in files if p.suffix.lower() == ".kml"]:
+    for kml in [p for p in files if p.suffix.lower() == ".kml" and p.stem in kinds]:
         try:
             rows = con.execute(
-                f"SELECT * EXCLUDE (geom), ST_X(ST_Centroid(geom)), ST_Y(ST_Centroid(geom)) FROM ST_Read('{kml}')"
+                f"SELECT Name, ST_X(ST_Centroid(geom)), ST_Y(ST_Centroid(geom)) FROM ST_Read('{kml}')"
             ).fetchall()
         except duckdb.Error as e:
             print(f"  {kml.name}: {e}", flush=True)
             continue
-        for r in rows:
-            pts.append([round(r[-2], 4), round(r[-1], 4), str(r[0])[:80], kml.stem])
+        for name, x, y in rows:
+            if x is not None:
+                pts.append([round(x, 4), round(y, 4), (name or "")[:80] or None, kinds[kml.stem]])
     app_file(
         "co2storage",
         {
             "source": "CO2StoP (JRC, SETIS), assessments of about 2013; reuse authorised with acknowledgement",
             "fields": ["lon", "lat", "name", "kind"],
-            "how": "storage units and traps as published (KML centroids, computed for the map); the vintage is the 2013 assessment",
+            "how": "storage units, traps and CCS projects as published (KML centroids, computed for the map); the vintage is the 2013 assessment",
             "points": pts,
         },
     )

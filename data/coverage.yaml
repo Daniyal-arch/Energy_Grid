@@ -5333,7 +5333,7 @@ families:
         source: USFWS National Wetlands Inventory
         url: https://www.fws.gov/program/national-wetlands-inventory/download-state-wetlands-data
         checked: '2026-10-29'
-        note: the state downloads answered HTTP 403 to the probe; to retry from Actions
+        note: "the CONUS and state downloads answer HTTP 403 to automated clients, from this sandbox and from GitHub Actions (2026-10-29). Data request: USFWS, a download URL open to scripts or a bulk copy of the NWI (public domain)"
   dams:
     name: Dams and reservoirs
     shows: barriers and reservoirs (Global Dam Watch)
