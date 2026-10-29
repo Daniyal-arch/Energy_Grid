@@ -315,7 +315,11 @@ function inline(text: string): ReactNode[] {
 
 /** Paragraphs, bullet lists, tables, headings, bold, code: what the answers use. */
 function Markdown({ text }: { text: string }) {
-  const lines = text.replace(/```[\s\S]*?```/g, "").split("\n");
+  // code blocks and result ids are the agent's plumbing, not part of the answer
+  const lines = text
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/\s*[【[(]?\br_[0-9a-f]{12}\b[】\])]?/g, "")
+    .split("\n");
   const blocks: ReactNode[] = [];
   let i = 0;
   while (i < lines.length) {
