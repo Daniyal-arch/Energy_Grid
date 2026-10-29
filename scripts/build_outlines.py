@@ -288,10 +288,10 @@ def fr(args: argparse.Namespace) -> None:
     cname = next(c for c in cols if c.lower() in ("nom_commune", "nom_com"))
     geom = next(c for c in cols if c.lower() in ("geometry", "geom", "the_geom", "geometrie"))
     # GeoParquet with native (GeoArrow) multipolygons: rebuilt as GEOMETRY through GeoJSON
-    native = "list_transform(p, r -> list_transform(r, q -> [q.x, q.y]))"
+    native = "list_transform(p, lambda r: list_transform(r, lambda q: [q.x, q.y]))"
     con.execute(
         f"CREATE TABLE iris AS SELECT * EXCLUDE ({geom}), ST_GeomFromGeoJSON(json_object('type', "
-        f"'MultiPolygon', 'coordinates', list_transform({geom}, p -> {native}))) AS {geom} "
+        f"'MultiPolygon', 'coordinates', list_transform({geom}, lambda p: {native}))) AS {geom} "
         f"FROM read_parquet('{src}')"
     )
     lk = lake(args, "IGN / INSEE Contours IRIS 2025", "Licence Ouverte 2.0")
@@ -443,7 +443,7 @@ def national(args: argparse.Namespace) -> None:
                 f = next(
                     p
                     for p in w.unzip(f).rglob("*")
-                    if p.suffix.lower() in (".geojson", ".json", ".shp", ".gpkg")
+                    if p.is_file() and p.suffix.lower() in (".geojson", ".json", ".shp", ".gpkg")
                 )
             cols = {
                 c[0].lower(): c[0]

@@ -38,6 +38,8 @@ jobs:
       rvars: ${{ steps.p.outputs.rvars }}
       sjobs: ${{ steps.p.outputs.sjobs }}
       mnames: ${{ steps.p.outputs.mnames }}
+      osets: ${{ steps.p.outputs.osets }}
+      words: ${{ steps.p.outputs.words }}
     steps:
       - id: p
         run: |
@@ -51,15 +53,21 @@ jobs:
           sjobs = [f"{n} {i}/{k}" for n, k in (("worldcover", 12), ("slope", 6)) for i in range(1, k + 1)
                    if "S" in words or f"S{n}" in words]
           mnames = [n for n in ("worldcover", "slope") if "M" in words or f"M{n}" in words]
+          # O builds every outline set; O<set> (Ofr, Onational) only that one, then the name index
+          sets = ["us", "nl", "uk", "fr", "adm2", "ucdb", "grid", "national", "divisions"]
+          osets = sets if "O" in words else [x for x in sets if f"O{x}" in words]
           print("groups=" + groups)
           print("sjobs=" + str(sjobs).replace("'", '"'))
           print("mnames=" + str(mnames).replace("'", '"'))
           print("rvars=" + str(rvars).replace("'", '"'))
+          print("osets=" + " ".join(osets))
+          # whole words: contains() on a string ignores case ('c' would match "Mworldcover")
+          print("words=" + str(words).replace("'", '"'))
           PY
 
   O:
     needs: plan
-    if: contains(needs.plan.outputs.groups, 'O')
+    if: needs.plan.outputs.osets != ''
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
@@ -70,7 +78,7 @@ jobs:
       - name: Outline sets (each continues when one fails)
         working-directory: scripts
         run: |
-          for s in us nl uk fr adm2 ucdb grid national divisions; do
+          for s in ${{ needs.plan.outputs.osets }}; do
             python build_outlines.py "$s" --lake ../lake-out --upload || echo "::warning::outline set $s failed"
           done
           python build_outlines.py names --lake ../lake-out --upload
@@ -145,7 +153,7 @@ jobs:
 
   C:
     needs: plan
-    if: contains(needs.plan.outputs.groups, 'C')
+    if: contains(fromJSON(needs.plan.outputs.words), 'C')
     runs-on: ubuntu-latest
     timeout-minutes: 300
     env:
@@ -163,7 +171,7 @@ jobs:
 
   A:
     needs: plan
-    if: contains(needs.plan.outputs.groups, 'A')
+    if: contains(fromJSON(needs.plan.outputs.words), 'A')
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
@@ -182,7 +190,7 @@ jobs:
 
   P:
     needs: plan
-    if: contains(needs.plan.outputs.groups, 'P')
+    if: contains(fromJSON(needs.plan.outputs.words), 'P')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -196,7 +204,7 @@ jobs:
 
   T:
     needs: plan
-    if: contains(needs.plan.outputs.groups, 'T')
+    if: contains(fromJSON(needs.plan.outputs.words), 'T')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
