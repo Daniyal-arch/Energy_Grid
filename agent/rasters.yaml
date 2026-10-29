@@ -12,7 +12,7 @@ measures:
     how: sum of the cells whose centre lies inside the area
     licence: CC BY 4.0 (European Commission, JRC)
     layers:
-      - {url: "r2://infraatlas-raw/lake/rasters/ghsl_pop_e2025_3ss.tif", cell: "3 arc-seconds (about 90 m)", cover: "Europe and the United States"}
+      - {tiles: "r2://infraatlas-raw/lake/rasters/ghsl_pop_e2025_3ss/R{row}_C{col}.tif", grid: ghsl, cell: "3 arc-seconds (about 90 m)", cover: "EU-27, the UK and the US"}
       - {url: "r2://infraatlas-raw/lake/rasters/ghsl_pop_e2025_30ss.tif", cell: "30 arc-seconds (about 1 km)", cover: world}
   built_up:
     title: Built-up surface (GHSL GHS-BUILT-S 2025, R2023A)
@@ -21,8 +21,8 @@ measures:
     how: sum of the cells whose centre lies inside the area
     licence: CC BY 4.0 (European Commission, JRC)
     layers:
-      - {url: "r2://infraatlas-raw/lake/rasters/ghsl_built_s_e2025_3ss.tif", cell: "3 arc-seconds (about 90 m)", cover: "Europe and the United States"}
-      - {url: "r2://infraatlas-raw/lake/rasters/ghsl_built_s_e2025_30ss.tif", cell: "30 arc-seconds (about 1 km)", cover: world}
+      - {tiles: "r2://infraatlas-raw/lake/rasters/ghsl_built_e2025_3ss/R{row}_C{col}.tif", grid: ghsl, cell: "3 arc-seconds (about 90 m)", cover: "EU-27, the UK and the US"}
+      - {url: "r2://infraatlas-raw/lake/rasters/ghsl_built_e2025_30ss.tif", cell: "30 arc-seconds (about 1 km)", cover: world}
   land_cover:
     title: Land cover (ESA WorldCover 10 m 2021, v200)
     unit: share of cells

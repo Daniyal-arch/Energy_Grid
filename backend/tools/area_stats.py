@@ -70,6 +70,15 @@ def gdal_path(ctx: ToolContext, url: str) -> str | None:
     return url
 
 
+def _local_mosaic(ctx: ToolContext, layer: dict[str, Any]) -> str | None:
+    """A tiled layer's local one-file copy (settings.rasters_dir/<tile folder>.tif)."""
+    local = getattr(ctx.settings, "rasters_dir", None)
+    if not local or "tiles" not in layer:
+        return None
+    p = Path(local) / (layer["tiles"].rsplit("/", 2)[-2] + ".tif")
+    return str(p) if p.exists() else None
+
+
 def gdal_env(ctx: ToolContext, url: str) -> dict[str, Any]:
     """rasterio.Env arguments: GDAL options and, for S3 paths, the AWS session (rasterio does
     not take AWS_* options directly)."""
@@ -98,10 +107,21 @@ def gdal_env(ctx: ToolContext, url: str) -> dict[str, Any]:
     return env
 
 
-def tile_urls(template: str, step: int, bbox: list[float]) -> list[str]:
-    """The tiles (named from their south-west corner) covering a bounding box."""
+# GHSL's 10-degree tiles R<row>_C<col> (scripts/build_rasters.py): origin of column 1 and row 1
+GHSL_GRID = (-180.00792, 89.09958, 10.0)
+
+
+def tile_urls(template: str, step: int, bbox: list[float], grid: str | None = None) -> list[str]:
+    """The tiles covering a bounding box: named from their south-west corner, or by row and
+    column of the GHSL grid."""
     x0, y0, x1, y1 = bbox
     out = []
+    if grid == "ghsl":
+        gx, gy, gs = GHSL_GRID
+        for c in range(int((x0 - gx) // gs) + 1, int((x1 - gx) // gs) + 2):
+            for r in range(int((gy - y1) // gs) + 1, int((gy - y0) // gs) + 2):
+                out.append(template.format(row=r, col=c))
+        return out
     lat = math.floor(y0 / step) * step
     while lat < y1:
         lon = math.floor(x0 / step) * step
@@ -193,8 +213,11 @@ def zonal(ctx: ToolContext, area: Area, name: str, *, budget: int | None = None)
     t0 = time.perf_counter()
     errors: list[str] = []
     for layer in spec["layers"]:
+        mosaic = _local_mosaic(ctx, layer)
         urls = (
-            tile_urls(layer["tiles"], layer["tile_deg"], area.bbox)
+            [mosaic]
+            if mosaic
+            else tile_urls(layer["tiles"], layer.get("tile_deg", 10), area.bbox, layer.get("grid"))
             if "tiles" in layer
             else [layer["url"]]
         )
@@ -328,7 +351,10 @@ def _figure(
 def people_in(ctx: ToolContext, area: Area) -> dict[str, Any] | None:
     """The area's people (resolve_area's own figure); None when no raster is readable here."""
     spec = measures(str(ctx.settings.agent_dir)).get("people")
-    if not spec or not any(gdal_path(ctx, x["url"]) for x in spec["layers"]):
+    readable = [
+        _local_mosaic(ctx, x) or gdal_path(ctx, x.get("url") or x["tiles"]) for x in spec["layers"]
+    ]
+    if not spec or not any(readable):
         return {"value": None, "note": "population raster not readable here (lake keys)"}
     if area.level == "world":
         return None

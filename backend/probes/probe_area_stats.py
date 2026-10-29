@@ -1,7 +1,10 @@
 """Probe for area_stats (brief 27 A4): GHSL population of Berlin by area_stats against an
 independent sum (every cell's centre tested with DuckDB spatial's ST_Contains).
 
-    uv run python probes/probe_area_stats.py <ghsl_pop_3ss.tif> <nuts_level1.geojson>
+    uv run python probes/probe_area_stats.py <ghsl_pop_3ss.tif> <nuts_level1.geojson> [--lake]
+
+With --lake, area_stats reads the lake's tiles on R2 (R2 keys in the environment) instead of
+the local file; the independent sum always reads the local tile.
 
 The raster: a GHSL E2025 3 arc-second tile covering Berlin (R4_C20, 151 MB zip) or the lake's
 mosaic; the outline: GISCO NUTS 2024 1:1M level 1 (DE3 = Berlin).
