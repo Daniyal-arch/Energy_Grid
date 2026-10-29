@@ -66,13 +66,13 @@ UK_LAYERS = {
     # level: (service, code field, name field)
     "itl1": ("ITL1_JAN_2025_UK_BGC", "ITL125CD", "ITL125NM"),
     "itl2": ("ITL2_JAN_2025_UK_BGC", "ITL225CD", "ITL225NM"),
-    "itl3": ("ITL3_JAN_2025_UK_BFC_V2", "ITL325CD", "ITL325NM"),
+    "itl3": ("ITL3_JAN_2025_UK_BGC_V2:1", "ITL325CD", "ITL325NM"),
     "lad": ("Local_Authority_Districts_December_2024_Boundaries_UK_BGC", "LAD24CD", "LAD24NM"),
     "msoa": ("Middle_layer_Super_Output_Areas_December_2021_Boundaries_EW_BGC_V3", "MSOA21CD", "MSOA21NM"),
     "lsoa": ("Lower_layer_Super_Output_Areas_December_2021_Boundaries_EW_BGC_V5", "LSOA21CD", "LSOA21NM"),
 }  # fmt: skip
 SCOT_DZ = "https://maps.gov.scot/ATOM/shapefiles/SG_DataZoneBdry_2022.zip"
-NI_SDZ = "https://www.nisra.gov.uk/sites/nisra.gov.uk/files/publications/geography-sdz2021-esri-shapefile.zip"
+NI_SDZ = "https://www.nisra.gov.uk/files/nisra/publications/geography-sdz2021-esri-shapefile.zip"
 IRIS = "https://data.geopf.fr/telechargement/download/CONTOURS-IRIS/CONTOURS-IRIS_3-0__GEOPARQUET_WGS84G_FRA_2025-01-01/contours_iris.parquet"
 PDOK = "https://api.pdok.nl/cbs/wijken-en-buurten-2024/ogc/v1/collections"
 UCDB = "https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_UCDB_GLOBE_R2024A/GHS_UCDB_GLOBE_R2024A/V1-1/GHS_UCDB_GLOBE_R2024A_V1_1.zip"
@@ -225,9 +225,10 @@ def arcgis_geojson(service: str, out: Path) -> Path:
     if out.exists():
         return out
     feats, offset = [], 0
+    name, _, layer = service.partition(":")
     while True:
         url = (
-            f"{ONS}/{service}/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=geojson"
+            f"{ONS}/{name}/FeatureServer/{layer or 0}/query?where=1%3D1&outFields=*&outSR=4326&f=geojson"
             f"&resultOffset={offset}&resultRecordCount=2000"
         )
         page = w.get_json(url, timeout=300)
@@ -247,7 +248,7 @@ def uk(args: argparse.Namespace) -> None:
     parts = []
     for level, (service, cd, nm) in UK_LAYERS.items():
         try:
-            f = arcgis_geojson(service, TMP / f"{service}.geojson")
+            f = arcgis_geojson(service, TMP / f"{service.split(':')[0]}.geojson")
         except SystemExit as e:  # one layer that fails is named; the others build
             print(f"  {level} ({service}): not built ({e})", flush=True)
             continue
@@ -285,17 +286,23 @@ def fr(args: argparse.Namespace) -> None:
     name = next(c for c in cols if c.lower() in ("nom_iris", "iris_name"))
     com = next(c for c in cols if c.lower() in ("code_insee", "insee_com", "code_commune"))
     cname = next(c for c in cols if c.lower() in ("nom_commune", "nom_com"))
-    geom = next(c for c in cols if c.lower() in ("geometry", "geom", "the_geom"))
-    con.execute(f"CREATE TABLE iris AS SELECT * FROM read_parquet('{src}')")
+    geom = next(c for c in cols if c.lower() in ("geometry", "geom", "the_geom", "geometrie"))
+    # GeoParquet with native (GeoArrow) multipolygons: rebuilt as GEOMETRY through GeoJSON
+    native = "list_transform(p, r -> list_transform(r, q -> [q.x, q.y]))"
+    con.execute(
+        f"CREATE TABLE iris AS SELECT * EXCLUDE ({geom}), ST_GeomFromGeoJSON(json_object('type', "
+        f"'MultiPolygon', 'coordinates', list_transform({geom}, p -> {native}))) AS {geom} "
+        f"FROM read_parquet('{src}')"
+    )
     lk = lake(args, "IGN / INSEE Contours IRIS 2025", "Licence Ouverte 2.0")
     write(
         lk, con, "fr_iris",
         f"""SELECT {code} AS id, {name} AS name, 'iris' AS level, 'IRIS' AS subtype, 'FRA' AS iso3,
-                   {cname} AS parent_name, NULL::DOUBLE AS population, {geom}::GEOMETRY AS geometry FROM iris
+                   {cname} AS parent_name, NULL::DOUBLE AS population, {geom} AS geometry FROM iris
             UNION ALL
             SELECT {com} AS id, any_value({cname}) AS name, 'fr_commune' AS level,
                    'commune (union of its IRIS, computed)' AS subtype, 'FRA', NULL, NULL,
-                   ST_Union_Agg({geom}::GEOMETRY) FROM iris GROUP BY {com}""",
+                   ST_Union_Agg({geom}) FROM iris GROUP BY {com}""",
     )  # fmt: skip
     w.lake_done(lk, args.upload)
 
@@ -341,7 +348,7 @@ def ucdb(args: argparse.Namespace) -> None:
     layers = [
         r[0]
         for r in con.execute(
-            f"SELECT layers.name FROM ST_Read_Meta('{gpkg}') m, unnest(m.layers) AS layers"
+            f"SELECT l.name FROM (SELECT unnest(layers) AS l FROM ST_Read_Meta('{gpkg}'))"
         ).fetchall()
     ]  # noqa: E501
     print(f"  UCDB layers: {layers[:12]}", flush=True)
@@ -352,7 +359,8 @@ def ucdb(args: argparse.Namespace) -> None:
             f"DESCRIBE SELECT * FROM ST_Read('{gpkg}', layer = '{layer}')"
         ).fetchall()
     ]
-    pick = lambda *names: next(c for c in cols if c in names)  # noqa: E731
+    # the columns' names start with a byte-order mark in R2024A
+    pick = lambda *names: '"' + next(c for c in cols if c.lstrip("\ufeff") in names) + '"'  # noqa: E731
     cid, cname = pick("ID_UC_G0"), pick("GC_UCN_MAI_2025", "GC_UCN_MAI_2020")
     ciso, cpop = (
         pick("GC_CNT_GAD_2025", "GC_CNT_GAD_2020"),
@@ -361,10 +369,10 @@ def ucdb(args: argparse.Namespace) -> None:
     lk = lake(args, "GHS Urban Centre Database R2024A V1.1", "CC BY 4.0", "R2024A V1.1")
     write(
         lk, con, "urban_centres",
-        f"""SELECT CAST({cid} AS VARCHAR) AS id, {cname} AS name, 'urban_centre' AS level, 'urban centre' AS subtype,
+        f"""SELECT replace(CAST({cid} AS VARCHAR), chr(65279), '') AS id, replace({cname}, chr(65279), '') AS name, 'urban_centre' AS level, 'urban centre' AS subtype,
                    i.iso3, NULL::VARCHAR AS parent_name, {cpop}::DOUBLE AS population,
                    ST_Transform(geom, 'ESRI:54009', 'EPSG:4326') AS geometry
-            FROM ST_Read('{gpkg}', layer = '{layer}') LEFT JOIN iso_codes i ON lower(i.name) = lower({ciso})""",
+            FROM ST_Read('{gpkg}', layer = '{layer}') LEFT JOIN iso_codes i ON lower(i.name) = lower(replace({ciso}, chr(65279), ''))""",
     )  # fmt: skip
     w.lake_done(lk, args.upload)
 

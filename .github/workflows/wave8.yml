@@ -161,6 +161,25 @@ jobs:
       - uses: actions/upload-artifact@v4
         with: {name: small-area-energy-status, path: /tmp/wave8/energy/status.json}
 
+  A:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'A')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - run: sudo apt-get update -q && sudo apt-get install -y -q gdal-bin && pip install httpx duckdb pycountry openpyxl shapely
+      - run: bash scripts/r2_creds.sh
+      - name: Asset layers (each step on its own)
+        working-directory: scripts
+        run: python build_assets_w8.py all --lake ../lake-out --upload
+      - name: Commit the app files
+        run: bash scripts/wave5_commit.sh "Wave 8 asset layers (app files)"
+
   P:
     needs: plan
     if: contains(needs.plan.outputs.groups, 'P')
