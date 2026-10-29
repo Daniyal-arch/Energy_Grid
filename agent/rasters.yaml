@@ -32,7 +32,7 @@ measures:
     classes: {10: tree cover, 20: shrubland, 30: grassland, 40: cropland, 50: built-up, 60: bare or sparse vegetation, 70: snow and ice, 80: permanent water, 90: herbaceous wetland, 95: mangroves, 100: moss and lichen}
     layers:
       - {tiles: "s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_{NS}{lat:02d}{EW}{lon:03d}_Map.tif", tile_deg: 3, cell: "10 m", cover: world}
-      - {url: "r2://infraatlas-raw/lake/rasters/worldcover_2021_1km_shares.tif", cell: "30 arc-seconds (about 1 km); band per class, share of the 10 m cells", cover: world, shares: true}
+      - {url: "r2://infraatlas-raw/lake/rasters/worldcover_1km_shares.tif", cell: "30 arc-seconds (about 1 km); band per class, share of the 10 m cells", cover: world, shares: true}
   slope:
     title: Slope (computed from Copernicus DEM GLO-30)
     unit: share of cells
@@ -43,7 +43,7 @@ measures:
     breaks: [2, 5, 10, 15, 30]
     layers:
       - {tiles: "s3://copernicus-dem-30m/Copernicus_DSM_COG_10_{NS}{lat:02d}_00_{EW}{lon:03d}_00_DEM/Copernicus_DSM_COG_10_{NS}{lat:02d}_00_{EW}{lon:03d}_00_DEM.tif", tile_deg: 1, cell: "1 arc-second (about 30 m)", cover: world, derive: slope}
-      - {url: "r2://infraatlas-raw/lake/rasters/slope_classes_1km_shares.tif", cell: "30 arc-seconds (about 1 km); band per class, share of the 30 m cells", cover: world, shares: true}
+      - {url: "r2://infraatlas-raw/lake/rasters/slope_1km_shares.tif", cell: "30 arc-seconds (about 1 km); band per class, share of the 30 m cells", cover: world, shares: true}
   solar:
     title: Photovoltaic power potential (Global Solar Atlas PVOUT)
     unit: kWh/kWp per day
@@ -71,3 +71,11 @@ measures:
     layers:
       - {url: "r2://infraatlas-raw/lake/flood/eu_classes.tif", cell: "100 m", cover: Europe}
       - {url: "r2://infraatlas-raw/lake/flood/world_classes.tif", cell: "30 arc-seconds (about 1 km)", cover: world}
+  heat_demand:
+    title: Heat demand of buildings, current (Hotmaps heat_tot_curr_density)
+    unit: MWh a year
+    stat: sum
+    how: sum of the 100 m cells whose centre lies inside the area (each cell is one hectare, published in MWh per hectare a year)
+    licence: CC BY 4.0 (Hotmaps project)
+    layers:
+      - {url: "r2://infraatlas-raw/lake/rasters/hotmaps_heat_density_100m.tif", cell: "100 m (ETRS89-LAEA)", cover: "EU-28 (2015 vintage)"}
