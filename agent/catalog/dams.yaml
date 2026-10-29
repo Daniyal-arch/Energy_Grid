@@ -1,0 +1,16 @@
+dataset: dams
+title: Global Dam Watch v1.0 (barriers and reservoirs)
+licence: CC BY 4.0
+map_file: frontend/public/data/eu/w8/dams.json (layer "Dams")
+tables:
+  barriers:
+    grain: one row per dam or barrier, columns as published (GDW_ID, DAM_NAME, COUNTRY, DAM_HGT_M, CAP_MCM, MAIN_USE...)
+    examples:
+      - q: dams in Norway
+        sql: SELECT count(*) FROM dams.barriers WHERE COUNTRY = 'Norway'
+        answer: 179
+      - q: dams worldwide
+        sql: SELECT count(*) FROM dams.barriers
+        answer: 41145
+  reservoirs:
+    grain: one row per reservoir polygon (35,295)

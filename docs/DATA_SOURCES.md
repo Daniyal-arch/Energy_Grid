@@ -1643,6 +1643,98 @@ the newest hour with a measured (non-forecast) value, MW rounded to whole MW; Es
 about two days late (newest measured hour 2026-10-18 23:00 on 2026-10-21). "Live grids" marker and
 card. Every snapshot.
 
+## Area outlines (`scripts/build_outlines.py`, lake `outlines/*`)
+
+Outlines at every level for the agent's `resolve_area` and `in_area()` (brief 27 B1); no map file.
+Overture Maps divisions (`divisions`, release 2026-10-21.0, ODbL with geoBoundaries and Esri parts under
+CC BY; 1,082,068 areas, 2.26 GB, every subtype from country to neighbourhood); geoBoundaries ADM2
+via Overture (`adm2`, 49,349); US Census cartographic boundaries 2024 1:500,000 (`us_places` 32,612,
+`us_cousub` 36,354, `us_tracts` 85,184; public domain); ONS Open Geography ITL 1-3, LAD, MSOA, LSOA,
+Scotland's data zones and intermediate zones, NISRA super data zones (`uk_ons`, OGL v3); INSEE/IGN
+contours IRIS (`fr_iris`, Licence Ouverte 2.0); CBS wijk- en buurtkaart 2024 (`nl_cbs`: 342
+gemeenten, 3,393 wijken, 14,574 buurten; CC BY 4.0); Ireland's small areas 2022 (OSi/CSO, CC BY
+4.0) and Sweden's DeSO (SCB, CC0) in `small_areas` (25,079); Belgium's statistical sectors (Statbel)
+are set up in the same set and load when Statbel's file answers; GHSL urban centres UCDB R2024A (`urban_centres`, CC BY 4.0, population as
+published); the GEOSTAT 2021 1 km grid (`geostat_grid`, 1,901,599 cells, Eurostat reuse policy). `names` (3,281,301 rows) is the
+name index of every set, no geometry. Geometry in WGS 84; display copies are simplified, areas are
+computed on the full outline (`ST_Area_Spheroid`). **Left out:** Eurostat GISCO LAU (its terms say
+"will not be used for commercial purposes"); a country without a published small-area level shows
+its coarser level, named.
+
+## Energy per small area (`scripts/build_small_area_energy.py`, lake `small_area_energy/*`)
+
+One schema for every country (`consumption`, `heating`, `poverty`, `renewables`; columns iso3,
+level, code, name, year, carrier or category, value, unit, measure, source). Values are passthrough;
+totals are kept as totals and averages as averages, never multiplied out, and a region's total is
+never split by area. France: Agence ORE electricity and gas per IRIS and commune (Licence Ouverte
+2.0; 3,214,647 IRIS rows, 2,003,509 commune rows) and the electric heating share published with the
+IRIS rows. Great Britain: DESNZ subnational consumption per LSOA, MSOA and local authority
+(OGL v3; 1,836,212 rows), DESNZ sub-regional fuel poverty (2024 data, 33,756 LSOA, modelled by
+DESNZ), ONS Census 2021 TS046 central heating per LSOA via Nomis (35,672 LSOA x 13 categories),
+DESNZ renewable electricity by local authority. Netherlands: CBS average electricity and gas per
+dwelling and heating shares per buurt (CC BY 4.0). Denmark: Energi Data Service household
+electricity per municipality (CC BY 4.0). Portugal: E-REDES consumption per municipality (CC BY
+4.0). Sweden: SCB TAB3654 final energy per kommun (CC0). Ireland: CSO MEC03 metered electricity per
+county (CC BY 4.0). Spain: ICAEN electricity per Catalan municipality (Catalonia only; CC BY 4.0).
+US: DOE LEAD 2022 energy burden and expenditure per tract (computed: sum over cohorts / income or
+households; public domain); ACS B25040 heating fuel per tract only with `CENSUS_API_KEY` (the Census
+API refuses keyless requests since 2026). Every member state: Eurostat ilc_mdes01 (arrears on
+utility bills, country level, CC BY 4.0). Research per country: docs/research/small-area-energy.md.
+Refresh: `wave8.yml` group C.
+
+## Rasters for area statistics (`scripts/build_rasters.py`, lake `rasters/*`)
+
+COGs `area_stats` sums or classifies inside any area (cell-centre rule; agent/rasters.yaml). GHSL
+GHS-POP and GHS-BUILT-S epoch 2025 (R2023A, CC BY 4.0): 3 arc-second tiles over the EU-27, the UK
+and the US (86 tiles, 0.77 GB for built-up) and the 30 arc-second world layer (126 MB). ESA
+WorldCover 2021 v200 (CC BY 4.0) and slope from Copernicus DEM GLO-30 (Copernicus licence, free
+and open including commercial use) as class shares per 30 arc-second cell (`slope_1km_shares.tif`,
+3,490 pieces mosaicked, 650 MB; `worldcover_1km_shares.tif`); the 10 m and 30 m tiles are read in
+place for small areas. Hotmaps heat density 100 m (`hotmaps_heat_density_100m.tif`, CC BY 4.0, MWh
+per hectare a year). Global Solar Atlas, Global Wind Atlas and JRC flood depth as before.
+Probe: backend/probes/probe_area_stats.py (Berlin, 3,629,179.4 people in 130,249 cells, equal to an
+independent count). Refresh: `wave8.yml` groups R, S, M.
+
+## Industrial facilities (`scripts/build_assets_w8.py eea`, `w8/industrial.json`, lake `industrial/*`)
+
+EEA Industrial Reporting database v15 (E-PRTR and IED, 2007-2023, CC BY 4.0): releases to air and
+water per facility, large combustion plants' fuel input and emissions, IED installations, as
+published. The map layer "Industrial facilities" shows each facility's newest reported year of
+releases to air (kg, as reported). Coverage: the EU-27 and the other reporting countries.
+
+## Dams (`build_assets_w8.py dams`, `w8/dams.json`, lake `dams/*`)
+
+Global Dam Watch v1.0 (figshare, CC BY 4.0): 41,145 barriers and 35,295 reservoirs worldwide,
+columns as published (height, length, capacity, main use, power). Layer "Dams": barriers with a
+reservoir or a height, hover card with the published fields.
+
+## CO₂ storage (`build_assets_w8.py co2stop`, `w8/co2storage.json`, lake `co2stop/*`)
+
+CO2StoP (JRC, assessment of about 2013; reuse authorised with acknowledgement): storage units, traps
+and the database's own country totals. The database's user list (`user_details`) and test tables are
+left out. Layer "CO₂ storage": unit positions from the KML (centroids computed for the map), the
+2013 vintage named on the card.
+
+## Excess heat and heat demand (`build_assets_w8.py hotmaps`, `w8/excess_heat.json`, lake `hotmaps/*`)
+
+Hotmaps (CC BY 4.0): the industrial database (sites with excess heat by temperature level, GWh a
+year, as published) and the heat density raster (area_stats `heat_demand`). EU-28, 2015 vintage.
+
+## Fires (`build_assets_w8.py fires`, `w8/fires.json`)
+
+NIFC WFIGS current interagency fire perimeters (public domain; perimeters simplified to 0.001° for
+the map, acres as published) and NASA FIRMS VIIRS detections of the last 24 hours when
+`FIRMS_MAP_KEY` is set (skipped and named in the file otherwise). EFFIS burnt areas are released only
+through JRC's data request form (blocked; request text in data/coverage.yaml).
+
+## Ownership, TRI, Pollution Inventory (`build_assets_w8.py ownership|tri|ukpi`, lake only)
+
+GEM Global Energy Ownership Tracker (CC BY 4.0) from the private bucket, one table per sheet. EPA
+Toxics Release Inventory, newest year (2024, 77,295 rows, public domain). Environment Agency
+Pollution Inventory 2024 (England, 31,384 releases from 2,870 permits; EA conditional licence,
+which allows commercial use with the attribution "Contains Environment Agency information ©
+Environment Agency and/or database right"); points moved from British National Grid.
+
 ## Notes
 
 - ENTSO-E allows 400 requests a minute; the scripts ask four at a time. A full snapshot

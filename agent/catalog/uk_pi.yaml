@@ -1,0 +1,15 @@
+dataset: uk_pi
+title: Environment Agency Pollution Inventory (England), newest year
+licence: Environment Agency conditional licence (commercial use allowed; "Contains Environment Agency information © Environment Agency and/or database right")
+tables:
+  releases:
+    grain: one row per permit, substance and route (air, controlled waters, land, wastewater); columns as published, lower case
+    keys: {"authorisation id / permit id": EA permit, "site postcode": postcode, geometry: point from the published easting and northing}
+    measures: {"quantity released (kg)": {unit: kg, how: as published (text; cast to DOUBLE)}}
+    examples:
+      - q: the largest release of carbon dioxide to air, 2024
+        sql: SELECT "operator name", try_cast("quantity released (kg)" AS DOUBLE) FROM uk_pi.releases WHERE "substance name" = 'Carbon dioxide' AND "route name" = 'Air' ORDER BY 2 DESC NULLS LAST LIMIT 1
+        answer: Drax Power Limited, 13340384000 kg
+      - q: how many permitted sites report
+        sql: SELECT count(DISTINCT "authorisation id / permit id") FROM uk_pi.releases
+        answer: 2870

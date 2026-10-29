@@ -1,0 +1,41 @@
+dataset: outlines
+title: Area outlines at every level (brief 27 B1) for resolve_area and choropleths
+licence: per set (Overture divisions ODbL; national statistics offices' open licences; US Census public domain; GHSL UCDB CC BY 4.0)
+tables:
+  divisions:
+    grain: one row per Overture division area (country, region, county, locality...), subtype names the level
+    keys: {id: Overture id, subtype: level, iso3: country}
+  adm2:
+    grain: one row per second-level administrative unit (geoBoundaries via Overture)
+  us_places:
+    grain: one row per US Census place (2024 cartographic boundary, 1:500,000)
+    keys: {parent_name: state name}
+    examples:
+      - q: how many Census places in Texas
+        sql: SELECT count(*) FROM outlines.us_places WHERE parent_name = 'Texas'
+        answer: 1863
+  us_cousub:
+    grain: one row per US county subdivision
+  us_tracts:
+    grain: one row per US census tract (2024)
+  uk_ons:
+    grain: one row per UK statistical area; level is itl1, itl2, itl3, lad, msoa, lsoa (England and Wales), data_zone, super_data_zone (Scotland and Northern Ireland)
+    examples:
+      - q: how many LSOAs in England and Wales
+        sql: SELECT count(*) FROM outlines.uk_ons WHERE level = 'lsoa'
+        answer: 35672
+  fr_iris:
+    grain: one row per IRIS (INSEE / IGN contours IRIS)
+  nl_cbs:
+    grain: one row per Dutch gemeente, wijk or buurt (CBS wijk- en buurtkaart)
+    examples:
+      - q: how many buurten in the Netherlands
+        sql: SELECT count(*) FROM outlines.nl_cbs WHERE level = 'nl_buurt'
+        answer: 14574
+  small_areas:
+    grain: one row per national small area where a statistics office publishes one (Ireland's small areas, Sweden's DeSO, Belgium's statistical sectors)
+  urban_centres:
+    grain: one row per GHSL urban centre (UCDB R2024A), with its population as published
+  names:
+    grain: one row per outline of every set above, no geometry (the name index resolve_area searches)
+notes: Read with resolve_area or in_area(); the geometry is in WGS 84. A country publishing only a coarser level shows that level, named.

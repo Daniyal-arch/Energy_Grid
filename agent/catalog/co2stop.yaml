@@ -1,0 +1,16 @@
+dataset: co2stop
+title: CO2StoP CO2 storage potential (JRC, assessment of about 2013)
+licence: reuse authorised with acknowledgement (JRC); the database's user list is left out
+map_file: frontend/public/data/eu/w8/co2storage.json (layer "CO₂ storage")
+tables:
+  country_totals:
+    grain: one row per country, the database's own totals (text as published; cast to DOUBLE)
+    examples:
+      - q: the country with the largest mean storage capacity estimate
+        sql: SELECT COUNTRY, Sum_EST_STORECAP_MEAN FROM co2stop.country_totals ORDER BY try_cast(Sum_EST_STORECAP_MEAN AS DOUBLE) DESC LIMIT 1
+        answer: Denmark, 16027 (as published)
+  storage_units_user_and_database_calc_storage:
+    grain: one row per storage unit with its calculated capacity
+  hydrocarbon_storage_units:
+    grain: one row per hydrocarbon field unit
+notes: The vintage is the 2013 assessment; say so with every figure.
