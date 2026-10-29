@@ -29,6 +29,12 @@ result: `{data, sources: [{dataset, table, licence, retrieved}], result_id?}`.
 > Values with ": " must be quoted; seven files did not parse until 2026-10-27. The catalogue
 > loader reads every file, so a broken file breaks search.
 
+## Areas (planned, brief 27)
+- Today the agent gets the view's countries only (`view.area`), not a drawn polygon, and no
+  tool filters by an outline. Brief 27 adds `resolve_area` (any level, unions, buffers, the
+  drawn area), an `areas` view and `in_area()` macro in `run_sql`, `area_stats` (rasters summed
+  in a polygon) and MapSpec `area` (outline, clip, camera).
+
 ## Maps (2026-10-29)
 - MapSpec v2 (`agent/mapspec.py`): 12 flat and 10 3D styles (`FLAT_STYLES`, `STYLES_3D`),
   `panels` for 2-6 maps side by side, `replaces` for edits; `check_map` covers panels.

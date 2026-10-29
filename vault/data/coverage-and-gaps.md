@@ -1,7 +1,7 @@
 ---
 title: Coverage and gaps
 tags: [data, coverage]
-updated: 2026-10-28
+updated: 2026-10-29
 paths: [data/coverage.yaml, docs/COVERAGE.md, frontend/public/data/eu/coverage.json, docs/tasks/, docs/research/room-to-connect.md]
 ---
 
@@ -31,5 +31,10 @@ of `docs/tasks/`.
 - **Keys the owner still has to provide** (`PLAN.md`): Anthropic API key for the agent, AWS
   account and deploy role for the backend (brief 25), PJM, AESO, data.go.kr, EPIAS, RTE,
   Fingrid, NREL; `EPA_API_KEY` reached Actions empty on 2026-10-18.
+- **Area levels** (brief 27, planned 2026-10-29): outlines below admin-1 (Overture divisions,
+  ADM2, TIGER, ONS, IRIS, CBS buurten, GHS urban centres), rasters for sums inside any polygon
+  (GHSL 100 m, WorldCover, Copernicus DEM) and consumption per small area (Agence ORE, DESNZ,
+  CBS, Energi Data Service, LEAD, ACS) are missing; EU LAU needs a EuroGeographics licence for
+  commercial use, the Overture divisions licence is to be confirmed.
 - **Energy-Charts** answers 503 since 2026-09-24 (GB and UA keep its older figures).
 - **NYISO** nodal prices: bot check on automated downloads.

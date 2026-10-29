@@ -122,6 +122,16 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 | Live markets: Japan JEPX (30-min area prices), Mexico CENACE (nodal prices), India Grid-India, South Africa Eskom, Chile CEN, NZ EMI, Korea KPX, Alberta AESO, Turkey EPİAŞ | prices, load, mix | downloads/APIs (some keys) | check each | the live map beyond Europe/US | JEPX, CENACE have (17); Grid-India blocked (refuses GitHub runners); keys pending for AESO, KPX, EPİAŞ |
 | WDPA protected areas | | download | *NC* | exclusion zones for screening | candidate (NC: needs licence) |
 
+## Wave 8 (brief 27, planned 2026-10-29)
+
+The agent's area analytics need outlines at every level and figures per small area. Brief 27
+lists them with licences and a review of peer platforms (Electricity Maps, Open Infrastructure
+Map, GEM, EIA Energy Atlas, siting platforms, JRC, Hotmaps, GHSL, TZ-SAM, FIRMS) and where they
+get their data: Overture divisions, geoBoundaries ADM2, TIGER, ONS, IRIS, CBS buurten, LAU
+(licence check), GHS-UCDB; GHSL, WorldCover and Copernicus DEM rasters; Agence ORE, DESNZ,
+CBS, Energi Data Service, LEAD, ACS consumption per small area; EIA midstream, EEA Industrial
+Reporting, Global Dam Watch, GEM ownership, CO2StoP, Hotmaps, FIRMS, EFFIS, NWI and NFHL.
+
 ## Picks for the product
 
 The paid use cases (PLAN.md) are site screening, alerts and history/exports. The datasets
