@@ -133,7 +133,7 @@ CBS, Energi Data Service, LEAD, ACS consumption per small area; EIA midstream, E
 Reporting, Global Dam Watch, GEM ownership, CO2StoP, Hotmaps, FIRMS, EFFIS, NWI and NFHL.
 
 Built: outlines at every level (Overture divisions, ADM2, TIGER places, county subdivisions and
-tracts, ONS, IRIS, CBS, Irish small areas, DeSO, GHS-UCDB), GHSL population and
+tracts, ONS, IRIS, CBS, Irish small areas, DeSO, Belgian sectors, GHS-UCDB), GHSL population and
 built-up tiles, WorldCover and slope class shares, energy per small area for FR, GB, NL, DK, PT,
 SE, IE, ES (Catalonia) and the US, EEA Industrial Reporting, Global Dam Watch, CO2StoP, Hotmaps,
 NIFC fire perimeters, GEM ownership, TRI and the EA Pollution Inventory. Left out: GISCO LAU

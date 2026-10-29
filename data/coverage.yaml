@@ -2674,12 +2674,12 @@ families:
         partial: true
       BE:
         status: built
-        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021; Statbel statistical sectors 2024 set up
+        source: Statbel statistical sectors 2024; Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
         url: https://statbel.fgov.be/en/open-data/statistical-sectors-2024
-        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); Statbel open data licence
-        dataset: lake outlines/divisions, outlines/geostat_grid
+        licence: Statbel open data licence; ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/small_areas, lake outlines/divisions, outlines/geostat_grid
         checked: '2026-10-29'
-        note: Statbel's sector file answered with an HTML page on 2026-10-29; the sectors join outlines/small_areas when it loads
+        note: national small areas plus the EU-wide layers
       BG:
         status: built
         source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021

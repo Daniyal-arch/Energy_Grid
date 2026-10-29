@@ -1653,9 +1653,9 @@ via Overture (`adm2`, 49,349); US Census cartographic boundaries 2024 1:500,000 
 Scotland's data zones and intermediate zones, NISRA super data zones (`uk_ons`, OGL v3); INSEE/IGN
 contours IRIS (`fr_iris`, Licence Ouverte 2.0); CBS wijk- en buurtkaart 2024 (`nl_cbs`: 342
 gemeenten, 3,393 wijken, 14,574 buurten; CC BY 4.0); Ireland's small areas 2022 (OSi/CSO, CC BY
-4.0) and Sweden's DeSO (SCB, CC0) in `small_areas` (25,079); Belgium's statistical sectors (Statbel)
-are set up in the same set and load when Statbel's file answers; GHSL urban centres UCDB R2024A (`urban_centres`, CC BY 4.0, population as
-published); the GEOSTAT 2021 1 km grid (`geostat_grid`, 1,901,599 cells, Eurostat reuse policy). `names` (3,281,301 rows) is the
+4.0), Sweden's DeSO (SCB, CC0) and Belgium's statistical sectors 2024 (Statbel, open licence) in
+`small_areas` (44,874); GHSL urban centres UCDB R2024A (`urban_centres`, CC BY 4.0, population as
+published); the GEOSTAT 2021 1 km grid (`geostat_grid`, 1,901,599 cells, Eurostat reuse policy). `names` (3,397,857 rows) is the
 name index of every set, no geometry. Geometry in WGS 84; display copies are simplified, areas are
 computed on the full outline (`ST_Area_Spheroid`). **Left out:** Eurostat GISCO LAU (its terms say
 "will not be used for commercial purposes"); a country without a published small-area level shows
