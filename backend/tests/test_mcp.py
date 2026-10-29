@@ -58,6 +58,7 @@ def test_lists_tools_and_runs_search_catalog(base_url):
         "describe_table",
         "run_sql",
         "find_place",
+        "resolve_area",
         "site_figures",
         "live",
     }

@@ -108,6 +108,29 @@ def build_server(settings: Settings) -> FastMCP:
     def find_place(text: str) -> dict[str, Any]:
         return specs["find_place"].run(ctx, text=text)
 
+    @mcp.tool(name="resolve_area", description=doc("resolve_area"))
+    def resolve_area(
+        names: list[str] | None = None,
+        level: str | None = None,
+        point: list[float] | None = None,
+        radius_km: float | None = None,
+        buffer_km: float | None = None,
+        intersect_with: str | None = None,
+        name: str | None = None,
+    ) -> dict[str, Any]:
+        args = registry.ResolveAreaArgs.model_validate(
+            {
+                "names": names or [],
+                "level": level,
+                "point": point,
+                "radius_km": radius_km,
+                "buffer_km": buffer_km,
+                "intersect_with": intersect_with,
+                "name": name,
+            }
+        )
+        return specs["resolve_area"].run(ctx, **args.model_dump(exclude={"from_view"}))
+
     @mcp.tool(name="site_figures", description=doc("site_figures"))
     def site_figures(lon: float, lat: float, radius_km: int = 50) -> dict[str, Any]:
         return specs["site_figures"].run(ctx, lon=lon, lat=lat, radius_km=radius_km)
