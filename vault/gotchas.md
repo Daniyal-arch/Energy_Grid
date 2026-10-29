@@ -38,3 +38,7 @@ updated: 2026-10-29
   geometries are GeoArrow; R2 multipart uploads need `AWS_REQUEST_CHECKSUM_CALCULATION=WHEN_REQUIRED`;
   rasterio's Env rejects AWS_* keys (use `AWSSession`); DuckDB needs `SET GLOBAL
   geometry_always_xy = true` before the lockdown.
+- **GitHub `contains()` on a string ignores case**: `contains(groups, 'C')` matched "Mworldcover";
+  wave8.yml compares whole words (`fromJSON(words)`). DuckDB 1.5 on runners refuses the `x -> y`
+  lambda (write `lambda x: y`). The outline name index must read every set (local or R2), or a
+  partial rebuild shrinks it.
