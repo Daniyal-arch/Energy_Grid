@@ -84,9 +84,9 @@ uv run python scripts/build_eu_day.py 2026-09-24 # one day for the time-lapse (?
 - **Every figure on screen** names its source; computed values say how ("median of 43
   zones", "sum of the member states reporting"). Prices keep the source's precision.
 - **Before a PR:** `uv run ruff check . && uv run ruff format .`, `uv run pytest`,
-  `cd frontend && npm run build`. In the PR, describe what the map shows now, the new
-  files in docs/DATA_SOURCES.md, and the link of the session
-  (`https://claude.ai/code/${CLAUDE_CODE_REMOTE_SESSION_ID/#cse_/session_}`).
+  `cd frontend && npm run build`. In the PR, describe what the map shows now and the new
+  files in docs/DATA_SOURCES.md. Never put a link to a Claude Code session (claude.ai/code)
+  in a PR, commit, comment or file on GitHub.
 - **Videos and screenshots** are never committed; recordings follow docs/VIDEO.md (only
   sourced values on screen).
 - Task briefs for cloud sessions are in `docs/tasks/`.
