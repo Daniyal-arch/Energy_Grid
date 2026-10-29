@@ -25,14 +25,14 @@ class Skill:
 
     def files(self) -> list[str]:
         return sorted(
-            str(p.relative_to(self.root))
+            p.relative_to(self.root).as_posix()
             for p in self.root.rglob("*")
             if p.is_file() and p.name != "SKILL.md"
         )
 
 
 def parse(path: Path) -> Skill:
-    m = FRONT.match(path.read_text())
+    m = FRONT.match(path.read_text(encoding="utf-8"))
     if not m:
         raise ValueError(f"{path}: no frontmatter")
     meta = yaml.safe_load(m.group(1)) or {}
@@ -69,7 +69,7 @@ class Skills:
         target = (s.root / path).resolve()
         if not target.is_relative_to(s.root.resolve()) or not target.is_file():
             return {"error": f"no file {path!r} in skill {name}; files: {s.files()}"}
-        return {"name": name, "path": path, "text": target.read_text()[:40_000]}
+        return {"name": name, "path": path, "text": target.read_text(encoding="utf-8")[:40_000]}
 
 
 _skills: dict[str, Skills] = {}

@@ -147,12 +147,14 @@ class Catalogue:
     def __init__(self, agent_dir: Path, datasets_json: Path) -> None:
         self.entries: dict[str, dict[str, Any]] = {}
         for p in sorted((agent_dir / "catalog").glob("*.yaml")):
-            d = yaml.safe_load(p.read_text())
+            d = yaml.safe_load(p.read_text(encoding="utf-8"))
             if isinstance(d, dict) and d.get("dataset"):
                 self.entries[d["dataset"]] = d
         self.map_datasets: list[dict[str, Any]] = []
         if datasets_json.exists():
-            self.map_datasets = json.loads(datasets_json.read_text()).get("datasets", [])
+            self.map_datasets = json.loads(datasets_json.read_text(encoding="utf-8")).get(
+                "datasets", []
+            )
         self.docs: list[dict[str, Any]] = []
         for name, t in APP_TABLES.items():
             self.docs.append(

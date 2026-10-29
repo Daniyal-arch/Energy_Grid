@@ -84,13 +84,15 @@ def main() -> int:
     a = ap.parse_args()
     sch = schema()
     files = {SCHEMA_PATH: json.dumps(sch, indent=2) + "\n", TS_PATH: typescript(sch)}
-    stale = [p for p, text in files.items() if not p.exists() or p.read_text() != text]
+    stale = [
+        p for p, text in files.items() if not p.exists() or p.read_text(encoding="utf-8") != text
+    ]
     if a.check:
         for p in stale:
             print(f"stale: {p.relative_to(ROOT)} (run uv run python scripts/gen_mapspec.py)")
         return 1 if stale else 0
     for p, text in files.items():
-        p.write_text(text)
+        p.write_text(text, encoding="utf-8")
         print(f"wrote {p.relative_to(ROOT)}")
     return 0
 

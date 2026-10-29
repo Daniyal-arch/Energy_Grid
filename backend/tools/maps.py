@@ -29,7 +29,7 @@ def known_layers(root: str) -> frozenset[str]:
     p = Path(root) / "frontend" / "src" / "app" / "store.ts"
     if not p.exists():
         return frozenset()
-    text = p.read_text()
+    text = p.read_text(encoding="utf-8")
     start = text.find("export const LAYERS")
     end = text.find("];", start)
     return frozenset(re.findall(r'\{\s*id:\s*"([A-Za-z0-9_]+)"', text[start:end]))

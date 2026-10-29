@@ -108,9 +108,9 @@ def test_eval_questions_and_scorers():
 
     from evals.scorers import map_correct, number_correct
 
-    qs = yaml.safe_load((Path(get_settings().agent_dir) / "evals" / "questions.yaml").read_text())[
-        "questions"
-    ]
+    qs = yaml.safe_load(
+        (Path(get_settings().agent_dir) / "evals" / "questions.yaml").read_text(encoding="utf-8")
+    )["questions"]
     assert sum(1 for q in qs if "numbers" in q) >= 40 and sum(1 for q in qs if "map" in q) >= 10
     assert len({q["id"] for q in qs}) == len(qs)
     assert number_correct(["15,508", "16,011"], "wind 15,508 MW and offshore 16.0 GW") == 0.5

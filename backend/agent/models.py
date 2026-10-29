@@ -44,7 +44,7 @@ class ModelEntry:
 
 class Registry:
     def __init__(self, path: Path) -> None:
-        raw = yaml.safe_load(path.read_text()) if path.exists() else {"models": []}
+        raw = yaml.safe_load(path.read_text(encoding="utf-8")) if path.exists() else {"models": []}
         self.entries = [ModelEntry(**m) for m in raw.get("models", [])]
 
     def resolve(self, name: str) -> ModelEntry:

@@ -23,7 +23,8 @@ class ResultStore:
         (self.root / f"{rid}.json").write_text(
             json.dumps(
                 {"columns": columns, "rows": rows, "sql": sql, "sources": sources}, default=str
-            )
+            ),
+            encoding="utf-8",
         )
         return rid
 
@@ -31,7 +32,7 @@ class ResultStore:
         if not rid.startswith("r_") or not rid[2:].isalnum():
             return None
         p = self.root / f"{rid}.json"
-        return json.loads(p.read_text()) if p.exists() else None
+        return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
 
     def summary(self, rid: str) -> dict[str, Any] | None:
         r = self.get(rid)

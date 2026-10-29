@@ -39,7 +39,7 @@ class SiteArgs(BaseModel):
 @lru_cache(maxsize=16)
 def _file(path: str) -> Any:
     p = Path(path)
-    return json.loads(p.read_text()) if p.exists() else None
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
 
 
 def _within(rows: list, at: Any, site: tuple[float, float], r: float) -> list[tuple[Any, float]]:

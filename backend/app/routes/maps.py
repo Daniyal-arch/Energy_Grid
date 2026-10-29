@@ -40,7 +40,8 @@ def save_map(body: SaveMap) -> dict[str, Any]:
             (ctx.results.root / f"{rid}.json").write_text(
                 json.dumps(
                     {"columns": d.columns, "rows": d.rows, "sql": "", "sources": body.sources}
-                )
+                ),
+                encoding="utf-8",
             )
     m, err, data = check_map(ctx, body.spec)
     if m is None:

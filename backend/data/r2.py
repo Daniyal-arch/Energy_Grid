@@ -42,11 +42,11 @@ class LocalStore:
     def put_json(self, key: str, value: Any) -> None:
         p = self._path(key)
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(value, default=str))
+        p.write_text(json.dumps(value, default=str), encoding="utf-8")
 
     def get_json(self, key: str) -> Any | None:
         p = self._path(key)
-        return json.loads(p.read_text()) if p.exists() else None
+        return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
 
 
 class R2Store:

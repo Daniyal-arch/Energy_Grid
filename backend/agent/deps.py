@@ -23,7 +23,7 @@ PROMPTS = Path(__file__).resolve().parent / "prompts"
 
 @lru_cache
 def _read(name: str) -> str:
-    return (PROMPTS / name).read_text()
+    return (PROMPTS / name).read_text(encoding="utf-8")
 
 
 def prompt(name: str, **values: str) -> str:

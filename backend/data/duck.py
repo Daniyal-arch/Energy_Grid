@@ -140,7 +140,7 @@ class Lake:
             self.lake_mode = f"local:{root}"
             cat = root / "_catalog.json"
             if cat.exists():
-                self.catalog_date = json.loads(cat.read_text()).get("updated")
+                self.catalog_date = json.loads(cat.read_text(encoding="utf-8")).get("updated")
             return
         if s.lake_db and s.r2_configured:
             local = s.lake_db
@@ -151,7 +151,9 @@ class Lake:
                 cat = "/tmp/lake_catalog.json"
                 try:
                     _download_r2(s, s.lake_db.rsplit("/", 1)[0] + "/_catalog.json", cat)
-                    self.catalog_date = json.loads(Path(cat).read_text()).get("updated")
+                    self.catalog_date = json.loads(Path(cat).read_text(encoding="utf-8")).get(
+                        "updated"
+                    )
                 except Exception:
                     log.warning("lake catalogue not read")
             con.execute(f"ATTACH '{local}' AS lake (READ_ONLY)")
@@ -175,7 +177,7 @@ class Lake:
             src: Source,
         ) -> None:
             path = tmp / f"{name}.csv"
-            with path.open("w", newline="") as f:
+            with path.open("w", newline="", encoding="utf-8") as f:
                 csv.writer(f).writerows(rows)
             spec = ", ".join(f"'{c}': '{t}'" for c, t in cols)
             con.execute(
@@ -189,7 +191,7 @@ class Lake:
             if not p.exists():
                 log.warning("map file missing", extra={"file": str(p)})
                 return None
-            return json.loads(p.read_text())
+            return json.loads(p.read_text(encoding="utf-8"))
 
         plants = load("eu/plants.json")
         if plants:

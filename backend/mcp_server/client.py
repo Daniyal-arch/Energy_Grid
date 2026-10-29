@@ -17,7 +17,7 @@ _tools: list[Any] | None = None
 
 def servers(settings: Settings) -> dict[str, dict[str, Any]]:
     p = settings.agent_dir / "mcp.yaml"
-    raw = (yaml.safe_load(p.read_text()) or {}) if p.exists() else {}
+    raw = (yaml.safe_load(p.read_text(encoding="utf-8")) or {}) if p.exists() else {}
     out = {}
     for name, conf in (raw.get("servers") or {}).items():
         conf = dict(conf)

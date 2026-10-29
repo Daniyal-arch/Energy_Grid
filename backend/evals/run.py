@@ -30,7 +30,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def load(path: Path) -> list[dict[str, Any]]:
-    return yaml.safe_load(path.read_text())["questions"]
+    return yaml.safe_load(path.read_text(encoding="utf-8"))["questions"]
 
 
 def reachable(q: dict[str, Any], s: Any, lake_tables: set[str]) -> bool:
@@ -160,7 +160,8 @@ async def main() -> None:
     print(f"\n({skipped} questions skipped: their data is not reachable from here)")
     if a.out:
         Path(a.out).write_text(
-            json.dumps({"summary": summary, "results": results}, indent=2, default=str)
+            json.dumps({"summary": summary, "results": results}, indent=2, default=str),
+            encoding="utf-8",
         )
 
 

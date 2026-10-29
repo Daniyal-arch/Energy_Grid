@@ -134,7 +134,7 @@ def expected_numbers(answer: str) -> list[str]:
 def main() -> None:
     questions = []
     for p in sorted((ROOT / "agent" / "catalog").glob("*.yaml")):
-        d = yaml.safe_load(p.read_text())
+        d = yaml.safe_load(p.read_text(encoding="utf-8"))
         exs = [(None, e) for e in d.get("examples") or []]
         for t, tv in (d.get("tables") or {}).items():
             if isinstance(tv, dict):
@@ -193,7 +193,9 @@ def main() -> None:
         "questions": questions,
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, width=120))
+    OUT.write_text(
+        yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, width=120), encoding="utf-8"
+    )
     n_num = sum(1 for q in questions if "numbers" in q)
     print(
         f"wrote {OUT.relative_to(ROOT)}: {n_num} questions with known answers, {len(MAPS)} map questions"
