@@ -47,6 +47,66 @@ Part A comes first: it is the frame every dataset in Part B plugs into.
 - Same access rules as brief 26: an honest client name, no bypassing of refusals, logins or
   terms; when a licence is unclear, write the question into the PR and leave the dataset out.
 
+## Consistency: every EU-27 country, the UK and the US
+
+The owner's rule for this wave: **the same answers in all 29 places** (the 27 member states,
+the United Kingdom, the United States). A family is not done when it covers a few countries.
+
+1. **One cell per country.** Each family of Part B gets an entry in `data/coverage.yaml` with a
+   cell for each of the 27 member states, GB and US (`status: built | partial |
+   not_published | blocked`, source, licence, url, checked date, a note). `docs/COVERAGE.md`
+   shows no blank cell at the end of the run; a dark cell carries its reason.
+2. **The same levels everywhere** (the level ladder below). A pan-European source comes first
+   (it is consistent by construction); national sources fill the levels it lacks; the UK and the
+   US get their own equivalents in the same columns.
+3. **Research every country** for the national families (small-area outlines, small-area
+   consumption), as brief 26 did for room to connect: the statistics office, the regulator, the
+   distribution operators' open-data portals, the national open-data portal. Record what each
+   country publishes, at which level, under which licence, in
+   `docs/research/small-area-energy.md`.
+4. **Same measure, same unit, same label.** Consumption in MWh a year per area, split by sector
+   where published; the key says the year and the level ("2023, per municipality"). A country
+   that publishes only a coarser level shows that level, named, never a finer split.
+
+### The level ladder
+
+| Level | EU-27 | UK | US |
+|---|---|---|---|
+| 0 country | have | have | have |
+| 1 large region | NUTS 1/2 (have) | ITL 1/2 (ONS, OGL v3; NUTS 2024 has no UK) | states (have) |
+| 2 county | NUTS 3 (have) | ITL 3 and local authority districts (ONS) | counties (have) |
+| 3 municipality | LAU 2024 (licence check) or Overture `localadmin`/`locality`, plus national sets | local authority districts and wards (ONS) | county subdivisions and places (TIGER) |
+| 4 small area | the national census small areas (IRIS, buurt, LSOA-like units; research per country) and, everywhere, Eurostat's Census 2021 1 km population grid (GEOSTAT) | LSOA and MSOA (ONS) | tracts (TIGER) |
+| any | H3 cells and GHSL rasters (identical everywhere) | same | same |
+| city | GHS urban centres (identical everywhere) | same | same |
+
+### Each family across the three regions
+
+| Family | EU-27 | UK | US |
+|---|---|---|---|
+| Rasters (population, built-up, land cover, slope, resource) | GHSL, WorldCover, Copernicus DEM, GSA/GWA (global) | same | same |
+| Consumption per small area | Agence ORE (FR), CBS (NL), Energi Data Service (DK); the other 24 by research (leads below) | DESNZ subnational (LSOA, MSOA, LA) | EIA-861 per utility (have), DOE LEAD, NREL SLOPE |
+| Heating fuel per small area | national censuses (research; not in the EU census programme) | Census 2021 TS046 central heating per LSOA (ONS) | ACS B25040 per tract |
+| Energy poverty | Eurostat "unable to keep home adequately warm" (country; NUTS 2 where published) | DESNZ sub-regional fuel poverty (LSOA) | DOE LEAD energy burden (tract) |
+| Industrial facilities and releases | EEA Industrial Reporting (E-PRTR, LCP) | UK PRTR (Defra) | EPA TRI (GHGRP have) |
+| Oil and gas facilities | refineries from EEA Industrial Reporting; storage and LNG (have); pipelines (GEM, have) | NSTA open data (offshore pipelines, platforms, wells); refineries from UK PRTR | EIA midstream layers |
+| CO₂ storage | CO2StoP | NSTA carbon storage licences; CO2 Stored (BGS/The Crown Estate, licence check) | NATCARB / DOE carbon storage atlas; EPA Class VI wells |
+| Heat demand | Hotmaps (EU28, includes the UK) | Hotmaps | no published equivalent found: research; else `not_published` |
+| Fires | EFFIS burnt areas, FIRMS | EFFIS, FIRMS | FIRMS, NIFC WFIGS fire perimeters |
+| Flood zones | JRC flood hazard (have) | Environment Agency Flood Map for Planning (England), SEPA, Natural Resources Wales, DfI (Northern Ireland) | FEMA NFHL |
+| Wetlands | Copernicus High Resolution Layer "Water and Wetness" | same (Copernicus covers the UK) | USFWS NWI |
+| Dams, ownership, urban centres | Global Dam Watch, GEM ownership, GHS-UCDB (global) | same | same |
+
+### Leads for small-area consumption in the other EU countries (verify each)
+
+Belgium: Fluvius open data per municipality (Flanders), ORES and RESA (Wallonia), Sibelga
+(Brussels). Sweden: SCB municipal and regional energy statistics. Portugal: E-REDES open data
+per municipality. Italy: Terna consumption per province. Poland: GUS Local Data Bank (BDL) per
+gmina. Ireland: CSO metered electricity consumption. Spain: Datadis aggregates and REE per
+province. Germany: Destatis regional statistics (industry energy use per district) and the
+Länder energy atlases. Austria, Czechia, Finland, Estonia, Latvia, Lithuania, Slovakia, Slovenia,
+Croatia, Hungary, Romania, Bulgaria, Greece, Cyprus, Malta, Luxembourg: research from scratch.
+
 ## Part A: area analytics
 
 ### A1. One area object and `resolve_area`
@@ -291,12 +351,18 @@ capacity.
 - Frontend: `viewOf()` sends `drawn`; multipolygon `AreaSpec`; the agent's map sets the app's
   area, clips and frames; child-level shapes fetched from the backend.
 - Data: B1 to B4 in the lake and on the map, each with its catalogue entry and docs rows.
+- `data/coverage.yaml` families for Part B (one cell per EU-27 country, GB, US),
+  `docs/research/small-area-energy.md`.
 - `docs/AGENT.md` (area section), `docs/DATASETS.md` (wave 8 rows marked have or blocked), the
   vault notes changed, `vault/log.md`.
 
 ## Done-check
 
 - Part A's checks (A7).
+- `data/coverage.yaml` has every Part B family with a cell for each of the 27 member states, GB
+  and US; `scripts/coverage.py` passes and `docs/COVERAGE.md` has no blank cell.
+- `docs/research/small-area-energy.md` covers all 29 places (what is published, level, licence,
+  link, checked date).
 - Every B dataset is built, or listed in the PR as blocked with the reason (licence unclear,
   key missing, source closed) and its data request text.
 - `uv run ruff check . && uv run ruff format .`, `uv run pytest`, `cd backend && uv run pytest`,

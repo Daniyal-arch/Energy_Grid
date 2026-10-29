@@ -11,7 +11,9 @@ Newest first. One entry per session or merged pull request.
 - **2026-10-29** (main, local): brief 27 written (`docs/tasks/27-any-area-wave8.md`): the agent
   resolves any area (country to neighbourhood, drawn polygon, circle, zone, union, buffer,
   world), filters queries and clips maps to it, sums rasters inside it; data wave 8 chosen from
-  a review of peer platforms and their sources. Notes: coverage-and-gaps, agent-tools.
+  a review of peer platforms and their sources; consistency rule: one coverage cell per EU-27
+  country, GB and US for every family, one level ladder, UK and US equivalents named. Notes:
+  coverage-and-gaps, agent-tools.
 
 - **2026-10-29** (main, local): Ask in the app (`ui/AskTab.tsx`, `app/agent.ts`); MapSpec v2 with
   12 flat and 10 3D styles, 2-6 maps side by side (`panels`) and edits (`replaces`);
