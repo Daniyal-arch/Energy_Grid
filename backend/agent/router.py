@@ -16,16 +16,24 @@ from agent.state import AgentState
 from agent.usage import record
 from obs.tracing import span
 
-MAP_WORDS = re.compile(r"\b(map|show|where|draw|shade|plot)\b", re.I)
+MAP_WORDS = re.compile(r"\b(maps?|show|where|draw|shade|plot)\b", re.I)
+# a change to the map on screen, without new data
+EDIT_WORDS = re.compile(
+    r"\b(3d|2d|flat|tilt|hexagons?|hexbin|heatmap|bubbles?|columns?|spikes?|beams?|choropleth|"
+    r"style|colou?rs?|split|side by side|separate maps|combine|make it|change the map|instead)\b",
+    re.I,
+)
 CHART_WORDS = re.compile(r"\b(chart|trend|over time|time series|by month|by year)\b", re.I)
 
 
 def heuristic(question: str) -> dict[str, Any]:
-    m = bool(MAP_WORDS.search(question))
+    e = bool(EDIT_WORDS.search(question))
+    m = bool(MAP_WORDS.search(question)) or e
     return {
         "kind": "map" if m else "answer",
         "map": m,
         "chart": bool(CHART_WORDS.search(question)),
+        "edit": e,
         "skills": [],
     }
 
@@ -43,6 +51,7 @@ def parse(text: str, question: str) -> dict[str, Any]:
         "kind": str(route.get("kind", base["kind"])),
         "map": bool(route.get("map", base["map"])),
         "chart": bool(route.get("chart", base["chart"])),
+        "edit": bool(route.get("edit", base["edit"])),
         "skills": [str(s) for s in route.get("skills", [])][:2],
         "parsed": True,
     }
@@ -61,6 +70,8 @@ async def router(state: AgentState, config: RunnableConfig) -> dict[str, Any]:
         except Exception:
             return {"route": {**heuristic(q), "parsed": False, "error": "router model failed"}}
     route = parse(text_of(resp), q)
+    if route.get("edit"):
+        route["map"] = True
     route["skills"] = [s for s in route["skills"] if s in d.skills.skills]
     return {
         "route": route,

@@ -28,6 +28,13 @@ class ResultStore:
         )
         return rid
 
+    def put(self, rid: str, record: dict[str, Any]) -> None:
+        """Keep a result under its own id (a saved map's data, brought back for an edit)."""
+        if rid.startswith("r_") and rid[2:].isalnum() and self.get(rid) is None:
+            (self.root / f"{rid}.json").write_text(
+                json.dumps({"sql": "", "sources": [], **record}, default=str), encoding="utf-8"
+            )
+
     def get(self, rid: str) -> dict[str, Any] | None:
         if not rid.startswith("r_") or not rid[2:].isalnum():
             return None

@@ -1,6 +1,9 @@
-"""The cartographer: the fast model turns the analyst's query results into a MapSpec (and a
-ChartSpec when one was asked), validated, at most three tries. A separate small model builds
-specs well and keeps the analyst's context clean."""
+"""The cartographer: the fast model designs the map (one map, or several side by side) and a
+chart when one was asked, from the analyst's query results and the maps already on screen,
+validated, at most three tries. It also edits a map on screen ("make it 3D", "split it into two
+maps"): the browser sends the maps it shows, their data is brought back from the saved maps,
+and the new spec replaces the old one. A separate small model builds specs well and keeps the
+analyst's context clean."""
 
 from __future__ import annotations
 
@@ -19,6 +22,7 @@ from agent.models import text_of
 from agent.state import AgentState
 from agent.usage import record
 from obs.tracing import span
+from tools.context import ToolContext
 from tools.maps import check_map, known_layers, make_chart, make_map
 
 TRIES = 3
@@ -34,6 +38,26 @@ def _json(text: str) -> dict[str, Any]:
     return out
 
 
+def view_maps(state: AgentState) -> list[dict[str, Any]]:
+    """The agent maps the browser shows: [{id, spec}] (ids of saved maps)."""
+    maps = (state.get("view") or {}).get("maps") or []
+    return [m for m in maps if isinstance(m, dict) and str(m.get("id", "")).startswith("m_")][:4]
+
+
+def restore_view_maps(ctx: ToolContext, maps: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Bring back the data of the maps on screen (their saved records) as results; returns the
+    maps with their saved specs."""
+    out = []
+    for m in maps:
+        rec = ctx.store.get_json(f"agent/maps/{m['id']}.json")
+        if not rec:
+            continue
+        for rid, d in (rec.get("data") or {}).items():
+            ctx.results.put(rid, {**d, "sources": rec.get("sources", [])})
+        out.append({"id": rec["id"], "spec": rec["spec"]})
+    return out
+
+
 def needs_cartographer(state: AgentState) -> bool:
     route = state.get("route") or {}
     done = any(
@@ -42,7 +66,7 @@ def needs_cartographer(state: AgentState) -> bool:
     )
     return (
         bool(route.get("map") or route.get("chart"))
-        and bool(state.get("result_ids"))
+        and bool(state.get("result_ids") or view_maps(state))
         and not done
         and not state.get("cartographer_done")
         and state.get("stop") is None
@@ -53,7 +77,13 @@ async def cartographer(state: AgentState, config: RunnableConfig) -> dict[str, A
     d = deps_of(config)
     d.ctx.emit = _emit(get_stream_writer())
     route = state.get("route") or {}
-    summaries = [x for rid in state.get("result_ids", [])[-4:] if (x := d.ctx.results.summary(rid))]
+    current = restore_view_maps(d.ctx, view_maps(state))
+    rids = list(dict.fromkeys(state.get("result_ids", [])[-6:]))
+    for m in current:
+        for o in MapSpec.model_validate(m["spec"]).all_overlays():
+            if o.data.result_id and o.data.result_id not in rids:
+                rids.append(o.data.result_id)
+    summaries = [x for rid in rids if (x := d.ctx.results.summary(rid))]
     schema = {"MapSpec": MapSpec.model_json_schema(), "ChartSpec": ChartSpec.model_json_schema()}
     sys = prompt(
         "cartographer.md",
@@ -66,9 +96,15 @@ async def cartographer(state: AgentState, config: RunnableConfig) -> dict[str, A
     ask = (
         f"Question: {state['question']}\nAnswer so far: {state.get('answer', '')[:1500]}\n"
         f"Wanted: {wanted}\n\nRESULTS: {json.dumps(summaries, default=str)}\n\n"
+        + (
+            f"CURRENT MAPS (on screen): {json.dumps(current, default=str)[:6000]}\n\n"
+            if current
+            else ""
+        )
     )
     msgs: list[BaseMessage] = [SystemMessage(content=sys), HumanMessage(content=ask)]
     usage, maps, charts, errors = [], [], [], []
+    note = ""
     with span("agent.node.cartographer"):
         for _ in range(TRIES):
             t0 = time.perf_counter()
@@ -95,6 +131,7 @@ async def cartographer(state: AgentState, config: RunnableConfig) -> dict[str, A
                     HumanMessage(content=f"Invalid: {e}. Reply with corrected JSON only."),
                 ]
                 continue
+            note = str(out.get("note") or "")[:300]
             if route.get("map") and out.get("map"):
                 r = make_map(d.ctx, out["map"])
                 if "map_id" in r["data"]:
@@ -104,10 +141,15 @@ async def cartographer(state: AgentState, config: RunnableConfig) -> dict[str, A
                 if r["data"].get("chart") == "sent":
                     charts.append(out["chart"])
             break
-    return {
+    upd: dict[str, Any] = {
         "maps": maps,
         "charts": charts,
         "usage": usage,
         "cartographer_done": True,
         "grounding": {**state.get("grounding", {}), "cartographer_errors": errors},
     }
+    # an edit of a map on screen has no analyst answer: the note says what changed
+    if not state.get("answer") and note and maps:
+        upd["answer"] = note
+        d.ctx.emit("text", {"delta": note})
+    return upd

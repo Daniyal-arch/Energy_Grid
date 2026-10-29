@@ -68,7 +68,7 @@ class Settings(BaseSettings):
     duckdb_extension_dir: Path | None = None
     duckdb_memory_limit: str = "2GB"
     sql_timeout_s: float = 25.0
-    sql_rows_returned: int = 2000
+    sql_rows_returned: int = 200
     sql_rows_kept: int = 100_000
 
     # local stand-ins when R2 is not configured

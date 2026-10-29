@@ -23,7 +23,7 @@ from langgraph.graph import END, START, StateGraph
 
 from agent import grounding as gr
 from agent.analyst import analyst, tools_node, wants_tools
-from agent.cartographer import cartographer, needs_cartographer
+from agent.cartographer import cartographer, needs_cartographer, view_maps
 from agent.deps import deps_of
 from agent.limits import get_limits
 from agent.router import router
@@ -55,6 +55,13 @@ async def guard(state: AgentState, config: RunnableConfig) -> dict[str, Any]:
 
 def after_guard(state: AgentState) -> str:
     return "finish" if state.get("stop") else "router"
+
+
+def after_router(state: AgentState) -> str:
+    """An edit of the map on screen goes straight to the cartographer (no new data)."""
+    if (state.get("route") or {}).get("edit") and view_maps(state):
+        return "cartographer"
+    return "analyst"
 
 
 def after_analyst(state: AgentState, config: RunnableConfig) -> str:
@@ -121,7 +128,7 @@ def build_graph() -> Any:
     g.add_node("finish", finish)
     g.add_edge(START, "guard")
     g.add_conditional_edges("guard", after_guard, ["router", "finish"])
-    g.add_edge("router", "analyst")
+    g.add_conditional_edges("router", after_router, ["analyst", "cartographer"])
     g.add_conditional_edges("analyst", after_analyst, ["tools", "cartographer", "grounding"])
     g.add_edge("tools", "analyst")
     g.add_edge("cartographer", "grounding")

@@ -2,6 +2,7 @@
 
 import type { Hex as MapHex } from "./hexLayers";
 import { styleTip } from "./styleLayers";
+import { agentTip } from "./agentLayers";
 import { MEASURE_BY_ID } from "../lib/measures";
 import type { PickingInfo } from "@deck.gl/core";
 
@@ -320,6 +321,7 @@ function tooltipHtml(id: string, object: unknown): string | null {
     const parts = h.types.slice(0, 3).map(([t, v]) => `<div>${t}: <b>${a.fmt(v)}</b></div>`).join("");
     return `<b>${a.label}: ${a.fmt(h.v)}</b>${b ? `<div>${b.label}: <b>${b.fmt(h.v2)}</b></div>` : parts}${SRC(`sum over a hexagon of about ${Number(rKm) * 2} km across (computed)`)}`;
   }
+  if (id.startsWith("agent:")) return agentTip(id, object);
   if (id.startsWith("st-")) {
     const html = styleTip(id, object);
     if (html) return html;

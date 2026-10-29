@@ -1,7 +1,7 @@
 ---
 title: Agent graph
 tags: [backend, agent]
-updated: 2026-10-27
+updated: 2026-10-29
 paths: [backend/agent/graph.py, backend/agent/analyst.py, backend/agent/grounding.py, backend/agent/prompts/]
 ---
 
@@ -12,9 +12,11 @@ in `config["configurable"]["deps"]` (`agent/deps.py`, `build_deps`). Uses [[agen
 [[agent-models]].
 
 ## Flow
-`guard` (size, spend cap) -> `router` (fast model JSON: kind, map, chart, skills) -> `analyst`
+`guard` (size, spend cap) -> `router` (fast model JSON: kind, map, chart, edit, skills; an
+edit of the map on screen goes straight to the cartographer) -> `analyst`
 <-> `tools` (at most `max_tool_calls`; past 60 s or the cap the analyst answers without tools)
--> `cartographer` (only map/chart asked and result ids exist; three tries) -> `grounding`
+-> `cartographer` (map/chart asked and result ids or maps on screen exist; designs one map or
+2-6 panels, picks the style; brings back the data of the maps on screen; three tries) -> `grounding`
 (one repair round back to the analyst, then unfound numbers appended as unverified) -> `finish`
 (`agent/runs.py`: sources, cost, run record, metrics, spend).
 

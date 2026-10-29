@@ -50,12 +50,13 @@ def check_map(
     except ValidationError as e:
         return None, errors_text(e), {}
     layers = known_layers(str(ctx.settings.atlas_root))
-    if m.app and layers:
-        bad = [x for x in m.app.layers if x not in layers]
+    apps = [a for a in (m.app, *(p.app for p in m.panels)) if a]
+    if layers:
+        bad = [x for a in apps for x in a.layers if x not in layers]
         if bad:
             return None, f"unknown app layers {bad}; known: {sorted(layers)}", {}
     data: dict[str, Any] = {}
-    for o in m.overlays:
+    for o in m.all_overlays():
         if o.data.result_id:
             r = ctx.results.get(o.data.result_id)
             if r is None:
@@ -76,7 +77,9 @@ def check_map(
                 o.data.to_lon,
                 o.data.to_lat,
                 o.label,
+                o.category,
                 o.value.column if o.value else None,
+                o.value2.column if o.value2 else None,
                 o.size.column if o.size else None,
                 *o.tooltip,
             )

@@ -53,7 +53,10 @@ def run_sql(ctx: ToolContext, sql: str) -> dict[str, Any]:
     if r.truncated:
         data["note"] = f"stopped at {s.sql_rows_kept} rows; aggregate in SQL for complete figures"
     elif len(r.rows) > len(shown):
-        data["note"] = f"{len(r.rows)} rows kept under result_id; only the first {len(shown)} shown"
+        data["note"] = (
+            f"{len(r.rows)} rows kept under result_id (a map or chart reads all of them); "
+            f"only the first {len(shown)} shown here"
+        )
     ctx.emit("tool_detail", {"tool": "run_sql", "rows": len(r.rows), "ms": round(r.ms, 1)})
     return result(data, sources, rid)
 

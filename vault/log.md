@@ -8,6 +8,12 @@ updated: 2026-10-28
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-10-29** (main, local): Ask in the app (`ui/AskTab.tsx`, `app/agent.ts`); MapSpec v2 with
+  12 flat and 10 3D styles, 2-6 maps side by side (`panels`) and edits (`replaces`);
+  `map/agentLayers.ts` draws them; the cartographer designs the maps and edits the ones on
+  screen; the analyst no longer calls make_map; SQL previews of 200 rows. Notes: agent-tools,
+  agent-graph, panels-and-cards, map-rendering.
+
 - **2026-10-29** (main, local): backend tested locally on Groq (data routes, the agent end to end);
   Groq and Bedrock API key support, Groq models in the registry, Bedrock probe (quotas 0);
   fixes: internal instructions no longer stream as answer text, thousands with spaces ground,

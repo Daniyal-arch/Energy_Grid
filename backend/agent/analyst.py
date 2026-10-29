@@ -65,7 +65,7 @@ async def analyst(state: AgentState, config: RunnableConfig) -> dict[str, Any]:
                 "Answer now with the figures you have."
             )
         )
-    model = d.main if (late or capped) else d.main.bind_tools(d.all_tools)
+    model = d.main if (late or capped) else d.main.bind_tools(d.analyst_tools)
     t0 = time.perf_counter()
     with span("agent.node.analyst", {"gen_ai.operation.name": "chat"}):
         resp = await model.ainvoke(conversation(state, d) + extra, config)

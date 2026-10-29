@@ -25,6 +25,8 @@ import { tileSync } from "../map/tiles";
 import { tooltip } from "../map/tooltip";
 import { LayerLegend } from "./LayersPanel";
 import { BivariateKey, StyleKey, StyleSelect, StyleText } from "./StyleControls";
+import { AgentPanelKey } from "./AskTab";
+import { is3DOverlay, panelAgentDraws, useAgent } from "../app/agent";
 
 const muted = "text-[#8d94a1]";
 /** The main map's style, flat, with the country names only. */
@@ -230,6 +232,7 @@ function PanelMap({
           layers,
           styled,
           scope,
+          agent: p.agent ? panelAgentDraws(p.agent.mapId, p.agent.panel) : undefined,
           bounds: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()],
           colour: "none",
           plantStatus: s.plantStatus,
@@ -296,6 +299,7 @@ function PanelMap({
       if (s.maps !== prev.maps || s.area !== prev.area || s.drawn !== prev.drawn || s.selection !== prev.selection) draw.current();
     });
     const unsubRaster = useRasterCache.subscribe(() => draw.current());
+    const unsubAgent = useAgent.subscribe(() => draw.current());
     const ro = new ResizeObserver(() => map.resize());
     ro.observe(box.current);
     return () => {
@@ -303,6 +307,7 @@ function PanelMap({
       unsubData();
       unsubApp();
       unsubRaster();
+      unsubAgent();
       peers.delete(map);
       if (leader.current === map) leader.current = null;
       map.remove();
@@ -314,7 +319,8 @@ function PanelMap({
   useEffect(() => {
     draw.current();
     const map = mapRef.current;
-    if (map && panel.items.some((x) => is3D(x.style)) && map.getPitch() < 5) {
+    const agent3D = panel.agent ? panelAgentDraws(panel.agent.mapId, panel.agent.panel).some((d) => is3DOverlay(d.overlay)) : false;
+    if (map && (panel.items.some((x) => is3D(x.style)) || agent3D) && map.getPitch() < 5) {
       const c = map.getCenter();
       const cam: Camera = { center: [c.lng, c.lat], zoom: map.getZoom(), pitch: 50, bearing: map.getBearing() };
       camera.current = cam;
@@ -389,6 +395,7 @@ function PanelKey({
         </button>
       </div>
       <div className="mt-0.5 space-y-1">
+        {panel.agent && <AgentPanelKey mapId={panel.agent.mapId} panel={panel.agent.panel} compact />}
         {panel.items.map((x) => {
           const d = DATASET_BY_ID.get(x.dataset);
           const own = !stylesOf(x.dataset).length || x.style === "points" || x.style === "raster" || x.style === "lines";

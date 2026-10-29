@@ -1,7 +1,7 @@
 ---
 title: Map rendering
 tags: [frontend, map]
-updated: 2026-10-27
+updated: 2026-10-29
 paths: [frontend/src/map/MapCanvas.tsx, frontend/src/map/build.ts, frontend/src/map/style.ts, frontend/src/map/tiles.ts, frontend/src/map/areaLayers.ts, frontend/src/map/tooltip.ts, frontend/src/map/memo.ts]
 ---
 
@@ -29,6 +29,8 @@ inside MapLibre's WebGL context. State comes from [[state-and-datasets]]; datase
 - `map/areaLayers.ts`: coverage tint (`coverageLayers`, under the data), the area veil, outline
   and drawing; `clipToArea` keeps only records inside a country or drawn area (by each layer's
   position, path or polygon accessor; continents are not clipped).
+- `map/agentLayers.ts`: the agent's 22 map styles (`Frame.agent`), keys in `useAgentKeys`,
+  hover cards (`agentTip`); deck.gl aggregation layers for heatmap and contour.
 - `map/tooltip.ts`: hover cards by layer id; `map/memo.ts`: memoised layer data by name.
 
 ## How it works

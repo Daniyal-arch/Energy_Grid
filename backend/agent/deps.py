@@ -50,12 +50,21 @@ class Deps:
     def all_tools(self) -> list[BaseTool]:
         return sorted([*self.tools, *self.extra_tools], key=lambda t: t.name)
 
+    @property
+    def analyst_tools(self) -> list[BaseTool]:
+        """The analyst queries; the cartographer draws (make_map and make_chart stay for MCP)."""
+        return [t for t in self.all_tools if t.name not in CARTOGRAPHER_ONLY]
+
     def system_text(self) -> str:
         return _system_text(
             str(self.settings.atlas_root),
             self.skills.index_text(),
             tuple(self.ctx.catalogue.dataset_list()),
         )
+
+
+# drawn by the cartographer from the analyst's results (agent/cartographer.py)
+CARTOGRAPHER_ONLY = {"make_map", "make_chart"}
 
 
 @lru_cache(maxsize=4)

@@ -1,7 +1,7 @@
 ---
 title: Agent tools
 tags: [backend, agent]
-updated: 2026-10-27
+updated: 2026-10-29
 paths: [backend/tools/, backend/agent/mapspec.py, backend/agent/skills.py, agent/skills/]
 ---
 
@@ -28,3 +28,11 @@ result: `{data, sources: [{dataset, table, licence, retrieved}], result_id?}`.
 > [!warning] Catalogue YAML
 > Values with ": " must be quoted; seven files did not parse until 2026-10-27. The catalogue
 > loader reads every file, so a broken file breaks search.
+
+## Maps (2026-10-29)
+- MapSpec v2 (`agent/mapspec.py`): 12 flat and 10 3D styles (`FLAT_STYLES`, `STYLES_3D`),
+  `panels` for 2-6 maps side by side, `replaces` for edits; `check_map` covers panels.
+- The analyst does not get `make_map`/`make_chart` (`Deps.analyst_tools`); the cartographer
+  draws. MCP keeps them.
+- `run_sql` shows the model `sql_rows_returned` rows (default 200); maps and charts read all
+  rows by `result_id`.

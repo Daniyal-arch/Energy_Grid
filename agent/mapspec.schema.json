@@ -487,6 +487,29 @@
           "title": "Overlays",
           "type": "array"
         },
+        "panels": {
+          "description": "several maps side by side (2-6), one variable or theme each; instead of overlays",
+          "items": {
+            "$ref": "#/$defs/Panel"
+          },
+          "maxItems": 6,
+          "title": "Panels",
+          "type": "array"
+        },
+        "replaces": {
+          "anyOf": [
+            {
+              "pattern": "^m_[0-9a-f]{12}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the id of a map on screen this one replaces (an edit)",
+          "title": "Replaces"
+        },
         "notes": {
           "anyOf": [
             {
@@ -516,13 +539,32 @@
           "type": "string"
         },
         "kind": {
+          "description": "the map style: flat dots, bubbles, choropleth, hexbin, grid, heatmap, contour, lines, flows, labels, bivariate, pies; 3D columns, beams, spikes, lollipops, hex_columns, grid_columns, prisms, arcs_3d, terrain, point_cloud",
           "enum": [
-            "points",
-            "lines",
-            "arcs",
+            "dots",
+            "bubbles",
             "choropleth",
+            "hexbin",
+            "grid",
+            "heatmap",
+            "contour",
+            "lines",
+            "flows",
+            "labels",
+            "bivariate",
+            "pies",
             "columns",
-            "labels"
+            "beams",
+            "spikes",
+            "lollipops",
+            "hex_columns",
+            "grid_columns",
+            "prisms",
+            "arcs_3d",
+            "terrain",
+            "point_cloud",
+            "points",
+            "arcs"
           ],
           "title": "Kind",
           "type": "string"
@@ -541,6 +583,18 @@
           ],
           "default": null
         },
+        "value2": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ValueEncoding"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the second variable of a bivariate map"
+        },
         "size": {
           "anyOf": [
             {
@@ -551,6 +605,34 @@
             }
           ],
           "default": null
+        },
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "column whose values colour the marks (types, fuels, classes)",
+          "title": "Category"
+        },
+        "radius_km": {
+          "anyOf": [
+            {
+              "maximum": 200,
+              "minimum": 0.5,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "bin size of hexbin, grid and their 3D forms",
+          "title": "Radius Km"
         },
         "label": {
           "anyOf": [
@@ -591,6 +673,41 @@
         "source"
       ],
       "title": "Overlay",
+      "type": "object"
+    },
+    "Panel": {
+      "additionalProperties": false,
+      "description": "One of several maps of the same place (side by side, one camera).",
+      "properties": {
+        "title": {
+          "maxLength": 80,
+          "title": "Title",
+          "type": "string"
+        },
+        "app": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AppState"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "overlays": {
+          "items": {
+            "$ref": "#/$defs/Overlay"
+          },
+          "maxItems": 3,
+          "title": "Overlays",
+          "type": "array"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "title": "Panel",
       "type": "object"
     },
     "SizeEncoding": {
@@ -652,7 +769,13 @@
             "fuel",
             "plant_type",
             "voltage",
-            "neutral"
+            "neutral",
+            "heat",
+            "cool",
+            "green",
+            "purple",
+            "emissions",
+            "room"
           ],
           "title": "Palette",
           "type": "string"

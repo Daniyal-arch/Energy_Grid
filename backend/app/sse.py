@@ -60,6 +60,8 @@ async def graph_events(stream: AsyncIterator[tuple[str, Any]]) -> AsyncIterator[
             name, data = chunk.get("event"), chunk.get("data", {})
             if name == "text_reset":
                 yield event("text", {"reset": True, **data})
+            elif name == "text":
+                yield event("text", data)
             elif name in ("tool", "map", "chart"):
                 yield event(name, data)
         elif mode == "updates" and "finish" in chunk:

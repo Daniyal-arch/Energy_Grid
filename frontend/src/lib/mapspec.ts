@@ -68,20 +68,38 @@ export interface MapSpec {
   camera?: Camera | null;
   app?: AppState | null;
   overlays?: Overlay[];
+  /** several maps side by side (2-6), one variable or theme each; instead of overlays */
+  panels?: Panel[];
+  /** the id of a map on screen this one replaces (an edit) */
+  replaces?: string | null;
   notes?: string | null;
 }
 
 export interface Overlay {
   id: string;
-  kind: "points" | "lines" | "arcs" | "choropleth" | "columns" | "labels";
+  /** the map style: flat dots, bubbles, choropleth, hexbin, grid, heatmap, contour, lines, flows, labels, bivariate, pies; 3D columns, beams, spikes, lollipops, hex_columns, grid_columns, prisms, arcs_3d, terrain, point_cloud */
+  kind: "dots" | "bubbles" | "choropleth" | "hexbin" | "grid" | "heatmap" | "contour" | "lines" | "flows" | "labels" | "bivariate" | "pies" | "columns" | "beams" | "spikes" | "lollipops" | "hex_columns" | "grid_columns" | "prisms" | "arcs_3d" | "terrain" | "point_cloud" | "points" | "arcs";
   data: DataRef;
   value?: ValueEncoding | null;
+  /** the second variable of a bivariate map */
+  value2?: ValueEncoding | null;
   size?: SizeEncoding | null;
+  /** column whose values colour the marks (types, fuels, classes) */
+  category?: string | null;
+  /** bin size of hexbin, grid and their 3D forms */
+  radius_km?: number | null;
   /** column with the label text (labels) */
   label?: string | null;
   legend: Legend;
   tooltip?: string[];
   source: string;
+}
+
+/** One of several maps of the same place (side by side, one camera). */
+export interface Panel {
+  title: string;
+  app?: AppState | null;
+  overlays?: Overlay[];
 }
 
 export interface SizeEncoding {
@@ -94,5 +112,5 @@ export interface ValueEncoding {
   column: string;
   unit: string;
   scale?: "sequential" | "diverging" | "categorical";
-  palette?: "share" | "price" | "price_glow" | "offline" | "solar" | "wind" | "fuel" | "plant_type" | "voltage" | "neutral";
+  palette?: "share" | "price" | "price_glow" | "offline" | "solar" | "wind" | "fuel" | "plant_type" | "voltage" | "neutral" | "heat" | "cool" | "green" | "purple" | "emissions" | "room";
 }

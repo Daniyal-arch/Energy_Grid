@@ -106,7 +106,7 @@ class FakeChatModel(BaseChatModel):
             "router"
             if system.startswith("You route")
             else "cartographer"
-            if system.startswith("You build one MapSpec")
+            if system.startswith("You are InfraAtlas's cartographer")
             else self.role
         )
         if role == "router":

@@ -68,9 +68,10 @@ def test_run_sql_result_id_and_sources(ctx):
     assert full["rows"] == d["rows"]
 
 
-def test_run_sql_shows_at_most_2000_rows(ctx):
+def test_run_sql_shows_at_most_the_configured_rows(ctx):
     out = call(ctx, "run_sql", sql="SELECT * FROM app.world_plants")
-    assert out["data"]["rows_shown"] == 2000 and out["data"]["row_count"] > 2000
+    n = ctx.settings.sql_rows_returned
+    assert out["data"]["rows_shown"] == n and out["data"]["row_count"] > n
     assert len(ctx.results.get(out["result_id"])["rows"]) == out["data"]["row_count"]
 
 

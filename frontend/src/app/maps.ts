@@ -25,6 +25,8 @@ export interface MapItem {
 export interface MapPanel {
   title: string;
   items: MapItem[];
+  /** one panel of an agent map (app/agent.ts) */
+  agent?: { mapId: string; panel: number };
 }
 
 export const THEMES: MapPanel[] = [

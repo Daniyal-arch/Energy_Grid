@@ -31,6 +31,7 @@ import { SUMMARY_FILES, summaryOf } from "./summaryLayers";
 import { inAreaCountry } from "../app/datasets";
 import { applyStyles, is3D } from "./styleLayers";
 import { tileSync } from "./tiles";
+import { agentIs3D, mainAgentDraws, useAgent } from "../app/agent";
 import { specBounds } from "../app/store";
 import { LAND, OCEAN, STYLE, dayFrame, dayPadding, europeCamera, europeView, setProjection, usFrame, worldCamera } from "./style";
 import { TIP_STYLE, countryHtml, tooltip } from "./tooltip";
@@ -190,6 +191,7 @@ export default function MapCanvas() {
     const touch = () => (dirty = true);
     const unsubApp = useApp.subscribe(touch);
     const unsubData = useDataStore.subscribe(touch);
+    const unsubAgent = useAgent.subscribe(touch);
     map.on("move", touch);
     let mobile = narrow;
     const mq = window.matchMedia(MOBILE_QUERY);
@@ -313,7 +315,7 @@ export default function MapCanvas() {
     const wantFlat = () => {
       const s = useApp.getState();
       // a dataset in 3D (bars, beams, terrain) stands up too
-      const raised = applyStyles(s.layers, s.mapStyles).styled.some(([, st]) => is3D(st));
+      const raised = applyStyles(s.layers, s.mapStyles).styled.some(([, st]) => is3D(st)) || agentIs3D();
       return s.mode === "day" || zoomedIn() || raised || (s.mode === "live" && (!!selectedIso2(s.selection) || raisedPrices()));
     };
     const applyProjection = () => {
@@ -673,6 +675,7 @@ export default function MapCanvas() {
         layers: frameLayers,
         styled,
         scope: "main",
+        agent: mainAgentDraws(),
         bounds: (() => {
           const b = map.getBounds();
           return [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] as [number, number, number, number];
@@ -745,6 +748,7 @@ export default function MapCanvas() {
       cancelAnimationFrame(raf);
       unsubApp();
       unsubData();
+      unsubAgent();
       unsubCam();
       unsubCursor();
       unsubSite();

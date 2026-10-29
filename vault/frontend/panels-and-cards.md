@@ -1,7 +1,7 @@
 ---
 title: Panels and cards
 tags: [frontend, ui]
-updated: 2026-10-27
+updated: 2026-10-29
 paths: [frontend/src/ui/App.tsx, frontend/src/ui/LayersPanel.tsx, frontend/src/ui/Panel.tsx, frontend/src/ui/DashboardTab.tsx, frontend/src/ui/Dashboards.tsx, frontend/src/ui/Catalogue.tsx, frontend/src/components/AreaCards.tsx, frontend/src/components/RoomCards.tsx]
 ---
 
@@ -18,7 +18,12 @@ One Layers panel on the left, one context panel on the right, a time bar at the 
   `ConnectKey` with the new generation / new demand switch), the summary key, then
   `DatasetDetails` (sources, coverage registry, "Show where it has data" tint button).
   Switching a dataset on while others are on asks where it goes (`AddChoice`).
-- `ui/Panel.tsx`: the context panel's tabs (Dashboard, Now, 7 days, Prices, Gas & LNG, 25 years...).
+- `ui/Panel.tsx`: the context panel's tabs, "Ask" first in every panel (Dashboard, Now, 7 days,
+  Prices, Gas & LNG, 25 years...).
+- `ui/AskTab.tsx` + `app/agent.ts`: the agent conversation (POST /api/ask, SSE; the dev server
+  proxies /api to localhost:8080, `vite.config.ts`); map cards with keys (`AgentLegend`), charts,
+  sources, grounding, cost; agent maps on the main map (`onMap`) or as Maps view panels
+  (`MapPanel.agent`); the maps on screen go back with each question for edits.
 - `ui/DashboardTab.tsx`: the dashboard's area, "also with data here" chips, `MapVariables`
   ("On the map": every styled dataset with its key, "All as"), and `AreaCards`.
 - `ui/Dashboards.tsx`: the dashboards menu, any country, the builder; `ui/Catalogue.tsx`: the data

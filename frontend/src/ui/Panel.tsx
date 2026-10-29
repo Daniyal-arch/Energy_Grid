@@ -48,6 +48,7 @@ import { actions, useApp } from "../app/store";
 import type { CountriesFile, DayFile, FlowsFile, GasFile, OutagesFile, PlantsFile, ReferenceFile, StatsFile, WorldFile, UnitOutputFile } from "../app/types";
 import { LngTerminalsCard } from "./LayerStats";
 import { DashboardTab } from "./DashboardTab";
+import { AskTab } from "./AskTab";
 import { useDashboardName } from "./Dashboards";
 import { RetailCountryCard, RetailRankingCard, UsRetailCard } from "../components/RetailCards";
 import type { RetailFile } from "../lib/retail";
@@ -154,9 +155,11 @@ export default function Panel() {
 /** The dashboard's figures first: for the country shown, else for the dashboard's area. */
 const withDashboard = (tabs: Tab[], iso3?: string): Tab[] => [{ id: "dashboard", label: "Dashboard", body: () => <DashboardTab iso3={iso3} /> }, ...tabs];
 
-function Frame({ title, sub, tabs, close = true, action }: { title: string; sub?: ReactNode; tabs: Tab[]; close?: boolean; action?: ReactNode }) {
+function Frame({ title, sub, tabs: own, close = true, action }: { title: string; sub?: ReactNode; tabs: Tab[]; close?: boolean; action?: ReactNode }) {
   const tab = useApp((s) => s.tab);
-  const current = tabs.find((t) => t.id === tab) ?? tabs[0];
+  // Ask first in every panel: the agent answers about anything on the map
+  const tabs: Tab[] = [{ id: "ask", label: "Ask", body: () => <AskTab /> }, ...own];
+  const current = tabs.find((t) => t.id === tab) ?? own[0] ?? tabs[0];
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex items-start justify-between gap-2 px-4 pb-2 pt-3">
@@ -182,7 +185,7 @@ function Frame({ title, sub, tabs, close = true, action }: { title: string; sub?
               key={t.id}
               onClick={() => useApp.setState({ tab: t.id })}
               className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] transition-colors ${
-                t.id === current.id ? "bg-white/[0.14] text-slate-100" : "text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
+                t.id === current.id ? "bg-white/[0.14] text-slate-100" : t.id === "ask" ? "text-sky-200 hover:bg-sky-400/10" : "text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
               }`}
             >
               {t.label}

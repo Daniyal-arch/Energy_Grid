@@ -108,6 +108,7 @@ import { inAreaCountry } from "../app/datasets";
 import { summaryFill, summaryLabels } from "./summaryLayers";
 import { hexLayers } from "./hexLayers";
 import { styleLayers } from "./styleLayers";
+import { agentLayers, type AgentDraw } from "./agentLayers";
 import type { Style } from "../app/maps";
 import type { AreaSpec } from "../lib/area";
 import { usSolarLayers } from "./usSolarLayers";
@@ -142,6 +143,8 @@ export interface Frame {
   styled: [string, Style][];
   /** which map: "main" or one of the Maps view's (keys its legend's figures) */
   scope: string;
+  /** the agent's overlays drawn on this map (map/agentLayers.ts) */
+  agent?: AgentDraw[];
   /** the view [west, south, east, north] */
   bounds: [number, number, number, number];
   /** the area as a drawn polygon or a circle, and the corners of one being drawn */
@@ -359,7 +362,7 @@ export function buildLayers(fr: Frame): Layer[] {
   // a dataset's per-country figure at continent scale (map/summaryLayers.ts); the datasets drawn in a
   // style of their own (map/hexLayers.ts, map/styleLayers.ts)
   layers.push(...summaryFill(fr), ...coverageLayers(fr), ...capacityGapLayers(fr));
-  layers.push(...hexLayers(fr), ...styleLayers(fr));
+  layers.push(...hexLayers(fr), ...styleLayers(fr), ...agentLayers(fr));
 
   // the night shadow (24 h mode)
   if (day && isOn("night") && fr.night) {

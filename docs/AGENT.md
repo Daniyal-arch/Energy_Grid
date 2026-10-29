@@ -144,17 +144,30 @@ A MapSpec is plain JSON, validated against a schema shared by backend and fronte
 }
 ```
 
-- **Kinds:** `points` (size and colour by columns), `lines` (from geometry or from/to pairs),
-  `arcs` (flows between places), `choropleth` (by key on a shapes table), `columns` (3-D bars),
-  `labels`. Data comes from a `result_id` (the server keeps the full query result) or inline.
+- **Styles (2026-10-29):** twelve flat (`dots`, `bubbles`, `choropleth`, `hexbin`, `grid`,
+  `heatmap`, `contour`, `lines`, `flows`, `labels`, `bivariate`, `pies`) and ten in 3D
+  (`columns`, `beams`, `spikes`, `lollipops`, `hex_columns`, `grid_columns`, `prisms`,
+  `arcs_3d`, `terrain`, `point_cloud`), drawn by `frontend/src/map/agentLayers.ts`. Encodings:
+  `value` (scale, palette), `value2` (bivariate), `size`, `category` (type colours), `radius_km`
+  (bins), `label`. Data comes from a `result_id` (the server keeps the full query result) or
+  inline.
+- **One map or several:** `overlays` (one map, up to four) or `panels` (2-6 maps of the same
+  place side by side in the Maps view, one camera, one variable or theme each). `replaces`
+  names a map on screen the spec changes (an edit).
+- **Who designs:** the analyst queries; the cartographer (fast model) picks the style and the
+  layout from the question and the data (`backend/agent/prompts/cartographer.md`). An edit
+  ("make it 3D", "split it into two maps") goes from the router straight to the cartographer
+  with the maps on screen, whose data comes back from the saved maps.
 - **Style comes from the app, never from the model:** the model picks a scale (`sequential`,
   `diverging`, `categorical`) and a named palette from the app's own (`app/colors.ts`); sizes
   and widths are bounded. Calm by construction: no blinking, no free colours, one overlay legend
   in the existing key.
 - **Existing layers first:** when an app layer already shows the answer (plants, queue, prices,
   outages, water), the spec switches it on and frames it rather than redrawing it.
-- **Rendering:** `frontend/src/map/agentLayers.ts` turns overlays into deck.gl layers;
-  `MapLegend` shows their legend and source; the "Ask" tab lists the sources of the answer.
+- **Rendering:** `frontend/src/map/agentLayers.ts` turns overlays into deck.gl layers; the
+  "Ask" tab (`frontend/src/ui/AskTab.tsx`, store `frontend/src/app/agent.ts`) streams the answer
+  with its tool steps, map cards (key, how, source), charts and sources; panels open in the Maps
+  view with their keys.
 - **Saved maps:** `/api/maps` stores the spec and its result data on R2; `?map=<id>` opens it for
   anyone; the owner can promote one to a story (later: the recorder renders it for LinkedIn).
 
