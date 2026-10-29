@@ -90,3 +90,32 @@ def test_extra_files_join_the_harmonised_rows() -> None:
     d = h.build(osm=False)
     ops = {o["operator"] for o in d["operators"]}
     assert {"50Hertz", "HOPS", "Elenia", "HEDNO"} <= ops
+
+
+def test_row_matches_by_match_name_in_the_osm_area(tmp_path: Path, monkeypatch: object) -> None:
+    monkeypatch.setattr(h, "OSM_CACHE", tmp_path)  # type: ignore[attr-defined]
+    (tmp_path / "US-CA.json").write_text(
+        json.dumps([{"name": "Larkin Substation", "lon": -122.42, "lat": 37.78, "osm": "way/1"}])
+    )
+    (tmp_path / "TR.json").write_text(
+        json.dumps([{"name": "Misis TM", "lon": 35.6, "lat": 36.96, "osm": "way/2"}])
+    )
+    b = h.Build(osm=False)
+    k = b.op(
+        "US-CAISO",
+        "CAISO",
+        "transmission",
+        source="s",
+        url="u",
+        licence="l",
+        as_of=None,
+        mapping="m",
+    )
+    b.row(k, name="LARKIN", match=True, osm_area="US-CA")
+    t = b.op(
+        "TR", "TEİAŞ", "transmission", source="s", url="u", licence="l", as_of=None, mapping="m"
+    )
+    b.row(t, name="MİSİS TM TR-B", match=True, match_name="MİSİS TM")
+    assert [b.operators[k]["matched"], b.operators[t]["matched"]] == [1, 1]
+    assert b.rows[0][h.FIELDS.index("lon")] == -122.42
+    assert b.rows[1][h.FIELDS.index("name")] == "MİSİS TM TR-B"

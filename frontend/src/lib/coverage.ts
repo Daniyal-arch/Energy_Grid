@@ -30,9 +30,10 @@ export const STATUS_TEXT: Record<CoverageCell["status"], string> = {
 export function coverageRows(f: CoverageFile, iso2: string): [string, string, string, string][] {
   const c = f.countries[iso2];
   if (!c) return [];
-  return f.families.map((fam) => {
+  return f.families.flatMap((fam) => {
     const cell = c[fam.id];
+    if (!cell) return []; // a neighbour holds only the families that cover the neighbours
     const what = cell.status === "have" || cell.status === "built" ? (cell.source ?? "") : `${STATUS_TEXT[cell.status]}${cell.note ? `: ${cell.note}` : ""}`;
-    return [fam.name, cell.g, what, cell.checked ?? ""];
+    return [[fam.name, cell.g, what, cell.checked ?? ""] as [string, string, string, string]];
   });
 }

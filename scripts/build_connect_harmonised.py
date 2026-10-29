@@ -106,7 +106,7 @@ STOP = {
     "uw", "umspannwerk", "umspannanlage", "station", "substation", "subestacion", "subestação",
     "subestacao", "se", "set", "st", "de", "del", "la", "el", "los", "las", "do", "da", "dos",
     "gsp", "kv", "rozdzielnia", "gpz", "sous", "poste", "s", "stn", "unterwerk", "schaltanlage",
-    "schaltwerk", "trafostation", "at", "mt", "rnd",
+    "schaltwerk", "trafostation", "at", "mt", "rnd", "tm",
     # Croatian, Polish, Hungarian, Slovenian, Slovak station words (OSM names carry them, the
     # operators' lists mostly not): "TS Beli Manastir", "Stacja elektroenergetyczna Mikułowa"
     "ts", "rp", "trafostanica", "transformatorska", "stanica", "stacja", "elektroenergetyczna",
@@ -140,7 +140,8 @@ def norm(name: str) -> str:
 
 
 def osm_substations(cc: str, fetch: bool) -> list[dict]:
-    """OpenStreetMap substations with a name in the country (cached; Overpass with --osm)."""
+    """OpenStreetMap substations with a name in the country, or in the subdivision for a code
+    with a dash ('US-CA'; cached; Overpass with --osm)."""
     path = OSM_CACHE / f"{cc}.json"
     if path.exists():
         return json.loads(path.read_text(encoding="utf-8"))
@@ -148,7 +149,8 @@ def osm_substations(cc: str, fetch: bool) -> list[dict]:
         return []
     import httpx
 
-    q = (f'[out:json][timeout:400];area["ISO3166-1"="{cc}"][admin_level=2]->.a;'
+    area = f'["ISO3166-2"="{cc}"]' if "-" in cc else f'["ISO3166-1"="{cc}"][admin_level=2]'
+    q = (f'[out:json][timeout:400];area{area}->.a;'
          'nwr["power"="substation"]["name"](area.a);out center tags;')  # fmt: skip
     for i, url in enumerate(OVERPASS):
         try:
@@ -214,13 +216,16 @@ class Build:
             lon: float | None = None, lat: float | None = None, kv: float | None = None,
             mw_gen: float | None = None, mw_load: float | None = None, mva_gen: float | None = None,
             mva_load: float | None = None, mw_queue: float | None = None, cls: str | None = None,
-            cls_load: str | None = None, polygon: list | None = None, match: bool = False) -> None:  # fmt: skip
+            cls_load: str | None = None, polygon: list | None = None, match: bool = False,
+            match_name: str | None = None, osm_area: str | None = None) -> None:  # fmt: skip
+        """`match_name`: the name to look up in OpenStreetMap when it differs from the label;
+        `osm_area`: where to look when the operator's code is not a country (US-CA)."""
         o = self.operators[k]
         if lon is None and match and kind == "node":
-            cc = o["cc"]
+            cc = osm_area or o["cc"]
             if cc not in self.matchers:
                 self.matchers[cc] = matcher(cc, self.osm)
-            at = self.matchers[cc](name)
+            at = self.matchers[cc](match_name or name)
             if at:
                 lon, lat = at
                 o["matched"] += 1
@@ -513,10 +518,10 @@ def extra_files(b: Build) -> None:
         if not d:
             continue
         k = b.op(d["cc"], d["operator"], d["level"], source=d["source"], url=d["url"], licence=d["licence"],
-                 as_of=d.get("as_of"), mapping=d["mapping"], note=d.get("note", ""))  # fmt: skip
+                 as_of=d.get("as_of"), mapping=d["mapping"], note=d.get("note", ""), summable=d.get("summable", True))  # fmt: skip
         for r in d["rows"]:
             b.row(k, **{"cls" if f == "class" else "cls_load" if f == "class_load" else f: v for f, v in r.items()},
-                  match=d.get("match", False))  # fmt: skip
+                  match=d.get("match", False), osm_area=d.get("osm_area"))  # fmt: skip
 
 
 def build(osm: bool) -> dict:
