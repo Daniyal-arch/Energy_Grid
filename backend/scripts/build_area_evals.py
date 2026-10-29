@@ -134,8 +134,8 @@ CASES: list[dict[str, Any]] = [
         "resolve": {"names": ["Bavaria"]},
         "level": "region",
         "needs": "lake",
-        "sql": "SELECT count(*) AS arrays, round(sum(area_m2) / 1e6, 2) AS km2 FROM grw.solar "
-        "WHERE intersects_area(geometry, '{area}')",
+        "sql": "SELECT count(*) AS arrays, round(sum(area_km2), 2) AS km2 FROM grw.solar "
+        "WHERE intersects_area(geometry, '{area}', bbox)",
         "map": {"kind": "hexbin", "key": "lon/lat"},
     },
     {
@@ -197,7 +197,7 @@ CASES: list[dict[str, Any]] = [
     {
         "id": "area-amsterdam-buurt",
         "q": "What is the average electricity use per dwelling in Burgwallen-Oude Zijde, Amsterdam?",
-        "resolve": {"names": ["Burgwallen-Oude Zijde"], "level": "neighbourhood"},
+        "resolve": {"names": ["Burgwallen-Oude Zijde"], "level": "nl_buurt"},
         "level": "nl_buurt",
         "needs": "lake",
         "sql": "SELECT electricity_kwh_per_dwelling FROM small_area_energy.nl_buurt "

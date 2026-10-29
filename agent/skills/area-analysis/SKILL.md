@@ -24,8 +24,10 @@ dataset exists at which level), `agent/areas/groups.yaml` (named groups), `data/
    - points, any other area: `WHERE in_area(lon, lat, 'a_...')` (the bounding box test is
      added for you) and `count(*)`, `sum(mw)`;
    - lines: `sum(km_inside(geometry, 'a_...'))` filtered with `intersects_area(geometry,
-     'a_...')` and, first, the bbox columns (`bbox.xmax >= xmin AND bbox.xmin <= xmax ...` from
-     the `areas` view); label "km of line inside the area (computed, geodesic)";
+     'a_...', bbox)` (the lake's GeoParquet tables carry a `bbox` column: its bounds are tested
+     first, so row groups are skipped); label "km of line inside the area (computed, geodesic)";
+   - lake tables of points stored as geometry (Overture sites, GRW turbines):
+     `intersects_area(geometry, 'a_...', bbox)`;
    - polygons: `sum(km2_inside(geometry, 'a_...')) / <area_km2>` as the share covered;
    - tables keyed by region: when the area is that region, join by its key. When the area is
      drawn or of another level, **never split a region's total by area share**: sum the regions

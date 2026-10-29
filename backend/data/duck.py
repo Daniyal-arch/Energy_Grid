@@ -474,7 +474,8 @@ class Lake:
 AREA_MACROS = [
     "CREATE TEMP MACRO area_geom(aid) AS (SELECT geometry FROM areas WHERE area_id = aid)",
     "CREATE TEMP MACRO in_area(lon, lat, aid) AS ST_Contains(area_geom(aid), ST_Point(lon, lat))",
-    "CREATE TEMP MACRO intersects_area(geom, aid) AS ST_Intersects(geom, area_geom(aid))",
+    "CREATE TEMP MACRO intersects_area(geom, aid, bb := NULL) AS "
+    "ST_Intersects(geom, area_geom(aid))",
     # geodesic, on the WGS84 ellipsoid (geometry_always_xy is on)
     "CREATE TEMP MACRO km_inside(geom, aid) AS "
     "ST_Length_Spheroid(ST_Intersection(geom, area_geom(aid))) / 1000",
@@ -507,7 +508,7 @@ def expand_in_area(sql: str, areas: list[dict[str, Any]]) -> str:
     import sqlglot
     from sqlglot import exp
 
-    if "in_area" not in sql.lower():
+    if "in_area" not in sql.lower() and "intersects_area" not in sql.lower():
         return sql
     by_id = {a["area_id"]: a for a in areas}
     tree = sqlglot.parse_one(sql, read="duckdb")
@@ -515,7 +516,12 @@ def expand_in_area(sql: str, areas: list[dict[str, Any]]) -> str:
 
     def swap(node: exp.Expression) -> exp.Expression:
         nonlocal changed
-        if not (isinstance(node, exp.Anonymous) and str(node.this).lower() == "in_area"):
+        if not isinstance(node, exp.Anonymous):
+            return node
+        fn = str(node.this).lower()
+        if fn == "intersects_area":
+            return _swap_intersects(node)
+        if fn != "in_area":
             return node
         args = node.expressions
         if len(args) != 3 or not (isinstance(args[2], exp.Literal) and args[2].is_string):
@@ -534,6 +540,25 @@ def expand_in_area(sql: str, areas: list[dict[str, Any]]) -> str:
                 if a["level"] == "bbox"
                 else f"({box} AND ST_Contains(area_geom('{a['area_id']}'), ST_Point({x}, {y})))"
             )
+        changed = True
+        return sqlglot.parse_one(text, read="duckdb")
+
+    def _swap_intersects(node: exp.Anonymous) -> exp.Expression:
+        """intersects_area(geom, 'a_...', bbox): the GeoParquet bbox column's literal bounds
+        first, then ST_Intersects."""
+        nonlocal changed
+        args = node.expressions
+        if len(args) != 3 or not (isinstance(args[1], exp.Literal) and args[1].is_string):
+            return node
+        a = by_id.get(args[1].this)
+        if a is None:
+            return node
+        g, bb = args[0].sql(dialect="duckdb"), args[2].sql(dialect="duckdb")
+        x0, y0, x1, y1 = a["bbox"]
+        text = (
+            f"({bb}.xmin <= {x1!r} AND {bb}.xmax >= {x0!r} AND {bb}.ymin <= {y1!r} AND "
+            f"{bb}.ymax >= {y0!r} AND ST_Intersects({g}, area_geom('{a['area_id']}')))"
+        )
         changed = True
         return sqlglot.parse_one(text, read="duckdb")
 

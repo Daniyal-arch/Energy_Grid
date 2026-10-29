@@ -146,3 +146,20 @@ def test_area_stats_people_by_cell_centres(ctx):
     assert f["people"]["value"] == 40800 and "centre lies inside" in f["people"]["how"]
     assert f["solar"]["value"] is None and "R2" in f["solar"]["error"]
     assert r["sources"][0]["licence"].startswith("CC BY 4.0")
+
+
+def test_intersects_area_with_a_bbox_column_is_pruned(ctx):
+    from data.duck import expand_in_area
+
+    a = area(ctx, names=["Oberbayern"])["area"]
+    rec = ctx.area_store.get(a["area_id"]).as_dict()
+    sql = f"SELECT count(*) FROM t WHERE intersects_area(geometry, '{a['area_id']}', bbox)"
+    out = expand_in_area(sql, [rec])
+    assert "bbox.xmin <= 13.1" in out and "ST_INTERSECTS" in out.upper()
+    r = run_sql(
+        ctx,
+        f"SELECT count(*) FROM (SELECT ST_Point(11.5, 48.1) AS geometry, "
+        f"{{'xmin': 11.5, 'ymin': 48.1, 'xmax': 11.5, 'ymax': 48.1}} AS bbox) t "
+        f"WHERE intersects_area(geometry, '{a['area_id']}', bbox)",
+    )
+    assert r["data"]["rows"] == [[1]], r
