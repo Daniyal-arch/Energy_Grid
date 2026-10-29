@@ -7,7 +7,8 @@
 import { create } from "zustand";
 
 import type { ChartSpec, MapSpec, Overlay } from "../lib/mapspec";
-import type { AgentDraw } from "../map/agentLayers";
+import { polysOfGeometry, type AreaSpec } from "../lib/area";
+import type { AgentDraw, ShapeFeature } from "../map/agentLayers";
 import { DATASET_OF_LAYER } from "./datasets";
 import type { MapPanel } from "./maps";
 import { actions, currentCamera, useApp, type CameraPreset, type LayerId } from "./store";
@@ -25,11 +26,24 @@ export interface MapData {
   columns: string[];
   rows: unknown[][];
 }
+/** An area resolved by the agent (resolve_area), as the map record carries it. */
+export interface AreaRec {
+  area_id: string;
+  name: string;
+  level: string;
+  bbox: [number, number, number, number];
+  area_km2: number;
+  geometry: { type: string; coordinates: unknown };
+}
 export interface AgentMap {
   id: string;
   spec: MapSpec;
   data: Record<string, MapData>;
   sources: Source[];
+  /** the areas the map shows (spec.area, panels' area), outlines simplified for display */
+  areas?: Record<string, AreaRec>;
+  /** outlines of the backend's shape sets by key (choropleths below the country level) */
+  shapes?: Record<string, { features: Record<string, ShapeFeature>; source?: string }>;
 }
 export interface ToolStep {
   name: string;
@@ -119,6 +133,14 @@ function patchLast(fn: (m: Msg) => Msg): void {
 }
 
 /** What the agent should know about the screen: its maps on screen, the layers on, the area. */
+/** The drawn area as the agent reads it ("what I drew"); an agent area goes back by its id. */
+function drawnOf(d: AreaSpec | null): Record<string, unknown> | null {
+  if (!d) return null;
+  if (d.kind !== "shape") return d;
+  const points = d.polygons.reduce((n, p) => n + p.reduce((k, r) => k + r.length / 2, 0), 0);
+  return { kind: "shape", area_id: d.areaId, name: d.name, ...(points <= 5000 ? { polygons: d.polygons } : {}) };
+}
+
 function viewOf(): Record<string, unknown> {
   const s = useApp.getState();
   const a = useAgent.getState();
@@ -130,7 +152,8 @@ function viewOf(): Record<string, unknown> {
       .filter(([, on]) => on)
       .map(([k]) => k),
     area: s.area,
-    camera: cam ? { center: cam.center, zoom: Math.round(cam.zoom * 10) / 10 } : null,
+    drawn: drawnOf(s.drawn),
+    camera: cam ? { center: cam.center, zoom: Math.round(cam.zoom * 10) / 10, ...(cam.box ? { bounds: cam.box.map((v) => Math.round(v * 1e4) / 1e4) } : {}) } : null,
   };
 }
 
@@ -155,9 +178,17 @@ export function showAgentMap(id: string): void {
   const s = useApp.getState();
   const layers = [...(spec.app?.layers ?? []), ...(spec.panels ?? []).flatMap((p) => p.app?.layers ?? [])].filter((l) => l in s.layers) as LayerId[];
   if (layers.length) useApp.setState({ layers: { ...s.layers, ...Object.fromEntries(layers.map((l) => [l, true])) } });
+  const areaOf = (ref?: { area_id: string } | null) => {
+    const a = ref ? m.areas?.[ref.area_id] : undefined;
+    return a && a.level !== "world" ? specOfArea(a) : undefined;
+  };
+  // the map's area becomes the app's area: outline, veil, base layers clipped, camera framed
+  const main = areaOf(spec.area);
+  if (main) actions.setDrawn(main);
   if (spec.panels?.length) {
     const panels: MapPanel[] = spec.panels.map((p, i) => ({
       title: p.title,
+      ...(areaOf(p.area) ? { drawn: areaOf(p.area) } : {}),
       items: (p.app?.layers ?? []).flatMap((l) => {
         const d = DATASET_OF_LAYER.get(l as LayerId);
         return d ? [{ dataset: d.id, style: "points" as const }] : [];
@@ -186,14 +217,14 @@ export function removeAgentMap(id: string): void {
 }
 
 async function loadMap(id: string, spec: MapSpec): Promise<void> {
-  let rec: { spec: MapSpec; data: Record<string, MapData>; sources: Source[] } | null = null;
+  let rec: Omit<AgentMap, "id"> | null = null;
   try {
     const r = await fetch(`${API_BASE}/api/maps/${id}`);
     if (r.ok) rec = await r.json();
   } catch {
     rec = null;
   }
-  const map: AgentMap = { id, spec: rec?.spec ?? spec, data: rec?.data ?? {}, sources: rec?.sources ?? [] };
+  const map: AgentMap = { id, spec: rec?.spec ?? spec, data: rec?.data ?? {}, sources: rec?.sources ?? [], areas: rec?.areas, shapes: rec?.shapes };
   useAgent.setState((s) => ({ maps: { ...s.maps, [id]: map } }));
   if (map.spec.replaces) removeAgentMap(map.spec.replaces);
   patchLast((m) => ({ ...m, maps: [...m.maps, id] }));
@@ -308,11 +339,28 @@ function rowsOf(m: AgentMap, o: Overlay): Record<string, unknown>[] {
   return rows;
 }
 const DRAWS = new Map<string, AgentDraw[]>();
+/** The outlines an overlay's keys refer to when the backend served them (or the area itself). */
+function servedShapes(m: AgentMap, o: Overlay): Record<string, ShapeFeature> | undefined {
+  const set = o.data.shapes;
+  if (!set) return undefined;
+  if (set === "area") {
+    const out: Record<string, ShapeFeature> = {};
+    for (const a of Object.values(m.areas ?? {})) out[a.area_id] = { name: a.name, at: [(a.bbox[0] + a.bbox[2]) / 2, (a.bbox[1] + a.bbox[3]) / 2], geometry: a.geometry };
+    return out;
+  }
+  return m.shapes?.[set]?.features;
+}
+
+/** An agent area as the app's area (several polygons of flat lon/lat pairs). */
+export function specOfArea(a: AreaRec): AreaSpec {
+  return { kind: "shape", polygons: polysOfGeometry(a.geometry).map((p) => p.map((ring) => ring.flat())), name: a.name, areaId: a.area_id };
+}
+
 function drawsOf(m: AgentMap, overlays: Overlay[], key: string): AgentDraw[] {
   const k = `${m.id}:${key}:${Object.keys(m.data).length}`;
   let d = DRAWS.get(k);
   if (!d) {
-    d = overlays.map((overlay) => ({ mapId: m.id, overlay, rows: rowsOf(m, overlay) }));
+    d = overlays.map((overlay) => ({ mapId: m.id, overlay, rows: rowsOf(m, overlay), shapes: servedShapes(m, overlay) }));
     DRAWS.set(k, d);
   }
   return d;
@@ -341,4 +389,15 @@ export function clearConversation(): void {
   const a = useAgent.getState();
   for (const id of Object.keys(a.maps)) removeAgentMap(id);
   useAgent.setState({ messages: [], maps: {}, onMap: null, conversationId: `c_${Math.random().toString(36).slice(2, 10)}` });
+}
+
+// ?aid=a_... (a link to an agent area): its outline from the backend becomes the app's area
+const linkedArea = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("aid") : null;
+if (linkedArea && /^a_[0-9a-f]{12}$/.test(linkedArea)) {
+  void fetch(`${API_BASE}/api/areas/${linkedArea}`)
+    .then((r) => (r.ok ? (r.json() as Promise<AreaRec>) : null))
+    .then((a) => {
+      if (a) actions.setDrawn(specOfArea(a));
+    })
+    .catch(() => undefined);
 }

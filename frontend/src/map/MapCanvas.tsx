@@ -296,7 +296,8 @@ export default function MapCanvas() {
     map.on("dragstart", () => useApp.getState().sheet !== "none" && useApp.setState({ sheet: "none" }));
     map.on("moveend", () => {
       const c = map.getCenter();
-      writeUrl({ center: [c.lng, c.lat], zoom: map.getZoom(), pitch: map.getPitch(), bearing: map.getBearing() });
+      const b = map.getBounds();
+      writeUrl({ center: [c.lng, c.lat], zoom: map.getZoom(), pitch: map.getPitch(), bearing: map.getBearing(), box: [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()] });
       // the overview panel follows the camera: Europe or the US when it faces them, else the world
       const at: [number, number] = [c.lng, c.lat];
       const usZoom = isNarrow() ? 1.3 : 2.6; // closer than the world view: phones frame the US further out

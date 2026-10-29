@@ -90,3 +90,46 @@ def test_in_area_in_run_sql(ctx):
     assert "unknown area" in r["data"]["error"]
     r = run_sql(ctx, f"SELECT round(km_inside(ST_GeomFromText('LINESTRING(5 50, 16 50)'), '{de}'))")
     assert 400 < r["data"]["rows"][0][0] < 500
+
+
+def test_map_with_area_and_backend_shapes(ctx):
+    from tools.maps import make_map
+
+    a = area(ctx, names=["Oberbayern"])["area"]["area_id"]
+    r = run_sql(ctx, "SELECT nuts_id, 1.5 AS v FROM shapes.nuts")
+    spec = {
+        "title": "Test",
+        "area": {"area_id": a},
+        "overlays": [
+            {
+                "id": "c",
+                "kind": "choropleth",
+                "data": {"result_id": r["result_id"], "key": "nuts_id", "shapes": "nuts2"},
+                "value": {"column": "v", "unit": "x"},
+                "legend": {"title": "t", "how": "h"},
+                "source": "test",
+            }
+        ],
+    }
+    out = make_map(ctx, spec)
+    assert out["data"]["map_id"].startswith("m_"), out
+    rec = ctx.store.get_json(f"agent/maps/{out['data']['map_id']}.json")
+    assert a in rec["areas"] and rec["areas"][a]["geometry"]["type"] in ("Polygon", "MultiPolygon")
+    assert set(rec["shapes"]["nuts2"]["features"]) == {"NL42", "BE22", "DE21"}
+    bad = make_map(ctx, {**spec, "area": {"area_id": "a_000000000000"}})
+    assert "unknown area" in bad["data"]["error"]
+
+
+def test_area_routes():
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+
+    with TestClient(app) as c:
+        r = c.get("/api/areas/resolve", params={"q": "Oberbayern"}).json()
+        aid = r["area"]["area_id"]
+        g = c.get(f"/api/areas/{aid}").json()
+        assert g["name"] == "Oberbayern" and g["geometry"]["type"]
+        s = c.get("/api/shapes/nuts2/DEU").json()
+        assert list(s["features"]) == ["DE21"]
+        assert c.get("/api/shapes/nope/DEU").status_code == 404

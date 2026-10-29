@@ -22,7 +22,7 @@ RUN --mount=type=secret,id=ca,required=false \
 # DuckDB extensions installed at build: nothing is downloaded at start.
 RUN --mount=type=secret,id=ca,required=false \
     if [ -f /run/secrets/ca ]; then export SSL_CERT_FILE=/run/secrets/ca; fi; \
-    .venv/bin/python -c "import duckdb; c = duckdb.connect(config={'extension_directory': '/opt/duckdb_ext'}); [c.install_extension(e) for e in ('httpfs', 'spatial')]"
+    .venv/bin/python -c "import duckdb; c = duckdb.connect(config={'extension_directory': '/opt/duckdb_ext'}); [c.install_extension(e) for e in ('httpfs', 'spatial')]; c.install_extension('h3', repository='community')"
 
 FROM ${PYTHON_IMAGE}
 COPY --from=lwa /lambda-adapter /opt/extensions/lambda-adapter

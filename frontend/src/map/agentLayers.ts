@@ -13,6 +13,7 @@ import { create } from "zustand";
 
 import { ensure } from "../app/data";
 import type { CountriesFile, WorldFile } from "../app/types";
+import { polysOfGeometry } from "../lib/area";
 import { FUEL_COLOR } from "../lib/energy";
 import type { Overlay, ValueEncoding } from "../lib/mapspec";
 import type { Pt } from "../lib/measures";
@@ -26,11 +27,20 @@ import { memo } from "./memo";
 
 export type Row = Record<string, unknown>;
 /** One overlay of an agent map with its rows (app/agent.ts prepares them). */
+/** Outlines the backend sends with a map (GeoJSON geometry per key; brief 27 A3). */
+export interface ShapeFeature {
+  name: string;
+  at: [number, number];
+  geometry: { type: string; coordinates: unknown };
+}
 export interface AgentDraw {
   mapId: string;
   overlay: Overlay;
   rows: Row[];
+  /** the overlay's shape set as served with the map (backend outline sets, H3 cells, the area) */
+  shapes?: Record<string, ShapeFeature>;
 }
+
 
 const ON_TOP = { depthCompare: "always", depthWriteEnabled: false } as const;
 
@@ -123,8 +133,27 @@ const pairs = (flat: number[]): [number, number][] => {
 };
 
 /** Where a row goes: its lon/lat, else the label point and outline of its shape key. */
-function placesOf(o: Overlay, files: Record<string, unknown>): Places {
+function placesOf(o: Overlay, files: Record<string, unknown>, served?: Record<string, ShapeFeature>): Places {
   const d = o.data;
+  if (d.key && served) {
+    const own = memo(`agentServed:${d.shapes}`, [served], () => {
+      const m = new Map<string, { at: [number, number]; polys: [number, number][][][] }>();
+      for (const [k, f] of Object.entries(served)) m.set(k.toUpperCase(), { at: f.at, polys: polysOfGeometry(f.geometry) });
+      return m;
+    });
+    const look = (r: Row) => own.get(String(r[d.key ?? ""] ?? "").toUpperCase()) ?? null;
+    return {
+      at: (r) => {
+        if (d.lon && d.lat) {
+          const x = num(r[d.lon]);
+          const y = num(r[d.lat]);
+          return x == null || y == null ? null : [x, y];
+        }
+        return look(r)?.at ?? null;
+      },
+      shape: (r) => look(r)?.polys ?? null,
+    };
+  }
   const countries = files.countries as CountriesFile | undefined;
   const world = files.world as WorldFile | undefined;
   const states = files.usStates as UsStatesFile | undefined;
@@ -234,7 +263,7 @@ function overlayLayers(fr: Frame, draw: AgentDraw): Layer[] {
   const o = draw.overlay;
   const id = `agent:${draw.mapId}:${o.id}`;
   TIPS.set(id, o);
-  const P = placesOf(o, fr.files);
+  const P = placesOf(o, fr.files, draw.shapes);
   const enc: ValueEncoding | undefined = o.value ?? undefined;
   const valueCol = enc?.column ?? o.size?.column;
   const unit = enc?.unit ?? o.size?.unit ?? "";

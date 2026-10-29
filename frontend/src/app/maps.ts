@@ -1,6 +1,7 @@
 // The Maps view's themes: several maps of one place, one theme each (docs/VISUALIZATION.md #2).
 // A country dashboard opens with the themes that have data there, six at most.
 
+import type { AreaSpec } from "../lib/area";
 import { DATASET_BY_ID, covers } from "./datasets";
 import { mapsFor, useApp } from "./store";
 
@@ -25,6 +26,8 @@ export interface MapItem {
 export interface MapPanel {
   title: string;
   items: MapItem[];
+  /** this panel's own area (an agent map comparing places side by side) */
+  drawn?: AreaSpec;
   /** one panel of an agent map (app/agent.ts) */
   agent?: { mapId: string; panel: number };
 }

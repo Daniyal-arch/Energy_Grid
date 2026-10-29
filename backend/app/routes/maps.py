@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field
 
 from app.deps import settings
 from tools.context import ToolContext
-from tools.maps import check_map
+from tools.maps import check_map, map_extras
 
 router = APIRouter()
 
@@ -56,6 +56,7 @@ def save_map(body: SaveMap) -> dict[str, Any]:
             "spec": m.model_dump(exclude_none=True),
             "data": {rid: {"columns": r["columns"], "rows": r["rows"]} for rid, r in data.items()},
             "sources": sources,
+            **map_extras(ctx, m, data),
         },
     )
     return {"id": map_id, "link": f"?map={map_id}", "sources": sources}

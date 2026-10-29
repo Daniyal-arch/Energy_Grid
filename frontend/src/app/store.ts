@@ -303,6 +303,8 @@ export interface Camera {
   zoom: number;
   pitch?: number;
   bearing?: number;
+  /** the map's visible box [west, south, east, north] (sent to the agent as "the map on screen") */
+  box?: [number, number, number, number];
 }
 /** The Dashboards menu's sections ("Mine": saved in this browser). */
 export const DASHBOARD_GROUPS = ["Europe", "United States", "Countries", "World", "Mine"] as const;
@@ -379,6 +381,17 @@ export function specBounds(d: AreaSpec): [number, number, number, number] {
     const dLat = d.r / 111.2;
     const dLon = dLat / Math.max(0.05, Math.cos((d.at[1] * Math.PI) / 180));
     return [d.at[0] - dLon, d.at[1] - dLat, d.at[0] + dLon, d.at[1] + dLat];
+  }
+  if (d.kind === "shape") {
+    let [x0, y0, x1, y1] = [180, 90, -180, -90];
+    for (const p of d.polygons)
+      for (let i = 0; i + 1 < p[0].length; i += 2) {
+        x0 = Math.min(x0, p[0][i]);
+        x1 = Math.max(x1, p[0][i]);
+        y0 = Math.min(y0, p[0][i + 1]);
+        y1 = Math.max(y1, p[0][i + 1]);
+      }
+    return [x0, y0, x1, y1];
   }
   const xs = d.ring.map((q) => q[0]);
   const ys = d.ring.map((q) => q[1]);
@@ -841,6 +854,7 @@ export function writeUrl(camera?: Camera): void {
       p.set("poly", s.drawn.ring.map((q) => `${q[0]},${q[1]}`).join(";"));
       if (s.drawn.name) p.set("aname", s.drawn.name);
     }
+    if (s.drawn?.kind === "shape" && s.drawn.areaId) p.set("aid", s.drawn.areaId);
     if (s.drawn?.kind === "circle") p.set("circle", [s.drawn.at[0], s.drawn.at[1], s.drawn.r, ...(s.drawn.name ? [s.drawn.name] : [])].join(","));
     const name = s.title ?? findDashboard(s.dashboard)?.label;
     if (name) p.set("dname", name);

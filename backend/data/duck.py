@@ -98,7 +98,7 @@ class Lake:
         if s.duckdb_extension_dir:
             config["extension_directory"] = str(s.duckdb_extension_dir)
         con = duckdb.connect(":memory:", config=config)
-        for ext in ("httpfs", "spatial"):
+        for ext in ("httpfs", "spatial", "h3"):
             try:
                 con.load_extension(ext)
             except duckdb.Error:

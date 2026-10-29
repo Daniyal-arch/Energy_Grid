@@ -75,6 +75,10 @@ def _from_view(ctx: ToolContext, which: str) -> Area:
             raise AreaError("nothing is drawn on the map; ask the user to draw an area")
         if d.get("kind") == "circle":
             return A.circle(d["at"][0], d["at"][1], float(d["r"]), d.get("name"))
+        if d.get("kind") == "shape" and d.get("area_id"):
+            a = ctx.area_store.get(str(d["area_id"]))
+            if a is not None:
+                return a
         if d.get("kind") == "shape":
             polys = [
                 [[[r[i], r[i + 1]] for i in range(0, len(r), 2)] for r in p] for p in d["polygons"]

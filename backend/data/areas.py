@@ -263,11 +263,12 @@ class OutlineSet:
     licence: str = ""
 
 
-# the brief-27 B1 sets share one schema: id, name, level, iso3, parent_name, population,
-# geometry (GeoParquet with a bbox column), built by scripts/build_outlines.py
+# the brief-27 B1 sets share one schema: id, name, level, subtype, iso3, parent_name,
+# population, geometry (GeoParquet with a bbox column), built by scripts/build_outlines.py
 B1_SETS = {
     "divisions": ("Overture Maps divisions (division_area)", "ODbL 1.0 (Overture divisions)"),
     "adm2": ("geoBoundaries ADM2", "CC BY 4.0"),
+    "lau": ("Eurostat GISCO LAU 2024", "© EuroGeographics (built only with a licence)"),
     "us_places": ("US Census TIGER/Line places", "public domain"),
     "us_cousub": ("US Census TIGER/Line county subdivisions", "public domain"),
     "us_tracts": ("US Census TIGER/Line tracts", "public domain"),
@@ -1020,3 +1021,138 @@ class Areas:
 
 def area_ids_in(sql: str) -> list[str]:
     return sorted(set(AREA_ID.findall(sql)))
+
+
+# choropleth shape sets the backend serves (MapSpec data.shapes): set -> (outline set, filter)
+SHAPE_SETS: dict[str, tuple[str, str | None]] = {
+    "nuts0": ("nuts", "level = 0"),
+    "nuts1": ("nuts", "level = 1"),
+    "nuts2": ("nuts", "level = 2"),
+    "nuts3": ("nuts", "level = 3"),
+    "admin1": ("admin1", None),
+    "bidding_zones": ("zones", None),
+    "admin2": ("adm2", None),
+    "lau": ("lau", None),
+    "us_places": ("us_places", None),
+    "us_tracts": ("us_tracts", None),
+    "lsoa": ("uk_ons", "level = 'lsoa'"),
+    "msoa": ("uk_ons", "level = 'msoa'"),
+    "lad": ("uk_ons", "level = 'lad'"),
+    "iris": ("fr_iris", "level = 'iris'"),
+    "fr_communes": ("fr_iris", "level = 'fr_commune'"),
+    "nl_gemeente": ("nl_cbs", "level = 'nl_gemeente'"),
+    "nl_wijk": ("nl_cbs", "level = 'nl_wijk'"),
+    "nl_buurt": ("nl_cbs", "level = 'nl_buurt'"),
+    "urban_centres": ("urban_centres", None),
+}
+LOCAL_SHAPES = {"countries", "us_states"}  # drawn from the app's own files
+
+
+def shape_set_of(name: str) -> tuple[OutlineSet, str | None]:
+    """The outline table and filter of a shape set name ('nuts3', 'divisions:county' ...)."""
+    if name.startswith("divisions:"):
+        sub = name.split(":", 1)[1]
+        if not re.fullmatch(r"[a-z_]+", sub):
+            raise AreaError(f"bad divisions subtype {sub!r}")
+        return SET_BY_KEY["divisions"], f"subtype = '{sub}'"
+    if name not in SHAPE_SETS:
+        raise AreaError(f"unknown shape set {name!r}")
+    key, flt = SHAPE_SETS[name]
+    return SET_BY_KEY[key], flt
+
+
+def _shape_rows(rows: list[tuple]) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for key, name, gj, x, y in rows:
+        if gj is None:
+            continue
+        out[str(key)] = {"name": name, "at": [round(x, 5), round(y, 5)], "geometry": json.loads(gj)}
+    return out
+
+
+def shapes_of(
+    areas: Areas,
+    name: str,
+    *,
+    keys: list[str] | None = None,
+    iso3: str | None = None,
+    max_features: int = 20_000,
+) -> dict[str, Any]:
+    """Simplified outlines of a shape set, by key: the keys asked (a map's rows) or one
+    country's. Simplification: 1/1500 of the features' extent (at least ~50 m), per feature."""
+    if name == "us_counties":
+        want = {k.upper() for k in keys} if keys else None
+        feats = {
+            c["code"]: {
+                "name": f"{c['name']} County",
+                "at": c["label"],
+                "geometry": flat_to_geojson(c["polygons"]),
+            }
+            for c in areas.us_counties
+            if (want is None or c["code"] in want) and (iso3 in (None, "USA"))
+        }
+        return {"set": name, "features": feats, "source": "US Census cartographic boundary file"}
+    if name.startswith("h3:"):
+        return h3_shapes(areas, name, keys or [])
+    s, flt = shape_set_of(name)
+    if s.table not in areas.tables():
+        raise AreaError(f"shape set {name} is not built in this service's lake ({s.table})")
+    where = [flt] if flt else []
+    params: dict[str, Any] = {}
+    if keys is not None:
+        where.append(f"upper(CAST({s.id} AS VARCHAR)) IN (SELECT upper(unnest($keys)))")
+        params["keys"] = [str(k) for k in keys][:max_features]
+    if iso3:
+        where.append(f"(upper({s.iso}) = $iso OR upper({s.iso}) = $iso2)")
+        params["iso"] = iso3.upper()
+        params["iso2"] = next((k for k, v in ISO2_TO_ISO3.items() if v == iso3.upper()), "")
+    sql_where = " AND ".join(where) or "TRUE"
+    cur = areas._cur()
+    ext = cur.execute(
+        f"SELECT max(ST_XMax({s.geometry})) - min(ST_XMin({s.geometry})), "
+        f"max(ST_YMax({s.geometry})) - min(ST_YMin({s.geometry})), count(*) "
+        f"FROM {s.table} WHERE {sql_where}",
+        params,
+    ).fetchone()
+    if not ext or not ext[2]:
+        return {"set": name, "features": {}, "source": s.dataset, "licence": s.licence}
+    if ext[2] > max_features:
+        raise AreaError(f"{ext[2]} shapes in {name}: name a country or the keys")
+    tol = max(max(ext[0] or 0, ext[1] or 0) / 1500, 0.0005)
+    rows = cur.execute(
+        f"SELECT CAST({s.id} AS VARCHAR), {s.name}, "
+        f"ST_AsGeoJSON(ST_SimplifyPreserveTopology({s.geometry}, {tol})), "
+        f"ST_X(ST_PointOnSurface({s.geometry})), ST_Y(ST_PointOnSurface({s.geometry})) "
+        f"FROM {s.table} WHERE {sql_where}",
+        params,
+    ).fetchall()
+    return {
+        "set": name,
+        "features": _shape_rows(rows),
+        "source": s.dataset,
+        "licence": s.licence,
+        "simplified_deg": round(tol, 5),
+    }
+
+
+def h3_shapes(areas: Areas, name: str, keys: list[str]) -> dict[str, Any]:
+    """H3 cells' outlines (DuckDB's h3 extension) for the keys of a map's rows."""
+    cells = [str(k) for k in keys if k is not None][:50_000]
+    if not cells:
+        return {"set": name, "features": {}, "source": "H3 (Uber, Apache-2.0)"}
+    cur = areas._cur()
+    try:
+        rows = cur.execute(
+            """SELECT k, k, h3_cell_to_boundary_wkt(c), h3_cell_to_lng(c), h3_cell_to_lat(c)
+               FROM (SELECT k, CASE WHEN regexp_full_match(k, '[0-9]+') THEN CAST(k AS UBIGINT)
+                                    ELSE h3_string_to_h3(k) END AS c FROM unnest($k) t(k))""",
+            {"k": cells},
+        ).fetchall()
+    except Exception as e:
+        raise AreaError(f"H3 outlines not computed (h3 extension): {str(e)[:120]}") from e
+    gj = cur.execute(
+        "SELECT ST_AsGeoJSON(ST_GeomFromText(w)) FROM unnest($w) t(w)",
+        {"w": [r[2] for r in rows]},
+    ).fetchall()
+    rows = [(r[0], r[1], g[0], r[3], r[4]) for r, g in zip(rows, gj, strict=True)]
+    return {"set": name, "features": _shape_rows(rows), "source": "H3 cells (computed)"}
