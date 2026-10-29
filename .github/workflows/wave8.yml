@@ -32,6 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       groups: ${{ steps.p.outputs.groups }}
+      rvars: ${{ steps.p.outputs.rvars }}
     steps:
       - id: p
         run: |
@@ -39,7 +40,11 @@ jobs:
           import os, re
           g = os.environ["GROUPS"]
           m = re.search(r"\[w8: ([A-Z ]+)\]", g)
-          print("groups=" + (m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""))
+          groups = m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""
+          words = groups.split()
+          rvars = ["pop", "built"] if "R" in words else [v for v in ("pop", "built") if f"R{v}" in words]
+          print("groups=" + groups)
+          print("rvars=" + str(rvars).replace("'", '"'))
           PY
 
   O:
@@ -62,13 +67,13 @@ jobs:
 
   R:
     needs: plan
-    if: contains(needs.plan.outputs.groups, 'R')
+    if: needs.plan.outputs.rvars != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 300
     strategy:
       fail-fast: false
       matrix:
-        var: [pop, built]
+        var: ${{ fromJSON(needs.plan.outputs.rvars) }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -129,6 +134,38 @@ jobs:
           merge-multiple: true
       - working-directory: scripts
         run: python build_rasters.py mosaic ${{ matrix.name }} --upload
+
+  C:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'C')
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - run: pip install httpx duckdb pycountry openpyxl
+      - name: Energy figures per small area (each source on its own)
+        working-directory: scripts
+        run: python build_small_area_energy.py all --lake ../lake-out --upload
+      - uses: actions/upload-artifact@v4
+        with: {name: small-area-energy-status, path: /tmp/wave8/energy/status.json}
+
+  P:
+    needs: plan
+    if: contains(needs.plan.outputs.groups, 'P')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - run: pip install httpx
+      - run: python scripts/probe_wave8.py all | tee -a "$GITHUB_STEP_SUMMARY"
 
   T:
     needs: plan

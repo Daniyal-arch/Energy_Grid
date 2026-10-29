@@ -102,7 +102,7 @@ def ghsl(args: argparse.Namespace) -> None:
         z = w.download(f"{base}{name}.zip", TMP / f"{name}.zip")
         tif = next(w.unzip(z).rglob("*.tif"))
         out = TMP / f"R{r}_C{c}.tif"
-        cog(tif, out, predictor="3")
+        cog(tif, out)
         if args.upload:
             s3(str(out), f"s3://{BUCKET}/lake/rasters/ghsl_{args.var}_e2025_3ss/R{r}_C{c}.tif")
         done.append({"tile": f"R{r}_C{c}", "bytes": out.stat().st_size})
@@ -118,7 +118,7 @@ def ghsl(args: argparse.Namespace) -> None:
     z = w.download(world, TMP / f"{stem}_30ss.zip")
     tif = next(w.unzip(z).rglob("*.tif"))
     out = TMP / f"ghsl_{args.var}_e2025_30ss.tif"
-    cog(tif, out, predictor="3")
+    cog(tif, out)
     if args.upload:
         s3(str(out), f"s3://{BUCKET}/lake/rasters/{out.name}")
     cat = {
