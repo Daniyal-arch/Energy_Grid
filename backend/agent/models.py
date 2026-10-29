@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -84,9 +85,16 @@ def chat_model(entry: ModelEntry, settings: Any, *, role: str, max_tokens: int) 
         kwargs["max_output_tokens"] = max_tokens
         if settings.google_api_key:
             kwargs["google_api_key"] = settings.google_api_key
+    elif provider == "groq":
+        kwargs["max_tokens"] = max_tokens
+        if settings.groq_api_key:
+            kwargs["api_key"] = settings.groq_api_key
     elif provider in ("bedrock_converse", "bedrock"):
         kwargs["max_tokens"] = max_tokens
         kwargs["region_name"] = settings.aws_region
+        # a Bedrock API key instead of IAM credentials (boto3 reads this variable)
+        if settings.bedrock_api_key and not os.environ.get("AWS_BEARER_TOKEN_BEDROCK"):
+            os.environ["AWS_BEARER_TOKEN_BEDROCK"] = settings.bedrock_api_key
     elif provider == "ollama":
         kwargs["num_predict"] = max_tokens
     if entry.temperature is not None:

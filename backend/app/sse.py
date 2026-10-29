@@ -47,7 +47,12 @@ async def graph_events(stream: AsyncIterator[tuple[str, Any]]) -> AsyncIterator[
     async for mode, chunk in stream:
         if mode == "messages":
             msg, md = chunk
-            if md.get("langgraph_node") == "analyst":
+            # only the model's own words: the node's instructions to the model (a HumanMessage
+            # it adds, e.g. at the time limit) also pass through this stream
+            if md.get("langgraph_node") == "analyst" and getattr(msg, "type", "") in (
+                "ai",
+                "AIMessageChunk",
+            ):
                 text = chunk_text(msg)
                 if text:
                     yield event("text", {"delta": text})

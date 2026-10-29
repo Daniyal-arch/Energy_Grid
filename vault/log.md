@@ -8,6 +8,12 @@ updated: 2026-10-28
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-10-29** (main, local): backend tested locally on Groq (data routes, the agent end to end);
+  Groq and Bedrock API key support, Groq models in the registry, Bedrock probe (quotas 0);
+  fixes: internal instructions no longer stream as answer text, thousands with spaces ground,
+  answers do not paste the MapSpec; backend CI installs DuckDB's extensions; UTF-8 file IO.
+  Notes: agent-models.
+
 - **2026-10-28** (claude/room-to-connect-everywhere): browser discovery for the Cloudflare-checked
   operators (`scripts/browser_discover.py`, browser-fetch.yml sources "discover"): only
   Transelectrica passed, and it publishes requested capacity as an image; the rest stay data

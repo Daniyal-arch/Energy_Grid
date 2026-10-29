@@ -25,6 +25,8 @@ CANDIDATES = [
     ("ANTHROPIC_API_KEY", "claude-opus-5-5"),
     ("OPENAI_API_KEY", "gpt-6-luna"),
     ("GOOGLE_API_KEY", "gemini-3.8-flash"),
+    ("GROQ_API_KEY", "groq-gpt-oss-120b"),
+    ("GROQ_API_KEY", "groq-gpt-oss-20b"),
     ("AWS_BEDROCK_PROBE_MODEL", "bedrock"),
     (None, "fake"),
 ]

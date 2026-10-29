@@ -18,6 +18,8 @@ from typing import Any
 NUM = re.compile(
     r"(?<![\w.])-?\d{1,3}(?:,\d{3})+(?:\.\d+)?(?![\w])|(?<![\w.,])-?\d+(?:\.\d+)?(?![\w])"
 )
+# thousands written with a space (plain, no-break, thin or narrow no-break): "65 690" is 65690
+GROUPS = re.compile(r"(?<=\d)[ \u00a0\u2009\u202f](?=\d{3}(?!\d))")
 DATE = re.compile(r"\b\d{4}-\d{2}(?:-\d{2})?(?:[T ]\d{2}:\d{2}(?::\d{2})?)?\b")
 CODE = re.compile(r"`[^`]*`|\b[A-Za-z_]+\d+[A-Za-z_\d]*\b|\b[A-Za-z_]\w*\.\w+\b")
 SCALES = (1.0, 1e3, 1e-3, 1e6, 1e-6, 100.0, 0.01)
@@ -25,7 +27,7 @@ SCALES = (1.0, 1e3, 1e-3, 1e6, 1e-6, 100.0, 0.01)
 
 def numbers_in_text(text: str) -> list[tuple[str, float, int]]:
     """(as written, value, decimals) for each number that needs grounding."""
-    clean = DATE.sub(" ", text)
+    clean = DATE.sub(" ", GROUPS.sub("", text))
     clean = CODE.sub(" ", clean)
     out = []
     for m in NUM.finditer(clean):

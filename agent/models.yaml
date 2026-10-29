@@ -62,6 +62,23 @@ models:
     tool_calling: true
     caching: google_implicit
     temperature: null
+  # Groq (uv sync --extra groq; GROQ_API_KEY): open models served fast; no cache discount listed
+  - id: groq-gpt-oss-120b
+    model: groq:openai/gpt-oss-120b
+    role: main
+    prices: {input: 0.15, output: 0.60}
+    price_source: https://console.groq.com/docs/models (read 2026-10-29)
+    context: 131072
+    tool_calling: true
+    caching: none
+  - id: groq-gpt-oss-20b
+    model: groq:openai/gpt-oss-20b
+    role: fast
+    prices: {input: 0.075, output: 0.30}
+    price_source: https://console.groq.com/docs/models (read 2026-10-29)
+    context: 131072
+    tool_calling: true
+    caching: none
   # Bedrock (non-Claude models, paid by AWS credits): add an entry with the Converse model id and
   # the prices from https://aws.amazon.com/bedrock/pricing/ for the region, e.g.
   # - id: bedrock-example

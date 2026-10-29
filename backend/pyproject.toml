@@ -29,6 +29,7 @@ openai = ["langchain-openai>=0.3"]
 google = ["langchain-google-genai>=2.0"]
 aws = ["langchain-aws>=0.2"]
 ollama = ["langchain-ollama>=0.3"]
+groq = ["langchain-groq>=0.3"]
 
 [dependency-groups]
 dev = [

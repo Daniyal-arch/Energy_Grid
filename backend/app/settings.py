@@ -53,6 +53,9 @@ class Settings(BaseSettings):
     anthropic_api_key: str | None = None
     openai_api_key: str | None = None
     google_api_key: str | None = None
+    groq_api_key: str | None = None
+    # an Amazon Bedrock API key (bearer token); boto3 reads it as AWS_BEARER_TOKEN_BEDROCK
+    bedrock_api_key: str | None = None
 
     # the lake: a lake.duckdb (local path or r2://...) or a local directory of Parquet files
     lake_db: str | None = "r2://infraatlas-raw/lake/lake.duckdb"
@@ -138,6 +141,8 @@ SSM_NAMES = {
     "ANTHROPIC_API_KEY",
     "OPENAI_API_KEY",
     "GOOGLE_API_KEY",
+    "GROQ_API_KEY",
+    "BEDROCK_API_KEY",
     "R2_ACCOUNT_ID",
     "R2_ACCESS_KEY_ID",
     "R2_SECRET_ACCESS_KEY",

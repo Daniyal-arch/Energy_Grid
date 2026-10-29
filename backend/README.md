@@ -51,8 +51,8 @@ uv run python -m evals.run --model claude-opus-5-5 --sample 10 --needs app
 `AGENT_MODEL` (the analyst) and `AGENT_MODEL_FAST` (router and cartographer) take an id from
 `agent/models.yaml` or any `provider:model` (`openai:gpt-6.1-sol`, `google_genai:gemini-3.8-flash`,
 `bedrock_converse:<id>`, `ollama:<model>`). Install the provider's extra
-(`uv sync --extra openai|google|aws|ollama`, or `--build-arg EXTRAS="--extra openai"` for the
-image) and add the model to the registry with its prices so costs and the spend cap count it. A
+(`uv sync --extra openai|google|aws|ollama|groq`, or `--build-arg EXTRAS="--extra openai"` for
+the image) and add the model to the registry with its prices so costs and the spend cap count it. A
 request may pick a model (`"model"` in the body) only from `AGENT_MODELS_ALLOWED`.
 
 ## Deploy (GitHub Actions, `.github/workflows/backend.yml`)
