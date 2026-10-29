@@ -1337,6 +1337,105 @@
           "doc": "World tab"
         }
       ]
+    },
+    {
+      "id": "industrialFacilities",
+      "name": "Industrial facilities",
+      "category": "Industry",
+      "description": "Every facility reporting releases under the EU Industrial Emissions rules, newest reporting year",
+      "color": "rgb(214,160,255)",
+      "family": "industrial",
+      "parts": [
+        {
+          "layer": "w8Industrial",
+          "where": [
+            "EU",
+            "NO",
+            "IS",
+            "CH",
+            "GB"
+          ],
+          "what": "facility position, sector and reported releases to air",
+          "source": "EEA Industrial Reporting (E-PRTR / IED), CC BY 4.0",
+          "doc": "Wave 8 asset layers"
+        }
+      ]
+    },
+    {
+      "id": "excessHeat",
+      "name": "Excess heat",
+      "category": "Industry",
+      "description": "Industrial sites with excess heat potential",
+      "color": "rgb(255,150,90)",
+      "family": "heat_demand",
+      "parts": [
+        {
+          "layer": "w8ExcessHeat",
+          "where": [
+            "EU"
+          ],
+          "what": "site position and excess heat as published",
+          "source": "Hotmaps (CC BY 4.0)",
+          "doc": "Wave 8 asset layers"
+        }
+      ]
+    },
+    {
+      "id": "dams",
+      "name": "Dams",
+      "category": "Risk",
+      "description": "Dams and reservoirs worldwide",
+      "color": "rgb(96,170,255)",
+      "family": "dams",
+      "parts": [
+        {
+          "layer": "w8Dams",
+          "where": [
+            "World"
+          ],
+          "what": "dam position, height, reservoir capacity and use as published",
+          "source": "Global Dam Watch (GDW v1)",
+          "doc": "Wave 8 asset layers"
+        }
+      ]
+    },
+    {
+      "id": "co2Storage",
+      "name": "CO₂ storage",
+      "category": "Risk",
+      "description": "Assessed CO₂ storage units (assessment about 2013)",
+      "color": "rgb(140,220,180)",
+      "family": "co2_storage",
+      "parts": [
+        {
+          "layer": "w8Co2Storage",
+          "where": [
+            "Europe"
+          ],
+          "what": "storage unit position and assessed capacity",
+          "source": "CO2StoP (JRC), reuse with acknowledgement",
+          "doc": "Wave 8 asset layers"
+        }
+      ]
+    },
+    {
+      "id": "fires",
+      "name": "Fires",
+      "category": "Risk",
+      "description": "Current US fire perimeters; satellite detections when the FIRMS key is set",
+      "color": "rgb(255,96,48)",
+      "family": "fires",
+      "parts": [
+        {
+          "layer": "w8Fires",
+          "where": [
+            "US"
+          ],
+          "what": "perimeter and acres as published",
+          "source": "NIFC WFIGS; NASA FIRMS",
+          "doc": "Wave 8 asset layers"
+        }
+      ]
     }
   ]
 }

@@ -61,6 +61,11 @@ export type LayerId =
   | "chemicals"
   | "ironOre"
   | "dataCentres"
+  | "w8Industrial"
+  | "w8Dams"
+  | "w8Co2Storage"
+  | "w8ExcessHeat"
+  | "w8Fires"
   | "usOutages"
   | "water"
   | "protectedAreas"
@@ -175,6 +180,11 @@ export const LAYERS: LayerInfo[] = [
   { id: "evChargersUS", label: "EV fast chargers", desc: "Public DC fast charging stations, sized by ports (NREL AFDC)", group: "Industry & demand", coverage: "US", color: "rgb(96,214,255)" },
   { id: "hydrogen", label: "Hydrogen projects", desc: "Electrolysers and other clean-hydrogen plants, operating or being built (European Hydrogen Observatory)", group: "Industry & demand", coverage: "Europe", color: "rgb(96,214,255)" },
   { id: "dataCentres", label: "Data centres", desc: "Mapped in OpenStreetMap", group: "Industry & demand", coverage: "World", color: "rgb(196,150,255)" },
+  { id: "w8Industrial", label: "Industrial facilities", desc: "Every facility reporting releases to air, newest year (EEA Industrial Reporting, E-PRTR)", group: "Industry & demand", coverage: "Europe", color: "rgb(214,160,255)" },
+  { id: "w8ExcessHeat", label: "Excess heat", desc: "Industrial sites with excess heat (Hotmaps)", group: "Industry & demand", coverage: "Europe", color: "rgb(255,150,90)" },
+  { id: "w8Dams", label: "Dams", desc: "Barriers worldwide (Global Dam Watch)", group: "Risk", coverage: "World", color: "rgb(96,170,255)" },
+  { id: "w8Co2Storage", label: "CO₂ storage", desc: "Storage units assessed about 2013 (CO2StoP, JRC)", group: "Risk", coverage: "Europe", color: "rgb(140,220,180)" },
+  { id: "w8Fires", label: "Fires", desc: "Current US fire perimeters (NIFC); FIRMS detections when its key is set", group: "Risk", coverage: "US", color: "rgb(255,96,48)" },
   { id: "water", label: "Water stress", desc: "Water stress, flood and drought risk per river basin (WRI Aqueduct)", group: "Risk", coverage: "World", color: "rgb(255,153,0)" },
   { id: "usOutages", label: "US power outages", desc: "Customer-hours without power per county, newest year (EAGLE-I)", group: "Risk", coverage: "US", color: "rgb(230,120,80)" },
   { id: "protectedAreas", label: "Protected areas", desc: "Natura 2000 sites (EEA), PAD-US (USGS)", group: "Risk", coverage: "Europe, US", color: "rgb(96,186,120)" },

@@ -790,6 +790,16 @@ export function LayerLegend({ id }: { id: LayerId }) {
       return pointStatus("rgb(206,112,88)");
     case "dataCentres":
       return <Note>Zoomed out: count per area. A mapped subset, not every site.</Note>;
+    case "w8Industrial":
+      return <Note>Facilities reporting to the EEA; hover for the reported releases.</Note>;
+    case "w8Dams":
+      return <Note>Global Dam Watch barriers; hover for height and capacity.</Note>;
+    case "w8Co2Storage":
+      return <Note>CO2StoP storage units, assessed about 2013.</Note>;
+    case "w8ExcessHeat":
+      return <Note>Hotmaps industrial sites with excess heat.</Note>;
+    case "w8Fires":
+      return <Note>NIFC current perimeters; FIRMS detections need its key.</Note>;
     case "wind":
       return <Note>Brighter = stronger. ECMWF forecast (live), Open-Meteo (24 h).</Note>;
     case "sun":

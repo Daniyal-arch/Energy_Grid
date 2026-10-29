@@ -2,6 +2,7 @@
 // One render loop outside React advances the clocks and hands deck.gl its layers; React
 // only mounts this once. When nothing moves and nothing changed, a frame costs nothing.
 
+import { wave8Keys } from "./wave8Layers";
 import { AmbientLight, DirectionalLight, LightingEffect, MapView, _GlobeView as GlobeView, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
 import { REGISTER_LAYERS, registerKey } from "../lib/registers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
@@ -83,6 +84,7 @@ export function wantedKeys(zoom: number, L: Record<LayerId, boolean> = useApp.ge
   if (L.usQueue) keys.push("usQueue", "usPlants");
   if (L.plantsUS || L.turbinesUS || L.gridUS || L.usQueue) keys.push("usStates");
   if (L.dataCentres) keys.push("datacentres");
+  keys.push(...wave8Keys(L));
   if (L.evChargersUS) keys.push("evChargers");
   if (L.evChargersEU) keys.push("evEu");
   if (L.gasPipesUS) keys.push("usGasPipes");

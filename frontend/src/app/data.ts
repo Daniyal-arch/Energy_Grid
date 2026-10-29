@@ -153,6 +153,12 @@ const STATIC: Record<string, Loader> = {
   usRt: archive("us_rt.json"),
   worldStats: archive("world_stats.json"),
   datacentres: archive("datacentres.json"),
+  // data wave 8 (scripts/build_assets_w8.py)
+  w8Industrial: bundled("w8/industrial.json"),
+  w8Dams: bundled("w8/dams.json"),
+  w8Co2Storage: bundled("w8/co2storage.json"),
+  w8ExcessHeat: bundled("w8/excess_heat.json"),
+  w8Fires: bundled("w8/fires.json"),
   irena: archive("irena.json"),
   // ENTSOG gas flows per gas day (scripts/fetch_entsog.py, daily on eu-days)
   gasFlows: archive("gas_flows.json"),
