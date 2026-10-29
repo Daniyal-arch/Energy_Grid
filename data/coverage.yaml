@@ -2674,12 +2674,12 @@ families:
         partial: true
       BE:
         status: built
-        source: Statbel statistical sectors 2024; Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021; Statbel statistical sectors 2024 set up
         url: https://statbel.fgov.be/en/open-data/statistical-sectors-2024
-        licence: Statbel open data licence; ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
-        dataset: lake outlines/small_areas, lake outlines/divisions, outlines/geostat_grid
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); Statbel open data licence
+        dataset: lake outlines/divisions, outlines/geostat_grid
         checked: '2026-10-29'
-        note: national small areas plus the EU-wide layers
+        note: Statbel's sector file answered with an HTML page on 2026-10-29; the sectors join outlines/small_areas when it loads
       BG:
         status: built
         source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
@@ -3552,13 +3552,11 @@ families:
         checked: '2026-10-29'
         note: per LSOA, households
       US:
-        status: built
+        status: blocked
         source: Census ACS 2019-2023 B25040 house heating fuel
-        url: https://api.census.gov/data/2023/acs/acs5
-        licence: public domain
-        dataset: lake small_area_energy/heating (USA)
+        url: https://api.census.gov/data/key_signup.html
         checked: '2026-10-29'
-        note: per tract
+        note: "the Census API refuses requests without a key (redirect to missing_key.html); set CENSUS_API_KEY (free) and run wave8.yml group C. Request: a Census API key for the project account"
       NL:
         status: built
         source: CBS Kerncijfers wijken en buurten 2024
@@ -3958,8 +3956,8 @@ families:
         partial: true
       GB:
         status: built
-        source: DESNZ sub-regional fuel poverty 2025 report (2023 data)
-        url: https://www.gov.uk/government/statistics/sub-regional-fuel-poverty-report-2025-2023-data
+        source: DESNZ sub-regional fuel poverty 2026 (2024 data, LSOA)
+        url: https://www.gov.uk/government/statistics/sub-regional-fuel-poverty-data-2026-2024-data
         licence: OGL v3
         dataset: lake small_area_energy/poverty (GBR)
         checked: '2026-10-29'

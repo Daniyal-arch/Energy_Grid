@@ -39,3 +39,6 @@ inside MapLibre's WebGL context. State comes from [[state-and-datasets]]; datase
 
 > [!warning] Shared memo slots
 > Memo keys are global: anything that differs per map must include `fr.scope` in its key.
+- **Wave 8 layers** (`map/wave8Layers.ts`): industrial facilities, dams, CO₂ storage, excess
+  heat (points from `w8/*.json`) and fires (NIFC perimeters, FIRMS detections); hover cards list
+  the published fields with the source. Agent areas draw as `shape` specs (`lib/area.ts`).

@@ -1,7 +1,7 @@
 ---
 title: InfraAtlas vault index
 tags: [index]
-updated: 2026-10-27
+updated: 2026-10-29
 ---
 
 # InfraAtlas vault
@@ -30,6 +30,7 @@ Read this first, then only the notes your task needs (`.claude/skills/atlas-vaul
 - [[agent-backend]]: the agent and the backend service (brief 25; AWS Lambda, LangGraph, any model).
 - [[backend-service]]: FastAPI app, routes, SSE, DuckDB lake and SQL guard, caps, MCP server.
 - [[agent-tools]]: tools, catalogue, site figures, MapSpec, skills.
+- [[areas]]: resolve_area, the area object, in_area() in SQL, area_stats over rasters (brief 27).
 - [[agent-graph]]: the LangGraph flow, prompts, grounding check.
 - [[agent-models]]: model registry, providers, the fake model, evals.
 - [[backend-observability]]: spans, Langfuse, run records, EMF metrics, cost.

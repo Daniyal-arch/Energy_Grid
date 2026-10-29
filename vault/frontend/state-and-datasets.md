@@ -1,7 +1,7 @@
 ---
 title: State and datasets
 tags: [frontend, state]
-updated: 2026-10-27
+updated: 2026-10-29
 paths: [frontend/src/app/store.ts, frontend/src/app/datasets.json, frontend/src/app/datasets.ts, frontend/src/app/maps.ts, frontend/src/app/data.ts, frontend/src/app/areaShape.ts, frontend/src/lib/area.ts]
 ---
 
@@ -33,3 +33,6 @@ registry. Drawing is in [[map-rendering]]; styles and the Maps view in [[styles-
 - `edited` marks a changed dashboard; "Save as dashboard" keeps it in localStorage.
 - Every file a map needs is listed by `wantedKeys(zoom, layers)` in `map/MapCanvas.tsx`; a
   country's own files load only for the dashboard's countries.
+- **Wave 8**: LayerIds `w8Industrial`, `w8Dams`, `w8Co2Storage`, `w8ExcessHeat`, `w8Fires`;
+  datasets.json entries carry their coverage `family`; `?aid=` opens an agent area; the
+  camera's `box` goes to the agent with drawn shapes (`viewOf`).

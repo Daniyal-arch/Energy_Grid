@@ -1,7 +1,7 @@
 ---
 title: Decisions
 tags: [decisions]
-updated: 2026-10-28
+updated: 2026-10-29
 ---
 
 # Decisions
@@ -26,3 +26,6 @@ updated: 2026-10-28
 - **2026-10-28 No session links on GitHub.** Pull requests, commits, comments and files never
   link a Claude Code session; the links in PRs #1-#14 were removed. Replaces the CLAUDE.md rule
   that asked for the session link in every PR.
+- **2026-10-29 Licences for a paid product.** Datasets whose terms forbid commercial use are left
+  out and named: Eurostat GISCO LAU (non-commercial clause); NREL SLOPE (terms unreachable);
+  Overture divisions (ODbL) and the EA Pollution Inventory (EA conditional licence) are used.

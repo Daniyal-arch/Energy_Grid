@@ -8,6 +8,16 @@ updated: 2026-10-29
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-10-29** (claude/funny-euler-7vwg1s): brief 27 built: areas (`resolve_area`, area
+  object and store, `in_area()` macros with bbox pruning, `area_stats` over COGs, MapSpec
+  `area`/`shapes`, drawn and screen areas from the app, area-analysis skill, level matrix,
+  20 area evals, timing probe); wave 8 data (outlines at every level, GHSL/WorldCover/slope
+  rasters, energy per small area for FR, GB, NL, DK, PT, SE, IE, ES-CT, US, EEA industrial,
+  dams, CO2StoP, Hotmaps, fires, GEM ownership, TRI, EA Pollution Inventory), five map layers,
+  15 coverage families for 29 places, `wave8.yml`. Notes: areas (new), agent-tools, lake,
+  coverage-and-gaps, gotchas, decisions, pipeline-and-workflows, map-rendering,
+  state-and-datasets, index.
+
 - **2026-10-29** (main, local): brief 27 written (`docs/tasks/27-any-area-wave8.md`): the agent
   resolves any area (country to neighbourhood, drawn polygon, circle, zone, union, buffer,
   world), filters queries and clips maps to it, sums rasters inside it; data wave 8 chosen from

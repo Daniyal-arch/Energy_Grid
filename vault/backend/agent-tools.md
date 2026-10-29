@@ -42,3 +42,6 @@ result: `{data, sources: [{dataset, table, licence, retrieved}], result_id?}`.
   draws. MCP keeps them.
 - `run_sql` shows the model `sql_rows_returned` rows (default 200); maps and charts read all
   rows by `result_id`.
+- **Areas (brief 27)**: `resolve_area`, `area_stats`, `in_area()` in SQL; see [[areas]].
+  Catalogue entries for wave 8: outlines, small_area_energy, industrial, dams, co2stop,
+  hotmaps, gem_ownership, tri, uk_pi.
