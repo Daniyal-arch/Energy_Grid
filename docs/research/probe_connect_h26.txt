@@ -1,0 +1,131 @@
+AT-NETZNOE           page   200 'Trafokarte f&#xFC;r Einspeiser | Netz Nieder&#xF6;sterreich'  <https://netz-noe.at/strom/versorgungsgebiete-und-kapazitaeten/trafokarte-fuer-einspeiser>
+AT-NETZNOE-WMS       page   ERR ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local   <https://webgis.evn.at/cgi-bin/qgis_mapserv.fcgi.exe?SERVICE=WMS&REQUEST=GetCapabilities>
+AT-ENETZE            page   200 'Freie Einspeisekapazitäten'  <https://www.e-netze.at/Service/FEK/Default.aspx>
+AT-WIENERNETZE       page   200 'Startseite - Wiener Netze'  <https://www.wienernetze.at/>
+AT-NETZOOE           page   200 '- Netz Oberösterreich GmbH'  <https://www.netzooe.at/>
+AT-KNG               page   200 'Das Energienetz in K&auml;rnten | K&auml;rnten Netz GmbH'  <https://kaerntennetz.at/>
+BE-ELIA              page   403 'Just a moment...' [Cloudflare challenge]  <https://www.elia.be/en/customers/connection/grid-hosting-capacity>
+BE-FLUVIUS           page   200 'Aansluiting elektriciteit/gas/riolering aanvragen, wijzigen '  <https://www.fluvius.be/nl/aansluitingen>
+BE-ORES              page   200 'Distributeur énergie, électricité, gaz  | ORES'  <https://www.ores.be/>
+BE-SIBELGA           page   403 'Just a moment...' [Cloudflare challenge]  <https://www.sibelga.be/>
+BE-RESA              page   ERR ConnectError: [Errno 104] Connection reset by peer  <https://www.resa.be/>
+BG-ERP               page   200 'ERPSever :: Проверка на капацитета на електроразпределителна'  <https://www.erpsever.bg/bg/prisyedinjavane-kym-mrejata/proverka-na-kapaciteta-na-elektrorazpredelitelnata-mreja>
+BG-ERMZ              page   200 'Капацитет на ЕРМ Запад за ВЕИ производители'  <https://ermzapad.bg/bg/za-klienta/uslugi/prisedinyavaniya/proverka-za-nalichie-na-kapacitet-na-erm-zapad-za-vei-proizvoditeli/>
+BG-EVN               page   ERR ProxyError: 502 Bad Gateway  <https://www.elektrorazpredelenie.bg/>
+CY-TSO               page   403 'Attention Required! | Cloudflare' [Cloudflare challenge]  <https://www.tsoc.org.cy/>
+CY-EAC               page   ERR ConnectError: [Errno 104] Connection reset by peer  <https://www.eac.com.cy/EN/RegulatedActivities/Distribution/renewableenergy/Pages/hosting-capacity.aspx>
+CZ-CEZ               page   200 ''  <https://www.cezdistribuce.cz/cs/o-spolecnosti/informace-ze-sveta-cez-distribuce/kapacita-distribucni-site-v-mape-231626>
+CZ-EGD               page   403 'Údržba webu'  <https://www.egd.cz/>
+CZ-PRE               arcgis 200 [0] Oblast_distribuce n=1; [1] NN_oblast n=5134; [2] VN_oblast n=133; [3] VVN_oblast n=133  <https://services7.arcgis.com/0NBqUPRkQ8NgorYt/arcgis/rest/services/Mapa_Pripojitelnosti_PREdistribuce/FeatureServer>
+DE-TENNET            page   403 'Just a moment...' [Cloudflare challenge]  <https://www.tennet.eu/de/>
+DE-WESTNETZ          page   403 'Just a moment...' [Cloudflare challenge]  <https://www.westnetz.de/>
+DE-BAYERNWERK        page   403 'Just a moment...' [Cloudflare challenge]  <https://www.bayernwerk-netz.de/>
+DE-EDIS              page   403 'Just a moment...' [Cloudflare challenge]  <https://www.e-dis-netz.de/>
+DE-AVACON            page   403 'Just a moment...' [Cloudflare challenge]  <https://www.avacon-netz.de/>
+DE-SHNETZ            page   403 'Just a moment...' [Cloudflare challenge]  <https://www.sh-netz.com/>
+DE-NETZEBW           page   200 'Mittelspannungsauskunft - Netze BW GmbH'  <https://www.netze-bw.de/stromeinspeisung/mittelspannungsauskunft>
+DE-MITNETZ           page   200 'Reservierung Vorhalten der Einspeisekapazit&#228;t von PV- u'  <https://www.mitnetz-strom.de/energie-einspeisen/anlage-anmelden/reservierung>
+DE-RHEINNETZ         page   200 'Netzauslastung Strom und Gas | RheinNetz'  <https://www.rheinnetz.de/netzauslastung>
+DE-STROMNETZBERLIN   page   200 'Erzeugungsanlagen'  <https://www.stromnetz.berlin/einspeisen/erzeugungsanlagen-einspeisung/>
+DE-STROMNETZHH       page   500 'The URL you requested has been blocked'  <https://www.stromnetz-hamburg.de/>
+DE-EWE               page   200 'Energie einspeisen und nutzen'  <https://www.ewe-netz.de/einspeiser>
+DE-LEW               page   200 'LEW'  <https://www.lew-verteilnetz.de/lew-verteilnetz/fuer-einspeiser/in-das-oeffentliche-netz-einspeisen/netzvoranfrage>
+DK-RADIUS            page   200 'Status på kapacitet i transmissionsnettet - Radius Elnet'  <https://radiuselnet.dk/ny-tilslutning/store-tilslutninger/status-paa-kapacitet-i-transmissionsnettet/>
+EE-ELEKTRILEVI       page   200 'Avaleht - Elektrilevi' [Cloudflare challenge]  <https://elektrilevi.ee/et>
+ES-IDE               page   503 'i-DE. Grupo IBERDROLA. Service unavailable'  <https://www.i-de.es/>
+ES-UFD               page   403 '403 Forbidden'  <https://www.ufd.es/>
+FI-FINGRID           page   200 'Tarkastele liitynt&#228;mahdollisuuksia Verkkokiikarissa - F'  <https://www.fingrid.fi/kantaverkko/liitynta-kantaverkkoon/verkkokiikari/>
+FI-CARUNA            page   200 'Caruna | Tuomme sinulle sähkön | Caruna.fi'  <https://caruna.fi/>
+FI-HELEN             arcgis 200 [0] KJ_vapaa_kapasiteetti n=25  <https://services-eu1.arcgis.com/gTUn8bgbbRzjNT5i/arcgis/rest/services/KJ_vapaa_kapasiteetti/FeatureServer>
+FI-KSAT              arcgis 200 [0] Vapaa liityntäkapasiteetti n=5; [1] Karkea verkkoalueraja n=1  <https://services7.arcgis.com/KGuWrKWD3xbnD3gd/arcgis/rest/services/K_Sat_Kapasiteetti_2026_WFL1/FeatureServer>
+FI-NIVOS             arcgis 200 [0] Karkea verkkoalue n=1; [1] Vapaa liityntäkapasiteetti n=7  <https://services7.arcgis.com/KGuWrKWD3xbnD3gd/arcgis/rest/services/Nivos_kapasiteetti_2026_WFL1/FeatureServer>
+FI-NAANTALI          arcgis 200 [0] Vapaa liityntäkapasiteetti n=4; [1] Karkea verkkoalue n=1  <https://services7.arcgis.com/KGuWrKWD3xbnD3gd/arcgis/rest/services/Naantali_kapasiteetti_2026_WFL1/FeatureServer>
+FI-ELENIA-STORAGE    arcgis 200 [15] Sähkövarastokapasiteetti n=169  <https://services-eu1.arcgis.com/sNo97Nomxi3o06sY/arcgis/rest/services/Akustokapasiteetti/FeatureServer>
+FR-ENEDIS            page   200 'Enedis | Gestionnaire du réseau de distribution d’électricit'  <https://www.enedis.fr/>
+GR-ADMIE             page   200 'Ανεξάρτητος Διαχειριστής Μεταφοράς Ηλεκτρικής Ενέργειας | ΑΔ' files: /sites/default/files/inline-files/ipto_logos.zip  <https://www.admie.gr/>
+HR-HEPODS            json   200 362,491 B, 488 records  <https://kapaciteti.hep.hr/api/substations/with-data>
+HU-OPUS              page   ERR ProxyError: 502 Bad Gateway  <https://www.opusttitasz.hu/>
+HU-EON               page   200 'Lakossági szolgáltatások | E.ON'  <https://www.eon.hu/hu/lakossagi.html>
+IE-ESBN              page   200 'Home | ESB Networks'  <https://www.esbnetworks.ie/>
+IT-TERNA             page   200 'Connessione alla Rete - Terna spa'  <https://www.terna.it/it/sistema-elettrico/programmazione-territoriale-efficiente/connessione-rete>
+IT-EDIS              page   200 'Produttori di energia | e-distribuzione'  <https://www.e-distribuzione.it/a-chi-ci-rivolgiamo/produttori.html>
+IT-ARETI             page   200 'Connessione impianti di produzione | Areti'  <https://www.areti.it/servizi/connessione-impianti-produzione>
+IT-UNARETI           page   200 'Connessioni alle reti elettriche | Unareti'  <https://www.unareti.it/it/chi-siamo/informazioni-servizio/connessioni-reti-elettriche>
+LT-ESO               page   403 'Just a moment...' [Cloudflare challenge]  <https://www.eso.lt/>
+LV-AST               page   403 'Attention Required! | Cloudflare' [Cloudflare challenge]  <https://www.ast.lv/>
+LV-ST                page   ERR ConnectError: [Errno 104] Connection reset by peer  <https://sadalestikls.lv/>
+NL-TENNET            page   403 'Just a moment...' [Cloudflare challenge]  <https://www.tennet.eu/nl/>
+PL-ENEA              page   200 'Przyłączone i dostępne moce OZE | Enea Operator' [Power BI report]  <https://www.operator.enea.pl/przylaczone-i-dostepne-moce-oze>
+PL-ENERGA            page   200 'Strefy inwestycyjne Energa-Operator | MocneStrefy.pl'  <https://mocnestrefy.pl/>
+PL-TAURON            page   200 'Strona główna - Tauron Dystrybucja | Portal dla Klienta bizn'  <https://dostepnemoce.tauron-dystrybucja.pl/>
+PL-PGE               page   ERR ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local   <https://pgedystrybucja.pl/>
+PL-STOEN             page   200 'Chcę przyłączyć się do sieci | Stoen Operator'  <https://www.stoen.pl/pl/strona/chce-przylaczyc-sie-do-sieci>
+PT-REN               page   200 'REN | Redes Energéticas Nacionais'  <https://www.ren.pt/>
+RO-TEL               page   200 'Procesul de alocare a capacității rețelei electrice - Transe' [Cloudflare challenge]  <https://www.transelectrica.ro/procesul-de-alocare-a-capacitatii-retelei-electrice>
+RO-DELGAZ            page   403 'Just a moment...' [Cloudflare challenge]  <https://www.delgaz.ro/>
+RO-EDIS              page   403 'Attention Required! | Cloudflare' [Cloudflare challenge]  <https://www.e-distributie.com/>
+RO-DEER              page   200 'Distribuție Energie Electrică Romania'  <https://www.distributie-energie.ro/>
+RO-RETELE            page   403 ''  <https://www.reteleelectrice.ro/>
+SE-VATTENFALL        arcgis 200 [1] Sol n=1233; [2] Energilager n=1233; [3] Elkonsumtion medel n=1233; [4] Elkonsumtion lätt transport n=1233; [5] Elkonsumtion hög n=1233; [6] Vindkraft n=1233  <https://services-eu1.arcgis.com/dVRL7HtXQT22fiCW/arcgis/rest/services/Kategori_regionnät_260702/FeatureServer>
+SE-ELLEVIO           page   200 'Ellevio | Startsida'  <https://www.ellevio.se/>
+SE-EON               page   403 'Just a moment...' [Cloudflare challenge]  <https://www.eon.se/>
+SI-ELEKTRO           page   200 'Elektro Ljubljana'  <https://www.elektro-ljubljana.si/>
+SK-SEPS              page   200 'Slovenská elektrizačná prenosová sústava, a.s.'  <https://www.sepsas.sk/>
+SK-SSD               page   200 'Stredoslovenská distribučná, a.s.'  <https://www.ssd.sk/>
+NI-NIE               json   200 258,561 B, 241 records  <https://www.nienetworks.co.uk/Connections/Capacity-Map?markers=1>
+NI-SONI              page   200 'Home'  <https://www.soni.ltd.uk/>
+NO-STATNETT          page   200 'Statistikk om tilknytningssaker | Statnett' [Power BI report]  <https://www.statnett.no/nettkapasitet-til-produksjon-og-forbruk/foresporsler-og-reservasjon-i-nettet/>
+NO-ELVIA             page   200 'Elvia | Alt om str&#xF8;mnettet, nettleie og str&#xF8;mbrudd'  <https://www.elvia.no/>
+NO-NVE               page   200 'NVE - Norges vassdrags- og energidirektorat'  <https://www.nve.no/>
+CH-SWISSGRID         pdf    200 PDF 2 pages, 253,827 B: 'Anschlusskapazität Einspeisung/Produktion | Capacité de raccordement injection/production '  <https://www.swissgrid.ch/dam/jcr:35ab9f4a-89d9-4093-8d1d-f4348a0b1aed/Capa-2026-2030-2035-2040-prod.pdf>
+CH-EKZ               page   200 'Angebote für Ihr klimafreundliches Zuhause | EKZ'  <https://www.ekz.ch/>
+CH-BKW               page   200 'BKW Schweiz - Energie für Ihr Zuhause: Solarstrom, Wärme, La'  <https://www.bkw.ch/>
+CH-ELCOM             page   200 'Willkommen bei der Eidgenössischen Elektrizitätskommission E'  <https://www.elcom.admin.ch/>
+IS-LANDSNET          page   200 ''  <https://www.landsnet.is/>
+IS-RARIK             page   200 'Rarik - Forsíða'  <https://www.rarik.is/>
+RS-EMS               page   200 'Опис и капацитети &#8211; Електромрежа Србије'  <https://ems.rs/opis-i-kapaciteti/>
+RS-EDS               page   200 'Електродистрибуција Србије'  <https://elektrodistribucija.rs/>
+BA-NOSBIH            page   ERR ReadTimeout: The read operation timed out  <https://www.nosbih.ba/>
+BA-ELPRENOS          page   200 'Elektroprenos - Elektroprijenos BiH'  <https://www.elprenos.ba/>
+ME-CGES              page   200 'Priključenje na prenosnu mrežu - CGES'  <https://cges.me/o-nama/karta-prenosnog-sistema/prikljucenje-na-prenosnu-mrezu/>
+ME-CEDIS             page   200 ''  <https://cedis.me/prikljucenje-na-distributivni-sistem/>
+MK-MEPSO             page   200 'А.Д. МЕПСО - Приклучоци'  <https://www.mepso.com.mk/index.php/mk/doma/za-nas/prikluchoci>
+MK-EVN               page   200 'Приклучување на потрошувачи - ЕЛЕКТРОДИСТРИБУЦИЈА'  <https://www.elektrodistribucija.mk/Services.aspx>
+AL-OST               page   403 'Just a moment...' [Cloudflare challenge]  <https://www.ost.al/>
+AL-OSHEE             page   200 'Lidhje të reja - OSHEE - Operatori i shperndarjes'  <https://oshee.al/lidhje-te-re/>
+XK-KOSTT             page   ERR ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local   <https://www.kostt.com/>
+XK-KEDS              page   200 'KEDS Energy - KEDS'  <https://www.keds-energy.com/>
+MD-MOLDELECTRICA     page   403 'Just a moment...' [Cloudflare challenge]  <https://moldelectrica.md/>
+MD-PREMIER           page   200 'Premier Energy' [Cloudflare challenge]  <https://premierenergy.md/>
+UA-UKRENERGO         page   403 'Attention Required! | Cloudflare' [Cloudflare challenge]  <https://ua.energy/>
+UA-NEURC             page   200 'Головна | Національна комісія, що здійснює державне регулюва'  <https://www.nerc.gov.ua/>
+TR-TEIAS             pdf    200 PDF 19 pages, 937,368 B: '2026 YILI İÇİN DAĞITIM SEVİYESİNDEN TRANSFORMATÖR MERKEZİ BAZLI TAHSİS EDİLEN'  <https://webim.teias.gov.tr/file/54e18598-8a7f-48d1-bdd1-a7ee93cee521?download>
+TR-EPDK              page   200 'EPDK | T.C. Enerji Piyasası Düzenleme Kurumu'  <https://www.epdk.gov.tr/>
+US-CAISO             json   200 37,535,905 B, keys ['wcResults'], wcResults=3  <https://www.caiso.com/poi-heatmap/WClusterTrLimSumJson.json>
+US-MISO              json   200 8,924 B, 4 records  <https://cloud.cartovista.com/miso/api/v2/maps/maps>
+US-PNM               json   200 10,847 B, 5 records  <https://cloud.cartovista.com/pnm/api/v2/maps/maps>
+US-SOCO              json   401  <https://cloud.cartovista.com/southerncompany/api/v2/maps/maps>
+US-ISONE             page   404 'Page Not Found' [login]  <https://www.iso-ne.com/system-planning/interconnection-service/interconnection-heatmap>
+US-NYISO             page   200 'Interconnection Process - NYISO' [CartoVista map]  <https://www.nyiso.com/interconnections>
+US-SPP               page   200 'Generator Interconnection - Southwest Power Pool' [Power BI report]  <https://www.spp.org/engineering/generator-interconnection/>
+US-PJM               page   200 'PJM - Service Requests' [login]  <https://www.pjm.com/planning/service-requests>
+US-ERCOT             page   200 'Resource Adequacy' files: https://www.ercot.com/files/docs/2016/04/26/Reservoir_Prediction_Example.xlsx https://www.ercot.com/files/docs/2016/06/16/Retrospective_Analysis_of_the_2010_2015_Drought_in_ERCOT.zip https://www.ercot.com/files/docs/2025/02/07/Capacity%20Changes%20by%20Fuel%20Type%20Charts_January_2025.xlsx  <https://www.ercot.com/gridinfo/resource>
+US-BPA               page   200 'Interconnection - Bonneville Power Administration' [ArcGIS app] files: /-/media/Aep/transmission-media-documents/BPAFERC845Report.xlsx /-/media/Aep/transmission-media-documents/InterconnectionQueueOutput.xlsx  <https://www.bpa.gov/energy-and-services/transmission/interconnection>
+US-VELCO             page   403 '403 - Forbidden'  <https://www.velco.com/our-work/interconnection>
+US-PGE-OR            arcgis 200 [0] transmission_poi_SubPoints n=226; [1] transmission_poi_list n=36960  <https://services6.arcgis.com/eqsXlDArbs19VWhn/arcgis/rest/services/TransmissionCapacity_PointsOfInterconnection/FeatureServer>
+US-IPC               arcgis 200 [0] substation_capacity n=216; [1] injection_location n=213; [2] injection_line n=603733  <https://services1.arcgis.com/A5HVOoaVqcd8etEM/arcgis/rest/services/InterconnectCapacity/FeatureServer>
+US-LGEKU             arcgis 200 [0] LGE_KU_BusNames_TRLimit_2 n=2234; [1] TR_Lim_Calc n=1505000; [2] MW_Selection_Table n=900  <https://services.arcgis.com/NTSXKyJwdnK9ffCb/arcgis/rest/services/LGE_KU_FERC_Interconnection_HeatMap_MW/FeatureServer>
+US-AVA               arcgis 200 [0] All n=19764  <https://services3.arcgis.com/WlYQgAChrqj0tuQi/arcgis/rest/services/HeatMap_MW_Impact_PRD/FeatureServer>
+US-NVE               arcgis 200 [1] Executed n=85; [2] Executed - Suspended n=50; [3] In Study n=99  <https://services7.arcgis.com/Bq5yvxFKGREICK7t/arcgis/rest/services/NV_Energy_Interconnection_Queue/FeatureServer>
+US-TVA               page   ERR ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local   <https://www.oasis.oati.com/woa/docs/TVA/TVAdocs/>
+US-PACIFICORP        page   ERR ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local   <https://www.oasis.oati.com/woa/docs/PPW/PPWdocs/>
+US-APS               page   ERR ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local   <https://www.oasis.oati.com/woa/docs/AZPS/AZPSdocs/>
+US-XCEL              page   ERR ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local   <https://www.oasis.oati.com/woa/docs/PSCO/PSCOdocs/>
+US-DUKE              page   ERR ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local   <https://www.oasis.oati.com/woa/docs/DUK/DUKdocs/>
+US-NG-NY             arcgis 200 [0] Local Feeder Level Hosting Capacity for PV n=1913; [1] Substation Level Data n=1913; [2] Primary Level Hosting Capacity n=452342; [3] Phase 1 n=1818  <https://systemdataportal.nationalgrid.com/arcgis/rest/services/NYSDP/Hosting_Capacity_Data/MapServer>
+US-EVERSOURCE-MA     arcgis 200 [0] MA_HostingCapacity n=38  <https://services7.arcgis.com/TlTHaqj12dc3XKZt/arcgis/rest/services/MA_HostingCapacity/FeatureServer>
+US-EVERSOURCE-NH     arcgis 200 [0] NH_HostingCapacity n=100  <https://services7.arcgis.com/TlTHaqj12dc3XKZt/arcgis/rest/services/NH_Hosting_Capacity/FeatureServer>
+US-ORU               arcgis 200 [0] ORU Cost Sharing Projects n=11; [1] O&R EV Chargers - Energized n=208; [2] O&R EV Chargers - Energized with O&R Incentive n=166; [3] O&R EV Chargers - Under Construction n=77; [4] Alternative Fuel Corridors n=11; [5] Summer Load Capacity for 3PH Feeders n=90397; [6] Winter Load Capacity for 3PH Feeders n=90397; [7] No Load Capacity for 1PH and 2PH Feeders n=129875  <https://services.arcgis.com/ciPnsNFi1JLWVjva/arcgis/rest/services/IEDR_ORU/FeatureServer>
+US-ORNL-OEH          json   ERR ConnectError: [Errno 104] Connection reset by peer  <https://openenergyhub.ornl.gov/api/explore/v2.1/catalog/datasets?limit=100&where=search(%22hosting%22)>
+US-IEDR              page   200 ''  <https://iedr.nyserda.ny.gov/>
+US-DOE-ATLAS         page   200 'U.S. Atlas of Electric Distribution System Hosting Capacity ' [ArcGIS app]  <https://www.energy.gov/eere/us-atlas-electric-distribution-system-hosting-capacity-maps>
