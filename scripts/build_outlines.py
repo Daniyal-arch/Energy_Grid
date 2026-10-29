@@ -66,7 +66,7 @@ UK_LAYERS = {
     # level: (service, code field, name field)
     "itl1": ("ITL1_JAN_2025_UK_BGC", "ITL125CD", "ITL125NM"),
     "itl2": ("ITL2_JAN_2025_UK_BGC", "ITL225CD", "ITL225NM"),
-    "itl3": ("ITL3_JAN_2025_UK_BGC", "ITL325CD", "ITL325NM"),
+    "itl3": ("ITL3_JAN_2025_UK_BFC_V2", "ITL325CD", "ITL325NM"),
     "lad": ("Local_Authority_Districts_December_2024_Boundaries_UK_BGC", "LAD24CD", "LAD24NM"),
     "msoa": ("Middle_layer_Super_Output_Areas_December_2021_Boundaries_EW_BGC_V3", "MSOA21CD", "MSOA21NM"),
     "lsoa": ("Lower_layer_Super_Output_Areas_December_2021_Boundaries_EW_BGC_V5", "LSOA21CD", "LSOA21NM"),
@@ -118,7 +118,8 @@ def write(lk, con: duckdb.DuckDBPyConnection, table: str, query: str, **kw: obje
     lk.write(
         con,
         table,
-        f"SELECT {COLUMNS} FROM ({query}) WHERE geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)",
+        f"SELECT {COLUMNS} FROM (SELECT * EXCLUDE (geometry), ST_GeomFromWKB(ST_AsWKB(geometry)) AS geometry "
+        f"FROM ({query})) WHERE geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)",
         sort=["iso3", lakemod.hilbert("geometry")],
         geometry="geometry",
         **kw,
@@ -171,7 +172,7 @@ def divisions(args: argparse.Namespace) -> None:
     )
     q = """SELECT d.id, d.name, lv.level, a.subtype, i.iso3, p.name AS parent_name,
                   d.population::DOUBLE AS population, a.geometry
-           FROM a JOIN d ON d.id = a.division_id JOIN lv USING (subtype)
+           FROM a JOIN d ON d.id = a.division_id JOIN lv ON lv.subtype = a.subtype
            LEFT JOIN d p ON p.id = d.parent_division_id
            LEFT JOIN iso_codes i ON i.iso2 = a.country"""
     for (iso3,) in con.execute(
@@ -245,7 +246,11 @@ def uk(args: argparse.Namespace) -> None:
     lk = lake(args, "ONS Open Geography; Scottish Government; NISRA", "OGL v3")
     parts = []
     for level, (service, cd, nm) in UK_LAYERS.items():
-        f = arcgis_geojson(service, TMP / f"{service}.geojson")
+        try:
+            f = arcgis_geojson(service, TMP / f"{service}.geojson")
+        except SystemExit as e:  # one layer that fails is named; the others build
+            print(f"  {level} ({service}): not built ({e})", flush=True)
+            continue
         parts.append(
             f"""SELECT {cd} AS id, {nm} AS name, '{level}' AS level, '{service}' AS subtype, 'GBR' AS iso3,
                        NULL::VARCHAR AS parent_name, NULL::DOUBLE AS population, geom AS geometry FROM ST_Read('{f}')"""
@@ -403,12 +408,12 @@ NATIONAL: list[dict[str, str]] = [
     },
     {
         "iso3": "IRL", "level": "ie_small_area", "label": "CSO / Tailte Éireann Small Areas 2022 (generalised 20 m)",
-        "url": "https://data-osi.opendata.arcgis.com/api/download/v1/items/e6831d1cd2814d6b9bc7a7d9ab1c4d50/geojson?layers=0",
-        "id": "SA_PUB2022", "name": "ED_ENGLISH", "crs": "EPSG:4326", "licence": "CC BY 4.0",
+        "url": "https://data-osi.opendata.arcgis.com/api/download/v1/items/9472cff586d74f2ba3c240d4344c5720/geojson?layers=0",
+        "id": "SA_GEOGID_2022", "name": "ED_ENGLISH", "crs": "EPSG:4326", "licence": "CC BY 4.0",
     },
     {
         "iso3": "SWE", "level": "se_deso", "label": "SCB DeSO 2025 (demographic statistical areas)",
-        "url": "https://geodata.scb.se/geoserver/stat/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=stat:DeSO_2025&outputFormat=application/json&srsName=EPSG:4326",
+        "url": "https://geodata.scb.se/geoserver/stat/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=stat:DeSO_2025&outputFormat=application/json&srsName=EPSG:4326",
         "id": "desokod", "name": "desokod", "crs": "EPSG:4326", "licence": "CC0 (SCB open geodata)",
     },
 ]  # fmt: skip
@@ -437,9 +442,9 @@ def national(args: argparse.Namespace) -> None:
                 for c in con.execute(f"DESCRIBE SELECT * FROM ST_Read('{f}')").fetchall()
             }
             geom = (
-                "geom"
+                "ST_GeomFromWKB(ST_AsWKB(geom))"
                 if s["crs"] == "EPSG:4326"
-                else f"ST_Transform(geom, '{s['crs']}', 'EPSG:4326')"
+                else f"ST_GeomFromWKB(ST_AsWKB(ST_Transform(geom, '{s['crs']}', 'EPSG:4326')))"
             )
             parts.append(
                 f"""SELECT CAST("{cols[s['id'].lower()]}" AS VARCHAR) AS id, CAST("{cols[s['name'].lower()]}" AS VARCHAR) AS name,
@@ -460,7 +465,9 @@ def names(args: argparse.Namespace) -> None:
     con = con_spatial()
     root = Path(args.lake) / "outlines"
     parts = []
-    for t in sorted(p for p in root.iterdir() if p.is_dir() and p.name != "names"):
+    for t in sorted(
+        p for p in root.iterdir() if p.is_dir() and p.name != "names" and any(p.rglob("*.parquet"))
+    ):
         parts.append(
             f"""SELECT '{t.name}' AS "set", id, name, level, subtype, iso3, parent_name, population,
                        bbox.xmin AS xmin, bbox.ymin AS ymin, bbox.xmax AS xmax, bbox.ymax AS ymax
