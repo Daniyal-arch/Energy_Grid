@@ -10,6 +10,7 @@ import { actions, readUrl, useApp, writeUrl } from "../app/store";
 import { DashboardBuilder, DashboardList, DashboardsMenu } from "./Dashboards";
 import { Catalogue } from "./Catalogue";
 import { MapsButton, MapsView } from "./MapsView";
+import { AskButton } from "./AskTab";
 import LayersPanel from "./LayersPanel";
 import MapLegend from "./MapLegend";
 import MapOptions from "./MapOptions";
@@ -88,6 +89,7 @@ function Desktop() {
           <CheckSite />
           <DrawArea />
           <MapsButton />
+          <AskButton />
         </div>
         <TimeControl />
       </header>

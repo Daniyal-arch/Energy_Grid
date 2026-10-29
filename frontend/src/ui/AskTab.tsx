@@ -21,6 +21,21 @@ const EXAMPLES = [
   "Map the room to connect new generation in Great Britain",
 ];
 
+/** The top bar's way to the agent: opens the Ask tab of the context panel. */
+export function AskButton() {
+  const on = useApp((s) => s.tab === "ask");
+  const busy = useAgent((s) => s.busy);
+  return (
+    <button
+      onClick={() => useApp.setState({ tab: on ? "dashboard" : "ask", sheet: "panel" })}
+      className={`shrink-0 rounded-lg border px-2.5 py-1.5 text-[12px] ${on ? "border-sky-400/50 bg-sky-400/15 text-sky-100" : "border-sky-300/30 bg-[#0b0f16]/90 text-sky-200 hover:bg-sky-400/10"}`}
+      title="Ask the agent: answers from the atlas's data, with maps"
+    >
+      ✦ Ask{busy ? " …" : ""}
+    </button>
+  );
+}
+
 export function AskTab() {
   const messages = useAgent((s) => s.messages);
   const busy = useAgent((s) => s.busy);
