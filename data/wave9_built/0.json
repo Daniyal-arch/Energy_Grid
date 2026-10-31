@@ -8,8 +8,33 @@
   "error": "SystemExit: kind ods_api is not built"
  },
  "de_zensus_heating": {
-  "built": null,
-  "error": "KeyError: 'skip'"
+  "bbox": [
+   6.637,
+   47.441,
+   14.972,
+   54.212
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "gitter_id_100m",
+   "x_mp_100m",
+   "y_mp_100m",
+   "insgesamt_heizungsart",
+   "fernheizung",
+   "etagenheizung",
+   "blockheizung",
+   "zentralheizung",
+   "einzel_mehrraumoefen",
+   "keine_heizung"
+  ],
+  "example": {
+   "answer": 42,
+   "sql": "SELECT count(*) FROM wave9.de_zensus_heating"
+  },
+  "geometry": true,
+  "rows": 42,
+  "seconds": 5,
+  "with_position": 42
  },
  "es_ine_secciones": {
   "bbox": [
@@ -47,8 +72,75 @@
   },
   "geometry": true,
   "rows": 36477,
-  "seconds": 69,
+  "seconds": 72,
   "with_position": 36477
+ },
+ "eu_emodnet_hydrocarbon_licences": {
+  "bbox": [
+   -1.7976931348623157e+308,
+   -1.7976931348623157e+308,
+   35.838,
+   80.683
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "status",
+   "country",
+   "code",
+   "name",
+   "year",
+   "purpose",
+   "content",
+   "operator",
+   "company",
+   "distance",
+   "depth",
+   "geometry"
+  ],
+  "example": {
+   "answer": 28506,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_hydrocarbon_licences"
+  },
+  "geometry": true,
+  "rows": 28506,
+  "seconds": 2,
+  "with_position": 28506
+ },
+ "eu_emodnet_pipelines": {
+  "bbox": [
+   -11.059,
+   35.996,
+   28.142,
+   71.569
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "name",
+   "status",
+   "medium",
+   "operator",
+   "size_in",
+   "length_m",
+   "year",
+   "from_loc",
+   "to_loc",
+   "country_co",
+   "country",
+   "notes",
+   "geometry"
+  ],
+  "example": {
+   "answer": 3951,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_pipelines"
+  },
+  "geometry": true,
+  "rows": 3951,
+  "seconds": 5,
+  "with_position": 3951
  },
  "fi_paavo": {
   "bbox": [
@@ -126,7 +218,7 @@
   },
   "geometry": true,
   "rows": 3026,
-  "seconds": 6,
+  "seconds": 5,
   "with_position": 3026
  },
  "gb_ea_flood_zones": {
@@ -150,12 +242,80 @@
   },
   "geometry": true,
   "rows": 415408,
-  "seconds": 548,
+  "seconds": 523,
   "with_position": 415408
  },
  "ie_cso_saps_heating": {
-  "built": null,
-  "error": "KeyError: 'sep'"
+  "built": "2026-10-31",
+  "columns": [
+   "guid",
+   "geogid",
+   "geogdesc",
+   "ur_category",
+   "ur_category_desc",
+   "t1_1age0m",
+   "t1_1age1m",
+   "t1_1age2m",
+   "t1_1age3m",
+   "t1_1age4m",
+   "t1_1age5m",
+   "t1_1age6m",
+   "t1_1age7m",
+   "t1_1age8m",
+   "t1_1age9m",
+   "t1_1age10m",
+   "t1_1age11m",
+   "t1_1age12m",
+   "t1_1age13m",
+   "t1_1age14m",
+   "t1_1age15m",
+   "t1_1age16m",
+   "t1_1age17m",
+   "t1_1age18m",
+   "t1_1age19m",
+   "t1_1age20_24m",
+   "t1_1age25_29m",
+   "t1_1age30_34m",
+   "t1_1age35_39m",
+   "t1_1age40_44m",
+   "t1_1age45_49m",
+   "t1_1age50_54m",
+   "t1_1age55_59m",
+   "t1_1age60_64m",
+   "t1_1age65_69m",
+   "t1_1age70_74m",
+   "t1_1age75_79m",
+   "t1_1age80_84m",
+   "t1_1agege_85m",
+   "t1_1agetm",
+   "t1_1age0f",
+   "t1_1age1f",
+   "t1_1age2f",
+   "t1_1age3f",
+   "t1_1age4f",
+   "t1_1age5f",
+   "t1_1age6f",
+   "t1_1age7f",
+   "t1_1age8f",
+   "t1_1age9f",
+   "t1_1age10f",
+   "t1_1age11f",
+   "t1_1age12f",
+   "t1_1age13f",
+   "t1_1age14f",
+   "t1_1age15f",
+   "t1_1age16f",
+   "t1_1age17f",
+   "t1_1age18f",
+   "t1_1age19f"
+  ],
+  "example": {
+   "answer": 18920,
+   "sql": "SELECT count(*) FROM wave9.ie_cso_saps_heating"
+  },
+  "geometry": false,
+  "rows": 18920,
+  "seconds": 4
  },
  "it_istat_sezioni": {
   "bbox": [
@@ -198,12 +358,12 @@
   },
   "geometry": true,
   "rows": 756376,
-  "seconds": 185,
+  "seconds": 130,
   "with_position": 756376
  },
  "pt_ine_bgri": {
   "built": null,
-  "error": "SystemExit: download failed: https://mapas.ine.pt/download/filesGPG/2021/BGRI21_CONT.zip"
+  "error": "BadZipFile: File is not a zip file"
  },
  "us_eia_crude_pipelines": {
   "bbox": [
@@ -513,7 +673,7 @@
   },
   "geometry": true,
   "rows": 130,
-  "seconds": 0,
+  "seconds": 1,
   "with_position": 130
  }
 }
