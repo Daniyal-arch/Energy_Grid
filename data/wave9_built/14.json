@@ -1,0 +1,6 @@
+{
+ "eu_nuclear_capacity": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ }
+}
