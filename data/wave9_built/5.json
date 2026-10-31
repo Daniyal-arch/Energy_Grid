@@ -1,6 +1,11 @@
 {
  "eu_degree_days": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 30,
+   "period": "2025",
+   "scope": "country"
+  },
   "columns": [
    "dataflow",
    "last_update",
@@ -19,7 +24,7 @@
   },
   "geometry": false,
   "rows": 39600,
-  "seconds": 4
+  "seconds": 1034
  },
  "eu_energy_productivity": {
   "built": "2026-10-31",
@@ -46,6 +51,11 @@
  },
  "eu_ev_stock_nuts2": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 35,
+   "period": "2024",
+   "scope": "country"
+  },
   "columns": [
    "dataflow",
    "last_update",
@@ -64,10 +74,11 @@
   },
   "geometry": false,
   "rows": 15106,
-  "seconds": 1
+  "seconds": 2
  },
  "eu_heat_pumps": {
   "built": "2026-10-31",
+  "choro": null,
   "columns": [
    "dataflow",
    "last_update",
@@ -87,10 +98,15 @@
   },
   "geometry": false,
   "rows": 24857,
-  "seconds": 2
+  "seconds": 3
  },
  "eu_new_cars_fuel": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 41,
+   "period": "2024",
+   "scope": "country"
+  },
   "columns": [
    "dataflow",
    "last_update",
@@ -114,6 +130,11 @@
  },
  "eu_renewable_capacity": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 41,
+   "period": "2019",
+   "scope": "country"
+  },
   "columns": [
    "dataflow",
    "last_update",
@@ -153,7 +174,7 @@
   },
   "geometry": false,
   "rows": 773782,
-  "seconds": 5
+  "seconds": 6
  },
  "gb_dec_certificates": {
   "built": "2026-10-31",
@@ -178,7 +199,7 @@
   },
   "geometry": false,
   "rows": 90,
-  "seconds": 21
+  "seconds": 25
  },
  "gb_dft_veh0142": {
   "built": "2026-10-31",
@@ -199,7 +220,7 @@
   },
   "geometry": false,
   "rows": 2520,
-  "seconds": 7
+  "seconds": 9
  },
  "gb_epc_stats": {
   "built": "2026-10-31",
@@ -223,7 +244,7 @@
   },
   "geometry": false,
   "rows": 90,
-  "seconds": 20
+  "seconds": 23
  },
  "gb_ulev_la": {
   "built": "2026-10-31",
@@ -278,7 +299,7 @@
   },
   "geometry": false,
   "rows": 484,
-  "seconds": 2
+  "seconds": 3
  },
  "ie_cso_dc_consumption": {
   "built": "2026-10-31",
@@ -299,7 +320,7 @@
   },
   "geometry": false,
   "rows": 1650,
-  "seconds": 2
+  "seconds": 1
  },
  "nl_cbs_solar": {
   "built": null,
