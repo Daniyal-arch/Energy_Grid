@@ -64,7 +64,7 @@
   },
   "geometry": false,
   "rows": 15106,
-  "seconds": 2
+  "seconds": 1
  },
  "eu_heat_pumps": {
   "built": "2026-10-31",
@@ -87,7 +87,7 @@
   },
   "geometry": false,
   "rows": 24857,
-  "seconds": 3
+  "seconds": 2
  },
  "eu_new_cars_fuel": {
   "built": "2026-10-31",
@@ -113,20 +113,94 @@
   "seconds": 1
  },
  "fr_ore_ev_commune": {
-  "built": null,
-  "error": "InvalidInputException: Invalid Input Error: File is not latin-1 encoded\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('/tmp/wave9/fr_ore_ev_commune/src.csv', sample_size...\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+  "built": "2026-10-31",
+  "columns": [
+   "codgeo",
+   "libgeo",
+   "epci",
+   "libepci",
+   "date_arrete",
+   "nb_vp_rechargeables_el",
+   "nb_vp_rechargeables_gaz",
+   "nb_vp"
+  ],
+  "example": {
+   "answer": 773782,
+   "sql": "SELECT count(*) FROM wave9.fr_ore_ev_commune"
+  },
+  "geometry": false,
+  "rows": 773782,
+  "seconds": 5
  },
  "gb_dec_certificates": {
-  "built": null,
-  "error": "StopIteration: "
+  "built": "2026-10-31",
+  "columns": [
+   "year",
+   "quarter",
+   "number_lodgements",
+   "total_floor_area_m2",
+   "A+",
+   "a",
+   "b",
+   "c",
+   "d",
+   "e",
+   "f",
+   "g",
+   "not_recorded"
+  ],
+  "example": {
+   "answer": 90,
+   "sql": "SELECT count(*) FROM wave9.gb_dec_certificates"
+  },
+  "geometry": false,
+  "rows": 90,
+  "seconds": 18
  },
  "gb_dft_veh0142": {
-  "built": null,
-  "error": "StopIteration: "
+  "built": "2026-10-31",
+  "columns": [
+   "geography",
+   "date",
+   "units",
+   "bodytype",
+   "battery_electric",
+   "plug_in_hybrid_electric_petrol",
+   "plug_in_hybrid_electric_diesel",
+   "range_extended_electric",
+   "total"
+  ],
+  "example": {
+   "answer": 2520,
+   "sql": "SELECT count(*) FROM wave9.gb_dft_veh0142"
+  },
+  "geometry": false,
+  "rows": 2520,
+  "seconds": 6
  },
  "gb_epc_stats": {
-  "built": null,
-  "error": "StopIteration: "
+  "built": "2026-10-31",
+  "columns": [
+   "year",
+   "quarter",
+   "number_lodgements",
+   "total_floor_area_m2",
+   "a",
+   "b",
+   "c",
+   "d",
+   "e",
+   "f",
+   "g",
+   "not_recorded"
+  ],
+  "example": {
+   "answer": 90,
+   "sql": "SELECT count(*) FROM wave9.gb_epc_stats"
+  },
+  "geometry": false,
+  "rows": 90,
+  "seconds": 16
  },
  "gb_ulev_la": {
   "built": "2026-10-31",
@@ -181,7 +255,7 @@
   },
   "geometry": false,
   "rows": 484,
-  "seconds": 6
+  "seconds": 2
  },
  "ie_cso_dc_consumption": {
   "built": "2026-10-31",
@@ -202,7 +276,7 @@
   },
   "geometry": false,
   "rows": 1650,
-  "seconds": 1
+  "seconds": 2
  },
  "nl_cbs_solar": {
   "built": null,
@@ -210,6 +284,6 @@
  },
  "us_nyc_ll84": {
   "built": null,
-  "error": "BinderException: Binder Error: Referenced column \"longitude\" not found in FROM clause!\nCandidate bindings: \"json\"\n\nLINE 1: ... ST_YMax(geometry)) AS bbox FROM (SELECT *, CASE WHEN TRY_CAST(longitude AS DOUBLE) BETWEEN -180 AND 180 AND TRY_CAST(lati...\n                                                                 "
+  "error": "InvalidInputException: Invalid Input Error: JSON transform error in file \"/tmp/wave9/us_nyc_ll84/src.json\", in record/value 30486: Object {\"report_year\":\"2023\",\"property_id\":\"6664906\",\"pro... has unknown key \"eligible_for_certification_for_report_ped_y_n_\"\nTry increasing 'sample_size', reducing 'maximum_depth', specifying"
  }
 }
