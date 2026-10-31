@@ -17,7 +17,31 @@
   },
   "geometry": false,
   "rows": 723195,
-  "seconds": 15
+  "seconds": 22
+ },
+ "eu_nonhousehold_prices": {
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "customer",
+   "nrg_prc",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2307,
+   "sql": "SELECT count(*) FROM wave9.eu_nonhousehold_prices"
+  },
+  "geometry": false,
+  "rows": 2307,
+  "seconds": 1
  },
  "gb_elexon_balancing": {
   "built": "2026-10-31",
