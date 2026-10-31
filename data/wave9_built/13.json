@@ -1,14 +1,85 @@
 {
  "eu_air_passengers": {
-  "built": null,
-  "error": "KeyError: 'sep'"
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "tra_meas",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 10203,
+   "sql": "SELECT count(*) FROM wave9.eu_air_passengers"
+  },
+  "geometry": false,
+  "rows": 10203,
+  "seconds": 2
  },
  "eu_rail_electrified": {
-  "built": null,
-  "error": "KeyError: 'sep'"
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "power",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2651,
+   "sql": "SELECT count(*) FROM wave9.eu_rail_electrified"
+  },
+  "geometry": false,
+  "rows": 2651,
+  "seconds": 2
  },
  "world_ourairports_runways": {
-  "built": null,
-  "error": "KeyError: 'sep'"
+  "bbox": [
+   -179.881,
+   -89.966,
+   179.339,
+   82.513
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "id",
+   "airport_ref",
+   "airport_ident",
+   "length_ft",
+   "width_ft",
+   "surface",
+   "lighted",
+   "closed",
+   "le_ident",
+   "le_latitude_deg",
+   "le_longitude_deg",
+   "le_elevation_ft",
+   "le_heading_degt",
+   "le_displaced_threshold_ft",
+   "he_ident",
+   "he_latitude_deg",
+   "he_longitude_deg",
+   "he_elevation_ft",
+   "he_heading_degt",
+   "he_displaced_threshold_ft"
+  ],
+  "example": {
+   "answer": 48388,
+   "sql": "SELECT count(*) FROM wave9.world_ourairports_runways"
+  },
+  "geometry": true,
+  "rows": 48388,
+  "seconds": 0,
+  "with_position": 15699
  }
 }
