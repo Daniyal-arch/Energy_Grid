@@ -19,7 +19,7 @@
   },
   "geometry": false,
   "rows": 12354,
-  "seconds": 1
+  "seconds": 2
  },
  "fr_georisques_ssp": {
   "built": null,
@@ -58,7 +58,7 @@
   },
   "geometry": true,
   "rows": 379683,
-  "seconds": 160,
+  "seconds": 208,
   "with_position": 379683
  },
  "gb_ne_alc": {
@@ -84,7 +84,7 @@
   },
   "geometry": true,
   "rows": 1826,
-  "seconds": 4,
+  "seconds": 6,
   "with_position": 1826
  },
  "us_blm_solar_dla": {
@@ -145,7 +145,7 @@
   },
   "geometry": true,
   "rows": 74636,
-  "seconds": 17,
+  "seconds": 29,
   "with_position": 74636
  },
  "world_ourairports": {
