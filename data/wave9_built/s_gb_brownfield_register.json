@@ -1,10 +1,10 @@
 {
  "gb_brownfield_register": {
   "bbox": [
-   null,
-   null,
-   null,
-   null
+   -6.945,
+   49.916,
+   2.527,
+   55.777
   ],
   "built": "2026-10-31",
   "columns": [
@@ -47,8 +47,19 @@
   "rows": 40229,
   "seconds": 1,
   "tiles": {
-   "error": "Merging index                  | 0 features, 12 bytes of geometry and attributes, 0 bytes of string pool, 0 bytes of vertices, 0 bytes of nodes | Did not read any valid geometries"
+   "fields": [
+    "name",
+    "dataset",
+    "end_date",
+    "entity",
+    "entry_date",
+    "organisation_entity",
+    "point"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_brownfield_register.pmtiles"
   },
-  "with_position": 0
+  "with_position": 38175
  }
 }
