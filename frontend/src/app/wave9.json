@@ -1,6 +1,62 @@
 {
  "layers": [
   {
+   "id": "w9_de_zensus_heating",
+   "label": "Zensus 2022 heating type per 100 m cell",
+   "desc": "Heating",
+   "group": "Industry & demand",
+   "coverage": "DE",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_eia_refineries",
+   "label": "EIA petroleum refineries",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_gas_processing",
+   "label": "EIA natural gas processing plants",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_lng",
+   "label": "EIA LNG import and export terminals",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_product_terminals",
+   "label": "EIA petroleum product terminals",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_gas_storage",
+   "label": "EIA underground gas storage",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_crude_rail",
+   "label": "EIA crude-by-rail terminals",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
    "id": "w9_us_eia_biodiesel",
    "label": "EIA biodiesel plants",
    "desc": "Digesters",
@@ -15,6 +71,14 @@
    "group": "Industry & demand",
    "coverage": "US",
    "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_nexrad",
+   "label": "NEXRAD weather radar sites",
+   "desc": "Listed heritage",
+   "group": "Land & planning",
+   "coverage": "US",
+   "color": "rgb(206,184,140)"
   },
   {
    "id": "w9_us_epa_lmop",
@@ -87,9 +151,150 @@
    "group": "Water & telecom",
    "coverage": "Europe",
    "color": "rgb(120,200,230)"
+  },
+  {
+   "id": "w9_eu_emodnet_hydrocarbon_licences",
+   "label": "EMODnet hydrocarbon licences",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "Europe",
+   "color": "rgb(230,140,90)"
   }
  ],
  "datasets": [
+  {
+   "id": "w9_de_zensus_heating",
+   "name": "Zensus 2022 heating type per 100 m cell",
+   "category": "Industry & demand",
+   "description": "Zensus 2022 heating type per 100 m cell: 2,628,942 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "heating",
+   "parts": [
+    {
+     "layer": "w9_de_zensus_heating",
+     "where": [
+      "DE"
+     ],
+     "what": "",
+     "source": "Zensus 2022 heating type per 100 m cell (dl-de/by-2-0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_refineries",
+   "name": "EIA petroleum refineries",
+   "category": "Gas, oil & coal",
+   "description": "EIA petroleum refineries: 130 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_refineries",
+     "where": [
+      "US"
+     ],
+     "what": "",
+     "source": "EIA petroleum refineries (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_gas_processing",
+   "name": "EIA natural gas processing plants",
+   "category": "Gas, oil & coal",
+   "description": "EIA natural gas processing plants: 478 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_gas_processing",
+     "where": [
+      "US"
+     ],
+     "what": "",
+     "source": "EIA natural gas processing plants (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_lng",
+   "name": "EIA LNG import and export terminals",
+   "category": "Gas, oil & coal",
+   "description": "EIA LNG import and export terminals: 8 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_lng",
+     "where": [
+      "US"
+     ],
+     "what": "",
+     "source": "EIA LNG import and export terminals (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_product_terminals",
+   "name": "EIA petroleum product terminals",
+   "category": "Gas, oil & coal",
+   "description": "EIA petroleum product terminals: 1,474 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_product_terminals",
+     "where": [
+      "US"
+     ],
+     "what": "",
+     "source": "EIA petroleum product terminals (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_gas_storage",
+   "name": "EIA underground gas storage",
+   "category": "Gas, oil & coal",
+   "description": "EIA underground gas storage: 412 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_gas_storage",
+     "where": [
+      "US"
+     ],
+     "what": "",
+     "source": "EIA underground gas storage (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_crude_rail",
+   "name": "EIA crude-by-rail terminals",
+   "category": "Gas, oil & coal",
+   "description": "EIA crude-by-rail terminals: 99 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_crude_rail",
+     "where": [
+      "US"
+     ],
+     "what": "",
+     "source": "EIA crude-by-rail terminals (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
   {
    "id": "w9_us_eia_biodiesel",
    "name": "EIA biodiesel plants",
@@ -124,6 +329,25 @@
      ],
      "what": "digesters",
      "source": "EIA ethanol plants (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_nexrad",
+   "name": "NEXRAD weather radar sites",
+   "category": "Land & planning",
+   "description": "NEXRAD weather radar sites: 210 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "heritage_aviation",
+   "parts": [
+    {
+     "layer": "w9_us_nexrad",
+     "where": [
+      "US"
+     ],
+     "what": "listed heritage",
+     "source": "NEXRAD weather radar sites (public domain)",
      "doc": "Wave 9 sources"
     }
    ]
@@ -295,6 +519,25 @@
      ],
      "what": "water abstraction",
      "source": "EMODnet desalination plants (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_hydrocarbon_licences",
+   "name": "EMODnet hydrocarbon licences",
+   "category": "Gas, oil & coal",
+   "description": "EMODnet hydrocarbon licences: 28,506 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_hydrocarbon_licences",
+     "where": [
+      "Europe"
+     ],
+     "what": "",
+     "source": "EMODnet hydrocarbon licences (CC BY 4.0 (EMODnet Human Activities))",
      "doc": "Wave 9 sources"
     }
    ]

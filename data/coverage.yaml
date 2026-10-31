@@ -1042,10 +1042,10 @@ families:
           found as data
       GB:
         status: built
-        source: NESO Constraint Breakdown Costs and Volume; NESO constraint cost breakdown; NESO constraint cost breakdown
+        source: NESO Constraint Breakdown Costs and Volume; NESO constraint cost breakdown; NESO constraint cost breakdown; NESO constraint cost breakdown
         url: https://api.neso.energy/api/3/action/package_search?q=constraint%20breakdown
-        licence: NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence
-        dataset: eu/congestion.json, lake wave9.gb_neso_constraint_costs, lake wave9.gb_neso_constraint_costs
+        licence: NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence
+        dataset: eu/congestion.json, lake wave9.gb_neso_constraint_costs, lake wave9.gb_neso_constraint_costs, lake wave9.gb_neso_constraint_costs
         checked: '2026-10-31'
         partial: true
         note: published at country level (NESO constraint cost breakdown)
@@ -2737,13 +2737,13 @@ families:
         partial: true
       FI:
         status: built
-        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
-        url: https://docs.overturemaps.org/guides/divisions/
-        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
-        dataset: lake outlines/divisions, outlines/geostat_grid
-        checked: '2026-10-29'
-        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021; Statistics Finland Paavo postal areas 2024
+        url: https://geo.stat.fi/geoserver/postialue/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=postialue:pno_tilasto_2024&outputFormat=application/json&srsName=EPSG:4326
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake outlines/divisions, outlines/geostat_grid, lake wave9.fi_paavo
+        checked: '2026-10-31'
         partial: true
+        note: published at small_area level (Statistics Finland Paavo postal areas 2024)
       FR:
         status: built
         source: IGN / INSEE Contours IRIS 2025 and communes; Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
@@ -2789,13 +2789,13 @@ families:
         note: national small areas plus the EU-wide layers
       IT:
         status: built
-        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
-        url: https://docs.overturemaps.org/guides/divisions/
-        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
-        dataset: lake outlines/divisions, outlines/geostat_grid
-        checked: '2026-10-29'
-        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021; ISTAT census sections 2021
+        url: https://www.istat.it/storage/cartografia/basi_territoriali/2021/R01_21.zip
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake outlines/divisions, outlines/geostat_grid, lake wave9.it_istat_sezioni
+        checked: '2026-10-31'
         partial: true
+        note: published at small_area level (ISTAT census sections 2021)
       LV:
         status: built
         source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
@@ -2887,13 +2887,13 @@ families:
         partial: true
       ES:
         status: built
-        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
-        url: https://docs.overturemaps.org/guides/divisions/
-        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
-        dataset: lake outlines/divisions, outlines/geostat_grid
-        checked: '2026-10-29'
-        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021; INE census sections 2024
+        url: https://www.ine.es/prodyser/cartografia/seccionado_2024.zip
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake outlines/divisions, outlines/geostat_grid, lake wave9.es_ine_secciones
+        checked: '2026-10-31'
         partial: true
+        note: published at small_area level (INE census sections 2024)
       SE:
         status: built
         source: SCB DeSO 2025; Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
@@ -3446,10 +3446,14 @@ families:
         checked: '2026-10-29'
         note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
       BE:
-        status: not_published
-        url: https://opendata.fluvius.be/
-        checked: '2026-10-29'
-        note: Fluvius (Flanders, per municipality), Sibelga (Brussels) and ORES (Wallonia) publish open sets (leads); not loaded this wave (docs/research/small-area-energy.md)
+        status: built
+        source: Fluvius consumption per statistical sector and NACE sector (Flanders)
+        url: https://opendata.fluvius.be/api/explore/v2.1/catalog/datasets/1_06b-verbruiksgegevens-statistische-sector-met-nace-sector/exports/csv?delimiter=%2C
+        licence: check
+        dataset: lake wave9.be_fluvius_consumption
+        checked: '2026-10-31'
+        partial: true
+        note: published at small_area level (Fluvius consumption per statistical sector and NACE sector (Flanders))
       BG:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3634,10 +3638,12 @@ families:
         checked: '2026-10-29'
         note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
       DE:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: Zensus 2022 heating type per municipality and 100 m cell (dl-de/by-2-0) is a lead, not loaded (docs/research/small-area-energy.md)
+        status: built
+        source: Zensus 2022 heating type per 100 m cell
+        url: https://www.destatis.de/static/DE/zensus/gitterdaten/Zensus2022_Heizungsart.zip
+        licence: dl-de/by-2-0
+        dataset: lake wave9.de_zensus_heating
+        checked: '2026-10-31'
       GR:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3649,10 +3655,14 @@ families:
         checked: '2026-10-29'
         note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
       IE:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: CSO census small-area statistics (central heating) are a lead, not loaded (docs/research/small-area-energy.md)
+        status: built
+        source: CSO Census 2022 small-area statistics (central heating)
+        url: https://www.cso.ie/en/media/csoie/census/census2022/SAPS_2022_Small_Area_UR_171024.csv
+        licence: CC BY 4.0
+        dataset: lake wave9.ie_cso_saps_heating
+        checked: '2026-10-31'
+        partial: true
+        note: published at small_area level (CSO Census 2022 small-area statistics (central heating))
       IT:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -4186,207 +4196,209 @@ families:
     cells:
       AT:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       BE:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       BG:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       HR:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       CY:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       CZ:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       DK:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       EE:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       FI:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       FR:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       DE:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       GR:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       HU:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       IE:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       IT:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       LV:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       LT:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       LU:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       MT:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       NL:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       PL:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       PT:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       RO:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       SK:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       SI:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       ES:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       SE:
         status: built
-        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
-        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
-        licence: CC BY 4.0
-        dataset: eu/w8/industrial.json, lake industrial/*
-        checked: '2026-10-29'
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities)
+        dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       GB:
-        status: blocked
-        source: NSTA open data (offshore pipelines, platforms, wells)
-        url: https://opendata-nstauthority.hub.arcgis.com/
-        checked: '2026-10-29'
-        note: 'NSTA''s ArcGIS services were not found under the organisation probed (2026-10-29); refineries are in the EEA set to 2019. Data request: NSTA, the open-data service URLs for pipelines, surface
-          infrastructure and wells.'
+        status: built
+        source: EMODnet offshore pipelines; EMODnet hydrocarbon licences
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
+        licence: CC BY 4.0 (EMODnet Human Activities)
+        dataset: lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+        checked: '2026-10-31'
       US:
-        status: blocked
-        source: EIA U.S. Energy Atlas midstream layers
-        url: https://atlas.eia.gov/
-        checked: '2026-10-29'
-        note: 'EIA''s feature services answer 499 ''Token Required''; copies on ArcGIS Online are third-party re-uploads (provenance not verifiable). Data request: EIA, public download links (shapefile
-          or GeoJSON) for refineries, gas processing plants, storage, terminals, ethanol and biodiesel plants, crude, product and HGL pipelines.'
+        status: built
+        source: EIA petroleum refineries; EIA natural gas processing plants; EIA interstate and intrastate gas pipelines; EIA crude oil pipelines; EIA LNG import and export terminals; EIA petroleum product
+          terminals; EIA underground gas storage; EIA hydrocarbon gas liquids pipelines; EIA petroleum product pipelines; EIA crude-by-rail terminals
+        url: https://www.eia.gov/maps/map_data/Petroleum_Refineries_US_EIA.zip
+        licence: public domain
+        dataset: lake wave9.us_eia_refineries, lake wave9.us_eia_gas_processing, lake wave9.us_eia_gas_pipelines, lake wave9.us_eia_crude_pipelines, lake wave9.us_eia_lng, lake wave9.us_eia_product_terminals,
+          lake wave9.us_eia_gas_storage, lake wave9.us_eia_hgl_pipelines, lake wave9.us_eia_product_pipelines, lake wave9.us_eia_crude_rail
+        checked: '2026-10-31'
   co2_storage:
     name: CO₂ storage
     shows: geological storage units and their capacity
@@ -5146,11 +5158,12 @@ families:
         source: JRC river flood hazard RP100
         dataset: grid/flood-eu.pmtiles, lake flood/*
       GB:
-        status: have
-        source: JRC river flood hazard RP100
-        dataset: grid/flood-eu.pmtiles
-        note: Environment Agency Flood Map for Planning (OGL v3) probed, not loaded this wave
-        partial: true
+        status: built
+        source: JRC river flood hazard RP100; Environment Agency Flood Map for Planning, flood zones 2 and 3
+        url: https://environment.data.gov.uk/api/file/download?fileDataSetId=455d2eb3-3065-4d20-871b-c4d5dee23f67&fileName=Flood_Map_for_Planning_Flood_Zones.gpkg.zip
+        licence: OGL v3
+        dataset: grid/flood-eu.pmtiles, lake wave9.gb_ea_flood_zones
+        checked: '2026-10-31'
       US:
         status: have
         source: JRC river flood hazard RP100 (world, 1 km)
@@ -6227,12 +6240,12 @@ families:
         checked: '2026-10-31'
         note: 'no source built in wave 9. data.europa.eu search ''brownfield land register'' (2026-10-31): 0 results'
       GB:
-        status: not_published
+        status: built
+        source: Brownfield land registers (planning.data.gov.uk)
         url: https://files.planning.data.gov.uk/dataset/brownfield-land.csv
+        licence: OGL v3
+        dataset: lake wave9.gb_brownfield_register
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Brownfield land registers (planning.data.gov.uk) probed (https://files.planning.data.gov.uk/dataset/brownfield-land.csv, HTTP 200): build failed (BinderException:
-          Binder Error: No function matches the given name and argument types ''ST_XMin(VARCHAR)''. You might need ) | data.gov.uk search ''brownfield land register'' (2026-10-31): 617 results, top: Brownfield;
-          Brownfield Land Register; Brownfield register'
       US:
         status: not_published
         url: https://www.epa.gov/re-powering/re-powering-mapper
@@ -6649,10 +6662,10 @@ families:
         checked: '2026-10-31'
       US:
         status: built
-        source: OurAirports airports; National Register of Historic Places; OurAirports navigation aids
+        source: OurAirports airports; National Register of Historic Places; NEXRAD weather radar sites; OurAirports navigation aids
         url: https://davidmegginson.github.io/ourairports-data/airports.csv
         licence: public domain
-        dataset: lake wave9.world_ourairports, lake wave9.us_nrhp, lake wave9.world_ourairports_navaids
+        dataset: lake wave9.world_ourairports, lake wave9.us_nrhp, lake wave9.us_nexrad, lake wave9.world_ourairports_navaids
         checked: '2026-10-31'
   energy_consents:
     name: Major energy consents
@@ -10052,13 +10065,11 @@ families:
         note: published at region level (Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst))
       FR:
         status: built
-        source: Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst); Eurostat new passenger cars by fuel (road_eqs_carpda)
-        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/tran_r_elvehst/?format=SDMX-CSV&compressed=false&startPeriod=2015
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_ev_stock_nuts2, lake wave9.eu_new_cars_fuel
+        source: Agence ORE vehicles per commune and energy; Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst); Eurostat new passenger cars by fuel (road_eqs_carpda)
+        url: https://opendata.agenceore.fr/data-fair/api/v1/datasets/voitures-par-commune-par-energie/raw
+        licence: Licence Ouverte 2.0; CC BY 4.0
+        dataset: lake wave9.fr_ore_ev_commune, lake wave9.eu_ev_stock_nuts2, lake wave9.eu_new_cars_fuel
         checked: '2026-10-31'
-        partial: true
-        note: published at region level (Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst))
       DE:
         status: built
         source: Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst); Eurostat new passenger cars by fuel (road_eqs_carpda)
@@ -10214,13 +10225,11 @@ families:
         note: published at region level (Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst))
       GB:
         status: built
-        source: DfT plug-in cars per local authority (VEH0131)
+        source: DfT VEH0142 plug-in vehicles; DfT plug-in cars per local authority (VEH0131)
         url: statistical-data-sets/vehicle-licensing-statistics-data-tables
         licence: OGL v3
-        dataset: lake wave9.gb_ulev_la
+        dataset: lake wave9.gb_dft_veh0142, lake wave9.gb_ulev_la
         checked: '2026-10-31'
-        partial: true
-        note: published at county level (DfT plug-in cars per local authority (VEH0131))
       US:
         status: not_published
         url: https://afdc.energy.gov/data/10962
@@ -10493,169 +10502,248 @@ families:
     category: 5
     cells:
       AT:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       BE:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       BG:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       HR:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       CY:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       CZ:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       DK:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       EE:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       FI:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       FR:
-        status: not_published
-        url: https://opendata.agenceore.fr/explore/dataset/registre-national-installation-production-stockage-electricite-agrege/
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ODRÉ national register of production installations probed (https://opendata.agenceore.fr/explore/dataset/registre-national-installation-production-st, HTTP 200):
-          no machine-readable download located | Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       DE:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       GR:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       HU:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       IE:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       IT:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       LV:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       LT:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       LU:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       MT:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       NL:
-        status: not_published
-        url: https://opendata.cbs.nl/ODataApi/odata/85005NED/TypedDataSet
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. CBS solar power per region (85005NED) probed (https://opendata.cbs.nl/ODataApi/odata/85005NED/TypedDataSet, HTTP 500): build failed (SystemExit: https://opendata.cbs.nl/ODataApi/odata/85005NED/TypedDataSet:
-          HTTP 500) | Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C, HTTP None):
-          no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       PL:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       PT:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       RO:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       SK:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       SI:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       ES:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       SE:
-        status: not_published
+        status: built
+        source: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_renewable_capacity
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
-          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat renewable electricity capacity by technology (nrg_inf_epcrw))
       GB:
         status: not_published
         url: https://www.gov.uk/government/statistics/solar-photovoltaics-deployment
@@ -10815,24 +10903,20 @@ families:
         checked: '2026-10-31'
         note: 'no source built in wave 9. data.europa.eu search ''energy performance certificates'' (2026-10-31): 1 results, top: Mapping of energy performance certificates (EPC) data applications'
       GB:
-        status: not_published
+        status: built
+        source: MHCLG EPC live table D1 (domestic certificates per local authority); MHCLG table DEC1 (display energy certificates per local authority)
         url: statistical-data-sets/live-tables-on-energy-performance-of-buildings-certificates
+        licence: OGL v3
+        dataset: lake wave9.gb_epc_stats, lake wave9.gb_dec_certificates
         checked: '2026-10-31'
-        note: 'no source built in wave 9. MHCLG EPC live table D1 (domestic certificates per local authority) probed (statistical-data-sets/live-tables-on-energy-performance-of-buildings-certificates, HTTP
-          None): build failed (StopIteration: ) | MHCLG table DEC1 (display energy certificates per local authority) probed (statistical-data-sets/live-tables-on-energy-performance-of-buildings-certificates,
-          HTTP None): build failed (StopIteration: ) | data.gov.uk search ''energy performance certificates'' (2026-10-31): 626 results, top: Non-domestic Energy Performance Certificate and Display Energy
-          Certificate data; Energy Performance of Buildings Certificates; Domestic Energy Performance Certificate Register'
+        partial: true
+        note: published at county level (MHCLG EPC live table D1 (domestic certificates per local authority))
       US:
         status: not_published
         url: https://data.cityofnewyork.us/resource/5zyy-y8am.json
         checked: '2026-10-31'
-        note: 'no source built in wave 9. NYC Local Law 84 building energy benchmarking probed (https://data.cityofnewyork.us/resource/5zyy-y8am.json, HTTP 200): build failed (BinderException: Binder Error:
-          Referenced column "longitude" not found in FROM clause!
-
-          Candidate bindings: "json"
-
-
-          LINE ) | catalog.data.gov search ''energy performance certificates'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. NYC Local Law 84 building energy benchmarking probed (https://data.cityofnewyork.us/resource/5zyy-y8am.json, HTTP 200): build failed (InvalidInputException: Invalid
+          Input Error: JSON transform error in file "/tmp/wave9/us_nyc_ll84/src.json", in record/va) | catalog.data.gov search ''energy performance certificates'' (2026-10-31): 0 results'
   data_centre_demand:
     name: Data-centre electricity
     shows: electricity used by data centres
@@ -15237,11 +15321,8 @@ families:
         url: https://www.gov.uk/government/collections/heat-network-zoning
         checked: '2026-10-31'
         note: 'no source built in wave 9. DESNZ heat network zoning: heat network zoning maps are published as PDF and interactive maps only (2026-10-31); the planning database below holds the projects
-          | DESNZ Heat Networks Planning Database (Q2 2026) probed (https://assets.publishing.service.gov.uk/media/6a6cbd2e0c36759b5ccaa304/HNPD_2026_Q2.xlsx, HTTP None): build failed (BinderException:
-          Binder Error: Referenced column "x_coordinate" not found in FROM clause!
-
-          Candidate bindings: "heat_netw) | data.gov.uk search ''district heating network'' (2026-10-31): 476 results, top: Heat Networks dataset; DESNZ: Heat Networks Planning Database; BEIS: Heat Networks
-          Planning Database'
+          | DESNZ Heat Networks Planning Database (Q2 2026) probed (https://assets.publishing.service.gov.uk/media/6a6cbd2e0c36759b5ccaa304/HNPD_2026_Q2.xlsx, HTTP 200): build failed (StopIteration: ) |
+          data.gov.uk search ''district heating network'' (2026-10-31): 476 results, top: Heat Networks dataset; DESNZ: Heat Networks Planning Database; BEIS: Heat Networks Planning Database'
       US:
         status: not_published
         url: https://catalog.data.gov/
