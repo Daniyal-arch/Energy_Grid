@@ -19,7 +19,7 @@
   },
   "geometry": false,
   "rows": 39600,
-  "seconds": 5
+  "seconds": 4
  },
  "eu_energy_productivity": {
   "built": "2026-10-31",
@@ -87,7 +87,7 @@
   },
   "geometry": false,
   "rows": 24857,
-  "seconds": 4
+  "seconds": 3
  },
  "eu_new_cars_fuel": {
   "built": "2026-10-31",
@@ -181,7 +181,7 @@
   },
   "geometry": false,
   "rows": 484,
-  "seconds": 5
+  "seconds": 6
  },
  "ie_cso_dc_consumption": {
   "built": "2026-10-31",
