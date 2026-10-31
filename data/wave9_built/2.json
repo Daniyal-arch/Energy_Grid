@@ -1,6 +1,11 @@
 {
  "eu_network_costs": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 39,
+   "period": "2025",
+   "scope": "country"
+  },
   "columns": [
    "dataflow",
    "last_update",
@@ -20,7 +25,7 @@
   },
   "geometry": false,
   "rows": 81164,
-  "seconds": 11
+  "seconds": 6
  },
  "gb_neso_constraint_costs": {
   "built": "2026-10-31",
@@ -36,11 +41,11 @@
    "thermal_constraints_volume"
   ],
   "example": {
-   "answer": 203,
+   "answer": 210,
    "sql": "SELECT count(*) FROM wave9.gb_neso_constraint_costs"
   },
   "geometry": false,
-  "rows": 203,
+  "rows": 210,
   "seconds": 4
  },
  "gb_neso_tnuos": {
@@ -59,13 +64,19 @@
   },
   "geometry": false,
   "rows": 572,
-  "seconds": 4
+  "seconds": 3
  },
  "gb_nged_generation_capacity": {
   "built": null,
   "error": "SystemExit: download failed: redacted"
  },
  "gb_nged_opendata": {
+  "bbox": [
+   -5.923,
+   -64.314,
+   Infinity,
+   Infinity
+  ],
   "built": "2026-10-31",
   "columns": [
    "export_mpan_msid",
@@ -133,9 +144,10 @@
    "answer": 7211,
    "sql": "SELECT count(*) FROM wave9.gb_nged_opendata"
   },
-  "geometry": false,
+  "geometry": true,
   "rows": 7211,
-  "seconds": 1
+  "seconds": 2,
+  "with_position": 6053
  },
  "gb_npg_curtailment_events": {
   "built": "2026-10-31",
@@ -162,9 +174,15 @@
   },
   "geometry": false,
   "rows": 0,
-  "seconds": 0
+  "seconds": 1
  },
  "gb_npg_heatmap_substations": {
+  "bbox": [
+   -2.607,
+   53.3,
+   0.116,
+   55.441
+  ],
   "built": "2026-10-31",
   "columns": [
    "psp_name",
@@ -205,9 +223,10 @@
    "answer": 670,
    "sql": "SELECT count(*) FROM wave9.gb_npg_heatmap_substations"
   },
-  "geometry": false,
+  "geometry": true,
   "rows": 670,
-  "seconds": 1
+  "seconds": 1,
+  "with_position": 670
  },
  "gb_npg_opendata": {
   "built": "2026-10-31",
@@ -324,6 +343,6 @@
   },
   "geometry": false,
   "rows": 58920,
-  "seconds": 7
+  "seconds": 8
  }
 }
