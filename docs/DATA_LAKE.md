@@ -389,6 +389,18 @@ Sizes below: estimated Parquet (zstd) on R2, ±50 %. Snapshots per year where no
 |---|---|---|---|
 | Room to connect, every operator in one schema (`connect/harmonised`) | the operators' files, ArcGIS layers, PDF tables, Opendatasoft, JSON | GeoParquet (point = node position or area label point; outline as JSON text), snapshot partition | 19,266 rows, 1.7 MB (2026-10-27); 24,696 rows with brief 26 (53 operators, 2026-10-28) |
 
+### Wave 8 (brief 27, any-area analytics)
+
+| Dataset | Access | Kept as | Size (measured) |
+|---|---|---|---|
+| Outlines at every level (`outlines/*`: divisions, adm2, us_places, us_cousub, us_tracts, uk_ons, fr_iris, nl_cbs, small_areas, urban_centres, geostat_grid, names) | Overture S3 Parquet, Census zips, ONS/ArcGIS GeoJSON, IGN GeoPackage, CBS, national WFS | GeoParquet, Hilbert-sorted, bbox column; `names` without geometry | divisions 1,082,068 rows 2.26 GB; names 3,397,857 rows 0.12 GB; the rest 0.48 GB |
+| Energy per small area (`small_area_energy/*`: consumption, heating, poverty, renewables) | ORE, DESNZ, Nomis, CBS, EDS, E-REDES, SCB, CSO, ICAEN, DOE LEAD, Eurostat | Parquet, iso3 partition | FR 5.2 M rows, GB 1.8 M, SE 0.37 M; ~0.1 GB |
+| Rasters for area_stats (`rasters/*`: GHSL population and built-up tiles, class shares, Hotmaps heat density) | JRC FTP zips, ESA WorldCover and Copernicus DEM on AWS (read in place) | COG (ZSTD), 3 arc-second tiles plus 30 arc-second layers | built-up 0.77 GB tiles + 126 MB world; slope shares 650 MB; population similar to built-up |
+| EEA Industrial Reporting (`industrial/*`), Global Dam Watch (`dams/*`), CO2StoP (`co2stop/*`), Hotmaps sites (`hotmaps/*`), GEM ownership (`gem_ownership/*`), TRI (`tri/releases`), EA Pollution Inventory (`uk_pi/releases`) | EEA WebDAV CSV, figshare GeoPackage, JRC zip, Hotmaps GitLab CSV, R2 private xlsx, EPA CSV, EA CKAN zip | GeoParquet where positioned, Parquet otherwise | TRI 77,295 rows 7.2 MB; PI 31,384 rows 0.4 MB; dams 41,145 + 35,295 rows |
+
+API-or-Parquet: the Census ACS (B25040) and FIRMS stay API calls (keys in the environment); the
+rest are files without a query API and land in the lake.
+
 ### Future (docs/DATASETS.md)
 
 | Dataset | Access | Kept as | Size |

@@ -1,0 +1,5 @@
+dataset: gem_ownership
+title: GEM Global Energy Ownership Tracker
+licence: CC BY 4.0 (Global Energy Monitor)
+tables: {}
+notes: One table per sheet of the tracker (entities, ownership links), columns as published; built from the private bucket copy by scripts/build_assets_w8.py.

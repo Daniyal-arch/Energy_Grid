@@ -193,7 +193,8 @@ function PanelMap({
     const start = () => {
       if (camera.current) return map.jumpTo(camera.current);
       const s = useApp.getState();
-      const shape = shapeOf(s.area, s.drawn, useDataStore.getState().files.world as WorldFile | undefined, useDataStore.getState().files.countries as CountriesFile | undefined);
+      const own = panelRef.current.drawn;
+      const shape = shapeOf(own ? null : s.area, own ?? s.drawn, useDataStore.getState().files.world as WorldFile | undefined, useDataStore.getState().files.countries as CountriesFile | undefined);
       if (shape && shape.bbox[2] - shape.bbox[0] < 180) {
         map.fitBounds(
           [
@@ -223,8 +224,11 @@ function PanelMap({
         const { layers, styled } = applyStyles(own, styles);
         const zoom = map.getZoom();
         for (const k of wantedKeys(zoom, own)) ensure(k);
-        if (s.area || s.drawn) ensure("world");
-        syncTiles(layers, s.area, s.drawn);
+        // a panel with its own area (an agent map comparing places) clips to it
+        const pDrawn = p.drawn ?? s.drawn;
+        const pArea = p.drawn ? null : s.area;
+        if (pArea || pDrawn) ensure("world");
+        syncTiles(layers, pArea, pDrawn);
         const b = map.getBounds();
         const c = map.getCenter();
         const frame: Frame = {
@@ -241,9 +245,9 @@ function PanelMap({
           waterIndicator: s.waterIndicator,
           mastrTech: s.mastrTech,
           selection: s.selection,
-          area: s.area,
+          area: pArea,
           coverageOf: null,
-          drawn: s.drawn,
+          drawn: pDrawn,
           drawing: null,
           files,
           zoom,

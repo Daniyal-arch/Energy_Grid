@@ -122,7 +122,7 @@ Researched 2026-10-11. Check each source's terms again before building (rule 2: 
 | Live markets: Japan JEPX (30-min area prices), Mexico CENACE (nodal prices), India Grid-India, South Africa Eskom, Chile CEN, NZ EMI, Korea KPX, Alberta AESO, Turkey EPİAŞ | prices, load, mix | downloads/APIs (some keys) | check each | the live map beyond Europe/US | JEPX, CENACE have (17); Grid-India blocked (refuses GitHub runners); keys pending for AESO, KPX, EPİAŞ |
 | WDPA protected areas | | download | *NC* | exclusion zones for screening | candidate (NC: needs licence) |
 
-## Wave 8 (brief 27, planned 2026-10-29)
+## Wave 8 (brief 27, built 2026-10-29)
 
 The agent's area analytics need outlines at every level and figures per small area. Brief 27
 lists them with licences and a review of peer platforms (Electricity Maps, Open Infrastructure
@@ -131,6 +131,16 @@ get their data: Overture divisions, geoBoundaries ADM2, TIGER, ONS, IRIS, CBS bu
 (licence check), GHS-UCDB; GHSL, WorldCover and Copernicus DEM rasters; Agence ORE, DESNZ,
 CBS, Energi Data Service, LEAD, ACS consumption per small area; EIA midstream, EEA Industrial
 Reporting, Global Dam Watch, GEM ownership, CO2StoP, Hotmaps, FIRMS, EFFIS, NWI and NFHL.
+
+Built: outlines at every level (Overture divisions, ADM2, TIGER places, county subdivisions and
+tracts, ONS, IRIS, CBS, Irish small areas, DeSO, Belgian sectors, GHS-UCDB), GHSL population and
+built-up tiles, WorldCover and slope class shares, energy per small area for FR, GB, NL, DK, PT,
+SE, IE, ES (Catalonia) and the US, EEA Industrial Reporting, Global Dam Watch, CO2StoP, Hotmaps,
+NIFC fire perimeters, GEM ownership, TRI and the EA Pollution Inventory. Left out: GISCO LAU
+(non-commercial), NREL SLOPE (terms not reachable), Covenant of Mayors (catalogue gone). Blocked:
+EFFIS burnt areas (request form), HRL Water & Wetness (EU Login), CO2 Stored (account), EIA
+midstream services (token), NWI (HTTP 403 to automated clients). Per-country cells:
+docs/COVERAGE.md.
 
 ## Picks for the product
 

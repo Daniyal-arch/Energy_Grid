@@ -1,0 +1,13 @@
+dataset: industrial
+title: EEA Industrial Reporting database v15 (E-PRTR and IED, 2007-2023)
+licence: CC BY 4.0 (EEA)
+map_file: frontend/public/data/eu/w8/industrial.json (layer "Industrial facilities")
+tables:
+  air_releases:
+    grain: one row per facility, year and pollutant released to air (columns as published, reportingYear partitioned by sort)
+  water_releases:
+    grain: one row per facility, year and pollutant released to water
+  lcp:
+    grain: one row per large combustion plant and year, its fuel input and emissions as published
+  installations:
+    grain: one row per IED installation

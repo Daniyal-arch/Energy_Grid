@@ -34,7 +34,7 @@ jobs:
       - run: uv run python scripts/gen_mapspec.py --check
       # the app loads DuckDB's extensions with auto-install off (the image ships them); the
       # runner installs them once, as the Dockerfile does
-      - run: uv run python -c "import duckdb; c = duckdb.connect(); [c.install_extension(e) for e in ('httpfs', 'spatial')]"
+      - run: uv run python -c "import duckdb; c = duckdb.connect(); [c.install_extension(e) for e in ('httpfs', 'spatial')]; c.install_extension('h3', repository='community')"
       - run: uv run pytest -q
 
   image:

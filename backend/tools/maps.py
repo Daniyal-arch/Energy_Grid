@@ -12,6 +12,7 @@ from typing import Any
 from pydantic import BaseModel, Field, ValidationError
 
 from agent.mapspec import ChartSpec, MapSpec
+from data.areas import LOCAL_SHAPES, AreaError, shapes_of
 from tools.context import ToolContext, result
 
 
@@ -55,6 +56,9 @@ def check_map(
         bad = [x for a in apps for x in a.layers if x not in layers]
         if bad:
             return None, f"unknown app layers {bad}; known: {sorted(layers)}", {}
+    for ref in [m.area, *(p.area for p in m.panels)]:
+        if ref and ctx.area_store.get(ref.area_id) is None:
+            return None, f"unknown area {ref.area_id}; resolve_area first", {}
     data: dict[str, Any] = {}
     for o in m.all_overlays():
         if o.data.result_id:
@@ -95,18 +99,59 @@ def check_map(
     return m, None, data
 
 
+def map_extras(ctx: ToolContext, m: MapSpec, data: dict[str, Any]) -> dict[str, Any]:
+    """What the browser needs besides the rows: the areas' outlines (simplified for display)
+    and the outlines of the backend's shape sets for the keys the rows hold."""
+    out: dict[str, Any] = {}
+    areas = {}
+    for ref in [m.area, *(p.area for p in m.panels)]:
+        if ref and ref.area_id not in areas:
+            a = ctx.area_store.get(ref.area_id)
+            if a is not None:
+                areas[a.area_id] = {**a.summary(), "geometry": a.display or a.geometry}
+    if areas:
+        out["areas"] = areas
+    shapes: dict[str, Any] = {}
+    for o in m.all_overlays():
+        name = o.data.shapes
+        if not name or not o.data.key or name in LOCAL_SHAPES:
+            continue
+        if name == "area":
+            continue
+        if o.data.result_id:
+            r = data[o.data.result_id]
+            i = r["columns"].index(o.data.key)
+            keys = [str(row[i]) for row in r["rows"] if row[i] is not None]
+        else:
+            keys = [str(x.get(o.data.key)) for x in o.data.inline or []]
+        try:
+            got = shapes_of(ctx.areas, name, keys=sorted(set(keys)))
+        except AreaError as e:
+            got = {"set": name, "features": {}, "error": str(e)}
+        prev = shapes.setdefault(name, {**got, "features": {}})
+        prev["features"].update(got.get("features", {}))
+    if shapes:
+        out["shapes"] = shapes
+    return out
+
+
 def make_map(ctx: ToolContext, spec: dict[str, Any]) -> dict[str, Any]:
     m, err, data = check_map(ctx, spec)
     if m is None:
         return result({"error": f"invalid MapSpec: {err}"}, [])
     map_id = "m_" + secrets.token_hex(6)
     sources = [s for r in data.values() for s in r.get("sources", [])]
+    extras = map_extras(ctx, m, data)
+    missing = [f"{k}: {v['error']}" for k, v in extras.get("shapes", {}).items() if v.get("error")]
+    if missing:
+        return result({"error": "shapes not available: " + "; ".join(missing)}, [])
     record = {
         "id": map_id,
         "created": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "spec": m.model_dump(exclude_none=True),
         "data": {rid: {"columns": r["columns"], "rows": r["rows"]} for rid, r in data.items()},
         "sources": sources,
+        **extras,
     }
     ctx.store.put_json(f"agent/maps/{map_id}.json", record)
     ctx.emit("map", {"id": map_id, "spec": record["spec"]})

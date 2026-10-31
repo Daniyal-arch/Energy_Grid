@@ -60,6 +60,10 @@ class Settings(BaseSettings):
     # the lake: a lake.duckdb (local path or r2://...) or a local directory of Parquet files
     lake_db: str | None = "r2://infraatlas-raw/lake/lake.duckdb"
     lake_dir: Path | None = None
+    # area_stats (brief 27 A4): local copies of rasters (tests, laptops) and the read budget
+    rasters_dir: Path | None = None
+    area_stats_max_cells: int = 60_000_000
+    area_stats_max_tiles: int = 16
     r2_account_id: str | None = None
     r2_access_key_id: str | None = None
     r2_secret_access_key: str | None = None

@@ -59,6 +59,22 @@
       "title": "AppState",
       "type": "object"
     },
+    "AreaRef": {
+      "additionalProperties": false,
+      "description": "The area the map shows (resolve_area): its outline is drawn, the camera framed on it, and\nthe map's layers and the app's own layers clipped to it.",
+      "properties": {
+        "area_id": {
+          "pattern": "^a_[0-9a-f]{12}$",
+          "title": "Area Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "area_id"
+      ],
+      "title": "AreaRef",
+      "type": "object"
+    },
     "Camera": {
       "additionalProperties": false,
       "description": "A preset, or a centre and zoom, or a bounding box [west, south, east, north].",
@@ -340,8 +356,26 @@
                 "nuts2",
                 "nuts3",
                 "bidding_zones",
-                "admin1"
+                "admin1",
+                "admin2",
+                "lau",
+                "us_places",
+                "us_tracts",
+                "lsoa",
+                "msoa",
+                "lad",
+                "iris",
+                "fr_communes",
+                "nl_gemeente",
+                "nl_wijk",
+                "nl_buurt",
+                "urban_centres",
+                "area"
               ],
+              "type": "string"
+            },
+            {
+              "pattern": "^(divisions:[a-z_]+|h3:([0-9]|1[0-2]))$",
               "type": "string"
             },
             {
@@ -467,6 +501,18 @@
             }
           ],
           "default": null
+        },
+        "area": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AreaRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "the area shown: outline drawn, camera on its bounds, layers clipped to it"
         },
         "app": {
           "anyOf": [
@@ -683,6 +729,18 @@
           "maxLength": 80,
           "title": "Title",
           "type": "string"
+        },
+        "area": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AreaRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "this panel's own area (comparing two places side by side)"
         },
         "app": {
           "anyOf": [

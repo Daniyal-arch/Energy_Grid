@@ -81,6 +81,29 @@ APP_TABLES: dict[str, dict[str, Any]] = {
         },
         "layer": "gridEU",
     },
+    "app.eu_lines": {
+        "title": "Europe's transmission lines, 220 kV and more, as geometries (PyPSA-Eur, "
+        "OpenStreetMap)",
+        "grain": "one row per line (circuit path)",
+        "columns": {
+            "kv": "kV",
+            "geometry": "LINESTRING, lon/lat",
+            "km": "km, geodesic length of the path (computed)",
+        },
+        "layer": "gridEU",
+    },
+    "app.data_centres": {
+        "title": "Data centres mapped in OpenStreetMap, worldwide (telecom=data_center or "
+        "building=data_center)",
+        "grain": "one row per mapped site",
+        "columns": {
+            "lon": "degrees",
+            "lat": "degrees",
+            "code": "site code where tagged",
+            "name": "operator or name where tagged",
+        },
+        "layer": "dataCentres",
+    },
     "app.eu_prices": {
         "title": "Day-ahead prices per European bidding zone, 12-month average and hours below "
         "zero (ENTSO-E A44)",

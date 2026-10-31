@@ -54,10 +54,12 @@ def test_lists_tools_and_runs_search_catalog(base_url):
 
     tools, res, sql, templates, skill = asyncio.run(session_do(base_url, "test-mcp", go))
     assert set(tools) == {
+        "area_stats",
         "search_catalog",
         "describe_table",
         "run_sql",
         "find_place",
+        "resolve_area",
         "site_figures",
         "live",
     }

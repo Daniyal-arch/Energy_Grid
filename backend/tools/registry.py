@@ -15,6 +15,8 @@ from langchain_core.tools import StructuredTool
 from pydantic import BaseModel, Field
 
 from agent.skills import get_skills
+from tools.area_stats import AreaStatsArgs, area_stats
+from tools.areas import ResolveAreaArgs, resolve_area
 from tools.catalog import APP_TABLES
 from tools.context import ToolContext, result
 from tools.live import LiveArgs, live
@@ -106,6 +108,27 @@ def specs() -> list[ToolSpec]:
             "bounding box.",
             FindPlaceArgs,
             find_place,
+        ),
+        ToolSpec(
+            "resolve_area",
+            "Resolve the area a question means into one record with an area_id: a country, "
+            "group (EU-27, Nordics...), region, county, city, neighbourhood, bidding zone, the "
+            "drawn polygon or circle (from_view='drawn'), the map on screen, several names "
+            "(union), a circle around a point or place (radius_km), a buffer (buffer_km) or an "
+            "intersection. Returns its outline's source, area_km2, people, and candidates when "
+            "a name is ambiguous. Use the area_id in run_sql's in_area(), area_stats and MapSpec "
+            "area.",
+            ResolveAreaArgs,
+            resolve_area,
+        ),
+        ToolSpec(
+            "area_stats",
+            "Rasters inside an area (resolve_area first): people and built-up surface (sums of "
+            "GHSL cells whose centre lies inside), land cover and slope class shares, solar "
+            "PVOUT and 100 m wind speed means, river flood depth class shares. Each figure names "
+            "its raster, cell size and rule.",
+            AreaStatsArgs,
+            area_stats,
         ),
         ToolSpec(
             "site_figures",

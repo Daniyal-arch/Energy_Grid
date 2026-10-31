@@ -279,7 +279,7 @@ export function AreaOverviewCard({ s }: { s: AreaShape }) {
   const p = people.v;
   const big = "–";
   return (
-    <Card title="The area" note={s.kind === "countries" ? "country outlines" : s.kind === "circle" ? "a circle" : "drawn on the map"} accent={[120, 190, 255]}>
+    <Card title="The area" note={s.kind === "countries" ? "country outlines" : s.kind === "circle" ? "a circle" : s.kind === "shape" ? "outline from the agent's area" : "drawn on the map"} accent={[120, 190, 255]}>
       <Tiles>
         <Tile label="Size" value={km2Text(s.km2)} sub="computed from the outline" />
         <Tile

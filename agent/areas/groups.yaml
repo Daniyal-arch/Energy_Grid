@@ -1,0 +1,64 @@
+# Named groups of countries the agent resolves as one area (resolve_area, brief 27 A1).
+# Each group: ISO alpha-3 members and the page that states the membership. The outline is the
+# union of the members' outlines; nothing is added or estimated.
+groups:
+  eu27:
+    name: European Union (EU-27)
+    aliases: [eu, eu-27, eu27, european union]
+    members: [AUT, BEL, BGR, HRV, CYP, CZE, DNK, EST, FIN, FRA, DEU, GRC, HUN, IRL, ITA, LVA, LTU, LUX, MLT, NLD, POL, PRT, ROU, SVK, SVN, ESP, SWE]
+    source: https://european-union.europa.eu/principles-countries-history/eu-countries_en
+  nordics:
+    name: Nordic countries
+    aliases: [nordics, nordic countries, the nordics, norden]
+    members: [DNK, FIN, ISL, NOR, SWE]
+    source: https://www.norden.org/en/information/facts-about-nordic-countries
+  baltics:
+    name: Baltic states
+    aliases: [baltics, baltic states, the baltics]
+    members: [EST, LVA, LTU]
+    source: https://european-union.europa.eu/principles-countries-history/eu-countries_en
+  benelux:
+    name: Benelux
+    aliases: [benelux]
+    members: [BEL, NLD, LUX]
+    source: https://www.benelux.int/en/
+  western_balkans:
+    name: Western Balkans
+    aliases: [western balkans, the western balkans]
+    members: [ALB, BIH, XKX, MNE, MKD, SRB]
+    source: https://www.eeas.europa.eu/eeas/western-balkans_en
+  iberia:
+    name: Iberian Peninsula (MIBEL)
+    aliases: [iberia, iberian peninsula, mibel]
+    members: [ESP, PRT]
+    source: https://www.mibel.com/en/home_en/
+  visegrad:
+    name: Visegrad Group
+    aliases: [visegrad, visegrad group, v4]
+    members: [CZE, HUN, POL, SVK]
+    source: https://www.visegradgroup.eu/about
+  dach:
+    name: DACH (Germany, Austria, Switzerland)
+    aliases: [dach]
+    members: [DEU, AUT, CHE]
+    source: country codes D, A, CH (common usage)
+  cwe:
+    name: Central Western Europe (CWE flow-based market coupling, 2015-2022)
+    aliases: [cwe, central western europe]
+    members: [AUT, BEL, DEU, FRA, LUX, NLD]
+    source: https://www.jao.eu/core-fb-mc (CWE was replaced by Core in June 2022)
+  core:
+    name: Core capacity calculation region
+    aliases: [core, core ccr, core region]
+    members: [AUT, BEL, HRV, CZE, FRA, DEU, HUN, LUX, NLD, POL, ROU, SVK, SVN]
+    source: https://www.acer.europa.eu/electricity/market-rules/capacity-allocation-and-congestion-management/capacity-calculation-regions
+  g7:
+    name: G7
+    aliases: [g7, group of seven]
+    members: [CAN, FRA, DEU, ITA, JPN, GBR, USA]
+    source: https://www.g7italy.it/en/the-g7/ (membership unchanged since 2014)
+  atlas29:
+    name: EU-27, the United Kingdom and the United States (the atlas's 29 places)
+    aliases: [atlas29, the 29 places]
+    members: [AUT, BEL, BGR, HRV, CYP, CZE, DNK, EST, FIN, FRA, DEU, GRC, HUN, IRL, ITA, LVA, LTU, LUX, MLT, NLD, POL, PRT, ROU, SVK, SVN, ESP, SWE, GBR, USA]
+    source: docs/tasks/27-any-area-wave8.md (the consistency rule)

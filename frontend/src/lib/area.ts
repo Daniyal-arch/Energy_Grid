@@ -7,12 +7,16 @@ import { inFlatPolygons, km, type LonLat } from "./site";
 export type { LonLat };
 
 /** A drawn polygon or a circle around a place; countries are the store's `area` list. */
-export type AreaSpec = { kind: "polygon"; ring: LonLat[]; name?: string } | { kind: "circle"; at: LonLat; r: number; name?: string };
+export type AreaSpec =
+  | { kind: "polygon"; ring: LonLat[]; name?: string }
+  | { kind: "circle"; at: LonLat; r: number; name?: string }
+  /** an outline resolved by the agent (resolve_area): several polygons, [polygon][ring] of flat lon/lat pairs */
+  | { kind: "shape"; polygons: number[][][]; name?: string; areaId?: string };
 
 export interface AreaShape {
   key: string;
   label: string;
-  kind: "countries" | "polygon" | "circle";
+  kind: "countries" | "polygon" | "circle" | "shape";
   /** [polygon][ring] of flat lon/lat pairs, the first ring the outline */
   polygons: number[][][];
   bbox: [number, number, number, number];
@@ -77,8 +81,16 @@ export function shapeOfSpec(spec: AreaSpec): AreaShape {
     const label = `${spec.r} km around ${spec.name ?? `${spec.at[1].toFixed(2)}, ${spec.at[0].toFixed(2)}`}`;
     return makeShape("circle", `c:${spec.at.join(",")}:${spec.r}`, label, [[circleRing(spec.at, spec.r)]]);
   }
+  if (spec.kind === "shape") return makeShape("shape", `a:${spec.areaId ?? spec.polygons.length}`, spec.name ?? "Area", spec.polygons);
   const flat = spec.ring.flat();
   return makeShape("polygon", `p:${flat.map((v) => v.toFixed(3)).join(",")}`, spec.name ?? "Drawn area", [[flat]]);
+}
+
+/** GeoJSON (Multi)Polygon -> [polygon][ring][point]. */
+export function polysOfGeometry(g: { type: string; coordinates: unknown }): [number, number][][][] {
+  const c = g.coordinates as number[][][] | number[][][][];
+  const polys = (g.type === "Polygon" ? [c] : g.type === "MultiPolygon" ? c : []) as number[][][][];
+  return polys.map((p) => p.map((ring) => ring.map((q) => [q[0], q[1]] as [number, number])));
 }
 
 /** Inside the area (its bounding box first, then the polygons). */

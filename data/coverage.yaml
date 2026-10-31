@@ -2659,3 +2659,3092 @@ families:
         licence: CC BY 4.0
         dataset: eu/us_outages.json
         checked: '2026-10-15'
+  outlines:
+    name: Outlines at every level
+    shows: 'municipality, neighbourhood and small-area outlines for areas, choropleths and resolve_area (brief 27 B1); EU LAU left out (GISCO: non-commercial only)'
+    cells:
+      AT:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      BE:
+        status: built
+        source: Statbel statistical sectors 2024; Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://statbel.fgov.be/en/open-data/statistical-sectors-2024
+        licence: Statbel open data licence; ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/small_areas, lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: national small areas plus the EU-wide layers
+      BG:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      HR:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      CY:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      CZ:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      DK:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      EE:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      FI:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      FR:
+        status: built
+        source: IGN / INSEE Contours IRIS 2025 and communes; Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://data.geopf.fr/telechargement/resource/CONTOURS-IRIS
+        licence: Licence Ouverte 2.0; ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/fr_iris, lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: national small areas plus the EU-wide layers
+      DE:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      GR:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      HU:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      IE:
+        status: built
+        source: CSO / Tailte Éireann Small Areas 2022; Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://data.gov.ie/dataset/cso-small-areas-national-statistical-boundaries-2022-generalised-20m
+        licence: CC BY 4.0; ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/small_areas, lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: national small areas plus the EU-wide layers
+      IT:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      LV:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      LT:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      LU:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      MT:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      NL:
+        status: built
+        source: CBS wijk- en buurtkaart 2024; Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://api.pdok.nl/cbs/wijken-en-buurten-2024/ogc/v1
+        licence: CC BY 4.0; ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/nl_cbs, lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: national small areas plus the EU-wide layers
+      PL:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      PT:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      RO:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      SK:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      SI:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      ES:
+        status: built
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://docs.overturemaps.org/guides/divisions/
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: municipalities and neighbourhoods from Overture, small areas as the 1 km census grid; the national census small areas are not loaded (docs/research/small-area-energy.md)
+        partial: true
+      SE:
+        status: built
+        source: SCB DeSO 2025; Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021
+        url: https://geodata.scb.se/geoserver/stat/wfs
+        licence: CC0; ODbL 1.0; Eurostat reuse policy (CC BY 4.0)
+        dataset: lake outlines/small_areas, lake outlines/divisions, outlines/geostat_grid
+        checked: '2026-10-29'
+        note: national small areas plus the EU-wide layers
+      GB:
+        status: built
+        source: ONS Open Geography (ITL 1-3, LAD, MSOA, LSOA); Scottish data zones 2022; NISRA super data zones 2021
+        url: https://geoportal.statistics.gov.uk/
+        licence: OGL v3
+        dataset: lake outlines/uk_ons, outlines/divisions
+        checked: '2026-10-29'
+      US:
+        status: built
+        source: US Census Bureau cartographic boundary files 2024 (places, county subdivisions, tracts)
+        url: https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html
+        licence: public domain
+        dataset: lake outlines/us_places, us_cousub, us_tracts
+        checked: '2026-10-29'
+  urban_centres:
+    name: City outlines (GHS urban centres)
+    shows: 'GHS Urban Centre Database R2024: city outlines worldwide with their 2025 population'
+    cells:
+      AT:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      BE:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      BG:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      HR:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      CY:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      CZ:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      DK:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      EE:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      FI:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      FR:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      DE:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      GR:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      HU:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      IE:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      IT:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      LV:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      LT:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      LU:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      MT:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      NL:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      PL:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      PT:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      RO:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      SK:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      SI:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      ES:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      SE:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      GB:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+      US:
+        status: built
+        source: GHS Urban Centre Database R2024A V1.1 (JRC)
+        url: https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php
+        licence: CC BY 4.0
+        dataset: lake outlines/urban_centres
+        checked: '2026-10-29'
+        note: 'Luxembourg, Malta and Cyprus: only where an urban centre meets the GHSL definition'
+  rasters:
+    name: Rasters summed in any area
+    shows: people and built-up surface (GHSL), land cover (WorldCover), slope (Copernicus DEM), solar and wind resource, river flood depth, read by area_stats
+    cells:
+      AT:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      BE:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      BG:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      HR:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      CY:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      CZ:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      DK:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      EE:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      FI:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      FR:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      DE:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      GR:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      HU:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      IE:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      IT:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      LV:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      LT:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      LU:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      MT:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      NL:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      PL:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      PT:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      RO:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      SK:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      SI:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      ES:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      SE:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      GB:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+      US:
+        status: built
+        source: GHSL R2023A (JRC); ESA WorldCover 2021; Copernicus DEM GLO-30; Global Solar Atlas; Global Wind Atlas; JRC flood RP100
+        url: https://human-settlement.emergency.copernicus.eu/
+        licence: CC BY 4.0; Copernicus DEM licence (free, attribution)
+        dataset: R2 lake/rasters/*, lake/atlas/*, lake/flood/*; AWS open data in place
+        checked: '2026-10-29'
+        note: JRC flood RP100 is Europe at 100 m, world at 1 km (the US at 1 km)
+  consumption:
+    name: Energy consumption per small area
+    shows: electricity and gas use per municipality or smaller area, MWh a year (or averages as published), with the level named
+    cells:
+      FR:
+        status: built
+        source: Agence ORE, annual electricity and gas consumption per IRIS and commune
+        url: https://www.data.gouv.fr/datasets/consommation-annuelle-delectricite-et-gaz-par-iris
+        licence: Licence Ouverte 2.0
+        dataset: lake small_area_energy/consumption (FRA)
+        checked: '2026-10-29'
+        note: 2011-2024 by sector; IRIS method changed in 2022 (source note)
+      GB:
+        status: built
+        source: DESNZ subnational electricity and gas consumption (LSOA domestic, MSOA, local authority)
+        url: https://www.gov.uk/government/collections/sub-national-electricity-consumption-data
+        licence: OGL v3
+        dataset: lake small_area_energy/consumption (GBR)
+        checked: '2026-10-29'
+        note: 'LSOA and MSOA: England and Wales; Scotland and Northern Ireland at local authority'
+      NL:
+        status: built
+        source: CBS Kerncijfers wijken en buurten 2024 (85984NED)
+        url: https://www.cbs.nl/nl-nl/maatwerk/2025/38/kerncijfers-wijken-en-buurten-2024
+        licence: CC BY 4.0
+        dataset: lake small_area_energy/consumption (NLD)
+        checked: '2026-10-29'
+        note: average electricity (kWh) and gas (m³) per dwelling per buurt, as published (not totals)
+        partial: true
+      DK:
+        status: built
+        source: Energi Data Service, PrivateConsumptionHeatingMonth
+        url: https://www.energidataservice.dk/tso-electricity/PrivateConsumptionHeatingMonth
+        licence: CC BY 4.0
+        dataset: lake small_area_energy/consumption (DNK)
+        checked: '2026-10-29'
+        note: households per municipality (whole years); business per region only
+        partial: true
+      PT:
+        status: built
+        source: E-REDES open data, billed consumption per municipality
+        url: https://e-redes.opendatasoft.com/explore/dataset/3-consumos-faturados-por-municipio-ultimos-10-anos/
+        licence: CC BY 4.0
+        dataset: lake small_area_energy/consumption (PRT)
+        checked: '2026-10-29'
+      SE:
+        status: built
+        source: SCB / Energimyndigheten TAB3654, final energy use per kommun
+        url: https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__EN__EN0203/SlutAnvSektor/
+        licence: CC0
+        dataset: lake small_area_energy/consumption (SWE)
+        checked: '2026-10-29'
+        note: per kommun, consumer category and fuel, 2009-2024
+      IE:
+        status: built
+        source: CSO MEC03 metered electricity consumption
+        url: https://data.cso.ie/table/MEC03
+        licence: CC BY 4.0
+        dataset: lake small_area_energy/consumption (IRL)
+        checked: '2026-10-29'
+        note: per county and Dublin postal district (the finest level published)
+        partial: true
+      ES:
+        status: built
+        source: ICAEN, electricity per municipality and sector (Catalonia)
+        url: https://analisi.transparenciacatalunya.cat/d/8idm-becu
+        licence: open data (Generalitat de Catalunya)
+        dataset: lake small_area_energy/consumption (ESP)
+        checked: '2026-10-29'
+        note: Catalonia only; no national open small-area table found
+        partial: true
+      US:
+        status: built
+        source: EIA-861 per utility (have); DOE LEAD 2022 per tract
+        url: https://data.openei.org/submissions/6219
+        licence: public domain; CC BY 4.0 (OpenEI)
+        dataset: lake eia861_territory, small_area_energy/poverty (USA)
+        checked: '2026-10-29'
+        note: LEAD bills are modelled by DOE from the ACS; NREL SLOPE left out until its terms are read
+        partial: true
+      AT:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      BE:
+        status: not_published
+        url: https://opendata.fluvius.be/
+        checked: '2026-10-29'
+        note: Fluvius (Flanders, per municipality), Sibelga (Brussels) and ORES (Wallonia) publish open sets (leads); not loaded this wave (docs/research/small-area-energy.md)
+      BG:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      HR:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      CY:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      CZ:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      EE:
+        status: not_published
+        url: https://elering.ee/en/node/1352
+        checked: '2026-10-29'
+        note: Elering sells postal-code aggregates (not open) (docs/research/small-area-energy.md)
+      FI:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      DE:
+        status: not_published
+        url: https://www.regionalstatistik.de/
+        checked: '2026-10-29'
+        note: industry energy use per Kreis (Destatis 43531, dl-de/by-2-0) is a lead; no national small-area consumption (docs/research/small-area-energy.md)
+      GR:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      HU:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      IT:
+        status: not_published
+        url: https://www.terna.it/it/sistema-elettrico/statistiche
+        checked: '2026-10-29'
+        note: Terna publishes consumption per province in its yearly statistics (no machine-readable open table found) (docs/research/small-area-energy.md)
+      LV:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      LT:
+        status: not_published
+        url: https://duomenys.stat.gov.lt/en/?p=12310
+        checked: '2026-10-29'
+        note: ESO consumption on grid cells catalogued by Statistics Lithuania; no open table found (docs/research/small-area-energy.md)
+      LU:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      MT:
+        status: not_published
+        url: https://nso.gov.mt/statistical_insights/non-residential-smart-meter-statistics/
+        checked: '2026-10-29'
+        note: NSO publishes non-residential consumption per district (2024); residential not found (docs/research/small-area-energy.md)
+      PL:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      RO:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      SK:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+      SI:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+  heating:
+    name: Heating fuel per small area
+    shows: how homes are heated per small area, as published (counts or shares)
+    cells:
+      GB:
+        status: built
+        source: ONS Census 2021 TS046 central heating (Nomis)
+        url: https://www.nomisweb.co.uk/datasets/c2021ts046
+        licence: OGL v3
+        dataset: lake small_area_energy/heating (GBR)
+        checked: '2026-10-29'
+        note: per LSOA, households
+      US:
+        status: blocked
+        source: Census ACS 2019-2023 B25040 house heating fuel
+        url: https://api.census.gov/data/key_signup.html
+        checked: '2026-10-29'
+        note: "the Census API refuses requests without a key (redirect to missing_key.html); set CENSUS_API_KEY (free) and run wave8.yml group C. Request: a Census API key for the project account"
+      NL:
+        status: built
+        source: CBS Kerncijfers wijken en buurten 2024
+        url: https://www.cbs.nl/nl-nl/maatwerk/2025/38/kerncijfers-wijken-en-buurten-2024
+        licence: CC BY 4.0
+        dataset: lake small_area_energy/heating (NLD)
+        checked: '2026-10-29'
+        note: district heating, gas-free and electric heating shares per buurt
+      FR:
+        status: built
+        source: Agence ORE (INSEE census field) per IRIS
+        url: https://www.data.gouv.fr/datasets/consommation-annuelle-delectricite-et-gaz-par-iris
+        licence: Licence Ouverte 2.0
+        dataset: lake small_area_energy/heating (FRA)
+        checked: '2026-10-29'
+        note: share of dwellings with electric heating only
+        partial: true
+      DK:
+        status: built
+        source: Energi Data Service, PrivateConsumptionHeatingMonth
+        url: https://www.energidataservice.dk/tso-electricity/PrivateConsumptionHeatingMonth
+        licence: CC BY 4.0
+        dataset: lake small_area_energy/consumption (DNK)
+        checked: '2026-10-29'
+        note: household electricity by heating category per municipality, not the heating fuel mix
+        partial: true
+      SE:
+        status: built
+        source: SCB TAB3654 per kommun and fuel
+        url: https://www.statistikdatabasen.scb.se/
+        licence: CC0
+        dataset: lake small_area_energy/consumption (SWE)
+        checked: '2026-10-29'
+        note: final use by fuel per kommun (all uses, not heating alone)
+        partial: true
+      AT:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      BE:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      BG:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      HR:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      CY:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      CZ:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      EE:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      FI:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      DE:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: Zensus 2022 heating type per municipality and 100 m cell (dl-de/by-2-0) is a lead, not loaded (docs/research/small-area-energy.md)
+      GR:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      HU:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      IE:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: CSO census small-area statistics (central heating) are a lead, not loaded (docs/research/small-area-energy.md)
+      IT:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      LV:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      LT:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      LU:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      MT:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      PL:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      PT:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      RO:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      SK:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      SI:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+      ES:
+        status: not_published
+        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        checked: '2026-10-29'
+        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+  energy_poverty:
+    name: Energy poverty
+    shows: households unable to keep warm, fuel poverty or energy burden, at the finest level published
+    cells:
+      AT:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      BE:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      BG:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      HR:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      CY:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      CZ:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      DK:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      EE:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      FI:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      FR:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      DE:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      GR:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      HU:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      IE:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      IT:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      LV:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      LT:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      LU:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      MT:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      NL:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      PL:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      PT:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      RO:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      SK:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      SI:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      ES:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      SE:
+        status: built
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
+        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
+        licence: Eurostat reuse policy (CC BY 4.0)
+        dataset: lake small_area_energy/poverty
+        checked: '2026-10-29'
+        note: country level (the finest Eurostat publishes)
+        partial: true
+      GB:
+        status: built
+        source: DESNZ sub-regional fuel poverty 2026 (2024 data, LSOA)
+        url: https://www.gov.uk/government/statistics/sub-regional-fuel-poverty-data-2026-2024-data
+        licence: OGL v3
+        dataset: lake small_area_energy/poverty (GBR)
+        checked: '2026-10-29'
+        note: England per LSOA, modelled by DESNZ (official statistics in development)
+      US:
+        status: built
+        source: DOE LEAD Tool 2022
+        url: https://data.openei.org/submissions/6219
+        licence: CC BY 4.0 (OpenEI)
+        dataset: lake small_area_energy/poverty (USA)
+        checked: '2026-10-29'
+        note: energy burden per tract, computed over LEAD's cohorts (modelled by DOE)
+  industrial:
+    name: Industrial facilities and releases
+    shows: every reporting facility with its position and releases to air and water; large combustion plants' fuel input
+    cells:
+      AT:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      BE:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      BG:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      HR:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      CY:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      CZ:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      DK:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      EE:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      FI:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      FR:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      DE:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      GR:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      HU:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      IE:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      IT:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      LV:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      LT:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      LU:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      MT:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      NL:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      PL:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      PT:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      RO:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      SK:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      SI:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      ES:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      SE:
+        status: built
+        source: EEA Industrial Reporting database v15 (E-PRTR, LCP, EU Registry)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0 (EEA)
+        dataset: lake industrial/*, eu/w8/industrial.json
+        checked: '2026-10-29'
+      GB:
+        status: built
+        source: EEA Industrial Reporting (UK to 2019); Environment Agency Pollution Inventory (England)
+        url: https://www.data.gov.uk/dataset/cfd94301-a2f2-48a2-9915-e477ca6d8b7e/pollutant-release-and-transfer-register
+        licence: CC BY 4.0; OGL v3
+        dataset: lake industrial/*, uk_pi/*
+        checked: '2026-10-29'
+        note: UK PRTR (Defra) for Scotland, Wales, Northern Ireland not loaded
+        partial: true
+      US:
+        status: built
+        source: EPA Toxics Release Inventory; EPA GHGRP (have)
+        url: https://www.epa.gov/toxics-release-inventory-tri-program/tri-basic-data-files-calendar-years-1987-present
+        licence: public domain
+        dataset: lake tri/*, ghgrp/*
+        checked: '2026-10-29'
+  oil_gas_facilities:
+    name: Oil and gas facilities
+    shows: refineries, processing plants, storage and terminals, pipelines
+    cells:
+      AT:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      BE:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      BG:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      HR:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      CY:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      CZ:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      DK:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      EE:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      FI:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      FR:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      DE:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      GR:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      HU:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      IE:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      IT:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      LV:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      LT:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      LU:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      MT:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      NL:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      PL:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      PT:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      RO:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      SK:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      SI:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      ES:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      SE:
+        status: built
+        source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have)
+        url: https://sdi.eea.europa.eu/catalogue/srv/api/records/3461f4ab-a3ee-4af2-bc11-95e651a8d0ba
+        licence: CC BY 4.0
+        dataset: eu/w8/industrial.json, lake industrial/*
+        checked: '2026-10-29'
+      GB:
+        status: blocked
+        source: NSTA open data (offshore pipelines, platforms, wells)
+        url: https://opendata-nstauthority.hub.arcgis.com/
+        checked: '2026-10-29'
+        note: 'NSTA''s ArcGIS services were not found under the organisation probed (2026-10-29); refineries are in the EEA set to 2019. Data request: NSTA, the open-data service URLs for pipelines, surface
+          infrastructure and wells.'
+      US:
+        status: blocked
+        source: EIA U.S. Energy Atlas midstream layers
+        url: https://atlas.eia.gov/
+        checked: '2026-10-29'
+        note: 'EIA''s feature services answer 499 ''Token Required''; copies on ArcGIS Online are third-party re-uploads (provenance not verifiable). Data request: EIA, public download links (shapefile
+          or GeoJSON) for refineries, gas processing plants, storage, terminals, ethanol and biodiesel plants, crude, product and HGL pipelines.'
+  co2_storage:
+    name: CO₂ storage
+    shows: geological storage units and their capacity
+    cells:
+      AT:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      BE:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      BG:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      HR:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      CY:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: no storage unit assessed for this country in CO2StoP (2013 vintage)
+      CZ:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      DK:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      EE:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      FI:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      FR:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      DE:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      GR:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      HU:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      IE:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      IT:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      LV:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      LT:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      LU:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: no storage unit assessed for this country in CO2StoP (2013 vintage)
+      MT:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: no storage unit assessed for this country in CO2StoP (2013 vintage)
+      NL:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      PL:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      PT:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      RO:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      SK:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      SI:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      ES:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      SE:
+        status: built
+        source: CO2StoP (JRC, SETIS)
+        url: https://setis.ec.europa.eu/european-co2-storage-database_en
+        licence: reuse authorised with acknowledgement (JRC)
+        dataset: lake co2stop/*, eu/w8/co2storage.json
+        checked: '2026-10-29'
+        note: 'assessments of about 2013: the vintage is shown'
+      GB:
+        status: blocked
+        source: CO2 Stored (BGS, The Crown Estate); NSTA carbon storage licences
+        url: https://www.co2stored.co.uk/
+        checked: '2026-10-29'
+        note: 'CO2 Stored needs an account and its terms were not found for paid use; NSTA licences not located (see oil and gas). Data request: The Crown Estate / BGS, licence terms for CO2 Stored in a
+          commercial product.'
+      US:
+        status: not_published
+        url: https://edx.netl.doe.gov/dataset/natcarb-sink
+        checked: '2026-10-29'
+        note: NATCARB (NETL EDX) and EPA's Class VI permit list were probed; the EDX page answered without a file link and EPA's tracker page moved (404). To finish next wave.
+  heat_demand:
+    name: Heat demand
+    shows: heat demand density (100 m) and industrial excess heat sites
+    cells:
+      AT:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      BE:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      BG:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      HR:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      CY:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      CZ:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      DK:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      EE:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      FI:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      FR:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      DE:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      GR:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      HU:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      IE:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      IT:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      LV:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      LT:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      LU:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      MT:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      NL:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      PL:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      PT:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      RO:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      SK:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      SI:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      ES:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      SE:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      GB:
+        status: built
+        source: Hotmaps heat demand density 100 m and industrial excess heat
+        url: https://gitlab.com/hotmaps/heat/heat_tot_curr_density
+        licence: CC BY 4.0
+        dataset: R2 lake/rasters/hotmaps_heat_density_100m.tif, lake hotmaps/*
+        checked: '2026-10-29'
+        note: EU28 reference year 2015
+      US:
+        status: not_published
+        url: https://www.energy.gov/eere/buildings/building-energy-data
+        checked: '2026-10-29'
+        note: no published heat demand density raster for the US found
+  fires:
+    name: Fires
+    shows: active fire detections and burnt areas near the grid
+    cells:
+      AT:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      BE:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      BG:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      HR:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      CY:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      CZ:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      DK:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      EE:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      FI:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      FR:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      DE:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      GR:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      HU:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      IE:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      IT:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      LV:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      LT:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      LU:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      MT:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      NL:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      PL:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      PT:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      RO:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      SK:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      SI:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      ES:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      SE:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      GB:
+        status: blocked
+        source: NASA FIRMS active fires; EFFIS burnt areas
+        url: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+        checked: '2026-10-29'
+        note: 'FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS''s data request form. Data request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.'
+      US:
+        status: built
+        source: NIFC WFIGS current interagency fire perimeters
+        url: https://data-nifc.opendata.arcgis.com/
+        licence: public domain
+        dataset: eu/w8/fires.json
+        checked: '2026-10-29'
+        note: FIRMS detections join when FIRMS_MAP_KEY is set
+        partial: true
+  flood_zones:
+    name: Flood zones
+    shows: river flood hazard, and national flood zones where published
+    cells:
+      AT:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      BE:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      BG:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      HR:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      CY:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      CZ:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      DK:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      EE:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      FI:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      FR:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      DE:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      GR:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      HU:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      IE:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      IT:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      LV:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      LT:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      LU:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      MT:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      NL:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      PL:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      PT:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      RO:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      SK:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      SI:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      ES:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      SE:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles, lake flood/*
+      GB:
+        status: have
+        source: JRC river flood hazard RP100
+        dataset: grid/flood-eu.pmtiles
+        note: Environment Agency Flood Map for Planning (OGL v3) probed, not loaded this wave
+        partial: true
+      US:
+        status: have
+        source: JRC river flood hazard RP100 (world, 1 km)
+        dataset: grid/flood-world.pmtiles
+        note: FEMA NFHL (5,825,896 zones, public domain) answers by service; not copied this wave
+        partial: true
+  wetlands:
+    name: Wetlands
+    shows: wetlands as siting constraints
+    cells:
+      AT:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      BE:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      BG:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      HR:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      CY:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      CZ:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      DK:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      EE:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      FI:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      FR:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      DE:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      GR:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      HU:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      IE:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      IT:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      LV:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      LT:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      LU:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      MT:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      NL:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      PL:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      PT:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      RO:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      SK:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      SI:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      ES:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      SE:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      GB:
+        status: blocked
+        source: Copernicus HRL Water and Wetness
+        url: https://land.copernicus.eu/en/products/high-resolution-layer-water-and-wetness
+        checked: '2026-10-29'
+        note: 'free for any use, but the download needs an EU Login account (sources behind a login are out of scope). Data request: CLMS, an anonymous download or COG endpoint.'
+      US:
+        status: blocked
+        source: USFWS National Wetlands Inventory
+        url: https://www.fws.gov/program/national-wetlands-inventory/download-state-wetlands-data
+        checked: '2026-10-29'
+        note: "the CONUS and state downloads answer HTTP 403 to automated clients, from this sandbox and from GitHub Actions (2026-10-29). Data request: USFWS, a download URL open to scripts or a bulk copy of the NWI (public domain)"
+  dams:
+    name: Dams and reservoirs
+    shows: barriers and reservoirs (Global Dam Watch)
+    cells:
+      AT:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      BE:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      BG:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      HR:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      CY:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      CZ:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      DK:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      EE:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      FI:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      FR:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      DE:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      GR:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      HU:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      IE:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      IT:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      LV:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      LT:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      LU:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      MT:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      NL:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      PL:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      PT:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      RO:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      SK:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      SI:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      ES:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      SE:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      GB:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+      US:
+        status: built
+        source: Global Dam Watch v1.0
+        url: https://doi.org/10.6084/m9.figshare.25988293
+        licence: CC BY 4.0
+        dataset: lake dams/*, eu/w8/dams.json
+        checked: '2026-10-29'
+  ownership:
+    name: Who owns the assets
+    shows: owners and ownership chains of GEM-tracked plants, mines and pipelines
+    cells:
+      AT:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      BE:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      BG:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      HR:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      CY:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      CZ:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      DK:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      EE:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      FI:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      FR:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      DE:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      GR:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      HU:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      IE:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      IT:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      LV:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      LT:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      LU:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      MT:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      NL:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      PL:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      PT:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      RO:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      SK:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      SI:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      ES:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      SE:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      GB:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'
+      US:
+        status: built
+        source: GEM Global Energy Ownership Tracker (September 2026)
+        url: https://globalenergymonitor.org/projects/global-energy-ownership-tracker/
+        licence: CC BY 4.0 (Global Energy Monitor)
+        dataset: lake gem_ownership/* (aggregates only)
+        checked: '2026-10-29'

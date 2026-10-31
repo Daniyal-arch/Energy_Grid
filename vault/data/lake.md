@@ -1,7 +1,7 @@
 ---
 title: Lake
 tags: [data, lake]
-updated: 2026-10-27
+updated: 2026-10-29
 paths: [docs/DATA_LAKE.md, agent/catalog/]
 ---
 
@@ -25,3 +25,8 @@ use of it is in [[agent-backend]].
   GeoNames cities (lake `shapes/`).
 - The backend attaches `lake.duckdb` read-only as catalog `lake` (default) and adds the map
   files' rows as `app.*` tables; see [[backend-service]].
+- **Wave 8** (brief 27): `outlines/*` (Overture divisions 1.08 M areas, 2.26 GB; ADM2; US
+  places, county subdivisions, tracts; ONS; IRIS; CBS; IE and SE small areas; GHS-UCDB; GEOSTAT
+  grid; `names` index), `small_area_energy/*` (one schema, iso3 partition), `rasters/*` COGs
+  (GHSL tiles, class shares, Hotmaps heat density), and the asset tables (industrial, dams,
+  co2stop, hotmaps, gem_ownership, tri, uk_pi). See [[areas]].

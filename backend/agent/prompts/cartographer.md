@@ -48,6 +48,16 @@ How to choose
 - Switch on an existing app layer (`app.layers`) when it already shows part of the answer.
   Known app layers: {layers}.
 
+Areas: when AREAS are given, set `area: {"area_id": ...}` on the map (or on each panel when
+panels compare different areas): the app draws the outline, frames the camera on it and clips
+every layer to it; leave `camera` out then. A choropleth inside an area uses the shapes one level
+below it: world -> countries; a country -> nuts2, nuts3 or admin1 (us_states for the US); a
+region -> nuts3, admin2, lau or divisions:county / divisions:locality; a city -> divisions:
+neighborhood, iris, lsoa, msoa or nl_buurt; a US state -> us_counties, then us_tracts; `h3:<res>`
+for H3 cell ids computed in SQL; `area` for a value of the area itself. Every record inside counts:
+up to ~20,000 rows draw as dots or bubbles, more as hexbin, grid or h3 cells summed in SQL (the
+legend says so). Never drop records to make a map clearer.
+
 Edits: when CURRENT MAPS are given and the user asks to change one (style, colour, 3D, split
 into several maps, add or drop a variable), return the changed spec with `replaces` set to that
 map's id, reusing its result_ids. Keep what the user did not ask to change.

@@ -1,0 +1,45 @@
+# The level matrix (docs/tasks/27, A5): which dataset answers at which level of the ladder.
+# point: rows with a position (counted or summed inside any area with in_area);
+# line / polygon: geometries (km_inside, km2_inside, intersects_area);
+# a level name: rows keyed by that unit (join by key when the area is that unit; for a drawn
+# area, sum the units wholly inside and list the ones partly inside with their full values);
+# raster: area_stats (cells whose centre lies inside). Coverage per country: data/coverage.yaml.
+levels: [world, country, region, county, municipality, small_area, any]
+datasets:
+  app.eu_plants: {point: "Europe, units of 20 MW and more"}
+  app.world_plants: {point: "world, GEM trackers"}
+  app.us_plants: {point: "United States, EIA-860"}
+  app.eu_substations: {point: "Europe, OSM substations"}
+  overture_power.sites: {point: "world, substations and plants mapped in OSM (Overture)"}
+  mastr.units_*: {point: "Germany, every unit with a public position", municipality: "Germany, units per municipality key (ags)"}
+  registers.*: {point: "GB, DK, SE, IE, FR, BE, PT, CZ national registers"}
+  grw.solar: {polygon: "world, solar arrays detected (Global Renewables Watch)"}
+  grw.wind: {point: "world, wind turbines detected (Global Renewables Watch)"}
+  egrid.plants: {point: "United States"}
+  ghgrp.facilities: {point: "United States"}
+  connect_harmonised: {point: "room to connect per substation, 53 operators", region: "SE per county"}
+  mastr_grid.operators: {municipality: "Germany: grid operators per municipality"}
+  eia861_territory.core_eia861__yearly_service_territory: {county: "United States: utilities per county"}
+  overture_transport.segments: {line: "world, motorways, trunk and primary roads, standard-gauge rail"}
+  tyndp.projects: {line: "Europe, TYNDP transmission projects"}
+  protected.natura2000: {polygon: "EU, Natura 2000 sites"}
+  ghsl.population: {region: "admin-1 and NUTS 3 sums (per region)", county: "NUTS 3"}
+  shapes.nuts: {country: NUTS 0, region: "NUTS 1, NUTS 2", county: NUTS 3}
+  shapes.admin1: {region: "world admin-1"}
+  shapes.bidding_zones: {region: "European bidding zones"}
+  edgar.ghg_by_sector: {country: world}
+  eurostat_balances: {country: "EU, energy balances"}
+  ember / transition: {country: "world yearly generation (app files)"}
+  entsoe live and day files: {country: "per bidding zone or country (live tool)"}
+  eia-930: {region: "US balancing authorities (live tool)"}
+  seds: {region: "US states"}
+  outlines.divisions: {region: "Overture regions", county: "Overture counties", municipality: "Overture localadmin and locality", small_area: "Overture neighbourhoods (where mapped)"}
+  outlines.adm2: {county: "geoBoundaries ADM2, world"}
+  outlines.us_places: {municipality: "US Census places"}
+  outlines.us_tracts: {small_area: "US Census tracts"}
+  outlines.uk_ons: {region: "ITL 1-2", county: "ITL 3, local authority districts", small_area: "MSOA, LSOA"}
+  outlines.fr_iris: {municipality: "communes", small_area: IRIS}
+  outlines.nl_cbs: {municipality: gemeenten, small_area: "wijken, buurten"}
+  outlines.urban_centres: {municipality: "GHS urban centres (city outlines, world)"}
+  small_area_energy.*: {municipality: "consumption per municipality where published", small_area: "per IRIS, buurt, LSOA, MSOA, tract where published (docs/research/small-area-energy.md)"}
+  rasters (area_stats): {any: "people, built-up surface, land cover, slope, solar PVOUT, wind 100 m, river flood depth"}

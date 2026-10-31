@@ -12,6 +12,11 @@ export interface AppState {
   selection?: string | null;
 }
 
+/** The area the map shows (resolve_area): its outline is drawn, the camera framed on it, and the map's layers and the app's own layers clipped to it. */
+export interface AreaRef {
+  area_id: string;
+}
+
 /** A preset, or a centre and zoom, or a bounding box [west, south, east, north]. */
 export interface Camera {
   preset?: "europe" | "world" | "us" | null;
@@ -48,7 +53,7 @@ export interface DataRef {
   inline?: (Record<string, string | number | boolean | null>)[] | null;
   /** column holding the shape key (choropleth) */
   key?: string | null;
-  shapes?: "countries" | "us_states" | "us_counties" | "nuts0" | "nuts1" | "nuts2" | "nuts3" | "bidding_zones" | "admin1" | null;
+  shapes?: "countries" | "us_states" | "us_counties" | "nuts0" | "nuts1" | "nuts2" | "nuts3" | "bidding_zones" | "admin1" | "admin2" | "lau" | "us_places" | "us_tracts" | "lsoa" | "msoa" | "lad" | "iris" | "fr_communes" | "nl_gemeente" | "nl_wijk" | "nl_buurt" | "urban_centres" | "area" | string | null;
   lon?: string | null;
   lat?: string | null;
   from_lon?: string | null;
@@ -66,6 +71,8 @@ export interface Legend {
 export interface MapSpec {
   title: string;
   camera?: Camera | null;
+  /** the area shown: outline drawn, camera on its bounds, layers clipped to it */
+  area?: AreaRef | null;
   app?: AppState | null;
   overlays?: Overlay[];
   /** several maps side by side (2-6), one variable or theme each; instead of overlays */
@@ -98,6 +105,8 @@ export interface Overlay {
 /** One of several maps of the same place (side by side, one camera). */
 export interface Panel {
   title: string;
+  /** this panel's own area (comparing two places side by side) */
+  area?: AreaRef | null;
   app?: AppState | null;
   overlays?: Overlay[];
 }

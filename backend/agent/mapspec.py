@@ -11,7 +11,7 @@ may replace a map already on screen (`replaces`).
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -35,17 +35,38 @@ Palette = Literal[
     "emissions",
     "room",
 ]
-Shapes = Literal[
-    "countries",
-    "us_states",
-    "us_counties",
-    "nuts0",
-    "nuts1",
-    "nuts2",
-    "nuts3",
-    "bidding_zones",
-    "admin1",
-]
+# shape sets a choropleth's key column refers to: the app's own outlines (countries, US states)
+# and the backend's outline sets (served with the map record, simplified); `divisions:<subtype>`
+# is an Overture subtype (region, county, localadmin, locality, neighborhood ...), `h3:<res>` an
+# H3 cell id at resolution 0-12 (computed with DuckDB's h3 extension), `area` the map's area
+Shapes = (
+    Literal[
+        "countries",
+        "us_states",
+        "us_counties",
+        "nuts0",
+        "nuts1",
+        "nuts2",
+        "nuts3",
+        "bidding_zones",
+        "admin1",
+        "admin2",
+        "lau",
+        "us_places",
+        "us_tracts",
+        "lsoa",
+        "msoa",
+        "lad",
+        "iris",
+        "fr_communes",
+        "nl_gemeente",
+        "nl_wijk",
+        "nl_buurt",
+        "urban_centres",
+        "area",
+    ]
+    | Annotated[str, Field(pattern=r"^(divisions:[a-z_]+|h3:([0-9]|1[0-2]))$")]
+)
 # the map styles the app draws (frontend/src/map/agentLayers.ts); "points" and "arcs" are the
 # first version's names for "dots" and "arcs_3d"
 FLAT_STYLES = (
@@ -135,6 +156,13 @@ class Camera(Strict):
     center: tuple[float, float] | None = Field(default=None, description="[lon, lat]")
     zoom: float | None = Field(default=None, ge=0, le=14)
     bbox: tuple[float, float, float, float] | None = None
+
+
+class AreaRef(Strict):
+    """The area the map shows (resolve_area): its outline is drawn, the camera framed on it, and
+    the map's layers and the app's own layers clipped to it."""
+
+    area_id: str = Field(pattern=r"^a_[0-9a-f]{12}$")
 
 
 class AppState(Strict):
@@ -251,6 +279,9 @@ class Panel(Strict):
     """One of several maps of the same place (side by side, one camera)."""
 
     title: str = Field(max_length=80)
+    area: AreaRef | None = Field(
+        default=None, description="this panel's own area (comparing two places side by side)"
+    )
     app: AppState | None = None
     overlays: list[Overlay] = Field(default_factory=list, max_length=3)
 
@@ -258,6 +289,10 @@ class Panel(Strict):
 class MapSpec(Strict):
     title: str = Field(max_length=120)
     camera: Camera | None = None
+    area: AreaRef | None = Field(
+        default=None,
+        description="the area shown: outline drawn, camera on its bounds, layers clipped to it",
+    )
     app: AppState | None = None
     overlays: list[Overlay] = Field(default_factory=list, max_length=4)
     panels: list[Panel] = Field(

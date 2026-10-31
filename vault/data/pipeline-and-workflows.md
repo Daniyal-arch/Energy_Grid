@@ -1,7 +1,7 @@
 ---
 title: Pipeline and workflows
 tags: [data, ci]
-updated: 2026-10-28
+updated: 2026-10-29
 paths: [scripts/, .github/workflows/, frontend/public/data/, docs/DATA_SOURCES.md]
 ---
 
@@ -37,3 +37,7 @@ the data branches. Every file and its source: `docs/DATA_SOURCES.md`. The lake: 
 - Locally: `uv run python scripts/<script>.py`; frontend `cd frontend && npm run dev`.
 - Dispatch a workflow: `gh workflow run <file>` (or the REST API where `gh` is missing).
 - Secrets live in repo secrets (ENTSO-E, EIA, EPA, Cloudflare, GEM form, ...); never printed.
+- **wave8.yml** runs on pushes to `claude/**` whose commit message carries `[w8: <groups>]`
+  (O outlines, R/Rpop/Rbuilt rasters, S/M class shares, C small-area energy, A asset layers,
+  P probes, T in_area timing); A commits `frontend/public/data/eu/w8/*.json` to the branch, so
+  pull before the next push.

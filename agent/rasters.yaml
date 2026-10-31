@@ -1,0 +1,81 @@
+# Rasters area_stats sums or counts inside any area (docs/tasks/27, A4 and B2). Each measure lists
+# its layers finest first; a layer is a published product (never an overview we made for sums).
+# Above the cell budget the next layer is used, or, for means and classes, the COG's overview;
+# the answer names the cell size used. url: r2://<bucket>/<key> (private lake, read with the
+# service's R2 keys), s3://<public bucket>/<key> (AWS open data, unsigned), https://...
+# `tiles` instead of `url`: one file per tile, named from the tile's corner (lat, lon).
+measures:
+  people:
+    title: People (GHSL population 2025, R2023A)
+    unit: people
+    stat: sum
+    how: sum of the cells whose centre lies inside the area
+    licence: CC BY 4.0 (European Commission, JRC)
+    layers:
+      - {tiles: "r2://infraatlas-raw/lake/rasters/ghsl_pop_e2025_3ss/R{row}_C{col}.tif", grid: ghsl, cell: "3 arc-seconds (about 90 m)", cover: "EU-27, the UK and the US"}
+      - {url: "r2://infraatlas-raw/lake/rasters/ghsl_pop_e2025_30ss.tif", cell: "30 arc-seconds (about 1 km)", cover: world}
+  built_up:
+    title: Built-up surface (GHSL GHS-BUILT-S 2025, R2023A)
+    unit: m²
+    stat: sum
+    how: sum of the cells whose centre lies inside the area
+    licence: CC BY 4.0 (European Commission, JRC)
+    layers:
+      - {tiles: "r2://infraatlas-raw/lake/rasters/ghsl_built_e2025_3ss/R{row}_C{col}.tif", grid: ghsl, cell: "3 arc-seconds (about 90 m)", cover: "EU-27, the UK and the US"}
+      - {url: "r2://infraatlas-raw/lake/rasters/ghsl_built_e2025_30ss.tif", cell: "30 arc-seconds (about 1 km)", cover: world}
+  land_cover:
+    title: Land cover (ESA WorldCover 10 m 2021, v200)
+    unit: share of cells
+    stat: classes
+    how: share of the cells whose centre lies inside the area, per class
+    licence: CC BY 4.0 (ESA WorldCover project 2021)
+    classes: {10: tree cover, 20: shrubland, 30: grassland, 40: cropland, 50: built-up, 60: bare or sparse vegetation, 70: snow and ice, 80: permanent water, 90: herbaceous wetland, 95: mangroves, 100: moss and lichen}
+    layers:
+      - {tiles: "s3://esa-worldcover/v200/2021/map/ESA_WorldCover_10m_2021_v200_{NS}{lat:02d}{EW}{lon:03d}_Map.tif", tile_deg: 3, cell: "10 m", cover: world}
+      - {url: "r2://infraatlas-raw/lake/rasters/worldcover_1km_shares.tif", cell: "30 arc-seconds (about 1 km); band per class, share of the 10 m cells", cover: world, shares: true}
+  slope:
+    title: Slope (computed from Copernicus DEM GLO-30)
+    unit: share of cells
+    stat: classes
+    how: slope of each DEM cell from its neighbours (degrees, computed; the DEM is a surface model, buildings and trees included), share of the cells whose centre lies inside the area per class
+    licence: "Copernicus DEM GLO-30: © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved (free licence, see docs/DATA_SOURCES.md)"
+    classes: {1: "0-2°", 2: "2-5°", 3: "5-10°", 4: "10-15°", 5: "15-30°", 6: "30° or more"}
+    breaks: [2, 5, 10, 15, 30]
+    layers:
+      - {tiles: "s3://copernicus-dem-30m/Copernicus_DSM_COG_10_{NS}{lat:02d}_00_{EW}{lon:03d}_00_DEM/Copernicus_DSM_COG_10_{NS}{lat:02d}_00_{EW}{lon:03d}_00_DEM.tif", tile_deg: 1, cell: "1 arc-second (about 30 m)", cover: world, derive: slope}
+      - {url: "r2://infraatlas-raw/lake/rasters/slope_1km_shares.tif", cell: "30 arc-seconds (about 1 km); band per class, share of the 30 m cells", cover: world, shares: true}
+  solar:
+    title: Photovoltaic power potential (Global Solar Atlas PVOUT)
+    unit: kWh/kWp per day
+    stat: mean
+    how: mean of the cells whose centre lies inside the area (and their range)
+    licence: CC BY 4.0 (World Bank, Solargis)
+    layers:
+      - {url: "r2://infraatlas-raw/lake/atlas/atlas-pvout.tif", cell: "30 arc-seconds (about 1 km)", cover: world}
+  wind:
+    title: Mean wind speed at 100 m (Global Wind Atlas 3)
+    unit: m/s
+    stat: mean
+    how: mean of the cells whose centre lies inside the area (and their range)
+    licence: CC BY 4.0 (DTU)
+    layers:
+      - {url: "r2://infraatlas-raw/lake/atlas/atlas-wind100.tif", cell: "0.0025° (about 250 m)", cover: world}
+  flood:
+    title: River flood depth, 100-year return period (JRC)
+    unit: share of cells
+    stat: classes
+    how: share of the cells whose centre lies inside the area, per depth class
+    licence: CC BY 4.0 (European Commission, JRC)
+    classes: {0: no flooding mapped, 1: under 0.5 m, 2: 0.5-1 m, 3: 1-2 m, 4: 2-4 m, 5: 4 m or more}
+    nodata_is: 0
+    layers:
+      - {url: "r2://infraatlas-raw/lake/flood/eu_classes.tif", cell: "100 m", cover: Europe}
+      - {url: "r2://infraatlas-raw/lake/flood/world_classes.tif", cell: "30 arc-seconds (about 1 km)", cover: world}
+  heat_demand:
+    title: Heat demand of buildings, current (Hotmaps heat_tot_curr_density)
+    unit: MWh a year
+    stat: sum
+    how: sum of the 100 m cells whose centre lies inside the area (each cell is one hectare, published in MWh per hectare a year)
+    licence: CC BY 4.0 (Hotmaps project)
+    layers:
+      - {url: "r2://infraatlas-raw/lake/rasters/hotmaps_heat_density_100m.tif", cell: "100 m (ETRS89-LAEA)", cover: "EU-28 (2015 vintage)"}

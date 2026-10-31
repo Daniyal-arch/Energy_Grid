@@ -55,6 +55,7 @@ async def ask(body: AskRequest, request: Request) -> StreamingResponse:
     except ModelError as e:
         raise HTTPException(400, str(e)) from e
     deps.extra_tools = await external_tools(s)
+    deps.ctx.view = body.view
     parent = otel_context.get_current()
 
     async def stream() -> AsyncIterator[str]:

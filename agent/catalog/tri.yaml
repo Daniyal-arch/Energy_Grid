@@ -1,0 +1,6 @@
+dataset: tri
+title: EPA Toxics Release Inventory, newest year
+licence: public domain (US EPA)
+tables:
+  releases:
+    grain: one row per facility and chemical (partition year; 2024, 77,295 rows), columns as published

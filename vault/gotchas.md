@@ -1,7 +1,7 @@
 ---
 title: Gotchas
 tags: [gotchas]
-updated: 2026-10-27
+updated: 2026-10-29
 ---
 
 # Gotchas
@@ -32,3 +32,13 @@ updated: 2026-10-27
   the git credential token.
 - **Backend**: DuckDB 2.0's lockdown needs the CA bundle allowed; catalogue YAML values with
   ": " must be quoted; see [[backend-service]] and [[agent-tools]].
+- **Wave 8 sources**: the Census API refuses keyless requests (redirect to missing_key.html);
+  Nomis returns 25,000 rows a request (page with `recordoffset`); DESNZ xlsx headers carry line
+  breaks and a note row naming the columns; GHSL UCDB names carry a byte-order mark; IRIS
+  geometries are GeoArrow; R2 multipart uploads need `AWS_REQUEST_CHECKSUM_CALCULATION=WHEN_REQUIRED`;
+  rasterio's Env rejects AWS_* keys (use `AWSSession`); DuckDB needs `SET GLOBAL
+  geometry_always_xy = true` before the lockdown.
+- **GitHub `contains()` on a string ignores case**: `contains(groups, 'C')` matched "Mworldcover";
+  wave8.yml compares whole words (`fromJSON(words)`). DuckDB 1.5 on runners refuses the `x -> y`
+  lambda (write `lambda x: y`). The outline name index must read every set (local or R2), or a
+  partial rebuild shrinks it.

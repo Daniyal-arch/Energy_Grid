@@ -38,3 +38,9 @@ of `docs/tasks/`.
   commercial use, the Overture divisions licence is to be confirmed.
 - **Energy-Charts** answers 503 since 2026-09-24 (GB and UA keep its older figures).
 - **NYISO** nodal prices: bot check on automated downloads.
+- **Wave 8 families** (data/coverage.yaml, 29 places each): outlines, urban_centres, rasters,
+  consumption, heating, energy_poverty, industrial, oil_gas_facilities, co2_storage,
+  heat_demand, fires, flood_zones, wetlands, dams, ownership. Blocked: EFFIS burnt areas
+  (request form), HRL Water & Wetness (EU Login), CO2 Stored (account), EIA midstream (token),
+  NWI (403). Keys still missing: FIRMS_MAP_KEY, CENSUS_API_KEY. Research per country:
+  docs/research/small-area-energy.md.

@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from opentelemetry import propagate
 
-from app.routes import admin, ask, catalog, health, maps, places, site
+from app.routes import admin, areas, ask, catalog, health, maps, places, site
 from app.settings import get_settings
 from obs import logging as jlog
 from obs.tracing import current_trace_id, setup_tracing, span
@@ -82,7 +82,7 @@ app.add_middleware(
     allow_headers=["content-type", "x-request-id", "traceparent", "x-conversation-id"],
     expose_headers=["x-request-id", "x-trace-id"],
 )
-for r in (health, catalog, places, site, maps, ask, admin):
+for r in (health, catalog, places, areas, site, maps, ask, admin):
     app.include_router(r.router)
 # last: FastAPI routes match first, then the MCP app answers /mcp (and 404 elsewhere)
 app.mount("/", mcp_asgi)

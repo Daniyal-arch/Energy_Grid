@@ -286,3 +286,56 @@ The full table, with where to register, is in `docs/tasks/25-agent-backend.md`.
   uses ~150 MB of memory with the app tables loaded; with the fake model a question takes
   ~40 ms in process. Model costs per question are not measured yet: the eval workflow prints
   them per model once `ANTHROPIC_API_KEY` is set.
+
+## 12. Areas: any area, only the data inside it (brief 27, 2026-10-29)
+
+The agent answers for whatever area a question means and shows only the data inside it.
+
+- **One area record** (`backend/data/areas.py`): `area_id` (`a_` + 12 hex of the SHA-256 of the
+  normalised outline), name, level, ISO alpha-3 codes, parents, outline (GeoJSON, EPSG:4326), bbox,
+  geodesic `area_km2`, people (GHSL, cells whose centre lies inside), source and how it was built.
+  Kept in the results directory and the object store (`agent/areas/<id>.json`), so maps, links
+  (`?aid=`) and later turns reuse it.
+- **`resolve_area`** (agent and MCP): from the view (`from_view`: the drawn polygon or circle,
+  the selected countries, the map on screen, sent by `viewOf()`), from text (the gazetteer and the
+  outline sets `shapes.nuts`, `shapes.admin1`, `shapes.bidding_zones`, `outlines.*`, ranked by
+  exact match, asked level, outline before point, in view, population, level preference;
+  "Name, qualifier" filters by country, parent or US state), named groups
+  (`agent/areas/groups.yaml`, each with the page stating its membership), unions of several names,
+  circles (`radius_km` around a point or a place), buffers (`buffer_km`, azimuthal equidistant
+  projection centred on the area) and intersections. Ambiguous names come back as candidates
+  with parents; a place that has only a point (a GeoNames city without an outline set) is never
+  given an invented outline: the note names what exists. The result lists `datasets_at_level`
+  from the level matrix `agent/areas/levels.yaml`.
+- **`run_sql` sees the areas**: the request's areas and any `a_...` id written in the SQL become
+  the temporary view `areas(area_id, name, level, geometry, xmin, ymin, xmax, ymax)` and the macros
+  `in_area(lon, lat, id)`, `intersects_area(geom, id)`, `km_inside(geom, id)`,
+  `km2_inside(geom, id)`, `area_geom(id)` on the query's own cursor. `in_area` with a literal id is
+  rewritten to a plain bounding-box test first (literal bounds, so Parquet row groups are
+  skipped) and `ST_Contains` after it; the rewritten query passes the guard again. DuckDB runs
+  with `geometry_always_xy = true` (lon/lat order; geodesic lengths and areas on WGS84).
+- **Tables keyed by region**: joined by key when the area is that region. A country or a group
+  of countries on a table with a country key is filtered by the key (generalised outlines leave
+  coastal and offshore records outside). For a drawn area a region's total is never split by
+  area share: the regions wholly inside are summed and the ones partly inside listed with their
+  full values.
+- **`area_stats`** (agent and MCP, `backend/tools/area_stats.py`, rasters in
+  `agent/rasters.yaml`): people and built-up surface (GHSL sums: the finest published grid
+  within the cell budget, else the next published one), land cover and slope class shares
+  (ESA WorldCover and Copernicus DEM read in place from AWS open data; slope computed per DEM
+  cell), solar PVOUT and 100 m wind means, river flood depth classes. Cells count when their
+  centre lies inside (GDAL's rasterize rule); above the budget, means and classes read a COG
+  overview and say so. rasterio adds about 120 MB to the image.
+- **Maps**: MapSpec `area` (and a per-panel `area`) draws the outline, frames the camera, clips
+  the agent's layers and makes it the app's own area (base layers clipped, area card). Shape sets
+  below the country (`admin2`, `lau`, `divisions:<subtype>`, `us_places`, `us_tracts`, `lad`,
+  `msoa`, `lsoa`, `fr_communes`, `iris`, `nl_gemeente`, `nl_wijk`, `nl_buurt`,
+  `urban_centres`, `h3:<res>`, `area`) travel with the saved map record, simplified to 1/1500 of
+  their extent; H3 outlines come from DuckDB's `h3` extension (in the image).
+- **API**: `GET /api/areas/resolve?q=&level=`, `GET /api/areas/{area_id}` (outline, figures,
+  sources), `GET /api/shapes/{set}/{iso3|all}` (cached in the object store).
+- **Skill** `area-analysis`; `places-and-shapes`, `make-map`, the system and cartographer
+  prompts updated. **Evals**: `agent/evals/areas.yaml` (20 cases, built by
+  `backend/scripts/build_area_evals.py`; the fake model plays them through the graph in
+  `tests/test_area_evals.py`; `uv run python -m evals.run --questions ../agent/evals/areas.yaml`
+  scores a real model).

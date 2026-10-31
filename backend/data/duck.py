@@ -98,7 +98,7 @@ class Lake:
         if s.duckdb_extension_dir:
             config["extension_directory"] = str(s.duckdb_extension_dir)
         con = duckdb.connect(":memory:", config=config)
-        for ext in ("httpfs", "spatial"):
+        for ext in ("httpfs", "spatial", "h3"):
             try:
                 con.load_extension(ext)
             except duckdb.Error:
@@ -107,6 +107,10 @@ class Lake:
         con.execute(f"SET memory_limit = '{s.duckdb_memory_limit}'")
         con.execute("SET temp_directory = '/tmp/duckdb'")
         con.execute("SET allow_persistent_secrets = false")
+        try:  # lon/lat axis order for geodesic areas and lengths (areas, in_area)
+            con.execute("SET GLOBAL geometry_always_xy = true")
+        except duckdb.Error:
+            log.warning("geometry_always_xy not set (spatial not loaded)")
         if s.r2_configured:
             con.execute(
                 "CREATE SECRET r2 (TYPE r2, KEY_ID ?, SECRET ?, ACCOUNT_ID ?)",
@@ -182,7 +186,7 @@ class Lake:
             spec = ", ".join(f"'{c}': '{t}'" for c, t in cols)
             con.execute(
                 f"CREATE TABLE app.{name} AS SELECT * FROM read_csv('{path}', header = false, "
-                f"columns = {{{spec}}}, nullstr = '')"
+                f"columns = {{{spec}}}, nullstr = '', quote = '\"', escape = '\"')"
             )
             self.sources[f"app.{name}"] = src
 
@@ -219,6 +223,47 @@ class Lake:
                 [("kv", "INTEGER"), ("lon", "DOUBLE"), ("lat", "DOUBLE"), ("country", "VARCHAR")],
                 [s[:4] for s in grid["substations"]],
                 Source("grid", "frontend/public/data/eu/grid.json", "ODbL", grid["source"]),
+            )
+        if grid:
+            # the lines as geometries (km inside an area: km_inside, brief 27 A2)
+            path = tmp / "eu_lines.csv"
+            with path.open("w", newline="", encoding="utf-8") as f:
+                csv.writer(f).writerows(
+                    [
+                        ln[0],
+                        "LINESTRING("
+                        + ", ".join(
+                            f"{ln[1][i]} {ln[1][i + 1]}" for i in range(0, len(ln[1]) - 1, 2)
+                        )
+                        + ")",
+                    ]
+                    for ln in grid["lines"]
+                    if len(ln[1]) >= 4
+                )
+            try:
+                con.execute(
+                    f"CREATE TABLE app.eu_lines AS SELECT kv, ST_GeomFromText(wkt) AS geometry, "
+                    "ST_Length_Spheroid(ST_GeomFromText(wkt)) / 1000 AS km "
+                    f"FROM read_csv('{path}', "
+                    "header = false, columns = {'kv': 'INTEGER', 'wkt': 'VARCHAR'})"
+                )
+                self.sources["app.eu_lines"] = Source(
+                    "grid", "frontend/public/data/eu/grid.json", "ODbL", grid["source"]
+                )
+            except duckdb.Error:
+                log.warning("app.eu_lines not built (spatial not loaded)")
+        dcs = load("eu/datacentres.json")
+        if dcs:
+            table(
+                "data_centres",
+                [("lon", "DOUBLE"), ("lat", "DOUBLE"), ("code", "VARCHAR"), ("name", "VARCHAR")],
+                [p[:4] for p in dcs["points"]],
+                Source(
+                    "datacentres",
+                    "frontend/public/data/eu/datacentres.json",
+                    "ODbL",
+                    f"{dcs['source']} (fetched {dcs.get('fetched', '')[:10]})",
+                ),
             )
         prices = load("eu/prices.json")
         if prices:
@@ -354,14 +399,36 @@ class Lake:
         )
         return [f"{c}.{t}" if c == "app" else f"{s}.{t}" for c, s, t in rows]
 
-    def run(self, sql: str, *, timeout_s: float | None = None, guard: bool = True) -> QueryResult:
-        """Check (unless an internal query), run with a timeout, keep up to sql_rows_kept rows."""
+    def run(
+        self,
+        sql: str,
+        *,
+        timeout_s: float | None = None,
+        guard: bool = True,
+        areas: list[dict[str, Any]] | None = None,
+    ) -> QueryResult:
+        """Check (unless an internal query), run with a timeout, keep up to sql_rows_kept rows.
+
+        `areas` (records of data/areas.py) become the read-only view `areas` and the macros
+        `in_area`, `area_geom`, `km_inside`, `km2_inside`, `intersects_area` on this query's
+        cursor; `in_area(lon, lat, 'a_...')` with a literal id is expanded to a plain bounding
+        box test first (so Parquet row groups are skipped) and the exact test after it.
+        """
         s = self.settings
         tables: list[str] = []
         if guard:
             checked = check(sql, allowed_paths=self.allowed, max_rows=s.sql_rows_kept + 1)
             sql, tables = checked.sql, checked.tables
+            if areas:
+                rewritten = expand_in_area(sql, areas)
+                if rewritten != sql:
+                    sql = check(
+                        rewritten, allowed_paths=self.allowed, max_rows=s.sql_rows_kept + 1
+                    ).sql
+            tables = [t for t in tables if t != "areas"]
         cur = self.cursor()
+        if areas:
+            register_areas(cur, areas)
         timer = threading.Timer(timeout_s or s.sql_timeout_s, cur.interrupt)
         t0 = time.perf_counter()
         with span("sql.query", {"db.system": "duckdb", "db.statement.hash": _hash(sql)}) as sp:
@@ -402,6 +469,101 @@ class Lake:
             str(entry.get("licence", "see agent/catalog")),
             self.catalog_date or "lake catalogue",
         )
+
+
+AREA_MACROS = [
+    "CREATE TEMP MACRO area_geom(aid) AS (SELECT geometry FROM areas WHERE area_id = aid)",
+    "CREATE TEMP MACRO in_area(lon, lat, aid) AS ST_Contains(area_geom(aid), ST_Point(lon, lat))",
+    "CREATE TEMP MACRO intersects_area(geom, aid, bb := NULL) AS "
+    "ST_Intersects(geom, area_geom(aid))",
+    # geodesic, on the WGS84 ellipsoid (geometry_always_xy is on)
+    "CREATE TEMP MACRO km_inside(geom, aid) AS "
+    "ST_Length_Spheroid(ST_Intersection(geom, area_geom(aid))) / 1000",
+    "CREATE TEMP MACRO km2_inside(geom, aid) AS "
+    "ST_Area_Spheroid(ST_Intersection(geom, area_geom(aid))) / 1e6",
+]
+
+
+def register_areas(cur: duckdb.DuckDBPyConnection, areas: list[dict[str, Any]]) -> None:
+    """The areas as a temporary table `areas` and the area macros, on this cursor only."""
+    cur.execute(
+        "CREATE TEMP TABLE areas (area_id VARCHAR, name VARCHAR, level VARCHAR, "
+        "geometry GEOMETRY, xmin DOUBLE, ymin DOUBLE, xmax DOUBLE, ymax DOUBLE)"
+    )
+    cur.executemany(
+        "INSERT INTO areas VALUES (?, ?, ?, ST_GeomFromGeoJSON(?), ?, ?, ?, ?)",
+        [
+            [a["area_id"], a["name"], a["level"], json.dumps(a["geometry"]), *a["bbox"]]
+            for a in areas
+        ],
+    )
+    for m in AREA_MACROS:
+        cur.execute(m)
+
+
+def expand_in_area(sql: str, areas: list[dict[str, Any]]) -> str:
+    """`in_area(x, y, 'a_...')` -> `(x BETWEEN x0 AND x1 AND y BETWEEN y0 AND y1 AND
+    ST_Contains(area_geom('a_...'), ST_Point(x, y)))`: literal bounds the Parquet reader can
+    prune row groups with. Unknown ids and non-literal ids keep the macro."""
+    import sqlglot
+    from sqlglot import exp
+
+    if "in_area" not in sql.lower() and "intersects_area" not in sql.lower():
+        return sql
+    by_id = {a["area_id"]: a for a in areas}
+    tree = sqlglot.parse_one(sql, read="duckdb")
+    changed = False
+
+    def swap(node: exp.Expression) -> exp.Expression:
+        nonlocal changed
+        if not isinstance(node, exp.Anonymous):
+            return node
+        fn = str(node.this).lower()
+        if fn == "intersects_area":
+            return _swap_intersects(node)
+        if fn != "in_area":
+            return node
+        args = node.expressions
+        if len(args) != 3 or not (isinstance(args[2], exp.Literal) and args[2].is_string):
+            return node
+        a = by_id.get(args[2].this)
+        if a is None:
+            return node
+        x, y = args[0].sql(dialect="duckdb"), args[1].sql(dialect="duckdb")
+        if a["level"] == "world":
+            text = f"({x} IS NOT NULL AND {y} IS NOT NULL)"
+        else:
+            x0, y0, x1, y1 = a["bbox"]
+            box = f"{x} BETWEEN {x0!r} AND {x1!r} AND {y} BETWEEN {y0!r} AND {y1!r}"
+            text = (
+                f"({box})"
+                if a["level"] == "bbox"
+                else f"({box} AND ST_Contains(area_geom('{a['area_id']}'), ST_Point({x}, {y})))"
+            )
+        changed = True
+        return sqlglot.parse_one(text, read="duckdb")
+
+    def _swap_intersects(node: exp.Anonymous) -> exp.Expression:
+        """intersects_area(geom, 'a_...', bbox): the GeoParquet bbox column's literal bounds
+        first, then ST_Intersects."""
+        nonlocal changed
+        args = node.expressions
+        if len(args) != 3 or not (isinstance(args[1], exp.Literal) and args[1].is_string):
+            return node
+        a = by_id.get(args[1].this)
+        if a is None:
+            return node
+        g, bb = args[0].sql(dialect="duckdb"), args[2].sql(dialect="duckdb")
+        x0, y0, x1, y1 = a["bbox"]
+        text = (
+            f"({bb}.xmin <= {x1!r} AND {bb}.xmax >= {x0!r} AND {bb}.ymin <= {y1!r} AND "
+            f"{bb}.ymax >= {y0!r} AND ST_Intersects({g}, area_geom('{a['area_id']}')))"
+        )
+        changed = True
+        return sqlglot.parse_one(text, read="duckdb")
+
+    tree = tree.transform(swap)
+    return tree.sql(dialect="duckdb") if changed else sql
 
 
 def _extreme(v: list | None) -> list[Any]:

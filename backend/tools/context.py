@@ -9,6 +9,7 @@ from functools import cached_property
 from typing import Any
 
 from app.settings import Settings
+from data.areas import Areas, AreaStore
 from data.duck import Lake, get_lake
 from data.gazetteer import Gazetteer
 from data.r2 import Store, get_store
@@ -22,6 +23,10 @@ Emit = Callable[[str, dict[str, Any]], None]
 class ToolContext:
     settings: Settings
     emit: Emit = field(default=lambda _e, _d: None)
+    # the browser's view (countries, drawn area, camera) for "here" and "what I drew"
+    view: dict[str, Any] | None = None
+    # the areas resolved in this request, registered in every run_sql (brief 27 A2)
+    turn_areas: list[str] = field(default_factory=list)
 
     @cached_property
     def lake(self) -> Lake:
@@ -42,6 +47,14 @@ class ToolContext:
     @cached_property
     def store(self) -> Store:
         return get_store(self.settings)
+
+    @cached_property
+    def area_store(self) -> AreaStore:
+        return AreaStore(self.settings.results_dir, self.store)
+
+    @cached_property
+    def areas(self) -> Areas:
+        return Areas(self.lake, self.gazetteer, self.settings.agent_dir, self.area_store)
 
 
 _catalogues: dict[str, Catalogue] = {}

@@ -1,0 +1,30 @@
+dataset: small_area_energy
+title: Energy figures per small area (brief 27 B3), one schema for every country
+licence: per row (the `source` column names the publisher and licence)
+tables:
+  consumption:
+    grain: one row per area, year, carrier and sector (partition iso3)
+    keys: {iso3: country, level: lsoa, msoa, lad, iris, fr_commune, nl_buurt, kommun, ..., code: the publisher's area code}
+    measures: {value: {unit: unit column (MWh unless stated), how: measure column (totals as published; averages kept as averages)}, meters: {unit: meters or sites as published}}
+    examples:
+      - q: domestic electricity of every LSOA in Great Britain, 2024
+        sql: SELECT round(sum(value)), count(*) FROM small_area_energy.consumption WHERE iso3 = 'GBR' AND level = 'lsoa' AND carrier = 'electricity' AND sector = 'domestic' AND year = 2024
+        answer: 97503555 MWh over 43065 rows (Scotland's data zones and the unallocated row included)
+      - q: electricity used in Paris, newest year
+        sql: SELECT year, round(sum(value)) FROM small_area_energy.consumption WHERE iso3 = 'FRA' AND level = 'fr_commune' AND code = '75056' AND carrier = 'electricity' GROUP BY 1 ORDER BY 1 DESC LIMIT 1
+        answer: 2024, 12146787 MWh
+  heating:
+    grain: one row per area, year and heating category (households or dwellings as the unit column says)
+    examples:
+      - q: central heating of LSOA E01000001
+        sql: SELECT category, value FROM small_area_energy.heating WHERE code = 'E01000001' ORDER BY value DESC LIMIT 3
+        answer: Total 840 households, electric only 342, district or communal heat networks only 261
+  poverty:
+    grain: one row per area, year and indicator (fuel poverty, energy burden, country-level arrears)
+    examples:
+      - q: the LSOA with the highest share of fuel-poor households
+        sql: SELECT name, value FROM small_area_energy.poverty WHERE iso3 = 'GBR' AND indicator LIKE 'share%' ORDER BY value DESC LIMIT 1
+        answer: Coventry 028D, 32.9 % (2024 data, modelled by DESNZ)
+  renewables:
+    grain: one row per GB local authority, year and technology (DESNZ renewable electricity by local authority)
+notes: Never split a region's total by area; a country publishing a coarser level has rows at that level only. The research behind each country is docs/research/small-area-energy.md.

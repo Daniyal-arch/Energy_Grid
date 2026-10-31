@@ -6,6 +6,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from data.areas import area_ids_in
 from data.guard import GuardError
 from tools.catalog import APP_TABLES
 from tools.context import ToolContext, result
@@ -14,7 +15,11 @@ from tools.context import ToolContext, result
 class RunSqlArgs(BaseModel):
     sql: str = Field(
         description="One DuckDB SELECT or WITH query over the lake's tables (dataset.table, e.g. "
-        "registers.gb) and the app tables (app.eu_plants, app.eu_prices, ...). Read-only."
+        "registers.gb) and the app tables (app.eu_plants, app.eu_prices, ...). Read-only. "
+        "Resolved areas are the view `areas(area_id, name, level, geometry, xmin, ymin, xmax, "
+        "ymax)` with in_area(lon, lat, 'a_...'), intersects_area(geom, 'a_...'), "
+        "km_inside(geom, 'a_...') (km of line inside, geodesic), km2_inside(geom, 'a_...') and "
+        "area_geom('a_...')."
     )
 
 
@@ -24,10 +29,25 @@ class DescribeTableArgs(BaseModel):
     )
 
 
+def query_areas(ctx: ToolContext, sql: str) -> list[dict[str, Any]]:
+    """The areas a query may use: this request's and any area id written in the SQL."""
+    ids = list(dict.fromkeys([*ctx.turn_areas, *area_ids_in(sql)]))
+    out = []
+    for i in ids:
+        a = ctx.area_store.get(i)
+        if a is not None:
+            out.append(a.as_dict())
+    return out
+
+
 def run_sql(ctx: ToolContext, sql: str) -> dict[str, Any]:
     s = ctx.settings
+    areas = query_areas(ctx, sql)
+    unknown = [i for i in area_ids_in(sql) if i not in {a["area_id"] for a in areas}]
+    if unknown:
+        return result({"error": f"unknown area id {unknown[0]}; resolve_area first"}, [])
     try:
-        r = ctx.lake.run(sql, timeout_s=s.sql_timeout_s)
+        r = ctx.lake.run(sql, timeout_s=s.sql_timeout_s, areas=areas)
     except GuardError as e:
         return result({"error": f"refused: {e}"}, [])
     except TimeoutError as e:
@@ -40,6 +60,16 @@ def run_sql(ctx: ToolContext, sql: str) -> dict[str, Any]:
         src = ctx.lake.source_for(t, cat).as_dict()
         if src not in sources:
             sources.append(src)
+    for a in areas:
+        if a["area_id"] in r.sql:
+            src = {
+                "dataset": a["source"].get("dataset", "area"),
+                "table": f"area {a['area_id']} ({a['name']})",
+                "licence": a["source"].get("licence", ""),
+                "retrieved": a.get("how", "")[:200],
+            }
+            if src not in sources:
+                sources.append(src)
     rid = ctx.results.save(r.columns, r.rows, sql=r.sql, sources=sources)
     shown = r.rows[: s.sql_rows_returned]
     data = {

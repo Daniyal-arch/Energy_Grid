@@ -1,0 +1,8 @@
+dataset: hotmaps
+title: Hotmaps industrial database (sites with excess heat)
+licence: CC BY 4.0 (Hotmaps project)
+map_file: frontend/public/data/eu/w8/excess_heat.json (layer "Excess heat")
+tables:
+  industrial_sites:
+    grain: one row per industrial site, columns as published (excess heat by temperature level, GWh a year)
+notes: The heat density raster (100 m, MWh per hectare a year) is area_stats measure heat_demand.
