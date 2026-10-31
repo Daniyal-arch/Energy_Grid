@@ -218,9 +218,9 @@ LINE 1: CREATE OR REPLACE TABLE t AS SELECT * FR | 2026-10-31 |
 | [USAspending DOE awards](https://api.usaspending.gov/api/v2/references/toptier_agencies/) (`us_usaspending_doe`) | US | point | public domain | 0.1 MB | page only (HTTP 200) | 2026-10-31 |
 | [DOE Loan Programs Office portfolio](https://www.energy.gov/lpo/portfolio-projects) (`us_doe_lpo`) | US | point | public domain | 0.0 MB | page only (HTTP 200) | 2026-10-31 |
 | [NETL IRA energy community layers](https://edx.netl.doe.gov/dataset/ira-energy-community-data-layers) (`us_ira_energy_communities`) | US | county | public domain |  | page only (HTTP 200) | 2026-10-31 |
-| [HUD Opportunity Zones (census tracts)](https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/Opportunity_Zones/FeatureServer/13) (`us_opportunity_zones`) | US | small_area | public domain | 8,765 features | not yet built | 2026-10-31 |
+| [HUD Opportunity Zones (census tracts)](https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/Opportunity_Zones/FeatureServer/13) (`us_opportunity_zones`) | US | small_area | public domain | 8,765 rows | built | 2026-10-31 |
 | [Just Transition Fund territories](https://cohesiondata.ec.europa.eu/) (`eu_jtf_territories`) | EU27 | region | CC BY 4.0 |  | page only (HTTP 200) | 2026-10-31 |
-| [Cohesion policy projects 2014-2020 (Kohesio export)](https://cohesiondata.ec.europa.eu/resource/557j-pmg8.json) (`eu_kohesio_2014_2020`) | EU27 | point | CC0 (cohesiondata.ec.europa.eu) |  | not yet built | 2026-10-31 |
+| [Cohesion policy projects 2014-2020 (Kohesio export)](https://cohesiondata.ec.europa.eu/api/views/557j-pmg8/rows.csv?accessType=DOWNLOAD) (`eu_kohesio_2014_2020`) | EU27 | point | CC0 (cohesiondata.ec.europa.eu) | 1,967,976 rows | built | 2026-10-31 |
 
 ## 9. Social and community
 

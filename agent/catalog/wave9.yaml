@@ -488,6 +488,16 @@ tables:
     - q: how many records in EPA LMOP landfill gas energy projects
       sql: SELECT count(*) FROM wave9.us_epa_lmop
       answer: 542
+  us_opportunity_zones:
+    grain: 'HUD Opportunity Zones (census tracts): one row per record as published (US; level small_area)'
+    source: https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/Opportunity_Zones/FeatureServer/13
+    licence: public domain
+    category: 8. Finance, public money and incentives
+    columns: ogc_fid, objectid, geoid10, state, county, tract, stusab, state_name, shape_area, shape_length, rural, geometry
+    examples:
+    - q: how many records in HUD Opportunity Zones (census tracts)
+      sql: SELECT count(*) FROM wave9.us_opportunity_zones
+      answer: 8765
   eu_household_income:
     grain: 'Eurostat household income per NUTS 2 (nama_10r_2hhinc): one row per record as published (EU27; level region)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nama_10r_2hhinc/?format=SDMX-CSV&compressed=false&startPeriod=2015
@@ -831,6 +841,20 @@ tables:
     - q: how many records in EMODnet marine aggregate areas
       sql: SELECT count(*) FROM wave9.eu_emodnet_aggregates
       answer: 1202
+  eu_kohesio_2014_2020:
+    grain: 'Cohesion policy projects 2014-2020 (Kohesio export): one row per record as published (EU27; level point)'
+    source: https://cohesiondata.ec.europa.eu/api/views/557j-pmg8/rows.csv?accessType=DOWNLOAD
+    licence: CC0 (cohesiondata.ec.europa.eu)
+    category: 8. Finance, public money and incentives
+    columns: operation_unique_identifier, operation_name_english, operation_name_programme_language, country, postal_code, operation_start_date, operation_end_date,
+      cofinancing_rate, total_eligible_expenditure_amount, total_eligible_expenditure_currency, project_eu_budget, beneficiary_unique_identifier, beneficiary_name,
+      location_indicator_latitude_longitude, category_of_intervention, category_label, thematic_objective_id, thematic_objective_label, policy_objective_id, policy_objective_label,
+      fund_code, fund_name, programme_code, programme_name, region, nuts3_code, programming_period, operation_summary_english, operation_summary_programme_language,
+      managingauthority
+    examples:
+    - q: how many records in Cohesion policy projects 2014-2020 (Kohesio export)
+      sql: SELECT count(*) FROM wave9.eu_kohesio_2014_2020
+      answer: 1967976
   gb_npg_heatmap_substations:
     grain: 'Northern Powergrid heat map: substation headroom: one row per record as published (GB; level point)'
     source: https://northernpowergrid.opendatasoft.com/api/explore/v2.1/catalog/datasets/heatmapdatatable/exports/csv?delimiter=%2C

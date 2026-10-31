@@ -14,7 +14,7 @@ Newest first. One entry per session or merged pull request.
   EU, UK and US sources, dashboards and agent skills per customer task. Notes: gotchas.
 
 - **2026-10-31** (claude/funny-euler-7vwg1s): brief 28: wave 9 registry (`scripts/wave9_sources.yaml`,
-  213 sources probed, 85 built), generic builder and `wave9.yml`, render of coverage families, research doc,
+  213 sources probed, 89 built), generic builder and `wave9.yml`, render of coverage families, research doc,
   catalogue, levels and the app's layer list; Part A sources (EIA layers, EA flood zones, census
   outlines, Zensus heating, CSO small areas); eleven Tasks dashboards, eleven task skills, 33
   eval cases; wave 9 map files served as `app.w9_<id>`. Notes: wave9 (new), coverage-and-gaps,

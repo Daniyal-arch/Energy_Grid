@@ -89,6 +89,7 @@ datasets:
   wave9.us_boem_wind_leases: {polygon: "US: BOEM offshore wind lease outlines"}
   wave9.us_usgs_mrds: {point: "WORLD: USGS Mineral Resources Data System"}
   wave9.us_epa_lmop: {point: "US: EPA LMOP landfill gas energy projects"}
+  wave9.us_opportunity_zones: {small_area: "US: HUD Opportunity Zones (census tracts)"}
   wave9.eu_household_income: {region: "EU27: Eurostat household income per NUTS 2 (nama_10r_2hhinc)"}
   wave9.us_usgs_water_use: {county: "US: USGS estimated water use per county (2015)"}
   wave9.us_epa_aqs_annual: {point: "US: EPA AQS annual concentrations per monitor (2025)"}
@@ -121,6 +122,7 @@ datasets:
   wave9.eu_emodnet_mpa: {polygon: "EUSEA: EMODnet marine protected areas"}
   wave9.eu_emodnet_military: {polygon: "EUSEA: EMODnet military areas at sea"}
   wave9.eu_emodnet_aggregates: {polygon: "EUSEA: EMODnet marine aggregate areas"}
+  wave9.eu_kohesio_2014_2020: {point: "EU27: Cohesion policy projects 2014-2020 (Kohesio export)"}
   wave9.gb_npg_heatmap_substations: {point: "GB: Northern Powergrid heat map: substation headroom"}
   wave9.eu_heat_production: {country: "EU27: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)"}
   wave9.eu_network_costs: {country: "EU27: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c)"}
