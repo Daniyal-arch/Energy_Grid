@@ -22,6 +22,14 @@
   "geometry": true,
   "rows": 5,
   "seconds": 1,
+  "tiles": {
+   "fields": [
+    "dm"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_drought_monitor.pmtiles"
+  },
   "with_position": 5
  },
  "us_noaa_storm_events": {
@@ -91,7 +99,21 @@
   },
   "geometry": true,
   "rows": 72360,
-  "seconds": 2,
+  "seconds": 3,
+  "tiles": {
+   "fields": [
+    "name",
+    "begin_yearmonth",
+    "begin_day",
+    "begin_time",
+    "end_yearmonth",
+    "end_day",
+    "end_time"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_noaa_storm_events.pmtiles"
+  },
   "with_position": 43917
  }
 }
