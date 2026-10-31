@@ -17,20 +17,40 @@
   },
   "geometry": false,
   "rows": 723195,
-  "seconds": 15
+  "seconds": 18
  },
  "gb_elexon_balancing": {
   "built": "2026-10-31",
   "columns": [
-   "metadata",
-   "data"
+   "settlementdate",
+   "settlementperiod",
+   "starttime",
+   "createddatetime",
+   "systemsellprice",
+   "systembuyprice",
+   "bsaddefaulted",
+   "pricederivationcode",
+   "reservescarcityprice",
+   "netimbalancevolume",
+   "sellpriceadjustment",
+   "buypriceadjustment",
+   "replacementprice",
+   "replacementpricereferencevolume",
+   "totalacceptedoffervolume",
+   "totalacceptedbidvolume",
+   "totaladjustmentsellvolume",
+   "totaladjustmentbuyvolume",
+   "totalsystemtaggedacceptedoffervolume",
+   "totalsystemtaggedacceptedbidvolume",
+   "totalsystemtaggedadjustmentsellvolume",
+   "totalsystemtaggedadjustmentbuyvolume"
   ],
   "example": {
-   "answer": 1,
+   "answer": 48,
    "sql": "SELECT count(*) FROM wave9.gb_elexon_balancing"
   },
   "geometry": false,
-  "rows": 1,
-  "seconds": 0
+  "rows": 48,
+  "seconds": 1
  }
 }
