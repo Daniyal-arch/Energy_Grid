@@ -1,0 +1,51 @@
+{
+ "eu_degree_days": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "eu_energy_productivity": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "eu_ev_stock_nuts2": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "eu_heat_pumps": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "eu_new_cars_fuel": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "ie_cso_dc_consumption": {
+  "built": "2026-10-31",
+  "columns": [
+   "c03816v04566",
+   "c03816v04566_code",
+   "c03815v04565",
+   "c03815v04565_code",
+   "tlist_a1",
+   "tlist_a1_code",
+   "statistic",
+   "statistic_code",
+   "value"
+  ],
+  "example": {
+   "answer": 1650,
+   "sql": "SELECT count(*) FROM wave9.ie_cso_dc_consumption"
+  },
+  "geometry": false,
+  "rows": 1650,
+  "seconds": 1
+ },
+ "nl_cbs_solar": {
+  "built": null,
+  "error": "SystemExit: https://opendata.cbs.nl/ODataApi/odata/85005NED/TypedDataSet: HTTP 500"
+ },
+ "us_nyc_ll84": {
+  "built": null,
+  "error": "BinderException: Binder Error: Referenced column \"longitude\" not found in FROM clause!\nCandidate bindings: \"json\"\n\nLINE 1: ... ST_YMax(geometry)) AS bbox FROM (SELECT *, CASE WHEN TRY_CAST(longitude AS DOUBLE) BETWEEN -180 AND 180 AND TRY_CAST(lati...\n                                                                 "
+ }
+}
