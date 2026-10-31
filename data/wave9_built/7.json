@@ -135,7 +135,7 @@
   },
   "geometry": true,
   "rows": 2323,
-  "seconds": 1,
+  "seconds": 0,
   "with_position": 2323
  },
  "us_usgs_mrds": {
@@ -200,7 +200,7 @@
   },
   "geometry": true,
   "rows": 304632,
-  "seconds": 5,
+  "seconds": 4,
   "with_position": 304613
  }
 }
