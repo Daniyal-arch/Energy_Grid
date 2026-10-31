@@ -42,6 +42,20 @@
   "geometry": true,
   "rows": 1202,
   "seconds": 2,
+  "tiles": {
+   "fields": [
+    "name",
+    "code",
+    "id",
+    "material",
+    "country",
+    "site_type",
+    "status"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_aggregates.pmtiles"
+  },
   "with_position": 1202
  },
  "eu_emodnet_military": {
@@ -74,6 +88,19 @@
   "geometry": true,
   "rows": 746,
   "seconds": 2,
+  "tiles": {
+   "fields": [
+    "id",
+    "country",
+    "country_2",
+    "country_3",
+    "status",
+    "type_1"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_military.pmtiles"
+  },
   "with_position": 746
  },
  "eu_emodnet_mpa": {
@@ -112,7 +139,21 @@
   },
   "geometry": true,
   "rows": 826,
-  "seconds": 53,
+  "seconds": 52,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "rsc",
+    "code",
+    "orig_name",
+    "country",
+    "designatio"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_mpa.pmtiles"
+  },
   "with_position": 826
  },
  "eu_emodnet_msp_zoning": {
@@ -170,7 +211,7 @@
   },
   "geometry": true,
   "rows": 361,
-  "seconds": 1,
+  "seconds": 0,
   "with_position": 361
  },
  "eu_emodnet_platforms": {
@@ -242,7 +283,20 @@
   },
   "geometry": true,
   "rows": 429668,
-  "seconds": 21,
+  "seconds": 20,
+  "tiles": {
+   "fields": [
+    "id",
+    "data_src_c",
+    "port_coor",
+    "port",
+    "port_id",
+    "portcode"
+   ],
+   "kind": "point",
+   "minzoom": 6,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_port_goods.pmtiles"
+  },
   "with_position": 429668
  },
  "eu_emodnet_ports": {
@@ -314,85 +368,29 @@
   "geometry": true,
   "rows": 600,
   "seconds": 2,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "country",
+    "n_turbines",
+    "power_mw",
+    "status",
+    "type_inst"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_wind_farms.pmtiles"
+  },
   "with_position": 600
  },
  "us_boem_active_leases": {
-  "bbox": [
-   -124.812,
-   29.028,
-   -68.573,
-   43.341
-  ],
-  "built": "2026-10-31",
-  "columns": [
-   "ogc_fid",
-   "objectid",
-   "lease_number",
-   "lease_type",
-   "resource",
-   "company",
-   "lease_number_company",
-   "lease_date",
-   "lease_term",
-   "project_easement",
-   "state",
-   "protraction_number",
-   "protraction_name",
-   "block_number",
-   "block_label",
-   "sub_block",
-   "lease_document1",
-   "lease_document2",
-   "geometry"
-  ],
-  "example": {
-   "answer": 4892,
-   "sql": "SELECT count(*) FROM wave9.us_boem_active_leases"
-  },
-  "geometry": true,
-  "rows": 4892,
-  "seconds": 6,
-  "with_position": 4891
+  "built": null,
+  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/wave9/us_boem_active_leases/src.geojson\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/us_boem_active_leases/src.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
  },
  "us_boem_wind_leases": {
-  "bbox": [
-   -124.812,
-   29.028,
-   -68.573,
-   43.341
-  ],
-  "built": "2026-10-31",
-  "columns": [
-   "ogc_fid",
-   "objectid",
-   "lease_number",
-   "lease_document1",
-   "lease_document2",
-   "lease_type",
-   "resource",
-   "company",
-   "lease_number_company",
-   "lease_date",
-   "lease_term",
-   "project_easement",
-   "acres",
-   "state",
-   "protraction_number",
-   "protraction_name",
-   "project_name_1",
-   "project_name_2",
-   "project_name_3",
-   "fast41",
-   "geometry"
-  ],
-  "example": {
-   "answer": 52,
-   "sql": "SELECT count(*) FROM wave9.us_boem_wind_leases"
-  },
-  "geometry": true,
-  "rows": 52,
-  "seconds": 3,
-  "with_position": 52
+  "built": null,
+  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/wave9/us_boem_wind_leases/src.geojson\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/us_boem_wind_leases/src.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
  },
  "world_port_index": {
   "built": null,
