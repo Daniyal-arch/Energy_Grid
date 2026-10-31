@@ -1,0 +1,68 @@
+{
+ "us_eia_biodiesel": {
+  "bbox": [
+   -155.05,
+   19.634,
+   -70.328,
+   61.164
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "company",
+   "site_name",
+   "cap_mmgal",
+   "state",
+   "source",
+   "period",
+   "longitude",
+   "latitude",
+   "padd",
+   "geometry"
+  ],
+  "example": {
+   "answer": 75,
+   "sql": "SELECT count(*) FROM wave9.us_eia_biodiesel"
+  },
+  "geometry": true,
+  "rows": 75,
+  "seconds": 0,
+  "with_position": 75
+ },
+ "us_eia_ethanol": {
+  "bbox": [
+   -121.336,
+   32.939,
+   -76.38,
+   47.371
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "company",
+   "site_name",
+   "capacity",
+   "state",
+   "padd",
+   "data_perio",
+   "source",
+   "longitude",
+   "latitude",
+   "geometry"
+  ],
+  "example": {
+   "answer": 197,
+   "sql": "SELECT count(*) FROM wave9.us_eia_ethanol"
+  },
+  "geometry": true,
+  "rows": 197,
+  "seconds": 0,
+  "with_position": 197
+ },
+ "us_usgs_mrds": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ }
+}
