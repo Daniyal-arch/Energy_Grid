@@ -18,7 +18,7 @@
   },
   "geometry": false,
   "rows": 203,
-  "seconds": 2
+  "seconds": 3
  },
  "gb_neso_tnuos": {
   "built": "2026-10-31",
@@ -112,7 +112,7 @@
   },
   "geometry": false,
   "rows": 7211,
-  "seconds": 1
+  "seconds": 2
  },
  "gb_npg_curtailment_events": {
   "built": "2026-10-31",
@@ -301,6 +301,6 @@
   },
   "geometry": false,
   "rows": 58920,
-  "seconds": 8
+  "seconds": 7
  }
 }
