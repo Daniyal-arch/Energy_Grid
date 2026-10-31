@@ -1748,8 +1748,13 @@ Environment Agency and/or database right"); points moved from British National G
 
 Every table is passthrough: the publisher's rows and columns as published (column names in
 lower snake case), one table per source; positions are moved to WGS 84 from the source's CRS
-(computed), points from published coordinates. A map file (`w9/<id>.json`) is written when a
-source is points and holds at most 30,000 records: all of them or none. The full list of the
+(computed), points from published coordinates. On the map: a point source of at most 30,000
+records gets a map file (`w9/<id>.json`, all records); every other positioned source is cut into
+vector tiles in Actions (tippecanoe, every record, no feature or size limit; larger sets from
+zoom 4 or 6) published as `w9/<id>.pmtiles` in the public bucket. Area series become colourings
+(`w9c/<id>.json`): one named series per table (the filter is in the file), Eurostat's country
+rows or USGS's US counties, newest period with the most areas, colour stops at the quartiles
+(computed). The full list of the
 sources probed, with the ones blocked or left out, is docs/research/wave9-sources.md.
 
 | Source | Category | Places | Level | Licence | Rows | Table |
@@ -1774,6 +1779,7 @@ sources probed, with the ones blocked or left out, is docs/research/wave9-source
 | [EIA biodiesel plants](https://www.eia.gov/maps/map_data/Biodiesel_Plants_US_EIA.zip) | 7. Supply chain, materials and industry | US | point | public domain | 75 | `wave9.us_eia_biodiesel` |
 | [EIA ethanol plants](https://www.eia.gov/maps/map_data/Ethanol_Plants_US_EIA.zip) | 7. Supply chain, materials and industry | US | point | public domain | 197 | `wave9.us_eia_ethanol` |
 | [Natural England provisional Agricultural Land Classification](https://environment.data.gov.uk/api/file/download?fileDataSetId=f33896b6-9847-4f03-b5d9-3c55497a003c&fileName=Provisional_Agricultural_Land_Classification_ALC.gpkg.zip) | 1. Land, permitting and planning | GB | polygon | OGL v3 | 1,826 | `wave9.gb_ne_alc` |
+| [Brownfield land registers (planning.data.gov.uk)](https://files.planning.data.gov.uk/dataset/brownfield-land.csv) | 1. Land, permitting and planning | GB | point | OGL v3 | 40,229 | `wave9.gb_brownfield_register` |
 | [Eurostat agricultural land prices and rents (apri_lprc)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/apri_lprc/?format=SDMX-CSV&compressed=false&startPeriod=2015) | 1. Land, permitting and planning | EU | region | CC BY 4.0 | 12,354 | `wave9.eu_land_prices` |
 | [OurAirports airports](https://davidmegginson.github.io/ourairports-data/airports.csv) | 1. Land, permitting and planning | World | point | public domain | 86,322 | `wave9.world_ourairports` |
 | [Historic England National Heritage List](https://services-eu1.arcgis.com/ZOdPfBS3aqqDYPUQ/arcgis/rest/services/National_Heritage_List_for_England_NHLE_v02_VIEW/FeatureServer/0) | 1. Land, permitting and planning | GB | point | OGL v3 | 379,683 | `wave9.gb_he_listed` |
@@ -1795,6 +1801,7 @@ sources probed, with the ones blocked or left out, is docs/research/wave9-source
 | [Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015) | 5. Demand and electrification | EU | county | CC BY 4.0 | 39,600 | `wave9.eu_degree_days` |
 | [CSO metered electricity consumption (MEC03)](https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/MEC03/JSON-stat/2.0/en) | 5. Demand and electrification | IE | country | CC BY 4.0 | 1,650 | `wave9.ie_cso_dc_consumption` |
 | [EMODnet offshore wind farms](https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:windfarmspoly&outputFormat=application/json) | 6. Offshore and maritime | Europe | polygon | CC BY 4.0 | 600 | `wave9.eu_emodnet_wind_farms` |
+| [BOEM offshore wind lease outlines](https://boem-metaport-boem.hub.arcgis.com/api/download/v1/items/709831444a234968966667d84bcc0357/geojson?layers=8) | 6. Offshore and maritime | US | polygon | public domain | 52 | `wave9.us_boem_wind_leases` |
 | [USGS Mineral Resources Data System](https://mrdata.usgs.gov/mrds/mrds-csv.zip) | 7. Supply chain, materials and industry | World | point | public domain | 304,632 | `wave9.us_usgs_mrds` |
 | [EPA LMOP landfill gas energy projects](https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/LMOP_Projects/FeatureServer/0) | 7. Supply chain, materials and industry | US | point | CC0 (data.gov) | 542 | `wave9.us_epa_lmop` |
 | [HUD Opportunity Zones (census tracts)](https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/Opportunity_Zones/FeatureServer/13) | 8. Finance, public money and incentives | US | small_area | public domain | 8,765 | `wave9.us_opportunity_zones` |
@@ -1815,6 +1822,7 @@ sources probed, with the ones blocked or left out, is docs/research/wave9-source
 | [OurAirports runways](https://davidmegginson.github.io/ourairports-data/runways.csv) | 13. Mobility | World | point | public domain | 48,388 | `wave9.world_ourairports_runways` |
 | [OurAirports navigation aids](https://davidmegginson.github.io/ourairports-data/navaids.csv) | 1. Land, permitting and planning | World | point | public domain | 11,008 | `wave9.world_ourairports_navaids` |
 | [EPA LMOP landfills](https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/New_Landfills/FeatureServer/0) | 7. Supply chain, materials and industry | US | point | CC0 (data.gov) | 2,323 | `wave9.us_epa_lmop_landfills` |
+| [BOEM active renewable energy leases](https://boem-metaport-boem.hub.arcgis.com/api/download/v1/items/e5a371353b4744418e57da448dac9471/geojson?layers=0) | 6. Offshore and maritime | US | polygon | public domain | 4,892 | `wave9.us_boem_active_leases` |
 | [MHCLG table DEC1 (display energy certificates per local authority)](statistical-data-sets/live-tables-on-energy-performance-of-buildings-certificates) | 5. Demand and electrification | GB | county | OGL v3 | 90 | `wave9.gb_dec_certificates` |
 | [DfT plug-in cars per local authority (VEH0131)](statistical-data-sets/vehicle-licensing-statistics-data-tables) | 5. Demand and electrification | GB | county | OGL v3 | 484 | `wave9.gb_ulev_la` |
 | [EMODnet offshore installations](https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:platforms&outputFormat=application/json) | 6. Offshore and maritime | Europe | point | CC BY 4.0 (EMODnet Human Activities) | 1,617 | `wave9.eu_emodnet_platforms` |

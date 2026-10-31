@@ -501,6 +501,7 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 | `wave9/us_eia_biodiesel` | GeoParquet (bbox, Hilbert order) | 75 | 75 |
 | `wave9/us_eia_ethanol` | GeoParquet (bbox, Hilbert order) | 197 | 197 |
 | `wave9/gb_ne_alc` | GeoParquet (bbox, Hilbert order) | 1,826 | 1826 |
+| `wave9/gb_brownfield_register` | GeoParquet (bbox, Hilbert order) | 40,229 | 38175 |
 | `wave9/eu_land_prices` | Parquet | 12,354 | no |
 | `wave9/world_ourairports` | GeoParquet (bbox, Hilbert order) | 86,322 | 86322 |
 | `wave9/gb_he_listed` | GeoParquet (bbox, Hilbert order) | 379,683 | 379683 |
@@ -522,6 +523,7 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 | `wave9/eu_degree_days` | Parquet | 39,600 | no |
 | `wave9/ie_cso_dc_consumption` | Parquet | 1,650 | no |
 | `wave9/eu_emodnet_wind_farms` | GeoParquet (bbox, Hilbert order) | 600 | 600 |
+| `wave9/us_boem_wind_leases` | GeoParquet (bbox, Hilbert order) | 52 | 52 |
 | `wave9/us_usgs_mrds` | GeoParquet (bbox, Hilbert order) | 304,632 | 304613 |
 | `wave9/us_epa_lmop` | GeoParquet (bbox, Hilbert order) | 542 | 542 |
 | `wave9/us_opportunity_zones` | GeoParquet (bbox, Hilbert order) | 8,765 | 8765 |
@@ -542,6 +544,7 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 | `wave9/world_ourairports_runways` | GeoParquet (bbox, Hilbert order) | 48,388 | 15699 |
 | `wave9/world_ourairports_navaids` | GeoParquet (bbox, Hilbert order) | 11,008 | 11008 |
 | `wave9/us_epa_lmop_landfills` | GeoParquet (bbox, Hilbert order) | 2,323 | 2323 |
+| `wave9/us_boem_active_leases` | GeoParquet (bbox, Hilbert order) | 4,892 | 4891 |
 | `wave9/gb_dec_certificates` | Parquet | 90 | no |
 | `wave9/gb_ulev_la` | Parquet | 484 | no |
 | `wave9/eu_emodnet_platforms` | GeoParquet (bbox, Hilbert order) | 1,617 | 1617 |

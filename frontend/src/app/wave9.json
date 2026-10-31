@@ -23,7 +23,7 @@
    ],
    "source": "ISTAT census sections 2021 (CC BY 4.0)",
    "label": "ISTAT census sections 2021",
-   "desc": "Outlines",
+   "desc": "Outlines (shown from zoom 6: zoom in)",
    "group": "Industry & demand",
    "coverage": "IT",
    "color": "rgb(214,160,255)"
@@ -43,7 +43,7 @@
    ],
    "source": "INE census sections 2024 (CC BY 4.0)",
    "label": "INE census sections 2024",
-   "desc": "Outlines",
+   "desc": "Outlines (shown from zoom 4: zoom in)",
    "group": "Industry & demand",
    "coverage": "ES",
    "color": "rgb(214,160,255)"
@@ -80,7 +80,7 @@
    ],
    "source": "Environment Agency Flood Map for Planning, flood zones 2 and 3 (OGL v3)",
    "label": "Environment Agency Flood Map for Planning, flood zones 2 and 3",
-   "desc": "Flood zones",
+   "desc": "Flood zones (shown from zoom 6: zoom in)",
    "group": "Risk",
    "coverage": "GB",
    "color": "rgb(255,120,96)"
@@ -113,7 +113,7 @@
    ],
    "source": "EIA interstate and intrastate gas pipelines (public domain)",
    "label": "EIA interstate and intrastate gas pipelines",
-   "desc": "Oil gas facilities",
+   "desc": "Oil gas facilities (shown from zoom 4: zoom in)",
    "group": "Gas, oil & coal",
    "coverage": "US",
    "color": "rgb(230,140,90)"
@@ -233,6 +233,27 @@
    "color": "rgb(206,184,140)"
   },
   {
+   "id": "w9_gb_brownfield_register",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_brownfield_register.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "dataset",
+    "end_date",
+    "entity",
+    "entry_date",
+    "organisation_entity",
+    "point"
+   ],
+   "source": "Brownfield land registers (planning.data.gov.uk) (OGL v3)",
+   "label": "Brownfield land registers (planning.data.gov.uk)",
+   "desc": "Brownfield registers and polluted sites (shown from zoom 4: zoom in)",
+   "group": "Land & planning",
+   "coverage": "GB",
+   "color": "rgb(206,184,140)"
+  },
+  {
    "id": "w9_world_ourairports",
    "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/world_ourairports.pmtiles",
    "kind": "point",
@@ -248,7 +269,7 @@
    ],
    "source": "OurAirports airports (public domain)",
    "label": "OurAirports airports",
-   "desc": "Listed heritage",
+   "desc": "Listed heritage (shown from zoom 4: zoom in)",
    "group": "Land & planning",
    "coverage": "World",
    "color": "rgb(206,184,140)"
@@ -269,7 +290,7 @@
    ],
    "source": "Historic England National Heritage List (OGL v3)",
    "label": "Historic England National Heritage List",
-   "desc": "Listed heritage",
+   "desc": "Listed heritage (shown from zoom 6: zoom in)",
    "group": "Land & planning",
    "coverage": "GB",
    "color": "rgb(206,184,140)"
@@ -290,7 +311,7 @@
    ],
    "source": "National Register of Historic Places (public domain)",
    "label": "National Register of Historic Places",
-   "desc": "Listed heritage",
+   "desc": "Listed heritage (shown from zoom 4: zoom in)",
    "group": "Land & planning",
    "coverage": "US",
    "color": "rgb(206,184,140)"
@@ -342,7 +363,7 @@
    ],
    "source": "NOAA Storm Events (newest year) (public domain)",
    "label": "NOAA Storm Events (newest year)",
-   "desc": "Storm events with position and damage",
+   "desc": "Storm events with position and damage (shown from zoom 4: zoom in)",
    "group": "Risk",
    "coverage": "US",
    "color": "rgb(255,120,96)"
@@ -369,6 +390,27 @@
    "color": "rgb(96,190,255)"
   },
   {
+   "id": "w9_us_boem_wind_leases",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_boem_wind_leases.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "lease_number",
+    "lease_document1",
+    "lease_document2",
+    "lease_type",
+    "resource",
+    "lease_number_company"
+   ],
+   "source": "BOEM offshore wind lease outlines (public domain)",
+   "label": "BOEM offshore wind lease outlines",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "US",
+   "color": "rgb(96,190,255)"
+  },
+  {
    "id": "w9_us_usgs_mrds",
    "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_mrds.pmtiles",
    "kind": "point",
@@ -384,7 +426,7 @@
    ],
    "source": "USGS Mineral Resources Data System (public domain)",
    "label": "USGS Mineral Resources Data System",
-   "desc": "Mineral deposits and occurrences",
+   "desc": "Mineral deposits and occurrences (shown from zoom 6: zoom in)",
    "group": "Industry & demand",
    "coverage": "World",
    "color": "rgb(214,160,255)"
@@ -434,7 +476,7 @@
    ],
    "source": "EPA AQS annual concentrations per monitor (2025) (public domain)",
    "label": "EPA AQS annual concentrations per monitor (2025)",
-   "desc": "Measured air quality per station",
+   "desc": "Measured air quality per station (shown from zoom 4: zoom in)",
    "group": "Emissions",
    "coverage": "US",
    "color": "rgb(200,200,200)"
@@ -462,6 +504,27 @@
    "group": "Industry & demand",
    "coverage": "US",
    "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_boem_active_leases",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_boem_active_leases.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "lease_number",
+    "lease_type",
+    "resource",
+    "lease_number_company",
+    "lease_date",
+    "lease_term"
+   ],
+   "source": "BOEM active renewable energy leases (public domain)",
+   "label": "BOEM active renewable energy leases",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "US",
+   "color": "rgb(96,190,255)"
   },
   {
    "id": "w9_eu_emodnet_platforms",
@@ -523,7 +586,7 @@
    ],
    "source": "EMODnet goods handled per port (CC BY 4.0 (EMODnet Human Activities))",
    "label": "EMODnet goods handled per port",
-   "desc": "Ports and their traffic",
+   "desc": "Ports and their traffic (shown from zoom 6: zoom in)",
    "group": "Offshore",
    "coverage": "Europe",
    "color": "rgb(96,190,255)"
@@ -544,7 +607,7 @@
    ],
    "source": "EMODnet urban wastewater treatment plants (UWWTD) (CC BY 4.0 (EMODnet Human Activities))",
    "label": "EMODnet urban wastewater treatment plants (UWWTD)",
-   "desc": "Urban wastewater treatment plants",
+   "desc": "Urban wastewater treatment plants (shown from zoom 4: zoom in)",
    "group": "Water & telecom",
    "coverage": "Europe",
    "color": "rgb(120,200,230)"
@@ -1150,6 +1213,25 @@
    ]
   },
   {
+   "id": "w9_gb_brownfield_register",
+   "name": "Brownfield land registers (planning.data.gov.uk)",
+   "category": "Land & planning",
+   "description": "Brownfield land registers (planning.data.gov.uk): 40,229 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "brownfield",
+   "parts": [
+    {
+     "layer": "w9_gb_brownfield_register",
+     "where": [
+      "GB"
+     ],
+     "what": "brownfield registers and polluted sites",
+     "source": "Brownfield land registers (planning.data.gov.uk) (OGL v3)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
    "id": "colour-w9c_eu_land_prices",
    "name": "Arable land price",
    "category": "Land & planning",
@@ -1335,6 +1417,25 @@
      ],
      "what": "offshore wind farms",
      "source": "EMODnet offshore wind farms (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_boem_wind_leases",
+   "name": "BOEM offshore wind lease outlines",
+   "category": "Offshore",
+   "description": "BOEM offshore wind lease outlines: 52 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_us_boem_wind_leases",
+     "where": [
+      "US"
+     ],
+     "what": "offshore wind farms",
+     "source": "BOEM offshore wind lease outlines (public domain)",
      "doc": "Wave 9 sources"
     }
    ]
@@ -1639,6 +1740,25 @@
      ],
      "what": "digesters",
      "source": "EPA LMOP landfills (CC0 (data.gov))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_boem_active_leases",
+   "name": "BOEM active renewable energy leases",
+   "category": "Offshore",
+   "description": "BOEM active renewable energy leases: 4,892 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_us_boem_active_leases",
+     "where": [
+      "US"
+     ],
+     "what": "offshore wind farms",
+     "source": "BOEM active renewable energy leases (public domain)",
      "doc": "Wave 9 sources"
     }
    ]
