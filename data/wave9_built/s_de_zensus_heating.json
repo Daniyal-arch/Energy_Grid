@@ -1,0 +1,31 @@
+{
+ "de_zensus_heating": {
+  "bbox": [
+   5.873,
+   47.335,
+   15.032,
+   55.024
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "gitter_id_100m",
+   "x_mp_100m",
+   "y_mp_100m",
+   "insgesamt_heizungsart",
+   "fernheizung",
+   "etagenheizung",
+   "blockheizung",
+   "zentralheizung",
+   "einzel_mehrraumoefen",
+   "keine_heizung"
+  ],
+  "example": {
+   "answer": 2628942,
+   "sql": "SELECT count(*) FROM wave9.de_zensus_heating"
+  },
+  "geometry": true,
+  "rows": 2628942,
+  "seconds": 11,
+  "with_position": 2628942
+ }
+}
