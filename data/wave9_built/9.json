@@ -1,6 +1,25 @@
 {
  "eu_household_income": {
-  "built": null,
-  "error": "KeyError: 'sep'"
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "direct",
+   "na_item",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 111460,
+   "sql": "SELECT count(*) FROM wave9.eu_household_income"
+  },
+  "geometry": false,
+  "rows": 111460,
+  "seconds": 8
  }
 }
