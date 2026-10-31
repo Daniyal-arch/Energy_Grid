@@ -1,0 +1,6 @@
+{
+ "eu_broadband_nuts2": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ }
+}
