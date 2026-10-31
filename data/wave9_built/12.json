@@ -20,10 +20,10 @@
   },
   "geometry": false,
   "rows": 894510,
-  "seconds": 65
+  "seconds": 90
  },
  "gb_hnpd": {
   "built": null,
-  "error": "BinderException: Binder Error: Referenced column \"x_coordinate\" not found in FROM clause!\nCandidate bindings: \"heat_networks_planning_database\"\n\nLINE 1: ...)) AS bbox FROM (SELECT *, ST_Transform(ST_Point(TRY_CAST(x_coordinate AS DOUBLE), TRY_CAST(y_coordinate AS DOUBLE...\n                                           "
+  "error": "StopIteration: "
  }
 }
