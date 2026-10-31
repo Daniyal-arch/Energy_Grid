@@ -612,7 +612,7 @@ def app_file(con, s: dict[str, Any], query: str) -> None:  # noqa: ANN001
     """A small map file (points only, at most APP_MAX_POINTS, all of them or none): position,
     a name and up to six columns as published, for the generic wave-9 layer."""
     n, pts = con.execute(
-        f"SELECT count(*), count(*) FILTER (WHERE ST_GeometryType(geometry)::VARCHAR = 'POINT') FROM ({query}) WHERE geometry IS NOT NULL"
+        f"SELECT count(*), count(*) FILTER (WHERE ST_GeometryType(geometry)::VARCHAR = 'POINT') FROM ({query}) WHERE geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)"
     ).fetchone()
     if not n or pts != n or n > APP_MAX_POINTS:
         return False
@@ -690,7 +690,7 @@ def tiles_file(con, s: dict[str, Any], query: str, n: int) -> dict[str, Any] | N
         if c != name and not c.startswith(("ogc_fid", "objectid", "fid", "shape_", "globalid"))
     ][:6]
     kind = con.execute(
-        f"SELECT mode(replace(ST_GeometryType(geometry)::VARCHAR, 'MULTI', '')) FROM ({query}) WHERE geometry IS NOT NULL"
+        f"SELECT mode(replace(ST_GeometryType(geometry)::VARCHAR, 'MULTI', '')) FROM ({query}) WHERE geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)"
     ).fetchone()[0]
     minzoom = 6 if n > 200_000 else 4 if n > 20_000 else 0
     d = TMP / s["id"]
@@ -700,7 +700,7 @@ def tiles_file(con, s: dict[str, Any], query: str, n: int) -> dict[str, Any] | N
     )
     cur = con.execute(
         f"SELECT json_object('type', 'Feature', 'geometry', ST_AsGeoJSON(geometry)::JSON, "
-        f"'properties', json_object({props}))::VARCHAR FROM ({query}) WHERE geometry IS NOT NULL"
+        f"'properties', json_object({props}))::VARCHAR FROM ({query}) WHERE geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)"
     )
     with seq.open("w", encoding="utf-8") as fh:
         while rows := cur.fetchmany(50_000):
@@ -708,7 +708,11 @@ def tiles_file(con, s: dict[str, Any], query: str, n: int) -> dict[str, Any] | N
     out = d / f"{s['id']}.pmtiles"
     cmd = ["tippecanoe", "-o", str(out), "-l", "d", f"-Z{minzoom}", "-z12", "--no-feature-limit", "--no-tile-size-limit",
            "--simplification=4", "--force", "-P", str(seq)]  # fmt: skip
-    subprocess.run(cmd, check=True, capture_output=True)
+    run = subprocess.run(cmd, capture_output=True, text=True)
+    if run.returncode != 0:  # the table is in the lake; only its tiles failed
+        err = (run.stderr or "").strip().splitlines()[-3:]
+        print(f"  {s['id']}: tippecanoe failed: {err}", flush=True)
+        return {"error": " | ".join(err)[:300]}
     print(
         f"  {s['id']}: {out.stat().st_size / 1e6:,.1f} MB of tiles (zoom {minzoom}-12)", flush=True
     )

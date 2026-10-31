@@ -213,18 +213,6 @@ tables:
     - q: how many records in Natural England provisional Agricultural Land Classification
       sql: SELECT count(*) FROM wave9.gb_ne_alc
       answer: 1826
-  gb_brownfield_register:
-    grain: 'Brownfield land registers (planning.data.gov.uk): one row per record as published (GB; level point)'
-    source: https://files.planning.data.gov.uk/dataset/brownfield-land.csv
-    licence: OGL v3
-    category: 1. Land, permitting and planning
-    columns: dataset, end_date, entity, entry_date, geometry, name, organisation_entity, point, prefix, quality, reference, start_date, typology, brownfield_land,
-      deliverable, hazardous_substances, hectares, maximum_net_dwellings, minimum_net_dwellings, notes, organisation, ownership_status, planning_permission_date,
-      planning_permission_history, planning_permission_status, planning_permission_type, site, site_address, site_categories, site_plan_url
-    examples:
-    - q: how many records in Brownfield land registers (planning.data.gov.uk)
-      sql: SELECT count(*) FROM wave9.gb_brownfield_register
-      answer: 40229
   eu_land_prices:
     grain: 'Eurostat agricultural land prices and rents (apri_lprc): one row per record as published (EU27; level region)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/apri_lprc/?format=SDMX-CSV&compressed=false&startPeriod=2015
@@ -322,7 +310,7 @@ tables:
     examples:
     - q: how many records in NESO constraint cost breakdown
       sql: SELECT count(*) FROM wave9.gb_neso_constraint_costs
-      answer: 203
+      answer: 210
   gb_nged_opendata:
     grain: 'NGED embedded capacity register: one row per record as published (GB; level point)'
     source: https://connecteddata.nationalgrid.co.uk/api/3/action/package_search?q=name:embedded-capacity-register
@@ -454,17 +442,6 @@ tables:
     - q: how many records in EMODnet offshore wind farms
       sql: SELECT count(*) FROM wave9.eu_emodnet_wind_farms
       answer: 600
-  us_boem_wind_leases:
-    grain: 'BOEM offshore wind lease outlines: one row per record as published (US; level polygon)'
-    source: https://boem-metaport-boem.hub.arcgis.com/api/download/v1/items/709831444a234968966667d84bcc0357/geojson?layers=8
-    licence: public domain
-    category: 6. Offshore and maritime
-    columns: ogc_fid, objectid, lease_number, lease_document1, lease_document2, lease_type, resource, company, lease_number_company, lease_date, lease_term, project_easement,
-      acres, state, protraction_number, protraction_name, project_name_1, project_name_2, project_name_3, fast41, geometry
-    examples:
-    - q: how many records in BOEM offshore wind lease outlines
-      sql: SELECT count(*) FROM wave9.us_boem_wind_leases
-      answer: 52
   us_usgs_mrds:
     grain: 'USGS Mineral Resources Data System: one row per record as published (WORLD; level point)'
     source: https://mrdata.usgs.gov/mrds/mrds-csv.zip
@@ -678,17 +655,6 @@ tables:
     - q: how many records in EPA LMOP landfills
       sql: SELECT count(*) FROM wave9.us_epa_lmop_landfills
       answer: 2323
-  us_boem_active_leases:
-    grain: 'BOEM active renewable energy leases: one row per record as published (US; level polygon)'
-    source: https://boem-metaport-boem.hub.arcgis.com/api/download/v1/items/e5a371353b4744418e57da448dac9471/geojson?layers=0
-    licence: public domain
-    category: 6. Offshore and maritime
-    columns: ogc_fid, objectid, lease_number, lease_type, resource, company, lease_number_company, lease_date, lease_term, project_easement, state, protraction_number,
-      protraction_name, block_number, block_label, sub_block, lease_document1, lease_document2, geometry
-    examples:
-    - q: how many records in BOEM active renewable energy leases
-      sql: SELECT count(*) FROM wave9.us_boem_active_leases
-      answer: 4892
   gb_dec_certificates:
     grain: 'MHCLG table DEC1 (display energy certificates per local authority): one row per record as published (GB; level county)'
     source: statistical-data-sets/live-tables-on-energy-performance-of-buildings-certificates
