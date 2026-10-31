@@ -1,0 +1,41 @@
+{
+ "eu_emodnet_wind_farms": {
+  "bbox": [
+   -16.59,
+   27.733,
+   24.738,
+   65.471
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "country",
+   "name",
+   "n_turbines",
+   "power_mw",
+   "status",
+   "type_inst",
+   "updateyear",
+   "year",
+   "dist_coast",
+   "area_sqkm",
+   "notes",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 600,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_wind_farms"
+  },
+  "geometry": true,
+  "rows": 600,
+  "seconds": 1,
+  "with_position": 600
+ },
+ "us_boem_wind_leases": {
+  "built": null,
+  "error": "SystemExit: https://services7.arcgis.com/G5Ma95RzqJRPKsWL/arcgis/rest/services/Wind_Lease_Boundaries__BOEM_/FeatureServer/0/query: HTTPStatusError Client error '400 Bad Request' for url 'https://services7.arcgis.com/G5Ma95RzqJRPKsWL/arcgis/rest/services/Wind_Lease_Boundaries__BOEM_/FeatureServer/0/query?where=1"
+ }
+}
