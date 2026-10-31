@@ -1,0 +1,33 @@
+{
+ "us_opportunity_zones": {
+  "bbox": [
+   -179.231,
+   -14.42,
+   179.86,
+   71.392
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "geoid10",
+   "state",
+   "county",
+   "tract",
+   "stusab",
+   "state_name",
+   "shape_area",
+   "shape_length",
+   "rural",
+   "geometry"
+  ],
+  "example": {
+   "answer": 8765,
+   "sql": "SELECT count(*) FROM wave9.us_opportunity_zones"
+  },
+  "geometry": true,
+  "rows": 8765,
+  "seconds": 63,
+  "with_position": 8765
+ }
+}
