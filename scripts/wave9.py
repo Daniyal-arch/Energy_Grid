@@ -543,7 +543,9 @@ def build_one(con, lk, s: dict[str, Any]) -> dict[str, Any]:  # noqa: ANN001
         geometry = "geometry"
         kind_of = dict(con.execute("SELECT column_name, column_type FROM (DESCRIBE t)").fetchall())
         if kind_of["geometry"] == "VARCHAR":  # WKT text (planning.data.gov.uk and others)
-            query = "SELECT * EXCLUDE (geometry), TRY(ST_GeomFromText(geometry)) AS geometry FROM t"
+            # planning.data.gov.uk fills `point` where `geometry` (the site outline) is empty
+            alt = ", TRY(ST_GeomFromText(point))" if "point" in cols else ""
+            query = f"SELECT * EXCLUDE (geometry), coalesce(TRY(ST_GeomFromText(geometry)){alt}) AS geometry FROM t"
         else:
             query = "SELECT * FROM t"
     elif lon and lat:
