@@ -1,4 +1,27 @@
 {
+ "eu_heat_production": {
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 894510,
+   "sql": "SELECT count(*) FROM wave9.eu_heat_production"
+  },
+  "geometry": false,
+  "rows": 894510,
+  "seconds": 65
+ },
  "gb_hnpd": {
   "built": null,
   "error": "BinderException: Binder Error: Referenced column \"x_coordinate\" not found in FROM clause!\nCandidate bindings: \"heat_networks_planning_database\"\n\nLINE 1: ...)) AS bbox FROM (SELECT *, ST_Transform(ST_Point(TRY_CAST(x_coordinate AS DOUBLE), TRY_CAST(y_coordinate AS DOUBLE...\n                                           "
