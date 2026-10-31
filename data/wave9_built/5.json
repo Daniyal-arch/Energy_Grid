@@ -112,6 +112,29 @@
   "rows": 5969,
   "seconds": 1
  },
+ "eu_renewable_capacity": {
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "plant_tec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 18961,
+   "sql": "SELECT count(*) FROM wave9.eu_renewable_capacity"
+  },
+  "geometry": false,
+  "rows": 18961,
+  "seconds": 2
+ },
  "fr_ore_ev_commune": {
   "built": "2026-10-31",
   "columns": [
@@ -155,7 +178,7 @@
   },
   "geometry": false,
   "rows": 90,
-  "seconds": 18
+  "seconds": 21
  },
  "gb_dft_veh0142": {
   "built": "2026-10-31",
@@ -176,7 +199,7 @@
   },
   "geometry": false,
   "rows": 2520,
-  "seconds": 6
+  "seconds": 7
  },
  "gb_epc_stats": {
   "built": "2026-10-31",
@@ -200,7 +223,7 @@
   },
   "geometry": false,
   "rows": 90,
-  "seconds": 16
+  "seconds": 20
  },
  "gb_ulev_la": {
   "built": "2026-10-31",
