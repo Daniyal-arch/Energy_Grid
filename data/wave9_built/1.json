@@ -1,0 +1,119 @@
+{
+ "eu_land_prices": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "fr_georisques_ssp": {
+  "built": null,
+  "error": "SystemExit: download failed: https://files.georisques.fr/SSP/ssp_casias_instruction.zip"
+ },
+ "gb_brownfield_register": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "gb_he_listed": {
+  "bbox": [
+   -6.446,
+   49.873,
+   1.758,
+   55.784
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "listentry",
+   "name",
+   "grade",
+   "listdate",
+   "amenddate",
+   "capturescale",
+   "hyperlink",
+   "ngr",
+   "easting",
+   "northing",
+   "geometry"
+  ],
+  "example": {
+   "answer": 379683,
+   "sql": "SELECT count(*) FROM wave9.gb_he_listed"
+  },
+  "geometry": true,
+  "rows": 379683,
+  "seconds": 196,
+  "with_position": 379683
+ },
+ "gb_ne_alc": {
+  "built": null,
+  "error": "SystemExit: https://services.arcgis.com/JJzESW51TqeY9uat/arcgis/rest/services/Provisional_Agricultural_Land_Classification_ALC_England/FeatureServer/0/query: HTTPStatusError Client error '400 Bad Request' for url 'https://services.arcgis.com/JJzESW51TqeY9uat/arcgis/rest/services/Provisional_Agricultural_Land_Cl"
+ },
+ "us_blm_solar_dla": {
+  "built": null,
+  "error": "SystemExit: https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_Solar_Energy_Zones/MapServer/0/query: HTTPStatusError Client error '404 Not Found' for url 'https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_Solar_Energy_Zones/MapServer/0/query?where=1%3D1&outFields=%2A&outSR=4326&f=geojson&resultOffset"
+ },
+ "us_nrhp": {
+  "bbox": [
+   -170.836,
+   -14.543,
+   172.906,
+   71.297
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "certdate",
+   "objectid",
+   "nris_refnum",
+   "resname",
+   "restype",
+   "address",
+   "city",
+   "county",
+   "state",
+   "vicinity",
+   "multiname",
+   "numcbldg",
+   "numcobj",
+   "numcsite",
+   "numcstru",
+   "is_nhl",
+   "bnd_type",
+   "bnd_other",
+   "is_extant",
+   "extant_oth",
+   "createdate",
+   "edit_date",
+   "map_method",
+   "map_mth_ot",
+   "source",
+   "src_date",
+   "src_scale",
+   "src_accu",
+   "src_coord",
+   "originator",
+   "constrant",
+   "cr_id",
+   "geom_id",
+   "property_id",
+   "status",
+   "nara_url",
+   "geometry"
+  ],
+  "example": {
+   "answer": 74636,
+   "sql": "SELECT count(*) FROM wave9.us_nrhp"
+  },
+  "geometry": true,
+  "rows": 74636,
+  "seconds": 26,
+  "with_position": 74636
+ },
+ "world_ourairports": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "world_ourairports_navaids": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ }
+}
