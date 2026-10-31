@@ -19,15 +19,60 @@
   },
   "geometry": false,
   "rows": 12354,
-  "seconds": 2
+  "seconds": 3
  },
  "fr_georisques_ssp": {
   "built": null,
   "error": "SystemExit: download failed: https://files.georisques.fr/SSP/ssp_casias_instruction.zip"
  },
  "gb_brownfield_register": {
-  "built": null,
-  "error": "BinderException: Binder Error: No function matches the given name and argument types 'ST_XMin(VARCHAR)'. You might need to add explicit type casts.\n\tCandidate functions:\n\tST_XMin(geom GEOMETRY) -> DOUBLE\n\tST_XMin(point POINT_2D) -> DOUBLE\n\tST_XMin(line LINESTRING_2D) -> DOUBLE\n\tST_XMin(polygon POLYGON_2D) -> DOUBLE\n"
+  "bbox": [
+   null,
+   null,
+   null,
+   null
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "dataset",
+   "end_date",
+   "entity",
+   "entry_date",
+   "geometry",
+   "name",
+   "organisation_entity",
+   "point",
+   "prefix",
+   "quality",
+   "reference",
+   "start_date",
+   "typology",
+   "brownfield_land",
+   "deliverable",
+   "hazardous_substances",
+   "hectares",
+   "maximum_net_dwellings",
+   "minimum_net_dwellings",
+   "notes",
+   "organisation",
+   "ownership_status",
+   "planning_permission_date",
+   "planning_permission_history",
+   "planning_permission_status",
+   "planning_permission_type",
+   "site",
+   "site_address",
+   "site_categories",
+   "site_plan_url"
+  ],
+  "example": {
+   "answer": 40229,
+   "sql": "SELECT count(*) FROM wave9.gb_brownfield_register"
+  },
+  "geometry": true,
+  "rows": 40229,
+  "seconds": 1,
+  "with_position": 0
  },
  "gb_he_listed": {
   "bbox": [
@@ -58,7 +103,7 @@
   },
   "geometry": true,
   "rows": 379683,
-  "seconds": 208,
+  "seconds": 22,
   "with_position": 379683
  },
  "gb_ne_alc": {
@@ -90,6 +135,37 @@
  "us_blm_solar_dla": {
   "built": null,
   "error": "SystemExit: https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_Solar_Energy_Zones/MapServer/0/query: HTTPStatusError Client error '404 Not Found' for url 'https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_Solar_Energy_Zones/MapServer/0/query?where=1%3D1&outFields=%2A&outSR=4326&f=geojson&resultOffset"
+ },
+ "us_nexrad": {
+  "bbox": [
+   -165.295,
+   13.456,
+   144.811,
+   65.035
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ncdcid",
+   "icao",
+   "wban",
+   "name",
+   "country",
+   "st",
+   "county",
+   "lat",
+   "lon",
+   "elev",
+   "utc",
+   "stntype"
+  ],
+  "example": {
+   "answer": 210,
+   "sql": "SELECT count(*) FROM wave9.us_nexrad"
+  },
+  "geometry": true,
+  "rows": 210,
+  "seconds": 1,
+  "with_position": 210
  },
  "us_nrhp": {
   "bbox": [
@@ -145,7 +221,7 @@
   },
   "geometry": true,
   "rows": 74636,
-  "seconds": 29,
+  "seconds": 34,
   "with_position": 74636
  },
  "world_ourairports": {
