@@ -158,7 +158,6 @@ build failed; the error is shown).
 | [Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/tran_r_elvehst/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_ev_stock_nuts2`) | EU27 | region | CC BY 4.0 | 15,106 rows | built | 2026-10-31 |
 | [Eurostat new passenger cars by fuel (road_eqs_carpda)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/road_eqs_carpda/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_new_cars_fuel`) | EU27 | country | CC BY 4.0 | 5,969 rows | built | 2026-10-31 |
 | [Eurostat heat pump characteristics (nrg_inf_hptc)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_hptc/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_heat_pumps`) | EU27 | country | CC BY 4.0 | 24,857 rows | built | 2026-10-31 |
-| [Eurostat energy import dependency (sdg_07_60)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_energy_productivity`) | EU27 | country | CC BY 4.0 | 1,260 rows | built | 2026-10-31 |
 | [MHCLG table DEC1 (display energy certificates per local authority)](statistical-data-sets/live-tables-on-energy-performance-of-buildings-certificates) (`gb_dec_certificates`) | GB | county | OGL v3 | 90 rows | built | 2026-10-31 |
 | [DfT plug-in cars per local authority (VEH0131)](statistical-data-sets/vehicle-licensing-statistics-data-tables) (`gb_ulev_la`) | GB | county | OGL v3 | 484 rows | built | 2026-10-31 |
 | [Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_renewable_capacity`) | EU27 | country | CC BY 4.0 | 18,961 rows | built | 2026-10-31 |
@@ -231,6 +230,7 @@ LINE 1: CREATE OR REPLACE TABLE t AS SELECT * FR | 2026-10-31 |
 | [ACS median household income per tract](https://api.census.gov/data/2023/acs/acs5) (`us_acs_income`) | US | small_area | public domain |  | blocked: needs CENSUS_API_KEY | 2026-10-31 |
 | [NREL Sharing the Sun community solar projects](https://data.nrel.gov/submissions/244) (`us_nrel_sharing_sun`) | US | point | check |  | page only (HTTP None) | 2026-10-31 |
 | [REScoop members](https://www.rescoop.eu/members) (`eu_rescoop`) | EUR | point | check |  | page only (HTTP 404) | 2026-10-31 |
+| [Eurostat population unable to keep home adequately warm (sdg_07_60)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_energy_productivity`) | EU27 | country | CC BY 4.0 | 1,260 rows | built | 2026-10-31 |
 
 ## 10. Telecom and digital
 

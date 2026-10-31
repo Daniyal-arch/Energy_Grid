@@ -278,7 +278,9 @@ export type ColourId =
   | "ir_wind"
   | "rt_household"
   | "cn_gen"
-  | "cn_load";
+  | "cn_load"
+  // data wave 9: one published series per country or US county (app/wave9.json, lib/wave9.ts)
+  | `w9c_${string}`;
 export interface ColourInfo {
   id: ColourId;
   label: string;
@@ -304,6 +306,7 @@ export const COLOURS: ColourInfo[] = [
   { id: "rt_household", label: "Household electricity price", group: "What consumers pay", modes: ["live", "years"] },
   { id: "cn_gen", label: "Free capacity for new generation", group: "Room to connect", modes: ["live", "years"] },
   { id: "cn_load", label: "Free capacity for new demand", group: "Room to connect", modes: ["live", "years"] },
+  ...(WAVE9.colours as ColourInfo[]),
 ];
 export const isPriceColour = (c: ColourId) => c.startsWith("pr_");
 export const isYearColour = (c: ColourId) => c.startsWith("tr_");

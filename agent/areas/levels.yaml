@@ -103,7 +103,7 @@ datasets:
   wave9.eu_wastewater_connected: {country: "EU27: Eurostat population connected to wastewater treatment (env_ww_con)"}
   wave9.eu_nuclear_capacity: {country: "EU27: Eurostat nuclear capacity and reactors (nrg_inf_nuc)"}
   wave9.eu_air_passengers: {region: "EU27: Eurostat air passengers per NUTS 2 (tran_r_avpa_nm)"}
-  wave9.eu_energy_productivity: {country: "EU27: Eurostat energy import dependency (sdg_07_60)"}
+  wave9.eu_energy_productivity: {country: "EU27: Eurostat population unable to keep home adequately warm (sdg_07_60)"}
   wave9.world_ourairports_runways: {point: "WORLD: OurAirports runways"}
   wave9.world_ourairports_navaids: {point: "WORLD: OurAirports navigation aids"}
   wave9.us_epa_lmop_landfills: {point: "US: EPA LMOP landfills"}

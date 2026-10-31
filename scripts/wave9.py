@@ -577,8 +577,11 @@ def build_one(con, lk, s: dict[str, Any]) -> dict[str, Any]:  # noqa: ANN001
         "example": {"sql": f"SELECT count(*) FROM wave9.{s['id']}", "answer": n},
         "built": time.strftime("%Y-%m-%d"),
     }  # fmt: skip
+    if s.get("choro"):
+        out["choro"] = choro_file(con, s)
     if geometry:
-        app_file(con, s, query)
+        if not app_file(con, s, query):
+            out["tiles"] = tiles_file(con, s, query, n)
         bb = con.execute(
             f"SELECT min(ST_XMin(geometry)), min(ST_YMin(geometry)), max(ST_XMax(geometry)), max(ST_YMax(geometry)), count(geometry) FROM ({query})"
         ).fetchone()
@@ -612,7 +615,7 @@ def app_file(con, s: dict[str, Any], query: str) -> None:  # noqa: ANN001
         f"SELECT count(*), count(*) FILTER (WHERE ST_GeometryType(geometry)::VARCHAR = 'POINT') FROM ({query}) WHERE geometry IS NOT NULL"
     ).fetchone()
     if not n or pts != n or n > APP_MAX_POINTS:
-        return
+        return False
     cols = [
         c
         for (c,) in con.execute(f"SELECT column_name FROM (DESCRIBE ({query}))").fetchall()
@@ -654,9 +657,128 @@ def app_file(con, s: dict[str, Any], query: str) -> None:  # noqa: ANN001
         },  # fmt: skip
         max_mb=6,
     )
+    return True
+
+
+UPLOAD = {"on": False}
+PUBLIC = "https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev"
+APPC = ROOT / "frontend" / "public" / "data" / "eu" / "w9c"
+EUROSTAT_ISO2 = {"EL": "GR", "UK": "GB"}
+
+
+def tiles_file(con, s: dict[str, Any], query: str, n: int) -> dict[str, Any] | None:  # noqa: ANN001
+    """Vector tiles of every record (lines, polygons, or more points than a map file holds):
+    tippecanoe over GeoJSONSeq, uploaded to the public bucket as w9/<id>.pmtiles. Every record
+    is in the tiles at the layer's own zoom range; nothing is dropped (no feature or size limit)."""
+    import shutil
+    import subprocess
+
+    if not shutil.which("tippecanoe"):
+        print(f"  {s['id']}: no tippecanoe here, tiles skipped", flush=True)
+        return None
+    cols = [
+        c
+        for (c,) in con.execute(f"SELECT column_name FROM (DESCRIBE ({query}))").fetchall()
+        if c not in ("geometry", "bbox")
+    ]
+    name = next((c for c in NAME_COLS if c in cols), None) or next(
+        (c for c in cols if "name" in c), None
+    )
+    keep = [
+        c
+        for c in cols
+        if c != name and not c.startswith(("ogc_fid", "objectid", "fid", "shape_", "globalid"))
+    ][:6]
+    kind = con.execute(
+        f"SELECT mode(replace(ST_GeometryType(geometry)::VARCHAR, 'MULTI', '')) FROM ({query}) WHERE geometry IS NOT NULL"
+    ).fetchone()[0]
+    minzoom = 6 if n > 200_000 else 4 if n > 20_000 else 0
+    d = TMP / s["id"]
+    seq = d / "tiles.geojsons"
+    props = ", ".join(
+        [f"'name', CAST(\"{name}\" AS VARCHAR)"] * bool(name) + [f"'{c}', \"{c}\"" for c in keep]
+    )
+    cur = con.execute(
+        f"SELECT json_object('type', 'Feature', 'geometry', ST_AsGeoJSON(geometry)::JSON, "
+        f"'properties', json_object({props}))::VARCHAR FROM ({query}) WHERE geometry IS NOT NULL"
+    )
+    with seq.open("w", encoding="utf-8") as fh:
+        while rows := cur.fetchmany(50_000):
+            fh.writelines(r[0] + "\n" for r in rows)
+    out = d / f"{s['id']}.pmtiles"
+    cmd = ["tippecanoe", "-o", str(out), "-l", "d", f"-Z{minzoom}", "-z12", "--no-feature-limit", "--no-tile-size-limit",
+           "--simplification=4", "--force", "-P", str(seq)]  # fmt: skip
+    subprocess.run(cmd, check=True, capture_output=True)
+    print(
+        f"  {s['id']}: {out.stat().st_size / 1e6:,.1f} MB of tiles (zoom {minzoom}-12)", flush=True
+    )
+    if UPLOAD["on"]:
+        w.upload_public(out, f"w9/{s['id']}.pmtiles", "application/vnd.pmtiles")
+    return {
+        "url": f"pmtiles://{PUBLIC}/w9/{s['id']}.pmtiles",
+        "kind": kind.lower(),
+        "minzoom": minzoom,
+        "fields": ["name", *keep] if name else keep,
+    }
+
+
+def choro_file(con, s: dict[str, Any]) -> dict[str, Any] | None:  # noqa: ANN001
+    """One published series per area for the map's colouring (w9c/<id>.json): the rows the
+    source publishes for each country (Eurostat's country rows) or US county, newest period
+    with the most areas; values as published, nothing aggregated or split."""
+    c = s["choro"]
+    where = " AND ".join(
+        [f"CAST(\"{k}\" AS VARCHAR) = '{v}'" for k, v in (c.get("filter") or {}).items()]
+        or ["true"]
+    )
+    key, val, per = c.get("key", "geo"), c.get("value", "obs_value"), c.get("period", "time_period")
+    scope = c.get("scope", "country")
+    keyok = "length(k) = 2" if scope == "country" else "true"
+    sql = f"""WITH r AS (SELECT CAST("{key}" AS VARCHAR) AS k, CAST({per} AS VARCHAR) AS p, TRY_CAST("{val}" AS DOUBLE) AS v FROM t WHERE {where})
+              SELECT p, count(DISTINCT k) AS n FROM r WHERE v IS NOT NULL AND {keyok} GROUP BY p ORDER BY n DESC, p DESC LIMIT 1"""
+    best = (
+        con.execute(sql).fetchone()
+        if per in [c_ for (c_,) in con.execute("SELECT column_name FROM (DESCRIBE t)").fetchall()]
+        else None
+    )
+    period = best[0] if best else None
+    pwhere = f"AND CAST({per} AS VARCHAR) = '{period}'" if period else ""
+    rows = con.execute(
+        f"""SELECT CAST("{key}" AS VARCHAR) AS k, any_value(TRY_CAST("{val}" AS DOUBLE)) FROM t
+            WHERE {where} {pwhere} AND TRY_CAST("{val}" AS DOUBLE) IS NOT NULL GROUP BY 1"""
+    ).fetchall()
+    values = {}
+    for k, v in rows:
+        if scope == "country":
+            if len(k) != 2:
+                continue
+            k = EUROSTAT_ISO2.get(k, k)
+        elif scope == "us_county":
+            k = k.zfill(5)
+        values[k] = v
+    if not values:
+        print(f"  {s['id']}: no rows for the colouring filter {c.get('filter')}", flush=True)
+        return None
+    APPC.mkdir(parents=True, exist_ok=True)
+    w.write_json(
+        APPC / f"{s['id']}.json",
+        {
+            "fetched": w.now(),
+            "source": f"{title_of(s)} ({s['licence']})",
+            "label": c["label"],
+            "unit": c.get("unit", ""),
+            "period": period,
+            "scope": scope,
+            "filter": c.get("filter") or {},
+            "values": values,
+        },  # fmt: skip
+    )
+    print(f"  {s['id']}: colouring of {len(values)} areas, period {period}", flush=True)
+    return {"scope": scope, "areas": len(values), "period": period}
 
 
 def build(args: argparse.Namespace) -> None:
+    UPLOAD["on"] = bool(args.upload)
     todo = [s for s in sources(args.cat, args.id) if s["status"] == "build" and s["kind"] != "page"]
     lk = w.lake_for(
         "wave9",
@@ -703,6 +825,7 @@ EXISTING = (
     "oil_gas_facilities",
     "co2_storage",
     "congestion",
+    "energy_poverty",
 )
 
 
@@ -1011,23 +1134,64 @@ def docs(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
 
 
 def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
-    """frontend/src/app/wave9.json: a layer and a dataset entry per source with a map file."""
-    layers, datasets = [], []
+    """frontend/src/app/wave9.json: a layer and a dataset entry per source on the map (a point
+    file, or vector tiles), and a colouring and its dataset entry per published area series."""
+    layers, datasets, colours = [], [], []
     for s in srcs:
-        if not (built.get(s["id"]) or {}).get("rows") or not (APP / f"{s['id']}.json").exists():
+        b = built.get(s["id"]) or {}
+        if not b.get("rows"):
             continue
         group = GROUP.get(s["cat"]) or FAMILY_GROUP.get(s["fam"], "Industry & demand")
         colour = GROUP_COLOUR.get(group, "rgb(200,200,200)")
         fam = families().get(s["fam"], {})
-        lid = f"w9_{s['id']}"
         where = where_of(s["places"])
-        layers.append({"id": lid, "label": title_of(s), "desc": fam.get("shows", s["fam"].replace("_", " ")).capitalize(),
-                       "group": group, "coverage": ", ".join(w for w in where if w != "World") or "World", "color": colour})  # fmt: skip
-        datasets.append({"id": lid, "name": title_of(s), "category": group, "description": f"{title_of(s)}: {built[s['id']]['rows']:,} records as published",
-                         "color": colour, "family": s["fam"],
-                         "parts": [{"layer": lid, "where": where, "what": fam.get("shows", ""), "source": f"{title_of(s)} ({s['licence']})", "doc": "Wave 9 sources"}]})  # fmt: skip
+        shows = fam.get("shows", s["fam"].replace("_", " "))
+        src = f"{title_of(s)} ({s['licence']})"
+        lid = f"w9_{s['id']}"
+        layer = None
+        if (APP / f"{s['id']}.json").exists():
+            layer = {"id": lid}
+        elif (b.get("tiles") or {}).get("url"):
+            t = b["tiles"]
+            layer = {
+                "id": lid,
+                "tiles": t["url"],
+                "kind": t["kind"],
+                "minzoom": t["minzoom"],
+                "fields": t["fields"],
+                "source": src,
+            }
+        if layer:
+            layers.append({**layer, "label": title_of(s), "desc": shows.capitalize(), "group": group,
+                           "coverage": ", ".join(w for w in where if w != "World") or "World", "color": colour})  # fmt: skip
+            datasets.append({"id": lid, "name": title_of(s), "category": group, "description": f"{title_of(s)}: {b['rows']:,} records as published",
+                             "color": colour, "family": s["fam"],
+                             "parts": [{"layer": lid, "where": where, "what": shows, "source": src, "doc": "Wave 9 sources"}]})  # fmt: skip
+        ch = b.get("choro")
+        if ch and (APPC / f"{s['id']}.json").exists():
+            cid = f"w9c_{s['id']}"
+            label = s["choro"]["label"]
+            colours.append(
+                {
+                    "id": cid,
+                    "label": label,
+                    "group": group,
+                    "modes": ["live"],
+                    "scope": ch["scope"],
+                    "file": s["id"],
+                }
+            )
+            datasets.append({"id": f"colour-{cid}", "name": label, "category": group,
+                             "description": f"{label} ({s['choro'].get('unit', '')}), {ch['areas']} {'countries' if ch['scope'] == 'country' else 'counties'}, {ch.get('period') or ''}: {title_of(s)}",
+                             "color": colour, "family": s["fam"], "colour": cid,
+                             "parts": [{"where": where if ch["scope"] == "country" else ["US"], "what": label, "source": src, "doc": "Wave 9 sources"}]})  # fmt: skip
     (ROOT / "frontend" / "src" / "app" / "wave9.json").write_text(
-        json.dumps({"layers": layers, "datasets": datasets}, indent=1, ensure_ascii=False) + "\n",
+        json.dumps(
+            {"layers": layers, "colours": colours, "datasets": datasets},
+            indent=1,
+            ensure_ascii=False,
+        )
+        + "\n",
         encoding="utf-8",
     )
 

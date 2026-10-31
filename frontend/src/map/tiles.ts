@@ -28,6 +28,7 @@ import {
   setAreaWithin,
   setWorldGridOutside,
 } from "./style";
+import { syncWave9Tiles } from "./wave9Tiles";
 
 /** A map's tile sync: call it each frame; it changes the map only when something it uses changed. */
 export function tileSync(map: maplibregl.Map) {
@@ -69,6 +70,8 @@ export function tileSync(map: maplibregl.Map) {
       const polys = areaShape && areaShape.km2 <= 3_000_000 ? areaShape.polygons.map((p) => p.map((r) => Array.from({ length: r.length / 2 }, (_, i) => [r[2 * i], r[2 * i + 1]]))) : null;
       setAreaWithin(map, polys);
     }
+    // data wave 9: the larger sources as vector tiles
+    syncWave9Tiles(map, L);
     // Global Renewables Watch (vector tiles)
     if (L.grw) addGrwLayers(map);
     for (const id of GRW_LAYERS) if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", L.grw ? "visible" : "none");

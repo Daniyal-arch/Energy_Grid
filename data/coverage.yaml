@@ -1043,11 +1043,11 @@ families:
       GB:
         status: built
         source: NESO Constraint Breakdown Costs and Volume; NESO constraint cost breakdown; NESO constraint cost breakdown; NESO constraint cost breakdown; NESO constraint cost breakdown; NESO constraint
-          cost breakdown; NESO constraint cost breakdown
+          cost breakdown; NESO constraint cost breakdown; NESO constraint cost breakdown
         url: https://api.neso.energy/api/3/action/package_search?q=constraint%20breakdown
-        licence: NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence
+        licence: NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence
         dataset: eu/congestion.json, lake wave9.gb_neso_constraint_costs, lake wave9.gb_neso_constraint_costs, lake wave9.gb_neso_constraint_costs, lake wave9.gb_neso_constraint_costs, lake wave9.gb_neso_constraint_costs,
-          lake wave9.gb_neso_constraint_costs
+          lake wave9.gb_neso_constraint_costs, lake wave9.gb_neso_constraint_costs
         checked: '2026-10-31'
         partial: true
         note: published at country level (NESO constraint cost breakdown)
@@ -2740,10 +2740,10 @@ families:
       FI:
         status: built
         source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021; Statistics Finland Paavo postal areas 2024; Statistics Finland Paavo postal areas 2024; Statistics Finland Paavo
-          postal areas 2024; Statistics Finland Paavo postal areas 2024
+          postal areas 2024; Statistics Finland Paavo postal areas 2024; Statistics Finland Paavo postal areas 2024
         url: https://geo.stat.fi/geoserver/postialue/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=postialue:pno_tilasto_2024&outputFormat=application/json&srsName=EPSG:4326
-        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0
-        dataset: lake outlines/divisions, outlines/geostat_grid, lake wave9.fi_paavo, lake wave9.fi_paavo, lake wave9.fi_paavo, lake wave9.fi_paavo
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0
+        dataset: lake outlines/divisions, outlines/geostat_grid, lake wave9.fi_paavo, lake wave9.fi_paavo, lake wave9.fi_paavo, lake wave9.fi_paavo, lake wave9.fi_paavo
         checked: '2026-10-31'
         partial: true
         note: published at small_area level (Statistics Finland Paavo postal areas 2024)
@@ -2792,10 +2792,11 @@ families:
         note: national small areas plus the EU-wide layers
       IT:
         status: built
-        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021; ISTAT census sections 2021; ISTAT census sections 2021; ISTAT census sections 2021; ISTAT census sections 2021
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021; ISTAT census sections 2021; ISTAT census sections 2021; ISTAT census sections 2021; ISTAT census sections 2021;
+          ISTAT census sections 2021
         url: https://www.istat.it/storage/cartografia/basi_territoriali/2021/R01_21.zip
-        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0
-        dataset: lake outlines/divisions, outlines/geostat_grid, lake wave9.it_istat_sezioni, lake wave9.it_istat_sezioni, lake wave9.it_istat_sezioni, lake wave9.it_istat_sezioni
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0
+        dataset: lake outlines/divisions, outlines/geostat_grid, lake wave9.it_istat_sezioni, lake wave9.it_istat_sezioni, lake wave9.it_istat_sezioni, lake wave9.it_istat_sezioni, lake wave9.it_istat_sezioni
         checked: '2026-10-31'
         partial: true
         note: published at small_area level (ISTAT census sections 2021)
@@ -2890,10 +2891,11 @@ families:
         partial: true
       ES:
         status: built
-        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021; INE census sections 2024; INE census sections 2024; INE census sections 2024; INE census sections 2024
+        source: Overture Maps divisions (ODbL) and Eurostat GEOSTAT 1 km census grid 2021; INE census sections 2024; INE census sections 2024; INE census sections 2024; INE census sections 2024; INE census
+          sections 2024
         url: https://www.ine.es/prodyser/cartografia/seccionado_2024.zip
-        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0
-        dataset: lake outlines/divisions, outlines/geostat_grid, lake wave9.es_ine_secciones, lake wave9.es_ine_secciones, lake wave9.es_ine_secciones, lake wave9.es_ine_secciones
+        licence: ODbL 1.0; Eurostat reuse policy (CC BY 4.0); CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0
+        dataset: lake outlines/divisions, outlines/geostat_grid, lake wave9.es_ine_secciones, lake wave9.es_ine_secciones, lake wave9.es_ine_secciones, lake wave9.es_ine_secciones, lake wave9.es_ine_secciones
         checked: '2026-10-31'
         partial: true
         note: published at small_area level (INE census sections 2024)
@@ -3451,10 +3453,10 @@ families:
       BE:
         status: built
         source: Fluvius consumption per statistical sector and NACE sector (Flanders); Fluvius consumption per statistical sector and NACE sector (Flanders); Fluvius consumption per statistical sector and
-          NACE sector (Flanders); Fluvius consumption per statistical sector and NACE sector (Flanders)
+          NACE sector (Flanders); Fluvius consumption per statistical sector and NACE sector (Flanders); Fluvius consumption per statistical sector and NACE sector (Flanders)
         url: https://opendata.fluvius.be/api/explore/v2.1/catalog/datasets/1_06b-verbruiksgegevens-statistische-sector-met-nace-sector/exports/csv?delimiter=%2C
-        licence: check; check; check; check
-        dataset: lake wave9.be_fluvius_consumption, lake wave9.be_fluvius_consumption, lake wave9.be_fluvius_consumption, lake wave9.be_fluvius_consumption
+        licence: check; check; check; check; check
+        dataset: lake wave9.be_fluvius_consumption, lake wave9.be_fluvius_consumption, lake wave9.be_fluvius_consumption, lake wave9.be_fluvius_consumption, lake wave9.be_fluvius_consumption
         checked: '2026-10-31'
         partial: true
         note: published at small_area level (Fluvius consumption per statistical sector and NACE sector (Flanders))
@@ -3643,10 +3645,11 @@ families:
         note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
       DE:
         status: built
-        source: Zensus 2022 heating type per 100 m cell; Zensus 2022 heating type per 100 m cell; Zensus 2022 heating type per 100 m cell; Zensus 2022 heating type per 100 m cell
+        source: Zensus 2022 heating type per 100 m cell; Zensus 2022 heating type per 100 m cell; Zensus 2022 heating type per 100 m cell; Zensus 2022 heating type per 100 m cell; Zensus 2022 heating type
+          per 100 m cell
         url: https://www.destatis.de/static/DE/zensus/gitterdaten/Zensus2022_Heizungsart.zip
-        licence: dl-de/by-2-0; dl-de/by-2-0; dl-de/by-2-0; dl-de/by-2-0
-        dataset: lake wave9.de_zensus_heating, lake wave9.de_zensus_heating, lake wave9.de_zensus_heating, lake wave9.de_zensus_heating
+        licence: dl-de/by-2-0; dl-de/by-2-0; dl-de/by-2-0; dl-de/by-2-0; dl-de/by-2-0
+        dataset: lake wave9.de_zensus_heating, lake wave9.de_zensus_heating, lake wave9.de_zensus_heating, lake wave9.de_zensus_heating, lake wave9.de_zensus_heating
         checked: '2026-10-31'
       GR:
         status: not_published
@@ -3661,10 +3664,10 @@ families:
       IE:
         status: built
         source: CSO Census 2022 small-area statistics (central heating); CSO Census 2022 small-area statistics (central heating); CSO Census 2022 small-area statistics (central heating); CSO Census 2022
-          small-area statistics (central heating)
+          small-area statistics (central heating); CSO Census 2022 small-area statistics (central heating)
         url: https://www.cso.ie/en/media/csoie/census/census2022/SAPS_2022_Small_Area_UR_171024.csv
-        licence: CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0
-        dataset: lake wave9.ie_cso_saps_heating, lake wave9.ie_cso_saps_heating, lake wave9.ie_cso_saps_heating, lake wave9.ie_cso_saps_heating
+        licence: CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0; CC BY 4.0
+        dataset: lake wave9.ie_cso_saps_heating, lake wave9.ie_cso_saps_heating, lake wave9.ie_cso_saps_heating, lake wave9.ie_cso_saps_heating, lake wave9.ie_cso_saps_heating
         checked: '2026-10-31'
         partial: true
         note: published at small_area level (CSO Census 2022 small-area statistics (central heating))
@@ -3729,247 +3732,247 @@ families:
     cells:
       AT:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       BE:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       BG:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       HR:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       CY:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       CZ:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       DK:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       EE:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       FI:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       FR:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       DE:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       GR:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       HU:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       IE:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       IT:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       LV:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       LT:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       LU:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       MT:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       NL:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       PL:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       PT:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       RO:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       SK:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       SI:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       ES:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       SE:
         status: built
-        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm'
-        url: https://ec.europa.eu/eurostat/databrowser/view/ilc_mdes01/default/table
-        licence: Eurostat reuse policy (CC BY 4.0)
-        dataset: lake small_area_energy/poverty
-        checked: '2026-10-29'
-        note: country level (the finest Eurostat publishes)
+        source: 'Eurostat ilc_mdes01 (EU-SILC): inability to keep home adequately warm; Eurostat population unable to keep home adequately warm (sdg_07_60)'
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: Eurostat reuse policy (CC BY 4.0); CC BY 4.0
+        dataset: lake small_area_energy/poverty, lake wave9.eu_energy_productivity
+        checked: '2026-10-31'
         partial: true
+        note: published at country level (Eurostat population unable to keep home adequately warm (sdg_07_60))
       GB:
         status: built
         source: DESNZ sub-regional fuel poverty 2026 (2024 data, LSOA)
@@ -4209,38 +4212,50 @@ families:
       BE:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       BG:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       HR:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       CY:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       CZ:
         status: built
@@ -4252,56 +4267,74 @@ families:
       DK:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       EE:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       FI:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       FR:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       DE:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       GR:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       HU:
         status: built
@@ -4313,38 +4346,50 @@ families:
       IE:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       IT:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       LV:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       LT:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       LU:
         status: built
@@ -4356,47 +4401,62 @@ families:
       MT:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       NL:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       PL:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       PT:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       RO:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       SK:
         status: built
@@ -4408,38 +4468,47 @@ families:
       SI:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       ES:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       SE:
         status: built
         source: EEA Industrial Reporting (refineries, E-PRTR activity 1(a)); GIE storage and LNG (have); GEM pipelines (have); EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet
+          hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0; CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human
+          Activities)
         dataset: eu/w8/industrial.json, lake industrial/*, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences,
-          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake
+          wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       GB:
         status: built
         source: EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences; EMODnet offshore
-          pipelines; EMODnet hydrocarbon licences
+          pipelines; EMODnet hydrocarbon licences; EMODnet offshore pipelines; EMODnet hydrocarbon licences
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
-        licence: CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
+        licence: CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities); CC BY 4.0 (EMODnet Human Activities)
         dataset: lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines,
-          lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
+          lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences, lake wave9.eu_emodnet_pipelines, lake wave9.eu_emodnet_hydrocarbon_licences
         checked: '2026-10-31'
       US:
         status: built
@@ -4449,16 +4518,20 @@ families:
           gas liquids pipelines; EIA petroleum product pipelines; EIA crude-by-rail terminals; EIA petroleum refineries; EIA natural gas processing plants; EIA interstate and intrastate gas pipelines; EIA
           crude oil pipelines; EIA LNG import and export terminals; EIA petroleum product terminals; EIA underground gas storage; EIA hydrocarbon gas liquids pipelines; EIA petroleum product pipelines;
           EIA crude-by-rail terminals; EIA petroleum refineries; EIA natural gas processing plants; EIA interstate and intrastate gas pipelines; EIA crude oil pipelines; EIA LNG import and export terminals;
-          EIA petroleum product terminals; EIA underground gas storage; EIA hydrocarbon gas liquids pipelines; EIA petroleum product pipelines; EIA crude-by-rail terminals
+          EIA petroleum product terminals; EIA underground gas storage; EIA hydrocarbon gas liquids pipelines; EIA petroleum product pipelines; EIA crude-by-rail terminals; EIA petroleum refineries; EIA
+          natural gas processing plants; EIA interstate and intrastate gas pipelines; EIA crude oil pipelines; EIA LNG import and export terminals; EIA petroleum product terminals; EIA underground gas storage;
+          EIA hydrocarbon gas liquids pipelines; EIA petroleum product pipelines; EIA crude-by-rail terminals
         url: https://www.eia.gov/maps/map_data/Petroleum_Refineries_US_EIA.zip
-        licence: public domain; public domain; public domain; public domain
+        licence: public domain; public domain; public domain; public domain; public domain
         dataset: lake wave9.us_eia_refineries, lake wave9.us_eia_gas_processing, lake wave9.us_eia_gas_pipelines, lake wave9.us_eia_crude_pipelines, lake wave9.us_eia_lng, lake wave9.us_eia_product_terminals,
           lake wave9.us_eia_gas_storage, lake wave9.us_eia_hgl_pipelines, lake wave9.us_eia_product_pipelines, lake wave9.us_eia_crude_rail, lake wave9.us_eia_refineries, lake wave9.us_eia_gas_processing,
           lake wave9.us_eia_gas_pipelines, lake wave9.us_eia_crude_pipelines, lake wave9.us_eia_lng, lake wave9.us_eia_product_terminals, lake wave9.us_eia_gas_storage, lake wave9.us_eia_hgl_pipelines,
           lake wave9.us_eia_product_pipelines, lake wave9.us_eia_crude_rail, lake wave9.us_eia_refineries, lake wave9.us_eia_gas_processing, lake wave9.us_eia_gas_pipelines, lake wave9.us_eia_crude_pipelines,
           lake wave9.us_eia_lng, lake wave9.us_eia_product_terminals, lake wave9.us_eia_gas_storage, lake wave9.us_eia_hgl_pipelines, lake wave9.us_eia_product_pipelines, lake wave9.us_eia_crude_rail, lake
           wave9.us_eia_refineries, lake wave9.us_eia_gas_processing, lake wave9.us_eia_gas_pipelines, lake wave9.us_eia_crude_pipelines, lake wave9.us_eia_lng, lake wave9.us_eia_product_terminals, lake
-          wave9.us_eia_gas_storage, lake wave9.us_eia_hgl_pipelines, lake wave9.us_eia_product_pipelines, lake wave9.us_eia_crude_rail
+          wave9.us_eia_gas_storage, lake wave9.us_eia_hgl_pipelines, lake wave9.us_eia_product_pipelines, lake wave9.us_eia_crude_rail, lake wave9.us_eia_refineries, lake wave9.us_eia_gas_processing, lake
+          wave9.us_eia_gas_pipelines, lake wave9.us_eia_crude_pipelines, lake wave9.us_eia_lng, lake wave9.us_eia_product_terminals, lake wave9.us_eia_gas_storage, lake wave9.us_eia_hgl_pipelines, lake
+          wave9.us_eia_product_pipelines, lake wave9.us_eia_crude_rail
         checked: '2026-10-31'
   co2_storage:
     name: CO₂ storage
@@ -5221,10 +5294,10 @@ families:
       GB:
         status: built
         source: JRC river flood hazard RP100; Environment Agency Flood Map for Planning, flood zones 2 and 3; Environment Agency Flood Map for Planning, flood zones 2 and 3; Environment Agency Flood Map
-          for Planning, flood zones 2 and 3; Environment Agency Flood Map for Planning, flood zones 2 and 3
+          for Planning, flood zones 2 and 3; Environment Agency Flood Map for Planning, flood zones 2 and 3; Environment Agency Flood Map for Planning, flood zones 2 and 3
         url: https://environment.data.gov.uk/api/file/download?fileDataSetId=455d2eb3-3065-4d20-871b-c4d5dee23f67&fileName=Flood_Map_for_Planning_Flood_Zones.gpkg.zip
-        licence: OGL v3; OGL v3; OGL v3; OGL v3
-        dataset: grid/flood-eu.pmtiles, lake wave9.gb_ea_flood_zones, lake wave9.gb_ea_flood_zones, lake wave9.gb_ea_flood_zones, lake wave9.gb_ea_flood_zones
+        licence: OGL v3; OGL v3; OGL v3; OGL v3; OGL v3
+        dataset: grid/flood-eu.pmtiles, lake wave9.gb_ea_flood_zones, lake wave9.gb_ea_flood_zones, lake wave9.gb_ea_flood_zones, lake wave9.gb_ea_flood_zones, lake wave9.gb_ea_flood_zones
         checked: '2026-10-31'
       US:
         status: have
@@ -11164,192 +11237,192 @@ families:
     cells:
       AT:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       BE:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       BG:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       HR:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       CY:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       CZ:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       DK:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       EE:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       FI:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       FR:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       DE:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       GR:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       HU:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       IE:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       IT:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       LV:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       LT:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       LU:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       MT:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       NL:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       PL:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       PT:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       RO:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       SK:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       SI:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       ES:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       SE:
         status: built
-        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a); Eurostat energy import dependency (sdg_07_60)
+        source: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_degree_days, lake wave9.eu_energy_productivity
+        dataset: lake wave9.eu_degree_days
         checked: '2026-10-31'
       GB:
         status: not_published

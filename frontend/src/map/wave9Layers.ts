@@ -4,10 +4,15 @@
 // published with the source. Larger sources stay in the lake for the agent.
 
 import type { Layer } from "@deck.gl/core";
-import { ScatterplotLayer } from "@deck.gl/layers";
+import { PathLayer, ScatterplotLayer, SolidPolygonLayer } from "@deck.gl/layers";
 
 import WAVE9 from "../app/wave9.json";
+import { stopColor } from "../app/colors";
+import { pairs } from "../app/geo";
+import type { UsCountiesFile } from "../lib/risk";
+import { type W9cFile, w9cStops } from "../lib/wave9";
 import type { Frame } from "./build";
+import { memo } from "./memo";
 
 /** A wave-9 point file. */
 export interface W9File {
@@ -17,7 +22,8 @@ export interface W9File {
   points: (string | number | null)[][];
 }
 
-const LAYERS = WAVE9.layers as { id: string; color: string }[];
+// point layers drawn here; layers with vector tiles are MapLibre's (map/tiles.ts)
+const LAYERS = (WAVE9.layers as { id: string; color: string; tiles?: string }[]).filter((d) => !d.tiles);
 const rgb = (c: string): [number, number, number] => {
   const m = c.match(/\d+/g) ?? ["200", "200", "200"];
   return [Number(m[0]), Number(m[1]), Number(m[2])];
@@ -51,7 +57,47 @@ export function wave9Layers(fr: Frame): Layer[] {
       }),
     );
   }
+  // a wave-9 colouring per US county (the app's county shapes)
+  if (fr.colour.startsWith("w9c_")) {
+    const w9 = fr.files[`w9c:${fr.colour.slice(4)}`] as W9cFile | undefined;
+    const counties = fr.files.usCounties as UsCountiesFile | undefined;
+    if (w9 && w9.scope === "us_county" && counties) {
+      const stops = memo(`w9cStops:${fr.colour}`, [w9], () => w9cStops(w9));
+      const shapes = memo("countyShapes", [counties], () =>
+        counties.counties.flatMap((cty) => cty.polygons.map((rings) => ({ code: cty.code, polygon: rings.map(pairs) }))),
+      );
+      out.push(
+        new SolidPolygonLayer<(typeof shapes)[number]>({
+          id: `w9c-${fr.colour.slice(4)}`,
+          data: shapes,
+          getPolygon: (d) => d.polygon,
+          getFillColor: (d) => [...(stopColor(stops, w9.values[d.code]) ?? [24, 28, 36]), 225] as [number, number, number, number],
+          updateTriggers: { getFillColor: [w9] },
+          pickable: true,
+          autoHighlight: true,
+          highlightColor: [255, 255, 255, 40],
+        }),
+        new PathLayer<(typeof shapes)[number]>({
+          id: `w9c-${fr.colour.slice(4)}-lines`,
+          data: shapes,
+          getPath: (d) => d.polygon[0],
+          getColor: [8, 10, 14, 120],
+          widthUnits: "pixels",
+          getWidth: 0.4,
+        }),
+      );
+    }
+  }
   return out;
+}
+
+/** The hover card of a county in a wave-9 colouring: its value as published, the source. */
+export function wave9CountyHtml(object: unknown, file: unknown): string | null {
+  const f = file as W9cFile | undefined;
+  const d = object as { code?: string } | undefined;
+  if (!f || !d?.code) return null;
+  const v = f.values[d.code];
+  return `<b>County ${d.code}</b><div>${f.label}: <b>${v == null ? "not published" : `${v.toLocaleString("en-US")} ${f.unit}`}</b></div><div style="color:#8d94a1">${f.period ?? ""} · ${f.source}</div>`;
 }
 
 /** The hover card of a wave-9 record: its fields as published, the source. */

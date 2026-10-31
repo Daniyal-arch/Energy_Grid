@@ -2,6 +2,7 @@
 // render loop (not by React); derived data is memoised, so per frame only the animation
 // uniforms change.
 
+import { type W9cFile, w9cStops } from "../lib/wave9";
 import { COORDINATE_SYSTEM, type Layer } from "@deck.gl/core";
 import { PathStyleExtension, type PathStyleExtensionProps } from "@deck.gl/extensions";
 import { BitmapLayer, ColumnLayer, LineLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
@@ -282,6 +283,11 @@ export function countryColour(fr: Frame, iso: string): RGB {
         if (!irena) return TR_NO_DATA;
         const k = irenaK(irena, fr.mode, (f.transition as TransitionFile | undefined)?.years, fr.yearK);
         return stopColor(IRENA_STOPS, irenaScale(irenaValue(irena, ISO3[iso], irenaMetricById(ir), k))) ?? TR_NO_DATA;
+      }
+      if (fr.colour.startsWith("w9c_")) {
+        const w9 = f[`w9c:${fr.colour.slice(4)}`] as W9cFile | undefined;
+        if (!w9 || w9.scope !== "country") return TR_NO_DATA;
+        return stopColor(memo(`w9cStops:${fr.colour}`, [w9], () => w9cStops(w9)), w9.values[iso]) ?? TR_NO_DATA;
       }
       const pr = PR_METRIC[fr.colour];
       if (pr) {

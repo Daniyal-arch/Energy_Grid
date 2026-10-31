@@ -161,6 +161,7 @@
    "color": "rgb(230,140,90)"
   }
  ],
+ "colours": [],
  "datasets": [
   {
    "id": "w9_de_zensus_heating",
@@ -175,7 +176,7 @@
      "where": [
       "DE"
      ],
-     "what": "",
+     "what": "heating",
      "source": "Zensus 2022 heating type per 100 m cell (dl-de/by-2-0)",
      "doc": "Wave 9 sources"
     }
@@ -194,7 +195,7 @@
      "where": [
       "US"
      ],
-     "what": "",
+     "what": "oil gas facilities",
      "source": "EIA petroleum refineries (public domain)",
      "doc": "Wave 9 sources"
     }
@@ -213,7 +214,7 @@
      "where": [
       "US"
      ],
-     "what": "",
+     "what": "oil gas facilities",
      "source": "EIA natural gas processing plants (public domain)",
      "doc": "Wave 9 sources"
     }
@@ -232,7 +233,7 @@
      "where": [
       "US"
      ],
-     "what": "",
+     "what": "oil gas facilities",
      "source": "EIA LNG import and export terminals (public domain)",
      "doc": "Wave 9 sources"
     }
@@ -251,7 +252,7 @@
      "where": [
       "US"
      ],
-     "what": "",
+     "what": "oil gas facilities",
      "source": "EIA petroleum product terminals (public domain)",
      "doc": "Wave 9 sources"
     }
@@ -270,7 +271,7 @@
      "where": [
       "US"
      ],
-     "what": "",
+     "what": "oil gas facilities",
      "source": "EIA underground gas storage (public domain)",
      "doc": "Wave 9 sources"
     }
@@ -289,7 +290,7 @@
      "where": [
       "US"
      ],
-     "what": "",
+     "what": "oil gas facilities",
      "source": "EIA crude-by-rail terminals (public domain)",
      "doc": "Wave 9 sources"
     }
@@ -536,7 +537,7 @@
      "where": [
       "Europe"
      ],
-     "what": "",
+     "what": "oil gas facilities",
      "source": "EMODnet hydrocarbon licences (CC BY 4.0 (EMODnet Human Activities))",
      "doc": "Wave 9 sources"
     }

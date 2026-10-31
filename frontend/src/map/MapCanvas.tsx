@@ -110,6 +110,7 @@ export function wantedKeys(zoom: number, L: Record<LayerId, boolean> = useApp.ge
   if (s.colour === "offline") keys.push("outages");
   if (s.colour.startsWith("pr_")) keys.push("prices", "zones");
   if (s.colour === "access") keys.push("worldStats");
+  if (s.colour.startsWith("w9c_")) keys.push(`w9c:${s.colour.slice(4)}`, "usCounties");
   if (s.colour === "rt_household") keys.push("retail", "usStates");
   if (s.colour === "cn_gen" || s.colour === "cn_load") keys.push("connectH");
   if (s.colour.startsWith("ir_")) keys.push("irena");

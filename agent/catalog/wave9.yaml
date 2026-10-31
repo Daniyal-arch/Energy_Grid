@@ -635,13 +635,13 @@ tables:
       sql: SELECT count(*) FROM wave9.eu_air_passengers
       answer: 10203
   eu_energy_productivity:
-    grain: 'Eurostat energy import dependency (sdg_07_60): one row per record as published (EU27; level country)'
+    grain: 'Eurostat population unable to keep home adequately warm (sdg_07_60): one row per record as published (EU27; level country)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015
     licence: CC BY 4.0
-    category: 5. Demand and electrification
+    category: 9. Social and community
     columns: dataflow, last_update, freq, hhcomp, rskpovth, unit, geo, time_period, obs_value, obs_flag, conf_status
     examples:
-    - q: how many records in Eurostat energy import dependency (sdg_07_60)
+    - q: how many records in Eurostat population unable to keep home adequately warm (sdg_07_60)
       sql: SELECT count(*) FROM wave9.eu_energy_productivity
       answer: 1260
   world_ourairports_runways:
