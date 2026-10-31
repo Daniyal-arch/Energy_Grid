@@ -423,7 +423,17 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
     elif kind in ("ods", "xls"):
         import pandas as pd
 
-        f = w.download(url, d / f"src.{kind}", timeout=3600)
+        f = w.download(
+            url,
+            d / ("src.zip" if url.split("?")[0].endswith(".zip") else f"src.{kind}"),
+            timeout=3600,
+        )
+        if f.suffix == ".zip":  # a workbook inside a zip: the member named by `member`
+            f = next(
+                p
+                for p in sorted(w.unzip(f).rglob("*"))
+                if p.is_file() and re.search(s["member"], p.name, re.I)
+            )
         book = pd.ExcelFile(f, engine="odf" if kind == "ods" else None)
         # the first sheet that is not a cover, contents or notes page (or the one named)
         skip = re.compile(r"cover|content|note|info|about|meta|guidance", re.I)
@@ -700,6 +710,8 @@ def built_records() -> dict[str, dict[str, Any]]:
 
 def outcome(s: dict[str, Any], built: dict[str, Any], probes: dict[str, Any]) -> str:
     """built | failed | page | blocked | left_out | not_published."""
+    if s["status"] == "have":
+        return "built"
     if s["status"] != "build":
         return s["status"]
     b = built.get(s["id"]) or {}
@@ -722,14 +734,16 @@ def cell_for(fam: str, f: dict[str, Any], cc: str, srcs: list[dict[str, Any]], b
     if ok:
         finest = min(ok, key=lambda s: RANK.get(s["level"], 5))
         cell = {
-            "status": "built",
+            "status": "have" if all(x["status"] == "have" for x in ok) else "built",
             "source": "; ".join(dict.fromkeys(title_of(s) for s in ok)),
             "url": finest["url"]
             if finest["kind"] not in ("ckan", "govuk", "sciencebase")
             else (finest.get("lic_url") or finest["url"]),
             "licence": "; ".join(dict.fromkeys(s["licence"] for s in ok)),
-            "dataset": ", ".join(f"lake wave9.{s['id']}" for s in ok),
-            "checked": max((built[s["id"]].get("built") or today) for s in ok),
+            "dataset": ", ".join(s.get("dataset") or f"lake wave9.{s['id']}" for s in ok),
+            "checked": max(
+                ((built.get(s["id"]) or {}).get("built") or s.get("checked") or today) for s in ok
+            ),
         }
         if RANK.get(finest["level"], 5) > RANK.get(f.get("want", "point"), 0):
             cell["partial"] = True
@@ -850,6 +864,8 @@ def research(srcs: list[dict[str, Any]], built: dict[str, Any], probes: dict[str
         ]
         for s in rows:
             o = outcome(s, built, probes)
+            if s["status"] == "have":
+                o = "have"
             b, pr = built.get(s["id"]) or {}, probes.get(s["id"]) or {}
             size = (
                 f"{b['rows']:,} rows"
@@ -860,7 +876,7 @@ def research(srcs: list[dict[str, Any]], built: dict[str, Any], probes: dict[str
                     else (f"{pr['rows']:,} features" if pr.get("rows") else "")
                 )
             )
-            status = {"built": "built", "failed": f"failed: {(b.get('error') or '')[:100]}", "page": f"page only (HTTP {pr.get('http')})",
+            status = {"built": "built", "have": f"have (earlier wave: {s.get('dataset')})", "failed": f"failed: {(b.get('error') or '')[:100]}", "page": f"page only (HTTP {pr.get('http')})",
                       "pending": "not yet built", "blocked": f"blocked: {s.get('why')}", "left_out": f"left out: {s.get('why')}",
                       "not_published": f"not published: {s.get('why')}"}[o]  # fmt: skip
             lines.append(
