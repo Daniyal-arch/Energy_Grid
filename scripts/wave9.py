@@ -665,8 +665,9 @@ def build(args: argparse.Namespace) -> None:
         "per table",
         SCRIPT,
     )
-    cat = args.cat if args.cat is not None else (todo[0]["cat"] if args.id and todo else "all")
-    out_path = ROOT / "data" / "wave9_built" / f"{cat}.json"
+    # a category job keeps <cat>.json, a single-source job its own file (jobs run in parallel)
+    name = str(args.cat) if args.cat is not None else (f"s_{args.id}" if args.id else "all")
+    out_path = ROOT / "data" / "wave9_built" / f"{name}.json"
     status = json.loads(out_path.read_text(encoding="utf-8")) if out_path.exists() else {}
     con = con_spatial()
     for s in todo:
