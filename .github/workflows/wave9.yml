@@ -35,18 +35,22 @@ jobs:
     outputs:
       cats: ${{ steps.p.outputs.cats }}
       words: ${{ steps.p.outputs.words }}
+      ids: ${{ steps.p.outputs.ids }}
     steps:
       - id: p
         run: |
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import os, re
           g = os.environ["GROUPS"]
-          m = re.search(r"\[w9: ([A-Za-z0-9 ]+)\]", g)
+          m = re.search(r"\[w9: ([A-Za-z0-9_: ]+)\]", g)
           groups = m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""
           words = groups.split()
           cats = [x for x in words if x.isdigit()]
+          # s:<id> builds one source (without rebuilding its category)
+          ids = " ".join(x[2:] for x in words if x.startswith("s:"))
           print("cats=" + str(cats).replace("'", '"'))
           print("words=" + str(words).replace("'", '"'))
+          print("ids=" + ids)
           PY
 
   P:
@@ -91,3 +95,23 @@ jobs:
       - name: Commit the build record and app files
         if: always()
         run: bash scripts/wave9_commit.sh "Wave 9 category ${{ matrix.cat }} built"
+
+  S:
+    needs: plan
+    if: needs.plan.outputs.ids != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+      NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - run: sudo apt-get update -q && sudo apt-get install -y -q gdal-bin && pip install httpx pyyaml duckdb pycountry openpyxl shapely rasterio numpy pandas odfpy xlrd
+      - run: bash scripts/r2_creds.sh
+      - name: Single sources
+        run: for id in ${{ needs.plan.outputs.ids }}; do python scripts/wave9.py build --id "$id" --lake lake-out --upload; done
+      - name: Commit the build record and app files
+        if: always()
+        run: bash scripts/wave9_commit.sh "Wave 9 single sources built"

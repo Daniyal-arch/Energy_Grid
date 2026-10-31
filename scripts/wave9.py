@@ -310,7 +310,11 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         read_geo(con, arcgis_pages(s, d / "layer.geojson"), {**s, "crs": "EPSG:4326"})
     elif kind in ("shp_zip", "gpkg_zip", "geojson_zip"):
         z = w.unzip(w.download(url, d / "src.zip", timeout=3600))
-        ext = {"shp_zip": (".shp",), "gpkg_zip": (".gpkg",), "geojson_zip": (".geojson", ".json")}
+        ext = {
+            "shp_zip": (".shp", ".gml"),
+            "gpkg_zip": (".gpkg",),
+            "geojson_zip": (".geojson", ".json"),
+        }
         read_geo(con, first_file(z, ext[kind]), s)
     elif kind in ("geojson", "gpkg"):
         read_geo(con, w.download(url, d / f"src.{kind}", timeout=3600), s)
@@ -661,7 +665,8 @@ def build(args: argparse.Namespace) -> None:
         "per table",
         SCRIPT,
     )
-    out_path = ROOT / "data" / "wave9_built" / f"{args.cat if args.cat is not None else 'all'}.json"
+    cat = args.cat if args.cat is not None else (todo[0]["cat"] if args.id and todo else "all")
+    out_path = ROOT / "data" / "wave9_built" / f"{cat}.json"
     status = json.loads(out_path.read_text(encoding="utf-8")) if out_path.exists() else {}
     con = con_spatial()
     for s in todo:
