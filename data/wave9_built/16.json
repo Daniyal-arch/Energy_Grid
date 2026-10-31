@@ -1,1 +1,42 @@
-{}
+{
+ "us_eia861_reliability_xlsx": {
+  "built": "2026-10-31",
+  "columns": [
+   "data_year",
+   "utility_number",
+   "utility_name",
+   "state",
+   "ownership",
+   "saidi_minutes_per_year",
+   "saifi_times_per_year",
+   "caidi_minutes_per_interruption",
+   "saidi_minutes_per_year_1",
+   "saifi_times_per_year_1",
+   "caidi_minutes_per_interruption_1",
+   "saidi_minutes_per_year_2",
+   "saifi_times_per_year_2",
+   "caidi_minutes_per_interruption_2",
+   "number_of_customers",
+   "highest_dist_voltage",
+   "outages_recorded_automatically",
+   "saidi_minutes_per_year_3",
+   "saifi_times_per_year_3",
+   "caidi_with_med",
+   "saidi_minutes_per_year_4",
+   "saifi_times_per_year_4",
+   "caidi_without_med",
+   "number_of_customers_1",
+   "inactive_accounts_included",
+   "momentary_interruptions",
+   "highest_dist_voltage_1",
+   "outages_recorded_automatically_1"
+  ],
+  "example": {
+   "answer": 972,
+   "sql": "SELECT count(*) FROM wave9.us_eia861_reliability_xlsx"
+  },
+  "geometry": false,
+  "rows": 972,
+  "seconds": 1
+ }
+}
