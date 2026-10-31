@@ -2,45 +2,43 @@
  "at_zaehlsprengel": {
   "checked": "2026-10-31",
   "final_url": null,
-  "http": 404,
+  "http": 200,
   "id": "at_zaehlsprengel",
-  "lic_http": 200,
-  "lic_quotes": [
-   "… &auml;tzen bzw. im Navigationspunkt Formate . Die Datens&auml;tze unterliegen der Lizenz \"Creative Commons Namensnennung 4.0 International (CC BY 4.0)\" ( CC BY 4.0 ). N&auml;heres hierzu entnehmen Sie bitte dem Men&uuml;punkt Nutzungsbedingungen . Impressum &nbsp;|&nbsp; Datenschutzinformation &nbsp;|&nb …"
-  ],
-  "quotes": [],
-  "seconds": 1.2,
-  "size": 441,
-  "title": "HTTP Status 404 – nicht gefunden",
-  "type": "text/html",
-  "url": "https://data.statistik.gv.at/data/OGDEXT_ZSP_1_STATISTIK_AUSTRIA_20250101.zip"
+  "lic_http": 404,
+  "lic_quotes": [],
+  "sample": null,
+  "seconds": 2.4,
+  "size": 213069962,
+  "type": "application/zip",
+  "url": "https://www.statistik.at/gs-inspire/www/inspire2/download/daten/su-vector_zsp_7767c333-302c-11e3-beb4-0000c1ab0db6.zip"
  },
  "be_fluvius_consumption": {
   "checked": "2026-10-31",
   "final_url": null,
   "http": 200,
   "id": "be_fluvius_consumption",
-  "lic_http": 404,
+  "lic_http": 200,
   "lic_quotes": [
-   "… Page not found &mdash; Huwise nl en Home Datasets Chart Builder API Contact us Licence This page could not be found Error code: 404 This could be due to one of these reasons: You made a mistake when typing the page address (URL) You clicked an ol …"
+   "… Licentie open data Fluvius &mdash; Fluvius Open Data nl en Home Datasets Chart Builder API Contact us Licence Terms and conditions Privacy policy nl en …"
   ],
-  "sample": "{\"total_count\": 27, \"results\": [{\"visibility\": \"domain\", \"fields\": [{\"name\": \"jaar\", \"description\": \"Jaar van rapportering.\", \"annotations\": {\"facetsort\": \"-count\", \"timeserie_precision\": \"year\", \"facet\": true}, \"label\": \"Jaar\", \"type\": \"date\", \"label_nl\": \"Jaar\", \"label_en\": \"Jaar\", \"description_nl\": \"Jaar van rapportering.\", \"description_en\": \"Jaar van rapportering.\"}, {\"name\": \"type_fraude\", \"d",
-  "seconds": 1.7,
+  "sample": "﻿verbruiksjaar,markt,richting,statistische_sector,provincie,gemeente,sector,rol_contact,aantal,afname,injectie\r\n2023,Elektriciteit,Afname,11001A00-,ANTWERPEN,AARTSELAAR,Tertiaire sector,Bedrijf,238,2602163.8072,0.0\r\n2023,Elektriciteit,Afname,11001A01-,ANTWERPEN,AARTSELAAR,Empty/onbekend,Bedrijf,51,1",
+  "seconds": 2.2,
   "size": null,
-  "type": "application/json",
-  "url": "https://opendata.fluvius.be/api/explore/v2.1/catalog/datasets"
+  "type": "text/csv",
+  "url": "https://opendata.fluvius.be/api/explore/v2.1/catalog/datasets/1_06b-verbruiksgegevens-statistische-sector-met-nace-sector/exports/csv?delimiter=%2C"
  },
  "cz_zsj": {
   "checked": "2026-10-31",
-  "final_url": "https://csu.gov.cz/zakladni-sidelni-jednotky",
-  "http": 404,
+  "final_url": null,
+  "http": 200,
   "id": "cz_zsj",
-  "quotes": [],
-  "seconds": 1.5,
-  "size": null,
-  "title": "Nenalezeno / Not found | Statistika",
-  "type": "text/html",
-  "url": "https://www.czso.cz/csu/czso/zakladni-sidelni-jednotky"
+  "lic_http": 200,
+  "lic_quotes": [],
+  "sample": null,
+  "seconds": 1.7,
+  "size": 63306253,
+  "type": "application/zip",
+  "url": "https://geodata.csu.gov.cz/as/data/distribuce/Hosted/Open_data_RSO/FeatureServer/20/gpkg.zip"
  },
  "de_destatis_43531": {
   "checked": "2026-10-31",
@@ -48,7 +46,7 @@
   "http": 200,
   "id": "de_destatis_43531",
   "quotes": [],
-  "seconds": 1.8,
+  "seconds": 2.6,
   "size": null,
   "title": "Regionaldatenbank Deutschland: Regionaldatenbank Deutschland",
   "type": "text/html",
@@ -60,8 +58,8 @@
   "http": 200,
   "id": "de_kba_districts",
   "quotes": [],
-  "seconds": 0.9,
-  "size": null,
+  "seconds": 2.1,
+  "size": 35894,
   "title": "Kraftfahrt-Bundesamt  -  Zulassungsbezirke und Gemeinden",
   "type": "text/html",
   "url": "https://www.kba.de/DE/Statistik/Fahrzeuge/Bestand/ZulassungsbezirkeGemeinden/zulassungsbezirke_node.html"
@@ -72,7 +70,7 @@
   "http": 404,
   "id": "de_netzausbau",
   "quotes": [],
-  "seconds": 0.6,
+  "seconds": 0.9,
   "size": 196,
   "title": "404 Not Found",
   "type": "text/html",
@@ -84,7 +82,7 @@
   "http": 200,
   "id": "de_regelleistung",
   "quotes": [],
-  "seconds": 1.1,
+  "seconds": 1.3,
   "size": 1428,
   "title": "Datacenter FCR/aFRR/mFRR/ABLA",
   "type": "text/html",
@@ -96,7 +94,7 @@
   "http": 404,
   "id": "de_wind_areas",
   "quotes": [],
-  "seconds": 0.9,
+  "seconds": 1.3,
   "size": null,
   "title": "Bundesnetzagentur  - \nHomepage - HTTP Status 404",
   "type": "text/html",
@@ -112,7 +110,7 @@
    "… isierte Datenabfragen mittels Webschnittstelle ( API ) zur Verfügun Darf ich die Daten aus der Zensusdatenbank weiterverbreiten und welches Copyright muss ich dabei beachten? Die Vervielfältigung und Verbreitung, auch auszugsweise, ist mit Quellennachweis gestattet. Informationen zu den Copyright -Regelungen …"
   ],
   "sample": null,
-  "seconds": 2.4,
+  "seconds": 2.8,
   "size": null,
   "type": "application/zip",
   "url": "https://www.destatis.de/static/DE/zensus/gitterdaten/Zensus2022_Heizungsart.zip"
@@ -123,7 +121,7 @@
   "http": 410,
   "id": "dk_afstemningsomraader",
   "sample": "{\n  \"status\": 410,\n  \"error\": \"Gone\",\n  \"message\": \"The requested resource is no longer available and will not be available again.\"\n}\n",
-  "seconds": 8.2,
+  "seconds": 8.3,
   "size": null,
   "type": "application/json",
   "url": "https://api.dataforsyningen.dk/afstemningsomraader?format=geojson"
@@ -134,7 +132,7 @@
   "http": 404,
   "id": "dk_district_heating",
   "quotes": [],
-  "seconds": 0.9,
+  "seconds": 0.7,
   "size": null,
   "title": "Ups, der gik strømmen",
   "type": "text/html",
@@ -146,7 +144,7 @@
   "http": 200,
   "id": "dk_energinet_reserves",
   "sample": "{\"total\":723195,\"filters\":\"\",\"limit\":0,\"dataset\":\"FcrNdDK2\",\"records\":[{\"HourUTC\":\"2026-11-01T22:00:00\",\"HourDK\":\"2026-11-01T23:00:00\",\"PriceArea\":\"DK2\",\"ProductName\":\"FCR-D ned\",\"AuctionType\":\"D-1 early\",\"PurchasedVolumeLocal\":47.800000,\"PurchasedVolumeTotal\":430.000000,\"PriceTotalEUR\":1.020000},{\"HourUTC\":\"2026-11-01T22:00:00\",\"HourDK\":\"2026-11-01T23:00:00\",\"PriceArea\":\"DK2\",\"ProductName\":\"FCR-D",
-  "seconds": 5.7,
+  "seconds": 6.7,
   "size": null,
   "type": "application/json",
   "url": "https://api.energidataservice.dk/dataset/FcrNdDK2?limit=0&start=2025-01-01"
@@ -157,7 +155,7 @@
   "http": 404,
   "id": "ee_grid",
   "quotes": [],
-  "seconds": 0.8,
+  "seconds": 1.4,
   "size": null,
   "title": "Page not found | Statistikaamet",
   "type": "text/html",
@@ -171,7 +169,7 @@
   "lic_http": 200,
   "lic_quotes": [],
   "sample": "PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000�IuX��@�þ�\u0003�\t�\u0006\u0014\u0000\u0000\u0000SECC_CE_20240101.shp��uX��\u0017>��\b\u0012��foL,@����@\u0004\t��\"��\r6��\nH�\u0007\u001b\u001bA����F�0�\u001d�\b\u0012v�Y�|�\u001f�����s���Y�f͚�̬PS3�T���k���nU35�\u0016������?�����<�y/��\u00154{}Mڻ���v�o���`�����DMmy5o+t^�\\m\u000f#�W�w[�J&�\u001d���m]��ݐ'��\u0002\u0015\u0013욲ߜ�E���jjE\u0019'\rn�\u001a�Ib\u000b�LX9�\u001bڄ\u0019�\u001dh?}]w�3��\\؇�\u0015�*�\u00193l�y�\u001c%��G?Ԛ3�5pʯ}�Fv.\u001fR��g�p�ѹ}K",
-  "seconds": 5.7,
+  "seconds": 2.2,
   "size": null,
   "type": "application/zip",
   "url": "https://www.ine.es/prodyser/cartografia/seccionado_2024.zip"
@@ -184,7 +182,7 @@
   "quotes": [
    "… lso&nbsp; browse from the homepage &nbsp;to find the information you need. Privacy policy Disclaimer Sitemap Contact Cookie settings &copy; copyright 1998-2026 …"
   ],
-  "seconds": 0.5,
+  "seconds": 0.7,
   "size": 7362,
   "title": "404 Not found | AIB",
   "type": "text/html",
@@ -196,7 +194,7 @@
   "http": 200,
   "id": "eu_air_passengers",
   "sample": "DATAFLOW,LAST UPDATE,freq,tra_meas,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:TRAN_R_AVPA_NM(1.0),11/05/26 23:00:00,A,PAS_CRD,THS_PAS,AT,2015,26753.42,,\r\nESTAT:TRAN_R_AVPA_NM(1.0),11/05/26 23:00:00,A,PAS_CRD,THS_PAS,AT,2016,27180.94,,\r\nESTAT:TRAN_R_AVPA_NM(1.0),11/05/26 23:00:00,A,PA",
-  "seconds": 0.7,
+  "seconds": 0.9,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/tran_r_avpa_nm/?format=SDMX-CSV&compressed=false&startPeriod=2015"
@@ -209,7 +207,7 @@
   "quotes": [
    "… adon Digital EU on LinkedIn Digital EU on Facebook Digital EU on Youtube Digital EU on Instagram Digital EU on X About us Privacy statement Copyright notice About Directorate-General CONNECT Language Policy Follow the European Commission Mastodon LinkedIn Bluesky Facebook Youtube Other Contact us Report an I …"
   ],
-  "seconds": 0.5,
+  "seconds": 0.4,
   "size": 7488,
   "title": "Page not found | Shaping Europe’s digital future",
   "type": "text/html",
@@ -221,7 +219,7 @@
   "http": 200,
   "id": "eu_broadband_nuts2",
   "sample": "DATAFLOW,LAST UPDATE,freq,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:ISOC_R_BROAD_H(1.0),16/06/24 23:00:00,A,PC_HH,AL,2018,82.79,,\r\nESTAT:ISOC_R_BROAD_H(1.0),16/06/24 23:00:00,A,PC_HH,AL,2019,85.45,,\r\nESTAT:ISOC_R_BROAD_H(1.0),16/06/24 23:00:00,A,PC_HH,AL,2020,87.15,,\r\nESTAT:ISOC_R_B",
-  "seconds": 0.7,
+  "seconds": 1.3,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015"
@@ -234,7 +232,7 @@
   "quotes": [
    "… Heat wave days days Number of hot days in a year using specific definitions. References Citation and attribution DOI: 10.24381/cds.9e7ca677 Licence CC-BY licence Publication date 2019-11-07 Update date 2026-05-12 Standard metadata STAC CSW Related datasets Atmosphere Data Store CEMS Early Warning Data Stor …"
   ],
-  "seconds": 3.3,
+  "seconds": 3.2,
   "size": null,
   "title": "Heat waves and cold spells in  Europe derived from climate projections",
   "type": "text/html",
@@ -246,7 +244,7 @@
   "http": 200,
   "id": "eu_degree_days",
   "sample": "DATAFLOW,LAST UPDATE,freq,unit,indic_nrg,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:NRG_CHDDR2_A(1.0),08/05/26 11:00:00,A,NR,CDD,AT,2015,68.16,,\r\nESTAT:NRG_CHDDR2_A(1.0),08/05/26 11:00:00,A,NR,CDD,AT,2016,12.26,,\r\nESTAT:NRG_CHDDR2_A(1.0),08/05/26 11:00:00,A,NR,CDD,AT,2017,34.86,,\r\nESTAT:N",
-  "seconds": 0.7,
+  "seconds": 0.9,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015"
@@ -257,7 +255,7 @@
   "http": 200,
   "id": "eu_eba_biomethane",
   "quotes": [],
-  "seconds": 0.9,
+  "seconds": 1.4,
   "size": null,
   "title": "EBA-GiE biomethane map 2020 - European Biogas Association",
   "type": "text/html",
@@ -269,7 +267,7 @@
   "http": 404,
   "id": "eu_edo_cdi",
   "quotes": [],
-  "seconds": 0.4,
+  "seconds": 0.5,
   "size": null,
   "title": "Not Found",
   "type": "text/html",
@@ -281,7 +279,7 @@
   "http": 200,
   "id": "eu_eea_aq_stats",
   "quotes": [],
-  "seconds": 0.5,
+  "seconds": 0.6,
   "size": 3630,
   "title": "Table publisher",
   "type": "text/html",
@@ -297,8 +295,8 @@
    "… {title}\": \"\", \"Disable\": \"\", \"Disable apply to subfolders\": \"\", \"Disabled\": \"\", \"Disabled apply to subfolders\": \"\", \"Distributed under the {license}.\": \"\", \"Divide each row into separate cells\": \"\", \"Do you really want to delete the group {groupname}?\": \"\", \"Do you really want to delete the type {typename} …",
    "… \": \"\", \"Folder\": \"\", \"Folder listing\": \"\", \"Forbidden\": \"\", \"Fourth\": \"\", \"From\": \"\", \"Full\": \"\", \"Full Name\": \"\", \"Fullname\": \"\", \"GNU GPL license\": \"\", \"General\": \"\", \"Global role\": \"\", \"Google Maps Embedded Block\": \"\", \"Grid\": \"\", \"Group\": \"\", \"Group created\": \"\", \"Group deleted\": \"\", \"Group roles updat …"
   ],
-  "seconds": 0.5,
-  "size": 1195520,
+  "seconds": 0.6,
+  "size": 1195607,
   "title": null,
   "type": "text/html",
   "url": "https://www.eea.europa.eu/en/datahub/datahubitem-view/6244937d-1c2c-47f5-bdf1-33ca01ff1715"
@@ -313,7 +311,7 @@
    "… {title}\": \"\", \"Disable\": \"\", \"Disable apply to subfolders\": \"\", \"Disabled\": \"\", \"Disabled apply to subfolders\": \"\", \"Distributed under the {license}.\": \"\", \"Divide each row into separate cells\": \"\", \"Do you really want to delete the group {groupname}?\": \"\", \"Do you really want to delete the type {typename} …",
    "… \": \"\", \"Folder\": \"\", \"Folder listing\": \"\", \"Forbidden\": \"\", \"Fourth\": \"\", \"From\": \"\", \"Full\": \"\", \"Full Name\": \"\", \"Fullname\": \"\", \"GNU GPL license\": \"\", \"General\": \"\", \"Global role\": \"\", \"Google Maps Embedded Block\": \"\", \"Grid\": \"\", \"Group\": \"\", \"Group created\": \"\", \"Group deleted\": \"\", \"Group roles updat …"
   ],
-  "seconds": 1.1,
+  "seconds": 1.0,
   "size": null,
   "title": null,
   "type": "text/html",
@@ -329,7 +327,7 @@
    "… Data Request Form Data and services Partners Contacts Data and services &nbsp; *** By using the data provided you acknowledge the following terms of use under this license . *** &nbsp; Data download instructions &nbsp; Human Settlement Layer &nbsp; &nbsp; Protected Areas Layer &nbsp; &nbsp; Corine Land Cover &n …",
    "… r raw burned area perimeters) we kindly ask you to use our DATA REQUEST FORM . *** By using the data provided you acknowledge the following terms of use under this license . *** JRC Mission Cookies Legal notice Sitemap Privacy Statement Accessibility Statement …"
   ],
-  "seconds": 0.6,
+  "seconds": 0.9,
   "size": 39488,
   "title": "EFFIS - Data and services",
   "type": "text/html",
@@ -343,7 +341,7 @@
   "quotes": [
    "… ails Content not displaying? Try in a new window: &nbsp; &laquo; EGDI - All maps This map shows available data products registered in EGDI. Terms of use Base layers EGDI default EMODnet Bathymetry Basemap ESRI World Imagery ESRI Ocean Basemap ESRI World Topography None Layers Boreholes and wells (Pan-Eu Atlas) …"
   ],
-  "seconds": 1.3,
+  "seconds": 1.5,
   "size": null,
   "title": "EGDI",
   "type": "text/html",
@@ -371,7 +369,7 @@
   "quotes": [
    "… alid email address European Investment Bank | European Investment Fund Information Careers Investor relations Contact Fraud warning Privacy Terms of use GET OUR NEWSLETTER Receive updates of the EIB Group’s activities in Europe and around the world. Next Where do you currently work? Government International/Mul …"
   ],
-  "seconds": 0.6,
+  "seconds": 0.9,
   "size": 16610,
   "title": "en",
   "type": "text/html",
@@ -385,7 +383,7 @@
   "quotes": [
    "… granted on condition that, under NO CIRCUMSTANCES are these data passed to third parties.&nbsp; They can be used for any purpose, including commercial gain.. The user agrees to:&nbsp; &nbsp;&nbsp;&nbsp;a) Make proper reference to the source of the data when disseminating the results to which this agreement re …"
   ],
-  "seconds": 4.0,
+  "seconds": 3.6,
   "size": null,
   "title": "European Landslide Susceptibility Map version 2 (ELSUS v2) - ESDAC - European Commission",
   "type": "text/html",
@@ -403,7 +401,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"aggregateareas.653\",\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[[[12.81300365,44.65829132],[12.82070213,44.66215758],[12.82730313,44.6557849],[12.8194362,44.65203332],[12.81300365,44.65829132]]]]},\"geometry_name\":\"the_geom\",\"properties\":{\"code\":null,\"name\":\"A0_1 2007\",\"id\":\"A_pg_654\",\"material\":\"Sand\",\"country\":\"Italy\",\"site_typ",
-  "seconds": 4.8,
+  "seconds": 2.4,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:aggregateareas&outputFormat=application/json"
@@ -432,7 +430,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"desalination.1\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[19.88428548,41.30619049]},\"geometry_name\":\"the_geom\",\"properties\":{\"id\":1,\"objectid\":\"AL001\",\"location\":\"Tirana\",\"country\":\"Albania\",\"positionsrc\":\"GISCO\",\"comm_name\":\"Tirane\",\"nuts3id\":\"\",\"lat\":\"41.3061904899999\",\"lon\":\"19.8842854799999\",\"project\":\"OSMO 12 AM\",\"award_date\":\"20",
-  "seconds": 2.0,
+  "seconds": 2.4,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:desalination&outputFormat=application/json"
@@ -449,7 +447,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"hydrocarbons.1\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[13.26661417,44.68188821]},\"geometry_name\":\"the_geom\",\"properties\":{\"status\":\"Abandoned\",\"country\":\"Croatia\",\"code\":\"Ana-1\",\"name\":\"ANA-1\",\"year\":\"2006\",\"purpose\":\"Exploration\",\"content\":null,\"operator\":\"INAGIP\",\"company\":null,\"distance\":43968.497717,\"depth\":0E-11}},{\"type\":\"Fea",
-  "seconds": 2.5,
+  "seconds": 2.1,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:hydrocarbons&outputFormat=application/json"
@@ -466,7 +464,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"militaryareaspoly.1\",\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[[[19.29535563,54.39857625],[19.23433904,54.39861978],[19.02503061,54.43545825],[19.04734726,54.46518635],[19.07580155,54.50267037],[19.11066617,54.5485001],[19.21399981,54.68183331],[19.3854994,54.56516679],[19.38566667,54.5485],[19.38233379,54.4651664],[19.3573340",
-  "seconds": 1.9,
+  "seconds": 2.4,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:militaryareaspoly&outputFormat=application/json"
@@ -483,7 +481,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"marineprotectedareas.1\",\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[[[-1.93217793,37.05297012],[-1.92576369,37.0524525],[-1.92460715,37.05232484],[-1.92359284,37.05227958],[-1.9212325,37.05198772],[-1.92016989,37.05197806],[-1.91891587,37.05188551],[-1.91583988,37.05160505],[-1.91549393,37.05146668],[-1.91521472,37.05068894],[-1",
-  "seconds": 5.6,
+  "seconds": 3.1,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:marineprotectedareas&outputFormat=application/json"
@@ -494,7 +492,7 @@
   "http": 200,
   "id": "eu_emodnet_msp",
   "sample": null,
-  "seconds": 0.5,
+  "seconds": 0.8,
   "size": null,
   "type": "application/xml",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&request=GetCapabilities"
@@ -511,7 +509,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"mspzoningpoly.3497\",\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[[[12.42239942,45.33179945],[12.38613501,45.32382549],[12.37500321,45.32168797],[12.3292619,45.33764525],[12.32909663,45.33940328],[12.32940169,45.34181171],[12.3292388,45.34568742],[12.32994521,45.3477256],[12.32986104,45.34972864],[12.33027681,45.35058853],[12.3309",
-  "seconds": 2.3,
+  "seconds": 2.5,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:mspzoningpoly&outputFormat=application/json"
@@ -527,8 +525,8 @@
    "… ed, and attributes to indicate the intensity of each activity. The data are aggregated and presented so as to preserve personal privacy and commercially-sensitive information. The data also include a time interval so that historic as well as current activities can be included. The information provided through …",
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
-  "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"nuclear.fid-5a6bbcc2_1a190596c3f_2c5a\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[9.20269775,53.89190674]},\"geometry_name\":\"the_geom\",\"properties\":{\"id\":3,\"objectid\":\"3\",\"lat\":\"53.89176\",\"long\":\"9.20256\",\"code\":\"DE02\",\"name\":\"BRUNSBUETTEL\",\"country\":\"Germany\",\"status\":\"Permanently shut down\",\"reactors_n\":\"1\",\"the_cap_mw_tot\":\"2292\",\"gr",
-  "seconds": 2.1,
+  "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"nuclear.fid-5a6bbcc2_1a190596c3f_66e2\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[9.20269775,53.89190674]},\"geometry_name\":\"the_geom\",\"properties\":{\"id\":3,\"objectid\":\"3\",\"lat\":\"53.89176\",\"long\":\"9.20256\",\"code\":\"DE02\",\"name\":\"BRUNSBUETTEL\",\"country\":\"Germany\",\"status\":\"Permanently shut down\",\"reactors_n\":\"1\",\"the_cap_mw_tot\":\"2292\",\"gr",
+  "seconds": 1.7,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:nuclear&outputFormat=application/json"
@@ -544,8 +542,8 @@
    "… ed, and attributes to indicate the intensity of each activity. The data are aggregated and presented so as to preserve personal privacy and commercially-sensitive information. The data also include a time interval so that historic as well as current activities can be included. The information provided through …",
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
-  "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"oenergy.fid-5a6bbcc2_1a190596c3f_2af1\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-8.84722,41.46861]},\"geometry_name\":\"the_geom\",\"properties\":{\"id\":1,\"id_1\":1,\"latitude\":41.46861,\"longitude\":-8.84722,\"country\":\"Portugal\",\"seabasin\":\"Atlantic\",\"sea\":\"Bay of Biscay and Iberian Coast\",\"location\":\"Aguçadoura\",\"coast_dist\":5723.0,\"posinfo\":",
-  "seconds": 1.8,
+  "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"oenergy.fid-5a6bbcc2_1a190596c3f_6579\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[-8.84722,41.46861]},\"geometry_name\":\"the_geom\",\"properties\":{\"id\":1,\"id_1\":1,\"latitude\":41.46861,\"longitude\":-8.84722,\"country\":\"Portugal\",\"seabasin\":\"Atlantic\",\"sea\":\"Bay of Biscay and Iberian Coast\",\"location\":\"Aguçadoura\",\"coast_dist\":5723.0,\"posinfo\":",
+  "seconds": 2.4,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:oenergy&outputFormat=application/json"
@@ -562,7 +560,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"pipelines.3463\",\"geometry\":{\"type\":\"MultiLineString\",\"coordinates\":[[[25.01292014,60.19078013],[25.01288738,60.19087108],[25.01079069,60.19141361],[25.0010641,60.19292623],[24.98448362,60.19238854]]]},\"geometry_name\":\"the_geom\",\"properties\":{\"id\":null,\"name\":null,\"status\":\"n/a\",\"medium\":null,\"operator\":null,\"size_in\":null,\"length_m\":1",
-  "seconds": 2.0,
+  "seconds": 3.4,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json"
@@ -579,7 +577,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"platforms.21\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[4.74882821,55.71545852]},\"geometry_name\":\"the_geom\",\"properties\":{\"country\":\"Denmark\",\"platformid\":\"DK35\",\"current_status\":\"Operational\",\"name\":\"Tyra WC\",\"category\":\"Fixed steel\",\"function\":\"Above water production\",\"operator\":\"Mærsk\",\"location_blocks\":\"5504/11\",\"primary_productio",
-  "seconds": 2.1,
+  "seconds": 2.0,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:platforms&outputFormat=application/json"
@@ -596,7 +594,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"portgoods.561\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[4.40815,51.24165]},\"geometry_name\":\"the_geom\",\"properties\":{\"id\":1,\"data_src_c\":\"0\",\"port_coor_\":null,\"port\":\"Antwerp-Bruges\",\"port_id\":\"BE003\",\"portcode\":\"BE_0BE003\",\"country\":\"BE\",\"year\":2025,\"cargo_type\":\"Dry bulk goods\",\"direct\":\"Inwards\",\"cargo_type_code\":\"DBK\",\"thousand_of",
-  "seconds": 2.4,
+  "seconds": 2.7,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:portgoods&outputFormat=application/json"
@@ -613,7 +611,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"portlocations.1\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[4.40815,51.24165]},\"geometry_name\":\"the_geom\",\"properties\":{\"port_id\":\"BE003\",\"data_src_c\":\"0\",\"port_coor_\":null,\"country\":\"BE\",\"portname\":null,\"port\":\"Antwerp-Bruges\",\"source\":\"Port of Antwerp-Bruges\",\"pointx\":4.40815,\"pointy\":51.24165,\"traffic\":\"1\"}},{\"type\":\"Feature\",\"id\":\"",
-  "seconds": 1.8,
+  "seconds": 2.5,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:portlocations&outputFormat=application/json"
@@ -624,7 +622,7 @@
   "http": 200,
   "id": "eu_emodnet_seabed",
   "sample": null,
-  "seconds": 0.6,
+  "seconds": 0.8,
   "size": null,
   "type": "application/xml",
   "url": "https://drive.emodnet-geology.eu/geoserver/wfs?service=WFS&request=GetCapabilities"
@@ -646,7 +644,7 @@
   "http": 200,
   "id": "eu_emodnet_vessel_density",
   "sample": null,
-  "seconds": 0.6,
+  "seconds": 0.8,
   "size": null,
   "type": "application/xml",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&request=GetCapabilities"
@@ -657,7 +655,7 @@
   "http": 200,
   "id": "eu_emodnet_wind_farms",
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"windfarmspoly.103\",\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[[[-2.66,47.20983333],[-2.635,47.17833333],[-2.58,47.163],[-2.57,47.18333333],[-2.52,47.17166667],[-2.49833333,47.14833333],[-2.565,47.11333333],[-2.58,47.125],[-2.7,47.14666667],[-2.68666667,47.18333333],[-2.69166667,47.2025],[-2.66,47.20983333]]]]},\"geometry_name\":\"",
-  "seconds": 0.7,
+  "seconds": 0.9,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:windfarmspoly&outputFormat=application/json"
@@ -674,7 +672,7 @@
    "… hing hours, Average surface swept area ratio, Average subsurface swept area ratio Fish Sales Points Value, volume, price Oil and Gas Active Licenses Polygons Status (exploration, exploitation) Boreholes Points Status (exploration, exploitation) Offshore Installations Points Distance from coast, Name, Opera …"
   ],
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"treatmentplants.1\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[4.3202,51.3576]},\"geometry_name\":\"the_geom\",\"properties\":{\"id\":1,\"uwwcode\":\"BE_F_CS_392\",\"latitude\":51.3576,\"longitude\":4.3202,\"countryname\":\"Belgium\",\"year\":\"2012\",\"country\":\"BE\",\"uwwname\":\"Berendrecht\",\"status\":\"Active\",\"capacit_pe\":\"\",\"treatment\":\"No treatment\",\"nremoval\"",
-  "seconds": 1.7,
+  "seconds": 2.5,
   "size": null,
   "type": "application/json",
   "url": "https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:treatmentplants&outputFormat=application/json"
@@ -685,7 +683,7 @@
   "http": 200,
   "id": "eu_energy_productivity",
   "sample": "DATAFLOW,LAST UPDATE,freq,hhcomp,rskpovth,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:SDG_07_60(1.0),20/10/26 23:00:00,A,TOTAL,A_60,PC,AL,2017,34.4,,\r\nESTAT:SDG_07_60(1.0),20/10/26 23:00:00,A,TOTAL,A_60,PC,AL,2018,29.9,,\r\nESTAT:SDG_07_60(1.0),20/10/26 23:00:00,A,TOTAL,A_60,PC,AL,2019,",
-  "seconds": 0.5,
+  "seconds": 0.6,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015"
@@ -695,8 +693,8 @@
   "final_url": null,
   "http": 401,
   "id": "eu_entsoe_balancing",
-  "sample": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Acknowledgement_MarketDocument\n\txmlns=\"urn:iec62325.351:tc57wg16:451-1:acknowledgementdocument:7:0\">\n\t<mRID>4236fe32-0e3a-4</mRID>\n\t<createdDateTime>2026-10-31T06:04:52Z</createdDateTime>\n\t<sender_MarketParticipant.mRID codingScheme=\"A01\">10X1001A1001A450</sen",
-  "seconds": 5.2,
+  "sample": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Acknowledgement_MarketDocument\n\txmlns=\"urn:iec62325.351:tc57wg16:451-1:acknowledgementdocument:7:0\">\n\t<mRID>28d67684-7e09-4</mRID>\n\t<createdDateTime>2026-10-31T06:26:37Z</createdDateTime>\n\t<sender_MarketParticipant.mRID codingScheme=\"A01\">10X1001A1001A450</sen",
+  "seconds": 7.6,
   "size": 833,
   "type": "text/xml",
   "url": "https://web-api.tp.entsoe.eu/api"
@@ -707,7 +705,7 @@
   "http": 404,
   "id": "eu_entsoe_tariffs",
   "quotes": [],
-  "seconds": 0.4,
+  "seconds": 0.3,
   "size": null,
   "title": "Ruh-oh the page you're looking for cannot be found",
   "type": "text/html",
@@ -722,7 +720,7 @@
    "… (JRC) of the European Commission. The ESDB data were developed in collaboration with the European Soil Bureau Network, which holds a joint copyright to the data with the European Commission. The DG-JRC, on behalf of the Commission, and the European Soil Bureau Network, does not accept any liability whatsoev …",
    "… is granted on condition that, under no circumstances are these data passed to third parties. Moreover they must not be used in any way for commercial gain or for purposes other than those specified above. The user agrees to: &nbsp;&nbsp;&nbsp;a) Make proper reference to the source of the data when disseminat …"
   ],
-  "seconds": 5.3,
+  "seconds": 7.4,
   "size": null,
   "title": "European Soil Database v2.0 (vector and attribute data) - ESDAC - European Commission",
   "type": "text/html",
@@ -735,7 +733,7 @@
   "http": 200,
   "id": "eu_eshm20",
   "sample": "<head>\n<meta name=\"DC.title\" content=\"European Seismic Hazard Model 2020 (ESHM20)\">\n<meta name=\"DC.bibliographicCitation\" content=\"<![CDATA[The 2020 update of the European Seismic Hazard Model: Model Overview, https://doi.org/10.12686/a15, EFEHR Technical Report 001]]>\">\n<meta name=\"DC.type\" content",
-  "seconds": 1.4,
+  "seconds": 1.9,
   "size": 2981,
   "type": "text/plain",
   "url": "https://gitlab.seismo.ethz.ch/efehr/eshm20/-/raw/master/README.md"
@@ -750,7 +748,7 @@
    "… Contact us User support Media and fact-checkers Institutional services Visit us Help Website guide Products and tools Services User guides Copyright notice and free re-use of data Alert Frequently asked questions Accessibility Maintenance information Error: Not Found The requested resource could not be foun …"
   ],
   "sample": "DATAFLOW,LAST UPDATE,freq,vehicle,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:TRAN_R_ELVEHST(1.0),31/08/26 23:00:00,A,BUS_MCO_TRO,NR,AL,2024,3,,\r\nESTAT:TRAN_R_ELVEHST(1.0),31/08/26 23:00:00,A,BUS_MCO_TRO,NR,AL0,2024,3,,\r\nESTAT:TRAN_R_ELVEHST(1.0),31/08/26 23:00:00,A,BUS_MCO_TRO,NR,AL0",
-  "seconds": 1.2,
+  "seconds": 1.8,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/tran_r_elvehst/?format=SDMX-CSV&compressed=false&startPeriod=2015"
@@ -764,11 +762,22 @@
    "… defined as the catchment area for each river s... Show more Support Get help References Citation and attribution DOI: 10.24381/cds.a4fdd6b9 Licence CEMS-FLOODS datasets licence Publication date 2019-11-05 Update date 2026-10-30 Standard metadata STAC CSW Related datasets The Copernicus Emergency Management …",
    "… ean Commission’s Joint Research Centre The CEMS Early Warning Data Store is hosted by Climate Data Store Atmosphere Data Store Help Privacy Terms of Use Cookies Background …"
   ],
-  "seconds": 1.2,
+  "seconds": 2.3,
   "size": null,
   "title": "River discharge and related historical data from the Global Flood Awareness System",
   "type": "text/html",
   "url": "https://ewds.climate.copernicus.eu/datasets/cems-glofas-historical"
+ },
+ "eu_heat_production": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "eu_heat_production",
+  "sample": "DATAFLOW,LAST UPDATE,freq,nrg_bal,siec,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:NRG_BAL_PEH(1.0),02/06/26 23:00:00,A,GEP,BA100,GWH,AL,2015,0.000,,\r\nESTAT:NRG_BAL_PEH(1.0),02/06/26 23:00:00,A,GEP,BA100,GWH,AL,2016,0.000,,\r\nESTAT:NRG_BAL_PEH(1.0),02/06/26 23:00:00,A,GEP,BA100,GWH,AL,",
+  "seconds": 0.9,
+  "size": null,
+  "type": "application/vnd.sdmx.data+csv",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015"
  },
  "eu_heat_pumps": {
   "checked": "2026-10-31",
@@ -776,7 +785,7 @@
   "http": 200,
   "id": "eu_heat_pumps",
   "sample": "DATAFLOW,LAST UPDATE,freq,plant_tec,hp_tech,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:NRG_INF_HPTC(1.0),09/10/26 23:00:00,A,CAP_HEAT,ATH,MW,AL,2015,0.000,,\r\nESTAT:NRG_INF_HPTC(1.0),09/10/26 23:00:00,A,CAP_HEAT,ATH,MW,AL,2016,0.000,,\r\nESTAT:NRG_INF_HPTC(1.0),09/10/26 23:00:00,A,CAP_H",
-  "seconds": 0.6,
+  "seconds": 1.3,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_hptc/?format=SDMX-CSV&compressed=false&startPeriod=2015"
@@ -787,10 +796,21 @@
   "http": 200,
   "id": "eu_household_income",
   "sample": "DATAFLOW,LAST UPDATE,freq,unit,direct,na_item,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:NAMA_10R_2HHINC(1.0),20/05/26 23:00:00,A,EUR_HAB,BAL,B5N,AT,2015,25100,,\r\nESTAT:NAMA_10R_2HHINC(1.0),20/05/26 23:00:00,A,EUR_HAB,BAL,B5N,AT,2016,25300,,\r\nESTAT:NAMA_10R_2HHINC(1.0),20/05/26 23:00:00,A",
-  "seconds": 0.6,
+  "seconds": 0.8,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nama_10r_2hhinc/?format=SDMX-CSV&compressed=false&startPeriod=2015"
+ },
+ "eu_internet_households": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "eu_internet_households",
+  "sample": "DATAFLOW,LAST UPDATE,freq,unit,hhtyp,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:ISOC_CI_IN_H(1.0),25/06/26 23:00:00,A,PC_HH,A1,AL,2018,56.73,,\r\nESTAT:ISOC_CI_IN_H(1.0),25/06/26 23:00:00,A,PC_HH,A1,AL,2020,58.56,,\r\nESTAT:ISOC_CI_IN_H(1.0),25/06/26 23:00:00,A,PC_HH,A1,AL,2021,70.76,,\r\nESTAT",
+  "seconds": 0.9,
+  "size": null,
+  "type": "application/vnd.sdmx.data+csv",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_ci_in_h/?format=SDMX-CSV&compressed=false&startPeriod=2015"
  },
  "eu_jrc_coastal_flood": {
   "checked": "2026-10-31",
@@ -801,7 +821,7 @@
    "… adable file More info Downloadable file Close A downloadable file for the dataset. Find similar datasets Use conditions European Commission reuse notice More info European Commission reuse notice Close According to the European Commission reuse notice, reuse is authorised, provided the source is acknowle …",
    "… e is acknowledged. The reuse policy of the European Commission is implemented by the Decision of 12 December 2011. The general principle of reuse can be subject to conditions which may be specified in individual copyright notices. Therefore users are advised to refer to the copyright notices of the indiv …"
   ],
-  "seconds": 1.3,
+  "seconds": 1.7,
   "size": null,
   "title": "Log in",
   "type": "text/html",
@@ -817,7 +837,7 @@
    "… gory\":\"Dataset Category\",\"contact_email\":\"Contact Email\",\"descending\":\"descending\",\"description\":\"Dataset Description\",\"details\":\"Details\",\"license\":\"License\",\"name\":\"Dataset Name\",\"past\":{\"attachment_added\":\"Attachment {name} was added\",\"attachment_changes\":\"Name of attachment {oldName} was changed to {ne …",
    "… urce file. To re-sync metadata, follow instructions\",\"labels\":{\"category\":\"Category\",\"enter_to_create_a_tag\":\"Press Enter to create a tag\",\"license_label\":\"Public license type (if applicable)\",\"tags_and_keywords\":\"Tags and keywords\"},\"select_a_value\":\"-- Select a value --\",\"subtitle\":\"Make your title and d …"
   ],
-  "seconds": 1.0,
+  "seconds": 1.3,
   "size": null,
   "title": null,
   "type": "text/html",
@@ -829,7 +849,7 @@
   "http": 403,
   "id": "eu_kohesio",
   "quotes": [],
-  "seconds": 0.6,
+  "seconds": 0.9,
   "size": 118,
   "title": "403 Forbidden",
   "type": "text/html",
@@ -841,7 +861,7 @@
   "http": 200,
   "id": "eu_kohesio_2014_2020",
   "sample": "[{\"operation_unique_identifier\":{\"url\":\"https://linkedopendata.eu/entity/Q4933645\"},\"operation_name_english\":\"INDIVIDUAL PROVISIONS IN FAVORE DI Bertei ALBERTO (*Tax Code*)\",\"operation_name_programme_language\":\"INTERVENTI INDIVIDUALI A FAVORE DI BERTEI ALBERTO (*codice fiscale*)\",\"country\":\"Italy\",\"operation_start_date\":\"2021-12-13T00:00:00.000\",\"operation_end_date\":\"2022-05-11T00:00:00.000\",\"cofi",
-  "seconds": 1.2,
+  "seconds": 0.9,
   "size": null,
   "type": "application/json",
   "url": "https://cohesiondata.ec.europa.eu/resource/557j-pmg8.json"
@@ -856,10 +876,21 @@
    "… Contact us User support Media and fact-checkers Institutional services Visit us Help Website guide Products and tools Services User guides Copyright notice and free re-use of data Alert Frequently asked questions Accessibility Maintenance information Error: Not Found The requested resource could not be foun …"
   ],
   "sample": "DATAFLOW,LAST UPDATE,freq,unit,agriprod,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:APRI_LPRC(1.0),10/07/26 23:00:00,A,EUR_HA,ARA,AT,2022,35100,,\r\nESTAT:APRI_LPRC(1.0),10/07/26 23:00:00,A,EUR_HA,ARA,AT,2023,37900,,\r\nESTAT:APRI_LPRC(1.0),10/07/26 23:00:00,A,EUR_HA,ARA,AT,2024,37600,,\r\nESTAT",
-  "seconds": 2.0,
+  "seconds": 2.1,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/apri_lprc/?format=SDMX-CSV&compressed=false&startPeriod=2015"
+ },
+ "eu_network_costs": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "eu_network_costs",
+  "sample": "DATAFLOW,LAST UPDATE,freq,nrg_prc,nrg_cons,currency,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:NRG_PC_205_C(1.0),16/10/26 11:00:00,A,ALLOW_OTH,MWH20-499,EUR,AL,2023,0.0000,,\r\nESTAT:NRG_PC_205_C(1.0),16/10/26 11:00:00,A,ALLOW_OTH,MWH20-499,EUR,AL,2024,0.0000,,\r\nESTAT:NRG_PC_205_C(1.0),16/1",
+  "seconds": 0.8,
+  "size": null,
+  "type": "application/vnd.sdmx.data+csv",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015"
  },
  "eu_new_cars_fuel": {
   "checked": "2026-10-31",
@@ -867,10 +898,21 @@
   "http": 200,
   "id": "eu_new_cars_fuel",
   "sample": "DATAFLOW,LAST UPDATE,freq,unit,mot_nrg,geo,leg_form,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:ROAD_EQS_CARPDA(1.0),06/10/26 23:00:00,A,NR,ALT,AL,TOTAL,2015,7562,,\r\nESTAT:ROAD_EQS_CARPDA(1.0),06/10/26 23:00:00,A,NR,ALT,AL,TOTAL,2016,14544,,\r\nESTAT:ROAD_EQS_CARPDA(1.0),06/10/26 23:00:00,A,NR,A",
-  "seconds": 0.7,
+  "seconds": 0.8,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/road_eqs_carpda/?format=SDMX-CSV&compressed=false&startPeriod=2015"
+ },
+ "eu_nonhousehold_prices": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "eu_nonhousehold_prices",
+  "sample": "DATAFLOW,LAST UPDATE,freq,customer,nrg_prc,siec,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:NRG_PC_206(1.0),19/10/26 23:00:00,A,HH,NETC_DIST,E7000,PC,AL,2020,86.4621,e,\r\nESTAT:NRG_PC_206(1.0),19/10/26 23:00:00,A,HH,NETC_DIST,E7000,PC,AL,2021,86.4621,e,\r\nESTAT:NRG_PC_206(1.0),19/10/26 ",
+  "seconds": 0.8,
+  "size": null,
+  "type": "application/vnd.sdmx.data+csv",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_206/?format=SDMX-CSV&compressed=false&startPeriod=2015"
  },
  "eu_nuclear_capacity": {
   "checked": "2026-10-31",
@@ -878,7 +920,7 @@
   "http": 200,
   "id": "eu_nuclear_capacity",
   "sample": "DATAFLOW,LAST UPDATE,freq,plant_tec,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:NRG_INF_NUC(1.0),09/10/26 23:00:00,A,BAA_IRRADF,GWD_THM,AL,2015,0.000,,\r\nESTAT:NRG_INF_NUC(1.0),09/10/26 23:00:00,A,BAA_IRRADF,GWD_THM,AL,2016,0.000,,\r\nESTAT:NRG_INF_NUC(1.0),09/10/26 23:00:00,A,BAA_IRRADF",
-  "seconds": 0.7,
+  "seconds": 1.0,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_nuc/?format=SDMX-CSV&compressed=false&startPeriod=2015"
@@ -889,10 +931,21 @@
   "http": 200,
   "id": "eu_rail_electrified",
   "sample": "DATAFLOW,LAST UPDATE,freq,unit,power,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:RAIL_IF_ELECTRI(1.0),06/10/26 23:00:00,A,KM,AC15000,AL,2015,0,,\r\nESTAT:RAIL_IF_ELECTRI(1.0),06/10/26 23:00:00,A,KM,AC15000,AL,2016,0,,\r\nESTAT:RAIL_IF_ELECTRI(1.0),06/10/26 23:00:00,A,KM,AC15000,AL,2017,0,,\r\nES",
-  "seconds": 0.6,
+  "seconds": 1.0,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/rail_if_electri/?format=SDMX-CSV&compressed=false&startPeriod=2015"
+ },
+ "eu_renewable_capacity": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "eu_renewable_capacity",
+  "sample": "DATAFLOW,LAST UPDATE,freq,siec,plant_tec,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:NRG_INF_EPCRW(1.0),09/10/26 23:00:00,A,R5100,CAP_NET_ELC,MW,AL,2015,0.000,,\r\nESTAT:NRG_INF_EPCRW(1.0),09/10/26 23:00:00,A,R5100,CAP_NET_ELC,MW,AL,2016,0.000,,\r\nESTAT:NRG_INF_EPCRW(1.0),09/10/26 23:00:",
+  "seconds": 0.9,
+  "size": null,
+  "type": "application/vnd.sdmx.data+csv",
+  "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015"
  },
  "eu_rescoop": {
   "checked": "2026-10-31",
@@ -900,7 +953,7 @@
   "http": 404,
   "id": "eu_rescoop",
   "quotes": [],
-  "seconds": 1.0,
+  "seconds": 0.9,
   "size": null,
   "title": "Page Not Found - REScoop",
   "type": "text/html",
@@ -912,7 +965,7 @@
   "http": 200,
   "id": "eu_salt_caverns",
   "sample": "{\"hits\": {\"hits\": [{\"created\": \"2026-01-05T12:40:56.388052+00:00\", \"modified\": \"2026-04-07T09:07:25.867978+00:00\", \"id\": 18153129, \"conceptrecid\": \"18153128\", \"doi\": \"10.5281/zenodo.18153129\", \"conceptdoi\": \"10.5281/zenodo.18153128\", \"doi_url\": \"https://doi.org/10.5281/zenodo.18153129\", \"metadata\": {\"title\": \"Modelblocks - module euro gas grid: stable datasets\", \"doi\": \"10.5281/zenodo.18153129\", \"",
-  "seconds": 1.7,
+  "seconds": 1.4,
   "size": null,
   "type": "application/json",
   "url": "https://zenodo.org/api/records?q=salt%20cavern%20hydrogen%20storage%20potential%20Europe"
@@ -923,7 +976,7 @@
   "http": 404,
   "id": "eu_tent_network",
   "quotes": [],
-  "seconds": 0.4,
+  "seconds": 0.5,
   "size": 658,
   "title": "Network Error",
   "type": "text/html",
@@ -935,7 +988,7 @@
   "http": 200,
   "id": "eu_wastewater_connected",
   "sample": "DATAFLOW,LAST UPDATE,freq,ww_tp,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:ENV_WW_CON(1.0),18/09/26 11:00:00,A,IND,PC,AT,2015,4.90,i,\r\nESTAT:ENV_WW_CON(1.0),18/09/26 11:00:00,A,IND,PC,AT,2016,4.80,e,\r\nESTAT:ENV_WW_CON(1.0),18/09/26 11:00:00,A,IND,PC,AT,2017,4.43,i,\r\nESTAT:ENV_WW_CON(",
-  "seconds": 0.7,
+  "seconds": 1.0,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ww_con/?format=SDMX-CSV&compressed=false&startPeriod=2015"
@@ -946,7 +999,7 @@
   "http": 200,
   "id": "eu_water_abstraction",
   "sample": "DATAFLOW,LAST UPDATE,freq,wat_proc,wat_src,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:ENV_WAT_ABS(1.0),16/09/26 23:00:00,A,ABST,FGW,M3_HAB,AL,2017,37.68,e,\r\nESTAT:ENV_WAT_ABS(1.0),16/09/26 23:00:00,A,ABST,FGW,M3_HAB,AL,2018,34.62,,\r\nESTAT:ENV_WAT_ABS(1.0),16/09/26 23:00:00,A,ABST,FGW",
-  "seconds": 0.7,
+  "seconds": 1.4,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_wat_abs/?format=SDMX-CSV&compressed=false&startPeriod=2015"
@@ -957,7 +1010,7 @@
   "http": 200,
   "id": "eu_water_use",
   "sample": "DATAFLOW,LAST UPDATE,freq,wat_proc,wat_src,unit,geo,TIME_PERIOD,OBS_VALUE,OBS_FLAG,CONF_STATUS\r\nESTAT:ENV_WAT_USE(1.0),03/07/26 23:00:00,A,ABST,DSW,M3_HAB,AL,2015,0.00,,\r\nESTAT:ENV_WAT_USE(1.0),03/07/26 23:00:00,A,ABST,DSW,M3_HAB,AL,2021,0.00,,\r\nESTAT:ENV_WAT_USE(1.0),03/07/26 23:00:00,A,ABST,DSW,M3",
-  "seconds": 0.7,
+  "seconds": 0.8,
   "size": null,
   "type": "application/vnd.sdmx.data+csv",
   "url": "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_wat_use/?format=SDMX-CSV&compressed=false&startPeriod=2015"
@@ -979,7 +1032,7 @@
   "http": 200,
   "id": "fi_paavo",
   "sample": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"id\":\"pno_tilasto_2024.1\",\"geometry\":{\"type\":\"MultiPolygon\",\"coordinates\":[[[[24.93946316,60.16518008],[24.94168154,60.16594962],[24.94028544,60.16695592],[24.93957821,60.16681702],[24.93906391,60.16712178],[24.93975698,60.16749499],[24.94021007,60.16776259],[24.9406065,60.16761843],[24.94108029,60.16728645],[24.94187466,60.16670554],[24.94",
-  "seconds": 1.6,
+  "seconds": 1.1,
   "size": null,
   "type": "application/json",
   "url": "https://geo.stat.fi/geoserver/postialue/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=postialue:pno_tilasto_2024&outputFormat=application/json&srsName=EPSG:4326"
@@ -990,7 +1043,7 @@
   "http": 200,
   "id": "fr_ademe_dpe",
   "sample": "{\"title\":\"DPE Logements existants (depuis juillet 2021)\",\"isVirtual\":true,\"virtual\":{\"children\":[\"hql3tmgt8jw2q0ecc9jdp57-\"],\"filters\":[{\"key\":\"dpe_desactive\",\"values\":[\"0\"]}]},\"owner\":{\"type\":\"organization\",\"id\":\"g1pKfMqaE\",\"name\":\"ADEME\"},\"schema\":[{\"key\":\"numero_dpe\",\"x-originalName\":\"numero_dpe\",\"type\":\"string\",\"description\":\"\",\"x-group\":\"Administratif\",\"x-cardinality\":15863720,\"label\":\"numero",
-  "seconds": 0.5,
+  "seconds": 0.7,
   "size": null,
   "type": "application/json",
   "url": "https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant"
@@ -1001,7 +1054,7 @@
   "http": 404,
   "id": "fr_enedis_interruptions",
   "quotes": [],
-  "seconds": 1.5,
+  "seconds": 1.7,
   "size": null,
   "title": "Page introuvable - Open data d&#x27;Enedis",
   "type": "text/html",
@@ -1029,7 +1082,7 @@
    "… des JDD de l'Agence ORE Taille : 773 782 enregistrements - 65 Mo Données issues de cette source Propriétaire : AAAData Producteur : AAAData Licence : Licence Ouverte / Open Licence version 2.0 Mots-clés : Voiture gaz Hybride-Rechargeable Électricité Fréquence de mise à jour : Chaque trimestre Dernière mise …"
   ],
   "sample": "CODGEO,LIBGEO,EPCI,LIBEPCI,DATE_ARRETE,NB_VP_RECHARGEABLES_EL,NB_VP_RECHARGEABLES_GAZ,NB_VP\n01001,L'ABERGEMENT-CL�MENCIAT,200069193,CC de la Dombes,2020-12-31,6,0,881\n01001,L'ABERGEMENT-CL�MENCIAT,200069193,CC de la Dombes,2021-03-31,6,0,887\n01001,L'ABERGEMENT-CL�MENCIAT,200069193,CC de la Dombes,20",
-  "seconds": 1.8,
+  "seconds": 2.4,
   "size": null,
   "type": "text/csv",
   "url": "https://opendata.agenceore.fr/data-fair/api/v1/datasets/voitures-par-commune-par-energie/raw"
@@ -1040,7 +1093,7 @@
   "http": 200,
   "id": "fr_ore_solar_commune",
   "quotes": [],
-  "seconds": 0.9,
+  "seconds": 1.1,
   "size": null,
   "title": "Explore - Agence ORE",
   "type": "text/html",
@@ -1092,7 +1145,7 @@
    "… ssibility statement Contact Terms and conditions Rhestr o Wasanaethau Cymraeg Government Digital Service All content is available under the Open Government Licence v3.0 , except where otherwise stated © Crown copyright …"
   ],
   "seconds": 1.3,
-  "size": 20818,
+  "size": 20816,
   "title": "GOV.UK",
   "type": "text/html",
   "url": "https://www.gov.uk/government/statistics/solar-photovoltaics-deployment"
@@ -1110,7 +1163,7 @@
   "http": 200,
   "id": "gb_ea_abstraction",
   "quotes": [],
-  "seconds": 0.6,
+  "seconds": 0.7,
   "size": null,
   "title": null,
   "type": "text/html",
@@ -1126,7 +1179,7 @@
    "… ry Publish your data Documentation Support Menu Publish your data Documentation Support Search directory Search Environment Agency Register Licence Abstracts Publisher Environment Agency Updated 18 September 2026 Topic Not set Licence View licence information Summary This dataset contains descriptions, att …",
    "… on statements, conditions and information warnings, where that information is not available on Data.gov.uk. It is for use with the relevant licence which will be either the Environment Agency Conditional Licence or the Open Government Licence. Much of the information covered by an Environment Agency Condit …"
   ],
-  "seconds": 1.1,
+  "seconds": 1.2,
   "size": 25459,
   "title": "\n      \n        Environment Agency Register Licence Abstracts - National Data Library\n      \n    ",
   "type": "text/html",
@@ -1144,7 +1197,7 @@
    "… -21 Frequency of update asNeeded Access constraints There are no public access constraints to this data. Use of this data is subject to the licence identified. Responsible party Environment Agency (pointOfContact) ISO 19139 resource type dataset Metadata language eng View additional information Contact Enq …"
   ],
   "sample": "PK\u0003\u0004-\u0000\u0000\u0000\b\u0000\"�U]ޣ&���������'\u0000\u0014\u0000Flood_Map_for_Planning_Flood_Zones.gpkg\u0001\u0000\u0010\u0000\u0000��t\u0001\u0000\u0000\u0000h\u001eV=\u0000\u0000\u0000\u0000��Oo�d\u001c\u0007�'m!]���D�S�\u0007k\u0012H���Ů�&5�L�$�v�-L�\u0015?I,\u0012��ݡ^�:��\u0000\u0007�p�\u0013G^\u0001\u0002�#�\u0002��4\u001e/M�\n\u00138��Jߏ���}�'����$u޺\u001bf���d�gT!k�T\";�\u0012B����Lm�g�K���y����A�-�꣝\u0017����o$oo��|\u0007\u0000\u0000\u0000\u0000\u0000\u0000\u0000��5�_V���ׅ�_����//\u000f�\u000e\u0000\u0000\u0000\u0000����q�h���O_!m�qK��uz+\t�0\u001dЖ�",
-  "seconds": 1.6,
+  "seconds": 3.5,
   "size": 1030581512,
   "type": "application/octet-stream",
   "url": "https://environment.data.gov.uk/api/file/download?fileDataSetId=455d2eb3-3065-4d20-871b-c4d5dee23f67&fileName=Flood_Map_for_Planning_Flood_Zones.gpkg.zip"
@@ -1161,7 +1214,7 @@
    "… w Market Entry &amp; Exit Go Back - Market Entry &amp; Exit Market Entry &amp; Exit Market Entry &amp; Exit Most Suppliers, Generators, and Licensed Distribution System Operators may have to become a BSC Party because it is a condition within their Ofgem licence. Other companies wishing to trade within the …"
   ],
   "sample": "{\"metadata\":{\"datasets\":[\"DISEBSP\"]},\"data\":[{\"settlementDate\":\"2026-10-01\",\"settlementPeriod\":1,\"startTime\":\"2026-09-30T23:00:00Z\",\"createdDateTime\":\"2026-10-01T23:44:35Z\",\"systemSellPrice\":158.00000000000000,\"systemBuyPrice\":158.00000000000000,\"bsadDefaulted\":false,\"priceDerivationCode\":\"P\",\"reserveScarcityPrice\":0.000000000000000000,\"netImbalanceVolume\":21.485756014957264171,\"sellPriceAdjustmen",
-  "seconds": 1.1,
+  "seconds": 1.4,
   "size": null,
   "type": "application/json",
   "url": "https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices/2026-10-01?format=json"
@@ -1172,7 +1225,7 @@
   "http": 404,
   "id": "gb_emr_cm_register",
   "sample": "404 NOT FOUND",
-  "seconds": 0.5,
+  "seconds": 0.6,
   "size": 13,
   "type": "",
   "url": "https://www.emrdeliverybody.com/CM/Registers.aspx"
@@ -1191,7 +1244,7 @@
   "id": "gb_he_listed",
   "name": "Listed Building points",
   "rows": 379683,
-  "seconds": 0.6,
+  "seconds": 0.1,
   "type": "arcgis layer",
   "url": "https://services-eu1.arcgis.com/ZOdPfBS3aqqDYPUQ/arcgis/rest/services/National_Heritage_List_for_England_NHLE_v02_VIEW/FeatureServer/0"
  },
@@ -1203,11 +1256,28 @@
   "quotes": [
    "… ssibility statement Contact Terms and conditions Rhestr o Wasanaethau Cymraeg Government Digital Service All content is available under the Open Government Licence v3.0 , except where otherwise stated © Crown copyright …"
   ],
-  "seconds": 0.7,
-  "size": 15605,
+  "seconds": 0.9,
+  "size": 15609,
   "title": "GOV.UK",
   "type": "text/html",
   "url": "https://www.gov.uk/government/collections/heat-network-zoning"
+ },
+ "gb_hnpd": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "gb_hnpd",
+  "lic_http": 200,
+  "lic_quotes": [
+   "… Heat Networks dataset Publisher Department for Business, Energy and Industrial Strategy Updated 15 February 2021 Topic Business and economy Licence Other (Not Open) Summary This data is furnished to the Energy officials within the Department of Business, Energy and Industrial Strategy to provide evidence a …",
+   "… rategy to provide evidence and to allow analysis for policy development. The data only captures information for England. The information is commercially sensitive and therefore cannot be made available. Experimental statistics were released in March 2018. Links to the article and dataset are attached to this …",
+   "… ks Roadmap About Support Accessibility Cookies Privacy and terms Built by the National Data Library team All content is available under the Open Government Licence v3.0 , except where otherwise stated. © Crown copyright …"
+  ],
+  "sample": null,
+  "seconds": 2.2,
+  "size": 1037444,
+  "type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "url": "https://assets.publishing.service.gov.uk/media/6a6cbd2e0c36759b5ccaa304/HNPD_2026_Q2.xlsx"
  },
  "gb_lccc_cfd": {
   "checked": "2026-10-31",
@@ -1217,7 +1287,7 @@
   "lic_http": 403,
   "lic_quotes": [],
   "quotes": [],
-  "seconds": 0.5,
+  "seconds": 0.6,
   "size": 118,
   "title": "403 Forbidden",
   "type": "text/html",
@@ -1229,7 +1299,7 @@
   "http": 200,
   "id": "gb_mcs_heat_pumps",
   "quotes": [],
-  "seconds": 0.4,
+  "seconds": 0.5,
   "size": null,
   "title": "The MCS Data Dashboard - MCS",
   "type": "text/html",
@@ -1243,7 +1313,7 @@
   "lic_http": 200,
   "lic_quotes": [],
   "sample": null,
-  "seconds": 1.7,
+  "seconds": 2.1,
   "size": 15074870,
   "type": "application/octet-stream",
   "url": "https://environment.data.gov.uk/api/file/download?fileDataSetId=f33896b6-9847-4f03-b5d9-3c55497a003c&fileName=Provisional_Agricultural_Land_Classification_ALC.gpkg.zip"
@@ -1254,7 +1324,7 @@
   "http": 200,
   "id": "gb_neso_constraint_costs",
   "sample": "{\"help\": \"https://api.neso.energy/api/3/action/help_show?name=package_search\", \"success\": true, \"result\": {\"count\": 1, \"sort\": \"score desc, metadata_modified desc\", \"facets\": {}, \"results\": [{\"license_title\": \"NESO Open Data Licence\", \"maintainer\": \"\", \"relationships_as_object\": [], \"private\": false, \"maintainer_email\": \"\", \"num_tags\": 9, \"id\": \"fb56b46e-cef3-4eb8-9294-0ca19769b7eb\", \"metadata_cre",
-  "seconds": 0.3,
+  "seconds": 0.6,
   "size": null,
   "type": "application/json",
   "url": "https://api.neso.energy/api/3/action/package_search?q=constraint%20breakdown"
@@ -1265,7 +1335,7 @@
   "http": 200,
   "id": "gb_neso_etys",
   "sample": "{\"help\": \"https://api.neso.energy/api/3/action/help_show?name=package_search\", \"success\": true, \"result\": {\"count\": 1, \"sort\": \"score desc, metadata_modified desc\", \"facets\": {}, \"results\": [{\"license_title\": \"NESO Open Data Licence\", \"maintainer\": \"\", \"relationships_as_object\": [], \"private\": false, \"maintainer_email\": \"\", \"num_tags\": 5, \"id\": \"997f4820-1ad4-499b-b1fe-4b8d3d7fbc72\", \"metadata_cre",
-  "seconds": 0.6,
+  "seconds": 0.4,
   "size": null,
   "type": "application/json",
   "url": "https://api.neso.energy/api/3/action/package_search?q=etys"
@@ -1276,7 +1346,7 @@
   "http": 200,
   "id": "gb_neso_tnuos",
   "sample": "{\"help\": \"https://api.neso.energy/api/3/action/help_show?name=package_search\", \"success\": true, \"result\": {\"count\": 2, \"sort\": \"score desc, metadata_modified desc\", \"facets\": {}, \"results\": [{\"license_title\": \"NESO Open Data Licence\", \"maintainer\": \"\", \"relationships_as_object\": [], \"private\": false, \"maintainer_email\": \"\", \"num_tags\": 10, \"id\": \"eaef4708-1100-4ad9-98d5-d892f3c9a56c\", \"metadata_cr",
-  "seconds": 0.5,
+  "seconds": 0.4,
   "size": null,
   "type": "application/json",
   "url": "https://api.neso.energy/api/3/action/package_search?q=tnuos%20tariffs"
@@ -1287,7 +1357,7 @@
   "http": 200,
   "id": "gb_nged_generation_capacity",
   "sample": "{\"help\": \"https://connecteddata.nationalgrid.co.uk/api/3/action/help_show?name=package_search\", \"success\": true, \"result\": {\"count\": 1, \"facets\": {}, \"results\": [{\"author\": null, \"author_email\": null, \"contributor\": \"Digitalisation & Data\", \"createddate\": \"\", \"creator\": \"Western Power Distribution\", \"creator_user_id\": \"d320b0c5-10ed-4c08-912e-2dca4c4d207b\", \"dataclassification\": \"Shared\", \"expirat",
-  "seconds": 0.5,
+  "seconds": 0.7,
   "size": null,
   "type": "application/json",
   "url": "https://connecteddata.nationalgrid.co.uk/api/3/action/package_search?q=name:generation-capacity-register"
@@ -1298,7 +1368,7 @@
   "http": 200,
   "id": "gb_nged_opendata",
   "sample": "{\"help\": \"https://connecteddata.nationalgrid.co.uk/api/3/action/help_show?name=package_search\", \"success\": true, \"result\": {\"count\": 1, \"facets\": {}, \"results\": [{\"author\": null, \"author_email\": null, \"contributor\": \"Digitalisation & Data\", \"coverage\": \"All Regions\", \"createddate\": \"\", \"creator\": \"Western Power Distribution\", \"creator_user_id\": \"5ee709d4-9def-4652-9087-26e325ed6385\", \"dataclassifi",
-  "seconds": 0.6,
+  "seconds": 0.9,
   "size": null,
   "type": "application/json",
   "url": "https://connecteddata.nationalgrid.co.uk/api/3/action/package_search?q=name:embedded-capacity-register"
@@ -1309,22 +1379,16 @@
   "http": 200,
   "id": "gb_npg_curtailment_events",
   "sample": "﻿licence_area,customer_unique_identifier,event_id,scheme_name,start_time_utc,start_time_local,end_time_utc,end_time_local,duration_hours,outage_related_curtailment_total_energy_reduction_mwh,average_access_reduction_mw,reason_for_curtailment,site_class,geo_shape,geo_point_2d\r\n",
-  "seconds": 0.5,
+  "seconds": 1.8,
   "size": null,
   "type": "text/csv",
   "url": "https://northernpowergrid.opendatasoft.com/api/explore/v2.1/catalog/datasets/curtailment-events-site-specific/exports/csv?delimiter=%2C"
  },
  "gb_npg_heatmap_substations": {
   "checked": "2026-10-31",
-  "final_url": null,
-  "http": 200,
+  "error": "RemoteProtocolError: Server disconnected without sending a response.",
   "id": "gb_npg_heatmap_substations",
-  "lic_http": 404,
-  "lic_quotes": [],
-  "sample": null,
-  "seconds": 1.1,
-  "size": null,
-  "type": "text/csv",
+  "seconds": 0.7,
   "url": "https://northernpowergrid.opendatasoft.com/api/explore/v2.1/catalog/datasets/heatmapdatatable/exports/csv?delimiter=%2C"
  },
  "gb_npg_opendata": {
@@ -1335,7 +1399,7 @@
   "lic_http": 404,
   "lic_quotes": [],
   "sample": "﻿row_number,gsp,licence_area,technology,export_capacity,queue_position,transmission_gate,dno_acceptance_date,final_queue_rank,phase\r\n1.0,Borders Connection Node A,Northeast,Battery,40.0,0.0,Gate 1,2024-04-24,0.0,N/A\r\n3.0,Borders Connection Node B,Northeast,Battery,41.0,0.0,Gate 1,2023-08-18,0.0,N/A\r",
-  "seconds": 0.9,
+  "seconds": 1.2,
   "size": null,
   "type": "text/csv",
   "url": "https://northernpowergrid.opendatasoft.com/api/explore/v2.1/catalog/datasets/connection-queue-information/exports/csv?delimiter=%2C"
@@ -1357,7 +1421,7 @@
   "http": 403,
   "id": "gb_ofcom_connected_nations",
   "quotes": [],
-  "seconds": 0.3,
+  "seconds": 0.1,
   "size": null,
   "title": "Just a moment...",
   "type": "text/html",
@@ -1371,7 +1435,7 @@
   "quotes": [
    "… vironmental and Social Schemes Energy regulation Go back Energy regulation Energy regulation How we regulate Go back How we regulate Energy licences and guidance Energy codes Compliance and enforcement Energy network price controls Electricity Go back Electricity Electricity supply Electricity interconnect …"
   ],
-  "seconds": 0.2,
+  "seconds": 4.9,
   "size": 23220,
   "title": "Data portal | Ofgem",
   "type": "text/html",
@@ -1381,7 +1445,7 @@
   "checked": "2026-10-31",
   "error": "ConnectError: [Errno -5] No address associated with hostname",
   "id": "gb_ofgem_rego",
-  "seconds": 0.1,
+  "seconds": 0.4,
   "url": "https://renewablesandchp.ofgem.gov.uk/"
  },
  "gb_ons_income_msoa": {
@@ -1392,7 +1456,7 @@
   "quotes": [
    "… f Information Connect with us X Instagram Facebook LinkedIn Consultations Discussion forums Email alerts All content is available under the Open Government Licence v3.0 , except where otherwise stated …"
   ],
-  "seconds": 0.3,
+  "seconds": 0.7,
   "size": null,
   "title": "\n      \n        Income estimates for small areas, England and Wales\n      - Office for National Statistics\n    ",
   "type": "text/html",
@@ -1406,7 +1470,7 @@
   "quotes": [
    "… ds and bank holidays. Support links Terms and conditions Accessibility statement Privacy Cookies Contact All content is available under the Open Government Licence v3.0 , except where otherwise stated &copy; Crown copyright …"
   ],
-  "seconds": 0.7,
+  "seconds": 0.9,
   "size": null,
   "title": "  Page not found\n",
   "type": "text/html",
@@ -1432,7 +1496,7 @@
   "quotes": [
    "… ks Roadmap About Support Accessibility Cookies Privacy and terms Built by the National Data Library team All content is available under the Open Government Licence v3.0 , except where otherwise stated. © Crown copyright …"
   ],
-  "seconds": 0.1,
+  "seconds": 0.5,
   "size": 10294,
   "title": "\n      \n        Page not found - National Data Library\n      \n    ",
   "type": "text/html",
@@ -1444,7 +1508,7 @@
   "http": 200,
   "id": "gb_ssen_opendata",
   "sample": "{\"help\": \"https://data-api.ssen.co.uk/api/3/action/help_show?name=package_list\", \"success\": true, \"result\": [\"bsp-gsp-supply-areas\", \"can-reporting-contract-award-notice\", \"data-portal-data-quality\", \"electric-office\", \"electronconnect\", \"embedded_capacity_register\", \"flexibility-day-ahead-bidding\", \"flexibility-dispatch-report\", \"flexibility-services-contract-register\", \"generation-and-network-av",
-  "seconds": 0.4,
+  "seconds": 0.6,
   "size": null,
   "type": "application/json",
   "url": "https://ckan-prod.sse.datopian.com/api/3/action/package_list"
@@ -1455,7 +1519,7 @@
   "http": 200,
   "id": "gb_tce_offshore_wind",
   "quotes": [],
-  "seconds": 0.3,
+  "seconds": 0.4,
   "size": null,
   "title": "The Crown Estate Open Data Portal",
   "type": "text/html",
@@ -1468,13 +1532,67 @@
   "seconds": 0.0,
   "url": "statistical-data-sets/vehicle-licensing-statistics-data-tables"
  },
+ "have_aqueduct_drought": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "have_aqueduct_drought",
+  "quotes": [
+   "… ion. This Data Set is part of Aqueduct within Freshwater . Reach out to Samantha Kuzma for more information. Primary Contact Samantha Kuzma License Creative Commons Jump to data download &nbsp; Please find the methodology and data calculation descriptions in the technical note, here: Aqueduct 4.0: Updated …"
+  ],
+  "seconds": 0.4,
+  "size": null,
+  "title": "Aqueduct 4.0 Current and Future Global Maps Data | World Resources Institute",
+  "type": "text/html",
+  "url": "https://www.wri.org/data/aqueduct-global-maps-40-data"
+ },
+ "have_data_centres": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "have_data_centres",
+  "quotes": [
+   "… t Edit with iD (in-browser editor) Edit with Remote Control (JOSM, Potlatch, Merkaartor) History Export GPS Traces User Diaries Communities Copyright Help Donate About More Log In Sign Up Select Language Loading... Close Where is this? GraphHopper OSRM Valhalla Route start marker Route end marker Loading... …",
+   "… d marker Loading... Welcome to OpenStreetMap! OpenStreetMap is a map of the world, created by people like you and free to use under an open license. Hosting is supported by Fastly , OSMF corporate members , and other partners . By using this website or other infrastructure provided by the OpenStreetMap Fou …",
+   "… t does not support JavaScript, or you have disabled JavaScript. OpenStreetMap uses JavaScript for its slippy map. https://openstreetmap.org/copyright https://openstreetmap.org Copyright OpenStreetMap and contributors, under an open license …"
+  ],
+  "seconds": 0.7,
+  "size": 6874,
+  "title": "OpenStreetMap",
+  "type": "text/html",
+  "url": "https://www.openstreetmap.org/"
+ },
+ "have_firms": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "have_firms",
+  "quotes": [],
+  "seconds": 0.2,
+  "size": null,
+  "title": "National Interagency Fire Center",
+  "type": "text/html",
+  "url": "https://data-nifc.opendata.arcgis.com/"
+ },
+ "have_tyndp": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "have_tyndp",
+  "quotes": [],
+  "seconds": 0.2,
+  "size": 1121,
+  "title": null,
+  "type": "text/html",
+  "url": "https://tyndp.entsoe.eu/"
+ },
  "ie_cso_datacentres": {
   "checked": "2026-10-31",
   "final_url": null,
   "http": 200,
   "id": "ie_cso_datacentres",
   "sample": "{\"class\":\"dataset\",\"dimension\":{\"STATISTIC\":{\"category\":{\"index\":[\"MEC02\"],\"label\":{\"MEC02\":\"Gigawatt hours\"},\"unit\":{\"MEC02\":{\"decimals\":0,\"label\":\"GWh\",\"position\":\"end\"}}},\"label\":\"Statistic\"},\"TLIST(Q1)\":{\"category\":{\"index\":[\"2015Q1\",\"2015Q2\",\"2015Q3\",\"2015Q4\",\"2016Q1\",\"2016Q2\",\"2016Q3\",\"2016Q4\",\"2017Q1\",\"2017Q2\",\"2017Q3\",\"2017Q4\",\"2018Q1\",\"2018Q2\",\"2018Q3\",\"2018Q4\",\"2019Q1\",\"2019Q2\",\"2019Q3\",",
-  "seconds": 0.8,
+  "seconds": 0.9,
   "size": null,
   "type": "application/json",
   "url": "https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/MEC02/JSON-stat/2.0/en"
@@ -1485,7 +1603,7 @@
   "http": 200,
   "id": "ie_cso_dc_consumption",
   "sample": "{\"class\":\"dataset\",\"dimension\":{\"STATISTIC\":{\"category\":{\"index\":[\"MEC03\"],\"label\":{\"MEC03\":\"Metered Electricity Consumption\"},\"unit\":{\"MEC03\":{\"decimals\":0,\"label\":\"Gigawatt Hours\",\"position\":\"end\"}}},\"label\":\"Statistic\"},\"TLIST(A1)\":{\"category\":{\"index\":[\"2015\",\"2016\",\"2017\",\"2018\",\"2019\",\"2020\",\"2021\",\"2022\",\"2023\",\"2024\",\"2025\"],\"label\":{\"2015\":\"2015\",\"2016\":\"2016\",\"2017\":\"2017\",\"2018\":\"2018\",",
-  "seconds": 0.4,
+  "seconds": 0.7,
   "size": null,
   "type": "application/json",
   "url": "https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/MEC03/JSON-stat/2.0/en"
@@ -1500,7 +1618,7 @@
    "… tact us Central Statistics Office Skehard Road, Cork T12 X00E, Ireland Tel: (+353) 21 453 5000 E-Mail: information@cso.ie Links &copy; 2026 Copyright and Re-use Policy Freedom of Information Accessibility Data Protection & Transparency Privacy & Cookies Feedback Contact us Careers You can count on a rewardin …"
   ],
   "sample": null,
-  "seconds": 1.0,
+  "seconds": 1.8,
   "size": 39568437,
   "type": "text/csv",
   "url": "https://www.cso.ie/en/media/csoie/census/census2022/SAPS_2022_Small_Area_UR_171024.csv"
@@ -1511,7 +1629,7 @@
   "http": 200,
   "id": "ie_seai_ber",
   "quotes": [],
-  "seconds": 1.0,
+  "seconds": 0.7,
   "size": 8750,
   "title": "\r\n\tSEAI BER Public Search\r\n",
   "type": "text/html",
@@ -1528,7 +1646,7 @@
    "… pubblico, esporre in pubblico, rappresentare, eseguire e recitare questo materiale con qualsiasi mezzo e formato per qualsiasi fine, anche commerciale Modificare — remixare, trasformare il materiale e basarti su di esso per le tue opere per qualsiasi fine, anche commerciale. Il licenziante non può revocare q …"
   ],
   "sample": null,
-  "seconds": 2.5,
+  "seconds": 3.7,
   "size": 77280408,
   "type": "application/zip",
   "url": "https://www.istat.it/storage/cartografia/basi_territoriali/2021/R01_21.zip"
@@ -1539,8 +1657,8 @@
   "http": 200,
   "id": "it_terna_capacity",
   "quotes": [],
-  "seconds": 0.8,
-  "size": 141821,
+  "seconds": 0.9,
+  "size": 141823,
   "title": "\r\n\tMercato della capacità - Terna spa\r\n",
   "type": "text/html",
   "url": "https://www.terna.it/it/sistema-elettrico/mercato-capacita"
@@ -1551,8 +1669,8 @@
   "http": 200,
   "id": "it_terna_province",
   "quotes": [],
-  "seconds": 1.3,
-  "size": 136793,
+  "seconds": 1.2,
+  "size": 136791,
   "title": "\r\n\tPubblicazioni Statistiche - Terna spa\r\n",
   "type": "text/html",
   "url": "https://www.terna.it/it/sistema-elettrico/statistiche/pubblicazioni-statistiche"
@@ -1563,7 +1681,7 @@
   "http": 403,
   "id": "mt_nso_consumption",
   "quotes": [],
-  "seconds": 0.5,
+  "seconds": 0.4,
   "size": null,
   "title": "Just a moment...",
   "type": "text/html",
@@ -1575,7 +1693,7 @@
   "http": 500,
   "id": "nl_cbs_solar",
   "sample": "Error getting TypedDataSet for '85005NED': The given query is not allowed on this table. Please redefine your query so that it returns less than 10000 records.",
-  "seconds": 0.5,
+  "seconds": 0.6,
   "size": 159,
   "type": "application/json",
   "url": "https://opendata.cbs.nl/ODataApi/odata/85005NED/TypedDataSet"
@@ -1585,8 +1703,8 @@
   "final_url": null,
   "http": 200,
   "id": "nl_rdw_vehicles",
-  "sample": "[{\"kenteken\":\"SH353V\",\"voertuigsoort\":\"Personenauto\",\"merk\":\"SEAT\",\"handelsbenaming\":\"ATECA\",\"vervaldatum_apk\":\"20270424\",\"datum_tenaamstelling\":\"20230701\",\"bruto_bpm\":\"4996\",\"inrichting\":\"stationwagen\",\"aantal_zitplaatsen\":\"5\",\"eerste_kleur\":\"BLAUW\",\"tweede_kleur\":\"Niet geregistreerd\",\"aantal_cilinders\":\"3\",\"cilinderinhoud\":\"999\",\"massa_ledig_voertuig\":\"1180\",\"toegestane_maximum_massa_voertuig\":\"",
-  "seconds": 0.7,
+  "sample": "[{\"kenteken\":\"DNL41T\",\"voertuigsoort\":\"Bromfiets\",\"merk\":\"BATAVUS GAZELLE\",\"handelsbenaming\":\"TOURIST\",\"datum_tenaamstelling\":\"20171121\",\"inrichting\":\"N.v.t.\",\"aantal_zitplaatsen\":\"2\",\"eerste_kleur\":\"N.v.t.\",\"tweede_kleur\":\"N.v.t.\",\"aantal_cilinders\":\"0\",\"cilinderinhoud\":\"49\",\"massa_ledig_voertuig\":\"75\",\"massa_rijklaar\":\"82\",\"datum_eerste_toelating\":\"19640630\",\"datum_eerste_tenaamstelling_in_neder",
+  "seconds": 1.0,
   "size": null,
   "type": "application/json",
   "url": "https://opendata.rdw.nl/resource/m9d7-ebf2.json?$limit=1"
@@ -1597,7 +1715,7 @@
   "http": 200,
   "id": "pt_ine_bgri",
   "quotes": [],
-  "seconds": 3.1,
+  "seconds": 2.8,
   "size": 1383,
   "title": "Site em manutenção — INE",
   "type": "text/html",
@@ -1621,7 +1739,7 @@
   "http": 200,
   "id": "us_acs_income",
   "sample": "{\n  \"@context\": \"https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld\",\n  \"@id\": \"http://api.census.gov/data/2023/acs/acs5.json\",\n  \"@type\": \"dcat:Catalog\",\n  \"conformsTo\": \"https://project-open-data.cio.gov/v1.1/schema\",\n  \"describedBy\": \"https://project-open-data.cio.gov/v1.1/schema/catalog.json\",\n  \"dataset\": [\n    {\n      \"c_vintage\": 2023,\n      \"c_dataset\": [\n        \"acs\",\n        \"",
-  "seconds": 0.2,
+  "seconds": 0.4,
   "size": null,
   "type": "application/json",
   "url": "https://api.census.gov/data/2023/acs/acs5"
@@ -1632,7 +1750,7 @@
   "http": 200,
   "id": "us_afdc_registrations",
   "quotes": [],
-  "seconds": 0.9,
+  "seconds": 1.0,
   "size": null,
   "title": "Alternative Fuels Data Center: Maps and Data - Electric Vehicle Registrations by State",
   "type": "text/html",
@@ -1645,28 +1763,28 @@
   "id": "us_blm_solar_dla",
   "name": null,
   "rows": null,
-  "seconds": 0.4,
+  "seconds": 0.3,
   "type": "arcgis layer",
   "url": "https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_Solar_Energy_Zones/MapServer/0"
  },
  "us_boem_active_leases": {
   "checked": "2026-10-31",
-  "final_url": "https://stg-arcgisazurecdataprod7.az.arcgis.com/exportfiles-64387-7985/Wind_Leases__BOEM__5427909208036340878.geojson?sv=2025-05-05&st=2026-10-31T06%3A00%3A04Z&se=2026-10-31T07%3A05%3A04Z&sr=b&sp=r&sig=V1cLw%2FWuHmHmVzSZS5QTBgznZ3HHYsO9GczIDeOz%2F8U%3D",
+  "final_url": "https://stg-arcgisazurecdataprod7.az.arcgis.com/exportfiles-64387-7985/Wind_Leases__BOEM__5427909208036340878.geojson?sv=2025-05-05&st=2026-10-31T06%3A21%3A48Z&se=2026-10-31T07%3A26%3A48Z&sr=b&sp=r&sig=ATRvHCLg3Z4KZbKKNJF1Z5IgteE7LmwNGlzYd6%2FLJPk%3D",
   "http": 200,
   "id": "us_boem_active_leases",
   "sample": "{\"type\":\"FeatureCollection\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:3857\"}},\"features\":[{\"type\":\"Feature\",\"id\":401,\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-8449518.04592706,4413928.58191966],[-8449520.74687187,4413940.79030089],[-8449523.49111996,4413953.01802511],[-8449526.23525673,4413965.24576338],[-8449529.03817018,4413977.45974898],[-8449531.840861,4413989.6737486],[-8449535.399",
-  "seconds": 3.6,
+  "seconds": 2.1,
   "size": 12632949,
   "type": "application/octet-stream",
   "url": "https://boem-metaport-boem.hub.arcgis.com/api/download/v1/items/e5a371353b4744418e57da448dac9471/geojson?layers=0"
  },
  "us_boem_wind_leases": {
   "checked": "2026-10-31",
-  "final_url": "https://stg-arcgisazurecdataprod7.az.arcgis.com/exportfiles-64387-7984/Wind_Lease_Boundaries__BOEM__-8262265191106496755.geojson?sv=2025-05-05&st=2026-10-31T05%3A59%3A56Z&se=2026-10-31T07%3A04%3A56Z&sr=b&sp=r&sig=nwexpDIzkJcvINa%2FFrbBuFeGNsIlIM3cK5QumLnoAkU%3D",
+  "final_url": "https://stg-arcgisazurecdataprod7.az.arcgis.com/exportfiles-64387-7984/Wind_Lease_Boundaries__BOEM__-8262265191106496755.geojson?sv=2025-05-05&st=2026-10-31T06%3A21%3A42Z&se=2026-10-31T07%3A26%3A42Z&sr=b&sp=r&sig=4p%2FZSSP1kf3zdUjzuO%2FvwCCX%2Bp04LbeL2cPMsERdWEI%3D",
   "http": 200,
   "id": "us_boem_wind_leases",
   "sample": "{\"type\":\"FeatureCollection\",\"crs\":{\"type\":\"name\",\"properties\":{\"name\":\"EPSG:3857\"}},\"features\":[{\"type\":\"Feature\",\"id\":11,\"geometry\":{\"type\":\"Polygon\",\"coordinates\":[[[-7950328.0471289,5060583.35739507],[-7950302.54672786,5060594.60154061],[-7950283.9820877,5060602.68545088],[-7950258.70376905,5060613.40945745],[-7949679.30563434,5057480.4707514],[-7949621.48606819,5056706.79068301],[-7949623.1114",
-  "seconds": 3.7,
+  "seconds": 4.8,
   "size": 7670525,
   "type": "application/octet-stream",
   "url": "https://boem-metaport-boem.hub.arcgis.com/api/download/v1/items/709831444a234968966667d84bcc0357/geojson?layers=8"
@@ -1677,7 +1795,7 @@
   "http": 200,
   "id": "us_clean_investment_monitor",
   "quotes": [],
-  "seconds": 0.4,
+  "seconds": 0.5,
   "size": null,
   "title": "Database: US",
   "type": "text/html",
@@ -1689,7 +1807,7 @@
   "http": 404,
   "id": "us_cpc_degree_days",
   "quotes": [],
-  "seconds": 0.3,
+  "seconds": 0.4,
   "size": 173,
   "title": "404 Not Found",
   "type": "text/html",
@@ -1702,7 +1820,7 @@
   "id": "us_doe_lpo",
   "quotes": [],
   "seconds": 0.1,
-  "size": 32934,
+  "size": 32358,
   "title": "EDF Projects | Department of Energy",
   "type": "text/html",
   "url": "https://www.energy.gov/lpo/portfolio-projects"
@@ -1713,8 +1831,8 @@
   "http": 200,
   "id": "us_doe_nietc",
   "quotes": [],
-  "seconds": 0.2,
-  "size": 31024,
+  "seconds": 0.9,
+  "size": 31111,
   "title": "National Interest Electric Transmission Corridor Designation Process | Department of Energy",
   "type": "text/html",
   "url": "https://www.energy.gov/gdo/national-interest-electric-transmission-corridor-designation-process"
@@ -1729,7 +1847,7 @@
    "… ncy has a diverse workforce of just under 18,000 civil servants, and works with many more U.S. contractors, academia, and international and commercial partners to explore, discover, and expand knowledge for the benefit of humanity. With an annual budget of $23.2 billion in Fiscal Year 2021, which is less than …"
   ],
   "sample": "PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000��\\]P<�\u000e\u0007\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0011\u0000\u0000\u0000USDM_20261027.cpg\u000b\rqӵ\u0000\u0000PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000��\\]�~�\u001a�\u0000\u0000\u0000�\u0001\u0000\u0000\u0011\u0000\u0000\u0000USDM_20261027.dbfm�=K�1\u0010\u0007��t�8��ó\u0017½��F�\n����C�I�\u000f�w��Ӗ��p�??.9��_�RJ����z�}��[?.[����I�\\���|v��}l���~���>_�O�7�u;�_\f��~�0D�\u0006��Q�\u0002�E�ɘL�U�\u0002�h��\t\b-<�}��\u0004�,\"�X�HKFC1\u0016\u0013��b\u0015��\u0018\\����3 8h['�\u000bK�\u0012\u0001sW���t��]CBд?\u0007J�E����E���?PK\u0003",
-  "seconds": 0.3,
+  "seconds": 0.8,
   "size": 2123280,
   "type": "application/x-zip-compressed",
   "url": "https://droughtmonitor.unl.edu/data/shapefiles_m/USDM_current_M.zip"
@@ -1744,11 +1862,28 @@
    "… pen Data Legacy Contact Us U.S. Energy Information Administration 1000 Independence Ave., SW Washington, DC 20585 Policies Privacy/Security Copyright &amp; Reuse Accessibility Information Quality Freedom of Information Act (FOIA) Related Sites usa.gov U.S. Department of Energy Stay Connected Facebook X Youtu …",
    "… jections integrated across all energy sources. Monthly Energy Review Annual Energy Review Consumption &amp; Efficiency Energy use in homes, commercial buildings, manufacturing, and transportation. Residential Energy Consumption Survey (RECS) Commercial Buildings Energy Consumption Survey (CBECS) Manufacturing …"
   ],
-  "seconds": 0.1,
+  "seconds": 0.2,
   "size": 17458,
   "title": "\r\n\t\tAnnual Electric Power Industry Report, Form EIA-861 detailed data files -\r\n\t\tU.S. Energy Information Administration (EIA)\t",
   "type": "text/html",
   "url": "https://www.eia.gov/electricity/data/eia861/"
+ },
+ "us_eia861_reliability_xlsx": {
+  "checked": "2026-10-31",
+  "final_url": null,
+  "http": 200,
+  "id": "us_eia861_reliability_xlsx",
+  "lic_http": 200,
+  "lic_quotes": [
+   "… nistration - EIA - Independent Statistics and Analysis Menu Statistics Analysis Tools Education News Enter Search Term(s): Search About EIA Copyrights and Reuse Public domain and use of EIA content U.S. government publications are in the public domain and are not subject to copyright protection. You may use …",
+   "… dgment. Protected materials You may see on our website documents, illustrations, photographs, or other information resources contributed or licensed by private individuals, companies, or organizations that may be protected by U.S. and foreign copyright laws. Transmission or reproduction of protected items …",
+   "… or reproduction of protected items beyond that allowed by fair use as defined in the copyright laws requires the written permission of the copyright owners. The EIA logo is a registered trademark (Registration Number 4019501) of the U.S. Department of Energy and may not be used without the expressed consent …"
+  ],
+  "sample": null,
+  "seconds": 0.2,
+  "size": 4568208,
+  "type": "application/x-zip-compressed",
+  "url": "https://www.eia.gov/electricity/data/eia861/zip/f8612024.zip"
  },
  "us_eia_biodiesel": {
   "checked": "2026-10-31",
@@ -1778,7 +1913,7 @@
   "http": 200,
   "id": "us_eia_crude_rail",
   "sample": null,
-  "seconds": 0.3,
+  "seconds": 0.1,
   "size": 31797,
   "type": "application/x-zip-compressed",
   "url": "https://www.eia.gov/maps/map_data/CrudeOil_RailTerminals_US_EIA.zip"
@@ -1789,7 +1924,7 @@
   "http": 200,
   "id": "us_eia_ethanol",
   "sample": "PK\u0003\u0004\u0014\u0000\u0000\u0000\u0000\u0000�sCTP<�\u000e\u0005\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u001e\u0000\u0000\u0000Ethanol_Plants_US_20210101.cpgUTF-8PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000�sCTb��S� \u0000\u0000�\u0007\u0004\u0000\u001e\u0000\u0000\u0000Ethanol_Plants_US_20210101.dbf��r\u001bIv@۞��\u000e��\u0003���-F�;3�\u0002!�zH\t�zZ��D\nH\u0002\u0015,fr�\nb�����\b���Y\u000f��BR\\ʹ�{�B\u0012�\u0012�[\u0000�n>��?�����\u001f~���ݿ��\u000f\t>\u001e�t2���}�����<>\u000fw��?vl���㟊�����s�<>��vY4�\u0013$��Sc\u001b7\\��2�������\u001f���m�\u0017�*�+�����",
-  "seconds": 0.2,
+  "seconds": 0.1,
   "size": 37644,
   "type": "application/x-zip-compressed",
   "url": "https://www.eia.gov/maps/map_data/Ethanol_Plants_US_EIA.zip"
@@ -1800,7 +1935,7 @@
   "http": 200,
   "id": "us_eia_gas_pipelines",
   "sample": "PK\u0003\u0004\u0014\u0000\u0002\u0000\b\u0000\u0019o�PP<�\u000e\u0007\u0000\u0000\u0000\u0005\u0000\u0000\u0000\"\u0000\u0000\u0000NaturalGas_Pipelines_US_202001.cpg\u000b\rqӵ\u0000\u0000PK\u0003\u0004\u0014\u0000\u0002\u0000\b\u0000\u0019o�Pn\u0000�,j�\u0003\u0000�bA\u0000\"\u0000\u0000\u0000NaturalGas_Pipelines_US_202001.dbf�\\�\nmU\f\u0014�R�,m�\u000f\u00182�ɫ\u0016\u0005AP��J,.*��\u000f�\u0014��O��|�\u0013\u0005+ӜU�͆Ð��L����o�{��o�y��g�{�ֻ����o���O?_��������_|��g_��>�����>���/��o�?�������\u000f�y���^���\u0017����W_|��O��ݧ�|�埞�����O?��ӧO^��",
-  "seconds": 0.2,
+  "seconds": 0.1,
   "size": 2954667,
   "type": "application/x-zip-compressed",
   "url": "https://www.eia.gov/maps/map_data/NaturalGas_InterIntrastate_Pipelines_US_EIA.zip"
@@ -1844,7 +1979,7 @@
   "http": 200,
   "id": "us_eia_lng",
   "sample": null,
-  "seconds": 0.2,
+  "seconds": 0.1,
   "size": 29168,
   "type": "application/x-zip-compressed",
   "url": "https://www.eia.gov/maps/map_data/Lng_ImportExportTerminals_US_EIA.zip"
@@ -1855,7 +1990,7 @@
   "http": 200,
   "id": "us_eia_product_pipelines",
   "sample": "PK\u0003\u0004\u0014\u0000\u0002\u0000\b\u0000iv�PP<�\u000e\u0007\u0000\u0000\u0000\u0005\u0000\u0000\u0000(\u0000\u0000\u0000PetroleumProduct_Pipelines_US_202001.cpg\u000b\rqӵ\u0000\u0000PK\u0003\u0004\u0014\u0000\u0002\u0000\b\u0000iv�P^z�$~\u0014\u0000\u0000\u001d�\u0000\u0000(\u0000\u0000\u0000PetroleumProduct_Pipelines_US_202001.dbfԜ;ocU\u0010�\u0017A��(in�\u0018��Qf�f�\b��\u0004-TȐ�n�c��\u0004A�g��8�\u0002�fs�4SDqns~�����9����GG�<y�˓_�����\u001e���ո�������x>�|=����?���Z�\u001e�9\u001e�/�|z���������闇�Ͼ�\r����lq6��=�����qx\\#�\n�L��",
-  "seconds": 0.2,
+  "seconds": 0.1,
   "size": 67985,
   "type": "application/x-zip-compressed",
   "url": "https://www.eia.gov/maps/map_data/PetroleumProduct_Pipelines_US_EIA.zip"
@@ -1866,7 +2001,7 @@
   "http": 200,
   "id": "us_eia_product_terminals",
   "sample": null,
-  "seconds": 0.2,
+  "seconds": 0.1,
   "size": 129104,
   "type": "application/x-zip-compressed",
   "url": "https://www.eia.gov/maps/map_data/PetroleumProduct_Terminals_US_EIA.zip"
@@ -1896,7 +2031,7 @@
   "quotes": [
    "… given under an agency program of recognition for accomplishment in support of the agency’s mission. Any reference to a specific company or commercial product or service by trade name, trademark, manufacturer, company, or otherwise does not constitute or imply the endorsement or recommendation of EPA. AgSTAR …"
   ],
-  "seconds": 0.1,
+  "seconds": 0.8,
   "size": null,
   "title": "Livestock Anaerobic Digester Database | US EPA",
   "type": "text/html",
@@ -1908,7 +2043,7 @@
   "http": 200,
   "id": "us_epa_aqs_annual",
   "sample": "PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000�!�\\F�\u000eއ�9\u0000!\u0012&\u0002\u001f\u0000\u001c\u0000annual_conc_by_monitor_2025.csvUT\t\u0000\u0003'5>j'5>jux\u000b\u0000\u0001\u0004'�\u0000\u0000\u0004�\u001b\u0000\u0000�]w\u001a9����W��f��6=�ni�0&����\u000bN���u�cs\u0006ho�d���J�\rM왘�$��`���\u001e��J���8\rӈ��it����2}(~�gPs�^���0\t\u0017Q\u001a%E���\u0007��0��kW0������0���\n��\u0011���<\"g�\u0004v���I<���p�\u0012���4L�Px\u0019��lB>����]<-\u000e�{\u0014&���r��H��\\F�j�`M�K\u0004��y��\u001f�O�(���B�]m�]G�$r��\u0018",
-  "seconds": 0.4,
+  "seconds": 0.7,
   "size": 3785819,
   "type": "application/zip",
   "url": "https://aqs.epa.gov/aqsweb/airdata/annual_conc_by_monitor_2025.zip"
@@ -1919,7 +2054,7 @@
   "http": 200,
   "id": "us_epa_class_vi",
   "quotes": [],
-  "seconds": 0.2,
+  "seconds": 0.3,
   "size": null,
   "title": "Current Class VI Projects under Review at EPA | US EPA",
   "type": "text/html",
@@ -1933,7 +2068,7 @@
   "quotes": [
    "… bsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Nonpoint Source Control $94.4 billion &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Water Reuse $7.7 billion &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Decentralized Wastewater Treatment Systems $74.7 billion &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp …"
   ],
-  "seconds": 0.1,
+  "seconds": 0.2,
   "size": null,
   "title": "Clean Watersheds Needs Survey | US EPA",
   "type": "text/html",
@@ -1945,7 +2080,7 @@
   "http": 200,
   "id": "us_epa_frs_cleanups",
   "quotes": [],
-  "seconds": 0.0,
+  "seconds": 0.2,
   "size": null,
   "title": "EPA State Combined CSV Download Files | US EPA",
   "type": "text/html",
@@ -1958,7 +2093,7 @@
   "id": "us_epa_lmop",
   "name": "Projects",
   "rows": 542,
-  "seconds": 0.2,
+  "seconds": 0.3,
   "type": "arcgis layer",
   "url": "https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/LMOP_Projects/FeatureServer/0"
  },
@@ -1979,7 +2114,7 @@
   "http": 200,
   "id": "us_epa_repowering",
   "quotes": [],
-  "seconds": 0.1,
+  "seconds": 0.2,
   "size": null,
   "title": "RE-Powering Mapper | US EPA",
   "type": "text/html",
@@ -2005,7 +2140,7 @@
   "quotes": [
    "… Hazard Zones (ID: 28) Name: Flood Hazard Zones Display Field: FLD_AR_ID Type: Feature Layer Geometry Type: esriGeometryPolygon Description: Copyright Text: Default Visibility: true MaxRecordCount: 2000 Supported Query Formats: JSON, geoJSON, PBF Min Scale: 36111.909643 Max Scale: 0.0 Supports Advanced Querie …"
   ],
-  "seconds": 4.8,
+  "seconds": 0.3,
   "size": null,
   "title": "Layer: Flood Hazard Zones (ID: 28)",
   "type": "text/html",
@@ -2017,7 +2152,7 @@
   "http": 403,
   "id": "us_ferc_hydro",
   "quotes": [],
-  "seconds": 0.2,
+  "seconds": 0.1,
   "size": null,
   "title": "Just a moment...",
   "type": "text/html",
@@ -2043,7 +2178,7 @@
   "quotes": [
    "… es USDA.gov Office of the Inspector General USA.gov WhiteHouse.gov Resources OneFPAC - Employee Links eDirectives Glossary No Fear Act Data Open Government Plain Writing Report Fraud on USDA Contract Sitemap Subscribe to our Newsletter Email Address …"
   ],
-  "seconds": 0.3,
+  "seconds": 0.4,
   "size": 28502,
   "title": "Gridded National Soil Survey Geographic Database (gNATSGO) | Natural Resources Conservation Service",
   "type": "text/html",
@@ -2071,7 +2206,7 @@
   "quotes": [
    "… t be found. Go to homepage Search our site Use the document library Browse the calendar Still need assistance? Fill out the contact us form Copyright ©&nbsp; California Independent System Operator. All rights reserved. …"
   ],
-  "seconds": 0.8,
+  "seconds": 0.9,
   "size": null,
   "title": "404: item not found | California ISO ",
   "type": "text/html",
@@ -2083,7 +2218,7 @@
   "http": 403,
   "id": "us_lbnl_tts",
   "quotes": [],
-  "seconds": 0.1,
+  "seconds": 0.2,
   "size": null,
   "title": "Just a moment...",
   "type": "text/html",
@@ -2094,7 +2229,7 @@
   "final_url": null,
   "http": 404,
   "id": "us_marinecadastre_ais",
-  "sample": "﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ResourceNotFound</Code><Message>The specified resource does not exist.\nRequestId:709a44ac-101e-008b-50fd-6862bf000000\nTime:2026-10-31T06:04:53.4983213Z</Message></Error>",
+  "sample": "﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>ResourceNotFound</Code><Message>The specified resource does not exist.\nRequestId:ac6bf6fd-601e-0081-4900-69c608000000\nTime:2026-10-31T06:26:37.4882818Z</Message></Error>",
   "seconds": 0.3,
   "size": 223,
   "type": "application/xml",
@@ -2122,7 +2257,7 @@
   "quotes": [
    "… API content, subject to these rules. You may not use the NASS name to imply endorsement of any product, service, or entity (not-for-profit, commercial or otherwise). Modification or False Representation of Content You may not modify or falsely represent content accessed through the NASS API and still claim th …"
   ],
-  "seconds": 0.3,
+  "seconds": 0.4,
   "size": null,
   "title": "USDA/NASS QuickStats Ad-hoc Query Tool",
   "type": "text/html",
@@ -2146,7 +2281,7 @@
   "http": 200,
   "id": "us_nexrad",
   "sample": "NCDCID   ICAO WBAN  NAME                           COUNTRY              ST COUNTY                         LAT       LON        ELEV   UTC   STNTYPE                                            \r\n-------- ---- ----- ------------------------------ -------------------- -- ------------------------------ -",
-  "seconds": 0.3,
+  "seconds": 0.4,
   "size": 40916,
   "type": "text/plain",
   "url": "https://www.ncei.noaa.gov/access/homr/file/nexrad-stations.txt"
@@ -2169,7 +2304,7 @@
   "http": 200,
   "id": "us_noaa_slr",
   "quotes": [],
-  "seconds": 0.4,
+  "seconds": 0.5,
   "size": 3485,
   "title": "Sea Level Rise Viewer Data Download",
   "type": "text/html",
@@ -2181,11 +2316,22 @@
   "http": 200,
   "id": "us_noaa_storm_events",
   "quotes": [],
-  "seconds": 0.2,
+  "seconds": 0.3,
   "size": null,
   "title": "Index of /pub/data/swdi/stormevents/csvfiles/",
   "type": "text/html",
   "url": "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/"
+ },
+ "us_nrc_operating_reactors": {
+  "checked": "2026-10-31",
+  "final_url": "https://www.nrc.gov/reading-rm/doc-collections/datasets/reactors-operating.xlsx",
+  "http": 200,
+  "id": "us_nrc_operating_reactors",
+  "sample": null,
+  "seconds": 0.3,
+  "size": 44100,
+  "type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "url": "https://www.nrc.gov/reading-rm/doc-collections/datasets/reactors-operating.xls"
  },
  "us_nrc_reactors": {
   "checked": "2026-10-31",
@@ -2197,7 +2343,7 @@
    "… Licensing Materials License Process Tools National Source Tracking System Public Involvement in Licensing Web-Based Licensing (WBL) System License Verification System (LVS) Education &amp; Regulatory Research Education &amp; Regulatory Research Explore NRC&#039;s regulatory research programs, staff traini …",
    "… rn to top Nuclear Regulatory Commission Contact Us 301-415-7000 OPA.resource@nrc.gov To report a safety concern, call 301-816-5100 About Us License Fees Budget &amp; Performance Agency Financial Report History of the NRC Career Opportunities NRC Ethics Agency Status Contact Us Strategic Plan Resources Regu …"
   ],
-  "seconds": 1.2,
+  "seconds": 0.5,
   "size": 94976,
   "title": "Page not found | Nuclear Regulatory Commission",
   "type": "text/html",
@@ -2217,7 +2363,7 @@
   "id": "us_nrhp",
   "name": "National Register Of Historic Places Points",
   "rows": 74636,
-  "seconds": 0.2,
+  "seconds": 0.3,
   "type": "arcgis layer",
   "url": "https://mapservices.nps.gov/arcgis/rest/services/cultural_resources/nrhp_locations/MapServer/0"
  },
@@ -2227,7 +2373,7 @@
   "http": 200,
   "id": "us_nyc_ll84",
   "sample": "[{\"report_year\":\"2022\",\"property_id\":\"6414946\",\"property_name\":\"58-01 Grand Avenue\",\"parent_property_id\":\"Not Applicable: Standalone Property\",\"parent_property_name\":\"Not Applicable: Standalone Property\",\"year_ending\":\"2022-12-31T00:00:00.000\",\"nyc_borough_block_and_lot\":\"4026780001\",\"nyc_building_identification\":\"4059918\",\"address_1\":\"58-01 Grand Avenue\",\"city\":\"Queens\",\"postal_code\":\"11378\",\"pri",
-  "seconds": 6.8,
+  "seconds": 3.3,
   "size": null,
   "type": "application/json",
   "url": "https://data.cityofnewyork.us/resource/5zyy-y8am.json"
@@ -2250,7 +2396,7 @@
   "id": "us_opportunity_zones",
   "name": "Opportunity_Zones",
   "rows": 8765,
-  "seconds": 0.2,
+  "seconds": 0.1,
   "type": "arcgis layer",
   "url": "https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/Opportunity_Zones/FeatureServer/13"
  },
@@ -2260,7 +2406,7 @@
   "http": 200,
   "id": "us_pjm_rpm",
   "quotes": [],
-  "seconds": 0.5,
+  "seconds": 1.0,
   "size": null,
   "title": "\r\n\t\r\nPJM - Capacity Market (RPM)\r\n",
   "type": "text/html",
@@ -2274,7 +2420,7 @@
   "quotes": [
    "… logging with high precision&nbsp; Temperature-Depth &nbsp;measurements Sample analysis of&nbsp; Thermal Conductivity &nbsp;measurement for commercial clients The Lab assists the public through: &nbsp;Our Power Plays&nbsp; conference, &nbsp;Geothermal Energy in Oil and Gas Fields &nbsp;K-12&nbsp; classroom ma …"
   ],
-  "seconds": 0.6,
+  "seconds": 0.7,
   "size": 9294,
   "title": "SMU Geothermal Lab  - Dedman College of Humanities and Sciences SMU",
   "type": "text/html",
@@ -2286,7 +2432,7 @@
   "http": 200,
   "id": "us_smu_heat_flow",
   "sample": null,
-  "seconds": 0.6,
+  "seconds": 0.5,
   "size": 377962305,
   "type": "application/octet-stream",
   "url": "https://gdr.openei.org/files/1704/Download%20Data%20Files.zip"
@@ -2297,7 +2443,7 @@
   "http": 200,
   "id": "us_usaspending_doe",
   "sample": "{\"results\":[{\"agency_id\":1525,\"toptier_code\":\"247\",\"abbreviation\":\"AAHC\",\"agency_name\":\"400 Years of African-American History Commission\",\"congressional_justification_url\":null,\"active_fy\":\"2026\",\"active_fq\":\"4\",\"outlay_amount\":0.0,\"obligated_amount\":0.0,\"budget_authority_amount\":0.0,\"current_total_budget_authority_amount\":16181198695809.91,\"percentage_of_total_budget_authority\":0.0,\"agency_slug\":",
-  "seconds": 0.4,
+  "seconds": 0.2,
   "size": 52950,
   "type": "application/json",
   "url": "https://api.usaspending.gov/api/v2/references/toptier_agencies/"
@@ -2308,7 +2454,7 @@
   "http": 200,
   "id": "us_usfs_whp",
   "quotes": [],
-  "seconds": 6.8,
+  "seconds": 2.2,
   "size": null,
   "title": "Forest Service Research Data Archive",
   "type": "text/html",
@@ -2320,7 +2466,7 @@
   "http": 200,
   "id": "us_usfs_whp_service",
   "sample": "{\"extent\":{\"ymin\":2135965.179399997,\"xmin\":-20037507.067200001,\"ymax\":11597575.179399997,\"xmax\":-7130157.0672000013,\"spatialReference\":{\"latestWkid\":3857,\"wkid\":102100}},\"blockWidth\":2048,\"mosaicOperator\":\"First\",\"serviceSourceType\":\"esriImageServiceSourceTypeMosaicDataset\",\"hasMultidimensions\":false,\"maxImageWidth\":100000,\"maxRecordCount\":1000,\"meanValues\":[653.08607377252042],\"hasColormap\":false",
-  "seconds": 0.3,
+  "seconds": 0.5,
   "size": null,
   "type": "application/json",
   "url": "https://imagery.geoplatform.gov/iipp/rest/services/Fire_Aviation/USFS_EDW_RMRS_WildfireHazardPotentialContinuous/ImageServer?f=json"
@@ -2355,7 +2501,7 @@
   "http": 200,
   "id": "us_usgs_mrds",
   "sample": "PK\u0003\u0004\u0014\u0000\u0000\u0000\b\u0000!y\u0017Uˏ�/x+�\u0001\u0005\u001c.\b\b\u0000\u001c\u0000mrds.csvUT\t\u0000\u0003�A\u0005c\u0001B\u0005cux\u000b\u0000\u0001\u0004\u000e�\u0000\u0000\u0004(#\u0000\u0000�\\�r�H�}߯��D�vo�`\u0014\n׎��\u0000/���\t�n���D�E�@�\u0003�v�_��U�H��(cԞyX�L��� �ɬ�CK����t�'t�/\u000b|�\u0016�[\u0011��&\u0015kI\u0013Q��v\t/��N���]��t�m�2�Ѣ\u0014��?������m���:[��U}�4��\\��\u0012>]����򦈿�[_n�r4�%�\u0013��VҬ\\��Z�\t�{�-w7���k��ki��L�HJ�í��J\u00177p�\u0005E\u0000\u0005J�,J���M�ï�\u0015����6��ꥺ�8�+\u000e�\u0016e�]�[�",
-  "seconds": 0.6,
+  "seconds": 0.4,
   "size": 25791223,
   "type": "application/zip",
   "url": "https://mrdata.usgs.gov/mrds/mrds-csv.zip"
@@ -2377,8 +2523,8 @@
   "final_url": null,
   "http": 200,
   "id": "us_usgs_nwis_sites",
-  "sample": "#\n#\n# US Geological Survey\n# retrieved: 2026-10-31 02:04:57 -04:00\t(caas01)\n#\n# The Site File stores location and general information about groundwater,\n# surface water, and meteorological sites\n# for sites in USA.\n#\n# File-format description:  http://help.waterdata.usgs.gov/faq/about-tab-delimited-",
-  "seconds": 0.3,
+  "sample": "#\n#\n# US Geological Survey\n# retrieved: 2026-10-31 02:26:41 -04:00\t(caas01)\n#\n# The Site File stores location and general information about groundwater,\n# surface water, and meteorological sites\n# for sites in USA.\n#\n# File-format description:  http://help.waterdata.usgs.gov/faq/about-tab-delimited-",
+  "seconds": 0.1,
   "size": null,
   "type": "text/plain",
   "url": "https://waterservices.usgs.gov/nwis/site/?format=rdb&stateCd=ri&siteType=ST&hasDataTypeCd=dv"
@@ -2389,7 +2535,7 @@
   "http": 200,
   "id": "us_usgs_water_use",
   "quotes": [],
-  "seconds": 0.3,
+  "seconds": 0.2,
   "size": null,
   "title": "Estimated Use of Water in the United States County-Level Data for 2015 - ScienceBase-Catalog ",
   "type": "text/html",
@@ -2401,7 +2547,7 @@
   "http": 200,
   "id": "us_usseabed",
   "quotes": [],
-  "seconds": 0.7,
+  "seconds": 0.5,
   "size": null,
   "title": "usSEABED: Gulf of Mexico and Caribbean Offshore Surficial Sediment Data Release, Title Page",
   "type": "text/html",
@@ -2415,7 +2561,7 @@
   "quotes": [
    "… geological, hydrological, environmental, heritage and other studies, and it is not known whether any particular site would be suitable. The commercial feasibility of developing these sites is unknown. As with all major engineering projects, diligent attention to quality assurance would be required for safety …"
   ],
-  "seconds": 1.7,
+  "seconds": 1.6,
   "size": null,
   "title": "Global Greenfield Pumped Hydro Energy Storage Atlas | ANU RE100 Group",
   "type": "text/html",
@@ -2427,7 +2573,7 @@
   "http": 200,
   "id": "world_black_marble",
   "quotes": [],
-  "seconds": 0.5,
+  "seconds": 0.7,
   "size": 40857,
   "title": "LAADS DAAC | NASA",
   "type": "text/html",
@@ -2443,7 +2589,7 @@
    "… 5 arc-second intervals. doi:10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa Link: https://doi.org/10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa Terms of use The GEBCO Grid is placed in the public domain and may be used free of charge. Use of the GEBCO Grid indicates that the user accepts the conditions of use and d …",
    "… es Printable Maps IHO-IOC GEBCO Cook Book Historical GEBCO Charts Historical Data Sets Imagery History of GEBCO GEBCO Digital Atlas Jump to Copyright © 2020-2026,&nbsp; GEBCO Hosted by the British Oceanographic Data Centre (BODC) Footer menu Privacy Policy Disclaimer Home Data &amp; Products Gridded Bathymet …"
   ],
-  "seconds": 0.6,
+  "seconds": 0.7,
   "size": 64098,
   "title": "Gridded Bathymetry Data | GEBCO",
   "type": "text/html",
@@ -2455,7 +2601,7 @@
   "http": 200,
   "id": "world_iaea_pris",
   "quotes": [],
-  "seconds": 0.9,
+  "seconds": 1.2,
   "size": null,
   "title": "PRIS Analytics",
   "type": "text/html",
@@ -2465,7 +2611,7 @@
   "checked": "2026-10-31",
   "error": "ConnectTimeout: timed out",
   "id": "world_ihfc_heat_flow",
-  "seconds": 60.6,
+  "seconds": 60.9,
   "url": "https://dataservices.gfz-potsdam.de/panmetaworks/showshort.php?id=a41fbcc3-0ea9-11ee-967a-4ffbfe06208e"
  },
  "world_nex_gddp": {
@@ -2474,7 +2620,7 @@
   "http": 200,
   "id": "world_nex_gddp",
   "quotes": [],
-  "seconds": 0.4,
+  "seconds": 0.2,
   "size": 32368,
   "title": "NEX-GDDP-CMIP6 | Data Browse",
   "type": "text/html",
@@ -2490,7 +2636,7 @@
    "… competing airport web site if you'd like! We'd love you to give us credit, like we give credit to our sources , but you're not required to. Terms of use All data is released to the Public Domain, and comes with no guarantee of accuracy or fitness for use. Datasets For information about the columns and values in …"
   ],
   "sample": "\"id\",\"ident\",\"type\",\"name\",\"latitude_deg\",\"longitude_deg\",\"elevation_ft\",\"continent\",\"iso_country\",\"iso_region\",\"municipality\",\"scheduled_service\",\"icao_code\",\"iata_code\",\"gps_code\",\"local_code\",\"home_link\",\"wikipedia_link\",\"keywords\"\n6523,\"00A\",\"heliport\",\"Total RF Heliport\",40.070985,-74.933689,11",
-  "seconds": 0.6,
+  "seconds": 0.7,
   "size": 3898536,
   "type": "text/csv",
   "url": "https://davidmegginson.github.io/ourairports-data/airports.csv"
@@ -2527,7 +2673,7 @@
    "… tribution to adhere to the requirements of the Open Database License : © OpenStreetMap contributors, Overture Maps Foundation . Addresses ​ License for theme: The addresses data comes from a variety of sources. All carry permissive open licenses. Some have special terms or require attribution. These terms …",
    "… a ​ G-NAF © Geoscape Australia licensed by the Commonwealth of Australia. Available under the Open Geo-coded National Address File End User Licence Agreement . Distributed by OpenAddresses. Accessed: 2026-10-15. Austria ​ © Austrian Address Register . Available under CC BY 4.0 . Distributed by OpenAddresse …"
   ],
-  "seconds": 0.3,
+  "seconds": 0.4,
   "size": 18899,
   "title": null,
   "type": "text/html",
@@ -2545,7 +2691,7 @@
    "… ing, abuse reporting, and Internet research and analysis. It would not include compiling marketing lists, demographic mapping, or any other commercial application. Each request would be carefully considered in light of the PeeringDB Acceptable Use Policy. &copy; 2004-2026 PeeringDB All Rights Reserved. By usi …"
   ],
   "sample": "{\"data\": [{\"id\": 1, \"org_id\": 2, \"org_name\": \"Equinix, Inc.\", \"campus_id\": 14, \"name\": \"Equinix DC1-DC15,DC21-DC22 - Ashburn\", \"aka\": \"\", \"name_long\": \"\", \"website\": \"http://www.equinix.com/\", \"social_media\": [{\"service\": \"website\", \"identifier\": \"http://www.equinix.com/\"}], \"clli\": \"ASBNVA\", \"rencode\": \"\", \"npanxx\": \"703-723\", \"notes\": \"\", \"net_count\": 526, \"ix_count\": 9, \"carrier_count\": 14, \"sa",
-  "seconds": 0.2,
+  "seconds": 0.4,
   "size": 1858,
   "type": "application/json",
   "url": "https://www.peeringdb.com/api/fac?limit=2"
@@ -2556,7 +2702,7 @@
   "http": 503,
   "id": "world_port_index",
   "quotes": [],
-  "seconds": 10.3,
+  "seconds": 31.7,
   "size": null,
   "title": "Maritime Safety Information",
   "type": "text/html",
@@ -2572,7 +2718,7 @@
    "… that is syndicated. Changes you may make are limited to display typeface, typeface size, typeface color, and linebreaks. You may not sell, license, or otherwise assign the use of any of the material contained in UNESCO/WHC website. Each syndication use must include a link back to the UNESCO/WHC home page: …",
    "… rrect reference is included in the Channel Link element of the XML/RSS/KML/XLS/GEORSS feed. Each syndication use must include the following copyright notice: \"Copyright © 1992 - [current year] UNESCO/World Heritage Centre. All rights reserved.\" The correct reference is included in the Channel Description ele …"
   ],
-  "seconds": 0.3,
+  "seconds": 0.5,
   "size": null,
   "title": "UNESCO World Heritage Centre - Syndication",
   "type": "text/html",
