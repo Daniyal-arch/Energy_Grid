@@ -1,4 +1,27 @@
 {
+ "eu_network_costs": {
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_prc",
+   "nrg_cons",
+   "currency",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 81164,
+   "sql": "SELECT count(*) FROM wave9.eu_network_costs"
+  },
+  "geometry": false,
+  "rows": 81164,
+  "seconds": 11
+ },
  "gb_neso_constraint_costs": {
   "built": "2026-10-31",
   "columns": [
@@ -18,7 +41,7 @@
   },
   "geometry": false,
   "rows": 203,
-  "seconds": 3
+  "seconds": 4
  },
  "gb_neso_tnuos": {
   "built": "2026-10-31",
@@ -36,7 +59,7 @@
   },
   "geometry": false,
   "rows": 572,
-  "seconds": 3
+  "seconds": 4
  },
  "gb_nged_generation_capacity": {
   "built": null,
@@ -112,7 +135,7 @@
   },
   "geometry": false,
   "rows": 7211,
-  "seconds": 2
+  "seconds": 1
  },
  "gb_npg_curtailment_events": {
   "built": "2026-10-31",
@@ -139,7 +162,7 @@
   },
   "geometry": false,
   "rows": 0,
-  "seconds": 1
+  "seconds": 0
  },
  "gb_npg_heatmap_substations": {
   "built": "2026-10-31",
