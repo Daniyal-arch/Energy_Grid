@@ -1,0 +1,519 @@
+{
+ "at_zaehlsprengel": {
+  "built": null,
+  "error": "SystemExit: download failed: https://data.statistik.gv.at/data/OGDEXT_ZSP_1_STATISTIK_AUSTRIA_20250101.zip"
+ },
+ "be_fluvius_consumption": {
+  "built": null,
+  "error": "SystemExit: kind ods_api is not built"
+ },
+ "de_zensus_heating": {
+  "built": null,
+  "error": "KeyError: 'skip'"
+ },
+ "es_ine_secciones": {
+  "bbox": [
+   -18.161,
+   27.638,
+   4.328,
+   43.79
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "cusec",
+   "cumun",
+   "csec",
+   "cdis",
+   "cmun",
+   "cpro",
+   "cca",
+   "cudis",
+   "clau2",
+   "npro",
+   "nca",
+   "cnut0",
+   "cnut1",
+   "cnut2",
+   "cnut3",
+   "nmun",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 36477,
+   "sql": "SELECT count(*) FROM wave9.es_ine_secciones"
+  },
+  "geometry": true,
+  "rows": 36477,
+  "seconds": 69,
+  "with_position": 36477
+ },
+ "fi_paavo": {
+  "bbox": [
+   19.472,
+   59.722,
+   31.587,
+   70.092
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "id",
+   "postinumeroalue",
+   "nimi",
+   "namn",
+   "euref_x",
+   "euref_y",
+   "pinta_ala",
+   "vuosi",
+   "kunta",
+   "he_vakiy",
+   "he_naiset",
+   "he_miehet",
+   "he_kika",
+   "he_0_2",
+   "he_3_6",
+   "he_7_12",
+   "he_13_15",
+   "he_16_17",
+   "he_18_19",
+   "he_20_24",
+   "he_25_29",
+   "he_30_34",
+   "he_35_39",
+   "he_40_44",
+   "he_45_49",
+   "he_50_54",
+   "he_55_59",
+   "he_60_64",
+   "he_65_69",
+   "he_70_74",
+   "he_75_79",
+   "he_80_84",
+   "he_85",
+   "ko_ika18y",
+   "ko_perus",
+   "ko_koul",
+   "ko_yliop",
+   "ko_ammat",
+   "ko_al_kork",
+   "ko_yl_kork",
+   "hr_tuy",
+   "hr_ktu",
+   "hr_mtu",
+   "hr_pi_tul",
+   "hr_ke_tul",
+   "hr_hy_tul",
+   "hr_ovy",
+   "te_taly",
+   "te_takk",
+   "te_as_valj",
+   "te_yks",
+   "te_nuor",
+   "te_eil_np",
+   "te_laps",
+   "te_plap",
+   "te_aklap",
+   "te_klap",
+   "te_teini",
+   "te_yhlap",
+   "te_aik"
+  ],
+  "example": {
+   "answer": 3026,
+   "sql": "SELECT count(*) FROM wave9.fi_paavo"
+  },
+  "geometry": true,
+  "rows": 3026,
+  "seconds": 6,
+  "with_position": 3026
+ },
+ "gb_ea_flood_zones": {
+  "bbox": [
+   -6.367,
+   49.882,
+   1.764,
+   55.812
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "objectid",
+   "origin",
+   "flood_zone",
+   "flood_source",
+   "geometry"
+  ],
+  "example": {
+   "answer": 415408,
+   "sql": "SELECT count(*) FROM wave9.gb_ea_flood_zones"
+  },
+  "geometry": true,
+  "rows": 415408,
+  "seconds": 548,
+  "with_position": 415408
+ },
+ "ie_cso_saps_heating": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "it_istat_sezioni": {
+  "bbox": [
+   6.627,
+   35.493,
+   18.52,
+   47.092
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "cod_reg",
+   "cod_uts",
+   "pro_com",
+   "sez21",
+   "sez21_id",
+   "cod_tipo_s",
+   "tipo_loc",
+   "loc21_id",
+   "cod_zic",
+   "cod_isam",
+   "cod_acque",
+   "cod_isole",
+   "cod_mont_d",
+   "cod_area_s",
+   "com_asc1",
+   "com_asc2",
+   "com_asc3",
+   "pop21",
+   "fam21",
+   "abi21",
+   "edi21",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 756376,
+   "sql": "SELECT count(*) FROM wave9.it_istat_sezioni"
+  },
+  "geometry": true,
+  "rows": 756376,
+  "seconds": 185,
+  "with_position": 756376
+ },
+ "pt_ine_bgri": {
+  "built": null,
+  "error": "SystemExit: download failed: https://mapas.ine.pt/download/filesGPG/2021/BGRI21_CONT.zip"
+ },
+ "us_eia_crude_pipelines": {
+  "bbox": [
+   -150.992,
+   26.655,
+   -70.299,
+   70.51
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "opername",
+   "pipename",
+   "shape_leng",
+   "geometry"
+  ],
+  "example": {
+   "answer": 236,
+   "sql": "SELECT count(*) FROM wave9.us_eia_crude_pipelines"
+  },
+  "geometry": true,
+  "rows": 236,
+  "seconds": 0,
+  "with_position": 236
+ },
+ "us_eia_crude_rail": {
+  "bbox": [
+   -1.7976931348623157e+308,
+   -1.7976931348623157e+308,
+   -70.286,
+   48.888
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "site_name",
+   "city",
+   "state",
+   "padd",
+   "station_ty",
+   "facility_t",
+   "handling",
+   "longitude",
+   "latitude",
+   "geometry"
+  ],
+  "example": {
+   "answer": 99,
+   "sql": "SELECT count(*) FROM wave9.us_eia_crude_rail"
+  },
+  "geometry": true,
+  "rows": 99,
+  "seconds": 0,
+  "with_position": 99
+ },
+ "us_eia_gas_pipelines": {
+  "bbox": [
+   -151.559,
+   25.386,
+   -67.44,
+   60.5
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "typepipe",
+   "operator",
+   "status",
+   "shape_leng",
+   "geometry"
+  ],
+  "example": {
+   "answer": 32961,
+   "sql": "SELECT count(*) FROM wave9.us_eia_gas_pipelines"
+  },
+  "geometry": true,
+  "rows": 32961,
+  "seconds": 1,
+  "with_position": 32921
+ },
+ "us_eia_gas_processing": {
+  "bbox": [
+   -120.433,
+   26.421,
+   -78.659,
+   48.874
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "plant_name",
+   "owner",
+   "operator",
+   "city",
+   "state",
+   "county",
+   "zipcode",
+   "period",
+   "cap_mmcfd",
+   "plant_flow",
+   "btu_conten",
+   "dry_stor",
+   "ngl_stor",
+   "longitude",
+   "latitude",
+   "source",
+   "geometry"
+  ],
+  "example": {
+   "answer": 478,
+   "sql": "SELECT count(*) FROM wave9.us_eia_gas_processing"
+  },
+  "geometry": true,
+  "rows": 478,
+  "seconds": 0,
+  "with_position": 478
+ },
+ "us_eia_gas_storage": {
+  "bbox": [
+   -151.274,
+   28.993,
+   -76.253,
+   61.263
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "state",
+   "id",
+   "fld_code",
+   "res_code",
+   "field",
+   "reservoir",
+   "field_type",
+   "company",
+   "county",
+   "region",
+   "status",
+   "base_gas",
+   "work_cap",
+   "fld_cap",
+   "maxdeliv",
+   "source",
+   "period",
+   "longitude",
+   "latitude",
+   "geometry"
+  ],
+  "example": {
+   "answer": 412,
+   "sql": "SELECT count(*) FROM wave9.us_eia_gas_storage"
+  },
+  "geometry": true,
+  "rows": 412,
+  "seconds": 0,
+  "with_position": 412
+ },
+ "us_eia_hgl_pipelines": {
+  "bbox": [
+   -114.489,
+   25.274,
+   -73.788,
+   53.769
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "opername",
+   "pipename",
+   "shape_leng",
+   "geometry"
+  ],
+  "example": {
+   "answer": 133,
+   "sql": "SELECT count(*) FROM wave9.us_eia_hgl_pipelines"
+  },
+  "geometry": true,
+  "rows": 133,
+  "seconds": 0,
+  "with_position": 133
+ },
+ "us_eia_lng": {
+  "bbox": [
+   -97.276,
+   27.891,
+   -70.36,
+   42.605
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "facility",
+   "owner",
+   "operator",
+   "city",
+   "county",
+   "state",
+   "functions",
+   "regas_bcfd",
+   "stora_bcf",
+   "liq_bcfd",
+   "period",
+   "source",
+   "latitude",
+   "longitude",
+   "geometry"
+  ],
+  "example": {
+   "answer": 8,
+   "sql": "SELECT count(*) FROM wave9.us_eia_lng"
+  },
+  "geometry": true,
+  "rows": 8,
+  "seconds": 0,
+  "with_position": 8
+ },
+ "us_eia_product_pipelines": {
+  "bbox": [
+   -123.111,
+   25.959,
+   -68.78,
+   53.521
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "opername",
+   "pipename",
+   "shape_leng",
+   "geometry"
+  ],
+  "example": {
+   "answer": 329,
+   "sql": "SELECT count(*) FROM wave9.us_eia_product_pipelines"
+  },
+  "geometry": true,
+  "rows": 329,
+  "seconds": 0,
+  "with_position": 329
+ },
+ "us_eia_product_terminals": {
+  "bbox": [
+   -176.658,
+   13.416,
+   144.687,
+   66.902
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "company",
+   "site",
+   "state_name",
+   "padd",
+   "longitude",
+   "latitude",
+   "source",
+   "geometry"
+  ],
+  "example": {
+   "answer": 1474,
+   "sql": "SELECT count(*) FROM wave9.us_eia_product_terminals"
+  },
+  "geometry": true,
+  "rows": 1474,
+  "seconds": 0,
+  "with_position": 1474
+ },
+ "us_eia_refineries": {
+  "bbox": [
+   -158.091,
+   17.709,
+   -64.749,
+   70.325
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "site_id",
+   "company",
+   "corp",
+   "site",
+   "state",
+   "padd",
+   "ad_mbpd",
+   "vdist_mbpd",
+   "cadis_mbpd",
+   "hycrk_mbpd",
+   "vredu_mbpd",
+   "caref_mbpd",
+   "isal_mbpd",
+   "hds_mbpd",
+   "cokin_mbpd",
+   "asph_mbpd",
+   "source",
+   "period",
+   "latitude",
+   "longitude",
+   "link_impor",
+   "geometry"
+  ],
+  "example": {
+   "answer": 130,
+   "sql": "SELECT count(*) FROM wave9.us_eia_refineries"
+  },
+  "geometry": true,
+  "rows": 130,
+  "seconds": 0,
+  "with_position": 130
+ }
+}
