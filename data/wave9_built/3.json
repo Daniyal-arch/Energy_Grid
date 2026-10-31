@@ -17,10 +17,15 @@
   },
   "geometry": false,
   "rows": 723195,
-  "seconds": 22
+  "seconds": 17
  },
  "eu_nonhousehold_prices": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 37,
+   "period": "2023",
+   "scope": "country"
+  },
   "columns": [
    "dataflow",
    "last_update",
