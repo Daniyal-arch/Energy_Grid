@@ -1,0 +1,54 @@
+{
+ "us_boem_active_leases": {
+  "bbox": [
+   -124.812,
+   29.028,
+   -68.573,
+   43.341
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "lease_number",
+   "lease_type",
+   "resource",
+   "company",
+   "lease_number_company",
+   "lease_date",
+   "lease_term",
+   "project_easement",
+   "state",
+   "protraction_number",
+   "protraction_name",
+   "block_number",
+   "block_label",
+   "sub_block",
+   "lease_document1",
+   "lease_document2",
+   "geometry"
+  ],
+  "example": {
+   "answer": 4892,
+   "sql": "SELECT count(*) FROM wave9.us_boem_active_leases"
+  },
+  "geometry": true,
+  "rows": 4892,
+  "seconds": 3,
+  "tiles": {
+   "fields": [
+    "name",
+    "lease_number",
+    "lease_type",
+    "resource",
+    "lease_number_company",
+    "lease_date",
+    "lease_term"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_boem_active_leases.pmtiles"
+  },
+  "with_position": 4891
+ }
+}

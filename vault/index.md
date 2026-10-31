@@ -1,7 +1,7 @@
 ---
 title: InfraAtlas vault index
 tags: [index]
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 # InfraAtlas vault
@@ -24,6 +24,7 @@ Read this first, then only the notes your task needs (`.claude/skills/atlas-vaul
 ## Data
 - [[pipeline-and-workflows]]: scripts, GitHub Actions, the data branches, R2.
 - [[lake]]: the Parquet lake on R2 and its catalogue.
+- [[wave9]]: the wave 9 registry, build, render and customer tasks (brief 28).
 - [[coverage-and-gaps]]: what each dataset covers, known gaps, keys still missing.
 
 ## Backend

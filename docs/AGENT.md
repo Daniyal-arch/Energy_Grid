@@ -339,3 +339,20 @@ The agent answers for whatever area a question means and shows only the data ins
   `backend/scripts/build_area_evals.py`; the fake model plays them through the graph in
   `tests/test_area_evals.py`; `uv run python -m evals.run --questions ../agent/evals/areas.yaml`
   scores a real model).
+
+## 13. Customer tasks and wave 9 (brief 28, 2026-10-31)
+
+- **Skills per task** (`agent/skills/<task>/SKILL.md`): datacentre-siting, battery-siting,
+  solar-wind-siting, offshore-wind, physical-risk, grid-planning, revenues,
+  industrial-decarbonisation, heat-networks, ev-electrification, public-money. Each is a
+  checklist run in order (power first for data centres, then fibre, water, land, permitting,
+  incentives); each criterion names its datasets and SQL, reports a missing source with its
+  coverage cell's reason, and never combines criteria into a score.
+- **Wave 9 tables** are `wave9.<id>` in the lake (catalogue `agent/catalog/wave9.yaml`, generated
+  with the answer of each table's example query; levels in `agent/areas/levels.yaml`). Every
+  wave 9 map file is also served as `app.w9_<id>` (points with lon, lat, name and the published
+  fields), so `in_area(lon, lat, '<area>')` works on them without the lake.
+- **Evals**: `agent/evals/tasks.yaml` (33 cases: one per task skill on the app's tables, run in CI
+  with the fake model, and 22 over wave 9 lake tables, answers computed from the built tables by
+  `backend/scripts/build_task_evals.py --lake DIR`).
+- **Dashboards**: the Tasks group of the Dashboards menu sets the layers and camera per task.

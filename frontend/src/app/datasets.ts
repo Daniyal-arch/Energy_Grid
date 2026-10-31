@@ -4,6 +4,7 @@
 
 import { EUROPE_ISO3, ISO3 } from "../lib/transition";
 import REGISTRY from "./datasets.json";
+import WAVE9 from "./wave9.json";
 import { COLOURS, LAYERS, LAYER_GROUPS, actions, countryDashboards, useApp, type ColourId, type Dashboard, type LayerGroup, type LayerId, type TimeMode } from "./store";
 
 export interface DatasetPart {
@@ -30,7 +31,7 @@ export interface Dataset {
   parts: DatasetPart[];
 }
 
-export const DATASETS = REGISTRY.datasets as Dataset[];
+export const DATASETS = [...(REGISTRY.datasets as Dataset[]), ...(WAVE9.datasets as Dataset[])];
 export const DATASET_BY_ID = new Map(DATASETS.map((d) => [d.id, d]));
 export const DATASET_OF_LAYER = new Map(DATASETS.flatMap((d) => d.parts.flatMap((p) => (p.layer ? [[p.layer, d] as const] : []))));
 export const CATEGORIES: LayerGroup[] = LAYER_GROUPS.filter((g) => DATASETS.some((d) => d.category === g));

@@ -47,3 +47,7 @@ updated: 2026-10-31
   wave8.yml compares whole words (`fromJSON(words)`). DuckDB 1.5 on runners refuses the `x -> y`
   lambda (write `lambda x: y`). The outline name index must read every set (local or R2), or a
   partial rebuild shrinks it.
+- **Wave 9 sources**: DuckDB reads JSON with many keys as one MAP column unless
+  `map_inference_threshold = -1`; gov.uk ODS workbooks start with cover sheets; the Census API
+  needs a key; data.europa.eu ORs the words of a query unless quoted; catalog.data.gov's CKAN API
+  moved (use `/search?q=`); some CSVs are CP1252 (recode before DuckDB).

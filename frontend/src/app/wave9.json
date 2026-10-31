@@ -1,0 +1,2109 @@
+{
+ "layers": [
+  {
+   "id": "w9_de_zensus_heating",
+   "label": "Zensus 2022 heating type per 100 m cell",
+   "desc": "Heating",
+   "group": "Industry & demand",
+   "coverage": "DE",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_it_istat_sezioni",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/it_istat_sezioni.pmtiles",
+   "kind": "polygon",
+   "minzoom": 6,
+   "fields": [
+    "cod_reg",
+    "cod_uts",
+    "pro_com",
+    "sez21",
+    "sez21_id",
+    "cod_tipo_s"
+   ],
+   "source": "ISTAT census sections 2021 (CC BY 4.0)",
+   "label": "ISTAT census sections 2021",
+   "desc": "Outlines (shown from zoom 6: zoom in)",
+   "group": "Industry & demand",
+   "coverage": "IT",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_es_ine_secciones",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/es_ine_secciones.pmtiles",
+   "kind": "polygon",
+   "minzoom": 4,
+   "fields": [
+    "cusec",
+    "cumun",
+    "csec",
+    "cdis",
+    "cmun",
+    "cpro"
+   ],
+   "source": "INE census sections 2024 (CC BY 4.0)",
+   "label": "INE census sections 2024",
+   "desc": "Outlines (shown from zoom 4: zoom in)",
+   "group": "Industry & demand",
+   "coverage": "ES",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_fi_paavo",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/fi_paavo.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "id",
+    "postinumeroalue",
+    "nimi",
+    "namn",
+    "euref_x",
+    "euref_y"
+   ],
+   "source": "Statistics Finland Paavo postal areas 2024 (CC BY 4.0)",
+   "label": "Statistics Finland Paavo postal areas 2024",
+   "desc": "Outlines",
+   "group": "Industry & demand",
+   "coverage": "FI",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_gb_ea_flood_zones",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_ea_flood_zones.pmtiles",
+   "kind": "polygon",
+   "minzoom": 6,
+   "fields": [
+    "origin",
+    "flood_zone",
+    "flood_source"
+   ],
+   "source": "Environment Agency Flood Map for Planning, flood zones 2 and 3 (OGL v3)",
+   "label": "Environment Agency Flood Map for Planning, flood zones 2 and 3",
+   "desc": "Flood zones (shown from zoom 6: zoom in)",
+   "group": "Risk",
+   "coverage": "GB",
+   "color": "rgb(255,120,96)"
+  },
+  {
+   "id": "w9_us_eia_refineries",
+   "label": "EIA petroleum refineries",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_gas_processing",
+   "label": "EIA natural gas processing plants",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_gas_pipelines",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_eia_gas_pipelines.pmtiles",
+   "kind": "linestring",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "typepipe",
+    "status"
+   ],
+   "source": "EIA interstate and intrastate gas pipelines (public domain)",
+   "label": "EIA interstate and intrastate gas pipelines",
+   "desc": "Oil gas facilities (shown from zoom 4: zoom in)",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_crude_pipelines",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_eia_crude_pipelines.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "pipename"
+   ],
+   "source": "EIA crude oil pipelines (public domain)",
+   "label": "EIA crude oil pipelines",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_lng",
+   "label": "EIA LNG import and export terminals",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_product_terminals",
+   "label": "EIA petroleum product terminals",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_gas_storage",
+   "label": "EIA underground gas storage",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_hgl_pipelines",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_eia_hgl_pipelines.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "pipename"
+   ],
+   "source": "EIA hydrocarbon gas liquids pipelines (public domain)",
+   "label": "EIA hydrocarbon gas liquids pipelines",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_product_pipelines",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_eia_product_pipelines.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "pipename"
+   ],
+   "source": "EIA petroleum product pipelines (public domain)",
+   "label": "EIA petroleum product pipelines",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_crude_rail",
+   "label": "EIA crude-by-rail terminals",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "US",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_us_eia_biodiesel",
+   "label": "EIA biodiesel plants",
+   "desc": "Digesters",
+   "group": "Industry & demand",
+   "coverage": "US",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_eia_ethanol",
+   "label": "EIA ethanol plants",
+   "desc": "Digesters",
+   "group": "Industry & demand",
+   "coverage": "US",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_gb_ne_alc",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_ne_alc.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "geogext",
+    "area",
+    "alc_grade",
+    "perimeter"
+   ],
+   "source": "Natural England provisional Agricultural Land Classification (OGL v3)",
+   "label": "Natural England provisional Agricultural Land Classification",
+   "desc": "Agricultural land classification or prime farmland",
+   "group": "Land & planning",
+   "coverage": "GB",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_gb_brownfield_register",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_brownfield_register.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "dataset",
+    "end_date",
+    "entity",
+    "entry_date",
+    "organisation_entity",
+    "point"
+   ],
+   "source": "Brownfield land registers (planning.data.gov.uk) (OGL v3)",
+   "label": "Brownfield land registers (planning.data.gov.uk)",
+   "desc": "Brownfield registers and polluted sites (shown from zoom 4: zoom in)",
+   "group": "Land & planning",
+   "coverage": "GB",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_world_ourairports",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/world_ourairports.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "id",
+    "ident",
+    "type",
+    "latitude_deg",
+    "longitude_deg",
+    "elevation_ft"
+   ],
+   "source": "OurAirports airports (public domain)",
+   "label": "OurAirports airports",
+   "desc": "Listed heritage (shown from zoom 4: zoom in)",
+   "group": "Land & planning",
+   "coverage": "World",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_gb_he_listed",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_he_listed.pmtiles",
+   "kind": "point",
+   "minzoom": 6,
+   "fields": [
+    "name",
+    "listentry",
+    "grade",
+    "listdate",
+    "amenddate",
+    "capturescale",
+    "hyperlink"
+   ],
+   "source": "Historic England National Heritage List (OGL v3)",
+   "label": "Historic England National Heritage List",
+   "desc": "Listed heritage (shown from zoom 6: zoom in)",
+   "group": "Land & planning",
+   "coverage": "GB",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_us_nrhp",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_nrhp.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "certdate",
+    "nris_refnum",
+    "restype",
+    "address",
+    "city",
+    "county"
+   ],
+   "source": "National Register of Historic Places (public domain)",
+   "label": "National Register of Historic Places",
+   "desc": "Listed heritage (shown from zoom 4: zoom in)",
+   "group": "Land & planning",
+   "coverage": "US",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_us_nexrad",
+   "label": "NEXRAD weather radar sites",
+   "desc": "Listed heritage",
+   "group": "Land & planning",
+   "coverage": "US",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_gb_nged_opendata",
+   "label": "NGED embedded capacity register",
+   "desc": "Dso open data (embedded capacity",
+   "group": "Power grid",
+   "coverage": "GB",
+   "color": "rgb(236,178,120)"
+  },
+  {
+   "id": "w9_us_drought_monitor",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_drought_monitor.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "dm"
+   ],
+   "source": "US Drought Monitor (current) (public (USDM, credit requested))",
+   "label": "US Drought Monitor (current)",
+   "desc": "Drought indicators or drought monitor polygons",
+   "group": "Risk",
+   "coverage": "US",
+   "color": "rgb(255,120,96)"
+  },
+  {
+   "id": "w9_us_noaa_storm_events",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_noaa_storm_events.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "begin_yearmonth",
+    "begin_day",
+    "begin_time",
+    "end_yearmonth",
+    "end_day",
+    "end_time"
+   ],
+   "source": "NOAA Storm Events (newest year) (public domain)",
+   "label": "NOAA Storm Events (newest year)",
+   "desc": "Storm events with position and damage (shown from zoom 4: zoom in)",
+   "group": "Risk",
+   "coverage": "US",
+   "color": "rgb(255,120,96)"
+  },
+  {
+   "id": "w9_eu_emodnet_wind_farms",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_wind_farms.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "id",
+    "country",
+    "n_turbines",
+    "power_mw",
+    "status",
+    "type_inst"
+   ],
+   "source": "EMODnet offshore wind farms (CC BY 4.0)",
+   "label": "EMODnet offshore wind farms",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_us_boem_wind_leases",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_boem_wind_leases.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "lease_number",
+    "lease_document1",
+    "lease_document2",
+    "lease_type",
+    "resource",
+    "lease_number_company"
+   ],
+   "source": "BOEM offshore wind lease outlines (public domain)",
+   "label": "BOEM offshore wind lease outlines",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "US",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_us_usgs_mrds",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_mrds.pmtiles",
+   "kind": "point",
+   "minzoom": 6,
+   "fields": [
+    "name",
+    "dep_id",
+    "url",
+    "mrds_id",
+    "mas_id",
+    "latitude",
+    "longitude"
+   ],
+   "source": "USGS Mineral Resources Data System (public domain)",
+   "label": "USGS Mineral Resources Data System",
+   "desc": "Mineral deposits and occurrences (shown from zoom 6: zoom in)",
+   "group": "Industry & demand",
+   "coverage": "World",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_epa_lmop",
+   "label": "EPA LMOP landfill gas energy projects",
+   "desc": "Digesters",
+   "group": "Industry & demand",
+   "coverage": "US",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_opportunity_zones",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_opportunity_zones.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "geoid10",
+    "state",
+    "county",
+    "tract",
+    "stusab",
+    "rural"
+   ],
+   "source": "HUD Opportunity Zones (census tracts) (public domain)",
+   "label": "HUD Opportunity Zones (census tracts)",
+   "desc": "Energy communities",
+   "group": "Money",
+   "coverage": "US",
+   "color": "rgb(150,220,150)"
+  },
+  {
+   "id": "w9_us_epa_aqs_annual",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_epa_aqs_annual.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "state_code",
+    "county_code",
+    "site_num",
+    "parameter_code",
+    "poc",
+    "latitude"
+   ],
+   "source": "EPA AQS annual concentrations per monitor (2025) (public domain)",
+   "label": "EPA AQS annual concentrations per monitor (2025)",
+   "desc": "Measured air quality per station (shown from zoom 4: zoom in)",
+   "group": "Emissions",
+   "coverage": "US",
+   "color": "rgb(200,200,200)"
+  },
+  {
+   "id": "w9_world_ourairports_runways",
+   "label": "OurAirports runways",
+   "desc": "Airports",
+   "group": "Mobility",
+   "coverage": "World",
+   "color": "rgb(190,190,255)"
+  },
+  {
+   "id": "w9_world_ourairports_navaids",
+   "label": "OurAirports navigation aids",
+   "desc": "Listed heritage",
+   "group": "Land & planning",
+   "coverage": "World",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_us_epa_lmop_landfills",
+   "label": "EPA LMOP landfills",
+   "desc": "Digesters",
+   "group": "Industry & demand",
+   "coverage": "US",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_boem_active_leases",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_boem_active_leases.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "lease_number",
+    "lease_type",
+    "resource",
+    "lease_number_company",
+    "lease_date",
+    "lease_term"
+   ],
+   "source": "BOEM active renewable energy leases (public domain)",
+   "label": "BOEM active renewable energy leases",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "US",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_platforms",
+   "label": "EMODnet offshore installations",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_pipelines",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_pipelines.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "id",
+    "status",
+    "medium",
+    "operator",
+    "size_in",
+    "length_m"
+   ],
+   "source": "EMODnet offshore pipelines (CC BY 4.0 (EMODnet Human Activities))",
+   "label": "EMODnet offshore pipelines",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "Europe",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_eu_emodnet_ocean_energy",
+   "label": "EMODnet wave and tidal energy projects",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_ports",
+   "label": "EMODnet ports",
+   "desc": "Ports and their traffic",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_port_goods",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_port_goods.pmtiles",
+   "kind": "point",
+   "minzoom": 6,
+   "fields": [
+    "id",
+    "data_src_c",
+    "port_coor",
+    "port",
+    "port_id",
+    "portcode"
+   ],
+   "source": "EMODnet goods handled per port (CC BY 4.0 (EMODnet Human Activities))",
+   "label": "EMODnet goods handled per port",
+   "desc": "Ports and their traffic (shown from zoom 6: zoom in)",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_wwtp",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_wwtp.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "id",
+    "uwwcode",
+    "latitude",
+    "longitude",
+    "year",
+    "country"
+   ],
+   "source": "EMODnet urban wastewater treatment plants (UWWTD) (CC BY 4.0 (EMODnet Human Activities))",
+   "label": "EMODnet urban wastewater treatment plants (UWWTD)",
+   "desc": "Urban wastewater treatment plants (shown from zoom 4: zoom in)",
+   "group": "Water & telecom",
+   "coverage": "Europe",
+   "color": "rgb(120,200,230)"
+  },
+  {
+   "id": "w9_eu_emodnet_nuclear",
+   "label": "EMODnet nuclear power plants",
+   "desc": "Reactors in operation and planned",
+   "group": "Power plants",
+   "coverage": "Europe",
+   "color": "rgb(255,214,72)"
+  },
+  {
+   "id": "w9_eu_emodnet_desalination",
+   "label": "EMODnet desalination plants",
+   "desc": "Water abstraction",
+   "group": "Water & telecom",
+   "coverage": "Europe",
+   "color": "rgb(120,200,230)"
+  },
+  {
+   "id": "w9_eu_emodnet_hydrocarbon_licences",
+   "label": "EMODnet hydrocarbon licences",
+   "desc": "Oil gas facilities",
+   "group": "Gas, oil & coal",
+   "coverage": "Europe",
+   "color": "rgb(230,140,90)"
+  },
+  {
+   "id": "w9_eu_emodnet_mpa",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_mpa.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "id",
+    "rsc",
+    "code",
+    "orig_name",
+    "country",
+    "designatio"
+   ],
+   "source": "EMODnet marine protected areas (CC BY 4.0 (EMODnet Human Activities))",
+   "label": "EMODnet marine protected areas",
+   "desc": "Marine protected areas",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_military",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_military.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "id",
+    "country",
+    "country_2",
+    "country_3",
+    "status",
+    "type_1"
+   ],
+   "source": "EMODnet military areas at sea (CC BY 4.0 (EMODnet Human Activities))",
+   "label": "EMODnet military areas at sea",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_aggregates",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_aggregates.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "code",
+    "id",
+    "material",
+    "country",
+    "site_type",
+    "status"
+   ],
+   "source": "EMODnet marine aggregate areas (CC BY 4.0 (EMODnet Human Activities))",
+   "label": "EMODnet marine aggregate areas",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_gb_npg_heatmap_substations",
+   "label": "Northern Powergrid heat map: substation headroom",
+   "desc": "Dso open data (embedded capacity",
+   "group": "Power grid",
+   "coverage": "GB",
+   "color": "rgb(236,178,120)"
+  }
+ ],
+ "colours": [
+  {
+   "id": "w9c_eu_land_prices",
+   "label": "Arable land price",
+   "group": "Land & planning",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_land_prices"
+  },
+  {
+   "id": "w9c_eu_degree_days",
+   "label": "Heating degree days",
+   "group": "Industry & demand",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_degree_days"
+  },
+  {
+   "id": "w9c_eu_household_income",
+   "label": "Disposable household income per inhabitant",
+   "group": "People & places",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_household_income"
+  },
+  {
+   "id": "w9c_us_usgs_water_use",
+   "label": "Total water withdrawals",
+   "group": "Water & telecom",
+   "modes": [
+    "live"
+   ],
+   "scope": "us_county",
+   "file": "us_usgs_water_use"
+  },
+  {
+   "id": "w9c_eu_ev_stock_nuts2",
+   "label": "Electric cars, share of all passenger cars",
+   "group": "Industry & demand",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_ev_stock_nuts2"
+  },
+  {
+   "id": "w9c_eu_new_cars_fuel",
+   "label": "New battery-electric cars registered",
+   "group": "Industry & demand",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_new_cars_fuel"
+  },
+  {
+   "id": "w9c_eu_rail_electrified",
+   "label": "Electrified railway lines",
+   "group": "Mobility",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_rail_electrified"
+  },
+  {
+   "id": "w9c_eu_water_abstraction",
+   "label": "Freshwater abstracted for electricity cooling",
+   "group": "Water & telecom",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_water_abstraction"
+  },
+  {
+   "id": "w9c_eu_wastewater_connected",
+   "label": "Population connected to urban wastewater collection",
+   "group": "Water & telecom",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_wastewater_connected"
+  },
+  {
+   "id": "w9c_eu_air_passengers",
+   "label": "Air passengers carried",
+   "group": "Mobility",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_air_passengers"
+  },
+  {
+   "id": "w9c_eu_energy_productivity",
+   "label": "Unable to keep home adequately warm",
+   "group": "People & places",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_energy_productivity"
+  },
+  {
+   "id": "w9c_eu_heat_production",
+   "label": "Derived heat produced",
+   "group": "Resources",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_heat_production"
+  },
+  {
+   "id": "w9c_eu_network_costs",
+   "label": "Network costs, non-household band ID (2,000-19,999 MWh)",
+   "group": "Power grid",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_network_costs"
+  },
+  {
+   "id": "w9c_eu_nonhousehold_prices",
+   "label": "Transmission network costs, share of the non-household electricity price (NETC_TRANS)",
+   "group": "Prices",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nonhousehold_prices"
+  },
+  {
+   "id": "w9c_eu_renewable_capacity",
+   "label": "Solar photovoltaic net capacity",
+   "group": "Industry & demand",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_renewable_capacity"
+  },
+  {
+   "id": "w9c_eu_internet_households",
+   "label": "Households with internet access",
+   "group": "Water & telecom",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_internet_households"
+  }
+ ],
+ "datasets": [
+  {
+   "id": "w9_de_zensus_heating",
+   "name": "Zensus 2022 heating type per 100 m cell",
+   "category": "Industry & demand",
+   "description": "Zensus 2022 heating type per 100 m cell: 2,628,942 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "heating",
+   "parts": [
+    {
+     "layer": "w9_de_zensus_heating",
+     "where": [
+      "DE"
+     ],
+     "what": "heating",
+     "source": "Zensus 2022 heating type per 100 m cell (dl-de/by-2-0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_it_istat_sezioni",
+   "name": "ISTAT census sections 2021",
+   "category": "Industry & demand",
+   "description": "ISTAT census sections 2021: 756,376 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "outlines",
+   "parts": [
+    {
+     "layer": "w9_it_istat_sezioni",
+     "where": [
+      "IT"
+     ],
+     "what": "outlines",
+     "source": "ISTAT census sections 2021 (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_es_ine_secciones",
+   "name": "INE census sections 2024",
+   "category": "Industry & demand",
+   "description": "INE census sections 2024: 36,477 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "outlines",
+   "parts": [
+    {
+     "layer": "w9_es_ine_secciones",
+     "where": [
+      "ES"
+     ],
+     "what": "outlines",
+     "source": "INE census sections 2024 (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_fi_paavo",
+   "name": "Statistics Finland Paavo postal areas 2024",
+   "category": "Industry & demand",
+   "description": "Statistics Finland Paavo postal areas 2024: 3,026 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "outlines",
+   "parts": [
+    {
+     "layer": "w9_fi_paavo",
+     "where": [
+      "FI"
+     ],
+     "what": "outlines",
+     "source": "Statistics Finland Paavo postal areas 2024 (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_gb_ea_flood_zones",
+   "name": "Environment Agency Flood Map for Planning, flood zones 2 and 3",
+   "category": "Risk",
+   "description": "Environment Agency Flood Map for Planning, flood zones 2 and 3: 415,408 records as published",
+   "color": "rgb(255,120,96)",
+   "family": "flood_zones",
+   "parts": [
+    {
+     "layer": "w9_gb_ea_flood_zones",
+     "where": [
+      "GB"
+     ],
+     "what": "flood zones",
+     "source": "Environment Agency Flood Map for Planning, flood zones 2 and 3 (OGL v3)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_refineries",
+   "name": "EIA petroleum refineries",
+   "category": "Gas, oil & coal",
+   "description": "EIA petroleum refineries: 130 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_refineries",
+     "where": [
+      "US"
+     ],
+     "what": "oil gas facilities",
+     "source": "EIA petroleum refineries (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_gas_processing",
+   "name": "EIA natural gas processing plants",
+   "category": "Gas, oil & coal",
+   "description": "EIA natural gas processing plants: 478 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_gas_processing",
+     "where": [
+      "US"
+     ],
+     "what": "oil gas facilities",
+     "source": "EIA natural gas processing plants (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_gas_pipelines",
+   "name": "EIA interstate and intrastate gas pipelines",
+   "category": "Gas, oil & coal",
+   "description": "EIA interstate and intrastate gas pipelines: 32,961 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_gas_pipelines",
+     "where": [
+      "US"
+     ],
+     "what": "oil gas facilities",
+     "source": "EIA interstate and intrastate gas pipelines (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_crude_pipelines",
+   "name": "EIA crude oil pipelines",
+   "category": "Gas, oil & coal",
+   "description": "EIA crude oil pipelines: 236 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_crude_pipelines",
+     "where": [
+      "US"
+     ],
+     "what": "oil gas facilities",
+     "source": "EIA crude oil pipelines (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_lng",
+   "name": "EIA LNG import and export terminals",
+   "category": "Gas, oil & coal",
+   "description": "EIA LNG import and export terminals: 8 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_lng",
+     "where": [
+      "US"
+     ],
+     "what": "oil gas facilities",
+     "source": "EIA LNG import and export terminals (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_product_terminals",
+   "name": "EIA petroleum product terminals",
+   "category": "Gas, oil & coal",
+   "description": "EIA petroleum product terminals: 1,474 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_product_terminals",
+     "where": [
+      "US"
+     ],
+     "what": "oil gas facilities",
+     "source": "EIA petroleum product terminals (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_gas_storage",
+   "name": "EIA underground gas storage",
+   "category": "Gas, oil & coal",
+   "description": "EIA underground gas storage: 412 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_gas_storage",
+     "where": [
+      "US"
+     ],
+     "what": "oil gas facilities",
+     "source": "EIA underground gas storage (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_hgl_pipelines",
+   "name": "EIA hydrocarbon gas liquids pipelines",
+   "category": "Gas, oil & coal",
+   "description": "EIA hydrocarbon gas liquids pipelines: 133 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_hgl_pipelines",
+     "where": [
+      "US"
+     ],
+     "what": "oil gas facilities",
+     "source": "EIA hydrocarbon gas liquids pipelines (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_product_pipelines",
+   "name": "EIA petroleum product pipelines",
+   "category": "Gas, oil & coal",
+   "description": "EIA petroleum product pipelines: 329 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_product_pipelines",
+     "where": [
+      "US"
+     ],
+     "what": "oil gas facilities",
+     "source": "EIA petroleum product pipelines (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_crude_rail",
+   "name": "EIA crude-by-rail terminals",
+   "category": "Gas, oil & coal",
+   "description": "EIA crude-by-rail terminals: 99 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_us_eia_crude_rail",
+     "where": [
+      "US"
+     ],
+     "what": "oil gas facilities",
+     "source": "EIA crude-by-rail terminals (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_biodiesel",
+   "name": "EIA biodiesel plants",
+   "category": "Industry & demand",
+   "description": "EIA biodiesel plants: 75 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "biogas",
+   "parts": [
+    {
+     "layer": "w9_us_eia_biodiesel",
+     "where": [
+      "US"
+     ],
+     "what": "digesters",
+     "source": "EIA biodiesel plants (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_ethanol",
+   "name": "EIA ethanol plants",
+   "category": "Industry & demand",
+   "description": "EIA ethanol plants: 197 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "biogas",
+   "parts": [
+    {
+     "layer": "w9_us_eia_ethanol",
+     "where": [
+      "US"
+     ],
+     "what": "digesters",
+     "source": "EIA ethanol plants (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_gb_ne_alc",
+   "name": "Natural England provisional Agricultural Land Classification",
+   "category": "Land & planning",
+   "description": "Natural England provisional Agricultural Land Classification: 1,826 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "farmland_quality",
+   "parts": [
+    {
+     "layer": "w9_gb_ne_alc",
+     "where": [
+      "GB"
+     ],
+     "what": "agricultural land classification or prime farmland",
+     "source": "Natural England provisional Agricultural Land Classification (OGL v3)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_gb_brownfield_register",
+   "name": "Brownfield land registers (planning.data.gov.uk)",
+   "category": "Land & planning",
+   "description": "Brownfield land registers (planning.data.gov.uk): 40,229 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "brownfield",
+   "parts": [
+    {
+     "layer": "w9_gb_brownfield_register",
+     "where": [
+      "GB"
+     ],
+     "what": "brownfield registers and polluted sites",
+     "source": "Brownfield land registers (planning.data.gov.uk) (OGL v3)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_land_prices",
+   "name": "Arable land price",
+   "category": "Land & planning",
+   "description": "Arable land price (€ per hectare), 23 countries, 2023: Eurostat agricultural land prices and rents (apri_lprc)",
+   "color": "rgb(206,184,140)",
+   "family": "land_prices",
+   "colour": "w9c_eu_land_prices",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Arable land price",
+     "source": "Eurostat agricultural land prices and rents (apri_lprc) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_world_ourairports",
+   "name": "OurAirports airports",
+   "category": "Land & planning",
+   "description": "OurAirports airports: 86,322 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "heritage_aviation",
+   "parts": [
+    {
+     "layer": "w9_world_ourairports",
+     "where": [
+      "World"
+     ],
+     "what": "listed heritage",
+     "source": "OurAirports airports (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_gb_he_listed",
+   "name": "Historic England National Heritage List",
+   "category": "Land & planning",
+   "description": "Historic England National Heritage List: 379,683 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "heritage_aviation",
+   "parts": [
+    {
+     "layer": "w9_gb_he_listed",
+     "where": [
+      "GB"
+     ],
+     "what": "listed heritage",
+     "source": "Historic England National Heritage List (OGL v3)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_nrhp",
+   "name": "National Register of Historic Places",
+   "category": "Land & planning",
+   "description": "National Register of Historic Places: 74,636 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "heritage_aviation",
+   "parts": [
+    {
+     "layer": "w9_us_nrhp",
+     "where": [
+      "US"
+     ],
+     "what": "listed heritage",
+     "source": "National Register of Historic Places (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_nexrad",
+   "name": "NEXRAD weather radar sites",
+   "category": "Land & planning",
+   "description": "NEXRAD weather radar sites: 210 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "heritage_aviation",
+   "parts": [
+    {
+     "layer": "w9_us_nexrad",
+     "where": [
+      "US"
+     ],
+     "what": "listed heritage",
+     "source": "NEXRAD weather radar sites (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_gb_nged_opendata",
+   "name": "NGED embedded capacity register",
+   "category": "Power grid",
+   "description": "NGED embedded capacity register: 7,211 records as published",
+   "color": "rgb(236,178,120)",
+   "family": "distribution_data",
+   "parts": [
+    {
+     "layer": "w9_gb_nged_opendata",
+     "where": [
+      "GB"
+     ],
+     "what": "DSO open data (embedded capacity",
+     "source": "NGED embedded capacity register (check)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_drought_monitor",
+   "name": "US Drought Monitor (current)",
+   "category": "Risk",
+   "description": "US Drought Monitor (current): 5 records as published",
+   "color": "rgb(255,120,96)",
+   "family": "drought",
+   "parts": [
+    {
+     "layer": "w9_us_drought_monitor",
+     "where": [
+      "US"
+     ],
+     "what": "drought indicators or drought monitor polygons",
+     "source": "US Drought Monitor (current) (public (USDM, credit requested))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_noaa_storm_events",
+   "name": "NOAA Storm Events (newest year)",
+   "category": "Risk",
+   "description": "NOAA Storm Events (newest year): 72,360 records as published",
+   "color": "rgb(255,120,96)",
+   "family": "storms",
+   "parts": [
+    {
+     "layer": "w9_us_noaa_storm_events",
+     "where": [
+      "US"
+     ],
+     "what": "storm events with position and damage",
+     "source": "NOAA Storm Events (newest year) (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_degree_days",
+   "name": "Heating degree days",
+   "category": "Industry & demand",
+   "description": "Heating degree days (degree days), 30 countries, 2025: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)",
+   "color": "rgb(214,160,255)",
+   "family": "degree_days",
+   "colour": "w9c_eu_degree_days",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Heating degree days",
+     "source": "Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_wind_farms",
+   "name": "EMODnet offshore wind farms",
+   "category": "Offshore",
+   "description": "EMODnet offshore wind farms: 600 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_wind_farms",
+     "where": [
+      "Europe"
+     ],
+     "what": "offshore wind farms",
+     "source": "EMODnet offshore wind farms (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_boem_wind_leases",
+   "name": "BOEM offshore wind lease outlines",
+   "category": "Offshore",
+   "description": "BOEM offshore wind lease outlines: 52 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_us_boem_wind_leases",
+     "where": [
+      "US"
+     ],
+     "what": "offshore wind farms",
+     "source": "BOEM offshore wind lease outlines (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_usgs_mrds",
+   "name": "USGS Mineral Resources Data System",
+   "category": "Industry & demand",
+   "description": "USGS Mineral Resources Data System: 304,632 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "critical_minerals",
+   "parts": [
+    {
+     "layer": "w9_us_usgs_mrds",
+     "where": [
+      "World"
+     ],
+     "what": "mineral deposits and occurrences",
+     "source": "USGS Mineral Resources Data System (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_epa_lmop",
+   "name": "EPA LMOP landfill gas energy projects",
+   "category": "Industry & demand",
+   "description": "EPA LMOP landfill gas energy projects: 542 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "biogas",
+   "parts": [
+    {
+     "layer": "w9_us_epa_lmop",
+     "where": [
+      "US"
+     ],
+     "what": "digesters",
+     "source": "EPA LMOP landfill gas energy projects (CC0 (data.gov))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_opportunity_zones",
+   "name": "HUD Opportunity Zones (census tracts)",
+   "category": "Money",
+   "description": "HUD Opportunity Zones (census tracts): 8,765 records as published",
+   "color": "rgb(150,220,150)",
+   "family": "transition_areas",
+   "parts": [
+    {
+     "layer": "w9_us_opportunity_zones",
+     "where": [
+      "US"
+     ],
+     "what": "energy communities",
+     "source": "HUD Opportunity Zones (census tracts) (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_household_income",
+   "name": "Disposable household income per inhabitant",
+   "category": "People & places",
+   "description": "Disposable household income per inhabitant (PPS), 28 countries, 2020: Eurostat household income per NUTS 2 (nama_10r_2hhinc)",
+   "color": "rgb(240,200,220)",
+   "family": "income",
+   "colour": "w9c_eu_household_income",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Disposable household income per inhabitant",
+     "source": "Eurostat household income per NUTS 2 (nama_10r_2hhinc) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_us_usgs_water_use",
+   "name": "Total water withdrawals",
+   "category": "Water & telecom",
+   "description": "Total water withdrawals (million gallons a day), 3223 counties, 2015: USGS estimated water use per county (2015)",
+   "color": "rgb(120,200,230)",
+   "family": "water_stress",
+   "colour": "w9c_us_usgs_water_use",
+   "parts": [
+    {
+     "where": [
+      "US"
+     ],
+     "what": "Total water withdrawals",
+     "source": "USGS estimated water use per county (2015) (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_epa_aqs_annual",
+   "name": "EPA AQS annual concentrations per monitor (2025)",
+   "category": "Emissions",
+   "description": "EPA AQS annual concentrations per monitor (2025): 65,709 records as published",
+   "color": "rgb(200,200,200)",
+   "family": "air_quality",
+   "parts": [
+    {
+     "layer": "w9_us_epa_aqs_annual",
+     "where": [
+      "US"
+     ],
+     "what": "measured air quality per station",
+     "source": "EPA AQS annual concentrations per monitor (2025) (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_ev_stock_nuts2",
+   "name": "Electric cars, share of all passenger cars",
+   "category": "Industry & demand",
+   "description": "Electric cars, share of all passenger cars (%), 35 countries, 2024: Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst)",
+   "color": "rgb(214,160,255)",
+   "family": "ev_registrations",
+   "colour": "w9c_eu_ev_stock_nuts2",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electric cars, share of all passenger cars",
+     "source": "Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_new_cars_fuel",
+   "name": "New battery-electric cars registered",
+   "category": "Industry & demand",
+   "description": "New battery-electric cars registered (cars), 41 countries, 2024: Eurostat new passenger cars by fuel (road_eqs_carpda)",
+   "color": "rgb(214,160,255)",
+   "family": "ev_registrations",
+   "colour": "w9c_eu_new_cars_fuel",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "New battery-electric cars registered",
+     "source": "Eurostat new passenger cars by fuel (road_eqs_carpda) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_rail_electrified",
+   "name": "Electrified railway lines",
+   "category": "Mobility",
+   "description": "Electrified railway lines (km), 39 countries, 2021: Eurostat electrified railway lines (rail_if_electri)",
+   "color": "rgb(190,190,255)",
+   "family": "rail_electrification",
+   "colour": "w9c_eu_rail_electrified",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electrified railway lines",
+     "source": "Eurostat electrified railway lines (rail_if_electri) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_water_abstraction",
+   "name": "Freshwater abstracted for electricity cooling",
+   "category": "Water & telecom",
+   "description": "Freshwater abstracted for electricity cooling (million m³), 26 countries, 2020: Eurostat water abstraction (env_wat_abs)",
+   "color": "rgb(120,200,230)",
+   "family": "water_stress",
+   "colour": "w9c_eu_water_abstraction",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Freshwater abstracted for electricity cooling",
+     "source": "Eurostat water abstraction (env_wat_abs) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_wastewater_connected",
+   "name": "Population connected to urban wastewater collection",
+   "category": "Water & telecom",
+   "description": "Population connected to urban wastewater collection (% of population), 35 countries, 2019: Eurostat population connected to wastewater treatment (env_ww_con)",
+   "color": "rgb(120,200,230)",
+   "family": "wastewater",
+   "colour": "w9c_eu_wastewater_connected",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Population connected to urban wastewater collection",
+     "source": "Eurostat population connected to wastewater treatment (env_ww_con) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_air_passengers",
+   "name": "Air passengers carried",
+   "category": "Mobility",
+   "description": "Air passengers carried (thousand passengers), 35 countries, 2024: Eurostat air passengers per NUTS 2 (tran_r_avpa_nm)",
+   "color": "rgb(190,190,255)",
+   "family": "airports",
+   "colour": "w9c_eu_air_passengers",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Air passengers carried",
+     "source": "Eurostat air passengers per NUTS 2 (tran_r_avpa_nm) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_energy_productivity",
+   "name": "Unable to keep home adequately warm",
+   "category": "People & places",
+   "description": "Unable to keep home adequately warm (% of population), 38 countries, 2018: Eurostat population unable to keep home adequately warm (sdg_07_60)",
+   "color": "rgb(240,200,220)",
+   "family": "energy_poverty",
+   "colour": "w9c_eu_energy_productivity",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Unable to keep home adequately warm",
+     "source": "Eurostat population unable to keep home adequately warm (sdg_07_60) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_world_ourairports_runways",
+   "name": "OurAirports runways",
+   "category": "Mobility",
+   "description": "OurAirports runways: 48,388 records as published",
+   "color": "rgb(190,190,255)",
+   "family": "airports",
+   "parts": [
+    {
+     "layer": "w9_world_ourairports_runways",
+     "where": [
+      "World"
+     ],
+     "what": "airports",
+     "source": "OurAirports runways (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_world_ourairports_navaids",
+   "name": "OurAirports navigation aids",
+   "category": "Land & planning",
+   "description": "OurAirports navigation aids: 11,008 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "heritage_aviation",
+   "parts": [
+    {
+     "layer": "w9_world_ourairports_navaids",
+     "where": [
+      "World"
+     ],
+     "what": "listed heritage",
+     "source": "OurAirports navigation aids (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_epa_lmop_landfills",
+   "name": "EPA LMOP landfills",
+   "category": "Industry & demand",
+   "description": "EPA LMOP landfills: 2,323 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "biogas",
+   "parts": [
+    {
+     "layer": "w9_us_epa_lmop_landfills",
+     "where": [
+      "US"
+     ],
+     "what": "digesters",
+     "source": "EPA LMOP landfills (CC0 (data.gov))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_boem_active_leases",
+   "name": "BOEM active renewable energy leases",
+   "category": "Offshore",
+   "description": "BOEM active renewable energy leases: 4,892 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_us_boem_active_leases",
+     "where": [
+      "US"
+     ],
+     "what": "offshore wind farms",
+     "source": "BOEM active renewable energy leases (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_platforms",
+   "name": "EMODnet offshore installations",
+   "category": "Offshore",
+   "description": "EMODnet offshore installations: 1,617 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_platforms",
+     "where": [
+      "Europe"
+     ],
+     "what": "offshore wind farms",
+     "source": "EMODnet offshore installations (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_pipelines",
+   "name": "EMODnet offshore pipelines",
+   "category": "Gas, oil & coal",
+   "description": "EMODnet offshore pipelines: 3,951 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_pipelines",
+     "where": [
+      "Europe"
+     ],
+     "what": "oil gas facilities",
+     "source": "EMODnet offshore pipelines (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_ocean_energy",
+   "name": "EMODnet wave and tidal energy projects",
+   "category": "Offshore",
+   "description": "EMODnet wave and tidal energy projects: 361 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_ocean_energy",
+     "where": [
+      "Europe"
+     ],
+     "what": "offshore wind farms",
+     "source": "EMODnet wave and tidal energy projects (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_ports",
+   "name": "EMODnet ports",
+   "category": "Offshore",
+   "description": "EMODnet ports: 946 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "ports",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_ports",
+     "where": [
+      "Europe"
+     ],
+     "what": "ports and their traffic",
+     "source": "EMODnet ports (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_port_goods",
+   "name": "EMODnet goods handled per port",
+   "category": "Offshore",
+   "description": "EMODnet goods handled per port: 429,668 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "ports",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_port_goods",
+     "where": [
+      "Europe"
+     ],
+     "what": "ports and their traffic",
+     "source": "EMODnet goods handled per port (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_wwtp",
+   "name": "EMODnet urban wastewater treatment plants (UWWTD)",
+   "category": "Water & telecom",
+   "description": "EMODnet urban wastewater treatment plants (UWWTD): 57,243 records as published",
+   "color": "rgb(120,200,230)",
+   "family": "wastewater",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_wwtp",
+     "where": [
+      "Europe"
+     ],
+     "what": "urban wastewater treatment plants",
+     "source": "EMODnet urban wastewater treatment plants (UWWTD) (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_nuclear",
+   "name": "EMODnet nuclear power plants",
+   "category": "Power plants",
+   "description": "EMODnet nuclear power plants: 121 records as published",
+   "color": "rgb(255,214,72)",
+   "family": "reactors",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_nuclear",
+     "where": [
+      "Europe"
+     ],
+     "what": "reactors in operation and planned",
+     "source": "EMODnet nuclear power plants (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_desalination",
+   "name": "EMODnet desalination plants",
+   "category": "Water & telecom",
+   "description": "EMODnet desalination plants: 3,911 records as published",
+   "color": "rgb(120,200,230)",
+   "family": "water_stress",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_desalination",
+     "where": [
+      "Europe"
+     ],
+     "what": "water abstraction",
+     "source": "EMODnet desalination plants (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_hydrocarbon_licences",
+   "name": "EMODnet hydrocarbon licences",
+   "category": "Gas, oil & coal",
+   "description": "EMODnet hydrocarbon licences: 28,506 records as published",
+   "color": "rgb(230,140,90)",
+   "family": "oil_gas_facilities",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_hydrocarbon_licences",
+     "where": [
+      "Europe"
+     ],
+     "what": "oil gas facilities",
+     "source": "EMODnet hydrocarbon licences (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_mpa",
+   "name": "EMODnet marine protected areas",
+   "category": "Offshore",
+   "description": "EMODnet marine protected areas: 826 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "marine_protected",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_mpa",
+     "where": [
+      "Europe"
+     ],
+     "what": "marine protected areas",
+     "source": "EMODnet marine protected areas (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_military",
+   "name": "EMODnet military areas at sea",
+   "category": "Offshore",
+   "description": "EMODnet military areas at sea: 746 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_military",
+     "where": [
+      "Europe"
+     ],
+     "what": "offshore wind farms",
+     "source": "EMODnet military areas at sea (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_aggregates",
+   "name": "EMODnet marine aggregate areas",
+   "category": "Offshore",
+   "description": "EMODnet marine aggregate areas: 1,202 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_aggregates",
+     "where": [
+      "Europe"
+     ],
+     "what": "offshore wind farms",
+     "source": "EMODnet marine aggregate areas (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_gb_npg_heatmap_substations",
+   "name": "Northern Powergrid heat map: substation headroom",
+   "category": "Power grid",
+   "description": "Northern Powergrid heat map: substation headroom: 670 records as published",
+   "color": "rgb(236,178,120)",
+   "family": "distribution_data",
+   "parts": [
+    {
+     "layer": "w9_gb_npg_heatmap_substations",
+     "where": [
+      "GB"
+     ],
+     "what": "DSO open data (embedded capacity",
+     "source": "Northern Powergrid heat map: substation headroom (check)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_heat_production",
+   "name": "Derived heat produced",
+   "category": "Resources",
+   "description": "Derived heat produced (GWh), 40 countries, 2019: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)",
+   "color": "rgb(255,170,110)",
+   "family": "district_heating",
+   "colour": "w9c_eu_heat_production",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Derived heat produced",
+     "source": "Eurostat electricity and derived heat production by fuel (nrg_bal_peh) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_network_costs",
+   "name": "Network costs, non-household band ID (2,000-19,999 MWh)",
+   "category": "Power grid",
+   "description": "Network costs, non-household band ID (2,000-19,999 MWh) (€ per kWh), 39 countries, 2025: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c)",
+   "color": "rgb(236,178,120)",
+   "family": "network_charges",
+   "colour": "w9c_eu_network_costs",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Network costs, non-household band ID (2,000-19,999 MWh)",
+     "source": "Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_nonhousehold_prices",
+   "name": "Transmission network costs, share of the non-household electricity price (NETC_TRANS)",
+   "category": "Prices",
+   "description": "Transmission network costs, share of the non-household electricity price (NETC_TRANS) (%), 37 countries, 2023: Eurostat non-household electricity prices (nrg_pc_206)",
+   "color": "rgb(255,196,90)",
+   "family": "network_charges",
+   "colour": "w9c_eu_nonhousehold_prices",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Transmission network costs, share of the non-household electricity price (NETC_TRANS)",
+     "source": "Eurostat non-household electricity prices (nrg_pc_206) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_renewable_capacity",
+   "name": "Solar photovoltaic net capacity",
+   "category": "Industry & demand",
+   "description": "Solar photovoltaic net capacity (MW), 41 countries, 2019: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)",
+   "color": "rgb(214,160,255)",
+   "family": "rooftop_solar",
+   "colour": "w9c_eu_renewable_capacity",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Solar photovoltaic net capacity",
+     "source": "Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_eu_internet_households",
+   "name": "Households with internet access",
+   "category": "Water & telecom",
+   "description": "Households with internet access (% of households), 39 countries, 2019: Eurostat household internet access (isoc_ci_in_h)",
+   "color": "rgb(120,200,230)",
+   "family": "broadband",
+   "colour": "w9c_eu_internet_households",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Households with internet access",
+     "source": "Eurostat household internet access (isoc_ci_in_h) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  }
+ ]
+}

@@ -32,15 +32,19 @@ from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResu
 from pydantic import Field
 
 AREA_EVALS = Path(__file__).resolve().parents[2] / "agent" / "evals" / "areas.yaml"
+TASK_EVALS = AREA_EVALS.with_name("tasks.yaml")
 
 
 @lru_cache
 def area_cases() -> dict[str, dict[str, Any]]:
     """The area questions (agent/evals/areas.yaml) and the tool calls that answer them: the fake
     plays them so the graph runs every area case end to end in CI."""
-    if not AREA_EVALS.exists():
-        return {}
-    qs = yaml.safe_load(AREA_EVALS.read_text(encoding="utf-8"))["questions"]
+    qs = [
+        q
+        for f in (AREA_EVALS, TASK_EVALS)
+        if f.exists()
+        for q in yaml.safe_load(f.read_text(encoding="utf-8"))["questions"]
+    ]
     return {q["q"].strip().lower(): q for q in qs}
 
 
@@ -131,7 +135,11 @@ class FakeChatModel(BaseChatModel):
                 "kind": "map" if wants_map else "answer",
                 "map": wants_map,
                 "chart": "chart" in q.lower(),
-                "skills": ["prices"] if "price" in q.lower() else [],
+                "skills": [case["skill"]]
+                if (case := area_cases().get(q.strip().lower())) and case.get("skill")
+                else ["prices"]
+                if "price" in q.lower()
+                else [],
             }
             return AIMessage(content=json.dumps(route))
         if role == "cartographer":

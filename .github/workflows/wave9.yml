@@ -1,0 +1,127 @@
+name: Wave 9 datasets
+
+# The builds of brief 28 (docs/tasks/28-wave9-customer-needs.md): every `build` source of
+# scripts/wave9_sources.yaml, one job per category (0 = finishing wave 8, 1-17 = the wave 9
+# categories), into the lake (private bucket infraatlas-raw, lake/wave9/<id>); P probes every
+# source. Each job commits its build record (data/wave9_built/<cat>.json) and app files back to
+# the branch. Run by hand naming the groups, or from a branch push whose commit message holds
+# "[w9: P 0 1 2 ...]". Keys (each optional; a source that needs a missing key is skipped and says
+# so): FIRMS_MAP_KEY, CENSUS_API_KEY, NREL_API_KEY, CDSAPI_KEY, NASA_EARTHDATA_TOKEN,
+# FINGRID_API_KEY, ENTSOE_API_KEY.
+
+on:
+  workflow_dispatch:
+    inputs:
+      groups:
+        description: "Groups: P and category numbers 0-17"
+        type: string
+        default: "P 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17"
+  push:
+    branches: ["claude/**"]
+
+permissions:
+  contents: write
+
+env:
+  AWS_REQUEST_CHECKSUM_CALCULATION: WHEN_REQUIRED
+  AWS_RESPONSE_CHECKSUM_VALIDATION: WHEN_REQUIRED
+  GROUPS: ${{ inputs.groups || github.event.head_commit.message }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      cats: ${{ steps.p.outputs.cats }}
+      words: ${{ steps.p.outputs.words }}
+      ids: ${{ steps.p.outputs.ids }}
+    steps:
+      - id: p
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import os, re
+          g = os.environ["GROUPS"]
+          m = re.search(r"\[w9: ([A-Za-z0-9_: ]+)\]", g)
+          groups = m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""
+          words = groups.split()
+          cats = [x for x in words if x.isdigit()]
+          # s:<id> builds one source (without rebuilding its category)
+          ids = " ".join(x[2:] for x in words if x.startswith("s:"))
+          print("cats=" + str(cats).replace("'", '"'))
+          print("words=" + str(words).replace("'", '"'))
+          print("ids=" + ids)
+          PY
+
+  P:
+    needs: plan
+    if: contains(fromJSON(needs.plan.outputs.words), 'P')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - run: pip install httpx pyyaml duckdb
+      - run: python scripts/wave9.py probe | tee -a "$GITHUB_STEP_SUMMARY"
+      - run: bash scripts/wave9_commit.sh "Wave 9 probes"
+
+  B:
+    needs: plan
+    if: needs.plan.outputs.cats != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        cat: ${{ fromJSON(needs.plan.outputs.cats) }}
+    env:
+      FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+      CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+      NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
+      CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
+      NASA_EARTHDATA_TOKEN: ${{ secrets.NASA_EARTHDATA_TOKEN }}
+      FINGRID_API_KEY: ${{ secrets.FINGRID_API_KEY }}
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - run: sudo apt-get update -q && sudo apt-get install -y -q gdal-bin build-essential libsqlite3-dev zlib1g-dev && pip install httpx pyyaml duckdb pycountry openpyxl shapely rasterio numpy pandas odfpy xlrd
+      - name: Build tippecanoe (vector tiles of the larger sources)
+        run: |
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 >/dev/null
+          sudo make -C /tmp/tippecanoe install >/dev/null
+      - run: bash scripts/r2_creds.sh
+      - name: Category ${{ matrix.cat }} (each source on its own)
+        run: python scripts/wave9.py build --cat ${{ matrix.cat }} --lake lake-out --upload
+      - name: Commit the build record and app files
+        if: always()
+        run: bash scripts/wave9_commit.sh "Wave 9 category ${{ matrix.cat }} built"
+
+  S:
+    needs: plan
+    if: needs.plan.outputs.ids != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    env:
+      CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
+      NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - run: sudo apt-get update -q && sudo apt-get install -y -q gdal-bin build-essential libsqlite3-dev zlib1g-dev && pip install httpx pyyaml duckdb pycountry openpyxl shapely rasterio numpy pandas odfpy xlrd
+      - name: Build tippecanoe (vector tiles of the larger sources)
+        run: |
+          git clone --depth 1 https://github.com/felt/tippecanoe.git /tmp/tippecanoe
+          make -C /tmp/tippecanoe -j4 >/dev/null
+          sudo make -C /tmp/tippecanoe install >/dev/null
+      - run: bash scripts/r2_creds.sh
+      - name: Single sources
+        run: for id in ${{ needs.plan.outputs.ids }}; do python scripts/wave9.py build --id "$id" --lake lake-out --upload; done
+      - name: Commit the build record and app files
+        if: always()
+        run: bash scripts/wave9_commit.sh "Wave 9 single sources built"
