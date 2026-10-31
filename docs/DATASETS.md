@@ -142,6 +142,16 @@ EFFIS burnt areas (request form), HRL Water & Wetness (EU Login), CO2 Stored (ac
 midstream services (token), NWI (HTTP 403 to automated clients). Per-country cells:
 docs/COVERAGE.md.
 
+## Wave 9 (brief 28, planned 2026-10-31)
+
+Seventeen categories chosen by what customers ask (developers, data-centre builders, grid
+planners, traders, lenders, insurers, industrial buyers, municipal planners), each with EU, UK
+and US sources: land and permitting, grid planning and network charges, markets and revenues,
+physical climate risk, demand and electrification, offshore, supply chain, public money and
+incentives, social, telecom, water, heat networks and geothermal, mobility, nuclear, air
+quality, reliability below the country, night lights. Seeds and licences: brief 28; every
+source probed: `docs/research/wave9-sources.md` (written by the run).
+
 ## Picks for the product
 
 The paid use cases (PLAN.md) are site screening, alerts and history/exports. The datasets

@@ -1,12 +1,17 @@
 ---
 title: Log
 tags: [log]
-updated: 2026-10-29
+updated: 2026-10-31
 ---
 
 # Log
 
 Newest first. One entry per session or merged pull request.
+
+- **2026-10-31** (main, local): PR #17 (brief 27) checked: the backend image job's failure was
+  public.ecr.aws's anonymous pull limit (429), green on main; coverage per family reviewed.
+  Brief 28 written: finish wave 8 and wave 9 in 17 categories chosen by customer needs, with
+  EU, UK and US sources, dashboards and agent skills per customer task. Notes: gotchas.
 
 - **2026-10-29** (claude/funny-euler-7vwg1s): brief 27 built: areas (`resolve_area`, area
   object and store, `in_area()` macros with bbox pruning, `area_stats` over COGs, MapSpec
