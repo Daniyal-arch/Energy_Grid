@@ -28,3 +28,8 @@ One registry, one script, one workflow for every source of brief 28.
 - Part C: Tasks dashboards (`store.ts`), eleven task skills, `agent/evals/tasks.yaml`.
 
 See [[coverage-and-gaps]], [[lake]], [[agent-tools]], [[state-and-datasets]].
+- **On the map** (after PR #18 review): point sources up to 30,000 records as map files; every
+  other positioned source as vector tiles (`w9/<id>.pmtiles`, tippecanoe in the build jobs,
+  `map/wave9Tiles.ts`, click card); area series as colourings (`w9c/<id>.json`, ColourId
+  `w9c_<id>`, `lib/wave9.ts` quartile stops; countries via countryColour, US counties via
+  `map/wave9Layers.ts`). A tippecanoe failure keeps the table and records `tiles.error`.

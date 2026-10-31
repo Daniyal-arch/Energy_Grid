@@ -1115,9 +1115,13 @@ def docs(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
     src = ["## Wave 9 sources (`scripts/wave9.py`, lake `wave9/<id>`)", "",
            "Every table is passthrough: the publisher's rows and columns as published (column names in",
            "lower snake case), one table per source; positions are moved to WGS 84 from the source's CRS",
-           "(computed), points from published coordinates. A map file (`w9/<id>.json`) is written when a",
-           "source is points and holds at most 30,000 records: all of them or none. The full list of the",
-           "sources probed, with the ones blocked or left out, is docs/research/wave9-sources.md.", "",
+           "(computed), points from published coordinates. On the map: a point source of at most 30,000",
+        "records gets a map file (`w9/<id>.json`, all records); every other positioned source is cut into",
+        "vector tiles in Actions (tippecanoe, every record, no feature or size limit; larger sets from",
+        "zoom 4 or 6) published as `w9/<id>.pmtiles` in the public bucket. Area series become colourings",
+        "(`w9c/<id>.json`): one named series per table (the filter is in the file), Eurostat's country",
+        "rows or USGS's US counties, newest period with the most areas, colour stops at the quartiles",
+        "(computed). The full list of the","sources probed, with the ones blocked or left out, is docs/research/wave9-sources.md.", "",
            "| Source | Category | Places | Level | Licence | Rows | Table |", "|---|---|---|---|---|---|---|"]  # fmt: skip
     lake_rows = [
         "### Wave 9 (brief 28)",
@@ -1166,7 +1170,10 @@ def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
                 "source": src,
             }
         if layer:
-            layers.append({**layer, "label": title_of(s), "desc": shows.capitalize(), "group": group,
+            desc = shows.capitalize() + (
+                f" (shown from zoom {layer['minzoom']}: zoom in)" if layer.get("minzoom") else ""
+            )
+            layers.append({**layer, "label": title_of(s), "desc": desc, "group": group,
                            "coverage": ", ".join(w for w in where if w != "World") or "World", "color": colour})  # fmt: skip
             datasets.append({"id": lid, "name": title_of(s), "category": group, "description": f"{title_of(s)}: {b['rows']:,} records as published",
                              "color": colour, "family": s["fam"],
