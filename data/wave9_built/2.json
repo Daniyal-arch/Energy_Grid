@@ -1,0 +1,45 @@
+{
+ "gb_neso_constraint_costs": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "gb_neso_tnuos": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "gb_nged_opendata": {
+  "built": null,
+  "error": "AttributeError: 'list' object has no attribute 'get'"
+ },
+ "gb_npg_opendata": {
+  "built": null,
+  "error": "SystemExit: kind ods_api is not built"
+ },
+ "gb_ssen_opendata": {
+  "built": null,
+  "error": "AttributeError: 'list' object has no attribute 'get'"
+ },
+ "ie_cso_datacentres": {
+  "built": "2026-10-31",
+  "columns": [
+   "c03907v04659",
+   "c03907v04659_code",
+   "tlist_q1",
+   "tlist_q1_code",
+   "statistic",
+   "statistic_code",
+   "value"
+  ],
+  "example": {
+   "answer": 132,
+   "sql": "SELECT count(*) FROM wave9.ie_cso_datacentres"
+  },
+  "geometry": false,
+  "rows": 132,
+  "seconds": 1
+ },
+ "us_openei_urdb": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ }
+}
