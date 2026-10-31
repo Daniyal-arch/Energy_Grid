@@ -1,0 +1,54 @@
+{
+ "gb_brownfield_register": {
+  "bbox": [
+   null,
+   null,
+   null,
+   null
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "dataset",
+   "end_date",
+   "entity",
+   "entry_date",
+   "geometry",
+   "name",
+   "organisation_entity",
+   "point",
+   "prefix",
+   "quality",
+   "reference",
+   "start_date",
+   "typology",
+   "brownfield_land",
+   "deliverable",
+   "hazardous_substances",
+   "hectares",
+   "maximum_net_dwellings",
+   "minimum_net_dwellings",
+   "notes",
+   "organisation",
+   "ownership_status",
+   "planning_permission_date",
+   "planning_permission_history",
+   "planning_permission_status",
+   "planning_permission_type",
+   "site",
+   "site_address",
+   "site_categories",
+   "site_plan_url"
+  ],
+  "example": {
+   "answer": 40229,
+   "sql": "SELECT count(*) FROM wave9.gb_brownfield_register"
+  },
+  "geometry": true,
+  "rows": 40229,
+  "seconds": 1,
+  "tiles": {
+   "error": "Merging index                  | 0 features, 12 bytes of geometry and attributes, 0 bytes of string pool, 0 bytes of vertices, 0 bytes of nodes | Did not read any valid geometries"
+  },
+  "with_position": 0
+ }
+}
