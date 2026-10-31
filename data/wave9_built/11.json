@@ -75,7 +75,7 @@
   },
   "geometry": true,
   "rows": 3911,
-  "seconds": 2,
+  "seconds": 3,
   "with_position": 3911
  },
  "eu_emodnet_wwtp": {
@@ -127,7 +127,7 @@
   },
   "geometry": true,
   "rows": 57243,
-  "seconds": 5,
+  "seconds": 6,
   "with_position": 57243
  },
  "eu_wastewater_connected": {
