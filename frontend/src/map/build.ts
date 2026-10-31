@@ -120,6 +120,7 @@ import { tyndpLayers } from "./tyndpLayers";
 import { capacityGapLayers, connectHLayers } from "./connectHLayers";
 import { registerLayers } from "./registerLayers";
 import { wave8Layers } from "./wave8Layers";
+import { wave9Layers } from "./wave9Layers";
 import { comingLayers } from "./comingLayers";
 import { NZ_COLOR, NZ_POINT, ZA_COLOR, ZA_POINT, type NzFile, type ZaFile } from "../lib/regionalLive";
 import { SEA_CABLE_COLOR, seaPipeLayer, type SeaCable, type SeaCablesFile, type SeaPipe } from "../lib/seaCables";
@@ -723,7 +724,7 @@ export function buildLayers(fr: Frame): Layer[] {
   layers.push(...usSolarLayers(fr));
   layers.push(...evLayers(fr), ...evEuLayers(fr), ...usGasLayers(fr));
   layers.push(...ghgrpLayers(fr));
-  layers.push(...wave8Layers(fr));
+  layers.push(...wave8Layers(fr), ...wave9Layers(fr));
   layers.push(...tyndpLayers(fr));
   layers.push(...worldLayers(fr, near));
   layers.push(...usLayers(fr));

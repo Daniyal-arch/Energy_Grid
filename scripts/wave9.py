@@ -546,12 +546,82 @@ def build_one(con, lk, s: dict[str, Any]) -> dict[str, Any]:  # noqa: ANN001
         "built": time.strftime("%Y-%m-%d"),
     }  # fmt: skip
     if geometry:
+        app_file(con, s, query)
         bb = con.execute(
             f"SELECT min(ST_XMin(geometry)), min(ST_YMin(geometry)), max(ST_XMax(geometry)), max(ST_YMax(geometry)), count(geometry) FROM ({query})"
         ).fetchone()
         out["bbox"] = [round(x, 3) if x is not None else None for x in bb[:4]]
         out["with_position"] = bb[4]
     return out
+
+
+APP = ROOT / "frontend" / "public" / "data" / "eu" / "w9"
+APP_MAX_POINTS = 30000
+NAME_COLS = (
+    "name",
+    "site_name",
+    "facility_name",
+    "company",
+    "dam_name",
+    "plant_name",
+    "project_name",
+    "title",
+    "label",
+    "operator",
+    "site",
+    "ident",
+)
+
+
+def app_file(con, s: dict[str, Any], query: str) -> None:  # noqa: ANN001
+    """A small map file (points only, at most APP_MAX_POINTS, all of them or none): position,
+    a name and up to six columns as published, for the generic wave-9 layer."""
+    n, pts = con.execute(
+        f"SELECT count(*), count(*) FILTER (WHERE ST_GeometryType(geometry)::VARCHAR = 'POINT') FROM ({query}) WHERE geometry IS NOT NULL"
+    ).fetchone()
+    if not n or pts != n or n > APP_MAX_POINTS:
+        return
+    cols = [
+        c
+        for (c,) in con.execute(f"SELECT column_name FROM (DESCRIBE ({query}))").fetchall()
+        if c not in ("geometry", "bbox")
+    ]
+    name = next((c for c in NAME_COLS if c in cols), None) or next(
+        (c for c in cols if "name" in c), None
+    )
+    keep = [
+        c
+        for c in (s.get("show") or cols)
+        if c in cols
+        and c != name
+        and not c.startswith(("ogc_fid", "objectid", "fid", "shape_", "globalid"))
+    ][:6]
+    sel = ", ".join(
+        ["round(ST_X(geometry), 4)", "round(ST_Y(geometry), 4)", f'"{name}"' if name else "NULL"]
+        + [f'"{c}"' for c in keep]
+    )
+    rows = con.execute(f"SELECT {sel} FROM ({query}) WHERE geometry IS NOT NULL").fetchall()
+    APP.mkdir(parents=True, exist_ok=True)
+    w.write_json(
+        APP / f"{s['id']}.json",
+        {
+            "fetched": w.now(),
+            "source": f"{title_of(s)} ({s['licence']})",
+            "fields": ["lon", "lat", "name", *keep],
+            "points": [
+                [
+                    r[0],
+                    r[1],
+                    *(
+                        v if isinstance(v, (int, float, str)) or v is None else str(v)
+                        for v in r[2:]
+                    ),
+                ]
+                for r in rows
+            ],
+        },  # fmt: skip
+        max_mb=6,
+    )
 
 
 def build(args: argparse.Namespace) -> None:
@@ -733,6 +803,7 @@ def render(args: argparse.Namespace) -> None:
         encoding="utf-8",
     )
     research(srcs, built, probes)
+    app_manifest(srcs, built)
     catalog(srcs, built)
     levels(srcs, built)
     counts = {}
@@ -792,6 +863,47 @@ def research(srcs: list[dict[str, Any]], built: dict[str, Any], probes: dict[str
             )
         lines.append("")
     (ROOT / "docs" / "research" / "wave9-sources.md").write_text("\n".join(lines), encoding="utf-8")
+
+
+GROUP = {0: None, 1: "Land & planning", 2: "Power grid", 3: "Prices", 4: "Risk", 5: "Industry & demand", 6: "Offshore",
+         7: "Industry & demand", 8: "Money", 9: "People & places", 10: "Water & telecom", 11: "Water & telecom",
+         12: "Resources", 13: "Mobility", 14: "Power plants", 15: "Emissions", 16: "Power grid", 17: "People & places"}  # fmt: skip
+FAMILY_GROUP = {
+    "oil_gas_facilities": "Gas, oil & coal",
+    "co2_storage": "Industry & demand",
+    "flood_zones": "Risk",
+}
+GROUP_COLOUR = {"Land & planning": "rgb(206,184,140)", "Power grid": "rgb(236,178,120)", "Prices": "rgb(255,196,90)",
+                "Risk": "rgb(255,120,96)", "Industry & demand": "rgb(214,160,255)", "Offshore": "rgb(96,190,255)",
+                "Money": "rgb(150,220,150)", "People & places": "rgb(240,200,220)", "Water & telecom": "rgb(120,200,230)",
+                "Resources": "rgb(255,170,110)", "Mobility": "rgb(190,190,255)", "Power plants": "rgb(255,214,72)",
+                "Emissions": "rgb(200,200,200)", "Gas, oil & coal": "rgb(230,140,90)"}  # fmt: skip
+
+
+def where_of(places: list[str]) -> list[str]:
+    return [{"EU27": "EU", "EUR": "Europe", "WORLD": "World"}.get(p, p) for p in places]
+
+
+def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
+    """frontend/src/app/wave9.json: a layer and a dataset entry per source with a map file."""
+    layers, datasets = [], []
+    for s in srcs:
+        if not (built.get(s["id"]) or {}).get("rows") or not (APP / f"{s['id']}.json").exists():
+            continue
+        group = GROUP.get(s["cat"]) or FAMILY_GROUP.get(s["fam"], "Industry & demand")
+        colour = GROUP_COLOUR.get(group, "rgb(200,200,200)")
+        fam = families().get(s["fam"], {})
+        lid = f"w9_{s['id']}"
+        where = where_of(s["places"])
+        layers.append({"id": lid, "label": title_of(s), "desc": fam.get("shows", s["fam"].replace("_", " ")).capitalize(),
+                       "group": group, "coverage": ", ".join(w for w in where if w != "World") or "World", "color": colour})  # fmt: skip
+        datasets.append({"id": lid, "name": title_of(s), "category": group, "description": f"{title_of(s)}: {built[s['id']]['rows']:,} records as published",
+                         "color": colour, "family": s["fam"],
+                         "parts": [{"layer": lid, "where": where, "what": fam.get("shows", ""), "source": f"{title_of(s)} ({s['licence']})", "doc": "Wave 9 sources"}]})  # fmt: skip
+    (ROOT / "frontend" / "src" / "app" / "wave9.json").write_text(
+        json.dumps({"layers": layers, "datasets": datasets}, indent=1, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
 
 
 def catalog(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:

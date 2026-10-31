@@ -10,6 +10,7 @@ import type { AreaSpec, LonLat } from "../lib/area";
 import type { MapPanel, Style } from "./maps";
 import { DEFAULT_STYLE, styleOf } from "./styleDefaults";
 import { EUROPE_ISO3 } from "../lib/transition";
+import WAVE9 from "./wave9.json";
 
 export type TimeMode = "live" | "day" | "years";
 
@@ -82,7 +83,9 @@ export type LayerId =
   | "offshoreWind"
   | "wind"
   | "sun"
-  | "night";
+  | "night"
+  // data wave 9: one generic point layer per source (app/wave9.json, map/wave9Layers.ts)
+  | `w9_${string}`;
 
 export type LayerGroup =
   | "Electricity"
@@ -96,7 +99,12 @@ export type LayerGroup =
   | "Risk"
   | "Resources"
   | "Weather"
-  | "Money";
+  | "Money"
+  | "Land & planning"
+  | "Offshore"
+  | "Water & telecom"
+  | "Mobility"
+  | "People & places";
 export const LAYER_GROUPS: LayerGroup[] = [
   "Electricity",
   "Prices",
@@ -110,6 +118,11 @@ export const LAYER_GROUPS: LayerGroup[] = [
   "Resources",
   "Weather",
   "Money",
+  "Land & planning",
+  "Offshore",
+  "Water & telecom",
+  "Mobility",
+  "People & places",
 ];
 
 export interface LayerInfo {
@@ -195,6 +208,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "solarResource", label: "Solar resource", desc: "PV output per kWp installed, long-term average (Global Solar Atlas)", group: "Resources", coverage: "World", color: "rgb(240,196,112)" },
   { id: "windResource", label: "Wind resource", desc: "Mean wind speed at 100 m (Global Wind Atlas)", group: "Resources", coverage: "World", color: "rgb(128,206,206)" },
   { id: "night", label: "Night", desc: "Where it is dark at that moment", group: "Weather", coverage: "World", color: "rgb(90,110,160)", modes: ["day"] },
+  ...(WAVE9.layers as LayerInfo[]),
 ];
 
 /** Layers with their own figures in the panel's "On the map" tab (ui/LayerStats.tsx). */

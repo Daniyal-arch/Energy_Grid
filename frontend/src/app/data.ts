@@ -304,6 +304,7 @@ function loaderFor(key: string): Loader | null {
   const index = () => useDataStore.getState().files.dayIndex as { remote: string[]; local: string[] } | undefined;
   // recordings take a bundled copy first (the archive can be slow to answer)
   const inArchive = () => !(RECORDING && index()?.local.includes(arg)) && (index()?.remote.includes(arg) ?? true);
+  if (kind === "w9") return bundled(`w9/${arg}.json`);
   if (kind === "day") return inArchive() ? archiveFirst(`${ARCHIVE_REMOTE}/day/${arg}.json`, `/data/eu/day/${arg}.json`) : bundled(`day/${arg}.json`);
   if (kind === "dayWind") return inArchive() ? archiveFirst(`${ARCHIVE_REMOTE}/wind/${arg}.json`, `/data/eu/wind/${arg}.json`) : bundled(`wind/${arg}.json`);
   if (kind === "week")
