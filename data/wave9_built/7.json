@@ -135,7 +135,7 @@
   },
   "geometry": true,
   "rows": 2323,
-  "seconds": 0,
+  "seconds": 1,
   "with_position": 2323
  },
  "us_usgs_mrds": {
@@ -200,7 +200,21 @@
   },
   "geometry": true,
   "rows": 304632,
-  "seconds": 4,
+  "seconds": 5,
+  "tiles": {
+   "fields": [
+    "name",
+    "dep_id",
+    "url",
+    "mrds_id",
+    "mas_id",
+    "latitude",
+    "longitude"
+   ],
+   "kind": "point",
+   "minzoom": 6,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_mrds.pmtiles"
+  },
   "with_position": 304613
  }
 }
