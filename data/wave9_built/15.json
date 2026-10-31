@@ -70,7 +70,21 @@
   },
   "geometry": true,
   "rows": 65709,
-  "seconds": 7,
+  "seconds": 4,
+  "tiles": {
+   "fields": [
+    "name",
+    "state_code",
+    "county_code",
+    "site_num",
+    "parameter_code",
+    "poc",
+    "latitude"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_epa_aqs_annual.pmtiles"
+  },
   "with_position": 65709
  }
 }
