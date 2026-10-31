@@ -1,0 +1,14 @@
+{
+ "eu_wastewater_connected": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "eu_water_abstraction": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ },
+ "eu_water_use": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ }
+}
