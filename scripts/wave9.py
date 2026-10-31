@@ -323,6 +323,10 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         )
         if kind == "csv_zip":
             f = first_file(w.unzip(f), (".csv", ".txt"))
+        if s.get("recode"):  # a legacy encoding DuckDB does not read: to UTF-8 first
+            utf8 = f.with_suffix(".utf8.csv")
+            utf8.write_text(f.read_bytes().decode(s["recode"], errors="replace"), encoding="utf-8")
+            f = utf8
         parts = ["sample_size = -1", "ignore_errors = true", "header = true"]
         if s.get("sep"):
             parts.append(f"delim = '{s['sep']}'")
@@ -351,7 +355,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(data))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000)"
         )
     elif kind == "socrata":
         rows: list[dict[str, Any]] = []
@@ -365,7 +369,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(rows))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000)"
         )
     elif kind == "jsonstat":
         con.execute("CREATE OR REPLACE TABLE t AS SELECT * FROM (VALUES (1)) LIMIT 0")
@@ -373,7 +377,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(rows))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array')"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1)"
         )
     elif kind == "odata":
         rows = []
@@ -386,7 +390,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(rows))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000)"
         )
     elif kind == "ckan":
         # the newest CSV (or `fmt`) resource of the first package the search finds
@@ -420,15 +424,17 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         import pandas as pd
 
         f = w.download(url, d / f"src.{kind}", timeout=3600)
-        raw = pd.read_excel(
-            f,
-            sheet_name=s.get("sheet", 0),
-            header=None,
-            engine="odf" if kind == "ods" else None,
-            dtype=str,
+        book = pd.ExcelFile(f, engine="odf" if kind == "ods" else None)
+        # the first sheet that is not a cover, contents or notes page (or the one named)
+        skip = re.compile(r"cover|content|note|info|about|meta|guidance", re.I)
+        sheet = s.get("sheet") or next(
+            (n for n in book.sheet_names if not skip.search(n)), book.sheet_names[0]
         )
+        print(f"  sheet {sheet!r} of {book.sheet_names[:8]}", flush=True)
+        raw = book.parse(sheet, header=None, dtype=str)
         # the header is the first row with at least three filled cells (title rows come first)
-        h = next(i for i, row in raw.iterrows() if row.notna().sum() >= max(3, raw.shape[1] // 2))
+        filled = raw.head(40).notna().sum(axis=1)
+        h = int(next(i for i, n in filled.items() if n >= max(3, 0.6 * filled.max())))
         body = raw.iloc[h + 1 :].copy()
         body.columns = [
             str(c) if str(c) != "nan" else f"col_{i}" for i, c in enumerate(raw.iloc[h])
@@ -593,7 +599,7 @@ def app_file(con, s: dict[str, Any], query: str) -> None:  # noqa: ANN001
         c
         for c in (s.get("show") or cols)
         if c in cols
-        and c != name
+        and c not in (name, "lon", "lat", "name")
         and not c.startswith(("ogc_fid", "objectid", "fid", "shape_", "globalid"))
     ][:6]
     sel = ", ".join(

@@ -1,1 +1,303 @@
-{"layers": [], "datasets": []}
+{
+ "layers": [
+  {
+   "id": "w9_us_eia_biodiesel",
+   "label": "EIA biodiesel plants",
+   "desc": "Digesters",
+   "group": "Industry & demand",
+   "coverage": "US",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_eia_ethanol",
+   "label": "EIA ethanol plants",
+   "desc": "Digesters",
+   "group": "Industry & demand",
+   "coverage": "US",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_epa_lmop",
+   "label": "EPA LMOP landfill gas energy projects",
+   "desc": "Digesters",
+   "group": "Industry & demand",
+   "coverage": "US",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_world_ourairports_runways",
+   "label": "OurAirports runways",
+   "desc": "Airports",
+   "group": "Mobility",
+   "coverage": "World",
+   "color": "rgb(190,190,255)"
+  },
+  {
+   "id": "w9_world_ourairports_navaids",
+   "label": "OurAirports navigation aids",
+   "desc": "Listed heritage",
+   "group": "Land & planning",
+   "coverage": "World",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_us_epa_lmop_landfills",
+   "label": "EPA LMOP landfills",
+   "desc": "Digesters",
+   "group": "Industry & demand",
+   "coverage": "US",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_platforms",
+   "label": "EMODnet offshore installations",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_ocean_energy",
+   "label": "EMODnet wave and tidal energy projects",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_ports",
+   "label": "EMODnet ports",
+   "desc": "Ports and their traffic",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_nuclear",
+   "label": "EMODnet nuclear power plants",
+   "desc": "Reactors in operation and planned",
+   "group": "Power plants",
+   "coverage": "Europe",
+   "color": "rgb(255,214,72)"
+  },
+  {
+   "id": "w9_eu_emodnet_desalination",
+   "label": "EMODnet desalination plants",
+   "desc": "Water abstraction",
+   "group": "Water & telecom",
+   "coverage": "Europe",
+   "color": "rgb(120,200,230)"
+  }
+ ],
+ "datasets": [
+  {
+   "id": "w9_us_eia_biodiesel",
+   "name": "EIA biodiesel plants",
+   "category": "Industry & demand",
+   "description": "EIA biodiesel plants: 75 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "biogas",
+   "parts": [
+    {
+     "layer": "w9_us_eia_biodiesel",
+     "where": [
+      "US"
+     ],
+     "what": "digesters",
+     "source": "EIA biodiesel plants (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_eia_ethanol",
+   "name": "EIA ethanol plants",
+   "category": "Industry & demand",
+   "description": "EIA ethanol plants: 197 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "biogas",
+   "parts": [
+    {
+     "layer": "w9_us_eia_ethanol",
+     "where": [
+      "US"
+     ],
+     "what": "digesters",
+     "source": "EIA ethanol plants (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_epa_lmop",
+   "name": "EPA LMOP landfill gas energy projects",
+   "category": "Industry & demand",
+   "description": "EPA LMOP landfill gas energy projects: 542 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "biogas",
+   "parts": [
+    {
+     "layer": "w9_us_epa_lmop",
+     "where": [
+      "US"
+     ],
+     "what": "digesters",
+     "source": "EPA LMOP landfill gas energy projects (CC0 (data.gov))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_world_ourairports_runways",
+   "name": "OurAirports runways",
+   "category": "Mobility",
+   "description": "OurAirports runways: 48,388 records as published",
+   "color": "rgb(190,190,255)",
+   "family": "airports",
+   "parts": [
+    {
+     "layer": "w9_world_ourairports_runways",
+     "where": [
+      "World"
+     ],
+     "what": "airports",
+     "source": "OurAirports runways (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_world_ourairports_navaids",
+   "name": "OurAirports navigation aids",
+   "category": "Land & planning",
+   "description": "OurAirports navigation aids: 11,008 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "heritage_aviation",
+   "parts": [
+    {
+     "layer": "w9_world_ourairports_navaids",
+     "where": [
+      "World"
+     ],
+     "what": "listed heritage",
+     "source": "OurAirports navigation aids (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_epa_lmop_landfills",
+   "name": "EPA LMOP landfills",
+   "category": "Industry & demand",
+   "description": "EPA LMOP landfills: 2,323 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "biogas",
+   "parts": [
+    {
+     "layer": "w9_us_epa_lmop_landfills",
+     "where": [
+      "US"
+     ],
+     "what": "digesters",
+     "source": "EPA LMOP landfills (CC0 (data.gov))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_platforms",
+   "name": "EMODnet offshore installations",
+   "category": "Offshore",
+   "description": "EMODnet offshore installations: 1,617 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_platforms",
+     "where": [
+      "Europe"
+     ],
+     "what": "offshore wind farms",
+     "source": "EMODnet offshore installations (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_ocean_energy",
+   "name": "EMODnet wave and tidal energy projects",
+   "category": "Offshore",
+   "description": "EMODnet wave and tidal energy projects: 361 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_ocean_energy",
+     "where": [
+      "Europe"
+     ],
+     "what": "offshore wind farms",
+     "source": "EMODnet wave and tidal energy projects (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_ports",
+   "name": "EMODnet ports",
+   "category": "Offshore",
+   "description": "EMODnet ports: 946 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "ports",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_ports",
+     "where": [
+      "Europe"
+     ],
+     "what": "ports and their traffic",
+     "source": "EMODnet ports (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_nuclear",
+   "name": "EMODnet nuclear power plants",
+   "category": "Power plants",
+   "description": "EMODnet nuclear power plants: 121 records as published",
+   "color": "rgb(255,214,72)",
+   "family": "reactors",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_nuclear",
+     "where": [
+      "Europe"
+     ],
+     "what": "reactors in operation and planned",
+     "source": "EMODnet nuclear power plants (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_desalination",
+   "name": "EMODnet desalination plants",
+   "category": "Water & telecom",
+   "description": "EMODnet desalination plants: 3,911 records as published",
+   "color": "rgb(120,200,230)",
+   "family": "water_stress",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_desalination",
+     "where": [
+      "Europe"
+     ],
+     "what": "water abstraction",
+     "source": "EMODnet desalination plants (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  }
+ ]
+}

@@ -58,6 +58,17 @@ def test_every_skill_parses_and_names_its_catalogue_entries():
         "emissions",
         "places-and-shapes",
         "area-analysis",
+        "datacentre-siting",
+        "battery-siting",
+        "solar-wind-siting",
+        "offshore-wind",
+        "physical-risk",
+        "grid-planning",
+        "revenues",
+        "industrial-decarbonisation",
+        "heat-networks",
+        "ev-electrification",
+        "public-money",
     }
     for sk in s.skills.values():
         assert sk.description and "Relies on" in sk.body

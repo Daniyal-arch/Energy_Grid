@@ -331,7 +331,7 @@ export interface Camera {
   box?: [number, number, number, number];
 }
 /** The Dashboards menu's sections ("Mine": saved in this browser). */
-export const DASHBOARD_GROUPS = ["Europe", "United States", "Countries", "World", "Mine"] as const;
+export const DASHBOARD_GROUPS = ["Europe", "United States", "Countries", "World", "Tasks", "Mine"] as const;
 export type DashboardGroup = (typeof DASHBOARD_GROUPS)[number];
 /** A saved view: datasets (as their map layers), an area, the time mode and the countries' colour. */
 export interface Dashboard {
@@ -355,6 +355,23 @@ export interface Dashboard {
   dayRegion?: DayRegion;
 }
 const EUROPE = [...EUROPE_ISO3];
+/** The layers of a list that exist (wave-9 layers exist only once their map file is built). */
+const have = (...ids: string[]): LayerId[] => ids.filter((id) => LAYERS.some((l) => l.id === id)) as LayerId[];
+// Customer tasks (docs/tasks/28, part C): each sets the layers, area and camera for one question
+// and shows every criterion with its own source; none ranks sites (no composite score).
+const TASKS: Dashboard[] = [
+  { id: "task-datacentre", group: "Tasks", label: "Data-centre siting", blurb: "Power first (free capacity, substations, lines), then fibre (cables, existing data centres), water stress and flood, protected land", mode: "live", colour: "none", layers: have("connect", "substations", "gridEU", "gridUS", "cables", "dataCentres", "water", "flood", "protectedAreas", "w9_eu_emodnet_wwtp"), camera: "europe" },
+  { id: "task-battery", group: "Tasks", label: "Battery storage siting", blurb: "Free capacity and substations, distribution headroom, the grid; prices and negative hours in the country panel", mode: "live", colour: "pr_negative", layers: have("connect", "substations", "gridEU", "w9_gb_npg_heatmap_substations", "w9_gb_nged_generation_capacity"), camera: "europe" },
+  { id: "task-solar-wind", group: "Tasks", label: "Solar and wind siting", blurb: "Resource, free capacity, protected areas, flood hazard, roads and rail, land quality where published", mode: "live", colour: "none", layers: have("solarResource", "windResource", "connect", "protectedAreas", "flood", "roadsRail", "gridEU"), camera: "europe" },
+  { id: "task-offshore", group: "Tasks", label: "Offshore wind", blurb: "Offshore farms, platforms, ports, sea cables, the coastal grid; depth and seabed via the agent", mode: "live", colour: "none", layers: have("offshoreWind", "cables", "gridEU", "w9_eu_emodnet_platforms", "w9_eu_emodnet_ports", "w9_eu_emodnet_ocean_energy"), camera: "europe" },
+  { id: "task-physical-risk", group: "Tasks", label: "Physical risk to grid assets", blurb: "Plants, substations and lines over river flood, fires, dams and water stress; storms and earthquakes via the agent", mode: "live", colour: "none", layers: have("plantsEU", "plantsUS", "substations", "gridEU", "gridUS", "flood", "w8Fires", "w8Dams", "water"), camera: "europe" },
+  { id: "task-grid-planning", group: "Tasks", label: "Grid planning", blurb: "TYNDP projects, free capacity, queues and the existing grid", mode: "live", colour: "none", layers: have("tyndp", "connect", "gridEU", "substations", "usQueue"), camera: "europe" },
+  { id: "task-revenues", group: "Tasks", label: "Balancing and capacity revenues", blurb: "Negative-price hours per zone and the flows; reserve prices and capacity auctions via the agent", mode: "live", colour: "pr_negative", layers: have("flows", "gridEU"), camera: "europe" },
+  { id: "task-industry", group: "Tasks", label: "Industrial decarbonisation", blurb: "Emitters, excess heat, CO₂ storage, hydrogen projects and industrial facilities", mode: "live", colour: "none", layers: have("ets", "w8ExcessHeat", "w8Co2Storage", "hydrogen", "w8Industrial", "steel", "cement"), camera: "europe" },
+  { id: "task-heat-networks", group: "Tasks", label: "Heat networks", blurb: "Excess heat from industry, wastewater plants and data centres; heat demand via the agent (Hotmaps)", mode: "live", colour: "none", layers: have("w8ExcessHeat", "w9_eu_emodnet_wwtp", "dataCentres"), camera: "europe" },
+  { id: "task-ev", group: "Tasks", label: "EV and electrification", blurb: "Chargers in Europe and the US; vehicles per area and heat pumps via the agent", mode: "live", colour: "none", layers: have("evChargersEU", "evChargersUS", "roadsRail"), camera: "europe" },
+  { id: "task-public-money", group: "Tasks", label: "Public money and incentives", blurb: "Public finance for coal and gas abroad, emitters; cohesion projects, energy communities and opportunity zones via the agent", mode: "live", colour: "none", layers: have("financeCoal", "financeGas", "ets"), camera: "world" },
+];
 export const DASHBOARDS: Dashboard[] = [
   { id: "europe-live", group: "Europe", label: "Europe now", blurb: "Power flows, renewable share and the grid, every 30 minutes", mode: "live", colour: "renewable", layers: ["flows", "gridEU", "hvdc", "substations", "plantsEU"], area: EUROPE, camera: "europe" },
   { id: "europe-day", group: "Europe", label: "Europe's last 24 hours", blurb: "Generation, prices and flows every 15 minutes", mode: "day", colour: "none", layers: ["flows", "towers", "prices", "night", "wind", "gridEU"], camera: "day" },
@@ -379,6 +396,7 @@ export const DASHBOARDS: Dashboard[] = [
   { id: "methane", group: "World", label: "Methane from space", blurb: "Plumes seen by satellites, fields and mines", mode: "live", colour: "none", layers: ["methane", "oilGasFields", "coalMines"], camera: "world" },
   { id: "money", group: "World", label: "Who finances fossil power", blurb: "Banks' money flowing to coal and gas", mode: "live", colour: "none", layers: ["financeCoal", "financeGas"], camera: { center: [100, 22], zoom: 2.1 } },
   { id: "heavy-industry", group: "World", label: "Heavy industry", blurb: "Steel, cement and chemical plants", mode: "live", colour: "none", layers: ["steel", "cement", "chemicals", "ironOre"], camera: "world" },
+  ...TASKS,
 ];
 export const DEFAULT_DASHBOARD = "europe-live";
 

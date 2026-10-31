@@ -1,0 +1,9515 @@
+{
+ "acceleration_areas": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 133,
+    "portal": "data.gov.uk",
+    "top": [
+     "Housing Renewal Area",
+     "Housing Renewal Areas",
+     "Allerdale Renewal Area Land Charge"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "renewables acceleration areas"
+ },
+ "air_quality": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Representativeness and classification of air quality monitoring stations",
+     "Representativeness and classification of air quality monitoring stations"
+    ]
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "INSPIRE – Air quality monitoring stations",
+     "Air quality monitoring stations (2018–2024)"
+    ]
+   },
+   "DE": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "WFS Hamburger Luftmessnetz (HaLm)",
+     "WMS Hamburger Luftmessnetz (HaLm)"
+    ]
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 263,
+    "portal": "data.gov.uk",
+    "top": [
+     "Air Quality Monitoring Stations",
+     "Air Quality Monitoring Stations",
+     "Air Quality Monitoring Stations"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "INSPIRE Air Quality Monitoring Stations",
+     "INSPIRE Air Quality Monitoring Stations",
+     "INSPIRE Air Quality Monitoring Stations - HVD"
+    ]
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 6,
+    "portal": "data.europa.eu",
+    "top": [
+     "INSPIRE Priority Data Set (as-is) - Air quality monitoring stations (including assessment ",
+     "Annex III. Atmospheric conditions (INSPIRE Download Service)",
+     "Annex III. Atmospheric conditions (INSPIRE dataset)"
+    ]
+   },
+   "LU": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "INSPIRE - Annex III Theme Environmental Monitoring Facilities - EnvironmentalMonitoringFac",
+     "INSPIRE - Annex III Theme Environmental Monitoring Facilities - EnvironmentalMonitoringNet",
+     "INSPIRE - Annex III Theme Environmental Monitoring Facilities - EnvironmentalMonitoringFac"
+    ]
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Air Quality Monitoring Network - Autonomous Region of the Azores (RAA)"
+    ]
+   },
+   "RO": {
+    "count": 172,
+    "portal": "data.europa.eu",
+    "top": [
+     "Information on the distribution of air quality monitoring stations by zones and agglomerat",
+     "Station RO0179A, 'Ploiești' : List of validated air quality measurements, 2007 - 2014",
+     "Station RO0170A: List of validated air quality measurements, 2007 - 2014"
+    ]
+   },
+   "SE": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Air quality measurements of particular matter PM2.5 and PM10",
+     "Air quality data, ATOM download service"
+    ]
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 5,
+    "portal": "data.europa.eu",
+    "top": [
+     "INSPIRE PD 3.01 Air quality monitoring stations",
+     "INSPIRE PD 3,01 Air quality monitoring stations: Storage service",
+     "INSPIRE PD 3,01 Air quality monitoring stations: Viewing service"
+    ]
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "NARSTO EPA Supersite (SS) Houston, Texas Air Quality Study 2000 (TexAQS2000) Texas Natural",
+     "Data collected at Pawtuckaway Beach in Nottingham, New Hampshire, 2015-2017, including dat",
+     "KMZ files of EPA Ambient Monitors"
+    ]
+   }
+  },
+  "query": "air quality monitoring stations"
+ },
+ "airports": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 5,
+    "portal": "data.gov.uk",
+    "top": [
+     "Airport Departing Passenger Survey",
+     "Busiest Airports by Passenger Traffic",
+     "Flights and Passengers from London Airports"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 12,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Coach Bus Passengers per Month at Port Authority of NY NJ Airports: Beginning 2002",
+     "Annual Enplanements in NYS Airports: Beginning 1997",
+     "Shared Ride Passengers at Port Authority of NY NJ Airports: Beginning 2005"
+    ]
+   }
+  },
+  "query": "airports passengers"
+ },
+ "balancing": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 30,
+    "portal": "data.gov.uk",
+    "top": [
+     "Balance sheet analysis and farming performance",
+     "Water Resource Management Plan Supply-Demand Balance Forecast Collated Data",
+     "National Environment Programme - 2024 Price Review Final Determination"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "balancing reserves prices"
+ },
+ "bathymetry": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Tiefenmodell (1m) - Wörthersee"
+    ]
+   },
+   "BE": {
+    "count": 11,
+    "portal": "data.europa.eu",
+    "top": [
+     "Waterways - Bathymetry - XYZ Point Cloud",
+     "Bathymetry - Relief of the waterbed of Walloon waterways",
+     "Bathymetry for the banks of the Flemish Coast"
+    ]
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 1228,
+    "portal": "data.europa.eu",
+    "top": [
+     "Elevation (Bathymetry)",
+     "Height (Bathymetry)",
+     "Bathymetry of the Trave, as of 2023"
+    ]
+   },
+   "DK": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "Height and depth map of Denmark",
+     "General bathymetric map of the oceans (2019) Polar Stereographic",
+     "Topography and Batymetry of Europe"
+    ]
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 37,
+    "portal": "data.europa.eu",
+    "top": [
+     "WMS view service of bathymetry",
+     "Coast line v1.0 - Bathymetry 2022-2023",
+     "Bathymetry of Catalonia"
+    ]
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 283,
+    "portal": "data.europa.eu",
+    "top": [
+     "EMODnet Bathymetry",
+     "Bathymetry_DT CB",
+     "Lagoon Bathymetry 1985"
+    ]
+   },
+   "GB": {
+    "count": 500,
+    "portal": "data.gov.uk",
+    "top": [
+     "Multibeam Bathymetry",
+     "Satellite Derived Bathymetry",
+     "Welsh Lakes Bathymetry Data"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 53,
+    "portal": "data.europa.eu",
+    "top": [
+     "CE10018 Pipeline Bathymetry Survey",
+     "INFOMAR Seabed Survey Bathymetry (Multi-beam & LiDAR)",
+     "Bathymetric Survey of Lough Feeagh, Co. Mayo."
+    ]
+   },
+   "IT": {
+    "count": 64,
+    "portal": "data.europa.eu",
+    "top": [
+     "Topographic Database - TOPIC: BATHYMETRY",
+     "Bathymetry of the seas",
+     "Bathymetry of Lake Trasimeno"
+    ]
+   },
+   "LT": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Bathymetry",
+     "Annex II. INSPIRE View Service for Elevation Theme"
+    ]
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "EL.200m.bathymetry",
+     "EL.200m.bathymetry",
+     "200m Isobath within the 25 mile management zone"
+    ]
+   },
+   "NL": {
+    "count": 125,
+    "portal": "data.europa.eu",
+    "top": [
+     "Bathymetry Caribbean South",
+     "Bathymetry Caribbean North",
+     "Bathymetry Caribbean North"
+    ]
+   },
+   "PL": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Baltic Sea – Bathymetric map of the South Baltic Sea, 1:200,000"
+    ]
+   },
+   "PT": {
+    "count": 41,
+    "portal": "data.europa.eu",
+    "top": [
+     "Batimetric model - EEZ",
+     "Batimetric model - Lagoa",
+     "Batimetric Model - Garajau"
+    ]
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 13,
+    "portal": "data.europa.eu",
+    "top": [
+     "EL.Bathymetry",
+     "Arctic Gakkel Vents (AGAVE) 2007 - Meteorological, Oceanographic and Ship Data Collected O",
+     "Oden Southern Ocean 2008/09 - Meteorological, Oceanographic and Ship Data Collected Onboar"
+    ]
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Crowdsourced Bathymetry",
+     "Great Lakes Bathymetry",
+     "Multibeam Bathymetry Database (MBBDB)"
+    ]
+   }
+  },
+  "query": "bathymetry"
+ },
+ "biogas": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "Biogas plants",
+     "Fermentation of manure in biogas plants",
+     "Animal by-products 2004-2006"
+    ]
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Czech Republic 2030 19.1.2 Number of biogas plants in the Czech Republic"
+    ]
+   },
+   "DE": {
+    "count": 42,
+    "portal": "data.europa.eu",
+    "top": [
+     "33. Amendment of the F-Plan of SG Lachendorf \"Biogas Plants Ahnsbeck and Metzingen\"",
+     "Energie_WFS – Biogas plants – OGC API Features",
+     "Energie_WFS – Biogas plants – OGC WFS Interface"
+    ]
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 0,
+    "portal": "data.gov.uk",
+    "top": []
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "Waste management - WFS",
+     "Waste management - WMS",
+     "Waste management"
+    ]
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Impianti autorizzati al trattamento rifiuti e produzione biogas biometano dalla Provincia "
+    ]
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Lists of approved animal by-products establishments"
+    ]
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "biogas plants"
+ },
+ "broadband": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "WFS broadband coverage district Wesel",
+     "Expansion status FTTH",
+     "Availability of broadband services (fixed network availability)"
+    ]
+   },
+   "DK": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Check your network"
+    ]
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "France Mobile indicator - Status and history of fixed DCC and 4G deployments"
+    ]
+   },
+   "GB": {
+    "count": 6,
+    "portal": "data.gov.uk",
+    "top": [
+     "Superfast Broadband Coverage at Postcode Level, OFCOM 2014",
+     "Ofcom Connected Nations (previously called Infrastructure Report) - UK internet speeds and",
+     "Broadband/Full Fibre Availability"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "MD iMAP: Maryland Broadband Service Areas - DSL Provider Coverage",
+     "MD iMAP: Maryland Broadband Service Areas - All Wireline Provider Coverage",
+     "MD iMAP: Maryland Broadband Service Areas - Cable Modem Provider Coverage"
+    ]
+   }
+  },
+  "query": "broadband coverage"
+ },
+ "brownfield": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 617,
+    "portal": "data.gov.uk",
+    "top": [
+     "Brownfield",
+     "Brownfield Land Register",
+     "Brownfield register"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "brownfield land register"
+ },
+ "building_certificates": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Register of Specialised Experts of Energy Performance Certificates for Buildings"
+    ]
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "WMS Service of Register of Energy Efficiency Certificates in the Valencian Community"
+    ]
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 626,
+    "portal": "data.gov.uk",
+    "top": [
+     "Non-domestic Energy Performance Certificate and Display Energy Certificate data",
+     "Energy Performance of Buildings Certificates",
+     "Domestic Energy Performance Certificate Register"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Extract from the Register of Energy Certificates Issued"
+    ]
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 23,
+    "portal": "data.europa.eu",
+    "top": [
+     "APE - Energy Performance Certificates",
+     "Energy performance certificates for buildings - signed",
+     "Energy performance certificates for buildings - fuel"
+    ]
+   },
+   "LT": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "Data on building energy performance certificates",
+     "Municipal Datalab application “State of Buildings” data",
+     "Data on the application of municipal Datalab “State of Buildings” (residential buildings)"
+    ]
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Mapping of energy performance certificates (EPC) data applications"
+    ]
+   },
+   "SI": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Register of issued energy performance certificates of buildings",
+     "Register of independent experts and energy performance certificates issuers"
+    ]
+   },
+   "SK": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Energy certification of buildings"
+    ]
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "energy performance certificates"
+ },
+ "capacity_markets": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 3,
+    "portal": "data.gov.uk",
+    "top": [
+     "London Long Term Labour Market  Projections",
+     "Housing-led population projections",
+     "Cultural Infrastructure Map"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "capacity market auction results"
+ },
+ "cleantech_factories": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 0,
+    "portal": "data.gov.uk",
+    "top": []
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "battery gigafactory"
+ },
+ "coastal_flood": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 36,
+    "portal": "data.gov.uk",
+    "top": [
+     "Flood levels and High Emission Scenario Sea Level Rise",
+     "Coastal Design Sea Levels - Coastal Flood Boundary Extreme Sea Levels (2018)",
+     "Coastal Design Sea Levels - Coastal Flood Boundary Extreme Sea Levels Estuary (2018)"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Channel Islands: CoSMoS Southern California v3.0 flood hazard projections: average conditi",
+     "Channel Islands: CoSMoS Southern California v3.0 flood hazard projections: 1-year storm",
+     "Channel Islands: CoSMoS Southern California v3.0 flood hazard projections: 100-year storm"
+    ]
+   }
+  },
+  "query": "coastal flood hazard sea level rise"
+ },
+ "community_energy": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 122,
+    "portal": "data.gov.uk",
+    "top": [
+     "Communities and Local Government energy and water consumption data page",
+     "Fuel Poverty",
+     "Community Fund Tracking"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "community energy cooperatives"
+ },
+ "critical_minerals": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Mineral Deposits"
+    ]
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 144,
+    "portal": "data.gov.uk",
+    "top": [
+     "Mineral occurrences database",
+     "GSNI GeoIndex Mineral Occurrences",
+     "EURARE ~ REE occurrences and deposits in Europe"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Stable oxygen, hydrogen, sulfur, carbon, and nitrogen isotope analyses of mineral deposits",
+     "Stable oxygen, hydrogen, sulfur, and carbon isotope analyses of mineral deposits and miner",
+     "Rhenium Occurrences in the United States"
+    ]
+   }
+  },
+  "query": "mineral deposits occurrences"
+ },
+ "data_centre_demand": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 294,
+    "portal": "data.gov.uk",
+    "top": [
+     "Council energy consumption",
+     "FCO Energy Consumption",
+     "Domestic Energy Consumption"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "data centres energy consumption"
+ },
+ "degree_days": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Air quality and meteorological measurements (Linz)"
+    ]
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 129,
+    "portal": "data.gov.uk",
+    "top": [
+     "UKCP09: Gridded Datasets of Annual values of Heating Degree Days",
+     "UKCP09: Time Series of Annual values of Heating Degree Days",
+     "UKCP09: 5km gridded data - Annual Average - Heating Degree Days"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "EWC local climate information - interpolated climate indices based on transformed time ser",
+     "EWC local climate information - interpolated climate indices based on transformed time ser"
+    ]
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Short-Term Energy Outlook: U.S. Weather Application Programming Interface (API)",
+     "U.S. Monthly Climate Normals (1971-2000)",
+     "Global Summary of the Month (GSOM), Version 1"
+    ]
+   }
+  },
+  "query": "heating degree days"
+ },
+ "distribution_data": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 925,
+    "portal": "data.gov.uk",
+    "top": [
+     "Lakes Surveillance Network Analysis Ready Data (NCEA)",
+     "Digitised fish spawning distribution adapted from the Olsen 1883 Piscatorial Atlas",
+     "Heat Network Locations (Existing and Planned) - Scotland"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "distribution network operator open data embedded capacity"
+ },
+ "district_heating": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 6,
+    "portal": "data.europa.eu",
+    "top": [
+     "2203.00035 - District heating contract Vienna",
+     "2203.01548 - Supply of heat (Fernwärme Güssing GmbH)",
+     "2203.01259 - District heating Straß (Stmk)"
+    ]
+   },
+   "BE": {
+    "count": 9,
+    "portal": "data.europa.eu",
+    "top": [
+     "Replication Data for: Nonlinear topology optimization of District Heating Networks: A benc",
+     "Replication Data for: Optimal Placement of Heat Pump Substations in District Heating Netwo",
+     "Replication Data for: A Multi-Period Topology and Design Optimization Approach for Distric"
+    ]
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "WFS District Heating Inventory Network City of Norderstedt (Download Service)",
+     "WMS District Heating Inventory Network City of Norderstedt (Representation Service)"
+    ]
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 37,
+    "portal": "data.europa.eu",
+    "top": [
+     "Energy - District heating network - Grand Poitiers Business data",
+     "Production of domestic hot water (ECS) from the district heating network in Bordeaux Métro",
+     "Classification perimeter (requirement to connect) of the district heating networks of the "
+    ]
+   },
+   "GB": {
+    "count": 476,
+    "portal": "data.gov.uk",
+    "top": [
+     "Heat Networks dataset",
+     "DESNZ: Heat Networks Planning Database",
+     "BEIS: Heat Networks Planning Database"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Municipal Energy Units of Reggio Emilia - Estimate of CO2 emissions"
+    ]
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Number of interruptions in the district heating network",
+     "Distribution by price area - district heating"
+    ]
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 6,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Community Geothermal: Open House Poster Session Materials April 2024 - Carbondale, CO",
+     "Community Geothermal: Subsurface and Seismic Interpretations - Carbondale, CO",
+     "Sup3rLoad Dataset"
+    ]
+   }
+  },
+  "query": "district heating network"
+ },
+ "drought": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 24,
+    "portal": "data.gov.uk",
+    "top": [
+     "Gridded drought indices based on remote sensing data for Europe (2000-2015)",
+     "Drought indicator time series for European NUTS regions based on remote sensing data (2000",
+     "High-resolution Global Multi-Index Drought (GMID) dataset, 1980-2024"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Drought indicator SWD60",
+     "Climate scenarios RCP 1981-2100 – mGROWA – seasonal – after 30 years – root zone water def"
+    ]
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 15,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Groundwater and Soil Moisture Conditions from GRACE and GRACE-FO Data Assimilation L4 7-da",
+     "Groundwater and Soil Moisture Conditions from GRACE and GRACE-FO Data Assimilation L4 7-da",
+     "Indicators for Assessing Community and Contaminated Site Vulnerability to Extreme Events"
+    ]
+   }
+  },
+  "query": "drought indicator"
+ },
+ "earthquake": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 1065,
+    "portal": "data.gov.uk",
+    "top": [
+     "Offshore seismic hazard models and maps for the UK Exclusive Economic Zone",
+     "Seismic Hazard UK (475 Year Intensity) V2003",
+     "Multi-hazard (earthquake, flood, landslide, debris flow) scenario data from 10 cities for "
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "European Fault-Source Model 2020 (EFSM20): online data on fault geometry and activity para",
+     "EPICA - European PreInstrumental Earthquake CAtalogue, version 1.1",
+     "B4 - Map of areas with local seismic hazard - UML model"
+    ]
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Data Release for the 2010 Haiti Seismic Hazard Model",
+     "Data Release for the 2007 Afghanistan Seismic Hazard Model",
+     "Data Release for the 2007 Alaska Seismic Hazard Model"
+    ]
+   }
+  },
+  "query": "seismic hazard model"
+ },
+ "energy_consents": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 10,
+    "portal": "data.gov.uk",
+    "top": [
+     "Stoney Wood Quarter additional planning documents",
+     "Brownfield Register 2021",
+     "Planning Applications (DEPRECATED) - Scotland"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "energy infrastructure planning consent register"
+ },
+ "ev_registrations": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 2,
+    "portal": "data.gov.uk",
+    "top": [
+     "ULEV Registered Vehicles",
+     "TMO - Miscellaneous/Experimental Orders"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "electric vehicles registered municipality"
+ },
+ "farmland_quality": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 4917,
+    "portal": "data.gov.uk",
+    "top": [
+     "Predictive Agricultural Land Classification Map for England",
+     "Provisional Agricultural Land Classification (ALC)",
+     "Climatological Data for Agricultural Land Classification"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "LBA-ECO LC-31 Historical Land-Use in the Amazon: 1940-1995",
+     "Data from: Not just crop or forest: building an integrated land cover map for agricultural",
+     "SMEX05 Land Use Classification Data: Iowa, Version 1"
+    ]
+   }
+  },
+  "query": "agricultural land classification"
+ },
+ "freight_corridors": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 3693,
+    "portal": "data.gov.uk",
+    "top": [
+     "Ten key biological traits of marine benthic invertebrates surveyed in Northwest Europe",
+     "Under Ten Metre Gillnet Fleet Haddock Fishery 2014/15 - Fisheries Science Partnership",
+     "Meteorology, soil physics, and eddy covariance measurements of carbon dioxide, energy, and"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 11,
+    "portal": "catalog.data.gov",
+    "top": [
+     "NYC STEW-MAP Staten Island organizations' website hyperlink webscrape",
+     "TEMMS Groundwater and Surface Water Monitoring Data: October 2022-March 2023",
+     "The Reynolds Creek Long-Term Dataset: A long-term meteorological dataset derived from stat"
+    ]
+   }
+  },
+  "query": "TEN-T network"
+ },
+ "geomagnetic": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 2,
+    "portal": "data.gov.uk",
+    "top": [
+     "Geoelectric field maps of the UK from four large geomagnetic storms derived from thin-shee",
+     "Magnetotelluric data for the Halloween 2003 magnetic storm in the vicinity of Uppsala and "
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "geomagnetic geoelectric hazard"
+ },
+ "geothermal_heat_flow": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 77,
+    "portal": "data.gov.uk",
+    "top": [
+     "Heat flow United Kingdom version 1",
+     "Heat flow United Kingdom Web service",
+     "UK Geothermal Platform Map Explorer"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Nationwide Heat Flow, Well Data, and Related Files in the SMU Node of the National Geother",
+     "USGS Contributions to the Nevada Geothermal Machine Learning Project (DE-FOA-0001956): Geo",
+     "USGS Geophysics, Heat Flow, and Slip and Dilation Tendency Data used in Applications of Ma"
+    ]
+   }
+  },
+  "query": "geothermal heat flow"
+ },
+ "guarantees_origin": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 502,
+    "portal": "data.gov.uk",
+    "top": [
+     "NewBuy Guarantee Scheme Statistics",
+     "Young Persons Guarantee",
+     "Contracts with No Guaranteed Hours"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "guarantees of origin statistics"
+ },
+ "h2_storage_potential": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 3,
+    "portal": "data.gov.uk",
+    "top": [
+     "Geophysical and transport properties of salt rocks during loading and exposed to dissoluti",
+     "Natural Environment Research Council (NERC) Geophysical and Multibeam Survey 2009/6_DETI: ",
+     "UKCCSRC Call 2 Project: Novel reductive rejuvenation approaches for degraded amine solutio"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "salt cavern hydrogen storage"
+ },
+ "heat_projection": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 126,
+    "portal": "data.gov.uk",
+    "top": [
+     "Climate projections of marine non-native species in north-west Europe",
+     "Hydrological projections for the UK, based on UK Climate Projections 2018 (UKCP18) data, f",
+     "UKCP09: Time Series of Annual values of rainfall intensity on days of rain ≥1 mm (mm/day)"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 2,
+    "portal": "catalog.data.gov",
+    "top": [
+     "New York City Climate Projections: Extreme Events and Sea Level Rise",
+     "Data from: Temporal plasticity of thermal tolerance in ants"
+    ]
+   }
+  },
+  "query": "climate projections hot days"
+ },
+ "heat_pumps": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 59,
+    "portal": "data.gov.uk",
+    "top": [
+     "Heat pump deployment",
+     "Low Carbon London Heat Pump Load Profiles",
+     "Open-loop ground source heat pump viability screening map"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 3,
+    "portal": "catalog.data.gov",
+    "top": [
+     "NYSERDA-Supported Air Source Heat Pump Projects: 2017-2019",
+     "NYSERDA-Supported Air Source Heat Pump Equipment: 2017-2019",
+     "Conway St Apartments - Olive Street Development"
+    ]
+   }
+  },
+  "query": "heat pumps installed"
+ },
+ "heritage_aviation": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 396,
+    "portal": "data.gov.uk",
+    "top": [
+     "English Heritage Listed Buildings",
+     "Listed Buildings Northern Ireland",
+     "Listed Buildings"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 4,
+    "portal": "catalog.data.gov",
+    "top": [
+     "StreetSmArts Murals",
+     "National Register of Historic Places - KML",
+     "National Register of Historic Places"
+    ]
+   }
+  },
+  "query": "listed buildings heritage"
+ },
+ "income": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 95,
+    "portal": "data.gov.uk",
+    "top": [
+     "Gross Disposable Household Income (GDHI)",
+     "Gross Disposable Household Income",
+     "Farm Household Income and Household Composition, England"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 9,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Community Development Block Grant (CDBG) Eligibility by Census Tract - FGDB",
+     "Community Development Block Grant (CDBG) Eligibility by Census Tract - CSV",
+     "Community Resiliency Fund Grant Program Area"
+    ]
+   }
+  },
+  "query": "household income per area"
+ },
+ "ixp_colocation": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 1296,
+    "portal": "data.gov.uk",
+    "top": [
+     "Leisure Centres",
+     "Elemental and isotopic data for timed exchange experiments between clay, mineral water and",
+     "Survey data of scientists on knowledge exchange in critical zone and geoscience"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "internet exchange point data centre facilities"
+ },
+ "land_prices": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Average agricultural land prices"
+    ]
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 4641,
+    "portal": "data.gov.uk",
+    "top": [
+     "Agricultural Price Index",
+     "Median House Prices (Land Registry)",
+     "Mean House Prices (Land Registry)"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "ARA01 - Agricultural Land Prices by Region, Year and Statistic"
+    ]
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 1,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Ag and Food Statistics: Charting the Essentials"
+    ]
+   }
+  },
+  "query": "agricultural land prices"
+ },
+ "landslides": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "GEMAS – Chemistry of Europe’s Agricultural soils, Supporting information, Parent material",
+     "GEMAS – Chemistry of Europe’s Agricultural soils, Supporting information (WMS)",
+     "GEMAS – Chemistry of Europe’s Agricultural soils, Supporting information"
+    ]
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 6,
+    "portal": "data.gov.uk",
+    "top": [
+     "Polygon inventory of 183 landslides mapped across Langtang Valley, Nepal (NERC Grant NE/L0",
+     "Polygon inventory of 481 landslides mapped along the Arniko Highway, Nepal (NERC Grant NE/",
+     "Polygon inventory of 12,920 Asia Summer Monsoon (ASM) Triggered landslides in Nepal (NERC "
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Sliding-type landslide susceptibility paper"
+    ]
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Preliminary Landslide Inventory for Landslides Triggered by Hurricane Helene (September 20",
+     "Landslide Inventory for the Little North Santiam River Basin, Oregon",
+     "Landslide Inventory for Kosrae, Federated States of Micronesia (FSM) 2005 - 2023"
+    ]
+   }
+  },
+  "query": "landslide inventory"
+ },
+ "large_load": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 154,
+    "portal": "data.gov.uk",
+    "top": [
+     "Electricity consumption",
+     "Electricity Consumption, Borough",
+     "Electricity and gas consumption"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "data centres electricity consumption"
+ },
+ "marine_protected": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Application of non-destructive methods for assessing rock pool fish assemblages on Lord Ho"
+    ]
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 8,
+    "portal": "data.europa.eu",
+    "top": [
+     "Federal Agency for Nature Conservation: Marine Protected Areas (WMS)",
+     "Federal Agency for Nature Conservation: Marine Protected Areas (WFS)",
+     "Modelled larval dispersal of European flat oyster (Ostrea edulis) in the southern North Se"
+    ]
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 7,
+    "portal": "data.europa.eu",
+    "top": [
+     "WMS Service (Web Map Service) OSPAR Network of Marine Protected Areas (OSPAR)",
+     "Data from: Marine biodiversity in Juan Fernández and Desventuradas Islands, Chile: global ",
+     "Discrete choice data on the effect of response time warnings in a discrete choice experime"
+    ]
+   },
+   "FI": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "HELCOM MPAs"
+    ]
+   },
+   "FR": {
+    "count": 109,
+    "portal": "data.europa.eu",
+    "top": [
+     "OSPAR Marine Protected Areas",
+     "French Marine Protected Areas",
+     "Marine Protected Areas - [polygon]"
+    ]
+   },
+   "GB": {
+    "count": 4755,
+    "portal": "data.gov.uk",
+    "top": [
+     "Marine Protection Area",
+     "Historic Marine Protected Areas",
+     "Historic Marine Protected Areas"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 11,
+    "portal": "data.europa.eu",
+    "top": [
+     "Special Area Conservation",
+     "Special Protected Area",
+     "Protected Marine Sites"
+    ]
+   },
+   "IT": {
+    "count": 20,
+    "portal": "data.europa.eu",
+    "top": [
+     "DSM FIRST LiDAR with ground resolution 2 meters — AMP Region Puglia",
+     "DTM LiDAR with ground resolution 2 meters — AMP Campania Region",
+     "DSM FIRST LiDAR with ground resolution 2 meters — AMP Campania Region"
+    ]
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Protected areas: Marine areas in Sweden according to HELCOM (MPA)",
+     "Protected areas: Marine areas in Sweden according to HELCOM (MPA)"
+    ]
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "California Marine Protected Areas [ds582]",
+     "Marine Protected Areas Coordinates - R7 - CDFW [ds3207]",
+     "channel-islands-marine-protected-areas-first-5-years-of-monitoring-2003-2008_all-habitats"
+    ]
+   }
+  },
+  "query": "marine protected areas"
+ },
+ "network_charges": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 14,
+    "portal": "data.gov.uk",
+    "top": [
+     "National Gas Transmission Network - Scotland",
+     "Wild rodent tracking and gut microbiome data, Holly Hill, Wytham Woods, UK, 2018-2019",
+     "Thwaites-Amundsen Regional Survey and Network (TARSAN) Integrating Atmosphere-Ice-Ocean Pr"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "transmission network tariffs"
+ },
+ "night_lights": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 22,
+    "portal": "data.gov.uk",
+    "top": [
+     "Effects of different intensities of artificial light at night on multi-trophic population ",
+     "Insect population dynamics, parasitism and behaviour in response to different spectra of a",
+     "Caterpillar activity under experimentally manipulated light conditions, Oxfordshire, UK, w"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 12,
+    "portal": "catalog.data.gov",
+    "top": [
+     "VIIRS/JPSS2 Day/Night Band 6-Min L1B Swath 750 m V2.1",
+     "VIIRS Plus DMSP Change in Lights (VIIRS+DMSP dLIGHT)",
+     "VIIRS/JPSS1 Day/Night Band 6-Min L1B Swath 750 m"
+    ]
+   }
+  },
+  "query": "night lights VIIRS"
+ },
+ "offshore_zones": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 41,
+    "portal": "data.gov.uk",
+    "top": [
+     "2013, Gardline, Dudgeon Offshore Wind Farm, Geophysical Survey",
+     "Energy resources - Areas of Search refined from offshore wind scoping study 2018",
+     "Ecological Consequences of Offshore Wind (ECOWind) research programme"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Offshore Wind Lease Outlines",
+     "Offshore Wind Planning Areas (Rescinded July 30, 2025)",
+     "Offshore Wind - Project Phase Areas (Proposed)"
+    ]
+   }
+  },
+  "query": "offshore wind lease areas"
+ },
+ "planned_grid": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 86,
+    "portal": "data.gov.uk",
+    "top": [
+     "Dundee Local Development Plan",
+     "DESNZ: Heat Networks Planning Database",
+     "BEIS: Heat Networks Planning Database"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "network development plan transmission projects"
+ },
+ "ports": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 13,
+    "portal": "data.europa.eu",
+    "top": [
+     "Ports of the Danube — Austria",
+     "Ports of the Danube - Austria",
+     "(INSPIRE) Ports of the Danube - Austria"
+    ]
+   },
+   "BE": {
+    "count": 32,
+    "portal": "data.europa.eu",
+    "top": [
+     "2019 Belgian MSP - Shipping and ports zones",
+     "2026 Belgian MSP - Shipping and ports zones",
+     "Location of ports and transhipment locations"
+    ]
+   },
+   "BG": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Register of public works"
+    ]
+   },
+   "CY": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Ports (Hydrographic Data)"
+    ]
+   },
+   "CZ": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Phone number portability",
+     "Location and characteristics of berths (anchorage, transshipment, without transshipment)"
+    ]
+   },
+   "DE": {
+    "count": 317,
+    "portal": "data.europa.eu",
+    "top": [
+     "Ports-West part A",
+     "Ports-West part A",
+     "BPlan 075-Portsloge,Portsloger Str. (origin)"
+    ]
+   },
+   "DK": {
+    "count": 23,
+    "portal": "data.europa.eu",
+    "top": [
+     "Cruise ships in Danish ports by port and unit",
+     "Freight transport across Danish ports by unit",
+     "Freight turnover at Danish ports by port and unit"
+    ]
+   },
+   "EE": {
+    "count": 27,
+    "portal": "data.europa.eu",
+    "top": [
+     "INSPIRE (TN) - Estonian ports (WFS)",
+     "INSPIRE (TN) - Estonian ports (WMS)",
+     "INSPIRE (TN) - Eesti sadamad (WFS)"
+    ]
+   },
+   "ES": {
+    "count": 94,
+    "portal": "data.europa.eu",
+    "top": [
+     "Hills, Picos, Ports, Altos",
+     "Buildings PortsIB",
+     "Facilities PortsIB"
+    ]
+   },
+   "FI": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "Marinas of the City of Turku",
+     "Air quality in the Turku region",
+     "2016 all ship types AIS shipping density"
+    ]
+   },
+   "FR": {
+    "count": 355,
+    "portal": "data.europa.eu",
+    "top": [
+     "Camargue Park - Ports de camargue",
+     "State of debt 2016 - budget annex PORTS",
+     "Ports of the Syndicat Mixte des Ports de Pêche et Plaisance de Cornouaille (SMPPPC) - Admi"
+    ]
+   },
+   "GB": {
+    "count": 355,
+    "portal": "data.gov.uk",
+    "top": [
+     "port_development",
+     "Port Locations",
+     "Port Statistics"
+    ]
+   },
+   "GR": {
+    "count": 27,
+    "portal": "data.europa.eu",
+    "top": [
+     "Περιοχή εφαρμογής από μελέτη Λιμένων",
+     "A SPORTSZERELÉSEKKEL FOGLALKOZÓ BIZOTTSÁGOK",
+     "Porturi de debarcare pentru ciclide"
+    ]
+   },
+   "HR": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "List of ports where port pilotage is mandatory",
+     "Statistics in a series:  Tourism",
+     "Tourism"
+    ]
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 40,
+    "portal": "data.europa.eu",
+    "top": [
+     "Ports Harbours and Shipping",
+     "Fishing Ports",
+     "Ports of Ireland"
+    ]
+   },
+   "IT": {
+    "count": 44,
+    "portal": "data.europa.eu",
+    "top": [
+     "Domain Ports",
+     "Projects with extended route in the SPORTS FACILITIES FOR MILITARY SPORTS GROUPS",
+     "Tuscany Region — Ports"
+    ]
+   },
+   "LT": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "Fishing ports, landing sites, auction rooms and shelters. Investments to improve the infra",
+     "Fishing ports, landing sites, auction rooms and shelters. Investments to facilitate compli",
+     "E-navigation map information"
+    ]
+   },
+   "LU": {
+    "count": 5,
+    "portal": "data.europa.eu",
+    "top": [
+     "Summer 1951",
+     "Supraregional passenger transportation infrastructure 2018",
+     "Driving times to major centres at peak times in 2018"
+    ]
+   },
+   "LV": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Multimodal ports cargo dataset",
+     "Overview of ship-generated waste delivered to Latvian ports during the ship visit"
+    ]
+   },
+   "MT": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "Strategic land use designations",
+     "MSFD Descriptor 6: Bunkering Areas",
+     "Strategic land use designations"
+    ]
+   },
+   "NL": {
+    "count": 12,
+    "portal": "data.europa.eu",
+    "top": [
+     "Port",
+     "Port Canal",
+     "Quantity and price of fish landed in Dutch ports"
+    ]
+   },
+   "PL": {
+    "count": 5,
+    "portal": "data.europa.eu",
+    "top": [
+     "Archiwalny Ruch statków w portach polskich",
+     "Ruch statków w portach polskich",
+     "Offer prices of apartments of developer PENINSULA SEASIDE 3 SPÓŁKA Z OGRANICZONĄ ODPOWIEDZ"
+    ]
+   },
+   "PT": {
+    "count": 53,
+    "portal": "data.europa.eu",
+    "top": [
+     "Timor Ports",
+     "Location of Shelter Ports (PSOEM-Azores)",
+     "Movement of goods (t) in ports"
+    ]
+   },
+   "RO": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "WFS Download Service for Romanian Habitats and Biotopes dataset (swamps and bogs)"
+    ]
+   },
+   "SE": {
+    "count": 10,
+    "portal": "data.europa.eu",
+    "top": [
+     "Guest harbors and natural harbors",
+     "Guest harbors",
+     "Real prices of alcohol at on-premise places with service licences"
+    ]
+   },
+   "SI": {
+    "count": 6,
+    "portal": "data.europa.eu",
+    "top": [
+     "At least one serving of fruit or vegetables per day by regions, Slovenia, 2019",
+     "Ports for water vehicles in the area of the Municipality of Maribor",
+     "Number of servings of fruit or vegetables per day by sex, education and year of study, Slo"
+    ]
+   },
+   "SK": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "RIS Index 2"
+    ]
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Quarterly Costs Of Transporting Brazilian Soybeans From The Southern Ports To Shanghai, Ch",
+     "Principal Ports",
+     "Top 25 Ports by Dry Bulk Tonnage"
+    ]
+   }
+  },
+  "query": "ports"
+ },
+ "public_funding": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 44,
+    "portal": "data.gov.uk",
+    "top": [
+     "Cambridgeshire Policy Challenges: Cambridge University Science and Policy Exchange (CUSPE)",
+     "Coastal Biodiversity and Ecosystem Service Sustainability (CBESS) sediment stability by Co",
+     "Policy interviews on trypanosomiasis in Zambia, 2013"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "funded projects cohesion policy"
+ },
+ "pumped_hydro": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 4,
+    "portal": "data.gov.uk",
+    "top": [
+     "Geophysical monitoring of the hydro-mechano-chemical changes of Bunter Sandstone exposed t",
+     "Northern Powergrid DFES 2021",
+     "Temperature Maps of the British Coalfields"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "pumped hydro storage potential"
+ },
+ "rail_electrification": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 45,
+    "portal": "data.gov.uk",
+    "top": [
+     "Rail Line Upgrading (Indicative)",
+     "TWBC Local Plan 2006 - Safeguarded Railway Line TP13",
+     "Northern Ireland Railways NIR Railway Network"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "electrified railway lines"
+ },
+ "reactors": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 7,
+    "portal": "data.europa.eu",
+    "top": [
+     "Strategic Environmental Assessment Location Study for two Nuclear Power Plants - Netherlan",
+     "Strategic Environmental Assessment for a second Nuclear Power Plant in Borssele (NL)",
+     "Strategic Environmental Assessment for a second Nuclear Power Plant in Borssele (NL)"
+    ]
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Certificates issued to persons in nuclear power plants",
+     "Certificates issued to persons in nuclear power plants — Valid"
+    ]
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "Locations of nuclear power plants",
+     "Water temperature and discharge at monitoring station along the Rhine",
+     "Water temperature and discharge at monitoring station along the Rhine"
+    ]
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Fossil energy projects guaranteed by Coface between 2001 and 2014",
+     "Downloadable files on Site CD76 19nov20"
+    ]
+   },
+   "GB": {
+    "count": 74,
+    "portal": "data.gov.uk",
+    "top": [
+     "Bradwell Nuclear Power Station 5 Mile Zone",
+     "Spatial radionuclide deposition data from the 60 km radial area around the Chernobyl nucle",
+     "Combined Heat and Power database"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Seveso establishments and nuclear power plants 2018"
+    ]
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Attitudes towards nuclear power and nuclear waste among adolescents in Oskarshamn 1996",
+     "SE.OF Oceanographic Forecast Model, HIROMB BS01 - Historical Analysis Data"
+    ]
+   },
+   "SI": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "Reports of Slovenia after Fukushima",
+     "Control of degradation/ageing of concrete structures for long-term operation of NEK (STUDY",
+     "Eurobarometer 72.2"
+    ]
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 7,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Population Exposure Estimates in Proximity to Nuclear Power Plants, Locations",
+     "Population Exposure Estimates in Proximity to Nuclear Power Plants, Country-Level Aggregat",
+     "Nuclear & Uranium Data and Statistics"
+    ]
+   }
+  },
+  "query": "nuclear power plants"
+ },
+ "reliability_local": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 0,
+    "portal": "data.gov.uk",
+    "top": []
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "power outages interruptions per region"
+ },
+ "river_discharge": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 46,
+    "portal": "data.gov.uk",
+    "top": [
+     "Extreme river discharge and associated tide gauge co-occurrences from UK estuaries 1984-20",
+     "Spot gauged flows on the lower River Frome, Dorset, April-November 2022",
+     "Water discharge data for Trout Beck, Cumbria 1961-1980"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 1,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Modeling of nutrient and sediment concentrations and loads for Clear Lake California, usin"
+    ]
+   }
+  },
+  "query": "river discharge gauging stations"
+ },
+ "rooftop_solar": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 9,
+    "portal": "data.gov.uk",
+    "top": [
+     "Solar Panels",
+     "Solar PV (photovolataics) data",
+     "Low Carbon Generators"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "solar photovoltaic installations municipality"
+ },
+ "seabed": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Seabed substrate map of surficial sediments in the BPNS",
+     "Seabed substrate map, surficial sediments Belgian part of the North Sea [map]. 1:100.000"
+    ]
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 18,
+    "portal": "data.europa.eu",
+    "top": [
+     "EMODnet Seabed substrate multiscale –Europe",
+     "Seabed substrate 1:15 000 – Europe",
+     "EMODnet Download Service for Seabed substrate"
+    ]
+   },
+   "FR": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "EUSeaMap2 (2016) Broad-Scale Predictive Habitat Map"
+    ]
+   },
+   "GB": {
+    "count": 38,
+    "portal": "data.gov.uk",
+    "top": [
+     "Seabed video analysis (substrate) data from Wight-Barfleur Reef SCI",
+     "Seabed still images analysis (substrate) data from Wight-Barfleur Reef SCI",
+     "Marine Hard Substrate Dataset"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 10,
+    "portal": "data.europa.eu",
+    "top": [
+     "Seabed Substrate Classification",
+     "INFOMAR Seabed Sediment Classification",
+     "CE14003 GATEWAYS II Survey"
+    ]
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Polygon shapefile of the interpretation of the seabed geologic substrates in quadrangle 6 ",
+     "Interpretation of the seabed geologic substrates in quadrangle 5 of the Stellwagen Bank Na",
+     "Interpretation of the seabed geologic substrates in quadrangle 2 of the Stellwagen Bank Na"
+    ]
+   }
+  },
+  "query": "seabed substrate"
+ },
+ "shipping_density": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 34,
+    "portal": "data.gov.uk",
+    "top": [
+     "Vessel Density Grid 2014",
+     "Vessel Density Grid 2013",
+     "Vessel Density Grid 2015"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 4,
+    "portal": "catalog.data.gov",
+    "top": [
+     "AIS Vessel Density 2011",
+     "AIS Vessel Density 2013",
+     "AIS data"
+    ]
+   }
+  },
+  "query": "vessel density AIS"
+ },
+ "storms": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 208,
+    "portal": "data.gov.uk",
+    "top": [
+     "Event Database",
+     "Event Duration Monitoring - Storm Overflows - Annual Returns",
+     "Event Duration Monitoring - Storm Overflows - Bathing Season Returns"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "NCDC Storm Events Database",
+     "NOAA/WDS Paleoclimatology - NCDC Storm Events Database",
+     "Event Footprint Catalog"
+    ]
+   }
+  },
+  "query": "storm events database"
+ },
+ "subsidence": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 63,
+    "portal": "data.gov.uk",
+    "top": [
+     "InSAR ground motion data between 2015 and 2017 over UKGEOS - Glasgow",
+     "Property Subsidence Assessment dataset",
+     "Interferometric Synthetic Aperture Radar ground motion and timeseries data over the Flow C"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 1,
+    "portal": "catalog.data.gov",
+    "top": [
+     "SAFARI 2000 Modeled Tropospheric Air Mass Trajectories, Dry Season 2000"
+    ]
+   }
+  },
+  "query": "ground motion subsidence"
+ },
+ "support_contracts": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 503,
+    "portal": "data.gov.uk",
+    "top": [
+     "Contract Register",
+     "Contracts Register",
+     "Contracts Register"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "contracts for difference register"
+ },
+ "transition_areas": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 28,
+    "portal": "data.gov.uk",
+    "top": [
+     "Just transition initial analysis by industry group in London",
+     "WFD Transitional and Coastal Waterbodies Cycle 2",
+     "WFD Transitional and Coastal Water Bodies Cycle 2 Classification 2019"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 0,
+    "portal": "catalog.data.gov",
+    "top": []
+   }
+  },
+  "query": "just transition territories"
+ },
+ "wastewater": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 7,
+    "portal": "data.europa.eu",
+    "top": [
+     "WMS Service (Web Map Service) Discharge points for urban wastewater treatment plants (Q202",
+     "WMS Service (Web Map Service) Discharge points for urban wastewater treatment plants (Q201",
+     "WMS Service (Web Map Service) Discharge points for urban wastewater treatment plants (Q202"
+    ]
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "URBAN EPERATION STATIONS",
+     "REJECTS OF URBAN EPERATION STATIONS"
+    ]
+   },
+   "GB": {
+    "count": 24,
+    "portal": "data.gov.uk",
+    "top": [
+     "Wastewater Treatment in England",
+     "Urban Waste Water Treatment Directive wastewater reuse in England",
+     "Antiviral, antibiotics and decongestants in wastewater treatment plants and receiving rive"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "List of public purifiers in Veneto (years 2013-2022)",
+     "Map georeferenced land registry waste plants",
+     "Land Registry Georeferenced Waste Plants"
+    ]
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "RH3 - Map 019. Urban waste water treatment plants, by type of plant",
+     "RH1 - Map 19. Urban waste water treatment plants, by type of plant",
+     "RH2 - Map 019. Urban waste water treatment plants, by type of plant"
+    ]
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "INSPIRE Environmental Management Facilities - Urban Wastewater Treatment Plants",
+     "INSPIRE Environmental management equipment - Urban wastewater treatment plants - Storage s",
+     "INSPIRE Environmental management facilities - Urban waste water treatment plants and point"
+    ]
+   },
+   "US": {
+    "count": 5,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Life cycle inventory data of various unit processes in water and wastewater treatment trai",
+     "Microplastics in urban watersheds",
+     "Concentrations of human fecal indicators in wastewater in Kentucky sewersheds"
+    ]
+   }
+  },
+  "query": "urban wastewater treatment plants"
+ },
+ "water_stress": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "Drinking fountain locations (Linz)",
+     "Water Management Regional Programme 2016 for the Preservation of Valuable Waterways in Low",
+     "Water points Land Salzburg"
+    ]
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 109,
+    "portal": "data.europa.eu",
+    "top": [
+     "Mineral water abstraction permits",
+     "Register of water abstraction permits",
+     "register permits for water abstraction"
+    ]
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Total water abstraction",
+     "Surface water abstraction"
+    ]
+   },
+   "DE": {
+    "count": 17,
+    "portal": "data.europa.eu",
+    "top": [
+     "Water abstraction in the raw materials sector 2022",
+     "Request for time series data Water abstraction charges",
+     "Water: Germany, years, water abstraction and supply, production areas"
+    ]
+   },
+   "DK": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "Water abstraction by region, type of water and category of abstraction",
+     "Water abstraction (Physical water accounts) by industry and type of water"
+    ]
+   },
+   "EE": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "Land and Space Board points of interest (WFS)",
+     "Land and Space Board points of interest (WMS)",
+     "River Basin Management Plans 2022-2027 (WMS)"
+    ]
+   },
+   "ES": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "Water abstraction carried out by the company, Autonomous Communities and Cities, source ty",
+     "WMS service on the subject INSPIRE Areas subject to management, restrictions or regulation",
+     "WFS service on the subject INSPIRE Areas subject to management, restrictions or regulation"
+    ]
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 150,
+    "portal": "data.europa.eu",
+    "top": [
+     "Agricultural water abstraction point",
+     "Agricultural water abstraction point",
+     "Water abstraction point for industrial use"
+    ]
+   },
+   "GB": {
+    "count": 107,
+    "portal": "data.gov.uk",
+    "top": [
+     "Licenced Water Abstractions",
+     "Water abstraction data",
+     "Water abstraction data sets"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Statistics in a series:  Environment"
+    ]
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 21,
+    "portal": "data.europa.eu",
+    "top": [
+     "Water Framework Directive Lake Waterbodies - Cycle 2",
+     "Water Framework Directive Lake Waterbodies",
+     "WFD Register of Protected Areas - Groundwater Waterbodies for Drinking Water"
+    ]
+   },
+   "IT": {
+    "count": 5,
+    "portal": "data.europa.eu",
+    "top": [
+     "INSPIRE - Production and industrial site",
+     "INSPIRE - Production and industrial building",
+     "Update of the tariffs for the calculation of the state fees due for concessions for the de"
+    ]
+   },
+   "LT": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Flood risk zones"
+    ]
+   },
+   "LU": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "INSPIRE - Annex II Theme Geology - ActiveWell",
+     "INSPIRE - Annex II Theme Geology - ActiveWell"
+    ]
+   },
+   "LV": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "Drinking water quality and monitoring stations (data)"
+    ]
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 3,
+    "portal": "data.europa.eu",
+    "top": [
+     "WFD Protected Areas - Drinking water abstraction (INSPIRE harmonized) WMS",
+     "WFD Protected Areas - Drinking water abstraction (INSPIRE harmonized) ATOM",
+     "Environmental accounts; water use and abstraction 2003 - 2011"
+    ]
+   },
+   "PL": {
+    "count": 2,
+    "portal": "data.europa.eu",
+    "top": [
+     "The INSPIRE WMS view service of water magagement datasets for Area management, restriction",
+     "The WFS INSPIRE download service of water magagement datasets for Area management, restric"
+    ]
+   },
+   "PT": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "RH4 - Water Mass Exploitation Systems and Significant Water abstraction",
+     "PGRH Algarve - RH8 - Protection of surface water abstraction (Measure Spf2) and groundwate",
+     "Hydrogeological map of Portugal on a scale of 1:1 000 000"
+    ]
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 4,
+    "portal": "data.europa.eu",
+    "top": [
+     "Industry water abstraction, by type of water and region. Year 2005 - 2020",
+     "Water abstraction in industry by NACE division and type of water. Year 2005 - 2020",
+     "Water abstraction in industry by NACE section and type of water. Year 2005 - 2020"
+    ]
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 1,
+    "portal": "data.europa.eu",
+    "top": [
+     "05_Plots with irrigation equipment - Water abstraction for pumping station"
+    ]
+   },
+   "US": {
+    "count": 20,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Evaluating the Accuracy of Common Runoff Estimation Methods for New Impervious Hot-Mix Asp",
+     "Footprint of high-resolution orthoimagery and digital surface model of Cottage Grove Lake,",
+     "Footprint of high-resolution orthoimagery and digital surface model of Dorena Lake, Oregon"
+    ]
+   }
+  },
+  "query": "water abstraction"
+ },
+ "wildfire_hazard": {
+  "checked": "2026-10-31",
+  "hits": {
+   "AT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "BG": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CY": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "CZ": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "DK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "EE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "ES": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "FR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "GB": {
+    "count": 2803,
+    "portal": "data.gov.uk",
+    "top": [
+     "Scottish wildfire and muirburn extents",
+     "National Flood Hazard Maps - Present Day",
+     "National Flood Hazard Maps - Climate Change"
+    ]
+   },
+   "GR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HR": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "HU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "IT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LU": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "LV": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "MT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "NL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PL": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "PT": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "RO": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SE": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SI": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "SK": {
+    "count": 0,
+    "portal": "data.europa.eu",
+    "top": []
+   },
+   "US": {
+    "count": 16,
+    "portal": "catalog.data.gov",
+    "top": [
+     "Post-Wildfire Debris-Flow Runout Hazard Assessment (PWFDF-R) Collection (updated 20261015)",
+     "Wildfire Hazard Potential, Continuous 2023 United States and Alaska (Image Service)",
+     "Border 2 2025-01-23 v1.0 postfire debris-flow hazard assessment"
+    ]
+   }
+  },
+  "query": "wildfire hazard map"
+ }
+}

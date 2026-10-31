@@ -18,6 +18,7 @@ import csv
 import json
 import logging
 import os
+import re
 import threading
 import time
 from dataclasses import dataclass, field
@@ -197,6 +198,37 @@ class Lake:
                 return None
             return json.loads(p.read_text(encoding="utf-8"))
 
+        # data wave 9: every map file (scripts/wave9.py) as app.w9_<source id>
+        for f in sorted((pub / "eu" / "w9").glob("*.json")) if (pub / "eu" / "w9").exists() else []:
+            w9 = json.loads(f.read_text(encoding="utf-8"))
+            fields, pts = w9.get("fields") or [], w9.get("points") or []
+            if not fields or not pts:
+                continue
+
+            def kind(i: int, pts: list = pts) -> str:
+                v = next((p[i] for p in pts if i < len(p) and p[i] is not None), None)
+                return (
+                    "DOUBLE"
+                    if isinstance(v, int | float) and not isinstance(v, bool)
+                    else "VARCHAR"
+                )
+
+            names = [
+                re.sub(r"[^0-9a-z]+", "_", str(c).lower()).strip("_") or f"c{i}"
+                for i, c in enumerate(fields)
+            ]
+            names = [n if n not in names[:i] else f"{n}_{i}" for i, n in enumerate(names)]
+            table(
+                f"w9_{f.stem}",
+                [(n, kind(i)) for i, n in enumerate(names)],
+                [[p[i] if i < len(p) else None for i in range(len(names))] for p in pts],
+                Source(
+                    f"w9 {f.stem}",
+                    f"frontend/public/data/eu/w9/{f.name}",
+                    "see source",
+                    str(w9.get("source", "")),
+                ),
+            )
         plants = load("eu/plants.json")
         if plants:
             g = plants["groups"]
