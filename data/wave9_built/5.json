@@ -1,23 +1,187 @@
 {
  "eu_degree_days": {
-  "built": null,
-  "error": "KeyError: 'sep'"
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "indic_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 39600,
+   "sql": "SELECT count(*) FROM wave9.eu_degree_days"
+  },
+  "geometry": false,
+  "rows": 39600,
+  "seconds": 5
  },
  "eu_energy_productivity": {
-  "built": null,
-  "error": "KeyError: 'sep'"
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "hhcomp",
+   "rskpovth",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1260,
+   "sql": "SELECT count(*) FROM wave9.eu_energy_productivity"
+  },
+  "geometry": false,
+  "rows": 1260,
+  "seconds": 1
  },
  "eu_ev_stock_nuts2": {
-  "built": null,
-  "error": "KeyError: 'sep'"
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "vehicle",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 15106,
+   "sql": "SELECT count(*) FROM wave9.eu_ev_stock_nuts2"
+  },
+  "geometry": false,
+  "rows": 15106,
+  "seconds": 2
  },
  "eu_heat_pumps": {
-  "built": null,
-  "error": "KeyError: 'sep'"
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "plant_tec",
+   "hp_tech",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 24857,
+   "sql": "SELECT count(*) FROM wave9.eu_heat_pumps"
+  },
+  "geometry": false,
+  "rows": 24857,
+  "seconds": 4
  },
  "eu_new_cars_fuel": {
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "mot_nrg",
+   "geo",
+   "leg_form",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 5969,
+   "sql": "SELECT count(*) FROM wave9.eu_new_cars_fuel"
+  },
+  "geometry": false,
+  "rows": 5969,
+  "seconds": 1
+ },
+ "fr_ore_ev_commune": {
   "built": null,
-  "error": "KeyError: 'sep'"
+  "error": "InvalidInputException: Invalid Input Error: File is not latin-1 encoded\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('/tmp/wave9/fr_ore_ev_commune/src.csv', sample_size...\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+ },
+ "gb_dec_certificates": {
+  "built": null,
+  "error": "StopIteration: "
+ },
+ "gb_dft_veh0142": {
+  "built": null,
+  "error": "StopIteration: "
+ },
+ "gb_epc_stats": {
+  "built": null,
+  "error": "StopIteration: "
+ },
+ "gb_ulev_la": {
+  "built": "2026-10-31",
+  "columns": [
+   "ons_la_code_apr_2021",
+   "region_local_authority_apr_2021_3",
+   "c_2021_q4",
+   "c_2021_q3",
+   "c_2021_q2",
+   "c_2021_q1",
+   "c_2020_q4",
+   "c_2020_q3",
+   "c_2020_q2",
+   "c_2020_q1",
+   "c_2019_q4",
+   "c_2019_q3",
+   "c_2019_q2",
+   "c_2019_q1",
+   "c_2018_q4",
+   "c_2018_q3",
+   "c_2018_q2",
+   "c_2018_q1",
+   "c_2017_q4",
+   "c_2017_q3",
+   "c_2017_q2",
+   "c_2017_q1",
+   "c_2016_q4",
+   "c_2016_q3",
+   "c_2016_q2",
+   "c_2016_q1",
+   "c_2015_q4",
+   "c_2015_q3",
+   "c_2015_q2",
+   "c_2015_q1",
+   "c_2014_q4",
+   "c_2014_q3",
+   "c_2014_q2",
+   "c_2014_q1",
+   "c_2013_q4",
+   "c_2013_q3",
+   "c_2013_q2",
+   "c_2013_q1",
+   "c_2012_q4",
+   "c_2012_q3",
+   "c_2012_q2",
+   "c_2012_q1",
+   "c_2011_q4"
+  ],
+  "example": {
+   "answer": 484,
+   "sql": "SELECT count(*) FROM wave9.gb_ulev_la"
+  },
+  "geometry": false,
+  "rows": 484,
+  "seconds": 5
  },
  "ie_cso_dc_consumption": {
   "built": "2026-10-31",
