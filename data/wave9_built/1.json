@@ -1,6 +1,11 @@
 {
  "eu_land_prices": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 23,
+   "period": "2023",
+   "scope": "country"
+  },
   "columns": [
    "dataflow",
    "last_update",
@@ -19,60 +24,15 @@
   },
   "geometry": false,
   "rows": 12354,
-  "seconds": 3
+  "seconds": 2
  },
  "fr_georisques_ssp": {
   "built": null,
   "error": "SystemExit: download failed: https://files.georisques.fr/SSP/ssp_casias_instruction.zip"
  },
  "gb_brownfield_register": {
-  "bbox": [
-   null,
-   null,
-   null,
-   null
-  ],
-  "built": "2026-10-31",
-  "columns": [
-   "dataset",
-   "end_date",
-   "entity",
-   "entry_date",
-   "geometry",
-   "name",
-   "organisation_entity",
-   "point",
-   "prefix",
-   "quality",
-   "reference",
-   "start_date",
-   "typology",
-   "brownfield_land",
-   "deliverable",
-   "hazardous_substances",
-   "hectares",
-   "maximum_net_dwellings",
-   "minimum_net_dwellings",
-   "notes",
-   "organisation",
-   "ownership_status",
-   "planning_permission_date",
-   "planning_permission_history",
-   "planning_permission_status",
-   "planning_permission_type",
-   "site",
-   "site_address",
-   "site_categories",
-   "site_plan_url"
-  ],
-  "example": {
-   "answer": 40229,
-   "sql": "SELECT count(*) FROM wave9.gb_brownfield_register"
-  },
-  "geometry": true,
-  "rows": 40229,
-  "seconds": 1,
-  "with_position": 0
+  "built": null,
+  "error": "CalledProcessError: Command '['tippecanoe', '-o', '/tmp/wave9/gb_brownfield_register/gb_brownfield_register.pmtiles', '-l', 'd', '-Z4', '-z12', '--no-feature-limit', '--no-tile-size-limit', '--simplification=4', '--force', '-P', '/tmp/wave9/gb_brownfield_register/tiles.geojsons']' returned non-zero exit status 110."
  },
  "gb_he_listed": {
   "bbox": [
@@ -103,7 +63,21 @@
   },
   "geometry": true,
   "rows": 379683,
-  "seconds": 22,
+  "seconds": 106,
+  "tiles": {
+   "fields": [
+    "name",
+    "listentry",
+    "grade",
+    "listdate",
+    "amenddate",
+    "capturescale",
+    "hyperlink"
+   ],
+   "kind": "point",
+   "minzoom": 6,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_he_listed.pmtiles"
+  },
   "with_position": 379683
  },
  "gb_ne_alc": {
@@ -129,7 +103,18 @@
   },
   "geometry": true,
   "rows": 1826,
-  "seconds": 6,
+  "seconds": 5,
+  "tiles": {
+   "fields": [
+    "geogext",
+    "area",
+    "alc_grade",
+    "perimeter"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_ne_alc.pmtiles"
+  },
   "with_position": 1826
  },
  "us_blm_solar_dla": {
@@ -164,7 +149,7 @@
   },
   "geometry": true,
   "rows": 210,
-  "seconds": 0,
+  "seconds": 1,
   "with_position": 210
  },
  "us_nrhp": {
@@ -221,7 +206,21 @@
   },
   "geometry": true,
   "rows": 74636,
-  "seconds": 34,
+  "seconds": 25,
+  "tiles": {
+   "fields": [
+    "name",
+    "certdate",
+    "nris_refnum",
+    "restype",
+    "address",
+    "city",
+    "county"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_nrhp.pmtiles"
+  },
   "with_position": 74636
  },
  "world_ourairports": {
@@ -260,6 +259,20 @@
   "geometry": true,
   "rows": 86322,
   "seconds": 1,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "ident",
+    "type",
+    "latitude_deg",
+    "longitude_deg",
+    "elevation_ft"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/world_ourairports.pmtiles"
+  },
   "with_position": 86322
  },
  "world_ourairports_navaids": {
