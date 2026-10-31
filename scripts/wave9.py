@@ -706,6 +706,9 @@ EXISTING = (
 )
 
 
+LANDLOCKED = ("AT", "CZ", "HU", "LU", "SK")  # marine sources (EMODnet) do not cover them
+
+
 def covers(places: list[str], cc: str) -> bool:
     from coverage import EU27
 
@@ -714,6 +717,7 @@ def covers(places: list[str], cc: str) -> bool:
         or cc in places
         or ("EUR" in places and (cc in EU27 or cc == "GB"))
         or ("EU27" in places and cc in EU27)
+        or ("EUSEA" in places and (cc in EU27 or cc == "GB") and cc not in LANDLOCKED)
     )
 
 
@@ -922,7 +926,10 @@ GROUP_COLOUR = {"Land & planning": "rgb(206,184,140)", "Power grid": "rgb(236,17
 
 
 def where_of(places: list[str]) -> list[str]:
-    return [{"EU27": "EU", "EUR": "Europe", "WORLD": "World"}.get(p, p) for p in places]
+    return [
+        {"EU27": "EU", "EUR": "Europe", "EUSEA": "Europe", "WORLD": "World"}.get(p, p)
+        for p in places
+    ]
 
 
 def pr_tables(args: argparse.Namespace) -> None:

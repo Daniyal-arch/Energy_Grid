@@ -85,7 +85,7 @@ datasets:
   wave9.gb_epc_stats: {county: "GB: MHCLG EPC live table D1 (domestic certificates per local authority)"}
   wave9.eu_degree_days: {county: "EU27: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)"}
   wave9.ie_cso_dc_consumption: {country: "IE: CSO metered electricity consumption (MEC03)"}
-  wave9.eu_emodnet_wind_farms: {polygon: "EUR: EMODnet offshore wind farms"}
+  wave9.eu_emodnet_wind_farms: {polygon: "EUSEA: EMODnet offshore wind farms"}
   wave9.us_boem_wind_leases: {polygon: "US: BOEM offshore wind lease outlines"}
   wave9.us_usgs_mrds: {point: "WORLD: USGS Mineral Resources Data System"}
   wave9.us_epa_lmop: {point: "US: EPA LMOP landfill gas energy projects"}
@@ -109,18 +109,18 @@ datasets:
   wave9.us_boem_active_leases: {polygon: "US: BOEM active renewable energy leases"}
   wave9.gb_dec_certificates: {county: "GB: MHCLG table DEC1 (display energy certificates per local authority)"}
   wave9.gb_ulev_la: {county: "GB: DfT plug-in cars per local authority (VEH0131)"}
-  wave9.eu_emodnet_platforms: {point: "EUR: EMODnet offshore installations"}
-  wave9.eu_emodnet_pipelines: {line: "EUR: EMODnet offshore pipelines"}
-  wave9.eu_emodnet_ocean_energy: {point: "EUR: EMODnet wave and tidal energy projects"}
-  wave9.eu_emodnet_ports: {point: "EUR: EMODnet ports"}
-  wave9.eu_emodnet_port_goods: {point: "EUR: EMODnet goods handled per port"}
+  wave9.eu_emodnet_platforms: {point: "EUSEA: EMODnet offshore installations"}
+  wave9.eu_emodnet_pipelines: {line: "EUSEA: EMODnet offshore pipelines"}
+  wave9.eu_emodnet_ocean_energy: {point: "EUSEA: EMODnet wave and tidal energy projects"}
+  wave9.eu_emodnet_ports: {point: "EUSEA: EMODnet ports"}
+  wave9.eu_emodnet_port_goods: {point: "EUSEA: EMODnet goods handled per port"}
   wave9.eu_emodnet_wwtp: {point: "EUR: EMODnet urban wastewater treatment plants (UWWTD)"}
   wave9.eu_emodnet_nuclear: {point: "EUR: EMODnet nuclear power plants"}
   wave9.eu_emodnet_desalination: {point: "EUR: EMODnet desalination plants"}
-  wave9.eu_emodnet_hydrocarbon_licences: {polygon: "EUR: EMODnet hydrocarbon licences"}
-  wave9.eu_emodnet_mpa: {polygon: "EUR: EMODnet marine protected areas"}
-  wave9.eu_emodnet_military: {polygon: "EUR: EMODnet military areas at sea"}
-  wave9.eu_emodnet_aggregates: {polygon: "EUR: EMODnet marine aggregate areas"}
+  wave9.eu_emodnet_hydrocarbon_licences: {polygon: "EUSEA: EMODnet hydrocarbon licences"}
+  wave9.eu_emodnet_mpa: {polygon: "EUSEA: EMODnet marine protected areas"}
+  wave9.eu_emodnet_military: {polygon: "EUSEA: EMODnet military areas at sea"}
+  wave9.eu_emodnet_aggregates: {polygon: "EUSEA: EMODnet marine aggregate areas"}
   wave9.gb_npg_heatmap_substations: {point: "GB: Northern Powergrid heat map: substation headroom"}
   wave9.eu_heat_production: {country: "EU27: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)"}
   wave9.eu_network_costs: {country: "EU27: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c)"}

@@ -445,7 +445,7 @@ tables:
       sql: SELECT count(*) FROM wave9.ie_cso_dc_consumption
       answer: 1650
   eu_emodnet_wind_farms:
-    grain: 'EMODnet offshore wind farms: one row per record as published (EUR; level polygon)'
+    grain: 'EMODnet offshore wind farms: one row per record as published (EUSEA; level polygon)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:windfarmspoly&outputFormat=application/json
     licence: CC BY 4.0
     category: 6. Offshore and maritime
@@ -702,7 +702,7 @@ tables:
       sql: SELECT count(*) FROM wave9.gb_ulev_la
       answer: 484
   eu_emodnet_platforms:
-    grain: 'EMODnet offshore installations: one row per record as published (EUR; level point)'
+    grain: 'EMODnet offshore installations: one row per record as published (EUSEA; level point)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:platforms&outputFormat=application/json
     licence: CC BY 4.0 (EMODnet Human Activities)
     category: 6. Offshore and maritime
@@ -713,7 +713,7 @@ tables:
       sql: SELECT count(*) FROM wave9.eu_emodnet_platforms
       answer: 1617
   eu_emodnet_pipelines:
-    grain: 'EMODnet offshore pipelines: one row per record as published (EUR; level line)'
+    grain: 'EMODnet offshore pipelines: one row per record as published (EUSEA; level line)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:pipelines&outputFormat=application/json
     licence: CC BY 4.0 (EMODnet Human Activities)
     category: 'Part A: finishing wave 8'
@@ -723,7 +723,7 @@ tables:
       sql: SELECT count(*) FROM wave9.eu_emodnet_pipelines
       answer: 3951
   eu_emodnet_ocean_energy:
-    grain: 'EMODnet wave and tidal energy projects: one row per record as published (EUR; level point)'
+    grain: 'EMODnet wave and tidal energy projects: one row per record as published (EUSEA; level point)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:oenergy&outputFormat=application/json
     licence: CC BY 4.0 (EMODnet Human Activities)
     category: 6. Offshore and maritime
@@ -735,7 +735,7 @@ tables:
       sql: SELECT count(*) FROM wave9.eu_emodnet_ocean_energy
       answer: 361
   eu_emodnet_ports:
-    grain: 'EMODnet ports: one row per record as published (EUR; level point)'
+    grain: 'EMODnet ports: one row per record as published (EUSEA; level point)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:portlocations&outputFormat=application/json
     licence: CC BY 4.0 (EMODnet Human Activities)
     category: 6. Offshore and maritime
@@ -745,7 +745,7 @@ tables:
       sql: SELECT count(*) FROM wave9.eu_emodnet_ports
       answer: 946
   eu_emodnet_port_goods:
-    grain: 'EMODnet goods handled per port: one row per record as published (EUR; level point)'
+    grain: 'EMODnet goods handled per port: one row per record as published (EUSEA; level point)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:portgoods&outputFormat=application/json
     licence: CC BY 4.0 (EMODnet Human Activities)
     category: 6. Offshore and maritime
@@ -790,7 +790,7 @@ tables:
       sql: SELECT count(*) FROM wave9.eu_emodnet_desalination
       answer: 3911
   eu_emodnet_hydrocarbon_licences:
-    grain: 'EMODnet hydrocarbon licences: one row per record as published (EUR; level polygon)'
+    grain: 'EMODnet hydrocarbon licences: one row per record as published (EUSEA; level polygon)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:hydrocarbons&outputFormat=application/json
     licence: CC BY 4.0 (EMODnet Human Activities)
     category: 'Part A: finishing wave 8'
@@ -800,7 +800,7 @@ tables:
       sql: SELECT count(*) FROM wave9.eu_emodnet_hydrocarbon_licences
       answer: 28506
   eu_emodnet_mpa:
-    grain: 'EMODnet marine protected areas: one row per record as published (EUR; level polygon)'
+    grain: 'EMODnet marine protected areas: one row per record as published (EUSEA; level polygon)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:marineprotectedareas&outputFormat=application/json
     licence: CC BY 4.0 (EMODnet Human Activities)
     category: 6. Offshore and maritime
@@ -811,7 +811,7 @@ tables:
       sql: SELECT count(*) FROM wave9.eu_emodnet_mpa
       answer: 826
   eu_emodnet_military:
-    grain: 'EMODnet military areas at sea: one row per record as published (EUR; level polygon)'
+    grain: 'EMODnet military areas at sea: one row per record as published (EUSEA; level polygon)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:militaryareaspoly&outputFormat=application/json
     licence: CC BY 4.0 (EMODnet Human Activities)
     category: 6. Offshore and maritime
@@ -821,7 +821,7 @@ tables:
       sql: SELECT count(*) FROM wave9.eu_emodnet_military
       answer: 746
   eu_emodnet_aggregates:
-    grain: 'EMODnet marine aggregate areas: one row per record as published (EUR; level polygon)'
+    grain: 'EMODnet marine aggregate areas: one row per record as published (EUSEA; level polygon)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:aggregateareas&outputFormat=application/json
     licence: CC BY 4.0 (EMODnet Human Activities)
     category: 6. Offshore and maritime
