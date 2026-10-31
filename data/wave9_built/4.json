@@ -1,0 +1,27 @@
+{
+ "us_drought_monitor": {
+  "bbox": [
+   -156.054,
+   17.884,
+   -65.221,
+   64.306
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "dm",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 5,
+   "sql": "SELECT count(*) FROM wave9.us_drought_monitor"
+  },
+  "geometry": true,
+  "rows": 5,
+  "seconds": 0,
+  "with_position": 5
+ }
+}
