@@ -41,7 +41,7 @@
   },
   "geometry": true,
   "rows": 1202,
-  "seconds": 1,
+  "seconds": 2,
   "with_position": 1202
  },
  "eu_emodnet_military": {
@@ -73,7 +73,7 @@
   },
   "geometry": true,
   "rows": 746,
-  "seconds": 1,
+  "seconds": 2,
   "with_position": 746
  },
  "eu_emodnet_mpa": {
@@ -112,7 +112,7 @@
   },
   "geometry": true,
   "rows": 826,
-  "seconds": 57,
+  "seconds": 53,
   "with_position": 826
  },
  "eu_emodnet_msp_zoning": {
@@ -242,7 +242,7 @@
   },
   "geometry": true,
   "rows": 429668,
-  "seconds": 23,
+  "seconds": 21,
   "with_position": 429668
  },
  "eu_emodnet_ports": {
@@ -313,7 +313,7 @@
   },
   "geometry": true,
   "rows": 600,
-  "seconds": 1,
+  "seconds": 2,
   "with_position": 600
  },
  "us_boem_active_leases": {
@@ -351,7 +351,7 @@
   },
   "geometry": true,
   "rows": 4892,
-  "seconds": 4,
+  "seconds": 6,
   "with_position": 4891
  },
  "us_boem_wind_leases": {
