@@ -3,7 +3,7 @@ scripts/wave9_sources.yaml.
 
     python scripts/wave9.py probe [--cat N] [--id ID]      # status, size, type, licence quote
     python scripts/wave9.py build --cat N [--upload]       # the `build` sources of a category
-    python scripts/wave9.py search FAMILY QUERY            # data.europa.eu hits per dark country
+    python scripts/wave9.py search [--family F]             # open-data portal hits per country
 
 Probe results go to `data/wave9_probes.json` (committed: the evidence behind every registry
 cell and docs/research/wave9-sources.md). Builds go to the lake (`lake/w9_<id>/...`) and write
@@ -130,28 +130,83 @@ def probe(args: argparse.Namespace) -> None:
     PROBES.write_text(json.dumps(old, indent=1, ensure_ascii=False, sort_keys=True) + "\n")
 
 
-def search(args: argparse.Namespace) -> None:
-    """data.europa.eu: the datasets a query finds per country (evidence for dark cells)."""
+FAMILIES = ROOT / "scripts" / "wave9_families.yaml"
+SEARCH = ROOT / "data" / "wave9_search.json"
+
+
+def families() -> dict[str, dict[str, Any]]:
+    return yaml.safe_load(FAMILIES.read_text(encoding="utf-8"))["families"]
+
+
+def search_one(fam: str, q: str) -> dict[str, Any]:
+    """The open datasets a query finds: per EU country on data.europa.eu, on catalog.data.gov
+    and on data.gov.uk (top three titles and the count): evidence for a dark cell."""
     from coverage import EU27
 
-    out = {}
-    for cc in EU27:
-        facets = json.dumps({"country": [cc.lower() if cc != "GR" else "gr"]})
-        d = w.get_json(
-            "https://data.europa.eu/api/hub/search/search",
-            params={"q": args.query, "filters": "dataset", "limit": 3, "facets": facets},
-        )
-        res = d["result"]  # type: ignore[index]
-        titles = [
-            (x.get("title") or {}).get("en") or next(iter((x.get("title") or {}).values()), "")
-            for x in res["results"]
-        ]
-        out[cc] = {"count": res["count"], "top": titles}
-        print(f"{cc}: {res['count']} | {' | '.join(t[:60] for t in titles)}", flush=True)
-    path = ROOT / "data" / "wave9_search.json"
-    old = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
-    old[args.family] = {"query": args.query, "checked": time.strftime("%Y-%m-%d"), "hits": out}
-    path.write_text(json.dumps(old, indent=1, ensure_ascii=False) + "\n")
+    out: dict[str, Any] = {}
+    with httpx.Client(headers=UA, timeout=60) as c:
+        for cc in EU27:
+            try:
+                r = c.get(
+                    "https://data.europa.eu/api/hub/search/search",
+                    params={
+                        "q": f'"{q}"',  # the phrase, not its words ORed
+                        "filters": "dataset",
+                        "limit": 3,
+                        "facets": json.dumps({"country": [cc.lower()]}),
+                    },
+                ).json()["result"]
+                titles = [
+                    (x.get("title") or {}).get("en")
+                    or next(iter((x.get("title") or {}).values()), "")
+                    for x in r["results"]
+                ]
+                out[cc] = {
+                    "count": r["count"],
+                    "top": [t[:90] for t in titles],
+                    "portal": "data.europa.eu",
+                }
+            except (httpx.HTTPError, ValueError, KeyError) as e:
+                out[cc] = {"error": type(e).__name__, "portal": "data.europa.eu"}
+        try:
+            r = c.get("https://catalog.data.gov/search", params={"q": q}).json()
+            out["US"] = {
+                "count": r.get("total") or len(r.get("results") or []),
+                "top": [
+                    ((x.get("dcat") or {}).get("title") or "")[:90]
+                    for x in (r.get("results") or [])[:3]
+                ],
+                "portal": "catalog.data.gov",
+            }
+        except (httpx.HTTPError, ValueError) as e:
+            out["US"] = {"error": type(e).__name__, "portal": "catalog.data.gov"}
+        try:
+            r = c.get(
+                "https://ckan.publishing.service.gov.uk/api/action/package_search",
+                params={"q": q, "rows": 3},
+            ).json()["result"]
+            out["GB"] = {
+                "count": r["count"],
+                "top": [x["title"][:90] for x in r["results"]],
+                "portal": "data.gov.uk",
+            }
+        except (httpx.HTTPError, ValueError, KeyError) as e:
+            out["GB"] = {"error": type(e).__name__, "portal": "data.gov.uk"}
+    return {"query": q, "checked": time.strftime("%Y-%m-%d"), "hits": out}
+
+
+def search(args: argparse.Namespace) -> None:
+    fams = families()
+    todo = [args.family] if args.family else list(fams)
+    old = json.loads(SEARCH.read_text(encoding="utf-8")) if SEARCH.exists() else {}
+    with cf.ThreadPoolExecutor(6) as ex:
+        for fam, res in zip(todo, ex.map(lambda f: search_one(f, fams[f]["q"]), todo), strict=True):
+            old[fam] = res
+            print(
+                f"{fam}: " + " ".join(f"{k}:{v.get('count', '?')}" for k, v in res["hits"].items()),
+                flush=True,
+            )
+    SEARCH.write_text(json.dumps(old, indent=1, ensure_ascii=False, sort_keys=True) + "\n")
 
 
 # ---------------------------------------------------------------------- build
@@ -268,13 +323,16 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         )
         if kind == "csv_zip":
             f = first_file(w.unzip(f), (".csv", ".txt"))
-        opts = ", ".join(
-            [f"delim = '{s['sep']}'"] * bool(s.get("sep"))
-            + [f"skip = {s['skip']}"] * bool(s.get("skip"))
-            + [f"encoding = '{s['encoding']}'"] * bool(s.get("encoding"))
-            + ["all_varchar = true"] * bool(s.get("varchar"))
-            + ["sample_size = -1", "ignore_errors = true", "header = true"]
-        )
+        parts = ["sample_size = -1", "ignore_errors = true", "header = true"]
+        if s.get("sep"):
+            parts.append(f"delim = '{s['sep']}'")
+        if s.get("skip"):
+            parts.append(f"skip = {s['skip']}")
+        if s.get("encoding"):
+            parts.append(f"encoding = '{s['encoding']}'")
+        if s.get("varchar"):
+            parts.append("all_varchar = true")
+        opts = ", ".join(parts)
         con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('{f}', {opts})")
     elif kind == "xlsx":
         f = w.download(url, d / "src.xlsx", timeout=3600)
@@ -288,10 +346,12 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         data = w.get_json(url, timeout=600)
         for k in (s.get("records") or "").split(".") if s.get("records") else []:
             data = data[k]  # type: ignore[index]
+        if isinstance(data, dict):
+            data = [data]
         f = d / "src.json"
         f.write_text(json.dumps(data))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json_auto('{f}', maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', maximum_object_size = 1000000000)"
         )
     elif kind == "socrata":
         rows: list[dict[str, Any]] = []
@@ -305,14 +365,16 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(rows))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json_auto('{f}', maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', maximum_object_size = 1000000000)"
         )
     elif kind == "jsonstat":
         con.execute("CREATE OR REPLACE TABLE t AS SELECT * FROM (VALUES (1)) LIMIT 0")
         rows = jsonstat_rows(w.get_json(url, timeout=300))  # type: ignore[arg-type]
         f = d / "src.json"
         f.write_text(json.dumps(rows))
-        con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json_auto('{f}')")
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array')"
+        )
     elif kind == "odata":
         rows = []
         while True:
@@ -324,7 +386,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(rows))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json_auto('{f}', maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', maximum_object_size = 1000000000)"
         )
     elif kind == "ckan":
         # the newest CSV (or `fmt`) resource of the first package the search finds
@@ -354,6 +416,57 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             f"  ScienceBase file: {f0['name']} ({(f0.get('size') or 0) / 1e6:,.1f} MB)", flush=True
         )
         load_one(con, {**s, "kind": s["inner"], "url": f0["url"]})
+    elif kind in ("ods", "xls"):
+        import pandas as pd
+
+        f = w.download(url, d / f"src.{kind}", timeout=3600)
+        raw = pd.read_excel(
+            f,
+            sheet_name=s.get("sheet", 0),
+            header=None,
+            engine="odf" if kind == "ods" else None,
+            dtype=str,
+        )
+        # the header is the first row with at least three filled cells (title rows come first)
+        h = next(i for i, row in raw.iterrows() if row.notna().sum() >= max(3, raw.shape[1] // 2))
+        body = raw.iloc[h + 1 :].copy()
+        body.columns = [
+            str(c) if str(c) != "nan" else f"col_{i}" for i, c in enumerate(raw.iloc[h])
+        ]
+        out = d / "src.csv"
+        body.dropna(how="all").to_csv(out, index=False)
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('{out}', all_varchar = true, header = true)"
+        )
+    elif kind == "govuk":
+        # a gov.uk publication: the attachment whose title matches, loaded by its file type
+        page = w.get_json("https://www.gov.uk/api/content/government/" + url)
+        att = [
+            a
+            for a in page["details"]["attachments"]
+            if re.search(s["match"], a.get("title", ""), re.I)
+        ]  # type: ignore[index]
+        if not att:
+            raise SystemExit(f"no attachment matching {s['match']}")
+        a = att[0]
+        print(f"  gov.uk attachment: {a['title'][:80]} {a['url']}", flush=True)
+        ext = a["url"].rsplit(".", 1)[-1].lower()
+        load_one(
+            con,
+            {
+                **s,
+                "kind": {"ods": "ods", "xlsx": "xlsx", "csv": "csv", "xls": "xls"}[ext],
+                "url": a["url"],
+            },
+        )
+    elif kind == "dirlist":
+        # the newest file of a directory listing whose name matches
+        page = httpx.get(url, headers=UA, timeout=120, follow_redirects=True).text
+        names = sorted(set(re.findall(s["match"], page)))
+        if not names:
+            raise SystemExit(f"no file matching {s['match']} in {url}")
+        print(f"  newest file: {names[-1]}", flush=True)
+        load_one(con, {**s, "kind": s["inner"], "url": url.rstrip("/") + "/" + names[-1]})
     elif kind == "custom":
         CUSTOM[s["id"]](con, s, d)
     else:
@@ -474,6 +587,252 @@ def build(args: argparse.Namespace) -> None:
         w.lake_done(lk, args.upload)
 
 
+# ---------------------------------------------------------------------- render
+
+RANK = {"point": 0, "line": 0, "polygon": 0, "raster": 0, "grid_100m": 0, "small_area": 1,
+        "municipality": 2, "county": 3, "region": 4, "zone": 4, "country": 5}  # fmt: skip
+EXISTING = (
+    "consumption",
+    "heating",
+    "outlines",
+    "flood_zones",
+    "oil_gas_facilities",
+    "co2_storage",
+    "congestion",
+)
+
+
+def covers(places: list[str], cc: str) -> bool:
+    from coverage import EU27
+
+    return (
+        "WORLD" in places
+        or cc in places
+        or ("EUR" in places and (cc in EU27 or cc == "GB"))
+        or ("EU27" in places and cc in EU27)
+    )
+
+
+def built_records() -> dict[str, dict[str, Any]]:
+    out: dict[str, dict[str, Any]] = {}
+    for f in sorted((ROOT / "data" / "wave9_built").glob("*.json")):
+        for k, v in json.loads(f.read_text(encoding="utf-8")).items():
+            if v.get("rows") is not None or k not in out:
+                out[k] = v
+    return out
+
+
+def outcome(s: dict[str, Any], built: dict[str, Any], probes: dict[str, Any]) -> str:
+    """built | failed | page | blocked | left_out | not_published."""
+    if s["status"] != "build":
+        return s["status"]
+    b = built.get(s["id"]) or {}
+    if b.get("rows"):
+        return "built"
+    if s["kind"] == "page":
+        return "page"
+    return "failed" if b else "pending"
+
+
+def title_of(s: dict[str, Any]) -> str:
+    return s.get("title") or s.get("note") or s["id"].replace("_", " ")
+
+
+def cell_for(fam: str, f: dict[str, Any], cc: str, srcs: list[dict[str, Any]], built: dict[str, Any],
+             probes: dict[str, Any], hits: dict[str, Any]) -> dict[str, Any] | None:  # fmt: skip
+    mine = [s for s in srcs if s["fam"] == fam and covers(s["places"], cc)]
+    ok = [s for s in mine if outcome(s, built, probes) == "built"]
+    today = time.strftime("%Y-%m-%d")
+    if ok:
+        finest = min(ok, key=lambda s: RANK.get(s["level"], 5))
+        cell = {
+            "status": "built",
+            "source": "; ".join(dict.fromkeys(title_of(s) for s in ok)),
+            "url": finest["url"]
+            if finest["kind"] not in ("ckan", "govuk", "sciencebase")
+            else (finest.get("lic_url") or finest["url"]),
+            "licence": "; ".join(dict.fromkeys(s["licence"] for s in ok)),
+            "dataset": ", ".join(f"lake wave9.{s['id']}" for s in ok),
+            "checked": max((built[s["id"]].get("built") or today) for s in ok),
+        }
+        if RANK.get(finest["level"], 5) > RANK.get(f.get("want", "point"), 0):
+            cell["partial"] = True
+            cell["note"] = f"published at {finest['level']} level ({title_of(finest)})"
+        return cell
+    if fam in EXISTING:
+        return None
+    blocked = [s for s in mine if s["status"] == "blocked"]
+    if blocked:
+        b = blocked[0]
+        return {"status": "blocked", "source": title_of(b), "url": b["url"], "checked": today,
+                "note": f"{b.get('why', 'blocked')}. Data request: {b.get('request', 'an open download')}"}  # fmt: skip
+    notes = []
+    for s in mine:
+        o = outcome(s, built, probes)
+        pr = probes.get(s["id"]) or {}
+        if o == "left_out":
+            notes.append(f"{title_of(s)} left out: {s.get('why')}")
+        elif o == "not_published":
+            notes.append(f"{title_of(s)}: {s.get('why')}")
+        elif o in ("page", "failed", "pending"):
+            err = (built.get(s["id"]) or {}).get("error")
+            notes.append(
+                f"{title_of(s)} probed ({s['url'][:90]}, HTTP {pr.get('http')}): "
+                + (f"build failed ({err[:120]})" if err else "no machine-readable download located")
+            )
+    h = (hits.get(fam) or {}).get("hits", {}).get(cc) or {}
+    if h:
+        top = "; ".join(t for t in h.get("top", []) if t)
+        notes.append(
+            f"{h.get('portal')} search '{(hits.get(fam) or {}).get('query')}' ({(hits.get(fam) or {}).get('checked')}): {h.get('count', '?')} results"
+            + (f", top: {top}" if top else "")
+        )
+    url = (
+        mine[0]["url"]
+        if mine
+        else {"US": "https://catalog.data.gov/", "GB": "https://www.data.gov.uk/"}.get(
+            cc, "https://data.europa.eu/data/datasets"
+        )
+    )
+    return {"status": "not_published", "url": url, "checked": today,
+            "note": ("no source built in wave 9. " + " | ".join(notes)) if notes else "no source found in wave 9"}  # fmt: skip
+
+
+def render(args: argparse.Namespace) -> None:
+    from coverage import COUNTRIES, REGISTRY
+
+    srcs = sources()
+    built = built_records()
+    probes = json.loads(PROBES.read_text(encoding="utf-8")) if PROBES.exists() else {}
+    hits = json.loads(SEARCH.read_text(encoding="utf-8")) if SEARCH.exists() else {}
+    fams = families()
+    reg = yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))
+    for fam, f in fams.items():
+        cells = {cc: cell_for(fam, f, cc, srcs, built, probes, hits) for cc in COUNTRIES}
+        reg["families"][fam] = {
+            "name": f["name"],
+            "shows": f["shows"],
+            "category": f["cat"],
+            "cells": cells,
+        }
+    for fam in EXISTING:
+        for cc in COUNTRIES:
+            c = cell_for(fam, {"want": "point"}, cc, srcs, built, probes, hits)
+            if c and c["status"] == "built":
+                old = reg["families"][fam]["cells"].get(cc) or {}
+                if old.get("status") in ("built", "have") and old.get("dataset"):
+                    c["source"] = f"{old.get('source')}; {c['source']}"
+                    c["dataset"] = f"{old.get('dataset')}, {c['dataset']}"
+                    c["licence"] = f"{old.get('licence') or ''}; {c['licence']}".strip("; ")
+                reg["families"][fam]["cells"][cc] = c
+    REGISTRY.write_text(
+        REGISTRY.read_text(encoding="utf-8").split("families:")[0]
+        + yaml.safe_dump(
+            {"families": reg["families"]}, sort_keys=False, allow_unicode=True, width=200
+        ),
+        encoding="utf-8",
+    )
+    research(srcs, built, probes)
+    catalog(srcs, built)
+    levels(srcs, built)
+    counts = {}
+    for s in srcs:
+        counts[outcome(s, built, probes)] = counts.get(outcome(s, built, probes), 0) + 1
+    print(f"{len(srcs)} sources: {counts}")
+
+
+CATS = {0: "Part A: finishing wave 8", 1: "1. Land, permitting and planning", 2: "2. Grid planning, connection and network charges",
+        3: "3. Markets and revenues", 4: "4. Physical climate and hazard risk", 5: "5. Demand and electrification",
+        6: "6. Offshore and maritime", 7: "7. Supply chain, materials and industry", 8: "8. Finance, public money and incentives",
+        9: "9. Social and community", 10: "10. Telecom and digital", 11: "11. Water and cooling", 12: "12. Heat networks and geothermal",
+        13: "13. Mobility", 14: "14. Nuclear", 15: "15. Air quality near plants", 16: "16. Reliability below the country", 17: "17. Night lights"}  # fmt: skip
+
+
+def research(srcs: list[dict[str, Any]], built: dict[str, Any], probes: dict[str, Any]) -> None:
+    lines = [
+        "# Wave 9 sources (brief 28)",
+        "",
+        "Every source probed for docs/tasks/28-wave9-customer-needs.md: category, places, level, licence as",
+        "found, size or rows, status, link and the date checked. Generated by `python scripts/wave9.py render`",
+        "from scripts/wave9_sources.yaml, data/wave9_probes.json and data/wave9_built/. Status: **built** (in the",
+        "lake, `wave9.<id>`), **blocked** (key, login or refusal; the data request is in data/coverage.yaml),",
+        "**left out** (licence does not allow a paid product), **not published** (no machine-readable file),",
+        "**page only** (the publisher's page was probed, no download located in this wave), **failed** (the",
+        "build failed; the error is shown).",
+        "",
+    ]
+    for cat, name in CATS.items():
+        rows = [s for s in srcs if s["cat"] == cat]
+        if not rows:
+            continue
+        lines += [
+            f"## {name}",
+            "",
+            "| Source | Places | Level | Licence | Size / rows | Status | Checked |",
+            "|---|---|---|---|---|---|---|",
+        ]
+        for s in rows:
+            o = outcome(s, built, probes)
+            b, pr = built.get(s["id"]) or {}, probes.get(s["id"]) or {}
+            size = (
+                f"{b['rows']:,} rows"
+                if b.get("rows")
+                else (
+                    f"{pr['size'] / 1e6:,.1f} MB"
+                    if pr.get("size")
+                    else (f"{pr['rows']:,} features" if pr.get("rows") else "")
+                )
+            )
+            status = {"built": "built", "failed": f"failed: {(b.get('error') or '')[:100]}", "page": f"page only (HTTP {pr.get('http')})",
+                      "pending": "not yet built", "blocked": f"blocked: {s.get('why')}", "left_out": f"left out: {s.get('why')}",
+                      "not_published": f"not published: {s.get('why')}"}[o]  # fmt: skip
+            lines.append(
+                f"| [{title_of(s)}]({s['url']}) (`{s['id']}`) | {', '.join(s['places'])} | {s['level']} | {s['licence']} | {size} | "
+                f"{status.replace('|', '/')} | {b.get('built') or pr.get('checked') or ''} |"
+            )
+        lines.append("")
+    (ROOT / "docs" / "research" / "wave9-sources.md").write_text("\n".join(lines), encoding="utf-8")
+
+
+def catalog(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
+    tables = {}
+    for s in srcs:
+        b = built.get(s["id"]) or {}
+        if not b.get("rows"):
+            continue
+        tables[s["id"]] = {
+            "grain": f"{title_of(s)}: one row per record as published ({', '.join(s['places'])}; level {s['level']})",
+            "source": s["url"],
+            "licence": s["licence"],
+            "category": CATS.get(s["cat"], ""),
+            "columns": ", ".join(b.get("columns", [])[:40]),
+            "examples": [{"q": f"how many records in {title_of(s)}", "sql": b["example"]["sql"], "answer": b["example"]["answer"]}],
+        }  # fmt: skip
+    out = {"dataset": "wave9", "title": "Wave 9 datasets (brief 28): one table per source", "licence": "per table (see each table)",
+           "notes": "Positioned tables are GeoParquet with a bbox column: use in_area(geometry, area_id). Values as published.",
+           "tables": tables}  # fmt: skip
+    (ROOT / "agent" / "catalog" / "wave9.yaml").write_text(
+        "# Generated by `python scripts/wave9.py render` from the build records (data/wave9_built/).\n"
+        + yaml.safe_dump(out, sort_keys=False, allow_unicode=True, width=160),
+        encoding="utf-8",
+    )
+
+
+def levels(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
+    path = ROOT / "agent" / "areas" / "levels.yaml"
+    text = path.read_text(encoding="utf-8").split("  # wave 9 (generated")[0].rstrip("\n") + "\n"
+    rows = ["  # wave 9 (generated by scripts/wave9.py render)"]
+    for s in srcs:
+        if (built.get(s["id"]) or {}).get("rows"):
+            lvl = (
+                s["level"]
+                if s["level"] in ("point", "line", "polygon", "raster")
+                else {"grid_100m": "small_area", "zone": "region"}.get(s["level"], s["level"])
+            )
+            rows.append(f'  wave9.{s["id"]}: {{{lvl}: "{", ".join(s["places"])}: {title_of(s)}"}}')
+    path.write_text(text + "\n".join(rows) + "\n", encoding="utf-8")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -487,9 +846,10 @@ def main() -> None:
     b.add_argument("--lake", type=Path, default=Path("lake-out"))
     b.add_argument("--upload", action="store_true")
     b.set_defaults(fn=build)
+    r = sub.add_parser("render")
+    r.set_defaults(fn=render)
     s = sub.add_parser("search")
-    s.add_argument("family")
-    s.add_argument("query")
+    s.add_argument("--family")
     s.set_defaults(fn=search)
     args = ap.parse_args()
     args.fn(args)

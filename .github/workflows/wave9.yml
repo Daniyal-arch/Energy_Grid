@@ -84,7 +84,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with: {python-version: "3.12"}
-      - run: sudo apt-get update -q && sudo apt-get install -y -q gdal-bin && pip install httpx pyyaml duckdb pycountry openpyxl shapely rasterio numpy
+      - run: sudo apt-get update -q && sudo apt-get install -y -q gdal-bin && pip install httpx pyyaml duckdb pycountry openpyxl shapely rasterio numpy pandas odfpy xlrd
       - run: bash scripts/r2_creds.sh
       - name: Category ${{ matrix.cat }} (each source on its own)
         run: python scripts/wave9.py build --cat ${{ matrix.cat }} --lake lake-out --upload
