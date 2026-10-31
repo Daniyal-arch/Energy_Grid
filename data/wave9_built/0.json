@@ -1,7 +1,7 @@
 {
  "at_zaehlsprengel": {
   "built": null,
-  "error": "SystemExit: download failed: https://data.statistik.gv.at/data/OGDEXT_ZSP_1_STATISTIK_AUSTRIA_20250101.zip"
+  "error": "CalledProcessError: Command '['tippecanoe', '-o', '/tmp/wave9/at_zaehlsprengel/at_zaehlsprengel.pmtiles', '-l', 'd', '-Z0', '-z12', '--no-feature-limit', '--no-tile-size-limit', '--simplification=4', '--force', '-P', '/tmp/wave9/at_zaehlsprengel/tiles.geojsons']' returned non-zero exit status 110."
  },
  "be_fluvius_consumption": {
   "built": "2026-10-31",
@@ -24,18 +24,18 @@
   },
   "geometry": false,
   "rows": 540342,
-  "seconds": 27
+  "seconds": 43
  },
  "cz_zsj": {
   "built": null,
-  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/src-8zyu9ngp/Zakladni_sidelni_jednotky_20260701.gpkg\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/src-8zyu9ngp/Zakladni_sidelni_jednotky_20260701...\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/src-y8hw4ajl/Zakladni_sidelni_jednotky_20260701.gpkg\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/src-y8hw4ajl/Zakladni_sidelni_jednotky_20260701...\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
  },
  "de_zensus_heating": {
   "bbox": [
-   6.637,
-   47.441,
-   14.972,
-   54.212
+   5.873,
+   47.335,
+   15.032,
+   55.024
   ],
   "built": "2026-10-31",
   "columns": [
@@ -51,13 +51,26 @@
    "keine_heizung"
   ],
   "example": {
-   "answer": 42,
+   "answer": 2628942,
    "sql": "SELECT count(*) FROM wave9.de_zensus_heating"
   },
   "geometry": true,
-  "rows": 42,
-  "seconds": 5,
-  "with_position": 42
+  "rows": 2628942,
+  "seconds": 11,
+  "tiles": {
+   "fields": [
+    "gitter_id_100m",
+    "x_mp_100m",
+    "y_mp_100m",
+    "insgesamt_heizungsart",
+    "fernheizung",
+    "etagenheizung"
+   ],
+   "kind": "point",
+   "minzoom": 6,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/de_zensus_heating.pmtiles"
+  },
+  "with_position": 2628942
  },
  "es_ine_secciones": {
   "bbox": [
@@ -95,7 +108,20 @@
   },
   "geometry": true,
   "rows": 36477,
-  "seconds": 72,
+  "seconds": 64,
+  "tiles": {
+   "fields": [
+    "cusec",
+    "cumun",
+    "csec",
+    "cdis",
+    "cmun",
+    "cpro"
+   ],
+   "kind": "polygon",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/es_ine_secciones.pmtiles"
+  },
   "with_position": 36477
  },
  "eu_emodnet_hydrocarbon_licences": {
@@ -162,7 +188,21 @@
   },
   "geometry": true,
   "rows": 3951,
-  "seconds": 5,
+  "seconds": 6,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "status",
+    "medium",
+    "operator",
+    "size_in",
+    "length_m"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_pipelines.pmtiles"
+  },
   "with_position": 3951
  },
  "fi_paavo": {
@@ -241,7 +281,20 @@
   },
   "geometry": true,
   "rows": 3026,
-  "seconds": 5,
+  "seconds": 6,
+  "tiles": {
+   "fields": [
+    "id",
+    "postinumeroalue",
+    "nimi",
+    "namn",
+    "euref_x",
+    "euref_y"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/fi_paavo.pmtiles"
+  },
   "with_position": 3026
  },
  "gb_ea_flood_zones": {
@@ -265,7 +318,17 @@
   },
   "geometry": true,
   "rows": 415408,
-  "seconds": 523,
+  "seconds": 679,
+  "tiles": {
+   "fields": [
+    "origin",
+    "flood_zone",
+    "flood_source"
+   ],
+   "kind": "polygon",
+   "minzoom": 6,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_ea_flood_zones.pmtiles"
+  },
   "with_position": 415408
  },
  "ie_cso_saps_heating": {
@@ -338,7 +401,7 @@
   },
   "geometry": false,
   "rows": 18920,
-  "seconds": 4
+  "seconds": 5
  },
  "it_istat_sezioni": {
   "bbox": [
@@ -381,7 +444,20 @@
   },
   "geometry": true,
   "rows": 756376,
-  "seconds": 130,
+  "seconds": 135,
+  "tiles": {
+   "fields": [
+    "cod_reg",
+    "cod_uts",
+    "pro_com",
+    "sez21",
+    "sez21_id",
+    "cod_tipo_s"
+   ],
+   "kind": "polygon",
+   "minzoom": 6,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/it_istat_sezioni.pmtiles"
+  },
   "with_position": 756376
  },
  "pt_ine_bgri": {
@@ -410,6 +486,15 @@
   "geometry": true,
   "rows": 236,
   "seconds": 0,
+  "tiles": {
+   "fields": [
+    "name",
+    "pipename"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_eia_crude_pipelines.pmtiles"
+  },
   "with_position": 236
  },
  "us_eia_crude_rail": {
@@ -465,6 +550,16 @@
   "geometry": true,
   "rows": 32961,
   "seconds": 1,
+  "tiles": {
+   "fields": [
+    "name",
+    "typepipe",
+    "status"
+   ],
+   "kind": "linestring",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_eia_gas_pipelines.pmtiles"
+  },
   "with_position": 32921
  },
  "us_eia_gas_processing": {
@@ -566,6 +661,15 @@
   "geometry": true,
   "rows": 133,
   "seconds": 0,
+  "tiles": {
+   "fields": [
+    "name",
+    "pipename"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_eia_hgl_pipelines.pmtiles"
+  },
   "with_position": 133
  },
  "us_eia_lng": {
@@ -625,6 +729,15 @@
   "geometry": true,
   "rows": 329,
   "seconds": 0,
+  "tiles": {
+   "fields": [
+    "name",
+    "pipename"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_eia_product_pipelines.pmtiles"
+  },
   "with_position": 329
  },
  "us_eia_product_terminals": {
