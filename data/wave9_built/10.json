@@ -18,6 +18,28 @@
   },
   "geometry": false,
   "rows": 4566,
-  "seconds": 1
+  "seconds": 2
+ },
+ "eu_internet_households": {
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "hhtyp",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 5585,
+   "sql": "SELECT count(*) FROM wave9.eu_internet_households"
+  },
+  "geometry": false,
+  "rows": 5585,
+  "seconds": 2
  }
 }
