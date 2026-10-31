@@ -12,7 +12,7 @@ build failed; the error is shown).
 
 | Source | Places | Level | Licence | Size / rows | Status | Checked |
 |---|---|---|---|---|---|---|
-| [Fluvius open data (Flanders)](https://opendata.fluvius.be/api/explore/v2.1/catalog/datasets) (`be_fluvius_consumption`) | BE | municipality | check |  | not yet built | 2026-10-31 |
+| [Fluvius consumption per statistical sector and NACE sector (Flanders)](https://opendata.fluvius.be/api/explore/v2.1/catalog/datasets/1_06b-verbruiksgegevens-statistische-sector-met-nace-sector/exports/csv?delimiter=%2C) (`be_fluvius_consumption`) | BE | small_area | check |  | not yet built | 2026-10-31 |
 | [Destatis regional table 43531 (industry energy use per district)](https://www.regionalstatistik.de/genesis/online?operation=table&code=43531-01-02-4) (`de_destatis_43531`) | DE | county | dl-de/by-2-0 |  | blocked: GENESIS (Regionalstatistik) tables are downloadable only with a registered account | 2026-10-31 |
 | [Terna electricity consumption per province](https://www.terna.it/it/sistema-elettrico/statistiche/pubblicazioni-statistiche) (`it_terna_province`) | IT | county | check | 0.1 MB | page only (HTTP 200) | 2026-10-31 |
 | [NSO Malta electricity consumption](https://nso.gov.mt/themes_publications/energy/) (`mt_nso_consumption`) | MT | county | check |  | blocked: nso.gov.mt answers HTTP 403 to an honest client (2026-10-31) | 2026-10-31 |
@@ -21,10 +21,10 @@ build failed; the error is shown).
 | [ISTAT census sections 2021](https://www.istat.it/storage/cartografia/basi_territoriali/2021/R01_21.zip) (`it_istat_sezioni`) | IT | small_area | CC BY 4.0 | 77.3 MB | not yet built | 2026-10-31 |
 | [INE census sections 2024](https://www.ine.es/prodyser/cartografia/seccionado_2024.zip) (`es_ine_secciones`) | ES | small_area | CC BY 4.0 |  | not yet built | 2026-10-31 |
 | [INE Portugal BGRI 2021 statistical subsections](https://mapas.ine.pt/download/filesGPG/2021/BGRI21_CONT.zip) (`pt_ine_bgri`) | PT | small_area | check | 0.0 MB | not yet built | 2026-10-31 |
-| [Statistik Austria census districts (Zählsprengel)](https://data.statistik.gv.at/data/OGDEXT_ZSP_1_STATISTIK_AUSTRIA_20250101.zip) (`at_zaehlsprengel`) | AT | small_area | CC BY 4.0 | 0.0 MB | not yet built | 2026-10-31 |
+| [Statistik Austria census districts (Zählsprengel)](https://www.statistik.at/gs-inspire/www/inspire2/download/daten/su-vector_zsp_7767c333-302c-11e3-beb4-0000c1ab0db6.zip) (`at_zaehlsprengel`) | AT | small_area | CC BY 4.0 (Statistik Austria) | 0.0 MB | not yet built | 2026-10-31 |
 | [DAWA voting districts (Denmark)](https://api.dataforsyningen.dk/afstemningsomraader?format=geojson) (`dk_afstemningsomraader`) | DK | small_area | check |  | not published: DAWA (api.dataforsyningen.dk) answers 410 Gone: the service was retired; Overture divisions cover Denmark | 2026-10-31 |
 | [Statistics Finland Paavo postal areas 2024](https://geo.stat.fi/geoserver/postialue/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=postialue:pno_tilasto_2024&outputFormat=application/json&srsName=EPSG:4326) (`fi_paavo`) | FI | small_area | CC BY 4.0 |  | not yet built | 2026-10-31 |
-| [ČSÚ basic settlement units (ZSJ)](https://www.czso.cz/csu/czso/zakladni-sidelni-jednotky) (`cz_zsj`) | CZ | small_area | check |  | page only (HTTP 404) | 2026-10-31 |
+| [ČSÚ basic settlement units (ZSJ)](https://geodata.csu.gov.cz/as/data/distribuce/Hosted/Open_data_RSO/FeatureServer/20/gpkg.zip) (`cz_zsj`) | CZ | small_area | ČSÚ open data terms (data.gov.cz) |  | not yet built | 2026-10-31 |
 | [Statistics Estonia statistical grid](https://www.stat.ee/en/find-statistics/methodology-and-quality/regional-statistics) (`ee_grid`) | EE | small_area | check |  | page only (HTTP 404) | 2026-10-31 |
 | [Environment Agency Flood Map for Planning, flood zones 2 and 3](https://environment.data.gov.uk/api/file/download?fileDataSetId=455d2eb3-3065-4d20-871b-c4d5dee23f67&fileName=Flood_Map_for_Planning_Flood_Zones.gpkg.zip) (`gb_ea_flood_zones`) | GB | polygon | OGL v3 | 1,030.6 MB | not yet built | 2026-10-31 |
 | [FEMA National Flood Hazard Layer](https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28) (`us_fema_nfhl`) | US | polygon | public domain |  | page only (HTTP 200) | 2026-10-31 |
@@ -65,7 +65,7 @@ build failed; the error is shown).
 | [UNESCO World Heritage List](https://whc.unesco.org/en/syndication) (`world_unesco_whc`) | WORLD | point | check |  | blocked: whc.unesco.org answers HTTP 403 to an honest client; licence of the list not stated | 2026-10-31 |
 | [Historic England National Heritage List](https://services-eu1.arcgis.com/ZOdPfBS3aqqDYPUQ/arcgis/rest/services/National_Heritage_List_for_England_NHLE_v02_VIEW/FeatureServer/0) (`gb_he_listed`) | GB | point | OGL v3 | 379,683 rows | built | 2026-10-31 |
 | [National Register of Historic Places](https://mapservices.nps.gov/arcgis/rest/services/cultural_resources/nrhp_locations/MapServer/0) (`us_nrhp`) | US | point | public domain | 74,636 rows | built | 2026-10-31 |
-| [NEXRAD weather radar sites](https://www.ncei.noaa.gov/access/homr/file/nexrad-stations.txt) (`us_nexrad`) | US | point | public domain | 0.0 MB | page only (HTTP 200) | 2026-10-31 |
+| [NEXRAD weather radar sites](https://www.ncei.noaa.gov/access/homr/file/nexrad-stations.txt) (`us_nexrad`) | US | point | public domain | 0.0 MB | not yet built | 2026-10-31 |
 | [Planning Inspectorate national infrastructure projects](https://national-infrastructure-consenting.planninginspectorate.gov.uk/api/projects) (`gb_pins_dco`) | GB | point | OGL v3 |  | page only (HTTP 404) | 2026-10-31 |
 | [FERC hydropower licences](https://www.ferc.gov/licensing) (`us_ferc_hydro`) | US | point | public domain |  | blocked: ferc.gov answers HTTP 403 to an honest client (2026-10-31) | 2026-10-31 |
 | [OurAirports navigation aids](https://davidmegginson.github.io/ourairports-data/navaids.csv) (`world_ourairports_navaids`) | WORLD | point | public domain | 11,008 rows | built | 2026-10-31 |
@@ -88,6 +88,9 @@ build failed; the error is shown).
 | [Northern Powergrid heat map: substation headroom](https://northernpowergrid.opendatasoft.com/api/explore/v2.1/catalog/datasets/heatmapdatatable/exports/csv?delimiter=%2C) (`gb_npg_heatmap_substations`) | GB | point | check | 670 rows | built | 2026-10-31 |
 | [Northern Powergrid curtailment events per site](https://northernpowergrid.opendatasoft.com/api/explore/v2.1/catalog/datasets/curtailment-events-site-specific/exports/csv?delimiter=%2C) (`gb_npg_curtailment_events`) | GB | point | check |  | failed:  | 2026-10-31 |
 | [NGED generation capacity register](https://connecteddata.nationalgrid.co.uk/api/3/action/package_search?q=name:generation-capacity-register) (`gb_nged_generation_capacity`) | GB | point | check |  | failed: SystemExit: download failed: redacted | 2026-10-31 |
+| [Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_network_costs`) | EU27 | country | CC BY 4.0 | 81,164 rows | built | 2026-10-31 |
+| [TYNDP transmission projects (earlier wave)](https://tyndp.entsoe.eu/) (`have_tyndp`) | EUR | line | ENTSO-E terms (reuse with attribution) |  | have (earlier wave: lake tyndp.projects) |  |
+| [Data centres mapped in OpenStreetMap (earlier wave)](https://www.openstreetmap.org/) (`have_data_centres`) | WORLD | point | ODbL |  | have (earlier wave: app.data_centres) |  |
 
 ## 3. Markets and revenues
 
@@ -96,7 +99,7 @@ build failed; the error is shown).
 | [Svenska kraftnät reserve markets (Mimer)](https://mimer.svk.se/) (`se_svk_reserves`) | SE | country | CC BY 4.0 | 0.0 MB | page only (HTTP 200) | 2026-10-31 |
 | [Energinet FCR-D down reserve auctions (DK2)](https://api.energidataservice.dk/dataset/FcrNdDK2?limit=0&start=2025-01-01) (`dk_energinet_reserves`) | DK | country | CC BY 4.0 | 723,195 rows | built | 2026-10-31 |
 | [Fingrid reserve markets](https://data.fingrid.fi/api/datasets/317) (`fi_fingrid_reserves`) | FI | country | CC BY 4.0 | 0.0 MB | blocked: the Fingrid API needs FINGRID_API_KEY (free) | 2026-10-31 |
-| [regelleistung.net balancing tenders](https://www.regelleistung.net/apps/datacenter/tenders/) (`de_regelleistung`) | DE, AT, BE, NL, FR | country | check | 0.0 MB | page only (HTTP 200) | 2026-10-31 |
+| [regelleistung.net balancing tenders](https://www.regelleistung.net/apps/datacenter/tenders/) (`de_regelleistung`) | DE, AT, BE, NL, FR | country | check | 0.0 MB | blocked: the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31) | 2026-10-31 |
 | [ENTSO-E balancing data (A81-A89)](https://web-api.tp.entsoe.eu/api) (`eu_entsoe_balancing`) | EU27 | zone | ENTSO-E terms (reuse with attribution) | 0.0 MB | page only (HTTP 401) | 2026-10-31 |
 | [Elexon system buy and sell prices (one day per call)](https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices/2026-10-01?format=json) (`gb_elexon_balancing`) | GB | country | Elexon BMRS licence (open, attribution) | 48 rows | built | 2026-10-31 |
 | [ISO ancillary-service prices](https://www.caiso.com/library/oasis) (`us_iso_as_prices`) | US | zone | public (ISO data) |  | page only (HTTP 404) | 2026-10-31 |
@@ -106,6 +109,7 @@ build failed; the error is shown).
 | [LCCC Contracts for Difference register](https://dp.lowcarboncontracts.uk/dataset/8e8ca0d5-c774-4dc8-a079-347f1c180c0f/resource/60a6c564-7bde-4d74-8a54-0a5f5ec74e4a/download/cfd-register.csv) (`gb_lccc_cfd`) | GB | point | OGL v3 | 0.0 MB | blocked: HTTP 403 to an honest client (2026-10-31) | 2026-10-31 |
 | [AIB guarantees of origin statistics](https://www.aib-net.org/facts/market-information/statistics/activity-statistics-all-aib-members) (`eu_aib_go`) | EU27 | country | check | 0.0 MB | page only (HTTP 404) | 2026-10-31 |
 | [Ofgem REGO register](https://renewablesandchp.ofgem.gov.uk/) (`gb_ofgem_rego`) | GB | point | check |  | page only (HTTP None) | 2026-10-31 |
+| [Eurostat non-household electricity prices (nrg_pc_206)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_206/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_nonhousehold_prices`) | EU27 | country | CC BY 4.0 | 2,307 rows | built | 2026-10-31 |
 
 ## 4. Physical climate and hazard risk
 
@@ -127,6 +131,8 @@ build failed; the error is shown).
 | [USGS geoelectric hazard](https://www.sciencebase.gov/catalog/item/5d0a0e6ce4b0e3d311556e0b) (`us_usgs_geoelectric`) | US | raster | public domain |  | page only (HTTP 404) | 2026-10-31 |
 | [European Ground Motion Service](https://egms.land.copernicus.eu/) (`eu_egms`) | EUR | point | Copernicus licence (login) |  | blocked: download behind EU Login | 2026-10-31 |
 | [USFS Wildfire Hazard Potential (image service)](https://imagery.geoplatform.gov/iipp/rest/services/Fire_Aviation/USFS_EDW_RMRS_WildfireHazardPotentialContinuous/ImageServer?f=json) (`us_usfs_whp_service`) | US | raster | CC BY 4.0 (USFS) |  | page only (HTTP 200) | 2026-10-31 |
+| [WRI Aqueduct 4.0 drought risk (earlier wave)](https://www.wri.org/data/aqueduct-global-maps-40-data) (`have_aqueduct_drought`) | WORLD | region | CC BY 4.0 |  | have (earlier wave: water layer (Aqueduct)) |  |
+| [Fires layer (NIFC perimeters; FIRMS detections when keyed)](https://data-nifc.opendata.arcgis.com/) (`have_firms`) | US | polygon | public domain |  | have (earlier wave: eu/w8/fires.json) |  |
 
 ## 5. Demand and electrification
 
@@ -158,6 +164,7 @@ Candidate bin | 2026-10-31 |
 | [Eurostat energy import dependency (sdg_07_60)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_07_60/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_energy_productivity`) | EU27 | country | CC BY 4.0 | 1,260 rows | built | 2026-10-31 |
 | [MHCLG table DEC1 (display energy certificates per local authority)](statistical-data-sets/live-tables-on-energy-performance-of-buildings-certificates) (`gb_dec_certificates`) | GB | county | OGL v3 |  | failed: StopIteration:  | 2026-10-31 |
 | [DfT plug-in cars per local authority (VEH0131)](statistical-data-sets/vehicle-licensing-statistics-data-tables) (`gb_ulev_la`) | GB | county | OGL v3 | 484 rows | built | 2026-10-31 |
+| [Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_renewable_capacity`) | EU27 | country | CC BY 4.0 |  | not yet built |  |
 
 ## 6. Offshore and maritime
 
@@ -237,6 +244,7 @@ LINE 1: CREATE OR REPLACE TABLE t AS SELECT * FR | 2026-10-31 |
 | [FCC National Broadband Map](https://broadbandmap.fcc.gov/data-download) (`us_fcc_bdc`) | US | small_area | public domain | 0.0 MB | blocked: broadbandmap.fcc.gov answers HTTP 403 to an honest client (2026-10-31) | 2026-10-31 |
 | [Commission broadband coverage study](https://digital-strategy.ec.europa.eu/en/library/broadband-coverage-europe-2024) (`eu_broadband_coverage`) | EU27 | country | check | 0.0 MB | page only (HTTP 200) | 2026-10-31 |
 | [Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_broadband_nuts2`) | EU27 | region | CC BY 4.0 | 4,566 rows | built | 2026-10-31 |
+| [Eurostat household internet access (isoc_ci_in_h)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_ci_in_h/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_internet_households`) | EU27 | country | CC BY 4.0 | 5,585 rows | built | 2026-10-31 |
 
 ## 11. Water and cooling
 
@@ -266,7 +274,9 @@ LINE 1: CREATE OR REPLACE TABLE t AS SELECT * FR | 2026-10-31 |
 | [DESNZ heat network zoning](https://www.gov.uk/government/collections/heat-network-zoning) (`gb_heat_network_zoning`) | GB | polygon | OGL v3 | 0.0 MB | not published: heat network zoning maps are published as PDF and interactive maps only (2026-10-31); the planning database below holds the projects | 2026-10-31 |
 | [Danish Energy Agency district heating areas](https://ens.dk/en/our-services/statistics-data-key-figures-and-energy-maps/download-gis-data) (`dk_district_heating`) | DK | polygon | check |  | page only (HTTP 404) | 2026-10-31 |
 | [SMU node heat flow data (Geothermal Data Repository)](https://gdr.openei.org/files/1704/Download%20Data%20Files.zip) (`us_smu_heat_flow`) | US | point | CC BY 4.0 | 378.0 MB | page only (HTTP 200) | 2026-10-31 |
-| [DESNZ Heat Networks Planning Database (Q2 2026)](https://assets.publishing.service.gov.uk/media/6a6cbd2e0c36759b5ccaa304/HNPD_2026_Q2.xlsx) (`gb_hnpd`) | GB | point | OGL v3 |  | not yet built |  |
+| [DESNZ Heat Networks Planning Database (Q2 2026)](https://assets.publishing.service.gov.uk/media/6a6cbd2e0c36759b5ccaa304/HNPD_2026_Q2.xlsx) (`gb_hnpd`) | GB | point | OGL v3 |  | failed: BinderException: Binder Error: Referenced column "x_coordinate" not found in FROM clause!
+Candidate  |  |
+| [Eurostat electricity and derived heat production by fuel (nrg_bal_peh)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_heat_production`) | EU27 | country | CC BY 4.0 | 894,510 rows | built | 2026-10-31 |
 
 ## 13. Mobility
 
@@ -284,10 +294,11 @@ LINE 1: CREATE OR REPLACE TABLE t AS SELECT * FR | 2026-10-31 |
 
 | Source | Places | Level | Licence | Size / rows | Status | Checked |
 |---|---|---|---|---|---|---|
-| [NRC operating reactors](https://www.nrc.gov/reading-rm/doc-collections/nuregs/staff/sr1350/appendices.html) (`us_nrc_reactors`) | US | point | public domain | 0.1 MB | page only (HTTP 404) | 2026-10-31 |
+| [NRC operating reactors](https://www.nrc.gov/reading-rm/doc-collections/nuregs/staff/sr1350/appendices.html) (`us_nrc_reactors`) | US | point | public domain | 0.1 MB | not published: the reactor status page is a daily text without positions; the NRC operating reactors list (us_nrc_operating_reactors) is built instead | 2026-10-31 |
 | [IAEA PRIS reactors](https://pris.iaea.org/PRIS/home.aspx) (`world_iaea_pris`) | WORLD | point | check |  | page only (HTTP 200) | 2026-10-31 |
 | [Eurostat nuclear capacity and reactors (nrg_inf_nuc)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_nuc/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_nuclear_capacity`) | EU27 | country | CC BY 4.0 | 3,363 rows | built | 2026-10-31 |
 | [EMODnet nuclear power plants](https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:nuclear&outputFormat=application/json) (`eu_emodnet_nuclear`) | EUR | point | CC BY 4.0 (EMODnet Human Activities) | 121 rows | built | 2026-10-31 |
+| [NRC operating reactors list](https://www.nrc.gov/reading-rm/doc-collections/datasets/reactors-operating.xls) (`us_nrc_operating_reactors`) | US | point | CC0 (data.gov) | 93 rows | built | 2026-10-31 |
 
 ## 15. Air quality near plants
 
@@ -304,6 +315,7 @@ LINE 1: CREATE OR REPLACE TABLE t AS SELECT * FR | 2026-10-31 |
 | [Enedis interruption time per department](https://data.enedis.fr/explore/dataset/temps-de-coupure-par-departement/) (`fr_enedis_interruptions`) | FR | county | Licence Ouverte 2.0 |  | page only (HTTP 404) | 2026-10-31 |
 | [EIA-861 reliability per utility](https://www.eia.gov/electricity/data/eia861/) (`us_eia861_reliability`) | US | point | public domain | 0.0 MB | page only (HTTP 200) | 2026-10-31 |
 | [Ofgem interruptions per DNO](https://www.ofgem.gov.uk/energy-data-and-research/data-portal) (`gb_ofgem_interruptions`) | GB | region | check | 0.0 MB | page only (HTTP 200) | 2026-10-31 |
+| [EIA-861 2024 reliability per utility (SAIDI, SAIFI)](https://www.eia.gov/electricity/data/eia861/zip/f8612024.zip) (`us_eia861_reliability_xlsx`) | US | point | public domain | 972 rows | built | 2026-10-31 |
 
 ## 17. Night lights
 

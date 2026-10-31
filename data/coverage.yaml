@@ -1042,10 +1042,10 @@ families:
           found as data
       GB:
         status: built
-        source: NESO Constraint Breakdown Costs and Volume; NESO constraint cost breakdown
+        source: NESO Constraint Breakdown Costs and Volume; NESO constraint cost breakdown; NESO constraint cost breakdown
         url: https://api.neso.energy/api/3/action/package_search?q=constraint%20breakdown
-        licence: NESO Open Data Licence; NESO Open Data Licence
-        dataset: eu/congestion.json, lake wave9.gb_neso_constraint_costs
+        licence: NESO Open Data Licence; NESO Open Data Licence; NESO Open Data Licence
+        dataset: eu/congestion.json, lake wave9.gb_neso_constraint_costs, lake wave9.gb_neso_constraint_costs
         checked: '2026-10-31'
         partial: true
         note: published at country level (NESO constraint cost breakdown)
@@ -6813,147 +6813,201 @@ families:
     category: 2
     cells:
       AT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       BE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       BG:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       HR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       CY:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       CZ:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       DK:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       EE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       FI:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       FR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       DE:
-        status: not_published
-        url: https://www.netzausbau.de/SiteGlobals/Forms/Suche/Vorhaben/Vorhabensuche_Formular.html
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. BNetzA grid expansion projects (Netzausbau) probed (https://www.netzausbau.de/SiteGlobals/Forms/Suche/Vorhaben/Vorhabensuche_Formular.html, HTTP 404): no machine-readable
-          download located | data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       GR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       HU:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       IE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       IT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       LV:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       LT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       LU:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       MT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       NL:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       PL:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       PT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       RO:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       SK:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       SI:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       ES:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       SE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''network development plan transmission projects'' (2026-10-31): 0 results'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       GB:
-        status: not_published
-        url: https://api.neso.energy/api/3/action/package_search?q=etys
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. NESO Electricity Ten Year Statement probed (https://api.neso.energy/api/3/action/package_search?q=etys, HTTP 200): no machine-readable download located | data.gov.uk
-          search ''network development plan transmission projects'' (2026-10-31): 86 results, top: Dundee Local Development Plan; DESNZ: Heat Networks Planning Database; BEIS: Heat Networks Planning Database'
+        status: have
+        source: TYNDP transmission projects (earlier wave)
+        url: https://tyndp.entsoe.eu/
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake tyndp.projects
+        checked: '2026-10-27'
       US:
         status: blocked
         source: MISO MTEP projects
@@ -6966,167 +7020,248 @@ families:
     category: 2
     cells:
       AT:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       BE:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       BG:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       HR:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       CY:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       CZ:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       DK:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       EE:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       FI:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       FR:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       DE:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       GR:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       HU:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       IE:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       IT:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       LV:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       LT:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       LU:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       MT:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       NL:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       PL:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       PT:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       RO:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       SK:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       SI:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       ES:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       SE:
-        status: not_published
-        url: https://www.entsoe.eu/data/transmission-tariffs/
+        status: built
+        source: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c); Eurostat non-household electricity prices (nrg_pc_206)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_network_costs, lake wave9.eu_nonhousehold_prices
         checked: '2026-10-31'
-        note: 'no source built in wave 9. ENTSO-E overview of transmission tariffs probed (https://www.entsoe.eu/data/transmission-tariffs/, HTTP 404): no machine-readable download located | data.europa.eu
-          search ''transmission network tariffs'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c))
       GB:
         status: built
         source: NESO TNUoS tariffs
@@ -7147,155 +7282,208 @@ families:
     category: 2
     cells:
       AT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       BE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       BG:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       HR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       CY:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       CZ:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       DK:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       EE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       FI:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       FR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       DE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       GR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       HU:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       IE:
         status: built
-        source: CSO data-centre electricity consumption (MEC02)
-        url: https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/MEC02/JSON-stat/2.0/en
-        licence: CC BY 4.0
-        dataset: lake wave9.ie_cso_datacentres
+        source: CSO data-centre electricity consumption (MEC02); Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: CC BY 4.0; ODbL
+        dataset: lake wave9.ie_cso_datacentres, app.data_centres
         checked: '2026-10-31'
-        partial: true
-        note: published at country level (CSO data-centre electricity consumption (MEC02))
       IT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       LV:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       LT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       LU:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       MT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       NL:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       PL:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       PT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       RO:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       SK:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       SI:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       ES:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       SE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       GB:
-        status: not_published
-        url: https://www.data.gov.uk/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. data.gov.uk search ''data centres electricity consumption'' (2026-10-31): 154 results, top: Electricity consumption; Electricity Consumption, Borough; Electricity
-          and gas consumption'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
       US:
-        status: not_published
-        url: https://catalog.data.gov/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. catalog.data.gov search ''data centres electricity consumption'' (2026-10-31): 0 results'
+        status: have
+        source: Data centres mapped in OpenStreetMap (earlier wave)
+        url: https://www.openstreetmap.org/
+        licence: ODbL
+        dataset: app.data_centres
+        checked: '2026-10-20'
   distribution_data:
     name: Distribution network data
     shows: DSO open data (embedded capacity
@@ -7454,17 +7642,19 @@ families:
     category: 3
     cells:
       AT:
-        status: not_published
+        status: blocked
+        source: regelleistung.net balancing tenders
         url: https://www.regelleistung.net/apps/datacenter/tenders/
         checked: '2026-10-31'
-        note: 'no source built in wave 9. regelleistung.net balancing tenders probed (https://www.regelleistung.net/apps/datacenter/tenders/, HTTP 200): no machine-readable download located | ENTSO-E balancing
-          data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results'
+        note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
+          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)'
       BE:
-        status: not_published
+        status: blocked
+        source: regelleistung.net balancing tenders
         url: https://www.regelleistung.net/apps/datacenter/tenders/
         checked: '2026-10-31'
-        note: 'no source built in wave 9. regelleistung.net balancing tenders probed (https://www.regelleistung.net/apps/datacenter/tenders/, HTTP 200): no machine-readable download located | ENTSO-E balancing
-          data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results'
+        note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
+          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)'
       BG:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
@@ -7511,17 +7701,19 @@ families:
         checked: '2026-10-31'
         note: 'the Fingrid API needs FINGRID_API_KEY (free). Data request: set FINGRID_API_KEY as a repo secret'
       FR:
-        status: not_published
+        status: blocked
+        source: regelleistung.net balancing tenders
         url: https://www.regelleistung.net/apps/datacenter/tenders/
         checked: '2026-10-31'
-        note: 'no source built in wave 9. regelleistung.net balancing tenders probed (https://www.regelleistung.net/apps/datacenter/tenders/, HTTP 200): no machine-readable download located | ENTSO-E balancing
-          data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results'
+        note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
+          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)'
       DE:
-        status: not_published
+        status: blocked
+        source: regelleistung.net balancing tenders
         url: https://www.regelleistung.net/apps/datacenter/tenders/
         checked: '2026-10-31'
-        note: 'no source built in wave 9. regelleistung.net balancing tenders probed (https://www.regelleistung.net/apps/datacenter/tenders/, HTTP 200): no machine-readable download located | ENTSO-E balancing
-          data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results'
+        note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
+          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)'
       GR:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
@@ -7571,11 +7763,12 @@ families:
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
           prices'' (2026-10-31): 0 results'
       NL:
-        status: not_published
+        status: blocked
+        source: regelleistung.net balancing tenders
         url: https://www.regelleistung.net/apps/datacenter/tenders/
         checked: '2026-10-31'
-        note: 'no source built in wave 9. regelleistung.net balancing tenders probed (https://www.regelleistung.net/apps/datacenter/tenders/, HTTP 200): no machine-readable download located | ENTSO-E balancing
-          data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results'
+        note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
+          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)'
       PL:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
@@ -8512,180 +8705,263 @@ families:
     category: 4
     cells:
       AT:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       BE:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       BG:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       HR:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       CY:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       CZ:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       DK:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       EE:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       FI:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       FR:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       DE:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       GR:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       HU:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       IE:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       IT:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       LV:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       LT:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       LU:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       MT:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       NL:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       PL:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       PT:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       RO:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       SK:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       SI:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 2 results, top: Drought indicator SWD60; Climate scenarios RCP 1981-2100 – mGROWA – seasonal – after 30 years – root zone water def'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       ES:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       SE:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.europa.eu search ''drought indicator'' (2026-10-31): 0 results'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       GB:
-        status: not_published
-        url: https://drought.emergency.copernicus.eu/data/
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. European Drought Observatory combined drought indicator probed (https://drought.emergency.copernicus.eu/data/, HTTP 404): no machine-readable download located |
-          data.gov.uk search ''drought indicator'' (2026-10-31): 24 results, top: Gridded drought indices based on remote sensing data for Europe (2000-2015); Drought indicator time series for European
-          NUTS regions based on remote sensing data (2000; High-resolution Global Multi-Index Drought (GMID) dataset, 1980-2024'
+        status: have
+        source: WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://www.wri.org/data/aqueduct-global-maps-40-data
+        licence: CC BY 4.0
+        dataset: water layer (Aqueduct)
+        checked: '2026-10-20'
+        partial: true
+        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
       US:
         status: built
-        source: US Drought Monitor (current)
+        source: US Drought Monitor (current); WRI Aqueduct 4.0 drought risk (earlier wave)
         url: https://droughtmonitor.unl.edu/data/shapefiles_m/USDM_current_M.zip
-        licence: public (USDM, credit requested)
-        dataset: lake wave9.us_drought_monitor
+        licence: public (USDM, credit requested); CC BY 4.0
+        dataset: lake wave9.us_drought_monitor, water layer (Aqueduct)
         checked: '2026-10-31'
   wildfire_hazard:
     name: Wildfire hazard
@@ -8861,13 +9137,12 @@ families:
         note: 'no source built in wave 9. EFFIS fire danger probed (https://forest-fire.emergency.copernicus.eu/applications/data-and-services, HTTP 200): no machine-readable download located | data.gov.uk
           search ''wildfire hazard map'' (2026-10-31): 2803 results, top: Scottish wildfire and muirburn extents; National Flood Hazard Maps - Present Day; National Flood Hazard Maps - Climate Change'
       US:
-        status: not_published
-        url: https://www.fs.usda.gov/rds/archive/catalog/RDS-2015-0047-4
-        checked: '2026-10-31'
-        note: 'no source built in wave 9. USFS Wildfire Hazard Potential probed (https://www.fs.usda.gov/rds/archive/catalog/RDS-2015-0047-4, HTTP 200): no machine-readable download located | USFS Wildfire
-          Hazard Potential (image service) probed (https://imagery.geoplatform.gov/iipp/rest/services/Fire_Aviation/USFS_EDW_RMRS_WildfireHaz, HTTP 200): no machine-readable download located | catalog.data.gov
-          search ''wildfire hazard map'' (2026-10-31): 16 results, top: Post-Wildfire Debris-Flow Runout Hazard Assessment (PWFDF-R) Collection (updated 20261015); Wildfire Hazard Potential, Continuous
-          2023 United States and Alaska (Image Service); Border 2 2025-01-23 v1.0 postfire debris-flow hazard assessment'
+        status: have
+        source: Fires layer (NIFC perimeters; FIRMS detections when keyed)
+        url: https://data-nifc.opendata.arcgis.com/
+        licence: public domain
+        dataset: eu/w8/fires.json
+        checked: '2026-10-29'
   coastal_flood:
     name: Coastal flood and sea level
     shows: coastal flood hazard and sea-level rise inundation
@@ -10219,141 +10494,168 @@ families:
     cells:
       AT:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       BE:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       BG:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       HR:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       CY:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       CZ:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       DK:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       EE:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       FI:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       FR:
         status: not_published
         url: https://opendata.agenceore.fr/explore/dataset/registre-national-installation-production-stockage-electricite-agrege/
         checked: '2026-10-31'
         note: 'no source built in wave 9. ODRÉ national register of production installations probed (https://opendata.agenceore.fr/explore/dataset/registre-national-installation-production-st, HTTP 200):
-          no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+          no machine-readable download located | Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       DE:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       GR:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       HU:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       IE:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       IT:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       LV:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       LT:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       LU:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       MT:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       NL:
         status: not_published
         url: https://opendata.cbs.nl/ODataApi/odata/85005NED/TypedDataSet
         checked: '2026-10-31'
         note: 'no source built in wave 9. CBS solar power per region (85005NED) probed (https://opendata.cbs.nl/ODataApi/odata/85005NED/TypedDataSet, HTTP 500): build failed (SystemExit: https://opendata.cbs.nl/ODataApi/odata/85005NED/TypedDataSet:
-          HTTP 500) | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+          HTTP 500) | Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C, HTTP None):
+          no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       PL:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       PT:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       RO:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       SK:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       SI:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       ES:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       SE:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Eurostat renewable electricity capacity by technology (nrg_inf_epcrw) probed (https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-C,
+          HTTP None): no machine-readable download located | data.europa.eu search ''solar photovoltaic installations municipality'' (2026-10-31): 0 results'
       GB:
         status: not_published
         url: https://www.gov.uk/government/statistics/solar-photovoltaics-deployment
@@ -13886,192 +14188,192 @@ families:
     cells:
       AT:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       BE:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       BG:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       HR:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       CY:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       CZ:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       DK:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       EE:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       FI:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       FR:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       DE:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       GR:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       HU:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       IE:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       IT:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       LV:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       LT:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       LU:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       MT:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       NL:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       PL:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       PT:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       RO:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       SK:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       SI:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       ES:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       SE:
         status: built
-        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h)
+        source: Eurostat household broadband access per NUTS 2 (isoc_r_broad_h); Eurostat household internet access (isoc_ci_in_h)
         url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_r_broad_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
         licence: CC BY 4.0
-        dataset: lake wave9.eu_broadband_nuts2
+        dataset: lake wave9.eu_broadband_nuts2, lake wave9.eu_internet_households
         checked: '2026-10-31'
       GB:
         status: blocked
@@ -14688,153 +14990,258 @@ families:
     category: 12
     cells:
       AT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 6 results, top: 2203.00035 - District heating contract Vienna; 2203.01548 - Supply of heat (Fernwärme
-          Güssing GmbH); 2203.01259 - District heating Straß (Stmk)'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       BE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 9 results, top: Replication Data for: Nonlinear topology optimization of District Heating Networks:
-          A benc; Replication Data for: Optimal Placement of Heat Pump Substations in District Heating Netwo; Replication Data for: A Multi-Period Topology and Design Optimization Approach for Distric'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       BG:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       HR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       CY:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       CZ:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       DK:
-        status: not_published
-        url: https://ens.dk/en/our-services/statistics-data-key-figures-and-energy-maps/download-gis-data
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. Danish Energy Agency district heating areas probed (https://ens.dk/en/our-services/statistics-data-key-figures-and-energy-maps/download-gis-da, HTTP 404): no machine-readable
-          download located | data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       EE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       FI:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       FR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 37 results, top: Energy - District heating network - Grand Poitiers Business data; Production of
-          domestic hot water (ECS) from the district heating network in Bordeaux Métro; Classification perimeter (requirement to connect) of the district heating networks of the '
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       DE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 2 results, top: WFS District Heating Inventory Network City of Norderstedt (Download Service);
-          WMS District Heating Inventory Network City of Norderstedt (Representation Service)'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       GR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       HU:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       IE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       IT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 1 results, top: Municipal Energy Units of Reggio Emilia - Estimate of CO2 emissions'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       LV:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       LT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       LU:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       MT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       NL:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       PL:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       PT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       RO:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       SK:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       SI:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       ES:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 0 results'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       SE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: built
+        source: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+        url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+        licence: CC BY 4.0
+        dataset: lake wave9.eu_heat_production
         checked: '2026-10-31'
-        note: 'no source built in wave 9. data.europa.eu search ''district heating network'' (2026-10-31): 2 results, top: Number of interruptions in the district heating network; Distribution by price
-          area - district heating'
+        partial: true
+        note: published at country level (Eurostat electricity and derived heat production by fuel (nrg_bal_peh))
       GB:
         status: not_published
         url: https://www.gov.uk/government/collections/heat-network-zoning
         checked: '2026-10-31'
         note: 'no source built in wave 9. DESNZ heat network zoning: heat network zoning maps are published as PDF and interactive maps only (2026-10-31); the planning database below holds the projects
-          | DESNZ Heat Networks Planning Database (Q2 2026) probed (https://assets.publishing.service.gov.uk/media/6a6cbd2e0c36759b5ccaa304/HNPD_2026_Q2.xlsx, HTTP None): no machine-readable download located
-          | data.gov.uk search ''district heating network'' (2026-10-31): 476 results, top: Heat Networks dataset; DESNZ: Heat Networks Planning Database; BEIS: Heat Networks Planning Database'
+          | DESNZ Heat Networks Planning Database (Q2 2026) probed (https://assets.publishing.service.gov.uk/media/6a6cbd2e0c36759b5ccaa304/HNPD_2026_Q2.xlsx, HTTP None): build failed (BinderException:
+          Binder Error: Referenced column "x_coordinate" not found in FROM clause!
+
+          Candidate bindings: "heat_netw) | data.gov.uk search ''district heating network'' (2026-10-31): 476 results, top: Heat Networks dataset; DESNZ: Heat Networks Planning Database; BEIS: Heat Networks
+          Planning Database'
       US:
         status: not_published
         url: https://catalog.data.gov/
@@ -16057,13 +16464,12 @@ families:
         dataset: lake wave9.eu_emodnet_nuclear
         checked: '2026-10-31'
       US:
-        status: not_published
-        url: https://www.nrc.gov/reading-rm/doc-collections/nuregs/staff/sr1350/appendices.html
+        status: built
+        source: NRC operating reactors list
+        url: https://www.nrc.gov/reading-rm/doc-collections/datasets/reactors-operating.xls
+        licence: CC0 (data.gov)
+        dataset: lake wave9.us_nrc_operating_reactors
         checked: '2026-10-31'
-        note: 'no source built in wave 9. NRC operating reactors probed (https://www.nrc.gov/reading-rm/doc-collections/nuregs/staff/sr1350/appendices.html, HTTP 404): no machine-readable download located
-          | IAEA PRIS reactors probed (https://pris.iaea.org/PRIS/home.aspx, HTTP 200): no machine-readable download located | catalog.data.gov search ''nuclear power plants'' (2026-10-31): 7 results, top:
-          Population Exposure Estimates in Proximity to Nuclear Power Plants, Locations; Population Exposure Estimates in Proximity to Nuclear Power Plants, Country-Level Aggregat; Nuclear & Uranium Data
-          and Statistics'
   air_quality:
     name: Air quality
     shows: measured air quality per station
@@ -16399,11 +16805,12 @@ families:
         note: 'no source built in wave 9. Ofgem interruptions per DNO probed (https://www.ofgem.gov.uk/energy-data-and-research/data-portal, HTTP 200): no machine-readable download located | data.gov.uk
           search ''power outages interruptions per region'' (2026-10-31): 0 results'
       US:
-        status: not_published
-        url: https://www.eia.gov/electricity/data/eia861/
+        status: built
+        source: EIA-861 2024 reliability per utility (SAIDI, SAIFI)
+        url: https://www.eia.gov/electricity/data/eia861/zip/f8612024.zip
+        licence: public domain
+        dataset: lake wave9.us_eia861_reliability_xlsx
         checked: '2026-10-31'
-        note: 'no source built in wave 9. EIA-861 reliability per utility probed (https://www.eia.gov/electricity/data/eia861/, HTTP 200): no machine-readable download located | catalog.data.gov search
-          ''power outages interruptions per region'' (2026-10-31): 0 results'
   night_lights:
     name: Night lights
     shows: night-time lights (electrification

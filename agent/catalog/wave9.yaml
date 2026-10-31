@@ -582,3 +582,72 @@ tables:
     - q: 'how many records in Northern Powergrid heat map: substation headroom'
       sql: SELECT count(*) FROM wave9.gb_npg_heatmap_substations
       answer: 670
+  eu_heat_production:
+    grain: 'Eurostat electricity and derived heat production by fuel (nrg_bal_peh): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
+    licence: CC BY 4.0
+    category: 12. Heat networks and geothermal
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat electricity and derived heat production by fuel (nrg_bal_peh)
+      sql: SELECT count(*) FROM wave9.eu_heat_production
+      answer: 894510
+  eu_network_costs:
+    grain: 'Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_205_c/?format=SDMX-CSV&compressed=false&startPeriod=2015
+    licence: CC BY 4.0
+    category: 2. Grid planning, connection and network charges
+    columns: dataflow, last_update, freq, nrg_prc, nrg_cons, currency, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c)
+      sql: SELECT count(*) FROM wave9.eu_network_costs
+      answer: 81164
+  eu_nonhousehold_prices:
+    grain: 'Eurostat non-household electricity prices (nrg_pc_206): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_206/?format=SDMX-CSV&compressed=false&startPeriod=2015
+    licence: CC BY 4.0
+    category: 3. Markets and revenues
+    columns: dataflow, last_update, freq, customer, nrg_prc, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat non-household electricity prices (nrg_pc_206)
+      sql: SELECT count(*) FROM wave9.eu_nonhousehold_prices
+      answer: 2307
+  eu_internet_households:
+    grain: 'Eurostat household internet access (isoc_ci_in_h): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_ci_in_h/?format=SDMX-CSV&compressed=false&startPeriod=2015
+    licence: CC BY 4.0
+    category: 10. Telecom and digital
+    columns: dataflow, last_update, freq, unit, hhtyp, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat household internet access (isoc_ci_in_h)
+      sql: SELECT count(*) FROM wave9.eu_internet_households
+      answer: 5585
+  us_eia861_reliability_xlsx:
+    grain: 'EIA-861 2024 reliability per utility (SAIDI, SAIFI): one row per record as published (US; level point)'
+    source: https://www.eia.gov/electricity/data/eia861/zip/f8612024.zip
+    licence: public domain
+    category: 16. Reliability below the country
+    columns: data_year, utility_number, utility_name, state, ownership, saidi_minutes_per_year, saifi_times_per_year, caidi_minutes_per_interruption, saidi_minutes_per_year_1,
+      saifi_times_per_year_1, caidi_minutes_per_interruption_1, saidi_minutes_per_year_2, saifi_times_per_year_2, caidi_minutes_per_interruption_2, number_of_customers,
+      highest_dist_voltage, outages_recorded_automatically, saidi_minutes_per_year_3, saifi_times_per_year_3, caidi_with_med, saidi_minutes_per_year_4, saifi_times_per_year_4,
+      caidi_without_med, number_of_customers_1, inactive_accounts_included, momentary_interruptions, highest_dist_voltage_1, outages_recorded_automatically_1
+    examples:
+    - q: how many records in EIA-861 2024 reliability per utility (SAIDI, SAIFI)
+      sql: SELECT count(*) FROM wave9.us_eia861_reliability_xlsx
+      answer: 972
+  us_nrc_operating_reactors:
+    grain: 'NRC operating reactors list: one row per record as published (US; level point)'
+    source: https://www.nrc.gov/reading-rm/doc-collections/datasets/reactors-operating.xls
+    licence: CC0 (data.gov)
+    category: 14. Nuclear
+    columns: year_of_update, plant_name_unit_number, nrc_reactor_unit_web_page, docket_number, license_number, location, nrc_region, parent_company_utility_name,
+      licensee, parent_company_website, parent_company_notes, reactor_and_containment_type, nuclear_steam_system_supplier_and_design_type, architect_engineer, constructor_name,
+      construction_permit_issued, operating_license_issued, commercial_operation, renewed_operating_license_issued, operating_license_expires, subsequent_renewed_operating_license_issued,
+      licensed_mwt, capacity_mwe, current_reactor_age, license_length, time_remaining, license_remaining, year_operating_license_issued, c_2021_capacity_factor_percent,
+      c_2022_capacity_factor_percent, c_2020_capacity_factor_percent, c_2019_capacity_factor_percent, c_2018_capacity_factor_percent, c_2017_capacity_factor_percent,
+      c_2016_capacity_factor_percent, c_2015_capacity_factor_percent, c_2014_capacity_factor_percent, c_2013_capacity_factor_percent, c_2012_capacity_factor_percent,
+      c_2011_capacity_factor_percent
+    examples:
+    - q: how many records in NRC operating reactors list
+      sql: SELECT count(*) FROM wave9.us_nrc_operating_reactors
+      answer: 93

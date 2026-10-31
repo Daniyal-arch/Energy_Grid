@@ -97,3 +97,9 @@ datasets:
   wave9.eu_emodnet_military: {polygon: "EUR: EMODnet military areas at sea"}
   wave9.eu_emodnet_aggregates: {polygon: "EUR: EMODnet marine aggregate areas"}
   wave9.gb_npg_heatmap_substations: {point: "GB: Northern Powergrid heat map: substation headroom"}
+  wave9.eu_heat_production: {country: "EU27: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)"}
+  wave9.eu_network_costs: {country: "EU27: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c)"}
+  wave9.eu_nonhousehold_prices: {country: "EU27: Eurostat non-household electricity prices (nrg_pc_206)"}
+  wave9.eu_internet_households: {country: "EU27: Eurostat household internet access (isoc_ci_in_h)"}
+  wave9.us_eia861_reliability_xlsx: {point: "US: EIA-861 2024 reliability per utility (SAIDI, SAIFI)"}
+  wave9.us_nrc_operating_reactors: {point: "US: NRC operating reactors list"}
