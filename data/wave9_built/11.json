@@ -128,10 +128,29 @@
   "geometry": true,
   "rows": 57243,
   "seconds": 6,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "uwwcode",
+    "latitude",
+    "longitude",
+    "year",
+    "country"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_wwtp.pmtiles"
+  },
   "with_position": 57243
  },
  "eu_wastewater_connected": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 35,
+   "period": "2019",
+   "scope": "country"
+  },
   "columns": [
    "dataflow",
    "last_update",
@@ -154,6 +173,11 @@
  },
  "eu_water_abstraction": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 26,
+   "period": "2020",
+   "scope": "country"
+  },
   "columns": [
    "dataflow",
    "last_update",
@@ -200,6 +224,11 @@
  },
  "us_usgs_water_use": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 3223,
+   "period": "2015",
+   "scope": "us_county"
+  },
   "columns": [
    "state",
    "statefips",
@@ -268,6 +297,6 @@
   },
   "geometry": false,
   "rows": 3223,
-  "seconds": 1
+  "seconds": 3
  }
 }
