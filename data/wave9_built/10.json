@@ -18,10 +18,15 @@
   },
   "geometry": false,
   "rows": 4566,
-  "seconds": 2
+  "seconds": 1
  },
  "eu_internet_households": {
   "built": "2026-10-31",
+  "choro": {
+   "areas": 39,
+   "period": "2019",
+   "scope": "country"
+  },
   "columns": [
    "dataflow",
    "last_update",
@@ -40,6 +45,6 @@
   },
   "geometry": false,
   "rows": 5585,
-  "seconds": 2
+  "seconds": 1
  }
 }
