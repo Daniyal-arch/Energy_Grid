@@ -13,6 +13,13 @@ Newest first. One entry per session or merged pull request.
   Brief 28 written: finish wave 8 and wave 9 in 17 categories chosen by customer needs, with
   EU, UK and US sources, dashboards and agent skills per customer task. Notes: gotchas.
 
+- **2026-10-31** (claude/funny-euler-7vwg1s): brief 28: wave 9 registry (`scripts/wave9_sources.yaml`,
+  200+ sources probed), generic builder and `wave9.yml`, render of coverage families, research doc,
+  catalogue, levels and the app's layer list; Part A sources (EIA layers, EA flood zones, census
+  outlines, Zensus heating, CSO small areas); eleven Tasks dashboards, eleven task skills, 33
+  eval cases; wave 9 map files served as `app.w9_<id>`. Notes: wave9 (new), coverage-and-gaps,
+  lake, agent-tools, state-and-datasets, map-rendering, pipeline-and-workflows, gotchas, index.
+
 - **2026-10-29** (claude/funny-euler-7vwg1s): brief 27 built: areas (`resolve_area`, area
   object and store, `in_area()` macros with bbox pruning, `area_stats` over COGs, MapSpec
   `area`/`shapes`, drawn and screen areas from the app, area-analysis skill, level matrix,

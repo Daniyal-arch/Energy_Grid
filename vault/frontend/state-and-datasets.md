@@ -1,7 +1,7 @@
 ---
 title: State and datasets
 tags: [frontend, state]
-updated: 2026-10-29
+updated: 2026-10-31
 paths: [frontend/src/app/store.ts, frontend/src/app/datasets.json, frontend/src/app/datasets.ts, frontend/src/app/maps.ts, frontend/src/app/data.ts, frontend/src/app/areaShape.ts, frontend/src/lib/area.ts]
 ---
 
@@ -36,3 +36,6 @@ registry. Drawing is in [[map-rendering]]; styles and the Maps view in [[styles-
 - **Wave 8**: LayerIds `w8Industrial`, `w8Dams`, `w8Co2Storage`, `w8ExcessHeat`, `w8Fires`;
   datasets.json entries carry their coverage `family`; `?aid=` opens an agent area; the
   camera's `box` goes to the agent with drawn shapes (`viewOf`).
+- **Wave 9**: LayerId `w9_<id>` (template type) from `app/wave9.json` (generated); new groups
+  Land & planning, Offshore, Water & telecom, Mobility, People & places; Tasks dashboards use
+  `have(...)` so a wave 9 layer is listed only once its map file exists.

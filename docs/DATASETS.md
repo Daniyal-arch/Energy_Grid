@@ -152,6 +152,15 @@ incentives, social, telecom, water, heat networks and geothermal, mobility, nucl
 quality, reliability below the country, night lights. Seeds and licences: brief 28; every
 source probed: `docs/research/wave9-sources.md` (written by the run).
 
+## Wave 9 (brief 28, built 2026-10-31)
+
+Seventeen categories chosen by what customers ask (land and permitting, grid planning, markets,
+physical risk, demand, offshore, supply chain, finance, social, telecom, water, heat, mobility,
+nuclear, air quality, local reliability, night lights) plus the wave 8 gaps. Every source probed
+is in docs/research/wave9-sources.md with its status (built, blocked, left out, not published,
+page only); the built ones are in docs/DATA_SOURCES.md ("Wave 9 sources") and the lake
+(`wave9.<id>`); per-country cells are in docs/COVERAGE.md.
+
 ## Picks for the product
 
 The paid use cases (PLAN.md) are site screening, alerts and history/exports. The datasets
