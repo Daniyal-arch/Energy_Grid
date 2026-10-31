@@ -1,0 +1,6 @@
+{
+ "eu_household_income": {
+  "built": null,
+  "error": "KeyError: 'sep'"
+ }
+}
