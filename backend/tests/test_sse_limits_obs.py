@@ -68,6 +68,7 @@ def test_every_skill_parses_and_names_its_catalogue_entries():
         "industrial-decarbonisation",
         "heat-networks",
         "ev-electrification",
+        "energy-statistics",
         "public-money",
     }
     for sk in s.skills.values():

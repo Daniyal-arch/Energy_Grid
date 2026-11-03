@@ -428,3 +428,108 @@ questions:
   numbers:
   - '388'
   answer: '388'
+- needs: lake
+  id: w10-gross-inland-de
+  skill: energy-statistics
+  q: What was Germany's gross inland energy consumption in the newest year (Eurostat simplified balance,
+    ktoe)?
+  resolve:
+    names:
+    - Europe
+  level: group
+  sql: SELECT time_period, obs_value FROM wave10.eu_nrg_bal_s WHERE nrg_bal = 'GIC' AND siec = 'TOTAL'
+    AND unit = 'KTOE' AND geo = 'DE' ORDER BY time_period DESC LIMIT 1
+  numbers:
+  - '2024'
+  - '251301.135'
+  answer: 2024, 251301.135
+- needs: lake
+  id: w10-access-lowest
+  skill: energy-statistics
+  q: Which country had the lowest access to electricity in 2024 according to the World Bank?
+  resolve:
+    names:
+    - Europe
+  level: group
+  sql: SELECT country, value FROM wave10.wb_eg_elc_accs_zs WHERE NOT aggregate AND year = 2024 ORDER BY
+    value LIMIT 1
+  numbers:
+  - '5.4'
+  answer: South Sudan, 5.4
+- needs: lake
+  id: w10-gb-ren-capacity-cornwall
+  skill: energy-statistics
+  q: How much renewable electricity capacity was installed in Cornwall at the end of 2025?
+  resolve:
+    names:
+    - Europe
+  level: group
+  sql: SELECT total FROM wave10.gb_desnz_ren_capacity_la WHERE local_authority_code_note_1 = 'E06000052'
+    AND sheet = 'LA - Capacity, 2025'
+  numbers:
+  - '876.75'
+  answer: '876.75'
+- needs: lake
+  id: w10-gb-elec-household-westminster
+  skill: energy-statistics
+  q: What was the mean domestic electricity consumption per household in Westminster in 2024?
+  resolve:
+    names:
+    - Europe
+  level: group
+  sql: SELECT mean_domestic_consumption_kwh_per_household FROM wave10.gb_desnz_elec_la WHERE code = 'E09000033'
+    AND sheet = '2024'
+  numbers:
+  - '3593.806230400037'
+  answer: '3593.806230400037'
+- needs: lake
+  id: w10-gb-ghg-per-capita-leeds
+  skill: emissions
+  q: What were Leeds' territorial greenhouse gas emissions per person in 2023?
+  resolve:
+    names:
+    - Europe
+  level: group
+  sql: SELECT per_capita_emissions_t_co2e FROM wave10.gb_desnz_ghg_la WHERE local_authority_code = 'E08000035'
+    AND calendar_year = '2023'
+  numbers:
+  - '4.281488327946768'
+  answer: '4.281488327946768'
+- needs: lake
+  id: w10-gb-chargers-edinburgh
+  skill: ev-electrification
+  q: How many public EV charging devices did the City of Edinburgh have in October 2025?
+  resolve:
+    names:
+    - Europe
+  level: group
+  sql: SELECT oct_25 FROM wave10.gb_dft_evcd_devices WHERE local_authority_region_code = 'S12000036'
+  numbers:
+  - '702'
+  answer: '702'
+- needs: lake
+  id: w10-gb-mains-gas-hartlepool
+  skill: heat-networks
+  q: What share of households in Hartlepool heat with mains gas only (Census 2021)?
+  resolve:
+    names:
+    - Europe
+  level: group
+  sql: SELECT obs_value FROM wave10.gb_census_heating WHERE geography_code = 'E06000001' AND c2021_heating_13_name
+    = 'Mains gas only' AND measures_name = 'Percent'
+  numbers:
+  - '82.2'
+  answer: '82.2'
+- needs: lake
+  id: w10-gb-gas-meter-manchester
+  skill: energy-statistics
+  q: What was the mean domestic gas consumption per meter in Manchester in 2024?
+  resolve:
+    names:
+    - Europe
+  level: group
+  sql: SELECT mean_consumption_kwh_per_meter_domestic FROM wave10.gb_desnz_gas_la WHERE code = 'E08000003'
+    AND sheet = '2024'
+  numbers:
+  - '10698.26141974722'
+  answer: '10698.26141974722'

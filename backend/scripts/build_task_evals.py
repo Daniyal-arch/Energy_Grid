@@ -274,6 +274,55 @@ CASES: list[dict[str, Any]] = [
         "For how many regions does Eurostat publish household income?",
         "SELECT count(DISTINCT geo) FROM wave9.eu_household_income",
     ),
+    # wave 10 (brief 29): country, world and GB district series
+    lake(
+        "w10-gross-inland-de",
+        "energy-statistics",
+        "What was Germany's gross inland energy consumption in the newest year (Eurostat simplified balance, ktoe)?",
+        "SELECT time_period, obs_value FROM wave10.eu_nrg_bal_s WHERE nrg_bal = 'GIC' AND siec = 'TOTAL' AND unit = 'KTOE' AND geo = 'DE' ORDER BY time_period DESC LIMIT 1",
+    ),
+    lake(
+        "w10-access-lowest",
+        "energy-statistics",
+        "Which country had the lowest access to electricity in 2024 according to the World Bank?",
+        "SELECT country, value FROM wave10.wb_eg_elc_accs_zs WHERE NOT aggregate AND year = 2024 ORDER BY value LIMIT 1",
+    ),
+    lake(
+        "w10-gb-ren-capacity-cornwall",
+        "energy-statistics",
+        "How much renewable electricity capacity was installed in Cornwall at the end of 2025?",
+        "SELECT total FROM wave10.gb_desnz_ren_capacity_la WHERE local_authority_code_note_1 = 'E06000052' AND sheet = 'LA - Capacity, 2025'",
+    ),
+    lake(
+        "w10-gb-elec-household-westminster",
+        "energy-statistics",
+        "What was the mean domestic electricity consumption per household in Westminster in 2024?",
+        "SELECT mean_domestic_consumption_kwh_per_household FROM wave10.gb_desnz_elec_la WHERE code = 'E09000033' AND sheet = '2024'",
+    ),
+    lake(
+        "w10-gb-ghg-per-capita-leeds",
+        "emissions",
+        "What were Leeds' territorial greenhouse gas emissions per person in 2023?",
+        "SELECT per_capita_emissions_t_co2e FROM wave10.gb_desnz_ghg_la WHERE local_authority_code = 'E08000035' AND calendar_year = '2023'",
+    ),
+    lake(
+        "w10-gb-chargers-edinburgh",
+        "ev-electrification",
+        "How many public EV charging devices did the City of Edinburgh have in October 2025?",
+        "SELECT oct_25 FROM wave10.gb_dft_evcd_devices WHERE local_authority_region_code = 'S12000036'",
+    ),
+    lake(
+        "w10-gb-mains-gas-hartlepool",
+        "heat-networks",
+        "What share of households in Hartlepool heat with mains gas only (Census 2021)?",
+        "SELECT obs_value FROM wave10.gb_census_heating WHERE geography_code = 'E06000001' AND c2021_heating_13_name = 'Mains gas only' AND measures_name = 'Percent'",
+    ),
+    lake(
+        "w10-gb-gas-meter-manchester",
+        "energy-statistics",
+        "What was the mean domestic gas consumption per meter in Manchester in 2024?",
+        "SELECT mean_consumption_kwh_per_meter_domestic FROM wave10.gb_desnz_gas_la WHERE code = 'E08000003' AND sheet = '2024'",
+    ),
 ]
 
 
@@ -309,7 +358,14 @@ def run_lake(c: dict[str, Any], root: Path) -> None:
         c["sql"],
     )
     rows = con.execute(sql).fetchall()[:3]
-    c["numbers"] = [str(v) for row in rows for v in row if isinstance(v, int | float)]
+
+    def num(v: object) -> bool:  # numbers, also those a workbook table keeps as text
+        try:
+            return not isinstance(v, bool) and v is not None and float(str(v)) == float(str(v))
+        except ValueError:
+            return False
+
+    c["numbers"] = [str(v) for row in rows for v in row if num(v)]
     c["answer"] = "; ".join(", ".join(str(v) for v in row) for row in rows)
 
 

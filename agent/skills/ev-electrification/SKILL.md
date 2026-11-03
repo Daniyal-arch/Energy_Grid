@@ -29,3 +29,7 @@ Example query (replace the area id):
 ```sql
 SELECT LIBGEO, NB_VP_RECHARGEABLES_EL FROM wave9.fr_ore_ev_commune ORDER BY DATE_ARRETE DESC LIMIT 10
 ```
+
+## Wave 10
+
+Country and GB district series of wave 10 (`wave10.*`, skill `energy-statistics`): vehicle stock and new registrations by fuel (`wave10.eu_road_eqs_*`, `wave10.eu_road_eqr_*`), DfT public charging devices per district (`wave10.gb_dft_evcd_devices`, `wave10.gb_dft_evcd_per_100k`, `wave10.gb_dft_evcd_rapid`), Census 2021 cars and travel to work (`wave10.gb_census_cars`, `wave10.gb_census_travel_method`).

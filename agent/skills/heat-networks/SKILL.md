@@ -29,3 +29,7 @@ Example query (replace the area id):
 ```sql
 SELECT count(*) FROM wave9.eu_emodnet_wwtp WHERE in_area(geometry, 'a_...')
 ```
+
+## Wave 10
+
+Country and GB district series of wave 10 (`wave10.*`, skill `energy-statistics`): Census 2021 central heating per district (`wave10.gb_census_heating`), DESNZ gas consumption per district (`wave10.gb_desnz_gas_la`), Eurostat district heating tables (`wave10.eu_nrg_dhdc_*`).
