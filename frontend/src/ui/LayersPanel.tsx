@@ -4,6 +4,7 @@
 // its key appears while it is on. Datasets that colour the countries are listed with the others
 // (one colouring at a time).
 
+import { isWaveColour, waveKey } from "../app/waves";
 import { type W9cFile, w9cNumber, w9cStops } from "../lib/wave9";
 import { useMemo, useState, type ReactNode } from "react";
 
@@ -108,7 +109,7 @@ const pipeStatus = (color: string) => (
 );
 
 function W9cLegend({ id }: { id: string }) {
-  const f = useFile<W9cFile>(`w9c:${id}`);
+  const f = useFile<W9cFile>(waveKey(id));
   if (!f) return <Note>Loading…</Note>;
   const stops = w9cStops(f);
   const filter = Object.entries(f.filter).map(([k, v]) => `${k} ${v}`).join(", ");
@@ -116,13 +117,13 @@ function W9cLegend({ id }: { id: string }) {
     <Scale
       gradient={gradientCss(stops)}
       ticks={[w9cNumber(stops[0][0]), w9cNumber(stops[Math.floor(stops.length / 2)][0]), `${w9cNumber(stops[stops.length - 1][0])} ${f.unit}`]}
-      note={`${f.label}, ${f.period ?? ""}, as published per ${{ country: "country", us_county: "US county", gb_lad: "GB local authority district (shapes: ONS December 2021, OGL v3)" }[f.scope]} (${Object.keys(f.values).length}); colour stops at the quartiles (computed). ${f.source}${filter ? `; series: ${filter}` : ""}`}
+      note={`${f.label}, ${f.period ?? ""}, as published per ${{ country: "country", us_county: "US county", gb_lad: "GB local authority district (shapes: ONS December 2021, OGL v3)", gb_lad24: "GB local authority district (shapes: ONS December 2024, OGL v3)" }[f.scope]} (${Object.keys(f.values).length}); colour stops at the quartiles (computed). ${f.source}${filter ? `; series: ${filter}` : ""}`}
     />
   );
 }
 
 export function ColourLegend({ colour }: { colour: ColourId }) {
-  if (colour.startsWith("w9c_")) return <W9cLegend id={colour.slice(4)} />;
+  if (isWaveColour(colour)) return <W9cLegend id={colour} />;
   if (colour === "renewable") return <Scale gradient={gradientCss(SHARE_STOPS)} ticks={["0 %", "50 %", "100 % renewable"]} note="share of generation, newest 15-min interval (ENTSO-E)" />;
   if (colour === "price")
     return (

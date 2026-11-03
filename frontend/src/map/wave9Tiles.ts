@@ -4,7 +4,7 @@
 
 import maplibregl from "maplibre-gl";
 
-import WAVE9 from "../app/wave9.json";
+import { WAVES } from "../app/waves";
 
 interface TileLayer {
   id: string;
@@ -17,7 +17,7 @@ interface TileLayer {
   source: string;
 }
 
-export const W9_TILE_LAYERS = (WAVE9.layers as Partial<TileLayer>[]).filter((d) => d.tiles) as TileLayer[];
+export const W9_TILE_LAYERS = (WAVES.layers as Partial<TileLayer>[]).filter((d) => d.tiles) as TileLayer[];
 const idsOf = (d: TileLayer) => (d.kind === "polygon" ? [`${d.id}-fill`, `${d.id}-line`] : [`${d.id}-${d.kind === "point" ? "dot" : "line"}`]);
 const clickReady = new WeakSet<maplibregl.Map>();
 

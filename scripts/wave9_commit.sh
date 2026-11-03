@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Commit the app's data files a wave-5 or wave-9 job wrote and push them to the branch it ran on (several
+# Commit the app's data files a wave-5 or registry-wave (9, 10, ...) job wrote and push them to the branch it ran on (several
 # jobs push in turn: rebase and retry). A file changed on the branch meanwhile keeps the job's
 # fresh copy (-X theirs replays this commit over the branch).
 set -u
 git config user.name "github-actions[bot]"
 git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-git add frontend/public/data agent/catalog data/wave9_built data/wave9_probes.json 2>/dev/null || git add frontend/public/data data/wave9_built
+git add frontend/public/data agent/catalog data/wave*_built 2>/dev/null; git add data/wave*_probes.json 2>/dev/null || true
 git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
 git commit -q -m "$1"
 for i in 1 2 3 4 5; do

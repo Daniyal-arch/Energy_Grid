@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures as cf
 import json
+import os
 import re
 import sys
 import time
@@ -28,11 +29,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import wave5_common as w  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
-REGISTRY = ROOT / "scripts" / "wave9_sources.yaml"
-PROBES = ROOT / "data" / "wave9_probes.json"
-BUILT = ROOT / "data" / "wave9_built.json"
+# the wave this run serves (WAVE=10 for wave 10): its registry, lake dataset, app files and ids
+WAVE = int(os.environ.get("WAVE", "9"))
+WN = f"wave{WAVE}"  # lake dataset, registry and catalogue name
+PFX = f"w{WAVE}"  # app folders (eu/w9, eu/w9c) and map ids (w9_<id>, w9c_<id>)
+BRIEF = {9: "brief 28", 10: "brief 29"}.get(WAVE, f"wave {WAVE}")
+REGISTRY = ROOT / "scripts" / f"{WN}_sources.yaml"
+PROBES = ROOT / "data" / f"{WN}_probes.json"
 SCRIPT = "scripts/wave9.py"
-TMP = Path("/tmp/wave9")
+TMP = Path(f"/tmp/{WN}")
 UA = w.UA
 LICENCE_WORDS = re.compile(
     r"(licen[cs]e|commercial|CC[ -]BY|CC0|Open Government|Licence Ouverte|public domain|"
@@ -130,8 +135,8 @@ def probe(args: argparse.Namespace) -> None:
     PROBES.write_text(json.dumps(old, indent=1, ensure_ascii=False, sort_keys=True) + "\n")
 
 
-FAMILIES = ROOT / "scripts" / "wave9_families.yaml"
-SEARCH = ROOT / "data" / "wave9_search.json"
+FAMILIES = ROOT / "scripts" / f"{WN}_families.yaml"
+SEARCH = ROOT / "data" / f"{WN}_search.json"
 
 
 def families() -> dict[str, dict[str, Any]]:
@@ -325,6 +330,15 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             / ("src.zip" if kind == "csv_zip" else "src.csv.gz" if kind == "csv_gz" else "src.csv"),
             timeout=3600,
         )
+        # Eurostat queues a large extraction (a SOAP "queued" answer) and serves it from its
+        # cache once ready: ask again until the table comes
+        for wait in range(40):
+            if f.stat().st_size > 2000 or b"<queued>" not in f.read_bytes()[:2000]:
+                break
+            print(f"  Eurostat queued the extraction; asking again ({wait + 1})", flush=True)
+            f.unlink()
+            time.sleep(30)
+            f = w.download(url, f, timeout=3600)
         if kind == "csv_zip":
             f = first_file(w.unzip(f), (".csv", ".txt"))
         if s.get("recode"):  # a legacy encoding DuckDB does not read: to UTF-8 first
@@ -342,7 +356,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             parts.append("all_varchar = true")
         opts = ", ".join(parts)
         con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('{f}', {opts})")
-    elif kind == "xlsx":
+    elif kind == "xlsx" and not (s.get("sheets") or s.get("pandas")):
         f = w.download(url, d / "src.xlsx", timeout=3600)
         con.execute("INSTALL excel; LOAD excel")
         sheet = f", sheet = '{s['sheet']}'" if s.get("sheet") else ""
@@ -424,7 +438,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             f"  ScienceBase file: {f0['name']} ({(f0.get('size') or 0) / 1e6:,.1f} MB)", flush=True
         )
         load_one(con, {**s, "kind": s["inner"], "url": f0["url"]})
-    elif kind in ("ods", "xls"):
+    elif kind in ("ods", "xls", "xlsx"):  # xlsx here when `sheets` or `pandas` is set
         import pandas as pd
 
         f = w.download(
@@ -444,17 +458,35 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         sheet = s.get("sheet") or next(
             (n for n in book.sheet_names if not skip.search(n)), book.sheet_names[0]
         )
-        print(f"  sheet {sheet!r} of {book.sheet_names[:8]}", flush=True)
-        raw = book.parse(sheet, header=None, dtype=str)
-        # the header is the first row with at least three filled cells (title rows come first)
-        filled = raw.head(40).notna().sum(axis=1)
-        h = int(next(i for i, n in filled.items() if n >= max(3, 0.6 * filled.max())))
-        body = raw.iloc[h + 1 :].copy()
-        body.columns = [
-            str(c) if str(c) != "nan" else f"col_{i}" for i, c in enumerate(raw.iloc[h])
-        ]
+        # `sheets`: every sheet whose name matches, stacked with its name in column `sheet`
+        names = (
+            [n for n in book.sheet_names if re.search(s["sheets"], n)]
+            if s.get("sheets")
+            else [sheet]
+        )
+        print(
+            f"  sheet(s) {names[:6]}{' ...' if len(names) > 6 else ''} of {len(book.sheet_names)}",
+            flush=True,
+        )
+        parts = []
+        for name in names:
+            raw = book.parse(name, header=None, dtype=str)
+            # the header is the first row with at least three filled cells (title rows come first)
+            filled = raw.head(40).notna().sum(axis=1)
+            h = int(next(i for i, n in filled.items() if n >= max(3, 0.6 * filled.max())))
+            body = raw.iloc[h + 1 :].copy()
+            cols = [str(c) if str(c) != "nan" else f"col_{i}" for i, c in enumerate(raw.iloc[h])]
+            # one name per column across sheets (headers differ in spaces and line breaks)
+            cols = [
+                re.sub(r"[^0-9a-z]+", "_", c.lower()).strip("_") or f"col_{i}"
+                for i, c in enumerate(cols)
+            ]
+            body.columns = [c if c not in cols[:i] else f"{c}_{i}" for i, c in enumerate(cols)]
+            if s.get("sheets"):
+                body.insert(0, "sheet", name)
+            parts.append(body.dropna(how="all"))
         out = d / "src.csv"
-        body.dropna(how="all").to_csv(out, index=False)
+        pd.concat(parts, ignore_index=True).to_csv(out, index=False)
         con.execute(
             f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('{out}', all_varchar = true, header = true)"
         )
@@ -495,6 +527,34 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             raise SystemExit(f"no file matching {s['match']} in {url}")
         print(f"  newest file: {names[-1]}", flush=True)
         load_one(con, {**s, "kind": s["inner"], "url": url.rstrip("/") + "/" + names[-1]})
+    elif kind == "wdi":
+        # a World Bank WDI indicator: every country and aggregate, every year (CC BY 4.0); the
+        # aggregates (regions, income groups) are marked from the country list
+        meta = w.get_json("https://api.worldbank.org/v2/country?format=json&per_page=400")
+        agg = {
+            c["iso2Code"] for c in meta[1] if (c.get("region") or {}).get("value") == "Aggregates"
+        }  # type: ignore[index]
+        rows, page = [], 1
+        while True:
+            r = w.get_json(f"{url}&per_page=20000&page={page}", timeout=300)
+            for x in r[1] or []:  # type: ignore[index]
+                rows.append({
+                    "indicator": x["indicator"]["id"], "indicator_name": x["indicator"]["value"],
+                    "iso2": x["country"]["id"], "iso3": x["countryiso3code"], "country": x["country"]["value"],
+                    "aggregate": x["country"]["id"] in agg, "year": int(x["date"]), "value": x["value"],
+                    "unit": x.get("unit") or "", "obs_status": x.get("obs_status") or "",
+                })  # fmt: skip
+            if page >= int(r[0]["pages"]):  # type: ignore[index]
+                break
+            page += 1
+        f = d / "src.json"
+        f.write_text(json.dumps(rows))
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', "
+            "columns = {indicator: 'VARCHAR', indicator_name: 'VARCHAR', iso2: 'VARCHAR', iso3: 'VARCHAR', "
+            "country: 'VARCHAR', aggregate: 'BOOLEAN', year: 'INTEGER', value: 'DOUBLE', unit: 'VARCHAR', "
+            "obs_status: 'VARCHAR'})"
+        )
     elif kind == "custom":
         CUSTOM[s["id"]](con, s, d)
     else:
@@ -576,7 +636,7 @@ def build_one(con, lk, s: dict[str, Any]) -> dict[str, Any]:  # noqa: ANN001
     n = con.execute("SELECT count(*) FROM t").fetchone()[0]
     out = {
         "rows": n, "columns": cols[:60], "geometry": bool(geometry), "seconds": round(time.time() - t0),
-        "example": {"sql": f"SELECT count(*) FROM wave9.{s['id']}", "answer": n},
+        "example": {"sql": f"SELECT count(*) FROM {WN}.{s['id']}", "answer": n},
         "built": time.strftime("%Y-%m-%d"),
     }  # fmt: skip
     if s.get("choro"):
@@ -592,7 +652,7 @@ def build_one(con, lk, s: dict[str, Any]) -> dict[str, Any]:  # noqa: ANN001
     return out
 
 
-APP = ROOT / "frontend" / "public" / "data" / "eu" / "w9"
+APP = ROOT / "frontend" / "public" / "data" / "eu" / PFX
 APP_MAX_POINTS = 30000
 NAME_COLS = (
     "name",
@@ -664,7 +724,7 @@ def app_file(con, s: dict[str, Any], query: str) -> None:  # noqa: ANN001
 
 UPLOAD = {"on": False}
 PUBLIC = "https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev"
-APPC = ROOT / "frontend" / "public" / "data" / "eu" / "w9c"
+APPC = ROOT / "frontend" / "public" / "data" / "eu" / f"{PFX}c"
 EUROSTAT_ISO2 = {"EL": "GR", "UK": "GB"}
 
 
@@ -719,19 +779,22 @@ def tiles_file(con, s: dict[str, Any], query: str, n: int) -> dict[str, Any] | N
         f"  {s['id']}: {out.stat().st_size / 1e6:,.1f} MB of tiles (zoom {minzoom}-12)", flush=True
     )
     if UPLOAD["on"]:
-        w.upload_public(out, f"w9/{s['id']}.pmtiles", "application/vnd.pmtiles")
+        w.upload_public(out, f"{PFX}/{s['id']}.pmtiles", "application/vnd.pmtiles")
     return {
-        "url": f"pmtiles://{PUBLIC}/w9/{s['id']}.pmtiles",
+        "url": f"pmtiles://{PUBLIC}/{PFX}/{s['id']}.pmtiles",
         "kind": kind.lower(),
         "minzoom": minzoom,
         "fields": ["name", *keep] if name else keep,
     }
 
 
+GB_DISTRICT = r"(E0[6-9]|W06|S12|N09)\d{6}"  # GB local authority district codes (no totals)
+
+
 def choro_file(con, s: dict[str, Any]) -> dict[str, Any] | None:  # noqa: ANN001
     """One published series per area for the map's colouring (w9c/<id>.json): the rows the
-    source publishes for each country (Eurostat's country rows) or US county, newest period
-    with the most areas; values as published, nothing aggregated or split."""
+    source publishes for each country (Eurostat's country rows), US county or GB district, the
+    newest period published for at least 90 % of the most areas any period has; values as published, nothing aggregated or split."""
     c = s["choro"]
     where = " AND ".join(
         [f"CAST(\"{k}\" AS VARCHAR) = '{v}'" for k, v in (c.get("filter") or {}).items()]
@@ -739,9 +802,14 @@ def choro_file(con, s: dict[str, Any]) -> dict[str, Any] | None:  # noqa: ANN001
     )
     key, val, per = c.get("key", "geo"), c.get("value", "obs_value"), c.get("period", "time_period")
     scope = c.get("scope", "country")
-    keyok = "length(k) = 2" if scope == "country" else "true"
+    keyok = {
+        "country": "length(k) = 2",
+        "gb_lad": f"regexp_full_match(k, '{GB_DISTRICT}')",
+        "gb_lad24": f"regexp_full_match(k, '{GB_DISTRICT}')",
+    }.get(scope, "true")
     sql = f"""WITH r AS (SELECT CAST("{key}" AS VARCHAR) AS k, CAST({per} AS VARCHAR) AS p, TRY_CAST("{val}" AS DOUBLE) AS v FROM t WHERE {where})
-              SELECT p, count(DISTINCT k) AS n FROM r WHERE v IS NOT NULL AND {keyok} GROUP BY p ORDER BY n DESC, p DESC LIMIT 1"""
+              , n AS (SELECT p, count(DISTINCT k) AS n FROM r WHERE v IS NOT NULL AND {keyok} GROUP BY p)
+              SELECT p, n FROM n WHERE n >= 0.9 * (SELECT max(n) FROM n) ORDER BY p DESC LIMIT 1"""
     best = (
         con.execute(sql).fetchone()
         if per in [c_ for (c_,) in con.execute("SELECT column_name FROM (DESCRIBE t)").fetchall()]
@@ -763,7 +831,7 @@ def choro_file(con, s: dict[str, Any]) -> dict[str, Any] | None:  # noqa: ANN001
             k = EUROSTAT_ISO2.get(k, k)
         elif scope == "us_county":
             k = k.zfill(5)
-        elif scope == "gb_lad" and not re.fullmatch(r"(E0[6-9]|W06|S12|N09)\d{6}", k):
+        elif scope in ("gb_lad", "gb_lad24") and not re.fullmatch(GB_DISTRICT, k):
             continue  # districts only: no county or region totals, no footnote rows
         values[k] = v
     if not values:
@@ -787,74 +855,75 @@ def choro_file(con, s: dict[str, Any]) -> dict[str, Any] | None:  # noqa: ANN001
     return {"scope": scope, "areas": len(values), "period": period}
 
 
-AREA_WORD = {"country": "countries", "us_county": "counties", "gb_lad": "local authority districts"}
-SCOPE_PLACE = {"us_county": "US", "gb_lad": "GB"}
-GB_LAD = (
-    "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/"
-    "Local_Authority_Districts_December_2021_UK_BUC_2022/FeatureServer/0/query"
-)
+AREA_WORD = {"country": "countries", "us_county": "counties", "gb_lad": "local authority districts",
+             "gb_lad24": "local authority districts"}  # fmt: skip
+SCOPE_PLACE = {"us_county": "US", "gb_lad": "GB", "gb_lad24": "GB"}
+ONS_AGOL = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services"
+# the shapes per GB colouring scope: ONS service, code and name fields, app file, label
+GB_LAD = {
+    "gb_lad": ("Local_Authority_Districts_December_2021_UK_BUC_2022", "LAD21CD", "LAD21NM",
+               "gb_lad.json", "ONS Local Authority Districts (December 2021) UK BUC (OGL v3)"),
+    "gb_lad24": ("Local_Authority_Districts_December_2024_Boundaries_UK_BUC", "LAD24CD", "LAD24NM",
+                 "gb_lad24.json", "ONS Local Authority Districts (December 2024) UK BUC (OGL v3)"),
+}  # fmt: skip
 
 
 def gb_lad(args: argparse.Namespace) -> None:
-    """The ONS local authority district shapes (December 2021, ultra generalised, OGL v3)
-    for the GB colourings: frontend/public/data/eu/gb_lad.json, flat rings to 4 decimals."""
-    feats: list[dict[str, Any]] = []
-    with httpx.Client(timeout=120) as cl:
-        while True:
-            r = cl.get(
-                GB_LAD,
-                params={
-                    "where": "1=1",
-                    "outFields": "LAD21CD,LAD21NM",
-                    "outSR": 4326,
-                    "f": "geojson",
-                    "resultOffset": len(feats),
-                    "resultRecordCount": 200,
-                },
+    """The ONS local authority district shapes (ultra generalised, OGL v3) for the GB
+    colourings: December 2021 (gb_lad.json, codes of DfT VEH0131) and December 2024
+    (gb_lad24.json, codes of the DESNZ and Census tables); flat rings to 4 decimals."""
+    for service, code, name, file, label in GB_LAD.values():
+        feats: list[dict[str, Any]] = []
+        with httpx.Client(timeout=120) as cl:
+            while True:
+                r = cl.get(
+                    f"{ONS_AGOL}/{service}/FeatureServer/0/query",
+                    params={
+                        "where": "1=1",
+                        "outFields": f"{code},{name}",
+                        "outSR": 4326,
+                        "f": "geojson",
+                        "resultOffset": len(feats),
+                        "resultRecordCount": 200,
+                    },
+                )
+                r.raise_for_status()
+                page = r.json()["features"]
+                feats += page
+                if len(page) < 200:
+                    break
+        out = []
+        for f in feats:
+            g = f["geometry"]
+            polys = g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]
+            out.append(
+                {
+                    "code": f["properties"][code],
+                    "name": f["properties"][name],
+                    "polygons": [
+                        [[round(v, 4) for pt in ring for v in pt] for ring in poly]
+                        for poly in polys
+                    ],
+                }
             )
-            r.raise_for_status()
-            page = r.json()["features"]
-            feats += page
-            if len(page) < 200:
-                break
-    out = []
-    for f in feats:
-        g = f["geometry"]
-        polys = g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]
-        out.append(
-            {
-                "code": f["properties"]["LAD21CD"],
-                "name": f["properties"]["LAD21NM"],
-                "polygons": [
-                    [[round(v, 4) for pt in ring for v in pt] for ring in poly] for poly in polys
-                ],
-            }
-        )
-    path = ROOT / "frontend" / "public" / "data" / "eu" / "gb_lad.json"
-    w.write_json(
-        path,
-        {
-            "fetched": w.now(),
-            "source": "ONS Local Authority Districts (December 2021) UK BUC (OGL v3)",
-            "areas": out,
-        },
-    )
-    print(f"{len(out)} districts, {path.stat().st_size:,} bytes -> {path}")
+        path = ROOT / "frontend" / "public" / "data" / "eu" / file
+        w.write_json(path, {"fetched": w.now(), "source": label, "areas": out})
+        print(f"{len(out)} districts, {path.stat().st_size:,} bytes -> {path}")
 
 
 def build(args: argparse.Namespace) -> None:
     UPLOAD["on"] = bool(args.upload)
     todo = [s for s in sources(args.cat, args.id) if s["status"] == "build" and s["kind"] != "page"]
     lk = w.lake_for(
-        "wave9",
+        WN,
         args.lake,
-        "wave 9 sources (see each table's source in agent/catalog)",
+        f"wave {WAVE} sources (see each table's source in agent/catalog)",
         "per table",
         SCRIPT,
     )
     # a category job keeps <cat>.json, a single-source job its own file (jobs run in parallel)
     name = str(args.cat) if args.cat is not None else (f"s_{args.id}" if args.id else "all")
-    out_path = ROOT / "data" / "wave9_built" / f"{name}.json"
+    out_path = ROOT / "data" / f"{WN}_built" / f"{name}.json"
     status = json.loads(out_path.read_text(encoding="utf-8")) if out_path.exists() else {}
     con = con_spatial()
     for s in todo:
@@ -911,7 +980,7 @@ def covers(places: list[str], cc: str) -> bool:
 
 def built_records() -> dict[str, dict[str, Any]]:
     out: dict[str, dict[str, Any]] = {}
-    for f in sorted((ROOT / "data" / "wave9_built").glob("*.json")):
+    for f in sorted((ROOT / "data" / f"{WN}_built").glob("*.json")):
         for k, v in json.loads(f.read_text(encoding="utf-8")).items():
             if v.get("rows") is not None or k not in out:
                 out[k] = v
@@ -950,7 +1019,7 @@ def cell_for(fam: str, f: dict[str, Any], cc: str, srcs: list[dict[str, Any]], b
             if finest["kind"] not in ("ckan", "govuk", "sciencebase")
             else (finest.get("lic_url") or finest["url"]),
             "licence": "; ".join(dict.fromkeys(s["licence"] for s in ok)),
-            "dataset": ", ".join(s.get("dataset") or f"lake wave9.{s['id']}" for s in ok),
+            "dataset": ", ".join(s.get("dataset") or f"lake {WN}.{s['id']}" for s in ok),
             "checked": max(
                 ((built.get(s["id"]) or {}).get("built") or s.get("checked") or today) for s in ok
             ),
@@ -995,7 +1064,7 @@ def cell_for(fam: str, f: dict[str, Any], cc: str, srcs: list[dict[str, Any]], b
         )
     )
     return {"status": "not_published", "url": url, "checked": today,
-            "note": ("no source built in wave 9. " + " | ".join(notes)) if notes else "no source found in wave 9"}  # fmt: skip
+            "note": (f"no source built in wave {WAVE}. " + " | ".join(notes)) if notes else f"no source found in wave {WAVE}"}  # fmt: skip
 
 
 def render(args: argparse.Namespace) -> None:
@@ -1049,16 +1118,23 @@ CATS = {0: "Part A: finishing wave 8", 1: "1. Land, permitting and planning", 2:
         6: "6. Offshore and maritime", 7: "7. Supply chain, materials and industry", 8: "8. Finance, public money and incentives",
         9: "9. Social and community", 10: "10. Telecom and digital", 11: "11. Water and cooling", 12: "12. Heat networks and geothermal",
         13: "13. Mobility", 14: "14. Nuclear", 15: "15. Air quality near plants", 16: "16. Reliability below the country", 17: "17. Night lights"}  # fmt: skip
+CATS10 = {1: "1. Energy supply, balances and trade", 2: "2. Energy prices, taxes and markets",
+          3: "3. Emissions and environmental accounts", 4: "4. Transport, vehicles and fuels",
+          5: "5. Water, materials and circular economy", 6: "6. Sustainable development indicators",
+          7: "7. World energy and climate indicators", 8: "8. GB local authority energy and emissions",
+          9: "9. US facilities and emissions"}  # fmt: skip
+if WAVE == 10:
+    CATS = CATS10
 
 
 def research(srcs: list[dict[str, Any]], built: dict[str, Any], probes: dict[str, Any]) -> None:
     lines = [
-        "# Wave 9 sources (brief 28)",
+        f"# Wave {WAVE} sources ({BRIEF})",
         "",
-        "Every source probed for docs/tasks/28-wave9-customer-needs.md: category, places, level, licence as",
-        "found, size or rows, status, link and the date checked. Generated by `python scripts/wave9.py render`",
-        "from scripts/wave9_sources.yaml, data/wave9_probes.json and data/wave9_built/. Status: **built** (in the",
-        "lake, `wave9.<id>`), **blocked** (key, login or refusal; the data request is in data/coverage.yaml),",
+        f"Every source probed for {BRIEF}: category, places, level, licence as",
+        f"found, size or rows, status, link and the date checked. Generated by `WAVE={WAVE} python scripts/wave9.py render`",
+        f"from scripts/{WN}_sources.yaml, data/{WN}_probes.json and data/{WN}_built/. Status: **built** (in the",
+        f"lake, `{WN}.<id>`), **blocked** (key, login or refusal; the data request is in data/coverage.yaml),",
         "**left out** (licence does not allow a paid product), **not published** (no machine-readable file),",
         "**page only** (the publisher's page was probed, no download located in this wave), **failed** (the",
         "build failed; the error is shown).",
@@ -1096,22 +1172,27 @@ def research(srcs: list[dict[str, Any]], built: dict[str, Any], probes: dict[str
                 f"{status.replace('|', '/')} | {b.get('built') or pr.get('checked') or ''} |"
             )
         lines.append("")
-    (ROOT / "docs" / "research" / "wave9-sources.md").write_text("\n".join(lines), encoding="utf-8")
+    (ROOT / "docs" / "research" / f"{WN}-sources.md").write_text("\n".join(lines), encoding="utf-8")
 
 
 GROUP = {0: None, 1: "Land & planning", 2: "Power grid", 3: "Prices", 4: "Risk", 5: "Industry & demand", 6: "Offshore",
          7: "Industry & demand", 8: "Money", 9: "People & places", 10: "Water & telecom", 11: "Water & telecom",
          12: "Resources", 13: "Mobility", 14: "Power plants", 15: "Emissions", 16: "Power grid", 17: "People & places"}  # fmt: skip
+if WAVE == 10:
+    GROUP = {1: "Energy statistics", 2: "Prices", 3: "Emissions", 4: "Mobility", 5: "Water & telecom",
+             6: "Energy statistics", 7: "World indicators", 8: "Energy statistics", 9: "Emissions"}  # fmt: skip
 FAMILY_GROUP = {
     "oil_gas_facilities": "Gas, oil & coal",
     "co2_storage": "Industry & demand",
     "flood_zones": "Risk",
 }
+FAMILY_FIRST = {"local_homes_gb": "People & places", "water_materials": "Industry & demand"}
 GROUP_COLOUR = {"Land & planning": "rgb(206,184,140)", "Power grid": "rgb(236,178,120)", "Prices": "rgb(255,196,90)",
                 "Risk": "rgb(255,120,96)", "Industry & demand": "rgb(214,160,255)", "Offshore": "rgb(96,190,255)",
                 "Money": "rgb(150,220,150)", "People & places": "rgb(240,200,220)", "Water & telecom": "rgb(120,200,230)",
                 "Resources": "rgb(255,170,110)", "Mobility": "rgb(190,190,255)", "Power plants": "rgb(255,214,72)",
-                "Emissions": "rgb(200,200,200)", "Gas, oil & coal": "rgb(230,140,90)"}  # fmt: skip
+                "Emissions": "rgb(200,200,200)", "Gas, oil & coal": "rgb(230,140,90)",
+                "Energy statistics": "rgb(140,200,255)", "World indicators": "rgb(170,230,200)"}  # fmt: skip
 
 
 def where_of(places: list[str]) -> list[str]:
@@ -1161,7 +1242,7 @@ def pr_tables(args: argparse.Namespace) -> None:
 
 def between(path: Path, block: str) -> None:
     """Replace the generated block of a doc (or append it once)."""
-    begin, end = "<!-- wave9:begin (generated by scripts/wave9.py render) -->", "<!-- wave9:end -->"
+    begin, end = f"<!-- {WN}:begin (generated by scripts/wave9.py render) -->", f"<!-- {WN}:end -->"
     text = path.read_text(encoding="utf-8")
     new = f"{begin}\n{block}\n{end}"
     if begin in text:
@@ -1174,19 +1255,19 @@ def between(path: Path, block: str) -> None:
 def docs(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
     """The wave 9 rows of docs/DATA_SOURCES.md and docs/DATA_LAKE.md."""
     ok = [s for s in srcs if (built.get(s["id"]) or {}).get("rows")]
-    src = ["## Wave 9 sources (`scripts/wave9.py`, lake `wave9/<id>`)", "",
+    src = [f"## Wave {WAVE} sources (`WAVE={WAVE} scripts/wave9.py`, lake `{WN}/<id>`)", "",
            "Every table is passthrough: the publisher's rows and columns as published (column names in",
            "lower snake case), one table per source; positions are moved to WGS 84 from the source's CRS",
            "(computed), points from published coordinates. On the map: a point source of at most 30,000",
-        "records gets a map file (`w9/<id>.json`, all records); every other positioned source is cut into",
+        f"records gets a map file (`{PFX}/<id>.json`, all records); every other positioned source is cut into",
         "vector tiles in Actions (tippecanoe, every record, no feature or size limit; larger sets from",
-        "zoom 4 or 6) published as `w9/<id>.pmtiles` in the public bucket. Area series become colourings",
-        "(`w9c/<id>.json`): one named series per table (the filter is in the file), Eurostat's country",
-        "rows or USGS's US counties, newest period with the most areas, colour stops at the quartiles",
+        f"zoom 4 or 6) published as `{PFX}/<id>.pmtiles` in the public bucket. Area series become colourings",
+        f"(`{PFX}c/<id>.json`): one named series per table (the filter is in the file), Eurostat's country",
+        "rows, USGS's US counties or GB districts, the newest period published for at least 90 % of the most areas, colour stops at the quartiles",
         "(computed). The full list of the","sources probed, with the ones blocked or left out, is docs/research/wave9-sources.md.", "",
            "| Source | Category | Places | Level | Licence | Rows | Table |", "|---|---|---|---|---|---|---|"]  # fmt: skip
     lake_rows = [
-        "### Wave 9 (brief 28)",
+        f"### Wave {WAVE} ({BRIEF})",
         "",
         "| Table | Kept as | Rows | Positioned |",
         "|---|---|---|---|",
@@ -1194,7 +1275,7 @@ def docs(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
     for s in ok:
         b = built[s["id"]]
         src.append(
-            f"| [{title_of(s)}]({s['url']}) | {CATS.get(s['cat'], '')} | {', '.join(where_of(s['places']))} | {s['level']} | {s['licence']} | {b['rows']:,} | `wave9.{s['id']}` |"
+            f"| [{title_of(s)}]({s['url']}) | {CATS.get(s['cat'], '')} | {', '.join(where_of(s['places']))} | {s['level']} | {s['licence']} | {b['rows']:,} | `{WN}.{s['id']}` |"
         )
         lake_rows.append(
             f"| `wave9/{s['id']}` | {'GeoParquet (bbox, Hilbert order)' if b.get('geometry') else 'Parquet'} | {b['rows']:,} | {b.get('with_position', '') if b.get('geometry') else 'no'} |"
@@ -1211,13 +1292,17 @@ def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
         b = built.get(s["id"]) or {}
         if not b.get("rows"):
             continue
-        group = GROUP.get(s["cat"]) or FAMILY_GROUP.get(s["fam"], "Industry & demand")
+        group = (
+            FAMILY_FIRST.get(s["fam"])
+            or GROUP.get(s["cat"])
+            or FAMILY_GROUP.get(s["fam"], "Industry & demand")
+        )
         colour = GROUP_COLOUR.get(group, "rgb(200,200,200)")
         fam = families().get(s["fam"], {})
         where = where_of(s["places"])
         shows = fam.get("shows", s["fam"].replace("_", " "))
         src = f"{title_of(s)} ({s['licence']})"
-        lid = f"w9_{s['id']}"
+        lid = f"{PFX}_{s['id']}"
         layer = None
         if (APP / f"{s['id']}.json").exists():
             layer = {"id": lid}
@@ -1239,10 +1324,10 @@ def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
                            "coverage": ", ".join(w for w in where if w != "World") or "World", "color": colour})  # fmt: skip
             datasets.append({"id": lid, "name": title_of(s), "category": group, "description": f"{title_of(s)}: {b['rows']:,} records as published",
                              "color": colour, "family": s["fam"],
-                             "parts": [{"layer": lid, "where": where, "what": shows, "source": src, "doc": "Wave 9 sources"}]})  # fmt: skip
+                             "parts": [{"layer": lid, "where": where, "what": shows, "source": src, "doc": f"Wave {WAVE} sources"}]})  # fmt: skip
         ch = b.get("choro")
         if ch and (APPC / f"{s['id']}.json").exists():
-            cid = f"w9c_{s['id']}"
+            cid = f"{PFX}c_{s['id']}"
             label = s["choro"]["label"]
             colours.append(
                 {
@@ -1257,8 +1342,8 @@ def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
             datasets.append({"id": f"colour-{cid}", "name": label, "category": group,
                              "description": f"{label} ({s['choro'].get('unit', '')}), {ch['areas']} {AREA_WORD[ch['scope']]}, {ch.get('period') or ''}: {title_of(s)}",
                              "color": colour, "family": s["fam"], "colour": cid,
-                             "parts": [{"where": where if ch["scope"] == "country" else [SCOPE_PLACE[ch["scope"]]], "what": label, "source": src, "doc": "Wave 9 sources"}]})  # fmt: skip
-    (ROOT / "frontend" / "src" / "app" / "wave9.json").write_text(
+                             "parts": [{"where": where if ch["scope"] == "country" else [SCOPE_PLACE[ch["scope"]]], "what": label, "source": src, "doc": f"Wave {WAVE} sources"}]})  # fmt: skip
+    (ROOT / "frontend" / "src" / "app" / f"{WN}.json").write_text(
         json.dumps(
             {"layers": layers, "colours": colours, "datasets": datasets},
             indent=1,
@@ -1283,11 +1368,11 @@ def catalog(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
             "columns": ", ".join(b.get("columns", [])[:40]),
             "examples": [{"q": f"how many records in {title_of(s)}", "sql": b["example"]["sql"], "answer": b["example"]["answer"]}],
         }  # fmt: skip
-    out = {"dataset": "wave9", "title": "Wave 9 datasets (brief 28): one table per source", "licence": "per table (see each table)",
+    out = {"dataset": WN, "title": f"Wave {WAVE} datasets ({BRIEF}): one table per source", "licence": "per table (see each table)",
            "notes": "Positioned tables are GeoParquet with a bbox column: use in_area(geometry, area_id). Values as published.",
            "tables": tables}  # fmt: skip
-    (ROOT / "agent" / "catalog" / "wave9.yaml").write_text(
-        "# Generated by `python scripts/wave9.py render` from the build records (data/wave9_built/).\n"
+    (ROOT / "agent" / "catalog" / f"{WN}.yaml").write_text(
+        f"# Generated by `WAVE={WAVE} python scripts/wave9.py render` from the build records (data/{WN}_built/).\n"
         + yaml.safe_dump(out, sort_keys=False, allow_unicode=True, width=160),
         encoding="utf-8",
     )
@@ -1295,8 +1380,12 @@ def catalog(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
 
 def levels(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
     path = ROOT / "agent" / "areas" / "levels.yaml"
-    text = path.read_text(encoding="utf-8").split("  # wave 9 (generated")[0].rstrip("\n") + "\n"
-    rows = ["  # wave 9 (generated by scripts/wave9.py render)"]
+    # this wave's block replaced in place (the other waves' blocks kept)
+    old = path.read_text(encoding="utf-8").rstrip("\n").split("\n")
+    head = f"  # wave {WAVE} (generated"
+    start = next((i for i, x in enumerate(old) if x.startswith(head)), len(old))
+    end = next((i for i in range(start + 1, len(old)) if old[i].startswith("  # wave ")), len(old))
+    rows = [f"  # wave {WAVE} (generated by scripts/wave9.py render)"]
     for s in srcs:
         if (built.get(s["id"]) or {}).get("rows"):
             lvl = (
@@ -1304,8 +1393,8 @@ def levels(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
                 if s["level"] in ("point", "line", "polygon", "raster")
                 else {"grid_100m": "small_area", "zone": "region"}.get(s["level"], s["level"])
             )
-            rows.append(f'  wave9.{s["id"]}: {{{lvl}: "{", ".join(s["places"])}: {title_of(s)}"}}')
-    path.write_text(text + "\n".join(rows) + "\n", encoding="utf-8")
+            rows.append(f'  {WN}.{s["id"]}: {{{lvl}: "{", ".join(s["places"])}: {title_of(s)}"}}')
+    path.write_text("\n".join(old[:start] + rows + old[end:]) + "\n", encoding="utf-8")
 
 
 def main() -> None:

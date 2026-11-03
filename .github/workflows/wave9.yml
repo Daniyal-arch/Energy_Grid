@@ -1,11 +1,12 @@
-name: Wave 9 datasets
+name: Registry wave datasets (wave 9, 10, ...)
 
 # The builds of brief 28 (docs/tasks/28-wave9-customer-needs.md): every `build` source of
 # scripts/wave9_sources.yaml, one job per category (0 = finishing wave 8, 1-17 = the wave 9
 # categories), into the lake (private bucket infraatlas-raw, lake/wave9/<id>); P probes every
 # source. Each job commits its build record (data/wave9_built/<cat>.json) and app files back to
 # the branch. Run by hand naming the groups, or from a branch push whose commit message holds
-# "[w9: P 0 1 2 ...]". Keys (each optional; a source that needs a missing key is skipped and says
+# "[w9: P 0 1 2 ...]"; "[w10: 1 2 ...]" runs wave 10 (scripts/wave10_sources.yaml, lake wave10,
+# app files eu/w10 and eu/w10c), any wave N the same way (WAVE=N). Keys (each optional; a source that needs a missing key is skipped and says
 # so): FIRMS_MAP_KEY, CENSUS_API_KEY, NREL_API_KEY, CDSAPI_KEY, NASA_EARTHDATA_TOKEN,
 # FINGRID_API_KEY, ENTSOE_API_KEY.
 
@@ -16,6 +17,10 @@ on:
         description: "Groups: P and category numbers 0-17"
         type: string
         default: "P 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17"
+      wave:
+        description: "Wave number (9, 10, ...)"
+        type: string
+        default: "9"
   push:
     branches: ["claude/**"]
 
@@ -26,6 +31,7 @@ env:
   AWS_REQUEST_CHECKSUM_CALCULATION: WHEN_REQUIRED
   AWS_RESPONSE_CHECKSUM_VALIDATION: WHEN_REQUIRED
   GROUPS: ${{ inputs.groups || github.event.head_commit.message }}
+  WAVE_INPUT: ${{ inputs.wave }}
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
@@ -36,14 +42,17 @@ jobs:
       cats: ${{ steps.p.outputs.cats }}
       words: ${{ steps.p.outputs.words }}
       ids: ${{ steps.p.outputs.ids }}
+      wave: ${{ steps.p.outputs.wave }}
     steps:
       - id: p
         run: |
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import os, re
           g = os.environ["GROUPS"]
-          m = re.search(r"\[w9: ([A-Za-z0-9_: ]+)\]", g)
-          groups = m.group(1) if m else g if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" else ""
+          m = re.search(r"\[w(\d+): ([A-Za-z0-9_: ]+)\]", g)
+          dispatch = os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch"
+          groups = m.group(2) if m else g if dispatch else ""
+          print("wave=" + (m.group(1) if m else os.environ.get("WAVE_INPUT") or "9"))
           words = groups.split()
           cats = [x for x in words if x.isdigit()]
           # s:<id> builds one source (without rebuilding its category)
@@ -58,13 +67,15 @@ jobs:
     if: contains(fromJSON(needs.plan.outputs.words), 'P')
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      WAVE: ${{ needs.plan.outputs.wave }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
         with: {python-version: "3.12"}
       - run: pip install httpx pyyaml duckdb
       - run: python scripts/wave9.py probe | tee -a "$GITHUB_STEP_SUMMARY"
-      - run: bash scripts/wave9_commit.sh "Wave 9 probes"
+      - run: bash scripts/wave9_commit.sh "Wave $WAVE probes"
 
   B:
     needs: plan
@@ -77,6 +88,7 @@ jobs:
       matrix:
         cat: ${{ fromJSON(needs.plan.outputs.cats) }}
     env:
+      WAVE: ${{ needs.plan.outputs.wave }}
       FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
       CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
       NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
@@ -99,7 +111,7 @@ jobs:
         run: python scripts/wave9.py build --cat ${{ matrix.cat }} --lake lake-out --upload
       - name: Commit the build record and app files
         if: always()
-        run: bash scripts/wave9_commit.sh "Wave 9 category ${{ matrix.cat }} built"
+        run: bash scripts/wave9_commit.sh "Wave $WAVE category ${{ matrix.cat }} built"
 
   S:
     needs: plan
@@ -107,6 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
+      WAVE: ${{ needs.plan.outputs.wave }}
       CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
       NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
     steps:
@@ -124,4 +137,4 @@ jobs:
         run: for id in ${{ needs.plan.outputs.ids }}; do python scripts/wave9.py build --id "$id" --lake lake-out --upload; done
       - name: Commit the build record and app files
         if: always()
-        run: bash scripts/wave9_commit.sh "Wave 9 single sources built"
+        run: bash scripts/wave9_commit.sh "Wave $WAVE single sources built"

@@ -302,8 +302,10 @@ def run_lake(c: dict[str, Any], root: Path) -> None:
 
     con = duckdb.connect()
     sql = re.sub(
-        r"wave9\.([a-z0-9_]+)",
-        lambda m: f"read_parquet('{root}/wave9/{m.group(1)}/**/*.parquet', union_by_name = true)",
+        r"(wave\d+)\.([a-z0-9_]+)",
+        lambda m: (
+            f"read_parquet('{root}/{m.group(1)}/{m.group(2)}/**/*.parquet', union_by_name = true)"
+        ),
         c["sql"],
     )
     rows = con.execute(sql).fetchall()[:3]

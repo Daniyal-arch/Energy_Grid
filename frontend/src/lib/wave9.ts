@@ -11,7 +11,7 @@ export interface W9cFile {
   label: string;
   unit: string;
   period: string | null;
-  scope: "country" | "us_county" | "gb_lad";
+  scope: "country" | "us_county" | "gb_lad" | "gb_lad24";
   filter: Record<string, string>;
   values: Record<string, number>;
 }

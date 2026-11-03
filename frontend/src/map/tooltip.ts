@@ -1,6 +1,7 @@
 // Hover cards for everything on the map. Values are the files' own; each card names its source.
 
 import { wave8Html } from "./wave8Layers";
+import { fromDeckId, waveKey } from "../app/waves";
 import { wave9CountyHtml, wave9Html } from "./wave9Layers";
 import type { Hex as MapHex } from "./hexLayers";
 import { styleTip } from "./styleLayers";
@@ -315,8 +316,8 @@ function mastrHtml(id: string, object: unknown): string | null {
 
 function tooltipHtml(id: string, object: unknown): string | null {
   if (id.startsWith("site-")) return siteHtml(id, object);
-  if (id.startsWith("w9c-")) return wave9CountyHtml(object, fileOf(`w9c:${id.slice(4).replace(/-lines$/, "")}`));
-  if (id.startsWith("w9-")) return wave9Html(id, object, fileOf(`w9:${id.slice(3)}`));
+  if (/^w\d+c-/.test(id)) return wave9CountyHtml(object, fileOf(waveKey(fromDeckId(id))));
+  if (/^w\d+-/.test(id)) return wave9Html(id, object, fileOf(waveKey(fromDeckId(id))));
   if (id.startsWith("w8-")) return wave8Html(id, object, Object.fromEntries(["w8Industrial", "w8Dams", "w8Co2Storage", "w8ExcessHeat", "w8Fires"].map((k) => [k, fileOf(k)])));
   if (id.startsWith("hex-map|") || id.startsWith("hex-bivariate|")) {
     const h = object as MapHex;

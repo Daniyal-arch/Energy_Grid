@@ -198,8 +198,13 @@ class Lake:
                 return None
             return json.loads(p.read_text(encoding="utf-8"))
 
-        # data wave 9: every map file (scripts/wave9.py) as app.w9_<source id>
-        for f in sorted((pub / "eu" / "w9").glob("*.json")) if (pub / "eu" / "w9").exists() else []:
+        # registry waves (9, 10, ...): every map file (scripts/wave9.py) as app.w<N>_<source id>
+        wave_dirs = (
+            sorted(d for d in (pub / "eu").iterdir() if re.fullmatch(r"w\d+", d.name))
+            if (pub / "eu").exists()
+            else []
+        )
+        for f in [f for d in wave_dirs for f in sorted(d.glob("*.json"))]:
             w9 = json.loads(f.read_text(encoding="utf-8"))
             fields, pts = w9.get("fields") or [], w9.get("points") or []
             if not fields or not pts:
@@ -219,12 +224,12 @@ class Lake:
             ]
             names = [n if n not in names[:i] else f"{n}_{i}" for i, n in enumerate(names)]
             table(
-                f"w9_{f.stem}",
+                f"{f.parent.name}_{f.stem}",
                 [(n, kind(i)) for i, n in enumerate(names)],
                 [[p[i] if i < len(p) else None for i in range(len(names))] for p in pts],
                 Source(
-                    f"w9 {f.stem}",
-                    f"frontend/public/data/eu/w9/{f.name}",
+                    f"{f.parent.name} {f.stem}",
+                    f"frontend/public/data/eu/{f.parent.name}/{f.name}",
                     "see source",
                     str(w9.get("source", "")),
                 ),

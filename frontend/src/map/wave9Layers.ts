@@ -1,12 +1,13 @@
-// The generic layers of data wave 9 (docs/tasks/28): one point layer per source that is small
-// enough for the app (frontend/public/data/eu/w9/<id>.json, written by scripts/wave9.py). The
-// layers, their groups and colours come from app/wave9.json; the hover card lists the fields as
-// published with the source. Larger sources stay in the lake for the agent.
+// The generic layers of the registry waves (9, 10, ...; scripts/wave9.py): one point layer per
+// source small enough for the app (data/eu/w<N>/<id>.json) and the area colourings
+// (data/eu/w<N>c/<id>.json) drawn on US counties or GB districts. The layers, groups and colours
+// come from app/waves.ts; the hover card lists the fields as published with the source. Larger
+// sources are vector tiles (map/wave9Tiles.ts) or stay in the lake for the agent.
 
 import type { Layer } from "@deck.gl/core";
 import { PathLayer, ScatterplotLayer, SolidPolygonLayer } from "@deck.gl/layers";
 
-import WAVE9 from "../app/wave9.json";
+import { WAVES, deckId, fromDeckId, isWaveColour, waveKey } from "../app/waves";
 import { stopColor } from "../app/colors";
 import { pairs } from "../app/geo";
 import type { UsCountiesFile } from "../lib/risk";
@@ -28,32 +29,33 @@ export interface GbLadFile {
   areas: { code: string; name: string; polygons: number[][][] }[];
 }
 
-/** The shapes file each area colouring needs (US counties unless named here). */
+/** The shapes file each area colouring needs (none for countries: the map's own outlines). */
+const SCOPE_SHAPES: Record<string, string> = { us_county: "usCounties", gb_lad: "gbLad", gb_lad24: "gbLad24" };
 export const W9C_SHAPES: Record<string, string> = Object.fromEntries(
-  (WAVE9.colours as { id: string; scope: string }[]).filter((c) => c.scope === "gb_lad").map((c) => [c.id, "gbLad"]),
+  (WAVES.colours as { id: string; scope: string }[]).filter((c) => SCOPE_SHAPES[c.scope]).map((c) => [c.id, SCOPE_SHAPES[c.scope]]),
 );
 
 // point layers drawn here; layers with vector tiles are MapLibre's (map/tiles.ts)
-const LAYERS = (WAVE9.layers as { id: string; color: string; tiles?: string }[]).filter((d) => !d.tiles);
+const LAYERS = (WAVES.layers as { id: string; color: string; tiles?: string }[]).filter((d) => !d.tiles);
 const rgb = (c: string): [number, number, number] => {
   const m = c.match(/\d+/g) ?? ["200", "200", "200"];
   return [Number(m[0]), Number(m[1]), Number(m[2])];
 };
 
-/** The files a frame needs for the wave-9 layers switched on ("w9:<source id>"). */
+/** The files a frame needs for the wave layers switched on ("w<N>:<source id>"). */
 export function wave9Keys(L: Record<string, boolean>): string[] {
-  return LAYERS.filter((d) => L[d.id]).map((d) => `w9:${d.id.slice(3)}`);
+  return LAYERS.filter((d) => L[d.id]).map((d) => waveKey(d.id));
 }
 
 export function wave9Layers(fr: Frame): Layer[] {
   const r = fr.zoom < 4 ? 1.6 : fr.zoom < 7 ? 2.6 : 3.6;
   const out: Layer[] = [];
   for (const d of LAYERS) {
-    const f = fr.files[`w9:${d.id.slice(3)}`] as W9File | undefined;
+    const f = fr.files[waveKey(d.id)] as W9File | undefined;
     if (!(fr.layers as Record<string, boolean>)[d.id] || !f) continue;
     out.push(
       new ScatterplotLayer<W9File["points"][number]>({
-        id: `w9-${d.id.slice(3)}`,
+        id: deckId(d.id),
         data: f.points,
         getPosition: (p) => [Number(p[0]), Number(p[1])],
         getRadius: r,
@@ -68,12 +70,11 @@ export function wave9Layers(fr: Frame): Layer[] {
       }),
     );
   }
-  // a wave-9 colouring per US county or GB local authority district (the app's area shapes)
-  if (fr.colour.startsWith("w9c_")) {
-    const w9 = fr.files[`w9c:${fr.colour.slice(4)}`] as W9cFile | undefined;
-    const counties = fr.files.usCounties as UsCountiesFile | undefined;
-    const lads = fr.files.gbLad as GbLadFile | undefined;
-    const areas = w9?.scope === "us_county" ? counties?.counties : w9?.scope === "gb_lad" ? lads?.areas : undefined;
+  // a wave colouring per US county or GB local authority district (the app's area shapes)
+  if (isWaveColour(fr.colour)) {
+    const w9 = fr.files[waveKey(fr.colour)] as W9cFile | undefined;
+    const shapes0 = w9 ? fr.files[SCOPE_SHAPES[w9.scope] ?? ""] : undefined;
+    const areas = w9?.scope === "us_county" ? (shapes0 as UsCountiesFile | undefined)?.counties : (shapes0 as GbLadFile | undefined)?.areas;
     if (w9 && areas) {
       const stops = memo(`w9cStops:${fr.colour}`, [w9], () => w9cStops(w9));
       const shapes = memo(`areaShapes:${w9.scope}`, [areas], () =>
@@ -81,7 +82,7 @@ export function wave9Layers(fr: Frame): Layer[] {
       );
       out.push(
         new SolidPolygonLayer<(typeof shapes)[number]>({
-          id: `w9c-${fr.colour.slice(4)}`,
+          id: deckId(fr.colour),
           data: shapes,
           getPolygon: (d) => d.polygon,
           getFillColor: (d) => [...(stopColor(stops, w9.values[d.code]) ?? [24, 28, 36]), 225] as [number, number, number, number],
@@ -91,7 +92,7 @@ export function wave9Layers(fr: Frame): Layer[] {
           highlightColor: [255, 255, 255, 40],
         }),
         new PathLayer<(typeof shapes)[number]>({
-          id: `w9c-${fr.colour.slice(4)}-lines`,
+          id: `${deckId(fr.colour)}-lines`,
           data: shapes,
           getPath: (d) => d.polygon[0],
           getColor: [8, 10, 14, 120],
@@ -110,7 +111,7 @@ export function wave9CountyHtml(object: unknown, file: unknown): string | null {
   const d = object as { code?: string; name?: string } | undefined;
   if (!f || !d?.code) return null;
   const v = f.values[d.code];
-  const title = f.scope === "gb_lad" ? `${d.name ?? ""} (${d.code})` : `County ${d.code}`;
+  const title = f.scope.startsWith("gb_lad") ? `${d.name ?? ""} (${d.code})` : `County ${d.code}`;
   return `<b>${title}</b><div>${f.label}: <b>${v == null ? "not published" : `${v.toLocaleString("en-US")} ${f.unit}`}</b></div><div style="color:#8d94a1">${f.period ?? ""} · ${f.source}</div>`;
 }
 
@@ -119,7 +120,7 @@ export function wave9Html(id: string, object: unknown, file: unknown): string | 
   const f = file as W9File | undefined;
   if (!f) return null;
   const p = object as W9File["points"][number];
-  const label = (LAYERS.find((d) => d.id === `w9_${id.slice(3)}`) as { label?: string } | undefined)?.label ?? "Record";
+  const label = (LAYERS.find((d) => d.id === fromDeckId(id)) as { label?: string } | undefined)?.label ?? "Record";
   const rows = f.fields
     .map((k, i) => [k, p[i]] as const)
     .filter(([k, v]) => v != null && v !== "" && k !== "lon" && k !== "lat" && k !== "name")

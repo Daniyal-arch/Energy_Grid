@@ -10,7 +10,7 @@ import type { AreaSpec, LonLat } from "../lib/area";
 import type { MapPanel, Style } from "./maps";
 import { DEFAULT_STYLE, styleOf } from "./styleDefaults";
 import { EUROPE_ISO3 } from "../lib/transition";
-import WAVE9 from "./wave9.json";
+import { WAVES } from "./waves";
 
 export type TimeMode = "live" | "day" | "years";
 
@@ -84,8 +84,8 @@ export type LayerId =
   | "wind"
   | "sun"
   | "night"
-  // data wave 9: one generic point layer per source (app/wave9.json, map/wave9Layers.ts)
-  | `w9_${string}`;
+  // registry waves 9, 10, ...: one generic layer per source (app/waves.ts, map/wave9Layers.ts)
+  | `w${number}_${string}`;
 
 export type LayerGroup =
   | "Electricity"
@@ -104,7 +104,9 @@ export type LayerGroup =
   | "Offshore"
   | "Water & telecom"
   | "Mobility"
-  | "People & places";
+  | "People & places"
+  | "Energy statistics"
+  | "World indicators";
 export const LAYER_GROUPS: LayerGroup[] = [
   "Electricity",
   "Prices",
@@ -123,6 +125,8 @@ export const LAYER_GROUPS: LayerGroup[] = [
   "Water & telecom",
   "Mobility",
   "People & places",
+  "Energy statistics",
+  "World indicators",
 ];
 
 export interface LayerInfo {
@@ -208,7 +212,7 @@ export const LAYERS: LayerInfo[] = [
   { id: "solarResource", label: "Solar resource", desc: "PV output per kWp installed, long-term average (Global Solar Atlas)", group: "Resources", coverage: "World", color: "rgb(240,196,112)" },
   { id: "windResource", label: "Wind resource", desc: "Mean wind speed at 100 m (Global Wind Atlas)", group: "Resources", coverage: "World", color: "rgb(128,206,206)" },
   { id: "night", label: "Night", desc: "Where it is dark at that moment", group: "Weather", coverage: "World", color: "rgb(90,110,160)", modes: ["day"] },
-  ...(WAVE9.layers as LayerInfo[]),
+  ...(WAVES.layers as LayerInfo[]),
 ];
 
 /** Layers with their own figures in the panel's "On the map" tab (ui/LayerStats.tsx). */
@@ -279,8 +283,8 @@ export type ColourId =
   | "rt_household"
   | "cn_gen"
   | "cn_load"
-  // data wave 9: one published series per country or US county (app/wave9.json, lib/wave9.ts)
-  | `w9c_${string}`;
+  // registry waves: one published series per country, US county or GB district (app/waves.ts)
+  | `w${number}c_${string}`;
 export interface ColourInfo {
   id: ColourId;
   label: string;
@@ -306,7 +310,7 @@ export const COLOURS: ColourInfo[] = [
   { id: "rt_household", label: "Household electricity price", group: "What consumers pay", modes: ["live", "years"] },
   { id: "cn_gen", label: "Free capacity for new generation", group: "Room to connect", modes: ["live", "years"] },
   { id: "cn_load", label: "Free capacity for new demand", group: "Room to connect", modes: ["live", "years"] },
-  ...(WAVE9.colours as ColourInfo[]),
+  ...(WAVES.colours as ColourInfo[]),
 ];
 export const isPriceColour = (c: ColourId) => c.startsWith("pr_");
 export const isYearColour = (c: ColourId) => c.startsWith("tr_");
