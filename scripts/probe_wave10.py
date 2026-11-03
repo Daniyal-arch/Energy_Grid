@@ -206,10 +206,30 @@ def wdi(_: argparse.Namespace) -> None:
 # tables Eurostat refused as SDMX-CSV from 2010 (HTTP 413 EXTRACTION_TOO_BIG, more than 5 million
 # rows; the wave 10 build of 2026-11-03): read from the API's TSV form, which has no row cap
 TOO_BIG = set(
-    "nrg_bal_cv nrg_cb_oil nrg_cb_oilm nrg_stk_oam nrg_stk_oilm nrg_stk_oom nrg_te_gasm "
-    "nrg_te_oilm nrg_ti_coifpm nrg_ti_gasm nrg_ti_oilm env_ac_aeint_r2 env_ac_ainah_r2 "
-    "env_ac_ch4fp env_ac_co2fp env_ac_egss2 env_ac_ghgfp env_ac_hfcfp env_ac_n2ofp "
-    "env_ac_nf3sf6fp env_ac_pefasu env_ac_pfcfp".split()
+    [
+        "nrg_bal_cv",
+        "nrg_cb_oil",
+        "nrg_cb_oilm",
+        "nrg_stk_oam",
+        "nrg_stk_oilm",
+        "nrg_stk_oom",
+        "nrg_te_gasm",
+        "nrg_te_oilm",
+        "nrg_ti_coifpm",
+        "nrg_ti_gasm",
+        "nrg_ti_oilm",
+        "env_ac_aeint_r2",
+        "env_ac_ainah_r2",
+        "env_ac_ch4fp",
+        "env_ac_co2fp",
+        "env_ac_egss2",
+        "env_ac_ghgfp",
+        "env_ac_hfcfp",
+        "env_ac_n2ofp",
+        "env_ac_nf3sf6fp",
+        "env_ac_pefasu",
+        "env_ac_pfcfp",
+    ]
 )
 
 
