@@ -1,0 +1,23 @@
+{
+ "eu_env_ac_ch4fp": {
+  "built": "2026-11-03",
+  "columns": [
+   "freq",
+   "na_item",
+   "nace_r2",
+   "c_dest",
+   "unit",
+   "c_orig",
+   "time_period",
+   "obs_value",
+   "obs_flag"
+  ],
+  "example": {
+   "answer": 19233000,
+   "sql": "SELECT count(*) FROM wave10.eu_env_ac_ch4fp"
+  },
+  "geometry": false,
+  "rows": 19233000,
+  "seconds": 31
+ }
+}

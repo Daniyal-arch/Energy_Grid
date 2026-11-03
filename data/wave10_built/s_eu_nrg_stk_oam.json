@@ -1,0 +1,23 @@
+{
+ "eu_nrg_stk_oam": {
+  "built": "2026-11-03",
+  "columns": [
+   "freq",
+   "partner",
+   "stk_flow",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag"
+  ],
+  "example": {
+   "answer": 50915404,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_stk_oam"
+  },
+  "geometry": false,
+  "rows": 50915404,
+  "seconds": 97
+ }
+}

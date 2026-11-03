@@ -1,0 +1,28 @@
+{
+ "eu_env_ac_aeint_r2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 32,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "freq",
+   "airpol",
+   "nace_r2",
+   "na_item",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag"
+  ],
+  "example": {
+   "answer": 5354167,
+   "sql": "SELECT count(*) FROM wave10.eu_env_ac_aeint_r2"
+  },
+  "geometry": false,
+  "rows": 5354167,
+  "seconds": 14
+ }
+}

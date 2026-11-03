@@ -1,0 +1,24 @@
+{
+ "eu_env_ac_egss2": {
+  "built": "2026-11-03",
+  "columns": [
+   "freq",
+   "nace_r2",
+   "ceparema",
+   "na_item",
+   "ty",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag"
+  ],
+  "example": {
+   "answer": 5789110,
+   "sql": "SELECT count(*) FROM wave10.eu_env_ac_egss2"
+  },
+  "geometry": false,
+  "rows": 5789110,
+  "seconds": 13
+ }
+}
