@@ -1,7 +1,8 @@
 // Hover cards for everything on the map. Values are the files' own; each card names its source.
 
 import { wave8Html } from "./wave8Layers";
-import { fromDeckId, waveKey } from "../app/waves";
+import { fromDeckId, isWaveColour, waveKey } from "../app/waves";
+import type { W9cFile } from "../lib/wave9";
 import { wave9CountyHtml, wave9Html } from "./wave9Layers";
 import type { Hex as MapHex } from "./hexLayers";
 import { styleTip } from "./styleLayers";
@@ -88,6 +89,12 @@ function powerHtml(title: string, p: Power | undefined): string {
 export function countryHtml(name: string, iso2: string | null, iso3: string | null): string | null {
   const s = useApp.getState();
   const code = iso3 ?? (iso2 ? ISO3[iso2] : undefined);
+  if (isWaveColour(s.colour)) {
+    const w = fileOf<W9cFile>(waveKey(s.colour));
+    if (!w || w.scope !== "country") return null;
+    const v = iso2 ? w.values[iso2] : undefined;
+    return `<b>${name}</b><div>${w.label}: <b>${v == null ? "not published" : `${v.toLocaleString("en-US")} ${w.unit}`}</b></div>${SRC(`${w.period ?? ""} · ${w.source}`)}`;
+  }
   if (s.colour.startsWith("tr_")) {
     const t = fileOf<TransitionFile>("transition");
     const m = metricById(s.colour.slice(3) as Parameters<typeof metricById>[0]);

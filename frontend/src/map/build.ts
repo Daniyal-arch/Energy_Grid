@@ -346,7 +346,7 @@ export function buildLayers(fr: Frame): Layer[] {
   );
   // prices: each country a block as high as its price (map/priceTerrain.ts)
   const terrain = facingEurope && isOn("prices") && day?.region !== "us" ? priceTerrain(fr, dayK, shapes) : null;
-  const fillKey = [fr.colour, f.stats, f.outages, f.prices, f.transition, f.worldStats, f.irena, f.retail, fr.mode, day, dayK, fr.yearK, sel, Math.round(sunLight(fr) * 20)];
+  const fillKey = [fr.colour, isWaveColour(fr.colour) ? f[waveKey(fr.colour)] : null, f.stats, f.outages, f.prices, f.transition, f.worldStats, f.irena, f.retail, fr.mode, day, dayK, fr.yearK, sel, Math.round(sunLight(fr) * 20)];
   if (facingEurope) {
     layers.push(
       new SolidPolygonLayer<Shape>({
