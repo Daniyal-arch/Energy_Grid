@@ -1,0 +1,2439 @@
+{
+ "eu_nrg_bal_cv": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_cv/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_bal_s": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1966518,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_bal_s"
+  },
+  "geometry": false,
+  "rows": 1966518,
+  "seconds": 189
+ },
+ "eu_nrg_cb_bm": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 34,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "nrg_bal",
+   "siec",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 12332,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_bm"
+  },
+  "geometry": false,
+  "rows": 12332,
+  "seconds": 2
+ },
+ "eu_nrg_cb_cosm": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 29,
+   "period": "2026-08",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "indic_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 30549,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_cosm"
+  },
+  "geometry": false,
+  "rows": 30549,
+  "seconds": 7
+ },
+ "eu_nrg_cb_e": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 36635,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_e"
+  },
+  "geometry": false,
+  "rows": 36635,
+  "seconds": 5
+ },
+ "eu_nrg_cb_eim": {
+  "built": "2026-11-03",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 17165,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_eim"
+  },
+  "geometry": false,
+  "rows": 17165,
+  "seconds": 5
+ },
+ "eu_nrg_cb_em": {
+  "built": "2026-11-03",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 41927,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_em"
+  },
+  "geometry": false,
+  "rows": 41927,
+  "seconds": 8
+ },
+ "eu_nrg_cb_gas": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 296960,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_gas"
+  },
+  "geometry": false,
+  "rows": 296960,
+  "seconds": 61
+ },
+ "eu_nrg_cb_gasm": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 36,
+   "period": "2026-08",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 125203,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_gasm"
+  },
+  "geometry": false,
+  "rows": 125203,
+  "seconds": 14
+ },
+ "eu_nrg_cb_h": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 31148,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_h"
+  },
+  "geometry": false,
+  "rows": 31148,
+  "seconds": 8
+ },
+ "eu_nrg_cb_h2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 32,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 11208,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_h2"
+  },
+  "geometry": false,
+  "rows": 11208,
+  "seconds": 2
+ },
+ "eu_nrg_cb_oil": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_oil/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_cb_oilm": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_oilm/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_cb_pem": {
+  "built": "2026-11-03",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 206979,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_pem"
+  },
+  "geometry": false,
+  "rows": 206979,
+  "seconds": 21
+ },
+ "eu_nrg_cb_rw": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 674532,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_rw"
+  },
+  "geometry": false,
+  "rows": 674532,
+  "seconds": 97
+ },
+ "eu_nrg_cb_sff": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 696518,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_sff"
+  },
+  "geometry": false,
+  "rows": 696518,
+  "seconds": 275
+ },
+ "eu_nrg_cb_sffm": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 36,
+   "period": "2026-07",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 299713,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_sffm"
+  },
+  "geometry": false,
+  "rows": 299713,
+  "seconds": 61
+ },
+ "eu_nrg_chdd_a": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 30,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "indic_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 992,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_chdd_a"
+  },
+  "geometry": false,
+  "rows": 992,
+  "seconds": 1
+ },
+ "eu_nrg_chdd_m": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 30,
+   "period": "2025-12",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "indic_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 11904,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_chdd_m"
+  },
+  "geometry": false,
+  "rows": 11904,
+  "seconds": 2
+ },
+ "eu_nrg_chddr2_m": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 30,
+   "period": "2025-12",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "indic_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 691200,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_chddr2_m"
+  },
+  "geometry": false,
+  "rows": 691200,
+  "seconds": 235
+ },
+ "eu_nrg_chp_cpfe": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "nrg_bal",
+   "plants",
+   "gen_tech",
+   "lev_efcy",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 73831,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_chp_cpfe"
+  },
+  "geometry": false,
+  "rows": 73831,
+  "seconds": 40
+ },
+ "eu_nrg_chp_f": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "siec",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 5350,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_chp_f"
+  },
+  "geometry": false,
+  "rows": 5350,
+  "seconds": 2
+ },
+ "eu_nrg_chp_n": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "plants",
+   "gen_tech",
+   "lev_efcy",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 5201,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_chp_n"
+  },
+  "geometry": false,
+  "rows": 5201,
+  "seconds": 1
+ },
+ "eu_nrg_d_cv": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "calval",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 6144,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_d_cv"
+  },
+  "geometry": false,
+  "rows": 6144,
+  "seconds": 2
+ },
+ "eu_nrg_d_hhq": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 67178,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_d_hhq"
+  },
+  "geometry": false,
+  "rows": 67178,
+  "seconds": 20
+ },
+ "eu_nrg_d_indq_n": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 33,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "siec",
+   "nace_r2",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1001830,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_d_indq_n"
+  },
+  "geometry": false,
+  "rows": 1001830,
+  "seconds": 129
+ },
+ "eu_nrg_d_serq_n": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 32,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "siec",
+   "nace_r2",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 133670,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_d_serq_n"
+  },
+  "geometry": false,
+  "rows": 133670,
+  "seconds": 44
+ },
+ "eu_nrg_d_traq": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 32,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "tra_mode",
+   "siec",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 102962,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_d_traq"
+  },
+  "geometry": false,
+  "rows": 102962,
+  "seconds": 43
+ },
+ "eu_nrg_dhdc_c": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 25,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "lev_efcy",
+   "network",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 841,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_dhdc_c"
+  },
+  "geometry": false,
+  "rows": 841,
+  "seconds": 1
+ },
+ "eu_nrg_dhdc_cpl": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 28,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "nrg_bal",
+   "network",
+   "plants",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 6572,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_dhdc_cpl"
+  },
+  "geometry": false,
+  "rows": 6572,
+  "seconds": 2
+ },
+ "eu_nrg_dhdc_e": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 26,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "customer",
+   "lev_efcy",
+   "network",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 3367,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_dhdc_e"
+  },
+  "geometry": false,
+  "rows": 3367,
+  "seconds": 1
+ },
+ "eu_nrg_dhdc_n": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 26,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "lev_efcy",
+   "network",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1759,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_dhdc_n"
+  },
+  "geometry": false,
+  "rows": 1759,
+  "seconds": 1
+ },
+ "eu_nrg_ind_ahbtc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "hp_tech",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 44688,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_ahbtc"
+  },
+  "geometry": false,
+  "rows": 44688,
+  "seconds": 5
+ },
+ "eu_nrg_ind_cotd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 10172,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_cotd"
+  },
+  "geometry": false,
+  "rows": 10172,
+  "seconds": 2
+ },
+ "eu_nrg_ind_di": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 405,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_di"
+  },
+  "geometry": false,
+  "rows": 405,
+  "seconds": 1
+ },
+ "eu_nrg_ind_difec": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 10657,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_difec"
+  },
+  "geometry": false,
+  "rows": 10657,
+  "seconds": 2
+ },
+ "eu_nrg_ind_ebmg": {
+  "built": "2026-11-03",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "partner",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 25080,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_ebmg"
+  },
+  "geometry": false,
+  "rows": 25080,
+  "seconds": 6
+ },
+ "eu_nrg_ind_eff": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 10842,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_eff"
+  },
+  "geometry": false,
+  "rows": 10842,
+  "seconds": 2
+ },
+ "eu_nrg_ind_ei": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 35,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2195,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_ei"
+  },
+  "geometry": false,
+  "rows": 2195,
+  "seconds": 1
+ },
+ "eu_nrg_ind_ep": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 35,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1105,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_ep"
+  },
+  "geometry": false,
+  "rows": 1105,
+  "seconds": 1
+ },
+ "eu_nrg_ind_epsc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "customer",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 20760,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_epsc"
+  },
+  "geometry": false,
+  "rows": 20760,
+  "seconds": 7
+ },
+ "eu_nrg_ind_esc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 32692,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_esc"
+  },
+  "geometry": false,
+  "rows": 32692,
+  "seconds": 5
+ },
+ "eu_nrg_ind_esr": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 405,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_esr"
+  },
+  "geometry": false,
+  "rows": 405,
+  "seconds": 1
+ },
+ "eu_nrg_ind_fecf": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 20298,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_fecf"
+  },
+  "geometry": false,
+  "rows": 20298,
+  "seconds": 3
+ },
+ "eu_nrg_ind_fechm2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 28,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 87,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_fechm2"
+  },
+  "geometry": false,
+  "rows": 87,
+  "seconds": 1
+ },
+ "eu_nrg_ind_ffgae": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 597,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_ffgae"
+  },
+  "geometry": false,
+  "rows": 597,
+  "seconds": 1
+ },
+ "eu_nrg_ind_hpind": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "hp_tech",
+   "nrg_bal",
+   "plant_tec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2920,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_hpind"
+  },
+  "geometry": false,
+  "rows": 2920,
+  "seconds": 1
+ },
+ "eu_nrg_ind_hptctc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "plant_tec",
+   "hp_tech",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 127568,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_hptctc"
+  },
+  "geometry": false,
+  "rows": 127568,
+  "seconds": 54
+ },
+ "eu_nrg_ind_ibmg": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "partner",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 25080,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_ibmg"
+  },
+  "geometry": false,
+  "rows": 25080,
+  "seconds": 4
+ },
+ "eu_nrg_ind_id": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 7761,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_id"
+  },
+  "geometry": false,
+  "rows": 7761,
+  "seconds": 1
+ },
+ "eu_nrg_ind_id3cf": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 33,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 3304,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_id3cf"
+  },
+  "geometry": false,
+  "rows": 3304,
+  "seconds": 1
+ },
+ "eu_nrg_ind_idooil": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 36,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 4466,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_idooil"
+  },
+  "geometry": false,
+  "rows": 4466,
+  "seconds": 1
+ },
+ "eu_nrg_ind_ioc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 6497,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_ioc"
+  },
+  "geometry": false,
+  "rows": 6497,
+  "seconds": 1
+ },
+ "eu_nrg_ind_peh": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "plants",
+   "operator",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 266012,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_peh"
+  },
+  "geometry": false,
+  "rows": 266012,
+  "seconds": 110
+ },
+ "eu_nrg_ind_pehap": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "plants",
+   "operator",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 155618,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_pehap"
+  },
+  "geometry": false,
+  "rows": 155618,
+  "seconds": 67
+ },
+ "eu_nrg_ind_pehcf": {
+  "built": "2026-11-03",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "plants",
+   "operator",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 928323,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_pehcf"
+  },
+  "geometry": false,
+  "rows": 928323,
+  "seconds": 130
+ },
+ "eu_nrg_ind_pehnf": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "plants",
+   "operator",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 156820,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_pehnf"
+  },
+  "geometry": false,
+  "rows": 156820,
+  "seconds": 94
+ },
+ "eu_nrg_ind_psth2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 32,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_tech",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2599,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_psth2"
+  },
+  "geometry": false,
+  "rows": 2599,
+  "seconds": 1
+ },
+ "eu_nrg_ind_rcaebt": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "network",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 3192,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_rcaebt"
+  },
+  "geometry": false,
+  "rows": 3192,
+  "seconds": 1
+ },
+ "eu_nrg_ind_rctcbt": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "network",
+   "plant_tec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 4611,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_rctcbt"
+  },
+  "geometry": false,
+  "rows": 4611,
+  "seconds": 1
+ },
+ "eu_nrg_ind_re": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 19264,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_re"
+  },
+  "geometry": false,
+  "rows": 19264,
+  "seconds": 3
+ },
+ "eu_nrg_ind_ren": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2343,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_ren"
+  },
+  "geometry": false,
+  "rows": 2343,
+  "seconds": 1
+ },
+ "eu_nrg_ind_resovsh": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 10032,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_resovsh"
+  },
+  "geometry": false,
+  "rows": 10032,
+  "seconds": 3
+ },
+ "eu_nrg_ind_stjpjss": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 12013,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_stjpjss"
+  },
+  "geometry": false,
+  "rows": 12013,
+  "seconds": 2
+ },
+ "eu_nrg_ind_ured": {
+  "built": "2026-11-03",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 15012,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_ured"
+  },
+  "geometry": false,
+  "rows": 15012,
+  "seconds": 2
+ },
+ "eu_nrg_ind_urhcd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 18852,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_urhcd"
+  },
+  "geometry": false,
+  "rows": 18852,
+  "seconds": 36
+ },
+ "eu_nrg_ind_urtd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "nrg_bal",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 33452,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ind_urtd"
+  },
+  "geometry": false,
+  "rows": 33452,
+  "seconds": 41
+ },
+ "eu_nrg_inf_bt": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "plant_tec",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 6926,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_inf_bt"
+  },
+  "geometry": false,
+  "rows": 6926,
+  "seconds": 3
+ },
+ "eu_nrg_inf_epc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "plant_tec",
+   "operator",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 93704,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_inf_epc"
+  },
+  "geometry": false,
+  "rows": 93704,
+  "seconds": 11
+ },
+ "eu_nrg_inf_epct": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "operator",
+   "gen_tech",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 6230,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_inf_epct"
+  },
+  "geometry": false,
+  "rows": 6230,
+  "seconds": 2
+ },
+ "eu_nrg_inf_h2stpc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 32,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "plant_tec",
+   "nrg_tech",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2462,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_inf_h2stpc"
+  },
+  "geometry": false,
+  "rows": 2462,
+  "seconds": 1
+ },
+ "eu_nrg_inf_lbpc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "plant_tec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2499,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_inf_lbpc"
+  },
+  "geometry": false,
+  "rows": 2499,
+  "seconds": 1
+ },
+ "eu_nrg_inf_stcs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "plant_tec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 625,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_inf_stcs"
+  },
+  "geometry": false,
+  "rows": 625,
+  "seconds": 1
+ },
+ "eu_nrg_stk_gas": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "stk_flow",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 6738,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_stk_gas"
+  },
+  "geometry": false,
+  "rows": 6738,
+  "seconds": 2
+ },
+ "eu_nrg_stk_gasm": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 35,
+   "period": "2026-08",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "stk_flow",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 38584,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_stk_gasm"
+  },
+  "geometry": false,
+  "rows": 38584,
+  "seconds": 9
+ },
+ "eu_nrg_stk_h2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 32,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "nrg_tech",
+   "stk_flow",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 632,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_stk_h2"
+  },
+  "geometry": false,
+  "rows": 632,
+  "seconds": 1
+ },
+ "eu_nrg_stk_oam": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oam/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_stk_oem": {
+  "built": "2026-11-03",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "stk_flow",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 28688,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_stk_oem"
+  },
+  "geometry": false,
+  "rows": 28688,
+  "seconds": 7
+ },
+ "eu_nrg_stk_oil": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "stk_flow",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 49646,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_stk_oil"
+  },
+  "geometry": false,
+  "rows": 49646,
+  "seconds": 21
+ },
+ "eu_nrg_stk_oilm": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oilm/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_stk_oom": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oom/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_te_bio": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 621122,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_te_bio"
+  },
+  "geometry": false,
+  "rows": 621122,
+  "seconds": 86
+ },
+ "eu_nrg_te_eh": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 205930,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_te_eh"
+  },
+  "geometry": false,
+  "rows": 205930,
+  "seconds": 20
+ },
+ "eu_nrg_te_gas": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 409048,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_te_gas"
+  },
+  "geometry": false,
+  "rows": 409048,
+  "seconds": 41
+ },
+ "eu_nrg_te_gasm": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_gasm/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_te_h2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 32,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "partner",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 19694,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_te_h2"
+  },
+  "geometry": false,
+  "rows": 19694,
+  "seconds": 5
+ },
+ "eu_nrg_te_oil": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 3905304,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_te_oil"
+  },
+  "geometry": false,
+  "rows": 3905304,
+  "seconds": 383
+ },
+ "eu_nrg_te_oilm": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_oilm/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_te_sff": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1447808,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_te_sff"
+  },
+  "geometry": false,
+  "rows": 1447808,
+  "seconds": 494
+ },
+ "eu_nrg_ti_bio": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 621262,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ti_bio"
+  },
+  "geometry": false,
+  "rows": 621262,
+  "seconds": 217
+ },
+ "eu_nrg_ti_coifpm": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_coifpm/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_ti_eh": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 205947,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ti_eh"
+  },
+  "geometry": false,
+  "rows": 205947,
+  "seconds": 56
+ },
+ "eu_nrg_ti_gas": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 409049,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ti_gas"
+  },
+  "geometry": false,
+  "rows": 409049,
+  "seconds": 38
+ },
+ "eu_nrg_ti_gasm": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_gasm/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_ti_h2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 32,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "partner",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 19694,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ti_h2"
+  },
+  "geometry": false,
+  "rows": 19694,
+  "seconds": 4
+ },
+ "eu_nrg_ti_oil": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 3902880,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ti_oil"
+  },
+  "geometry": false,
+  "rows": 3902880,
+  "seconds": 1207
+ },
+ "eu_nrg_ti_oilm": {
+  "built": null,
+  "error": "SystemExit: download failed: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_oilm/?format=SDMX-CSV&compressed=false&startPeriod=2010"
+ },
+ "eu_nrg_ti_sff": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1447806,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ti_sff"
+  },
+  "geometry": false,
+  "rows": 1447806,
+  "seconds": 158
+ }
+}
