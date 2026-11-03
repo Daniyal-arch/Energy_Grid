@@ -362,6 +362,16 @@
    "file": "eu_cei_wm060"
   },
   {
+   "id": "w10c_eu_env_ac_aeint_r2",
+   "label": "Air emissions intensities by NACE Rev. 2 activity: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); Total - all NACE activities; Value added, gross; Grams per euro, current prices",
+   "group": "Emissions",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_env_ac_aeint_r2"
+  },
+  {
    "id": "w10c_eu_env_ac_aibrid_r2",
    "label": "Air emissions accounts totals bridging to emission inventory totals: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); Air emissions by resident units (production activities and households); Tonne",
    "group": "Emissions",
@@ -380,6 +390,16 @@
    ],
    "scope": "country",
    "file": "eu_env_ac_aigg_q"
+  },
+  {
+   "id": "w10c_eu_env_ac_ainah_r2",
+   "label": "Air emissions accounts by NACE Rev. 2 activity: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); All NACE activities plus households; Tonne",
+   "group": "Emissions",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_env_ac_ainah_r2"
   },
   {
    "id": "w10c_eu_env_ac_ccminv",
@@ -572,6 +592,16 @@
    "file": "eu_iww_eq_loadcap"
   },
   {
+   "id": "w10c_eu_nrg_bal_cv",
+   "label": "Calorific values: Gross calorific value - average; Natural gas; Kilojoule per cubic metre (gross calorific value - GCV)",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_bal_cv"
+  },
+  {
    "id": "w10c_eu_nrg_bal_s",
    "label": "Simplified energy balances: Total energy supply; Total; Thousand tonnes of oil equivalent",
    "group": "Energy statistics",
@@ -650,6 +680,16 @@
    ],
    "scope": "country",
    "file": "eu_nrg_cb_h2"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_oil",
+   "label": "Oil and petroleum products supply, transformation and consumption - annual data: Indigenous production; Oil and petroleum products",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_oil"
   },
   {
    "id": "w10c_eu_nrg_cb_rw",
@@ -1342,6 +1382,16 @@
    "file": "eu_nrg_te_gas"
   },
   {
+   "id": "w10c_eu_nrg_te_gasm",
+   "label": "Natural gas exports - monthly data: Natural gas; Belgium; Million cubic metres",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_te_gasm"
+  },
+  {
    "id": "w10c_eu_nrg_te_h2",
    "label": "Exports of hydrogen, ammonia and e-fuels: Belgium; E-fuels",
    "group": "Energy statistics",
@@ -1382,6 +1432,16 @@
    "file": "eu_nrg_ti_bio"
   },
   {
+   "id": "w10c_eu_nrg_ti_coifpm",
+   "label": "Crude oil imports by field of production - monthly data: Algeria - Hassi Messaoud; Reporting companies - number",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ti_coifpm"
+  },
+  {
    "id": "w10c_eu_nrg_ti_eh",
    "label": "Electricity and derived heat imports: Electricity; Total; Gigawatt-hour",
    "group": "Energy statistics",
@@ -1400,6 +1460,16 @@
    ],
    "scope": "country",
    "file": "eu_nrg_ti_gas"
+  },
+  {
+   "id": "w10c_eu_nrg_ti_gasm",
+   "label": "Natural gas imports - monthly data: Natural gas; Belgium; Million cubic metres",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ti_gasm"
   },
   {
    "id": "w10c_eu_nrg_ti_h2",
@@ -5388,6 +5458,25 @@
    ]
   },
   {
+   "id": "colour-w10c_eu_env_ac_aeint_r2",
+   "name": "Air emissions intensities by NACE Rev. 2 activity: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); Total - all NACE activities; Value added, gross; Grams per euro, current prices",
+   "category": "Emissions",
+   "description": "Air emissions intensities by NACE Rev. 2 activity: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); Total - all NACE activities; Value added, gross; Grams per euro, current prices (Grams per euro, current prices), 32 countries, 2023: Eurostat Air emissions intensities by NACE Rev. 2 activity (env_ac_aeint_r2)",
+   "color": "rgb(200,200,200)",
+   "family": "emission_accounts",
+   "colour": "w10c_eu_env_ac_aeint_r2",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Air emissions intensities by NACE Rev. 2 activity: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); Total - all NACE activities; Value added, gross; Grams per euro, current prices",
+     "source": "Eurostat Air emissions intensities by NACE Rev. 2 activity (env_ac_aeint_r2) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
    "id": "colour-w10c_eu_env_ac_aibrid_r2",
    "name": "Air emissions accounts totals bridging to emission inventory totals: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); Air emissions by resident units (production activities and households); Tonne",
    "category": "Emissions",
@@ -5421,6 +5510,25 @@
      ],
      "what": "Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data: Unadjusted data (i.e. neither seasonally adjusted nor calendar adjusted data); All NACE activities plus households; Thousand tonnes",
      "source": "Eurostat Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data (env_ac_aigg_q) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_env_ac_ainah_r2",
+   "name": "Air emissions accounts by NACE Rev. 2 activity: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); All NACE activities plus households; Tonne",
+   "category": "Emissions",
+   "description": "Air emissions accounts by NACE Rev. 2 activity: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); All NACE activities plus households; Tonne (Tonne), 29 countries, 2024: Eurostat Air emissions accounts by NACE Rev. 2 activity (env_ac_ainah_r2)",
+   "color": "rgb(200,200,200)",
+   "family": "emission_accounts",
+   "colour": "w10c_eu_env_ac_ainah_r2",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Air emissions accounts by NACE Rev. 2 activity: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); All NACE activities plus households; Tonne",
+     "source": "Eurostat Air emissions accounts by NACE Rev. 2 activity (env_ac_ainah_r2) (CC BY 4.0 (Eurostat))",
      "doc": "Wave 10 sources"
     }
    ]
@@ -5787,6 +5895,25 @@
    ]
   },
   {
+   "id": "colour-w10c_eu_nrg_bal_cv",
+   "name": "Calorific values: Gross calorific value - average; Natural gas; Kilojoule per cubic metre (gross calorific value - GCV)",
+   "category": "Energy statistics",
+   "description": "Calorific values: Gross calorific value - average; Natural gas; Kilojoule per cubic metre (gross calorific value - GCV) (Kilojoule per cubic metre (gross calorific value - GCV)), 35 countries, 2024: Eurostat Calorific values for energy balances (nrg_bal_cv)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_bal_cv",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Calorific values: Gross calorific value - average; Natural gas; Kilojoule per cubic metre (gross calorific value - GCV)",
+     "source": "Eurostat Calorific values for energy balances (nrg_bal_cv) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
    "id": "colour-w10c_eu_nrg_bal_s",
    "name": "Simplified energy balances: Total energy supply; Total; Thousand tonnes of oil equivalent",
    "category": "Energy statistics",
@@ -5934,6 +6061,25 @@
      ],
      "what": "Supply, transformation and consumption of hydrogen, ammonia and e-fuels: International maritime bunkers; Ammonia (NH3)",
      "source": "Eurostat Hydrogen, ammonia and e-fuels supply, transformation and consumption (nrg_cb_h2) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_oil",
+   "name": "Oil and petroleum products supply, transformation and consumption - annual data: Indigenous production; Oil and petroleum products",
+   "category": "Energy statistics",
+   "description": "Oil and petroleum products supply, transformation and consumption - annual data: Indigenous production; Oil and petroleum products (Thousand tonnes), 37 countries, 2025: Eurostat Oil and petroleum products supply, transformation and consumption - annual data (nrg_cb_oil)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_oil",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Oil and petroleum products supply, transformation and consumption - annual data: Indigenous production; Oil and petroleum products",
+     "source": "Eurostat Oil and petroleum products supply, transformation and consumption - annual data (nrg_cb_oil) (CC BY 4.0 (Eurostat))",
      "doc": "Wave 10 sources"
     }
    ]
@@ -7250,6 +7396,25 @@
    ]
   },
   {
+   "id": "colour-w10c_eu_nrg_te_gasm",
+   "name": "Natural gas exports - monthly data: Natural gas; Belgium; Million cubic metres",
+   "category": "Energy statistics",
+   "description": "Natural gas exports - monthly data: Natural gas; Belgium; Million cubic metres (Million cubic metres), 35 countries, 2026-08: Eurostat Natural gas exports - monthly data (nrg_te_gasm)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_te_gasm",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Natural gas exports - monthly data: Natural gas; Belgium; Million cubic metres",
+     "source": "Eurostat Natural gas exports - monthly data (nrg_te_gasm) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
    "id": "colour-w10c_eu_nrg_te_h2",
    "name": "Exports of hydrogen, ammonia and e-fuels: Belgium; E-fuels",
    "category": "Energy statistics",
@@ -7326,6 +7491,25 @@
    ]
   },
   {
+   "id": "colour-w10c_eu_nrg_ti_coifpm",
+   "name": "Crude oil imports by field of production - monthly data: Algeria - Hassi Messaoud; Reporting companies - number",
+   "category": "Energy statistics",
+   "description": "Crude oil imports by field of production - monthly data: Algeria - Hassi Messaoud; Reporting companies - number (), 35 countries, 2026-08: Eurostat Crude oil imports by field of production - monthly data (nrg_ti_coifpm)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ti_coifpm",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Crude oil imports by field of production - monthly data: Algeria - Hassi Messaoud; Reporting companies - number",
+     "source": "Eurostat Crude oil imports by field of production - monthly data (nrg_ti_coifpm) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
    "id": "colour-w10c_eu_nrg_ti_eh",
    "name": "Electricity and derived heat imports: Electricity; Total; Gigawatt-hour",
    "category": "Energy statistics",
@@ -7359,6 +7543,25 @@
      ],
      "what": "Natural gas imports - annual data: Natural gas; Total; Million cubic metres",
      "source": "Eurostat Natural gas imports - annual data (nrg_ti_gas) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ti_gasm",
+   "name": "Natural gas imports - monthly data: Natural gas; Belgium; Million cubic metres",
+   "category": "Energy statistics",
+   "description": "Natural gas imports - monthly data: Natural gas; Belgium; Million cubic metres (Million cubic metres), 35 countries, 2026-08: Eurostat Natural gas imports - monthly data (nrg_ti_gasm)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ti_gasm",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Natural gas imports - monthly data: Natural gas; Belgium; Million cubic metres",
+     "source": "Eurostat Natural gas imports - monthly data (nrg_ti_gasm) (CC BY 4.0 (Eurostat))",
      "doc": "Wave 10 sources"
     }
    ]

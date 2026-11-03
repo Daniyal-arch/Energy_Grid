@@ -177,16 +177,21 @@ datasets:
   wave10.eu_cei_wm011: {country: "EU27: Eurostat Recycling rate of municipal waste (cei_wm011)"}
   wave10.eu_cei_wm020: {country: "EU27: Eurostat Recycling rate of packaging waste by type of packaging (cei_wm020)"}
   wave10.eu_cei_wm060: {country: "EU27: Eurostat Recycling rate of waste of electrical and electronic equipment (WEEE) separately collected (cei_wm060)"}
+  wave10.eu_env_ac_aeint_r2: {country: "EU27: Eurostat Air emissions intensities by NACE Rev. 2 activity (env_ac_aeint_r2)"}
   wave10.eu_env_ac_aibrid_r2: {country: "EU27: Eurostat Air emissions accounts totals bridging to emission inventory totals (env_ac_aibrid_r2)"}
   wave10.eu_env_ac_aibrid_rd: {country: "EU27: Eurostat Air emissions accounts related to road transport - totals bridging to emission inventory totals (env_ac_aibrid_rd)"}
   wave10.eu_env_ac_aigg_q: {country: "EU27: Eurostat Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data (env_ac_aigg_q)"}
+  wave10.eu_env_ac_ainah_r2: {country: "EU27: Eurostat Air emissions accounts by NACE Rev. 2 activity (env_ac_ainah_r2)"}
   wave10.eu_env_ac_ainah_rd: {country: "EU27: Eurostat Air emissions accounts related to road transport by NACE Rev. 2 activity (env_ac_ainah_rd)"}
   wave10.eu_env_ac_ccminv: {country: "EU27: Eurostat Investments in climate change mitigation by NACE Rev. 2 activity (env_ac_ccminv)"}
   wave10.eu_env_ac_cepsgc1: {country: "EU27: Eurostat Intermediate consumption of environmental protection services by institutional sector and NACE Rev. 2 activity (env_ac_cepsgc1)"}
   wave10.eu_env_ac_cepsgh1: {country: "EU27: Eurostat Final consumption expenditure on environmental protection services by institutional sector (env_ac_cepsgh1)"}
+  wave10.eu_env_ac_ch4fp: {country: "EU27: Eurostat Methane emission footprints (CH4 in CO2 equivalent, FIGARO application) (env_ac_ch4fp)"}
+  wave10.eu_env_ac_co2fp: {country: "EU27: Eurostat Carbon dioxide emission footprints (FIGARO application) (env_ac_co2fp)"}
   wave10.eu_env_ac_cur: {country: "EU27: Eurostat Circular material use rate (env_ac_cur)"}
   wave10.eu_env_ac_curm: {country: "EU27: Eurostat Circular material use rate by material type (env_ac_curm)"}
   wave10.eu_env_ac_egss1: {country: "EU27: Eurostat Employment in the environmental goods and services sector (2000-2023) (env_ac_egss1)"}
+  wave10.eu_env_ac_egss2: {country: "EU27: Eurostat Production, value added and exports in the environmental goods and services sector (2000-2023) (env_ac_egss2)"}
   wave10.eu_env_ac_egss3: {country: "EU27: Eurostat Production, value added and employment by industry groups in the environmental goods and services sector (2000-2023) (env_ac_egss3)"}
   wave10.eu_env_ac_epiap1: {country: "EU27: Eurostat Environmental protection investments of corporations as ancillary producers by environmental protection activity and NACE Rev. 2 activity (env_ac_epiap1)"}
   wave10.eu_env_ac_epigg1: {country: "EU27: Eurostat Environmental protection investments of general government by environmental protection activity (env_ac_epigg1)"}
@@ -194,6 +199,8 @@ datasets:
   wave10.eu_env_ac_epite1: {country: "EU27: Eurostat Environmental protection investments of total economy (env_ac_epite1)"}
   wave10.eu_env_ac_epneis1: {country: "EU27: Eurostat National expenditure on environmental protection by institutional sector (env_ac_epneis1)"}
   wave10.eu_env_ac_eptrf1: {country: "EU27: Eurostat Environmental protection transfers by environmental protection activity and institutional sector (env_ac_eptrf1)"}
+  wave10.eu_env_ac_ghgfp: {country: "EU27: Eurostat Greenhouse gas emission footprints (in CO2 equivalent, FIGARO application) (env_ac_ghgfp)"}
+  wave10.eu_env_ac_hfcfp: {country: "EU27: Eurostat Hydrofluorocarbon emission footprints (HFC in CO2 equivalent, FIGARO application) (env_ac_hfcfp)"}
   wave10.eu_env_ac_io10: {country: "EU27: Eurostat Air emission footprints (domestic technology assumption) (env_ac_io10)"}
   wave10.eu_env_ac_landfp: {country: "EU27: Eurostat Land use footprints (env_ac_landfp)"}
   wave10.eu_env_ac_mfa: {country: "EU27: Eurostat Material flow accounts (env_ac_mfa)"}
@@ -201,12 +208,16 @@ datasets:
   wave10.eu_env_ac_mfadpo: {country: "EU27: Eurostat Material flow accounts - domestic processed output (env_ac_mfadpo)"}
   wave10.eu_env_ac_mfain: {country: "EU27: Eurostat Material flow accounts - main indicators (env_ac_mfain)"}
   wave10.eu_env_ac_mid: {country: "EU27: Eurostat Material import dependency (env_ac_mid)"}
+  wave10.eu_env_ac_n2ofp: {country: "EU27: Eurostat Nitrous oxide emission footprints (N2O in CO2 equivalent, FIGARO application) (env_ac_n2ofp)"}
+  wave10.eu_env_ac_nf3sf6fp: {country: "EU27: Eurostat Nitrogen trifluoride and sulphur hexafluoride emission footprints (NF3-SF6 in CO2 equivalent, FIGARO application) (env_ac_nf3sf6fp)"}
   wave10.eu_env_ac_pefa04: {country: "EU27: Eurostat Key indicators of physical energy flow accounts by NACE Rev. 2 activity (env_ac_pefa04)"}
   wave10.eu_env_ac_pefa05: {country: "EU27: Eurostat Physical energy flow accounts totals bridging to energy balances totals (env_ac_pefa05)"}
   wave10.eu_env_ac_pefafp: {country: "EU27: Eurostat Energy footprints (domestic technology assumption) (env_ac_pefafp)"}
+  wave10.eu_env_ac_pefasu: {country: "EU27: Eurostat Energy supply and use by NACE Rev. 2 activity (env_ac_pefasu)"}
   wave10.eu_env_ac_pepsgg1: {country: "EU27: Eurostat Production of environmental protection services of general government by economic characteristics (env_ac_pepsgg1)"}
   wave10.eu_env_ac_pepsns1: {country: "EU27: Eurostat Production of environmental protection services of corporations as ancillary producers by economic characteristics and NACE Rev. 2 activity (env_ac_pepsns1)"}
   wave10.eu_env_ac_pepssp1: {country: "EU27: Eurostat Production of environmental protection services of corporations as specialist and secondary producers by economic characteristics (env_ac_pepssp1)"}
+  wave10.eu_env_ac_pfcfp: {country: "EU27: Eurostat Perfluorocarbon emission footprints (PFC in CO2 equivalent, FIGARO application) (env_ac_pfcfp)"}
   wave10.eu_env_ac_rme: {country: "EU27: Eurostat Material footprints - main indicators (env_ac_rme)"}
   wave10.eu_env_ac_rmefd: {country: "EU27: Eurostat Material footprints - details by final use of products (env_ac_rmefd)"}
   wave10.eu_env_ac_rp: {country: "EU27: Eurostat Resource productivity (env_ac_rp)"}
@@ -246,6 +257,7 @@ datasets:
   wave10.eu_iww_eq_age_loa: {country: "EU27: Eurostat Load capacity of self-propelled vessels by year of construction (iww_eq_age_loa)"}
   wave10.eu_iww_eq_loadcap: {country: "EU27: Eurostat Self-propelled vessels, dumb and pushed vessels by load capacity (iww_eq_loadcap)"}
   wave10.eu_iww_eq_power_lo: {country: "EU27: Eurostat Power of self-propelled vessels by load capacity (iww_eq_power_lo)"}
+  wave10.eu_nrg_bal_cv: {country: "EU27: Eurostat Calorific values for energy balances (nrg_bal_cv)"}
   wave10.eu_nrg_bal_s: {country: "EU27: Eurostat Simplified energy balances (nrg_bal_s)"}
   wave10.eu_nrg_cb_bm: {country: "EU27: Eurostat Biomass supply (nrg_cb_bm)"}
   wave10.eu_nrg_cb_cosm: {country: "EU27: Eurostat Crude oil supply - monthly data (nrg_cb_cosm)"}
@@ -256,6 +268,8 @@ datasets:
   wave10.eu_nrg_cb_gasm: {country: "EU27: Eurostat Gas supply, transformation and consumption - monthly data (nrg_cb_gasm)"}
   wave10.eu_nrg_cb_h: {country: "EU27: Eurostat Derived heat supply, transformation and consumption (nrg_cb_h)"}
   wave10.eu_nrg_cb_h2: {country: "EU27: Eurostat Hydrogen, ammonia and e-fuels supply, transformation and consumption (nrg_cb_h2)"}
+  wave10.eu_nrg_cb_oil: {country: "EU27: Eurostat Oil and petroleum products supply, transformation and consumption - annual data (nrg_cb_oil)"}
+  wave10.eu_nrg_cb_oilm: {country: "EU27: Eurostat Oil and petroleum products supply, transformation and consumption - monthly data (nrg_cb_oilm)"}
   wave10.eu_nrg_cb_pem: {country: "EU27: Eurostat Net electricity generation by type of fuel - monthly data (nrg_cb_pem)"}
   wave10.eu_nrg_cb_rw: {country: "EU27: Eurostat Renewables and wastes supply, transformation and consumption (nrg_cb_rw)"}
   wave10.eu_nrg_cb_sff: {country: "EU27: Eurostat Solid fossil fuels supply, transformation and consumption - annual data (nrg_cb_sff)"}
@@ -325,19 +339,27 @@ datasets:
   wave10.eu_nrg_stk_gas: {country: "EU27: Eurostat Natural gas stock levels - annual data (nrg_stk_gas)"}
   wave10.eu_nrg_stk_gasm: {country: "EU27: Eurostat Gas products stock levels - monthly data (nrg_stk_gasm)"}
   wave10.eu_nrg_stk_h2: {country: "EU27: Eurostat Hydrogen, ammonia and e-fuels stock levels (nrg_stk_h2)"}
+  wave10.eu_nrg_stk_oam: {country: "EU27: Eurostat Oil stocks held abroad - monthly data (nrg_stk_oam)"}
   wave10.eu_nrg_stk_oem: {country: "EU27: Eurostat Emergency oil stocks in days equivalent - monthly data (nrg_stk_oem)"}
   wave10.eu_nrg_stk_oil: {country: "EU27: Eurostat Oil products stock levels - annual data (nrg_stk_oil)"}
+  wave10.eu_nrg_stk_oilm: {country: "EU27: Eurostat Oil products stock levels - monthly data (nrg_stk_oilm)"}
+  wave10.eu_nrg_stk_oom: {country: "EU27: Eurostat Oil stocks held for other countries - monthly data (nrg_stk_oom)"}
   wave10.eu_nrg_te_bio: {country: "EU27: Eurostat Biofuels exports (nrg_te_bio)"}
   wave10.eu_nrg_te_eh: {country: "EU27: Eurostat Electricity and derived heat exports (nrg_te_eh)"}
   wave10.eu_nrg_te_gas: {country: "EU27: Eurostat Natural gas exports - annual data (nrg_te_gas)"}
+  wave10.eu_nrg_te_gasm: {country: "EU27: Eurostat Natural gas exports - monthly data (nrg_te_gasm)"}
   wave10.eu_nrg_te_h2: {country: "EU27: Eurostat Hydrogen, ammonia and e-fuels exports (nrg_te_h2)"}
   wave10.eu_nrg_te_oil: {country: "EU27: Eurostat Oil and petroleum products exports - annual data (nrg_te_oil)"}
+  wave10.eu_nrg_te_oilm: {country: "EU27: Eurostat Oil and petroleum products exports - monthly data (nrg_te_oilm)"}
   wave10.eu_nrg_te_sff: {country: "EU27: Eurostat Solid fossil fuels exports (nrg_te_sff)"}
   wave10.eu_nrg_ti_bio: {country: "EU27: Eurostat Biofuels imports (nrg_ti_bio)"}
+  wave10.eu_nrg_ti_coifpm: {country: "EU27: Eurostat Crude oil imports by field of production - monthly data (nrg_ti_coifpm)"}
   wave10.eu_nrg_ti_eh: {country: "EU27: Eurostat Electricity and derived heat imports (nrg_ti_eh)"}
   wave10.eu_nrg_ti_gas: {country: "EU27: Eurostat Natural gas imports - annual data (nrg_ti_gas)"}
+  wave10.eu_nrg_ti_gasm: {country: "EU27: Eurostat Natural gas imports - monthly data (nrg_ti_gasm)"}
   wave10.eu_nrg_ti_h2: {country: "EU27: Eurostat Hydrogen, ammonia and e-fuels imports (nrg_ti_h2)"}
   wave10.eu_nrg_ti_oil: {country: "EU27: Eurostat Oil and petroleum products imports - annual data (nrg_ti_oil)"}
+  wave10.eu_nrg_ti_oilm: {country: "EU27: Eurostat Oil and petroleum products imports - monthly data (nrg_ti_oilm)"}
   wave10.eu_nrg_ti_sff: {country: "EU27: Eurostat Solid fossil fuels imports (nrg_ti_sff)"}
   wave10.eu_rail_eq_locon: {country: "EU27: Eurostat Locomotives and railcars by source of energy (rail_eq_locon)"}
   wave10.eu_rail_eq_locop: {country: "EU27: Eurostat Tractive power of locomotives and railcars by source of energy (rail_eq_locop)"}

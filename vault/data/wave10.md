@@ -16,7 +16,8 @@ Hundreds of country, world and GB district series, gathered first, then built wi
   newest period (a total if published, else the code covering most countries); 225 WDI
   indicators of topics 5, 6, 9, 19 (each licence read from series metadata: all CC BY 4.0).
 - **Registry** `scripts/wave10_sources.yaml` is generated (edit `wave10_manual.yaml` or the
-  gathering): 571 sources, 484 colourings (Eurostat ≥ 15 countries, WDI ≥ 30).
+  gathering): 571 sources, all built (2026-11-03); 477 colourings (Eurostat ≥ 15 countries,
+  WDI ≥ 30). 22 tables over Eurostat's 5 million row cap come from the TSV form (313 M rows).
 - **GB districts**: DESNZ sub-national consumption, renewables, emissions; DfT EV charging;
   Census 2021 via Nomis (TYPE424 = April 2023 districts; TS006 only TYPE154). Scope `gb_lad24`
   on `eu/gb_lad24.json` (ONS Dec 2024 BUC, `wave9.py gb-lad`).
