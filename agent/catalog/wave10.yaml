@@ -491,6 +491,207 @@ tables:
     - q: how many records in Eurostat Recycling rate of waste of electrical and electronic equipment (WEEE) separately collected (cei_wm060)
       sql: SELECT count(*) FROM wave10.eu_cei_wm060
       answer: 451
+  eu_env_ac_aibrid_r2:
+    grain: 'Eurostat Air emissions accounts totals bridging to emission inventory totals (env_ac_aibrid_r2): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_aibrid_r2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, airpol, indic_env, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Air emissions accounts totals bridging to emission inventory totals (env_ac_aibrid_r2)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_aibrid_r2
+      answer: 595116
+  eu_env_ac_aibrid_rd:
+    grain: 'Eurostat Air emissions accounts related to road transport - totals bridging to emission inventory totals (env_ac_aibrid_rd): one row per record as published
+      (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_aibrid_rd/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, indic_env, airpol, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Air emissions accounts related to road transport - totals bridging to emission inventory totals (env_ac_aibrid_rd)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_aibrid_rd
+      answer: 86264
+  eu_env_ac_aigg_q:
+    grain: 'Eurostat Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data (env_ac_aigg_q): one row per record as published (EU27;
+      level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_aigg_q/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, s_adj, nace_r2, airpol, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data (env_ac_aigg_q)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_aigg_q
+      answer: 16502
+  eu_env_ac_ainah_rd:
+    grain: 'Eurostat Air emissions accounts related to road transport by NACE Rev. 2 activity (env_ac_ainah_rd): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_ainah_rd/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, nace_r2, airpol, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Air emissions accounts related to road transport by NACE Rev. 2 activity (env_ac_ainah_rd)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_ainah_rd
+      answer: 713160
+  eu_env_ac_ccminv:
+    grain: 'Eurostat Investments in climate change mitigation by NACE Rev. 2 activity (env_ac_ccminv): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_ccminv/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, nace_r2, unit, env_pa, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Investments in climate change mitigation by NACE Rev. 2 activity (env_ac_ccminv)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_ccminv
+      answer: 13846
+  eu_env_ac_cepsgc1:
+    grain: 'Eurostat Intermediate consumption of environmental protection services by institutional sector and NACE Rev. 2 activity (env_ac_cepsgc1): one row per
+      record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_cepsgc1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, ceparema, sector, nace_r2, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Intermediate consumption of environmental protection services by institutional sector and NACE Rev. 2 activity (env_ac_cepsgc1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_cepsgc1
+      answer: 61622
+  eu_env_ac_cepsgh1:
+    grain: 'Eurostat Final consumption expenditure on environmental protection services by institutional sector (env_ac_cepsgh1): one row per record as published
+      (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_cepsgh1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, ceparema, sector, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Final consumption expenditure on environmental protection services by institutional sector (env_ac_cepsgh1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_cepsgh1
+      answer: 10424
+  eu_env_ac_cur:
+    grain: 'Eurostat Circular material use rate (env_ac_cur): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_cur/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Circular material use rate (env_ac_cur)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_cur
+      answer: 420
+  eu_env_ac_curm:
+    grain: 'Eurostat Circular material use rate by material type (env_ac_curm): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_curm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, material, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Circular material use rate by material type (env_ac_curm)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_curm
+      answer: 75
+  eu_env_ac_egss1:
+    grain: 'Eurostat Employment in the environmental goods and services sector (2000-2023) (env_ac_egss1): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_egss1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, nace_r2, ceparema, na_item, ty, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Employment in the environmental goods and services sector (2000-2023) (env_ac_egss1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_egss1
+      answer: 877833
+  eu_env_ac_egss3:
+    grain: 'Eurostat Production, value added and employment by industry groups in the environmental goods and services sector (2000-2023) (env_ac_egss3): one row
+      per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_egss3/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, ty, na_item, unit, nace_r2, ceparema, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Production, value added and employment by industry groups in the environmental goods and services sector (2000-2023) (env_ac_egss3)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_egss3
+      answer: 299
+  eu_env_ac_epiap1:
+    grain: 'Eurostat Environmental protection investments of corporations as ancillary producers by environmental protection activity and NACE Rev. 2 activity (env_ac_epiap1):
+      one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_epiap1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, ceparema, env_econ, nace_r2, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental protection investments of corporations as ancillary producers by environmental protection activity and NACE Rev.
+        2 activity (env_ac_epiap1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_epiap1
+      answer: 133870
+  eu_env_ac_epigg1:
+    grain: 'Eurostat Environmental protection investments of general government by environmental protection activity (env_ac_epigg1): one row per record as published
+      (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_epigg1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, ceparema, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental protection investments of general government by environmental protection activity (env_ac_epigg1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_epigg1
+      answer: 6398
+  eu_env_ac_epissp1:
+    grain: 'Eurostat Environmental protection investments of corporations as specialist and secondary producers by environmental protection activity (env_ac_epissp1):
+      one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_epissp1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, ceparema, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental protection investments of corporations as specialist and secondary producers by environmental protection activity
+        (env_ac_epissp1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_epissp1
+      answer: 5980
+  eu_env_ac_epite1:
+    grain: 'Eurostat Environmental protection investments of total economy (env_ac_epite1): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_epite1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental protection investments of total economy (env_ac_epite1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_epite1
+      answer: 558
+  eu_env_ac_epneis1:
+    grain: 'Eurostat National expenditure on environmental protection by institutional sector (env_ac_epneis1): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_epneis1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, sector, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat National expenditure on environmental protection by institutional sector (env_ac_epneis1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_epneis1
+      answer: 2922
+  eu_env_ac_eptrf1:
+    grain: 'Eurostat Environmental protection transfers by environmental protection activity and institutional sector (env_ac_eptrf1): one row per record as published
+      (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_eptrf1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, ceparema, sector, env_econ, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental protection transfers by environmental protection activity and institutional sector (env_ac_eptrf1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_eptrf1
+      answer: 36432
+  eu_env_ac_io10:
+    grain: 'Eurostat Air emission footprints (domestic technology assumption) (env_ac_io10): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_io10/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, airpol, cpa08, ind_acct, origin, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Air emission footprints (domestic technology assumption) (env_ac_io10)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_io10
+      answer: 1181880
+  eu_env_ac_landfp:
+    grain: 'Eurostat Land use footprints (env_ac_landfp): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_landfp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, c_dest, indic_env, unit, c_orig, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Land use footprints (env_ac_landfp)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_landfp
+      answer: 165
   eu_env_ac_mfa:
     grain: 'Eurostat Material flow accounts (env_ac_mfa): one row per record as published (EU27; level country)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_mfa/?format=SDMX-CSV&compressed=false&startPeriod=2010
@@ -541,6 +742,71 @@ tables:
     - q: how many records in Eurostat Material import dependency (env_ac_mid)
       sql: SELECT count(*) FROM wave10.eu_env_ac_mid
       answer: 2820
+  eu_env_ac_pefa04:
+    grain: 'Eurostat Key indicators of physical energy flow accounts by NACE Rev. 2 activity (env_ac_pefa04): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_pefa04/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, nace_r2, indic_pefa, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Key indicators of physical energy flow accounts by NACE Rev. 2 activity (env_ac_pefa04)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_pefa04
+      answer: 301792
+  eu_env_ac_pefa05:
+    grain: 'Eurostat Physical energy flow accounts totals bridging to energy balances totals (env_ac_pefa05): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_pefa05/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, indic_pefa, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Physical energy flow accounts totals bridging to energy balances totals (env_ac_pefa05)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_pefa05
+      answer: 4564
+  eu_env_ac_pefafp:
+    grain: 'Eurostat Energy footprints (domestic technology assumption) (env_ac_pefafp): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_pefafp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, indic_pefa, cpa08, ind_acct, origin, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Energy footprints (domestic technology assumption) (env_ac_pefafp)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_pefafp
+      answer: 80400
+  eu_env_ac_pepsgg1:
+    grain: 'Eurostat Production of environmental protection services of general government by economic characteristics (env_ac_pepsgg1): one row per record as published
+      (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_pepsgg1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, ceparema, env_econ, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Production of environmental protection services of general government by economic characteristics (env_ac_pepsgg1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_pepsgg1
+      answer: 39490
+  eu_env_ac_pepsns1:
+    grain: 'Eurostat Production of environmental protection services of corporations as ancillary producers by economic characteristics and NACE Rev. 2 activity (env_ac_pepsns1):
+      one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_pepsns1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, ceparema, env_econ, nace_r2, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Production of environmental protection services of corporations as ancillary producers by economic characteristics and NACE
+        Rev. 2 activity (env_ac_pepsns1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_pepsns1
+      answer: 257882
+  eu_env_ac_pepssp1:
+    grain: 'Eurostat Production of environmental protection services of corporations as specialist and secondary producers by economic characteristics (env_ac_pepssp1):
+      one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_pepssp1/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, ceparema, env_econ, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Production of environmental protection services of corporations as specialist and secondary producers by economic characteristics
+        (env_ac_pepssp1)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_pepssp1
+      answer: 32268
   eu_env_ac_rme:
     grain: 'Eurostat Material footprints - main indicators (env_ac_rme): one row per record as published (EU27; level country)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_rme/?format=SDMX-CSV&compressed=false&startPeriod=2010
@@ -561,6 +827,26 @@ tables:
     - q: how many records in Eurostat Material footprints - details by final use of products (env_ac_rmefd)
       sql: SELECT count(*) FROM wave10.eu_env_ac_rmefd
       answer: 946196
+  eu_env_ac_rp:
+    grain: 'Eurostat Resource productivity (env_ac_rp): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_rp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Resource productivity (env_ac_rp)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_rp
+      answer: 2186
+  eu_env_ac_sd:
+    grain: 'Eurostat Material flows for circular economy - Sankey diagram data (env_ac_sd): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_sd/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, indic_env, material, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Material flows for circular economy - Sankey diagram data (env_ac_sd)
+      sql: SELECT count(*) FROM wave10.eu_env_ac_sd
+      answer: 50940
   eu_env_ac_tax:
     grain: 'Eurostat Environmental tax revenues (env_ac_tax): one row per record as published (EU27; level country)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_tax/?format=SDMX-CSV&compressed=false&startPeriod=2010
@@ -591,6 +877,234 @@ tables:
     - q: how many records in Eurostat Environmental taxes by economic activity (NACE Rev. 2) (env_ac_taxind2)
       sql: SELECT count(*) FROM wave10.eu_env_ac_taxind2
       answer: 431730
+  eu_env_air_emis:
+    grain: 'Eurostat Air pollutants by source sector (env_air_emis): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_air_emis/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, unit, airpol, src_nfr, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Air pollutants by source sector (env_air_emis)
+      sql: SELECT count(*) FROM wave10.eu_env_air_emis
+      answer: 412002
+  eu_env_air_emis_ind:
+    grain: 'Eurostat Air pollutants by source sector aggregated for indicator sets (env_air_emis_ind): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_air_emis_ind/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, unit, airpol, src_nfr, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Air pollutants by source sector aggregated for indicator sets (env_air_emis_ind)
+      sql: SELECT count(*) FROM wave10.eu_env_air_emis_ind
+      answer: 7860
+  eu_env_air_no2:
+    grain: 'Eurostat Nitrogen dioxide concentrations in European capital cities - monthly averages, experimental statistics (env_air_no2): one row per record as published
+      (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_air_no2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, airpol, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Nitrogen dioxide concentrations in European capital cities - monthly averages, experimental statistics (env_air_no2)
+      sql: SELECT count(*) FROM wave10.eu_env_air_no2
+      answer: 3240
+  eu_env_epea_cfin:
+    grain: 'Eurostat Final consumption expenditure on environmental protection services by institutional sector and environmental purpose (env_epea_cfin): one row
+      per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_cfin/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, sector, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Final consumption expenditure on environmental protection services by institutional sector and environmental purpose (env_epea_cfin)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_cfin
+      answer: 7418
+  eu_env_epea_cint:
+    grain: 'Eurostat Intermediate consumption of environmental protection services by institutional sector, NACE Rev. 2 activity and environmental purpose (env_epea_cint):
+      one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_cint/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, nace_r2, sector, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Intermediate consumption of environmental protection services by institutional sector, NACE Rev. 2 activity and environmental
+        purpose (env_epea_cint)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_cint
+      answer: 51592
+  eu_env_epea_invap:
+    grain: 'Eurostat Environmental protection investments of corporations as ancillary producers by NACE Rev. 2 activity and environmental purpose (env_epea_invap):
+      one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_invap/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, env_econ, nace_r2, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental protection investments of corporations as ancillary producers by NACE Rev. 2 activity and environmental purpose
+        (env_epea_invap)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_invap
+      answer: 94022
+  eu_env_epea_invgg:
+    grain: 'Eurostat Environmental protection investments of general government and NPISH by environmental purpose (env_epea_invgg): one row per record as published
+      (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_invgg/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental protection investments of general government and NPISH by environmental purpose (env_epea_invgg)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_invgg
+      answer: 3624
+  eu_env_epea_invsp:
+    grain: 'Eurostat Environmental protection investments of corporations as specialist and secondary producers by environmental purpose (env_epea_invsp): one row
+      per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_invsp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental protection investments of corporations as specialist and secondary producers by environmental purpose (env_epea_invsp)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_invsp
+      answer: 3828
+  eu_env_epea_invte:
+    grain: 'Eurostat Environmental protection investments of total economy (env_epea_invte): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_invte/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental protection investments of total economy (env_epea_invte)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_invte
+      answer: 477
+  eu_env_epea_neep:
+    grain: 'Eurostat National expenditure on environmental protection by institutional sector and environmental purpose (env_epea_neep): one row per record as published
+      (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_neep/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, sector, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat National expenditure on environmental protection by institutional sector and environmental purpose (env_epea_neep)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_neep
+      answer: 21171
+  eu_env_epea_pap:
+    grain: 'Eurostat Production of environmental protection services by corporations as ancillary producers, by economic characteristics, NACE Rev. 2 activity and
+      environmental purpose (env_epea_pap): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_pap/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, env_econ, nace_r2, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Production of environmental protection services by corporations as ancillary producers, by economic characteristics, NACE Rev.
+        2 activity and environmental purpose (env_epea_pap)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_pap
+      answer: 195092
+  eu_env_epea_pgg:
+    grain: 'Eurostat Production of environmental protection services by general government and NPISH, by economic characteristics and environmental purpose (env_epea_pgg):
+      one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_pgg/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, env_econ, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Production of environmental protection services by general government and NPISH, by economic characteristics and environmental
+        purpose (env_epea_pgg)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_pgg
+      answer: 26444
+  eu_env_epea_psp:
+    grain: 'Eurostat Production of environmental protection services by corporations as specialist and secondary producers, by economic characteristics and environmental
+      purpose (env_epea_psp): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_psp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, env_econ, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Production of environmental protection services by corporations as specialist and secondary producers, by economic characteristics
+        and environmental purpose (env_epea_psp)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_psp
+      answer: 22488
+  eu_env_epea_trf:
+    grain: 'Eurostat Environmental protection transfers by institutional sector and environmental purpose (env_epea_trf): one row per record as published (EU27; level
+      country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_epea_trf/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, env_econ, sector, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental protection transfers by institutional sector and environmental purpose (env_epea_trf)
+      sql: SELECT count(*) FROM wave10.eu_env_epea_trf
+      answer: 20044
+  eu_env_esst_cepgg:
+    grain: 'Eurostat Environmental subsidies and similar transfers from general government, by environmental activity, sector of recipient and ESA category of transfer
+      (env_esst_cepgg): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_esst_cepgg/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, sector2, env_pa, na_item, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental subsidies and similar transfers from general government, by environmental activity, sector of recipient and ESA
+        category of transfer (env_esst_cepgg)
+      sql: SELECT count(*) FROM wave10.eu_env_esst_cepgg
+      answer: 142792
+  eu_env_esst_cepggcp:
+    grain: 'Eurostat Environmental subsidies and similar transfers from general government to corporations, by environmental activity, ESA category of transfer and
+      NACE Rev. 2 activity of recipient (env_esst_cepggcp): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_esst_cepggcp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, nace_r2, na_item, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental subsidies and similar transfers from general government to corporations, by environmental activity, ESA category
+        of transfer and NACE Rev. 2 activity of recipient (env_esst_cepggcp)
+      sql: SELECT count(*) FROM wave10.eu_env_esst_cepggcp
+      answer: 202358
+  eu_env_esst_ceprw:
+    grain: 'Eurostat Environmental subsidies and similar transfers from the rest of the world to the domestic economy, by environmental activity and ESA category
+      of transfer (env_esst_ceprw): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_esst_ceprw/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, env_pa, unit, na_item, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental subsidies and similar transfers from the rest of the world to the domestic economy, by environmental activity
+        and ESA category of transfer (env_esst_ceprw)
+      sql: SELECT count(*) FROM wave10.eu_env_esst_ceprw
+      answer: 22270
+  eu_env_esst_gg:
+    grain: 'Eurostat Environmental subsidies and similar transfers from general government, by environmental activity, sector of recipient and ESA category of transfer
+      (2011-2022) (env_esst_gg): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_esst_gg/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, sector, na_item, ceparema, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental subsidies and similar transfers from general government, by environmental activity, sector of recipient and ESA
+        category of transfer (2011-2022) (env_esst_gg)
+      sql: SELECT count(*) FROM wave10.eu_env_esst_gg
+      answer: 206037
+  eu_env_esst_ggcp:
+    grain: 'Eurostat Environmental subsidies and similar transfers from general government to corporations, by environmental activity, ESA category of transfer and
+      NACE Rev. 2 activity of recipient (2011-2022) (env_esst_ggcp): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_esst_ggcp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, na_item, ceparema, nace_r2, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental subsidies and similar transfers from general government to corporations, by environmental activity, ESA category
+        of transfer and NACE Rev. 2 activity of recipient (2011-2022) (env_esst_ggcp)
+      sql: SELECT count(*) FROM wave10.eu_env_esst_ggcp
+      answer: 209400
+  eu_env_esst_rw:
+    grain: 'Eurostat Environmental subsidies and similar transfers from the Rest of the World to the domestic economy, by environmental activity and ESA category
+      of transfer (2011-2022) (env_esst_rw): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_esst_rw/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 3. Emissions and environmental accounts
+    columns: dataflow, last_update, freq, na_item, ceparema, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Environmental subsidies and similar transfers from the Rest of the World to the domestic economy, by environmental activity
+        and ESA category of transfer (2011-2022) (env_esst_rw)
+      sql: SELECT count(*) FROM wave10.eu_env_esst_rw
+      answer: 33570
   eu_env_wat_bal:
     grain: 'Eurostat Water use balance (env_wat_bal): one row per record as published (EU27; level country)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_wat_bal/?format=SDMX-CSV&compressed=false&startPeriod=2010
@@ -711,6 +1225,708 @@ tables:
     - q: how many records in Eurostat Power of self-propelled vessels by load capacity (iww_eq_power_lo)
       sql: SELECT count(*) FROM wave10.eu_iww_eq_power_lo
       answer: 482
+  eu_nrg_bal_s:
+    grain: 'Eurostat Simplified energy balances (nrg_bal_s): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_s/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Simplified energy balances (nrg_bal_s)
+      sql: SELECT count(*) FROM wave10.eu_nrg_bal_s
+      answer: 1966518
+  eu_nrg_cb_bm:
+    grain: 'Eurostat Biomass supply (nrg_cb_bm): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_bm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, nrg_bal, siec, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Biomass supply (nrg_cb_bm)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_bm
+      answer: 12332
+  eu_nrg_cb_cosm:
+    grain: 'Eurostat Crude oil supply - monthly data (nrg_cb_cosm): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_cosm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, indic_nrg, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Crude oil supply - monthly data (nrg_cb_cosm)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_cosm
+      answer: 30549
+  eu_nrg_cb_e:
+    grain: 'Eurostat Electricity supply, transformation and consumption - annual data (nrg_cb_e): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_e/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity supply, transformation and consumption - annual data (nrg_cb_e)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_e
+      answer: 36635
+  eu_nrg_cb_eim:
+    grain: 'Eurostat Electricity available to internal market - monthly data (nrg_cb_eim): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_eim/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity available to internal market - monthly data (nrg_cb_eim)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_eim
+      answer: 17165
+  eu_nrg_cb_em:
+    grain: 'Eurostat Electricity supply, transformation and consumption - monthly data (nrg_cb_em): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_em/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity supply, transformation and consumption - monthly data (nrg_cb_em)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_em
+      answer: 41927
+  eu_nrg_cb_gas:
+    grain: 'Eurostat Gas supply, transformation and consumption - annual data (nrg_cb_gas): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_gas/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Gas supply, transformation and consumption - annual data (nrg_cb_gas)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_gas
+      answer: 296960
+  eu_nrg_cb_gasm:
+    grain: 'Eurostat Gas supply, transformation and consumption - monthly data (nrg_cb_gasm): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_gasm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Gas supply, transformation and consumption - monthly data (nrg_cb_gasm)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_gasm
+      answer: 125203
+  eu_nrg_cb_h:
+    grain: 'Eurostat Derived heat supply, transformation and consumption (nrg_cb_h): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_h/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Derived heat supply, transformation and consumption (nrg_cb_h)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_h
+      answer: 31148
+  eu_nrg_cb_h2:
+    grain: 'Eurostat Hydrogen, ammonia and e-fuels supply, transformation and consumption (nrg_cb_h2): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_h2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Hydrogen, ammonia and e-fuels supply, transformation and consumption (nrg_cb_h2)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_h2
+      answer: 11208
+  eu_nrg_cb_pem:
+    grain: 'Eurostat Net electricity generation by type of fuel - monthly data (nrg_cb_pem): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_pem/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Net electricity generation by type of fuel - monthly data (nrg_cb_pem)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_pem
+      answer: 206979
+  eu_nrg_cb_rw:
+    grain: 'Eurostat Renewables and wastes supply, transformation and consumption (nrg_cb_rw): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_rw/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Renewables and wastes supply, transformation and consumption (nrg_cb_rw)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_rw
+      answer: 674532
+  eu_nrg_cb_sff:
+    grain: 'Eurostat Solid fossil fuels supply, transformation and consumption - annual data (nrg_cb_sff): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_sff/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Solid fossil fuels supply, transformation and consumption - annual data (nrg_cb_sff)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_sff
+      answer: 696518
+  eu_nrg_cb_sffm:
+    grain: 'Eurostat Solid fossil fuels supply, transformation and consumption - monthly data (nrg_cb_sffm): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_sffm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Solid fossil fuels supply, transformation and consumption - monthly data (nrg_cb_sffm)
+      sql: SELECT count(*) FROM wave10.eu_nrg_cb_sffm
+      answer: 299713
+  eu_nrg_chdd_a:
+    grain: 'Eurostat Cooling and heating degree days by country - annual data (nrg_chdd_a): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chdd_a/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, indic_nrg, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Cooling and heating degree days by country - annual data (nrg_chdd_a)
+      sql: SELECT count(*) FROM wave10.eu_nrg_chdd_a
+      answer: 992
+  eu_nrg_chdd_m:
+    grain: 'Eurostat Cooling and heating degree days by country - monthly data (nrg_chdd_m): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chdd_m/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, indic_nrg, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Cooling and heating degree days by country - monthly data (nrg_chdd_m)
+      sql: SELECT count(*) FROM wave10.eu_nrg_chdd_m
+      answer: 11904
+  eu_nrg_chddr2_m:
+    grain: 'Eurostat Cooling and heating degree days by NUTS 3 region - monthly data (nrg_chddr2_m): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_m/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, indic_nrg, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Cooling and heating degree days by NUTS 3 region - monthly data (nrg_chddr2_m)
+      sql: SELECT count(*) FROM wave10.eu_nrg_chddr2_m
+      answer: 691200
+  eu_nrg_chp_cpfe:
+    grain: 'Eurostat Combined heat and power capacity, production, fuel use and primary energy savings (nrg_chp_cpfe): one row per record as published (EU27; level
+      country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chp_cpfe/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, nrg_bal, plants, gen_tech, lev_efcy, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Combined heat and power capacity, production, fuel use and primary energy savings (nrg_chp_cpfe)
+      sql: SELECT count(*) FROM wave10.eu_nrg_chp_cpfe
+      answer: 73831
+  eu_nrg_chp_f:
+    grain: 'Eurostat Combined heat and power fuel use (nrg_chp_f): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chp_f/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, siec, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Combined heat and power fuel use (nrg_chp_f)
+      sql: SELECT count(*) FROM wave10.eu_nrg_chp_f
+      answer: 5350
+  eu_nrg_chp_n:
+    grain: 'Eurostat Combined heat and power units (nrg_chp_n): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chp_n/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, plants, gen_tech, lev_efcy, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Combined heat and power units (nrg_chp_n)
+      sql: SELECT count(*) FROM wave10.eu_nrg_chp_n
+      answer: 5201
+  eu_nrg_d_cv:
+    grain: 'Eurostat Final energy consumption by sector - calorific values (nrg_d_cv): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_d_cv/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, calval, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Final energy consumption by sector - calorific values (nrg_d_cv)
+      sql: SELECT count(*) FROM wave10.eu_nrg_d_cv
+      answer: 6144
+  eu_nrg_d_hhq:
+    grain: 'Eurostat Households energy consumption - quantities (nrg_d_hhq): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_d_hhq/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Households energy consumption - quantities (nrg_d_hhq)
+      sql: SELECT count(*) FROM wave10.eu_nrg_d_hhq
+      answer: 67178
+  eu_nrg_d_indq_n:
+    grain: 'Eurostat Industry energy consumption by NACE Rev. 2 activity - quantities (nrg_d_indq_n): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_d_indq_n/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, siec, nace_r2, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Industry energy consumption by NACE Rev. 2 activity - quantities (nrg_d_indq_n)
+      sql: SELECT count(*) FROM wave10.eu_nrg_d_indq_n
+      answer: 1001830
+  eu_nrg_d_serq_n:
+    grain: 'Eurostat Services energy consumption by NACE Rev. 2 activity - quantities (nrg_d_serq_n): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_d_serq_n/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, siec, nace_r2, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Services energy consumption by NACE Rev. 2 activity - quantities (nrg_d_serq_n)
+      sql: SELECT count(*) FROM wave10.eu_nrg_d_serq_n
+      answer: 133670
+  eu_nrg_d_traq:
+    grain: 'Eurostat Transport energy consumption by mode of transport - quantities (nrg_d_traq): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_d_traq/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, tra_mode, siec, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Transport energy consumption by mode of transport - quantities (nrg_d_traq)
+      sql: SELECT count(*) FROM wave10.eu_nrg_d_traq
+      answer: 102962
+  eu_nrg_dhdc_c:
+    grain: 'Eurostat District heating and cooling networks'' customers (nrg_dhdc_c): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_dhdc_c/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, lev_efcy, network, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat District heating and cooling networks' customers (nrg_dhdc_c)
+      sql: SELECT count(*) FROM wave10.eu_nrg_dhdc_c
+      answer: 841
+  eu_nrg_dhdc_cpl:
+    grain: 'Eurostat District heating and cooling networks'' capacity, productions and losses (nrg_dhdc_cpl): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_dhdc_cpl/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, nrg_bal, network, plants, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat District heating and cooling networks' capacity, productions and losses (nrg_dhdc_cpl)
+      sql: SELECT count(*) FROM wave10.eu_nrg_dhdc_cpl
+      answer: 6572
+  eu_nrg_dhdc_e:
+    grain: 'Eurostat District heating and cooling networks'' energy supply (nrg_dhdc_e): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_dhdc_e/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, customer, lev_efcy, network, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat District heating and cooling networks' energy supply (nrg_dhdc_e)
+      sql: SELECT count(*) FROM wave10.eu_nrg_dhdc_e
+      answer: 3367
+  eu_nrg_dhdc_n:
+    grain: 'Eurostat District heating and cooling networks and their length (nrg_dhdc_n): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_dhdc_n/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, lev_efcy, network, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat District heating and cooling networks and their length (nrg_dhdc_n)
+      sql: SELECT count(*) FROM wave10.eu_nrg_dhdc_n
+      answer: 1759
+  eu_nrg_ind_ahbtc:
+    grain: 'Eurostat Heat pumps'' ambient heat captured by technology and climate (nrg_ind_ahbtc): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_ahbtc/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, hp_tech, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Heat pumps' ambient heat captured by technology and climate (nrg_ind_ahbtc)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_ahbtc
+      answer: 44688
+  eu_nrg_ind_cotd:
+    grain: 'Eurostat Overall renewable energy share - detailed components (nrg_ind_cotd): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_cotd/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Overall renewable energy share - detailed components (nrg_ind_cotd)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_cotd
+      answer: 10172
+  eu_nrg_ind_di:
+    grain: 'Eurostat Diversity index of energy supply (nrg_ind_di): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_di/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Diversity index of energy supply (nrg_ind_di)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_di
+      answer: 405
+  eu_nrg_ind_difec:
+    grain: 'Eurostat Diversity index of final energy consumption by sector (nrg_ind_difec): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_difec/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Diversity index of final energy consumption by sector (nrg_ind_difec)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_difec
+      answer: 10657
+  eu_nrg_ind_ebmg:
+    grain: 'Eurostat Biomethane exports through the grid (nrg_ind_ebmg): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_ebmg/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, partner, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Biomethane exports through the grid (nrg_ind_ebmg)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_ebmg
+      answer: 25080
+  eu_nrg_ind_eff:
+    grain: 'Eurostat Primary and final energy consumption (nrg_ind_eff): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_eff/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Primary and final energy consumption (nrg_ind_eff)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_eff
+      answer: 10842
+  eu_nrg_ind_ei:
+    grain: 'Eurostat Energy intensity (nrg_ind_ei): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_ei/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Energy intensity (nrg_ind_ei)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_ei
+      answer: 2195
+  eu_nrg_ind_ep:
+    grain: 'Eurostat Energy productivity (nrg_ind_ep): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_ep/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Energy productivity (nrg_ind_ep)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_ep
+      answer: 1105
+  eu_nrg_ind_epsc:
+    grain: 'Eurostat Electricity production and self-consumption (nrg_ind_epsc): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_epsc/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, customer, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity production and self-consumption (nrg_ind_epsc)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_epsc
+      answer: 20760
+  eu_nrg_ind_esc:
+    grain: 'Eurostat Available energy, energy supply and final energy consumption per capita (nrg_ind_esc): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_esc/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Available energy, energy supply and final energy consumption per capita (nrg_ind_esc)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_esc
+      answer: 32692
+  eu_nrg_ind_esr:
+    grain: 'Eurostat Energy self-reliance (nrg_ind_esr): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_esr/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Energy self-reliance (nrg_ind_esr)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_esr
+      answer: 405
+  eu_nrg_ind_fecf:
+    grain: 'Eurostat Share of fuels in final energy consumption (nrg_ind_fecf): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_fecf/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Share of fuels in final energy consumption (nrg_ind_fecf)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_fecf
+      answer: 20298
+  eu_nrg_ind_fechm2:
+    grain: 'Eurostat Households energy consumption - quantities per square meter (nrg_ind_fechm2): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_fechm2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Households energy consumption - quantities per square meter (nrg_ind_fechm2)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_fechm2
+      answer: 87
+  eu_nrg_ind_ffgae:
+    grain: 'Eurostat Share of fossil fuels in gross available energy (nrg_ind_ffgae): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_ffgae/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Share of fossil fuels in gross available energy (nrg_ind_ffgae)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_ffgae
+      answer: 597
+  eu_nrg_ind_hpind:
+    grain: 'Eurostat Heat pumps - ambient heat (nrg_ind_hpind): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_hpind/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, hp_tech, nrg_bal, plant_tec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Heat pumps - ambient heat (nrg_ind_hpind)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_hpind
+      answer: 2920
+  eu_nrg_ind_hptctc:
+    grain: 'Eurostat Heat pumps'' technical characteristics by technology and climate (nrg_ind_hptctc): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_hptctc/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, plant_tec, hp_tech, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Heat pumps' technical characteristics by technology and climate (nrg_ind_hptctc)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_hptctc
+      answer: 127568
+  eu_nrg_ind_ibmg:
+    grain: 'Eurostat Biomethane imports through the grid (nrg_ind_ibmg): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_ibmg/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, partner, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Biomethane imports through the grid (nrg_ind_ibmg)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_ibmg
+      answer: 25080
+  eu_nrg_ind_id:
+    grain: 'Eurostat Energy imports dependency (nrg_ind_id): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_id/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Energy imports dependency (nrg_ind_id)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_id
+      answer: 7761
+  eu_nrg_ind_id3cf:
+    grain: 'Eurostat Import dependency on third countries by fuel type (nrg_ind_id3cf): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_id3cf/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Import dependency on third countries by fuel type (nrg_ind_id3cf)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_id3cf
+      answer: 3304
+  eu_nrg_ind_idooil:
+    grain: 'Eurostat Oil and petroleum products import dependency by country of origin (nrg_ind_idooil): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_idooil/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Oil and petroleum products import dependency by country of origin (nrg_ind_idooil)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_idooil
+      answer: 4466
+  eu_nrg_ind_ioc:
+    grain: 'Eurostat Energy import origin concentration index by fuel (nrg_ind_ioc): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_ioc/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Energy import origin concentration index by fuel (nrg_ind_ioc)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_ioc
+      answer: 6497
+  eu_nrg_ind_peh:
+    grain: 'Eurostat Electricity and derived heat gross and net production (nrg_ind_peh): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_peh/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, plants, operator, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity and derived heat gross and net production (nrg_ind_peh)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_peh
+      answer: 266012
+  eu_nrg_ind_pehap:
+    grain: 'Eurostat Electricity and heat production (nrg_ind_pehap): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_pehap/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, plants, operator, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity and heat production (nrg_ind_pehap)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_pehap
+      answer: 155618
+  eu_nrg_ind_pehcf:
+    grain: 'Eurostat Electricity and derived heat gross production from combustible fuels (nrg_ind_pehcf): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_pehcf/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, plants, operator, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity and derived heat gross production from combustible fuels (nrg_ind_pehcf)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_pehcf
+      answer: 928323
+  eu_nrg_ind_pehnf:
+    grain: 'Eurostat Electricity and derived heat gross production from non-combustible fuels (nrg_ind_pehnf): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_pehnf/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, plants, operator, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity and derived heat gross production from non-combustible fuels (nrg_ind_pehnf)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_pehnf
+      answer: 156820
+  eu_nrg_ind_psth2:
+    grain: 'Eurostat Hydrogen, ammonia and e-fuels production (nrg_ind_psth2): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_psth2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_tech, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Hydrogen, ammonia and e-fuels production (nrg_ind_psth2)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_psth2
+      answer: 2599
+  eu_nrg_ind_rcaebt:
+    grain: 'Eurostat Renewable cooling ambient energy (nrg_ind_rcaebt): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_rcaebt/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, network, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Renewable cooling ambient energy (nrg_ind_rcaebt)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_rcaebt
+      answer: 3192
+  eu_nrg_ind_rctcbt:
+    grain: 'Eurostat Renewable cooling technical characteristics (nrg_ind_rctcbt): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_rctcbt/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, network, plant_tec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Renewable cooling technical characteristics (nrg_ind_rctcbt)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_rctcbt
+      answer: 4611
+  eu_nrg_ind_re:
+    grain: 'Eurostat Rate of electrification (nrg_ind_re): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_re/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Rate of electrification (nrg_ind_re)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_re
+      answer: 19264
+  eu_nrg_ind_ren:
+    grain: 'Eurostat Renewable energy share (nrg_ind_ren): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_ren/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Renewable energy share (nrg_ind_ren)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_ren
+      answer: 2343
+  eu_nrg_ind_resovsh:
+    grain: 'Eurostat Renewable energy sources in overall share (nrg_ind_resovsh): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_resovsh/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Renewable energy sources in overall share (nrg_ind_resovsh)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_resovsh
+      answer: 10032
+  eu_nrg_ind_stjpjss:
+    grain: 'Eurostat Renewable energy cooperation mechanisms - statistical transfers, joint projects and joint support schemes (nrg_ind_stjpjss): one row per record
+      as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_stjpjss/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Renewable energy cooperation mechanisms - statistical transfers, joint projects and joint support schemes (nrg_ind_stjpjss)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_stjpjss
+      answer: 12013
+  eu_nrg_ind_ured:
+    grain: 'Eurostat Renewable energy share in electricity - detailed components (nrg_ind_ured): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_ured/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Renewable energy share in electricity - detailed components (nrg_ind_ured)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_ured
+      answer: 15012
+  eu_nrg_ind_urhcd:
+    grain: 'Eurostat Renewable energy share in heating and cooling - detailed components (nrg_ind_urhcd): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_urhcd/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Renewable energy share in heating and cooling - detailed components (nrg_ind_urhcd)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_urhcd
+      answer: 18852
+  eu_nrg_ind_urtd:
+    grain: 'Eurostat Renewable energy share in transport - detailed components (nrg_ind_urtd): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ind_urtd/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, nrg_bal, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Renewable energy share in transport - detailed components (nrg_ind_urtd)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ind_urtd
+      answer: 33452
+  eu_nrg_inf_bt:
+    grain: 'Eurostat Batteries power capacities and energy storage (nrg_inf_bt): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_bt/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, plant_tec, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Batteries power capacities and energy storage (nrg_inf_bt)
+      sql: SELECT count(*) FROM wave10.eu_nrg_inf_bt
+      answer: 6926
+  eu_nrg_inf_epc:
+    grain: 'Eurostat Electricity production capacities (nrg_inf_epc): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epc/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, plant_tec, operator, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity production capacities (nrg_inf_epc)
+      sql: SELECT count(*) FROM wave10.eu_nrg_inf_epc
+      answer: 93704
+  eu_nrg_inf_epct:
+    grain: 'Eurostat Electricity production capacities for combustible fuels (nrg_inf_epct): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epct/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, operator, gen_tech, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity production capacities for combustible fuels (nrg_inf_epct)
+      sql: SELECT count(*) FROM wave10.eu_nrg_inf_epct
+      answer: 6230
+  eu_nrg_inf_h2stpc:
+    grain: 'Eurostat Hydrogen, ammonia and e-fuels production capacity (nrg_inf_h2stpc): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_h2stpc/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, plant_tec, nrg_tech, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Hydrogen, ammonia and e-fuels production capacity (nrg_inf_h2stpc)
+      sql: SELECT count(*) FROM wave10.eu_nrg_inf_h2stpc
+      answer: 2462
+  eu_nrg_inf_lbpc:
+    grain: 'Eurostat Liquid biofuels production capacities (nrg_inf_lbpc): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_lbpc/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, plant_tec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Liquid biofuels production capacities (nrg_inf_lbpc)
+      sql: SELECT count(*) FROM wave10.eu_nrg_inf_lbpc
+      answer: 2499
+  eu_nrg_inf_stcs:
+    grain: 'Eurostat Solar thermal collectors'' surface (nrg_inf_stcs): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_stcs/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, plant_tec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Solar thermal collectors' surface (nrg_inf_stcs)
+      sql: SELECT count(*) FROM wave10.eu_nrg_inf_stcs
+      answer: 625
   eu_nrg_pc_202_c:
     grain: 'Eurostat Gas prices components for household consumers (nrg_pc_202_c): one row per record as published (EU27; level country)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_pc_202_c/?format=SDMX-CSV&compressed=false&startPeriod=2010
@@ -771,6 +1987,176 @@ tables:
     - q: how many records in Eurostat Non-household consumption volumes of electricity by consumption bands (nrg_pc_205_v)
       sql: SELECT count(*) FROM wave10.eu_nrg_pc_205_v
       answer: 2315
+  eu_nrg_stk_gas:
+    grain: 'Eurostat Natural gas stock levels - annual data (nrg_stk_gas): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_gas/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, stk_flow, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Natural gas stock levels - annual data (nrg_stk_gas)
+      sql: SELECT count(*) FROM wave10.eu_nrg_stk_gas
+      answer: 6738
+  eu_nrg_stk_gasm:
+    grain: 'Eurostat Gas products stock levels - monthly data (nrg_stk_gasm): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_gasm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, stk_flow, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Gas products stock levels - monthly data (nrg_stk_gasm)
+      sql: SELECT count(*) FROM wave10.eu_nrg_stk_gasm
+      answer: 38584
+  eu_nrg_stk_h2:
+    grain: 'Eurostat Hydrogen, ammonia and e-fuels stock levels (nrg_stk_h2): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_h2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, nrg_tech, stk_flow, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Hydrogen, ammonia and e-fuels stock levels (nrg_stk_h2)
+      sql: SELECT count(*) FROM wave10.eu_nrg_stk_h2
+      answer: 632
+  eu_nrg_stk_oem:
+    grain: 'Eurostat Emergency oil stocks in days equivalent - monthly data (nrg_stk_oem): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oem/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, stk_flow, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Emergency oil stocks in days equivalent - monthly data (nrg_stk_oem)
+      sql: SELECT count(*) FROM wave10.eu_nrg_stk_oem
+      answer: 28688
+  eu_nrg_stk_oil:
+    grain: 'Eurostat Oil products stock levels - annual data (nrg_stk_oil): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oil/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, stk_flow, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Oil products stock levels - annual data (nrg_stk_oil)
+      sql: SELECT count(*) FROM wave10.eu_nrg_stk_oil
+      answer: 49646
+  eu_nrg_te_bio:
+    grain: 'Eurostat Biofuels exports (nrg_te_bio): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_bio/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Biofuels exports (nrg_te_bio)
+      sql: SELECT count(*) FROM wave10.eu_nrg_te_bio
+      answer: 621122
+  eu_nrg_te_eh:
+    grain: 'Eurostat Electricity and derived heat exports (nrg_te_eh): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_eh/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity and derived heat exports (nrg_te_eh)
+      sql: SELECT count(*) FROM wave10.eu_nrg_te_eh
+      answer: 205930
+  eu_nrg_te_gas:
+    grain: 'Eurostat Natural gas exports - annual data (nrg_te_gas): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_gas/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Natural gas exports - annual data (nrg_te_gas)
+      sql: SELECT count(*) FROM wave10.eu_nrg_te_gas
+      answer: 409048
+  eu_nrg_te_h2:
+    grain: 'Eurostat Hydrogen, ammonia and e-fuels exports (nrg_te_h2): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_h2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, partner, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Hydrogen, ammonia and e-fuels exports (nrg_te_h2)
+      sql: SELECT count(*) FROM wave10.eu_nrg_te_h2
+      answer: 19694
+  eu_nrg_te_oil:
+    grain: 'Eurostat Oil and petroleum products exports - annual data (nrg_te_oil): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_oil/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Oil and petroleum products exports - annual data (nrg_te_oil)
+      sql: SELECT count(*) FROM wave10.eu_nrg_te_oil
+      answer: 3905304
+  eu_nrg_te_sff:
+    grain: 'Eurostat Solid fossil fuels exports (nrg_te_sff): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_sff/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Solid fossil fuels exports (nrg_te_sff)
+      sql: SELECT count(*) FROM wave10.eu_nrg_te_sff
+      answer: 1447808
+  eu_nrg_ti_bio:
+    grain: 'Eurostat Biofuels imports (nrg_ti_bio): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_bio/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Biofuels imports (nrg_ti_bio)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ti_bio
+      answer: 621262
+  eu_nrg_ti_eh:
+    grain: 'Eurostat Electricity and derived heat imports (nrg_ti_eh): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_eh/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Electricity and derived heat imports (nrg_ti_eh)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ti_eh
+      answer: 205947
+  eu_nrg_ti_gas:
+    grain: 'Eurostat Natural gas imports - annual data (nrg_ti_gas): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_gas/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Natural gas imports - annual data (nrg_ti_gas)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ti_gas
+      answer: 409049
+  eu_nrg_ti_h2:
+    grain: 'Eurostat Hydrogen, ammonia and e-fuels imports (nrg_ti_h2): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_h2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, partner, siec, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Hydrogen, ammonia and e-fuels imports (nrg_ti_h2)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ti_h2
+      answer: 19694
+  eu_nrg_ti_oil:
+    grain: 'Eurostat Oil and petroleum products imports - annual data (nrg_ti_oil): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_oil/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Oil and petroleum products imports - annual data (nrg_ti_oil)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ti_oil
+      answer: 3902880
+  eu_nrg_ti_sff:
+    grain: 'Eurostat Solid fossil fuels imports (nrg_ti_sff): one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_sff/?format=SDMX-CSV&compressed=false&startPeriod=2010
+    licence: CC BY 4.0 (Eurostat)
+    category: 1. Energy supply, balances and trade
+    columns: dataflow, last_update, freq, siec, partner, unit, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Eurostat Solid fossil fuels imports (nrg_ti_sff)
+      sql: SELECT count(*) FROM wave10.eu_nrg_ti_sff
+      answer: 1447806
   eu_rail_eq_locon:
     grain: 'Eurostat Locomotives and railcars by source of energy (rail_eq_locon): one row per record as published (EU27; level country)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/rail_eq_locon/?format=SDMX-CSV&compressed=false&startPeriod=2010

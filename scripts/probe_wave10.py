@@ -203,6 +203,16 @@ def wdi(_: argparse.Namespace) -> None:
     print(f"{len(ok)} of {len(res)} indicators: CC BY 4.0 and 30 or more countries")
 
 
+# tables Eurostat refused as SDMX-CSV from 2010 (HTTP 413 EXTRACTION_TOO_BIG, more than 5 million
+# rows; the wave 10 build of 2026-11-03): read from the API's TSV form, which has no row cap
+TOO_BIG = set(
+    "nrg_bal_cv nrg_cb_oil nrg_cb_oilm nrg_stk_oam nrg_stk_oilm nrg_stk_oom nrg_te_gasm "
+    "nrg_te_oilm nrg_ti_coifpm nrg_ti_gasm nrg_ti_oilm env_ac_aeint_r2 env_ac_ainah_r2 "
+    "env_ac_ch4fp env_ac_co2fp env_ac_egss2 env_ac_ghgfp env_ac_hfcfp env_ac_n2ofp "
+    "env_ac_nf3sf6fp env_ac_pefasu env_ac_pfcfp".split()
+)
+
+
 def eurostat_place(code: str) -> tuple[int, str]:
     """The wave-10 category and family of a Eurostat table, by its code."""
     rules = [
@@ -231,6 +241,7 @@ def registry(_: argparse.Namespace) -> None:
         "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/{}/"
         "?format=SDMX-CSV&compressed=false&startPeriod=2010"
     )
+    es_tsv = "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/{}/?format=TSV&compressed=true"
     for code, t in sorted(g["eurostat"]["tables"].items()):
         cat, fam = eurostat_place(code)
         src: dict[str, Any] = {
@@ -246,6 +257,10 @@ def registry(_: argparse.Namespace) -> None:
             "lic_url": "https://ec.europa.eu/eurostat/about-us/policies/copyright",
             "status": "build",
         }
+        if code in TOO_BIG:
+            src["kind"] = "eurostat_tsv"
+            src["url"] = es_tsv.format(code)
+            src["note"] = "over Eurostat's 5 million row cap for SDMX-CSV: read from the TSV form"
         if "error" in t:
             src["note"] = f"probe: {t['error'][:120]} (built from the full table)"
         elif t.get("countries", 0) >= 15:

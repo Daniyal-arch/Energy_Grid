@@ -362,6 +362,46 @@
    "file": "eu_cei_wm060"
   },
   {
+   "id": "w10c_eu_env_ac_aibrid_r2",
+   "label": "Air emissions accounts totals bridging to emission inventory totals: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); Air emissions by resident units (production activities and households); Tonne",
+   "group": "Emissions",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_env_ac_aibrid_r2"
+  },
+  {
+   "id": "w10c_eu_env_ac_aigg_q",
+   "label": "Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data: Unadjusted data (i.e. neither seasonally adjusted nor calendar adjusted data); All NACE activities plus households; Thousand tonnes",
+   "group": "Emissions",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_env_ac_aigg_q"
+  },
+  {
+   "id": "w10c_eu_env_ac_ccminv",
+   "label": "Investments in climate change mitigation by NACE Rev. 2 activity: Total - all NACE activities; Million euro",
+   "group": "Emissions",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_env_ac_ccminv"
+  },
+  {
+   "id": "w10c_eu_env_ac_cur",
+   "label": "Circular material use rate",
+   "group": "Emissions",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_env_ac_cur"
+  },
+  {
    "id": "w10c_eu_env_ac_mfa",
    "label": "Material flow accounts: Domestic extraction; Total; Thousand tonnes",
    "group": "Industry & demand",
@@ -402,6 +442,26 @@
    "file": "eu_env_ac_rme"
   },
   {
+   "id": "w10c_eu_env_ac_rp",
+   "label": "Resource productivity: Euro per kilogram",
+   "group": "Emissions",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_env_ac_rp"
+  },
+  {
+   "id": "w10c_eu_env_ac_sd",
+   "label": "Material flows for circular economy - Sankey diagram data: Imports of waste for recovery - recycling; Total; Thousand tonnes",
+   "group": "Emissions",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_env_ac_sd"
+  },
+  {
    "id": "w10c_eu_env_ac_tax",
    "label": "Environmental tax revenues: Total environmental taxes; Million euro",
    "group": "Prices",
@@ -430,6 +490,16 @@
    ],
    "scope": "country",
    "file": "eu_env_ac_taxind2"
+  },
+  {
+   "id": "w10c_eu_env_esst_rw",
+   "label": "Environmental subsidies and similar transfers from the Rest of the World to the domestic economy, by environmental activity and ESA category of transfer: Subsidies; Total environmental protection activities; Million euro",
+   "group": "Emissions",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_env_esst_rw"
   },
   {
    "id": "w10c_eu_env_wat_bal",
@@ -502,6 +572,646 @@
    "file": "eu_iww_eq_loadcap"
   },
   {
+   "id": "w10c_eu_nrg_bal_s",
+   "label": "Simplified energy balances: Total energy supply; Total; Thousand tonnes of oil equivalent",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_bal_s"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_bm",
+   "label": "Supply of biomass - annual data: Thousand cubic metres; Indigenous production; Solid biofuels",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_bm"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_cosm",
+   "label": "Crude oil supply - monthly data: Production; Volume - thousand barrels",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_cosm"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_e",
+   "label": "Electricity supply, transformation and consumption - annual data: Imports",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_e"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_gas",
+   "label": "Gas supply, transformation and consumption - annual data: Indigenous production; Manufactured gases; Terajoule (gross calorific value - GCV)",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_gas"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_gasm",
+   "label": "Gas supply, transformation and consumption - monthly data: Imports; Terajoule (gross calorific value - GCV)",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_gasm"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_h",
+   "label": "Derived heat supply, transformation and consumption: Imports",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_h"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_h2",
+   "label": "Supply, transformation and consumption of hydrogen, ammonia and e-fuels: International maritime bunkers; Ammonia (NH3)",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_h2"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_rw",
+   "label": "Renewables and wastes supply, transformation and consumption: Indigenous production; Charcoal; Thousand tonnes",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_rw"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_sff",
+   "label": "Solid fossil fuels supply, transformation and consumption - annual data: Indigenous production; Solid fossil fuels",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_sff"
+  },
+  {
+   "id": "w10c_eu_nrg_cb_sffm",
+   "label": "Solid fossil fuels supply, transformation and consumption - monthly data: Imports; Hard coal",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_cb_sffm"
+  },
+  {
+   "id": "w10c_eu_nrg_chdd_a",
+   "label": "Cooling and heating degree days by country - annual data: Heating degree days",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_chdd_a"
+  },
+  {
+   "id": "w10c_eu_nrg_chdd_m",
+   "label": "Cooling and heating degree days by country - monthly data: Heating degree days",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_chdd_m"
+  },
+  {
+   "id": "w10c_eu_nrg_chddr2_m",
+   "label": "Cooling and heating degree days by NUTS 3 region - monthly data: Heating degree days",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_chddr2_m"
+  },
+  {
+   "id": "w10c_eu_nrg_chp_cpfe",
+   "label": "Capacities, production, fuel used and energy savings in combined heat and power (CHP) by type of plant, generation technologies and primary energy savings levels: Gigawatt-hour; Gross electricity production; Combined heat and power units; Total; All levels",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_chp_cpfe"
+  },
+  {
+   "id": "w10c_eu_nrg_chp_f",
+   "label": "Fuel used in combined heat and power: Terajoule (net calorific value - NCV); Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_chp_f"
+  },
+  {
+   "id": "w10c_eu_nrg_chp_n",
+   "label": "Number of combined heat and power (CHP) units by type of plant, generation technologies and primary energy savings levels: Combined heat and power units; Total; High",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_chp_n"
+  },
+  {
+   "id": "w10c_eu_nrg_d_cv",
+   "label": "Final energy consumption by sector - calorific values: Final consumption - other sectors - households - energy use; Oil and petroleum products",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_d_cv"
+  },
+  {
+   "id": "w10c_eu_nrg_d_hhq",
+   "label": "Disaggregated final energy consumption in households - quantities: Final consumption - other sectors - households - energy use; Solid fossil fuels, peat, peat products, oil shale and oil sands; Thousand tonnes",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_d_hhq"
+  },
+  {
+   "id": "w10c_eu_nrg_d_indq_n",
+   "label": "Disaggregated final energy consumption in industry by NACE Rev. 2 activity - quantities: Terajoule (net calorific value - NCV); Gas works gas; Total - all NACE activities",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_d_indq_n"
+  },
+  {
+   "id": "w10c_eu_nrg_d_serq_n",
+   "label": "Disaggregated final energy consumption in services by NACE Rev. 2 activity – quantities: Thousand tonnes; Solid fossil fuels, peat, peat products, oil shale and oil sands; Total - all NACE activities",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_d_serq_n"
+  },
+  {
+   "id": "w10c_eu_nrg_d_traq",
+   "label": "Disaggregated final energy consumption in transport by mode of transport - quantities: Total; Solid fossil fuels; Final consumption - transport sector - rail - energy use; Thousand tonnes",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_d_traq"
+  },
+  {
+   "id": "w10c_eu_nrg_dhdc_c",
+   "label": "Customers by type of district network and efficiency of network: High; District heating - hot water",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_dhdc_c"
+  },
+  {
+   "id": "w10c_eu_nrg_dhdc_cpl",
+   "label": "Capacities, productions and losses in district networks by type of network and type of plant: Terajoule; Net production; District heating; Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_dhdc_cpl"
+  },
+  {
+   "id": "w10c_eu_nrg_dhdc_e",
+   "label": "Energy removed from district networks by customers, type of networks and efficiency of network: All customers; Low; District cooling",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_dhdc_e"
+  },
+  {
+   "id": "w10c_eu_nrg_dhdc_n",
+   "label": "Number and length of district networks by type of network and efficiency of network: Number; Low; District cooling",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_dhdc_n"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_ahbtc",
+   "label": "Heat pumps - ambient heat captured by technology and climate: Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_ahbtc"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_cotd",
+   "label": "Calculation of overall target - details: Total; Gross final consumption - heating and cooling - energy use; Thousand tonnes of oil equivalent",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_cotd"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_di",
+   "label": "Diversity index of energy supply",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_di"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_difec",
+   "label": "Diversity index of final energy consumption by sector: Final consumption - energy use",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_difec"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_eff",
+   "label": "Energy efficiency: Primary energy consumption - Energy Efficiency Directive; Million tonnes of oil equivalent",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_eff"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_ei",
+   "label": "Energy intensity: Energy intensity of GDP in chain linked volumes (2010); Kilograms of oil equivalent (KGOE) per thousand euro",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_ei"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_ep",
+   "label": "Energy productivity: Euro per kilogram of oil equivalent (KGOE)",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_ep"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_epsc",
+   "label": "Electricity production and self-consumption: Household; Production; Natural gas",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_epsc"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_esc",
+   "label": "Available energy, energy supply and final energy consumption per capita: Total energy supply; Kilograms of oil equivalent (KGOE) per capita",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_esc"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_esr",
+   "label": "Energy self-reliance",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_esr"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_fecf",
+   "label": "Share of fuels in final energy consumption: Final consumption - energy use; Solid fossil fuels",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_fecf"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_fechm2",
+   "label": "Final energy consumption in households – quantities per square meter: Kilograms of oil equivalent (KGOE) per square meter",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_fechm2"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_ffgae",
+   "label": "Share of fossil fuels in gross available energy",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_ffgae"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_hpind",
+   "label": "Heat pumps – ambient heat: Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_hpind"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_hptctc",
+   "label": "Heat pumps - technical characteristics by technology and climate: Seasonal performance factor; Aerothermal - air-air electrical - cold climate; Number",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_hptctc"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_ibmg",
+   "label": "Imports of biomethane through the grid: Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_ibmg"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_id",
+   "label": "Energy imports dependency: Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_id"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_id3cf",
+   "label": "Import dependency on third countries by fuel type: Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_id3cf"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_idooil",
+   "label": "Oil and petroleum products import dependency by country of origin: Norway",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_idooil"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_ioc",
+   "label": "Energy import origin concentration index by fuel: Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_ioc"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_peh",
+   "label": "Electricity and derived heat gross and net production: Total; Total; Gross electricity production; Total; Gigawatt-hour",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_peh"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_pehap",
+   "label": "Electricity and heat production: Total; Production; Electricity; Gigawatt-hour",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_pehap"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_pehnf",
+   "label": "Electricity and derived heat gross production from non-combustible fuels: Total; Total; Gross electricity production; Hydro; Gigawatt-hour",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_pehnf"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_psth2",
+   "label": "Production by source and technology of hydrogen, ammonia and e-fuels: NG_CCS; Ammonia (NH3)",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_psth2"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_rcaebt",
+   "label": "Renewable cooling - ambient energy by technology: Total; Primary production - Renewable Energy Directive",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_rcaebt"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_rctcbt",
+   "label": "Renewable cooling - technical characteristics by technology: Individual cooling below threshold - process cooling; Activity factor; Number",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_rctcbt"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_re",
+   "label": "Rate of electrification: Energy sector - energy use",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_re"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_ren",
+   "label": "Main indicators - share of renewable energy: Renewable energy - overall",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_ren"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_resovsh",
+   "label": "Renewable energy sources in overall share: Gross final consumption - energy use - overall target calculation without aviation cap adjustment; Renewables and biofuels; Thousand tonnes of oil equivalent",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_resovsh"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_stjpjss",
+   "label": "Statistical transfers, joint projects and joint support schemes: Statistical transfers between Member States",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_stjpjss"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_urhcd",
+   "label": "Use of renewables for heating and cooling - details: Ambient heat (heat pumps); Primary production - Renewable Energy Directive; Thousand tonnes of oil equivalent",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_urhcd"
+  },
+  {
+   "id": "w10c_eu_nrg_ind_urtd",
+   "label": "Use of renewables for transport - details: Electricity; Energy sector - manufacturing of non-biological fuels of renewable origin used in transport - energy use; Thousand tonnes of oil equivalent",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ind_urtd"
+  },
+  {
+   "id": "w10c_eu_nrg_inf_bt",
+   "label": "Batteries power capacities and energy storage: Batteries - power capacity; Batteries (1 MWh - 10 MWh); Megawatt",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_inf_bt"
+  },
+  {
+   "id": "w10c_eu_nrg_inf_epc",
+   "label": "Electricity production capacities: Total; Net maximum electrical capacity; Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_inf_epc"
+  },
+  {
+   "id": "w10c_eu_nrg_inf_epct",
+   "label": "Electricity production capacities for combustible fuels: Main activity producers; Steam",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_inf_epct"
+  },
+  {
+   "id": "w10c_eu_nrg_inf_h2stpc",
+   "label": "Production capacity of hydrogen, ammonia and e-fuels: Production capacity; AMM; Hydrogen (H2)",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_inf_h2stpc"
+  },
+  {
+   "id": "w10c_eu_nrg_inf_lbpc",
+   "label": "Liquid biofuels production capacities: Pure biogasoline",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_inf_lbpc"
+  },
+  {
+   "id": "w10c_eu_nrg_inf_stcs",
+   "label": "Solar thermal collectors' surface",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_inf_stcs"
+  },
+  {
    "id": "w10c_eu_nrg_pc_202_c",
    "label": "Gas prices components for household consumers: Energy and supply; Consumption of GJ - all bands; Euro; Kilowatt-hour",
    "group": "Prices",
@@ -560,6 +1270,166 @@
    ],
    "scope": "country",
    "file": "eu_nrg_pc_205_v"
+  },
+  {
+   "id": "w10c_eu_nrg_stk_gas",
+   "label": "Natural gas stock levels - annual data: Opening stock - national territory; Million cubic metres",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_stk_gas"
+  },
+  {
+   "id": "w10c_eu_nrg_stk_gasm",
+   "label": "Gas products stock levels - monthly data: Opening stock - national territory; Million cubic metres",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_stk_gasm"
+  },
+  {
+   "id": "w10c_eu_nrg_stk_h2",
+   "label": "Stocks level for hydrogen, ammonia and e-fuels: HYD_AS_AMM; Opening stock - national territory; Ammonia (NH3)",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_stk_h2"
+  },
+  {
+   "id": "w10c_eu_nrg_stk_oil",
+   "label": "Oil products stock levels - annual data: Opening stock - national territory; Oil and petroleum products",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_stk_oil"
+  },
+  {
+   "id": "w10c_eu_nrg_te_bio",
+   "label": "Biofuels exports: Wood pellets; Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_te_bio"
+  },
+  {
+   "id": "w10c_eu_nrg_te_eh",
+   "label": "Electricity and derived heat exports: Electricity; Total; Gigawatt-hour",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_te_eh"
+  },
+  {
+   "id": "w10c_eu_nrg_te_gas",
+   "label": "Natural gas exports - annual data: Natural gas; Total; Million cubic metres",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_te_gas"
+  },
+  {
+   "id": "w10c_eu_nrg_te_h2",
+   "label": "Exports of hydrogen, ammonia and e-fuels: Belgium; E-fuels",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_te_h2"
+  },
+  {
+   "id": "w10c_eu_nrg_te_oil",
+   "label": "Oil and petroleum products exports - annual data: Oil and petroleum products; Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_te_oil"
+  },
+  {
+   "id": "w10c_eu_nrg_te_sff",
+   "label": "Solid fossil fuels exports: Solid fossil fuels; Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_te_sff"
+  },
+  {
+   "id": "w10c_eu_nrg_ti_bio",
+   "label": "Biofuels imports: Wood pellets; Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ti_bio"
+  },
+  {
+   "id": "w10c_eu_nrg_ti_eh",
+   "label": "Electricity and derived heat imports: Electricity; Total; Gigawatt-hour",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ti_eh"
+  },
+  {
+   "id": "w10c_eu_nrg_ti_gas",
+   "label": "Natural gas imports - annual data: Natural gas; Total; Million cubic metres",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ti_gas"
+  },
+  {
+   "id": "w10c_eu_nrg_ti_h2",
+   "label": "Imports of hydrogen, ammonia and e-fuels: Belgium; E-fuels",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ti_h2"
+  },
+  {
+   "id": "w10c_eu_nrg_ti_oil",
+   "label": "Oil and petroleum products imports - annual data: Oil and petroleum products; Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ti_oil"
+  },
+  {
+   "id": "w10c_eu_nrg_ti_sff",
+   "label": "Solid fossil fuels imports: Solid fossil fuels; Total",
+   "group": "Energy statistics",
+   "modes": [
+    "live"
+   ],
+   "scope": "country",
+   "file": "eu_nrg_ti_sff"
   },
   {
    "id": "w10c_eu_rail_eq_locon",
@@ -4518,6 +5388,82 @@
    ]
   },
   {
+   "id": "colour-w10c_eu_env_ac_aibrid_r2",
+   "name": "Air emissions accounts totals bridging to emission inventory totals: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); Air emissions by resident units (production activities and households); Tonne",
+   "category": "Emissions",
+   "description": "Air emissions accounts totals bridging to emission inventory totals: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); Air emissions by resident units (production activities and households); Tonne (Tonne), 29 countries, 2024: Eurostat Air emissions accounts totals bridging to emission inventory totals (env_ac_aibrid_r2)",
+   "color": "rgb(200,200,200)",
+   "family": "emission_accounts",
+   "colour": "w10c_eu_env_ac_aibrid_r2",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Air emissions accounts totals bridging to emission inventory totals: Greenhouse gases (CO2, N2O in CO2 equivalent, CH4 in CO2 equivalent, HFC in CO2 equivalent, PFC in CO2 equivalent, SF6 in CO2 equivalent, NF3 in CO2 equivalent); Air emissions by resident units (production activities and households); Tonne",
+     "source": "Eurostat Air emissions accounts totals bridging to emission inventory totals (env_ac_aibrid_r2) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_env_ac_aigg_q",
+   "name": "Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data: Unadjusted data (i.e. neither seasonally adjusted nor calendar adjusted data); All NACE activities plus households; Thousand tonnes",
+   "category": "Emissions",
+   "description": "Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data: Unadjusted data (i.e. neither seasonally adjusted nor calendar adjusted data); All NACE activities plus households; Thousand tonnes (Thousand tonnes), 27 countries, 2026-Q1: Eurostat Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data (env_ac_aigg_q)",
+   "color": "rgb(200,200,200)",
+   "family": "emission_accounts",
+   "colour": "w10c_eu_env_ac_aigg_q",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data: Unadjusted data (i.e. neither seasonally adjusted nor calendar adjusted data); All NACE activities plus households; Thousand tonnes",
+     "source": "Eurostat Air emissions accounts for greenhouse gases by NACE Rev. 2 activity - quarterly data (env_ac_aigg_q) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_env_ac_ccminv",
+   "name": "Investments in climate change mitigation by NACE Rev. 2 activity: Total - all NACE activities; Million euro",
+   "category": "Emissions",
+   "description": "Investments in climate change mitigation by NACE Rev. 2 activity: Total - all NACE activities; Million euro (Million euro), 27 countries, 2023: Eurostat Investments in climate change mitigation by NACE Rev. 2 activity (env_ac_ccminv)",
+   "color": "rgb(200,200,200)",
+   "family": "emission_accounts",
+   "colour": "w10c_eu_env_ac_ccminv",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Investments in climate change mitigation by NACE Rev. 2 activity: Total - all NACE activities; Million euro",
+     "source": "Eurostat Investments in climate change mitigation by NACE Rev. 2 activity (env_ac_ccminv) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_env_ac_cur",
+   "name": "Circular material use rate",
+   "category": "Emissions",
+   "description": "Circular material use rate (Percentage), 27 countries, 2024: Eurostat Circular material use rate (env_ac_cur)",
+   "color": "rgb(200,200,200)",
+   "family": "emission_accounts",
+   "colour": "w10c_eu_env_ac_cur",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Circular material use rate",
+     "source": "Eurostat Circular material use rate (env_ac_cur) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
    "id": "colour-w10c_eu_env_ac_mfa",
    "name": "Material flow accounts: Domestic extraction; Total; Thousand tonnes",
    "category": "Industry & demand",
@@ -4594,6 +5540,44 @@
    ]
   },
   {
+   "id": "colour-w10c_eu_env_ac_rp",
+   "name": "Resource productivity: Euro per kilogram",
+   "category": "Emissions",
+   "description": "Resource productivity: Euro per kilogram (Euro per kilogram), 34 countries, 2024: Eurostat Resource productivity (env_ac_rp)",
+   "color": "rgb(200,200,200)",
+   "family": "emission_accounts",
+   "colour": "w10c_eu_env_ac_rp",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Resource productivity: Euro per kilogram",
+     "source": "Eurostat Resource productivity (env_ac_rp) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_env_ac_sd",
+   "name": "Material flows for circular economy - Sankey diagram data: Imports of waste for recovery - recycling; Total; Thousand tonnes",
+   "category": "Emissions",
+   "description": "Material flows for circular economy - Sankey diagram data: Imports of waste for recovery - recycling; Total; Thousand tonnes (Thousand tonnes), 27 countries, 2024: Eurostat Material flows for circular economy - Sankey diagram data (env_ac_sd)",
+   "color": "rgb(200,200,200)",
+   "family": "emission_accounts",
+   "colour": "w10c_eu_env_ac_sd",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Material flows for circular economy - Sankey diagram data: Imports of waste for recovery - recycling; Total; Thousand tonnes",
+     "source": "Eurostat Material flows for circular economy - Sankey diagram data (env_ac_sd) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
    "id": "colour-w10c_eu_env_ac_tax",
    "name": "Environmental tax revenues: Total environmental taxes; Million euro",
    "category": "Prices",
@@ -4646,6 +5630,25 @@
      ],
      "what": "Environmental taxes by economic activity (NACE Rev. 2): Total environmental taxes; Million euro; All NACE activities plus households, non-residents and not allocated",
      "source": "Eurostat Environmental taxes by economic activity (NACE Rev. 2) (env_ac_taxind2) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_env_esst_rw",
+   "name": "Environmental subsidies and similar transfers from the Rest of the World to the domestic economy, by environmental activity and ESA category of transfer: Subsidies; Total environmental protection activities; Million euro",
+   "category": "Emissions",
+   "description": "Environmental subsidies and similar transfers from the Rest of the World to the domestic economy, by environmental activity and ESA category of transfer: Subsidies; Total environmental protection activities; Million euro (Million euro), 20 countries, 2022: Eurostat Environmental subsidies and similar transfers from the Rest of the World to the domestic economy, by environmental activity and ESA category of transfer (2011-2022) (env_esst_rw)",
+   "color": "rgb(200,200,200)",
+   "family": "emission_accounts",
+   "colour": "w10c_eu_env_esst_rw",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Environmental subsidies and similar transfers from the Rest of the World to the domestic economy, by environmental activity and ESA category of transfer: Subsidies; Total environmental protection activities; Million euro",
+     "source": "Eurostat Environmental subsidies and similar transfers from the Rest of the World to the domestic economy, by environmental activity and ESA category of transfer (2011-2022) (env_esst_rw) (CC BY 4.0 (Eurostat))",
      "doc": "Wave 10 sources"
     }
    ]
@@ -4784,6 +5787,1222 @@
    ]
   },
   {
+   "id": "colour-w10c_eu_nrg_bal_s",
+   "name": "Simplified energy balances: Total energy supply; Total; Thousand tonnes of oil equivalent",
+   "category": "Energy statistics",
+   "description": "Simplified energy balances: Total energy supply; Total; Thousand tonnes of oil equivalent (Thousand tonnes of oil equivalent), 38 countries, 2024: Eurostat Simplified energy balances (nrg_bal_s)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_bal_s",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Simplified energy balances: Total energy supply; Total; Thousand tonnes of oil equivalent",
+     "source": "Eurostat Simplified energy balances (nrg_bal_s) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_bm",
+   "name": "Supply of biomass - annual data: Thousand cubic metres; Indigenous production; Solid biofuels",
+   "category": "Energy statistics",
+   "description": "Supply of biomass - annual data: Thousand cubic metres; Indigenous production; Solid biofuels (Thousand cubic metres), 34 countries, 2023: Eurostat Biomass supply (nrg_cb_bm)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_bm",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Supply of biomass - annual data: Thousand cubic metres; Indigenous production; Solid biofuels",
+     "source": "Eurostat Biomass supply (nrg_cb_bm) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_cosm",
+   "name": "Crude oil supply - monthly data: Production; Volume - thousand barrels",
+   "category": "Energy statistics",
+   "description": "Crude oil supply - monthly data: Production; Volume - thousand barrels (), 29 countries, 2026-08: Eurostat Crude oil supply - monthly data (nrg_cb_cosm)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_cosm",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Crude oil supply - monthly data: Production; Volume - thousand barrels",
+     "source": "Eurostat Crude oil supply - monthly data (nrg_cb_cosm) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_e",
+   "name": "Electricity supply, transformation and consumption - annual data: Imports",
+   "category": "Energy statistics",
+   "description": "Electricity supply, transformation and consumption - annual data: Imports (Gigawatt-hour), 39 countries, 2024: Eurostat Electricity supply, transformation and consumption - annual data (nrg_cb_e)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_e",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electricity supply, transformation and consumption - annual data: Imports",
+     "source": "Eurostat Electricity supply, transformation and consumption - annual data (nrg_cb_e) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_gas",
+   "name": "Gas supply, transformation and consumption - annual data: Indigenous production; Manufactured gases; Terajoule (gross calorific value - GCV)",
+   "category": "Energy statistics",
+   "description": "Gas supply, transformation and consumption - annual data: Indigenous production; Manufactured gases; Terajoule (gross calorific value - GCV) (Terajoule (gross calorific value - GCV)), 37 countries, 2025: Eurostat Gas supply, transformation and consumption - annual data (nrg_cb_gas)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_gas",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Gas supply, transformation and consumption - annual data: Indigenous production; Manufactured gases; Terajoule (gross calorific value - GCV)",
+     "source": "Eurostat Gas supply, transformation and consumption - annual data (nrg_cb_gas) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_gasm",
+   "name": "Gas supply, transformation and consumption - monthly data: Imports; Terajoule (gross calorific value - GCV)",
+   "category": "Energy statistics",
+   "description": "Gas supply, transformation and consumption - monthly data: Imports; Terajoule (gross calorific value - GCV) (Terajoule (gross calorific value - GCV)), 36 countries, 2026-08: Eurostat Gas supply, transformation and consumption - monthly data (nrg_cb_gasm)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_gasm",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Gas supply, transformation and consumption - monthly data: Imports; Terajoule (gross calorific value - GCV)",
+     "source": "Eurostat Gas supply, transformation and consumption - monthly data (nrg_cb_gasm) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_h",
+   "name": "Derived heat supply, transformation and consumption: Imports",
+   "category": "Energy statistics",
+   "description": "Derived heat supply, transformation and consumption: Imports (Terajoule), 39 countries, 2024: Eurostat Derived heat supply, transformation and consumption (nrg_cb_h)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_h",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Derived heat supply, transformation and consumption: Imports",
+     "source": "Eurostat Derived heat supply, transformation and consumption (nrg_cb_h) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_h2",
+   "name": "Supply, transformation and consumption of hydrogen, ammonia and e-fuels: International maritime bunkers; Ammonia (NH3)",
+   "category": "Energy statistics",
+   "description": "Supply, transformation and consumption of hydrogen, ammonia and e-fuels: International maritime bunkers; Ammonia (NH3) (Terajoule), 32 countries, 2024: Eurostat Hydrogen, ammonia and e-fuels supply, transformation and consumption (nrg_cb_h2)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_h2",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Supply, transformation and consumption of hydrogen, ammonia and e-fuels: International maritime bunkers; Ammonia (NH3)",
+     "source": "Eurostat Hydrogen, ammonia and e-fuels supply, transformation and consumption (nrg_cb_h2) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_rw",
+   "name": "Renewables and wastes supply, transformation and consumption: Indigenous production; Charcoal; Thousand tonnes",
+   "category": "Energy statistics",
+   "description": "Renewables and wastes supply, transformation and consumption: Indigenous production; Charcoal; Thousand tonnes (Thousand tonnes), 39 countries, 2024: Eurostat Renewables and wastes supply, transformation and consumption (nrg_cb_rw)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_rw",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Renewables and wastes supply, transformation and consumption: Indigenous production; Charcoal; Thousand tonnes",
+     "source": "Eurostat Renewables and wastes supply, transformation and consumption (nrg_cb_rw) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_sff",
+   "name": "Solid fossil fuels supply, transformation and consumption - annual data: Indigenous production; Solid fossil fuels",
+   "category": "Energy statistics",
+   "description": "Solid fossil fuels supply, transformation and consumption - annual data: Indigenous production; Solid fossil fuels (Thousand tonnes), 37 countries, 2025: Eurostat Solid fossil fuels supply, transformation and consumption - annual data (nrg_cb_sff)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_sff",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Solid fossil fuels supply, transformation and consumption - annual data: Indigenous production; Solid fossil fuels",
+     "source": "Eurostat Solid fossil fuels supply, transformation and consumption - annual data (nrg_cb_sff) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_cb_sffm",
+   "name": "Solid fossil fuels supply, transformation and consumption - monthly data: Imports; Hard coal",
+   "category": "Energy statistics",
+   "description": "Solid fossil fuels supply, transformation and consumption - monthly data: Imports; Hard coal (Thousand tonnes), 36 countries, 2026-07: Eurostat Solid fossil fuels supply, transformation and consumption - monthly data (nrg_cb_sffm)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_cb_sffm",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Solid fossil fuels supply, transformation and consumption - monthly data: Imports; Hard coal",
+     "source": "Eurostat Solid fossil fuels supply, transformation and consumption - monthly data (nrg_cb_sffm) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_chdd_a",
+   "name": "Cooling and heating degree days by country - annual data: Heating degree days",
+   "category": "Energy statistics",
+   "description": "Cooling and heating degree days by country - annual data: Heating degree days (Number), 30 countries, 2025: Eurostat Cooling and heating degree days by country - annual data (nrg_chdd_a)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_chdd_a",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Cooling and heating degree days by country - annual data: Heating degree days",
+     "source": "Eurostat Cooling and heating degree days by country - annual data (nrg_chdd_a) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_chdd_m",
+   "name": "Cooling and heating degree days by country - monthly data: Heating degree days",
+   "category": "Energy statistics",
+   "description": "Cooling and heating degree days by country - monthly data: Heating degree days (Number), 30 countries, 2025-12: Eurostat Cooling and heating degree days by country - monthly data (nrg_chdd_m)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_chdd_m",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Cooling and heating degree days by country - monthly data: Heating degree days",
+     "source": "Eurostat Cooling and heating degree days by country - monthly data (nrg_chdd_m) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_chddr2_m",
+   "name": "Cooling and heating degree days by NUTS 3 region - monthly data: Heating degree days",
+   "category": "Energy statistics",
+   "description": "Cooling and heating degree days by NUTS 3 region - monthly data: Heating degree days (Number), 30 countries, 2025-12: Eurostat Cooling and heating degree days by NUTS 3 region - monthly data (nrg_chddr2_m)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_chddr2_m",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Cooling and heating degree days by NUTS 3 region - monthly data: Heating degree days",
+     "source": "Eurostat Cooling and heating degree days by NUTS 3 region - monthly data (nrg_chddr2_m) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_chp_cpfe",
+   "name": "Capacities, production, fuel used and energy savings in combined heat and power (CHP) by type of plant, generation technologies and primary energy savings levels: Gigawatt-hour; Gross electricity production; Combined heat and power units; Total; All levels",
+   "category": "Energy statistics",
+   "description": "Capacities, production, fuel used and energy savings in combined heat and power (CHP) by type of plant, generation technologies and primary energy savings levels: Gigawatt-hour; Gross electricity production; Combined heat and power units; Total; All levels (Gigawatt-hour), 27 countries, 2024: Eurostat Combined heat and power capacity, production, fuel use and primary energy savings (nrg_chp_cpfe)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_chp_cpfe",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Capacities, production, fuel used and energy savings in combined heat and power (CHP) by type of plant, generation technologies and primary energy savings levels: Gigawatt-hour; Gross electricity production; Combined heat and power units; Total; All levels",
+     "source": "Eurostat Combined heat and power capacity, production, fuel use and primary energy savings (nrg_chp_cpfe) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_chp_f",
+   "name": "Fuel used in combined heat and power: Terajoule (net calorific value - NCV); Total",
+   "category": "Energy statistics",
+   "description": "Fuel used in combined heat and power: Terajoule (net calorific value - NCV); Total (Terajoule (net calorific value - NCV)), 27 countries, 2024: Eurostat Combined heat and power fuel use (nrg_chp_f)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_chp_f",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Fuel used in combined heat and power: Terajoule (net calorific value - NCV); Total",
+     "source": "Eurostat Combined heat and power fuel use (nrg_chp_f) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_chp_n",
+   "name": "Number of combined heat and power (CHP) units by type of plant, generation technologies and primary energy savings levels: Combined heat and power units; Total; High",
+   "category": "Energy statistics",
+   "description": "Number of combined heat and power (CHP) units by type of plant, generation technologies and primary energy savings levels: Combined heat and power units; Total; High (Number), 27 countries, 2024: Eurostat Combined heat and power units (nrg_chp_n)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_chp_n",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Number of combined heat and power (CHP) units by type of plant, generation technologies and primary energy savings levels: Combined heat and power units; Total; High",
+     "source": "Eurostat Combined heat and power units (nrg_chp_n) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_d_cv",
+   "name": "Final energy consumption by sector - calorific values: Final consumption - other sectors - households - energy use; Oil and petroleum products",
+   "category": "Energy statistics",
+   "description": "Final energy consumption by sector - calorific values: Final consumption - other sectors - households - energy use; Oil and petroleum products (Megajoule per tonne (net calorific value - NCV)), 37 countries, 2024: Eurostat Final energy consumption by sector - calorific values (nrg_d_cv)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_d_cv",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Final energy consumption by sector - calorific values: Final consumption - other sectors - households - energy use; Oil and petroleum products",
+     "source": "Eurostat Final energy consumption by sector - calorific values (nrg_d_cv) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_d_hhq",
+   "name": "Disaggregated final energy consumption in households - quantities: Final consumption - other sectors - households - energy use; Solid fossil fuels, peat, peat products, oil shale and oil sands; Thousand tonnes",
+   "category": "Energy statistics",
+   "description": "Disaggregated final energy consumption in households - quantities: Final consumption - other sectors - households - energy use; Solid fossil fuels, peat, peat products, oil shale and oil sands; Thousand tonnes (Thousand tonnes), 37 countries, 2024: Eurostat Households energy consumption - quantities (nrg_d_hhq)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_d_hhq",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Disaggregated final energy consumption in households - quantities: Final consumption - other sectors - households - energy use; Solid fossil fuels, peat, peat products, oil shale and oil sands; Thousand tonnes",
+     "source": "Eurostat Households energy consumption - quantities (nrg_d_hhq) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_d_indq_n",
+   "name": "Disaggregated final energy consumption in industry by NACE Rev. 2 activity - quantities: Terajoule (net calorific value - NCV); Gas works gas; Total - all NACE activities",
+   "category": "Energy statistics",
+   "description": "Disaggregated final energy consumption in industry by NACE Rev. 2 activity - quantities: Terajoule (net calorific value - NCV); Gas works gas; Total - all NACE activities (Terajoule (net calorific value - NCV)), 33 countries, 2024: Eurostat Industry energy consumption by NACE Rev. 2 activity - quantities (nrg_d_indq_n)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_d_indq_n",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Disaggregated final energy consumption in industry by NACE Rev. 2 activity - quantities: Terajoule (net calorific value - NCV); Gas works gas; Total - all NACE activities",
+     "source": "Eurostat Industry energy consumption by NACE Rev. 2 activity - quantities (nrg_d_indq_n) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_d_serq_n",
+   "name": "Disaggregated final energy consumption in services by NACE Rev. 2 activity – quantities: Thousand tonnes; Solid fossil fuels, peat, peat products, oil shale and oil sands; Total - all NACE activities",
+   "category": "Energy statistics",
+   "description": "Disaggregated final energy consumption in services by NACE Rev. 2 activity – quantities: Thousand tonnes; Solid fossil fuels, peat, peat products, oil shale and oil sands; Total - all NACE activities (Thousand tonnes), 32 countries, 2024: Eurostat Services energy consumption by NACE Rev. 2 activity - quantities (nrg_d_serq_n)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_d_serq_n",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Disaggregated final energy consumption in services by NACE Rev. 2 activity – quantities: Thousand tonnes; Solid fossil fuels, peat, peat products, oil shale and oil sands; Total - all NACE activities",
+     "source": "Eurostat Services energy consumption by NACE Rev. 2 activity - quantities (nrg_d_serq_n) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_d_traq",
+   "name": "Disaggregated final energy consumption in transport by mode of transport - quantities: Total; Solid fossil fuels; Final consumption - transport sector - rail - energy use; Thousand tonnes",
+   "category": "Energy statistics",
+   "description": "Disaggregated final energy consumption in transport by mode of transport - quantities: Total; Solid fossil fuels; Final consumption - transport sector - rail - energy use; Thousand tonnes (Thousand tonnes), 32 countries, 2023: Eurostat Transport energy consumption by mode of transport - quantities (nrg_d_traq)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_d_traq",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Disaggregated final energy consumption in transport by mode of transport - quantities: Total; Solid fossil fuels; Final consumption - transport sector - rail - energy use; Thousand tonnes",
+     "source": "Eurostat Transport energy consumption by mode of transport - quantities (nrg_d_traq) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_dhdc_c",
+   "name": "Customers by type of district network and efficiency of network: High; District heating - hot water",
+   "category": "Energy statistics",
+   "description": "Customers by type of district network and efficiency of network: High; District heating - hot water (Number), 25 countries, 2024: Eurostat District heating and cooling networks' customers (nrg_dhdc_c)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_dhdc_c",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Customers by type of district network and efficiency of network: High; District heating - hot water",
+     "source": "Eurostat District heating and cooling networks' customers (nrg_dhdc_c) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_dhdc_cpl",
+   "name": "Capacities, productions and losses in district networks by type of network and type of plant: Terajoule; Net production; District heating; Total",
+   "category": "Energy statistics",
+   "description": "Capacities, productions and losses in district networks by type of network and type of plant: Terajoule; Net production; District heating; Total (Terajoule), 28 countries, 2024: Eurostat District heating and cooling networks' capacity, productions and losses (nrg_dhdc_cpl)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_dhdc_cpl",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Capacities, productions and losses in district networks by type of network and type of plant: Terajoule; Net production; District heating; Total",
+     "source": "Eurostat District heating and cooling networks' capacity, productions and losses (nrg_dhdc_cpl) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_dhdc_e",
+   "name": "Energy removed from district networks by customers, type of networks and efficiency of network: All customers; Low; District cooling",
+   "category": "Energy statistics",
+   "description": "Energy removed from district networks by customers, type of networks and efficiency of network: All customers; Low; District cooling (Terajoule), 26 countries, 2024: Eurostat District heating and cooling networks' energy supply (nrg_dhdc_e)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_dhdc_e",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Energy removed from district networks by customers, type of networks and efficiency of network: All customers; Low; District cooling",
+     "source": "Eurostat District heating and cooling networks' energy supply (nrg_dhdc_e) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_dhdc_n",
+   "name": "Number and length of district networks by type of network and efficiency of network: Number; Low; District cooling",
+   "category": "Energy statistics",
+   "description": "Number and length of district networks by type of network and efficiency of network: Number; Low; District cooling (Number), 26 countries, 2024: Eurostat District heating and cooling networks and their length (nrg_dhdc_n)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_dhdc_n",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Number and length of district networks by type of network and efficiency of network: Number; Low; District cooling",
+     "source": "Eurostat District heating and cooling networks and their length (nrg_dhdc_n) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_ahbtc",
+   "name": "Heat pumps - ambient heat captured by technology and climate: Total",
+   "category": "Energy statistics",
+   "description": "Heat pumps - ambient heat captured by technology and climate: Total (Gigawatt-hour), 37 countries, 2024: Eurostat Heat pumps' ambient heat captured by technology and climate (nrg_ind_ahbtc)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_ahbtc",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Heat pumps - ambient heat captured by technology and climate: Total",
+     "source": "Eurostat Heat pumps' ambient heat captured by technology and climate (nrg_ind_ahbtc) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_cotd",
+   "name": "Calculation of overall target - details: Total; Gross final consumption - heating and cooling - energy use; Thousand tonnes of oil equivalent",
+   "category": "Energy statistics",
+   "description": "Calculation of overall target - details: Total; Gross final consumption - heating and cooling - energy use; Thousand tonnes of oil equivalent (Thousand tonnes of oil equivalent), 37 countries, 2024: Eurostat Overall renewable energy share - detailed components (nrg_ind_cotd)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_cotd",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Calculation of overall target - details: Total; Gross final consumption - heating and cooling - energy use; Thousand tonnes of oil equivalent",
+     "source": "Eurostat Overall renewable energy share - detailed components (nrg_ind_cotd) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_di",
+   "name": "Diversity index of energy supply",
+   "category": "Energy statistics",
+   "description": "Diversity index of energy supply (Index), 27 countries, 2024: Eurostat Diversity index of energy supply (nrg_ind_di)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_di",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Diversity index of energy supply",
+     "source": "Eurostat Diversity index of energy supply (nrg_ind_di) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_difec",
+   "name": "Diversity index of final energy consumption by sector: Final consumption - energy use",
+   "category": "Energy statistics",
+   "description": "Diversity index of final energy consumption by sector: Final consumption - energy use (Index), 27 countries, 2024: Eurostat Diversity index of final energy consumption by sector (nrg_ind_difec)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_difec",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Diversity index of final energy consumption by sector: Final consumption - energy use",
+     "source": "Eurostat Diversity index of final energy consumption by sector (nrg_ind_difec) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_eff",
+   "name": "Energy efficiency: Primary energy consumption - Energy Efficiency Directive; Million tonnes of oil equivalent",
+   "category": "Energy statistics",
+   "description": "Energy efficiency: Primary energy consumption - Energy Efficiency Directive; Million tonnes of oil equivalent (Million tonnes of oil equivalent), 37 countries, 2024: Eurostat Primary and final energy consumption (nrg_ind_eff)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_eff",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Energy efficiency: Primary energy consumption - Energy Efficiency Directive; Million tonnes of oil equivalent",
+     "source": "Eurostat Primary and final energy consumption (nrg_ind_eff) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_ei",
+   "name": "Energy intensity: Energy intensity of GDP in chain linked volumes (2010); Kilograms of oil equivalent (KGOE) per thousand euro",
+   "category": "Energy statistics",
+   "description": "Energy intensity: Energy intensity of GDP in chain linked volumes (2010); Kilograms of oil equivalent (KGOE) per thousand euro (Kilograms of oil equivalent (KGOE) per thousand euro), 35 countries, 2024: Eurostat Energy intensity (nrg_ind_ei)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_ei",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Energy intensity: Energy intensity of GDP in chain linked volumes (2010); Kilograms of oil equivalent (KGOE) per thousand euro",
+     "source": "Eurostat Energy intensity (nrg_ind_ei) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_ep",
+   "name": "Energy productivity: Euro per kilogram of oil equivalent (KGOE)",
+   "category": "Energy statistics",
+   "description": "Energy productivity: Euro per kilogram of oil equivalent (KGOE) (Euro per kilogram of oil equivalent (KGOE)), 35 countries, 2024: Eurostat Energy productivity (nrg_ind_ep)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_ep",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Energy productivity: Euro per kilogram of oil equivalent (KGOE)",
+     "source": "Eurostat Energy productivity (nrg_ind_ep) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_epsc",
+   "name": "Electricity production and self-consumption: Household; Production; Natural gas",
+   "category": "Energy statistics",
+   "description": "Electricity production and self-consumption: Household; Production; Natural gas (Gigawatt-hour), 38 countries, 2024: Eurostat Electricity production and self-consumption (nrg_ind_epsc)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_epsc",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electricity production and self-consumption: Household; Production; Natural gas",
+     "source": "Eurostat Electricity production and self-consumption (nrg_ind_epsc) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_esc",
+   "name": "Available energy, energy supply and final energy consumption per capita: Total energy supply; Kilograms of oil equivalent (KGOE) per capita",
+   "category": "Energy statistics",
+   "description": "Available energy, energy supply and final energy consumption per capita: Total energy supply; Kilograms of oil equivalent (KGOE) per capita (Kilograms of oil equivalent (KGOE) per capita), 37 countries, 2024: Eurostat Available energy, energy supply and final energy consumption per capita (nrg_ind_esc)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_esc",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Available energy, energy supply and final energy consumption per capita: Total energy supply; Kilograms of oil equivalent (KGOE) per capita",
+     "source": "Eurostat Available energy, energy supply and final energy consumption per capita (nrg_ind_esc) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_esr",
+   "name": "Energy self-reliance",
+   "category": "Energy statistics",
+   "description": "Energy self-reliance (Percentage), 27 countries, 2024: Eurostat Energy self-reliance (nrg_ind_esr)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_esr",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Energy self-reliance",
+     "source": "Eurostat Energy self-reliance (nrg_ind_esr) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_fecf",
+   "name": "Share of fuels in final energy consumption: Final consumption - energy use; Solid fossil fuels",
+   "category": "Energy statistics",
+   "description": "Share of fuels in final energy consumption: Final consumption - energy use; Solid fossil fuels (Percentage), 37 countries, 2024: Eurostat Share of fuels in final energy consumption (nrg_ind_fecf)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_fecf",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Share of fuels in final energy consumption: Final consumption - energy use; Solid fossil fuels",
+     "source": "Eurostat Share of fuels in final energy consumption (nrg_ind_fecf) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_fechm2",
+   "name": "Final energy consumption in households – quantities per square meter: Kilograms of oil equivalent (KGOE) per square meter",
+   "category": "Energy statistics",
+   "description": "Final energy consumption in households – quantities per square meter: Kilograms of oil equivalent (KGOE) per square meter (Kilograms of oil equivalent (KGOE) per square meter), 28 countries, 2023: Eurostat Households energy consumption - quantities per square meter (nrg_ind_fechm2)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_fechm2",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Final energy consumption in households – quantities per square meter: Kilograms of oil equivalent (KGOE) per square meter",
+     "source": "Eurostat Households energy consumption - quantities per square meter (nrg_ind_fechm2) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_ffgae",
+   "name": "Share of fossil fuels in gross available energy",
+   "category": "Energy statistics",
+   "description": "Share of fossil fuels in gross available energy (Percentage), 37 countries, 2024: Eurostat Share of fossil fuels in gross available energy (nrg_ind_ffgae)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_ffgae",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Share of fossil fuels in gross available energy",
+     "source": "Eurostat Share of fossil fuels in gross available energy (nrg_ind_ffgae) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_hpind",
+   "name": "Heat pumps – ambient heat: Total",
+   "category": "Energy statistics",
+   "description": "Heat pumps – ambient heat: Total (Terajoule), 39 countries, 2024: Eurostat Heat pumps - ambient heat (nrg_ind_hpind)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_hpind",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Heat pumps – ambient heat: Total",
+     "source": "Eurostat Heat pumps - ambient heat (nrg_ind_hpind) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_hptctc",
+   "name": "Heat pumps - technical characteristics by technology and climate: Seasonal performance factor; Aerothermal - air-air electrical - cold climate; Number",
+   "category": "Energy statistics",
+   "description": "Heat pumps - technical characteristics by technology and climate: Seasonal performance factor; Aerothermal - air-air electrical - cold climate; Number (Number), 37 countries, 2024: Eurostat Heat pumps' technical characteristics by technology and climate (nrg_ind_hptctc)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_hptctc",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Heat pumps - technical characteristics by technology and climate: Seasonal performance factor; Aerothermal - air-air electrical - cold climate; Number",
+     "source": "Eurostat Heat pumps' technical characteristics by technology and climate (nrg_ind_hptctc) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_ibmg",
+   "name": "Imports of biomethane through the grid: Total",
+   "category": "Energy statistics",
+   "description": "Imports of biomethane through the grid: Total (Terajoule (gross calorific value - GCV)), 37 countries, 2024: Eurostat Biomethane imports through the grid (nrg_ind_ibmg)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_ibmg",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Imports of biomethane through the grid: Total",
+     "source": "Eurostat Biomethane imports through the grid (nrg_ind_ibmg) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_id",
+   "name": "Energy imports dependency: Total",
+   "category": "Energy statistics",
+   "description": "Energy imports dependency: Total (Percentage), 37 countries, 2024: Eurostat Energy imports dependency (nrg_ind_id)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_id",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Energy imports dependency: Total",
+     "source": "Eurostat Energy imports dependency (nrg_ind_id) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_id3cf",
+   "name": "Import dependency on third countries by fuel type: Total",
+   "category": "Energy statistics",
+   "description": "Import dependency on third countries by fuel type: Total (Percentage), 33 countries, 2023: Eurostat Import dependency on third countries by fuel type (nrg_ind_id3cf)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_id3cf",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Import dependency on third countries by fuel type: Total",
+     "source": "Eurostat Import dependency on third countries by fuel type (nrg_ind_id3cf) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_idooil",
+   "name": "Oil and petroleum products import dependency by country of origin: Norway",
+   "category": "Energy statistics",
+   "description": "Oil and petroleum products import dependency by country of origin: Norway (Percentage), 36 countries, 2023: Eurostat Oil and petroleum products import dependency by country of origin (nrg_ind_idooil)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_idooil",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Oil and petroleum products import dependency by country of origin: Norway",
+     "source": "Eurostat Oil and petroleum products import dependency by country of origin (nrg_ind_idooil) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_ioc",
+   "name": "Energy import origin concentration index by fuel: Total",
+   "category": "Energy statistics",
+   "description": "Energy import origin concentration index by fuel: Total (Index), 27 countries, 2024: Eurostat Energy import origin concentration index by fuel (nrg_ind_ioc)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_ioc",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Energy import origin concentration index by fuel: Total",
+     "source": "Eurostat Energy import origin concentration index by fuel (nrg_ind_ioc) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_peh",
+   "name": "Electricity and derived heat gross and net production: Total; Total; Gross electricity production; Total; Gigawatt-hour",
+   "category": "Energy statistics",
+   "description": "Electricity and derived heat gross and net production: Total; Total; Gross electricity production; Total; Gigawatt-hour (Gigawatt-hour), 38 countries, 2024: Eurostat Electricity and derived heat gross and net production (nrg_ind_peh)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_peh",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electricity and derived heat gross and net production: Total; Total; Gross electricity production; Total; Gigawatt-hour",
+     "source": "Eurostat Electricity and derived heat gross and net production (nrg_ind_peh) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_pehap",
+   "name": "Electricity and heat production: Total; Production; Electricity; Gigawatt-hour",
+   "category": "Energy statistics",
+   "description": "Electricity and heat production: Total; Production; Electricity; Gigawatt-hour (Gigawatt-hour), 38 countries, 2024: Eurostat Electricity and heat production (nrg_ind_pehap)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_pehap",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electricity and heat production: Total; Production; Electricity; Gigawatt-hour",
+     "source": "Eurostat Electricity and heat production (nrg_ind_pehap) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_pehnf",
+   "name": "Electricity and derived heat gross production from non-combustible fuels: Total; Total; Gross electricity production; Hydro; Gigawatt-hour",
+   "category": "Energy statistics",
+   "description": "Electricity and derived heat gross production from non-combustible fuels: Total; Total; Gross electricity production; Hydro; Gigawatt-hour (Gigawatt-hour), 39 countries, 2024: Eurostat Electricity and derived heat gross production from non-combustible fuels (nrg_ind_pehnf)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_pehnf",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electricity and derived heat gross production from non-combustible fuels: Total; Total; Gross electricity production; Hydro; Gigawatt-hour",
+     "source": "Eurostat Electricity and derived heat gross production from non-combustible fuels (nrg_ind_pehnf) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_psth2",
+   "name": "Production by source and technology of hydrogen, ammonia and e-fuels: NG_CCS; Ammonia (NH3)",
+   "category": "Energy statistics",
+   "description": "Production by source and technology of hydrogen, ammonia and e-fuels: NG_CCS; Ammonia (NH3) (Terajoule), 32 countries, 2024: Eurostat Hydrogen, ammonia and e-fuels production (nrg_ind_psth2)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_psth2",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Production by source and technology of hydrogen, ammonia and e-fuels: NG_CCS; Ammonia (NH3)",
+     "source": "Eurostat Hydrogen, ammonia and e-fuels production (nrg_ind_psth2) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_rcaebt",
+   "name": "Renewable cooling - ambient energy by technology: Total; Primary production - Renewable Energy Directive",
+   "category": "Energy statistics",
+   "description": "Renewable cooling - ambient energy by technology: Total; Primary production - Renewable Energy Directive (Gigawatt-hour), 37 countries, 2024: Eurostat Renewable cooling ambient energy (nrg_ind_rcaebt)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_rcaebt",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Renewable cooling - ambient energy by technology: Total; Primary production - Renewable Energy Directive",
+     "source": "Eurostat Renewable cooling ambient energy (nrg_ind_rcaebt) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_rctcbt",
+   "name": "Renewable cooling - technical characteristics by technology: Individual cooling below threshold - process cooling; Activity factor; Number",
+   "category": "Energy statistics",
+   "description": "Renewable cooling - technical characteristics by technology: Individual cooling below threshold - process cooling; Activity factor; Number (Number), 37 countries, 2024: Eurostat Renewable cooling technical characteristics (nrg_ind_rctcbt)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_rctcbt",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Renewable cooling - technical characteristics by technology: Individual cooling below threshold - process cooling; Activity factor; Number",
+     "source": "Eurostat Renewable cooling technical characteristics (nrg_ind_rctcbt) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_re",
+   "name": "Rate of electrification: Energy sector - energy use",
+   "category": "Energy statistics",
+   "description": "Rate of electrification: Energy sector - energy use (Percentage), 38 countries, 2022: Eurostat Rate of electrification (nrg_ind_re)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_re",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Rate of electrification: Energy sector - energy use",
+     "source": "Eurostat Rate of electrification (nrg_ind_re) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_ren",
+   "name": "Main indicators - share of renewable energy: Renewable energy - overall",
+   "category": "Energy statistics",
+   "description": "Main indicators - share of renewable energy: Renewable energy - overall (Percentage), 37 countries, 2024: Eurostat Renewable energy share (nrg_ind_ren)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_ren",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Main indicators - share of renewable energy: Renewable energy - overall",
+     "source": "Eurostat Renewable energy share (nrg_ind_ren) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_resovsh",
+   "name": "Renewable energy sources in overall share: Gross final consumption - energy use - overall target calculation without aviation cap adjustment; Renewables and biofuels; Thousand tonnes of oil equivalent",
+   "category": "Energy statistics",
+   "description": "Renewable energy sources in overall share: Gross final consumption - energy use - overall target calculation without aviation cap adjustment; Renewables and biofuels; Thousand tonnes of oil equivalent (Thousand tonnes of oil equivalent), 37 countries, 2024: Eurostat Renewable energy sources in overall share (nrg_ind_resovsh)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_resovsh",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Renewable energy sources in overall share: Gross final consumption - energy use - overall target calculation without aviation cap adjustment; Renewables and biofuels; Thousand tonnes of oil equivalent",
+     "source": "Eurostat Renewable energy sources in overall share (nrg_ind_resovsh) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_stjpjss",
+   "name": "Statistical transfers, joint projects and joint support schemes: Statistical transfers between Member States",
+   "category": "Energy statistics",
+   "description": "Statistical transfers, joint projects and joint support schemes: Statistical transfers between Member States (Thousand tonnes of oil equivalent), 37 countries, 2024: Eurostat Renewable energy cooperation mechanisms - statistical transfers, joint projects and joint support schemes (nrg_ind_stjpjss)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_stjpjss",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Statistical transfers, joint projects and joint support schemes: Statistical transfers between Member States",
+     "source": "Eurostat Renewable energy cooperation mechanisms - statistical transfers, joint projects and joint support schemes (nrg_ind_stjpjss) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_urhcd",
+   "name": "Use of renewables for heating and cooling - details: Ambient heat (heat pumps); Primary production - Renewable Energy Directive; Thousand tonnes of oil equivalent",
+   "category": "Energy statistics",
+   "description": "Use of renewables for heating and cooling - details: Ambient heat (heat pumps); Primary production - Renewable Energy Directive; Thousand tonnes of oil equivalent (Thousand tonnes of oil equivalent), 37 countries, 2024: Eurostat Renewable energy share in heating and cooling - detailed components (nrg_ind_urhcd)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_urhcd",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Use of renewables for heating and cooling - details: Ambient heat (heat pumps); Primary production - Renewable Energy Directive; Thousand tonnes of oil equivalent",
+     "source": "Eurostat Renewable energy share in heating and cooling - detailed components (nrg_ind_urhcd) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ind_urtd",
+   "name": "Use of renewables for transport - details: Electricity; Energy sector - manufacturing of non-biological fuels of renewable origin used in transport - energy use; Thousand tonnes of oil equivalent",
+   "category": "Energy statistics",
+   "description": "Use of renewables for transport - details: Electricity; Energy sector - manufacturing of non-biological fuels of renewable origin used in transport - energy use; Thousand tonnes of oil equivalent (Thousand tonnes of oil equivalent), 37 countries, 2024: Eurostat Renewable energy share in transport - detailed components (nrg_ind_urtd)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ind_urtd",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Use of renewables for transport - details: Electricity; Energy sector - manufacturing of non-biological fuels of renewable origin used in transport - energy use; Thousand tonnes of oil equivalent",
+     "source": "Eurostat Renewable energy share in transport - detailed components (nrg_ind_urtd) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_inf_bt",
+   "name": "Batteries power capacities and energy storage: Batteries - power capacity; Batteries (1 MWh - 10 MWh); Megawatt",
+   "category": "Energy statistics",
+   "description": "Batteries power capacities and energy storage: Batteries - power capacity; Batteries (1 MWh - 10 MWh); Megawatt (Megawatt), 38 countries, 2024: Eurostat Batteries power capacities and energy storage (nrg_inf_bt)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_inf_bt",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Batteries power capacities and energy storage: Batteries - power capacity; Batteries (1 MWh - 10 MWh); Megawatt",
+     "source": "Eurostat Batteries power capacities and energy storage (nrg_inf_bt) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_inf_epc",
+   "name": "Electricity production capacities: Total; Net maximum electrical capacity; Total",
+   "category": "Energy statistics",
+   "description": "Electricity production capacities: Total; Net maximum electrical capacity; Total (Megawatt), 38 countries, 2024: Eurostat Electricity production capacities (nrg_inf_epc)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_inf_epc",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electricity production capacities: Total; Net maximum electrical capacity; Total",
+     "source": "Eurostat Electricity production capacities (nrg_inf_epc) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_inf_epct",
+   "name": "Electricity production capacities for combustible fuels: Main activity producers; Steam",
+   "category": "Energy statistics",
+   "description": "Electricity production capacities for combustible fuels: Main activity producers; Steam (Megawatt), 38 countries, 2024: Eurostat Electricity production capacities for combustible fuels (nrg_inf_epct)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_inf_epct",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electricity production capacities for combustible fuels: Main activity producers; Steam",
+     "source": "Eurostat Electricity production capacities for combustible fuels (nrg_inf_epct) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_inf_h2stpc",
+   "name": "Production capacity of hydrogen, ammonia and e-fuels: Production capacity; AMM; Hydrogen (H2)",
+   "category": "Energy statistics",
+   "description": "Production capacity of hydrogen, ammonia and e-fuels: Production capacity; AMM; Hydrogen (H2) (Terajoule), 32 countries, 2024: Eurostat Hydrogen, ammonia and e-fuels production capacity (nrg_inf_h2stpc)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_inf_h2stpc",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Production capacity of hydrogen, ammonia and e-fuels: Production capacity; AMM; Hydrogen (H2)",
+     "source": "Eurostat Hydrogen, ammonia and e-fuels production capacity (nrg_inf_h2stpc) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_inf_lbpc",
+   "name": "Liquid biofuels production capacities: Pure biogasoline",
+   "category": "Energy statistics",
+   "description": "Liquid biofuels production capacities: Pure biogasoline (Thousand tonnes per year), 39 countries, 2024: Eurostat Liquid biofuels production capacities (nrg_inf_lbpc)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_inf_lbpc",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Liquid biofuels production capacities: Pure biogasoline",
+     "source": "Eurostat Liquid biofuels production capacities (nrg_inf_lbpc) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_inf_stcs",
+   "name": "Solar thermal collectors' surface",
+   "category": "Energy statistics",
+   "description": "Solar thermal collectors' surface (Thousand square metres), 39 countries, 2024: Eurostat Solar thermal collectors' surface (nrg_inf_stcs)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_infrastructure_stats",
+   "colour": "w10c_eu_nrg_inf_stcs",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Solar thermal collectors' surface",
+     "source": "Eurostat Solar thermal collectors' surface (nrg_inf_stcs) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
    "id": "colour-w10c_eu_nrg_pc_202_c",
    "name": "Gas prices components for household consumers: Energy and supply; Consumption of GJ - all bands; Euro; Kilowatt-hour",
    "category": "Prices",
@@ -4893,6 +7112,310 @@
      ],
      "what": "Non-household consumption volumes of electricity by consumption bands: Consumption less than 20 MWh - band IA",
      "source": "Eurostat Non-household consumption volumes of electricity by consumption bands (nrg_pc_205_v) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_stk_gas",
+   "name": "Natural gas stock levels - annual data: Opening stock - national territory; Million cubic metres",
+   "category": "Energy statistics",
+   "description": "Natural gas stock levels - annual data: Opening stock - national territory; Million cubic metres (Million cubic metres), 38 countries, 2024: Eurostat Natural gas stock levels - annual data (nrg_stk_gas)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_stk_gas",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Natural gas stock levels - annual data: Opening stock - national territory; Million cubic metres",
+     "source": "Eurostat Natural gas stock levels - annual data (nrg_stk_gas) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_stk_gasm",
+   "name": "Gas products stock levels - monthly data: Opening stock - national territory; Million cubic metres",
+   "category": "Energy statistics",
+   "description": "Gas products stock levels - monthly data: Opening stock - national territory; Million cubic metres (Million cubic metres), 35 countries, 2026-08: Eurostat Gas products stock levels - monthly data (nrg_stk_gasm)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_stk_gasm",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Gas products stock levels - monthly data: Opening stock - national territory; Million cubic metres",
+     "source": "Eurostat Gas products stock levels - monthly data (nrg_stk_gasm) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_stk_h2",
+   "name": "Stocks level for hydrogen, ammonia and e-fuels: HYD_AS_AMM; Opening stock - national territory; Ammonia (NH3)",
+   "category": "Energy statistics",
+   "description": "Stocks level for hydrogen, ammonia and e-fuels: HYD_AS_AMM; Opening stock - national territory; Ammonia (NH3) (Terajoule), 32 countries, 2024: Eurostat Hydrogen, ammonia and e-fuels stock levels (nrg_stk_h2)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_stk_h2",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Stocks level for hydrogen, ammonia and e-fuels: HYD_AS_AMM; Opening stock - national territory; Ammonia (NH3)",
+     "source": "Eurostat Hydrogen, ammonia and e-fuels stock levels (nrg_stk_h2) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_stk_oil",
+   "name": "Oil products stock levels - annual data: Opening stock - national territory; Oil and petroleum products",
+   "category": "Energy statistics",
+   "description": "Oil products stock levels - annual data: Opening stock - national territory; Oil and petroleum products (Thousand tonnes), 38 countries, 2023: Eurostat Oil products stock levels - annual data (nrg_stk_oil)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_stk_oil",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Oil products stock levels - annual data: Opening stock - national territory; Oil and petroleum products",
+     "source": "Eurostat Oil products stock levels - annual data (nrg_stk_oil) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_te_bio",
+   "name": "Biofuels exports: Wood pellets; Total",
+   "category": "Energy statistics",
+   "description": "Biofuels exports: Wood pellets; Total (Thousand tonnes), 39 countries, 2024: Eurostat Biofuels exports (nrg_te_bio)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_te_bio",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Biofuels exports: Wood pellets; Total",
+     "source": "Eurostat Biofuels exports (nrg_te_bio) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_te_eh",
+   "name": "Electricity and derived heat exports: Electricity; Total; Gigawatt-hour",
+   "category": "Energy statistics",
+   "description": "Electricity and derived heat exports: Electricity; Total; Gigawatt-hour (Gigawatt-hour), 38 countries, 2024: Eurostat Electricity and derived heat exports (nrg_te_eh)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_te_eh",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electricity and derived heat exports: Electricity; Total; Gigawatt-hour",
+     "source": "Eurostat Electricity and derived heat exports (nrg_te_eh) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_te_gas",
+   "name": "Natural gas exports - annual data: Natural gas; Total; Million cubic metres",
+   "category": "Energy statistics",
+   "description": "Natural gas exports - annual data: Natural gas; Total; Million cubic metres (Million cubic metres), 38 countries, 2024: Eurostat Natural gas exports - annual data (nrg_te_gas)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_te_gas",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Natural gas exports - annual data: Natural gas; Total; Million cubic metres",
+     "source": "Eurostat Natural gas exports - annual data (nrg_te_gas) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_te_h2",
+   "name": "Exports of hydrogen, ammonia and e-fuels: Belgium; E-fuels",
+   "category": "Energy statistics",
+   "description": "Exports of hydrogen, ammonia and e-fuels: Belgium; E-fuels (Terajoule), 32 countries, 2024: Eurostat Hydrogen, ammonia and e-fuels exports (nrg_te_h2)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_te_h2",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Exports of hydrogen, ammonia and e-fuels: Belgium; E-fuels",
+     "source": "Eurostat Hydrogen, ammonia and e-fuels exports (nrg_te_h2) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_te_oil",
+   "name": "Oil and petroleum products exports - annual data: Oil and petroleum products; Total",
+   "category": "Energy statistics",
+   "description": "Oil and petroleum products exports - annual data: Oil and petroleum products; Total (Thousand tonnes), 38 countries, 2023: Eurostat Oil and petroleum products exports - annual data (nrg_te_oil)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_te_oil",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Oil and petroleum products exports - annual data: Oil and petroleum products; Total",
+     "source": "Eurostat Oil and petroleum products exports - annual data (nrg_te_oil) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_te_sff",
+   "name": "Solid fossil fuels exports: Solid fossil fuels; Total",
+   "category": "Energy statistics",
+   "description": "Solid fossil fuels exports: Solid fossil fuels; Total (Thousand tonnes), 39 countries, 2024: Eurostat Solid fossil fuels exports (nrg_te_sff)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_te_sff",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Solid fossil fuels exports: Solid fossil fuels; Total",
+     "source": "Eurostat Solid fossil fuels exports (nrg_te_sff) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ti_bio",
+   "name": "Biofuels imports: Wood pellets; Total",
+   "category": "Energy statistics",
+   "description": "Biofuels imports: Wood pellets; Total (Thousand tonnes), 39 countries, 2024: Eurostat Biofuels imports (nrg_ti_bio)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ti_bio",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Biofuels imports: Wood pellets; Total",
+     "source": "Eurostat Biofuels imports (nrg_ti_bio) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ti_eh",
+   "name": "Electricity and derived heat imports: Electricity; Total; Gigawatt-hour",
+   "category": "Energy statistics",
+   "description": "Electricity and derived heat imports: Electricity; Total; Gigawatt-hour (Gigawatt-hour), 38 countries, 2024: Eurostat Electricity and derived heat imports (nrg_ti_eh)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ti_eh",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Electricity and derived heat imports: Electricity; Total; Gigawatt-hour",
+     "source": "Eurostat Electricity and derived heat imports (nrg_ti_eh) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ti_gas",
+   "name": "Natural gas imports - annual data: Natural gas; Total; Million cubic metres",
+   "category": "Energy statistics",
+   "description": "Natural gas imports - annual data: Natural gas; Total; Million cubic metres (Million cubic metres), 38 countries, 2024: Eurostat Natural gas imports - annual data (nrg_ti_gas)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ti_gas",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Natural gas imports - annual data: Natural gas; Total; Million cubic metres",
+     "source": "Eurostat Natural gas imports - annual data (nrg_ti_gas) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ti_h2",
+   "name": "Imports of hydrogen, ammonia and e-fuels: Belgium; E-fuels",
+   "category": "Energy statistics",
+   "description": "Imports of hydrogen, ammonia and e-fuels: Belgium; E-fuels (Terajoule), 32 countries, 2024: Eurostat Hydrogen, ammonia and e-fuels imports (nrg_ti_h2)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ti_h2",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Imports of hydrogen, ammonia and e-fuels: Belgium; E-fuels",
+     "source": "Eurostat Hydrogen, ammonia and e-fuels imports (nrg_ti_h2) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ti_oil",
+   "name": "Oil and petroleum products imports - annual data: Oil and petroleum products; Total",
+   "category": "Energy statistics",
+   "description": "Oil and petroleum products imports - annual data: Oil and petroleum products; Total (Thousand tonnes), 38 countries, 2023: Eurostat Oil and petroleum products imports - annual data (nrg_ti_oil)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ti_oil",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Oil and petroleum products imports - annual data: Oil and petroleum products; Total",
+     "source": "Eurostat Oil and petroleum products imports - annual data (nrg_ti_oil) (CC BY 4.0 (Eurostat))",
+     "doc": "Wave 10 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w10c_eu_nrg_ti_sff",
+   "name": "Solid fossil fuels imports: Solid fossil fuels; Total",
+   "category": "Energy statistics",
+   "description": "Solid fossil fuels imports: Solid fossil fuels; Total (Thousand tonnes), 39 countries, 2024: Eurostat Solid fossil fuels imports (nrg_ti_sff)",
+   "color": "rgb(140,200,255)",
+   "family": "energy_balances",
+   "colour": "w10c_eu_nrg_ti_sff",
+   "parts": [
+    {
+     "where": [
+      "EU"
+     ],
+     "what": "Solid fossil fuels imports: Solid fossil fuels; Total",
+     "source": "Eurostat Solid fossil fuels imports (nrg_ti_sff) (CC BY 4.0 (Eurostat))",
      "doc": "Wave 10 sources"
     }
    ]

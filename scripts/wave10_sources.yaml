@@ -847,11 +847,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_aeint_r2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_aeint_r2/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
   choro:
     filter:
       freq: A
@@ -921,11 +922,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_ainah_r2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_ainah_r2/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
   choro:
     filter:
       freq: A
@@ -997,11 +999,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_ch4fp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_ch4fp/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_env_ac_co2fp
   title: Eurostat Carbon dioxide emission footprints (FIGARO application) (env_ac_co2fp)
   cat: 3
@@ -1009,11 +1012,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_co2fp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_co2fp/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_env_ac_cur
   title: Eurostat Circular material use rate (env_ac_cur)
   cat: 3
@@ -1063,11 +1067,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_egss2/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_egss2/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_env_ac_egss3
   title: Eurostat Production, value added and employment by industry groups in the environmental goods and services sector (2000-2023) (env_ac_egss3)
   cat: 3
@@ -1159,11 +1164,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_ghgfp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_ghgfp/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_env_ac_hfcfp
   title: Eurostat Hydrofluorocarbon emission footprints (HFC in CO2 equivalent, FIGARO application) (env_ac_hfcfp)
   cat: 3
@@ -1171,11 +1177,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_hfcfp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_hfcfp/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_env_ac_io10
   title: Eurostat Air emission footprints (domestic technology assumption) (env_ac_io10)
   cat: 3
@@ -1289,11 +1296,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_n2ofp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_n2ofp/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_env_ac_nf3sf6fp
   title: Eurostat Nitrogen trifluoride and sulphur hexafluoride emission footprints (NF3-SF6 in CO2 equivalent, FIGARO application) (env_ac_nf3sf6fp)
   cat: 3
@@ -1301,11 +1309,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_nf3sf6fp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_nf3sf6fp/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_env_ac_pefa04
   title: Eurostat Key indicators of physical energy flow accounts by NACE Rev. 2 activity (env_ac_pefa04)
   cat: 3
@@ -1349,11 +1358,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_pefasu/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_pefasu/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_env_ac_pepsgg1
   title: Eurostat Production of environmental protection services of general government by economic characteristics (env_ac_pepsgg1)
   cat: 3
@@ -1397,11 +1407,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_pfcfp/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/env_ac_pfcfp/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_env_ac_rme
   title: Eurostat Material footprints - main indicators (env_ac_rme)
   cat: 5
@@ -1999,11 +2010,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_cv/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_cv/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
   choro:
     filter:
       freq: A
@@ -2202,11 +2214,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_oil/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_oil/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
   choro:
     filter:
       freq: A
@@ -2222,11 +2235,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_oilm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_cb_oilm/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_nrg_cb_pem
   title: Eurostat Net electricity generation by type of fuel - monthly data (nrg_cb_pem)
   cat: 1
@@ -3580,11 +3594,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oam/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oam/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_nrg_stk_oem
   title: Eurostat Emergency oil stocks in days equivalent - monthly data (nrg_stk_oem)
   cat: 1
@@ -3624,11 +3639,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oilm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oilm/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_nrg_stk_oom
   title: Eurostat Oil stocks held for other countries - monthly data (nrg_stk_oom)
   cat: 1
@@ -3636,11 +3652,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oom/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_stk_oom/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_nrg_te_bio
   title: Eurostat Biofuels exports (nrg_te_bio)
   cat: 1
@@ -3708,11 +3725,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_gasm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_gasm/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
   choro:
     filter:
       freq: M
@@ -3768,11 +3786,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_oilm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_te_oilm/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_nrg_te_sff
   title: Eurostat Solid fossil fuels exports (nrg_te_sff)
   cat: 1
@@ -3820,11 +3839,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_coifpm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_coifpm/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
   choro:
     filter:
       freq: M
@@ -3879,11 +3899,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_gasm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_gasm/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
   choro:
     filter:
       freq: M
@@ -3939,11 +3960,12 @@ sources:
   places:
   - EU27
   level: country
-  kind: csv
-  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_oilm/?format=SDMX-CSV&compressed=false&startPeriod=2010
+  kind: eurostat_tsv
+  url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_ti_oilm/?format=TSV&compressed=true
   licence: CC BY 4.0 (Eurostat)
   lic_url: https://ec.europa.eu/eurostat/about-us/policies/copyright
   status: build
+  note: 'over Eurostat''s 5 million row cap for SDMX-CSV: read from the TSV form'
 - id: eu_nrg_ti_sff
   title: Eurostat Solid fossil fuels imports (nrg_ti_sff)
   cat: 1

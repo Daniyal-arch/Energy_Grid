@@ -527,6 +527,28 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             raise SystemExit(f"no file matching {s['match']} in {url}")
         print(f"  newest file: {names[-1]}", flush=True)
         load_one(con, {**s, "kind": s["inner"], "url": url.rstrip("/") + "/" + names[-1]})
+    elif kind == "eurostat_tsv":
+        # a Eurostat table too big for one SDMX-CSV extraction (HTTP 413 above 5 million rows):
+        # the same API's gzipped TSV (no row cap, one column per period), turned long like the
+        # SDMX-CSV tables: one column per dimension, time_period, obs_value, obs_flag
+        f = w.download(url, d / "src.tsv.gz", timeout=3600)
+        con.execute(
+            f"CREATE OR REPLACE TABLE raw AS SELECT * FROM read_csv('{f}', delim = '\\t', header = true, all_varchar = true, compression = 'gzip')"
+        )
+        first = con.execute("SELECT column_name FROM (DESCRIBE raw) LIMIT 1").fetchone()[0]
+        dims = [x.strip().lower() for x in first.split("\\")[0].split(",")]
+        keys = ", ".join(
+            f'split_part("{first}", \',\', {i + 1}) AS "{n}"' for i, n in enumerate(dims)
+        )
+        con.execute(
+            f"""CREATE OR REPLACE TABLE t AS
+            WITH u AS (UNPIVOT raw ON COLUMNS(* EXCLUDE ("{first}")) INTO NAME time_period VALUE raw_value)
+            SELECT {keys}, trim(time_period) AS time_period,
+                   TRY_CAST(regexp_extract(raw_value, '^\\s*(-?[0-9.]+(e-?[0-9]+)?)', 1) AS DOUBLE) AS obs_value,
+                   nullif(trim(regexp_replace(raw_value, '^[\\s:0-9.e-]+', '')), '') AS obs_flag
+            FROM u WHERE trim(raw_value) NOT IN (':', '')"""
+        )
+        con.execute("DROP TABLE raw")
     elif kind == "wdi":
         # a World Bank WDI indicator: every country and aggregate, every year (CC BY 4.0); the
         # aggregates (regions, income groups) are marked from the country list
