@@ -159,7 +159,7 @@ build failed; the error is shown).
 | [Eurostat new passenger cars by fuel (road_eqs_carpda)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/road_eqs_carpda/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_new_cars_fuel`) | EU27 | country | CC BY 4.0 | 5,969 rows | built | 2026-10-31 |
 | [Eurostat heat pump characteristics (nrg_inf_hptc)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_hptc/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_heat_pumps`) | EU27 | country | CC BY 4.0 | 24,857 rows | built | 2026-10-31 |
 | [MHCLG table DEC1 (display energy certificates per local authority)](statistical-data-sets/live-tables-on-energy-performance-of-buildings-certificates) (`gb_dec_certificates`) | GB | county | OGL v3 | 90 rows | built | 2026-10-31 |
-| [DfT plug-in cars per local authority (VEH0131)](statistical-data-sets/vehicle-licensing-statistics-data-tables) (`gb_ulev_la`) | GB | county | OGL v3 | 484 rows | built | 2026-10-31 |
+| [DfT plug-in cars per local authority (VEH0131)](statistical-data-sets/vehicle-licensing-statistics-data-tables) (`gb_ulev_la`) | GB | county | OGL v3 | 484 rows | built | 2026-11-03 |
 | [Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)](https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_inf_epcrw/?format=SDMX-CSV&compressed=false&startPeriod=2015) (`eu_renewable_capacity`) | EU27 | country | CC BY 4.0 | 18,961 rows | built | 2026-10-31 |
 
 ## 6. Offshore and maritime

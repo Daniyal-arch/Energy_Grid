@@ -1,12 +1,17 @@
 ---
 title: Log
 tags: [log]
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 # Log
 
 Newest first. One entry per session or merged pull request.
+
+- **2026-11-03** (claude/funny-euler-7vwg1s): GB local authority districts (ONS Dec 2021 BUC,
+  `gb_lad.json`) as the shapes of a new colouring scope `gb_lad`; DfT VEH0131 plug-in cars per
+  district coloured (2021 Q4, 385 districts). `wave9.py render` is idempotent again (coverage
+  cells merged each source once). Notes: wave9, map-rendering.
 
 - **2026-10-31** (claude/funny-euler-7vwg1s): every positioned wave 9 source on the map (vector
   tiles for 24 large or line/polygon sources) and 16 area series as colourings (Eurostat

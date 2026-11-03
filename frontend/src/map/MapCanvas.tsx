@@ -3,7 +3,7 @@
 // only mounts this once. When nothing moves and nothing changed, a frame costs nothing.
 
 import { wave8Keys } from "./wave8Layers";
-import { wave9Keys } from "./wave9Layers";
+import { W9C_SHAPES, wave9Keys } from "./wave9Layers";
 import { AmbientLight, DirectionalLight, LightingEffect, MapView, _GlobeView as GlobeView, _SunLight as SunLight, type PickingInfo } from "@deck.gl/core";
 import { REGISTER_LAYERS, registerKey } from "../lib/registers";
 import { MapboxOverlay } from "@deck.gl/mapbox";
@@ -110,7 +110,7 @@ export function wantedKeys(zoom: number, L: Record<LayerId, boolean> = useApp.ge
   if (s.colour === "offline") keys.push("outages");
   if (s.colour.startsWith("pr_")) keys.push("prices", "zones");
   if (s.colour === "access") keys.push("worldStats");
-  if (s.colour.startsWith("w9c_")) keys.push(`w9c:${s.colour.slice(4)}`, "usCounties");
+  if (s.colour.startsWith("w9c_")) keys.push(`w9c:${s.colour.slice(4)}`, W9C_SHAPES[s.colour] ?? "usCounties");
   if (s.colour === "rt_household") keys.push("retail", "usStates");
   if (s.colour === "cn_gen" || s.colour === "cn_load") keys.push("connectH");
   if (s.colour.startsWith("ir_")) keys.push("irena");

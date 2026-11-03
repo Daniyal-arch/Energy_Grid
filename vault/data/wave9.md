@@ -31,5 +31,8 @@ See [[coverage-and-gaps]], [[lake]], [[agent-tools]], [[state-and-datasets]].
 - **On the map** (after PR #18 review): point sources up to 30,000 records as map files; every
   other positioned source as vector tiles (`w9/<id>.pmtiles`, tippecanoe in the build jobs,
   `map/wave9Tiles.ts`, click card); area series as colourings (`w9c/<id>.json`, ColourId
-  `w9c_<id>`, `lib/wave9.ts` quartile stops; countries via countryColour, US counties via
-  `map/wave9Layers.ts`). A tippecanoe failure keeps the table and records `tiles.error`.
+  `w9c_<id>`, `lib/wave9.ts` quartile stops; countries via countryColour, US counties and GB
+  local authority districts via `map/wave9Layers.ts`; the shapes file per scope is
+  `W9C_SHAPES`: `usCounties` or `gbLad` = `eu/gb_lad.json`, built by `wave9.py gb-lad`). A
+  tippecanoe failure keeps the table and records `tiles.error`. A choro config may carry
+  `period_label` when the period is a column name (VEH0131 `c_2021_q4`).

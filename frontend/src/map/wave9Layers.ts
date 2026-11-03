@@ -22,6 +22,17 @@ export interface W9File {
   points: (string | number | null)[][];
 }
 
+/** The shapes of a GB local authority district colouring (scripts/wave9.py gb-lad, ONS). */
+export interface GbLadFile {
+  source: string;
+  areas: { code: string; name: string; polygons: number[][][] }[];
+}
+
+/** The shapes file each area colouring needs (US counties unless named here). */
+export const W9C_SHAPES: Record<string, string> = Object.fromEntries(
+  (WAVE9.colours as { id: string; scope: string }[]).filter((c) => c.scope === "gb_lad").map((c) => [c.id, "gbLad"]),
+);
+
 // point layers drawn here; layers with vector tiles are MapLibre's (map/tiles.ts)
 const LAYERS = (WAVE9.layers as { id: string; color: string; tiles?: string }[]).filter((d) => !d.tiles);
 const rgb = (c: string): [number, number, number] => {
@@ -57,14 +68,16 @@ export function wave9Layers(fr: Frame): Layer[] {
       }),
     );
   }
-  // a wave-9 colouring per US county (the app's county shapes)
+  // a wave-9 colouring per US county or GB local authority district (the app's area shapes)
   if (fr.colour.startsWith("w9c_")) {
     const w9 = fr.files[`w9c:${fr.colour.slice(4)}`] as W9cFile | undefined;
     const counties = fr.files.usCounties as UsCountiesFile | undefined;
-    if (w9 && w9.scope === "us_county" && counties) {
+    const lads = fr.files.gbLad as GbLadFile | undefined;
+    const areas = w9?.scope === "us_county" ? counties?.counties : w9?.scope === "gb_lad" ? lads?.areas : undefined;
+    if (w9 && areas) {
       const stops = memo(`w9cStops:${fr.colour}`, [w9], () => w9cStops(w9));
-      const shapes = memo("countyShapes", [counties], () =>
-        counties.counties.flatMap((cty) => cty.polygons.map((rings) => ({ code: cty.code, polygon: rings.map(pairs) }))),
+      const shapes = memo(`areaShapes:${w9.scope}`, [areas], () =>
+        areas.flatMap((a) => a.polygons.map((rings) => ({ code: a.code, name: a.name, polygon: rings.map(pairs) }))),
       );
       out.push(
         new SolidPolygonLayer<(typeof shapes)[number]>({
@@ -91,13 +104,14 @@ export function wave9Layers(fr: Frame): Layer[] {
   return out;
 }
 
-/** The hover card of a county in a wave-9 colouring: its value as published, the source. */
+/** The hover card of an area in a wave-9 colouring: its value as published, the source. */
 export function wave9CountyHtml(object: unknown, file: unknown): string | null {
   const f = file as W9cFile | undefined;
-  const d = object as { code?: string } | undefined;
+  const d = object as { code?: string; name?: string } | undefined;
   if (!f || !d?.code) return null;
   const v = f.values[d.code];
-  return `<b>County ${d.code}</b><div>${f.label}: <b>${v == null ? "not published" : `${v.toLocaleString("en-US")} ${f.unit}`}</b></div><div style="color:#8d94a1">${f.period ?? ""} · ${f.source}</div>`;
+  const title = f.scope === "gb_lad" ? `${d.name ?? ""} (${d.code})` : `County ${d.code}`;
+  return `<b>${title}</b><div>${f.label}: <b>${v == null ? "not published" : `${v.toLocaleString("en-US")} ${f.unit}`}</b></div><div style="color:#8d94a1">${f.period ?? ""} · ${f.source}</div>`;
 }
 
 /** The hover card of a wave-9 record: its fields as published, the source. */

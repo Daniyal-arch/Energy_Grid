@@ -116,7 +116,7 @@ function W9cLegend({ id }: { id: string }) {
     <Scale
       gradient={gradientCss(stops)}
       ticks={[w9cNumber(stops[0][0]), w9cNumber(stops[Math.floor(stops.length / 2)][0]), `${w9cNumber(stops[stops.length - 1][0])} ${f.unit}`]}
-      note={`${f.label}, ${f.period ?? ""}, as published per ${f.scope === "country" ? "country" : "US county"} (${Object.keys(f.values).length}); colour stops at the quartiles (computed). ${f.source}${filter ? `; series: ${filter}` : ""}`}
+      note={`${f.label}, ${f.period ?? ""}, as published per ${{ country: "country", us_county: "US county", gb_lad: "GB local authority district (shapes: ONS December 2021, OGL v3)" }[f.scope]} (${Object.keys(f.values).length}); colour stops at the quartiles (computed). ${f.source}${filter ? `; series: ${filter}` : ""}`}
     />
   );
 }

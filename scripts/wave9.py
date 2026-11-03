@@ -747,20 +747,24 @@ def choro_file(con, s: dict[str, Any]) -> dict[str, Any] | None:  # noqa: ANN001
         if per in [c_ for (c_,) in con.execute("SELECT column_name FROM (DESCRIBE t)").fetchall()]
         else None
     )
-    period = best[0] if best else None
-    pwhere = f"AND CAST({per} AS VARCHAR) = '{period}'" if period else ""
+    period = best[0] if best else c.get("period_label")
+    pwhere = f"AND CAST({per} AS VARCHAR) = '{period}'" if best else ""
     rows = con.execute(
         f"""SELECT CAST("{key}" AS VARCHAR) AS k, any_value(TRY_CAST("{val}" AS DOUBLE)) FROM t
             WHERE {where} {pwhere} AND TRY_CAST("{val}" AS DOUBLE) IS NOT NULL GROUP BY 1"""
     ).fetchall()
     values = {}
     for k, v in rows:
+        if k is None:
+            continue
         if scope == "country":
             if len(k) != 2:
                 continue
             k = EUROSTAT_ISO2.get(k, k)
         elif scope == "us_county":
             k = k.zfill(5)
+        elif scope == "gb_lad" and not re.fullmatch(r"(E0[6-9]|W06|S12|N09)\d{6}", k):
+            continue  # districts only: no county or region totals, no footnote rows
         values[k] = v
     if not values:
         print(f"  {s['id']}: no rows for the colouring filter {c.get('filter')}", flush=True)
@@ -781,6 +785,61 @@ def choro_file(con, s: dict[str, Any]) -> dict[str, Any] | None:  # noqa: ANN001
     )
     print(f"  {s['id']}: colouring of {len(values)} areas, period {period}", flush=True)
     return {"scope": scope, "areas": len(values), "period": period}
+
+
+AREA_WORD = {"country": "countries", "us_county": "counties", "gb_lad": "local authority districts"}
+SCOPE_PLACE = {"us_county": "US", "gb_lad": "GB"}
+GB_LAD = (
+    "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/"
+    "Local_Authority_Districts_December_2021_UK_BUC_2022/FeatureServer/0/query"
+)
+
+
+def gb_lad(args: argparse.Namespace) -> None:
+    """The ONS local authority district shapes (December 2021, ultra generalised, OGL v3)
+    for the GB colourings: frontend/public/data/eu/gb_lad.json, flat rings to 4 decimals."""
+    feats: list[dict[str, Any]] = []
+    with httpx.Client(timeout=120) as cl:
+        while True:
+            r = cl.get(
+                GB_LAD,
+                params={
+                    "where": "1=1",
+                    "outFields": "LAD21CD,LAD21NM",
+                    "outSR": 4326,
+                    "f": "geojson",
+                    "resultOffset": len(feats),
+                    "resultRecordCount": 200,
+                },
+            )
+            r.raise_for_status()
+            page = r.json()["features"]
+            feats += page
+            if len(page) < 200:
+                break
+    out = []
+    for f in feats:
+        g = f["geometry"]
+        polys = g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]
+        out.append(
+            {
+                "code": f["properties"]["LAD21CD"],
+                "name": f["properties"]["LAD21NM"],
+                "polygons": [
+                    [[round(v, 4) for pt in ring for v in pt] for ring in poly] for poly in polys
+                ],
+            }
+        )
+    path = ROOT / "frontend" / "public" / "data" / "eu" / "gb_lad.json"
+    w.write_json(
+        path,
+        {
+            "fetched": w.now(),
+            "source": "ONS Local Authority Districts (December 2021) UK BUC (OGL v3)",
+            "areas": out,
+        },
+    )
+    print(f"{len(out)} districts, {path.stat().st_size:,} bytes -> {path}")
 
 
 def build(args: argparse.Namespace) -> None:
@@ -962,9 +1021,10 @@ def render(args: argparse.Namespace) -> None:
             if c and c["status"] == "built":
                 old = reg["families"][fam]["cells"].get(cc) or {}
                 if old.get("status") in ("built", "have") and old.get("dataset"):
-                    c["source"] = f"{old.get('source')}; {c['source']}"
-                    c["dataset"] = f"{old.get('dataset')}, {c['dataset']}"
-                    c["licence"] = f"{old.get('licence') or ''}; {c['licence']}".strip("; ")
+                    # the earlier dataset first, each name once (render runs again and again)
+                    for k, sep in (("source", "; "), ("dataset", ", "), ("licence", "; ")):
+                        parts = [p for p in f"{old.get(k) or ''}{sep}{c[k]}".split(sep) if p]
+                        c[k] = sep.join(dict.fromkeys(parts))
                 reg["families"][fam]["cells"][cc] = c
     REGISTRY.write_text(
         REGISTRY.read_text(encoding="utf-8").split("families:")[0]
@@ -1195,9 +1255,9 @@ def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
                 }
             )
             datasets.append({"id": f"colour-{cid}", "name": label, "category": group,
-                             "description": f"{label} ({s['choro'].get('unit', '')}), {ch['areas']} {'countries' if ch['scope'] == 'country' else 'counties'}, {ch.get('period') or ''}: {title_of(s)}",
+                             "description": f"{label} ({s['choro'].get('unit', '')}), {ch['areas']} {AREA_WORD[ch['scope']]}, {ch.get('period') or ''}: {title_of(s)}",
                              "color": colour, "family": s["fam"], "colour": cid,
-                             "parts": [{"where": where if ch["scope"] == "country" else ["US"], "what": label, "source": src, "doc": "Wave 9 sources"}]})  # fmt: skip
+                             "parts": [{"where": where if ch["scope"] == "country" else [SCOPE_PLACE[ch["scope"]]], "what": label, "source": src, "doc": "Wave 9 sources"}]})  # fmt: skip
     (ROOT / "frontend" / "src" / "app" / "wave9.json").write_text(
         json.dumps(
             {"layers": layers, "colours": colours, "datasets": datasets},
@@ -1265,6 +1325,8 @@ def main() -> None:
     q.set_defaults(fn=pr_tables)
     r = sub.add_parser("render")
     r.set_defaults(fn=render)
+    g = sub.add_parser("gb-lad")
+    g.set_defaults(fn=gb_lad)
     s = sub.add_parser("search")
     s.add_argument("--family")
     s.set_defaults(fn=search)

@@ -211,6 +211,7 @@ const STATIC: Record<string, Loader> = {
   // US outages per county (scripts/build_us_outages.py, EAGLE-I) and their outlines
   usOutages: bundled("us_outages.json"),
   usCounties: bundledUs("counties.json"),
+  gbLad: bundled("gb_lad.json"),
   // water risk per river basin (scripts/build_aqueduct.py, WRI Aqueduct 4.0)
   water: bundled("water.json"),
   // offshore wind farms in European seas (scripts/fetch_emodnet_wind.py, EMODnet)

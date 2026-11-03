@@ -819,6 +819,16 @@
    "file": "eu_energy_productivity"
   },
   {
+   "id": "w9c_gb_ulev_la",
+   "label": "Plug-in cars, LGVs and quadricycles licensed",
+   "group": "Industry & demand",
+   "modes": [
+    "live"
+   ],
+   "scope": "gb_lad",
+   "file": "gb_ulev_la"
+  },
+  {
    "id": "w9c_eu_heat_production",
    "label": "Derived heat produced",
    "group": "Resources",
@@ -1759,6 +1769,25 @@
      ],
      "what": "offshore wind farms",
      "source": "BOEM active renewable energy leases (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "colour-w9c_gb_ulev_la",
+   "name": "Plug-in cars, LGVs and quadricycles licensed",
+   "category": "Industry & demand",
+   "description": "Plug-in cars, LGVs and quadricycles licensed (vehicles), 385 local authority districts, 2021 Q4: DfT plug-in cars per local authority (VEH0131)",
+   "color": "rgb(214,160,255)",
+   "family": "ev_registrations",
+   "colour": "w9c_gb_ulev_la",
+   "parts": [
+    {
+     "where": [
+      "GB"
+     ],
+     "what": "Plug-in cars, LGVs and quadricycles licensed",
+     "source": "DfT plug-in cars per local authority (VEH0131) (OGL v3)",
      "doc": "Wave 9 sources"
     }
    ]
