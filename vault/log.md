@@ -8,6 +8,14 @@ updated: 2026-11-03
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-03** (claude/funny-euler-7vwg1s): wave 10 (brief 29) gathered and built: 571
+  sources (323 Eurostat tables, 225 WDI indicators, 23 GB district tables), colourings per
+  country, world country and GB district (`gb_lad24`). The wave-9 machinery runs any wave
+  (`WAVE=N`, ids `w<N>_`/`w<N>c_`); new loader kinds `wdi`, `eurostat_tsv` (tables over
+  Eurostat's 5 million row cap) and stacked workbook sheets. Country colourings now redraw when
+  their file loads (also wave 9). Skill `energy-statistics`, eight evals. Notes: wave10, wave9,
+  gotchas.
+
 - **2026-11-03** (claude/funny-euler-7vwg1s): GB local authority districts (ONS Dec 2021 BUC,
   `gb_lad.json`) as the shapes of a new colouring scope `gb_lad`; DfT VEH0131 plug-in cars per
   district coloured (2021 Q4, 385 districts). `wave9.py render` is idempotent again (coverage

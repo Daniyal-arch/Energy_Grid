@@ -51,3 +51,10 @@ updated: 2026-10-31
   `map_inference_threshold = -1`; gov.uk ODS workbooks start with cover sheets; the Census API
   needs a key; data.europa.eu ORs the words of a query unless quoted; catalog.data.gov's CKAN API
   moved (use `/search?q=`); some CSVs are CP1252 (recode before DuckDB).
+
+- **Eurostat extraction cap** (2026-11-03): SDMX-CSV refuses more than 5 million rows (HTTP 413
+  `EXTRACTION_TOO_BIG`) and queues large ones (a SOAP `<queued>` answer, retry until cached).
+  The TSV form (`format=TSV&compressed=true`) has no cap: kind `eurostat_tsv`.
+- **GB district codes change** (2019, 2021, 2023 mergers): DESNZ workbooks per year carry the
+  codes of their year; colour with the newest period and the matching ONS shapes (`gb_lad`
+  December 2021 for VEH0131, `gb_lad24` for the rest).
