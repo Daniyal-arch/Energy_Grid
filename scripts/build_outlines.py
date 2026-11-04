@@ -589,7 +589,7 @@ def names(args: argparse.Namespace) -> None:
     local = {
         p.name: f"{p}/**/*.parquet"
         for p in (root.iterdir() if root.exists() else [])
-        if p.is_dir() and p.name != "names" and any(p.rglob("*.parquet"))
+        if p.is_dir() and p.name not in ("names", "aliases") and any(p.rglob("*.parquet"))
     }
     key, secret = os.environ.get("AWS_ACCESS_KEY_ID"), os.environ.get("AWS_SECRET_ACCESS_KEY")
     acct = os.environ.get("CLOUDFLARE_ACCOUNT_ID")
