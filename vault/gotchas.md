@@ -1,7 +1,7 @@
 ---
 title: Gotchas
 tags: [gotchas]
-updated: 2026-10-31
+updated: 2026-11-04
 ---
 
 # Gotchas
@@ -45,8 +45,6 @@ updated: 2026-10-31
   `ca_cert_file` is per connection unless `SET GLOBAL`: cursors lost it and every R2 read failed
   locally ("Cannot read a CA certificate bundle"). `data/duck.py` sets it globally and falls
   back to certifi's bundle where no system bundle exists.
-- **public.ecr.aws rate limit**: the backend image job can fail with `429 Too Many Requests ...
-  Data limit exceeded` pulling the Lambda adapter image anonymously; re-run the job.
 - **GitHub `contains()` on a string ignores case**: `contains(groups, 'C')` matched "Mworldcover";
   wave8.yml compares whole words (`fromJSON(words)`). DuckDB 1.5 on runners refuses the `x -> y`
   lambda (write `lambda x: y`). The outline name index must read every set (local or R2), or a
@@ -62,3 +60,17 @@ updated: 2026-10-31
 - **GB district codes change** (2019, 2021, 2023 mergers): DESNZ workbooks per year carry the
   codes of their year; colour with the newest period and the matching ONS shapes (`gb_lad`
   December 2021 for VEH0131, `gb_lad24` for the rest).
+
+- **R2 keys in AWS_* reach other S3 reads** (2026-11-04): DuckDB sends `AWS_ACCESS_KEY_ID` to
+  Overture's public bucket (403 InvalidAccessKeyId); read it through a scoped secret with empty
+  keys (`overture_anonymous` in `scripts/build_outlines.py`). A global `SET s3_region` also
+  reaches the R2 secret (400 InvalidRegionName): give the region in the secret instead. In the
+  cloud sandbox the AWS_* variables are proxy placeholders: unset them for anonymous S3 reads.
+- **DuckDB extensions on a fresh machine**: the backend loads them with auto-install off; tests
+  fail with "Extension ... not found" until httpfs, spatial and h3 (community) are in
+  `~/.duckdb/extensions/v2.0.0/<platform>/` (CI installs them in its setup step).
+- **New workflows** can be dispatched only once they are on the default branch: give a new
+  workflow a `pull_request` trigger (paths) to run it from a branch.
+- **public.ecr.aws 429**: `backend/deploy/build_image.sh` pulls each base image with up to five
+  tries and a growing wait before building (backend.yml, backend-probe.yml).
+

@@ -613,8 +613,88 @@ def jsonstat_rows(d: dict[str, Any]) -> list[dict[str, Any]]:
 CUSTOM: dict[str, Any] = {}
 
 
+def build_raster(s: dict[str, Any]) -> dict[str, Any]:
+    """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
+    `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
+    the private lake: `lake/rasters/<wave>/<id>[_<n>].tif`. The build record keeps the CRS, cell
+    size, band, unit and the min and max of the band (read on an overview) so the
+    catalogue can describe it; area_stats reads it through agent/rasters_waves.yaml."""
+    import subprocess
+    import zipfile
+
+    import rasterio
+
+    t0 = time.time()
+    urls = s.get("urls") or [s["url"]]
+    d = TMP / s["id"]
+    d.mkdir(parents=True, exist_ok=True)
+    inputs: list[str] = []
+    for i, url in enumerate(urls):
+        name = url.split("?")[0].rsplit("/", 1)[-1] or f"src{i}"
+        src = d / name
+        if not src.exists():
+            with httpx.stream(
+                "GET", url, headers={"User-Agent": UA}, timeout=600, follow_redirects=True
+            ) as r:
+                r.raise_for_status()
+                with src.open("wb") as f:
+                    for chunk in r.iter_bytes(1 << 20):
+                        f.write(chunk)
+        if zipfile.is_zipfile(src):
+            with zipfile.ZipFile(src) as z:
+                member = s.get("member") or next(
+                    m for m in z.namelist() if m.lower().endswith((".tif", ".tiff", ".nc", ".asc"))
+                )
+                z.extract(member, d)
+                src = d / member
+        inputs.append(f'NETCDF:"{src}":{s["var"]}' if s.get("var") else str(src))
+    # several files (tiles) become one mosaic: one COG per source
+    gd = inputs[0]
+    if len(inputs) > 1:
+        gd = str(d / "mosaic.vrt")
+        subprocess.run(["gdalbuildvrt", gd, *inputs], check=True)
+    out = d / f"{s['id']}.tif"
+    cmd = ["gdal_translate", "-of", "COG", "-co", "COMPRESS=ZSTD", "-co", "PREDICTOR=YES"]
+    if s.get("band"):
+        cmd += ["-b", str(s["band"])]
+    if s.get("assign_crs"):  # a file without a CRS: the one its publisher states
+        cmd += ["-a_srs", s["assign_crs"]]
+    subprocess.run([*cmd, gd, str(out)], check=True)
+    with rasterio.open(out) as r:
+        a = r.read(1, masked=True, out_shape=(min(r.height, 2000), min(r.width, 2000)))
+        files = [
+            {
+                "key": f"lake/rasters/{WN}/{out.name}",
+                "bytes": out.stat().st_size,
+                "crs": str(r.crs),
+                "cell": [abs(r.transform.a), abs(r.transform.e)],
+                "size": [r.width, r.height],
+                "bounds": [round(x, 4) for x in r.bounds],
+                "nodata": r.nodata,
+                "dtype": r.dtypes[0],
+                # on a read of at most 2,000 x 2,000 cells (an overview): a description only
+                "min": float(a.min()) if a.count() else None,
+                "max": float(a.max()) if a.count() else None,
+            }
+        ]
+    if UPLOAD["on"]:
+        subprocess.run(
+            ["aws", "s3", "cp", "--only-show-errors", "--endpoint-url",
+             f"https://{w.env('CLOUDFLARE_ACCOUNT_ID')}.r2.cloudflarestorage.com",
+             str(out), f"s3://infraatlas-raw/{files[0]['key']}"],
+            check=True,
+        )  # fmt: skip
+    return {
+        "rows": 0, "raster": files, "unit": s.get("unit"), "band": s.get("band_meaning") or s.get("band"),
+        "seconds": round(time.time() - t0), "built": time.strftime("%Y-%m-%d"),
+        "example": {"sql": f"area_stats(measure='{PFX}_{s['id']}')", "answer": None},
+    }  # fmt: skip
+
+
 def build_one(con, lk, s: dict[str, Any]) -> dict[str, Any]:  # noqa: ANN001
     """One source into the lake (table = its id); the example query's answer."""
+    if s["kind"] == "raster":
+        return build_raster(s)
     t0 = time.time()
     load(con, s)
     safe_cols(con, "t")
@@ -1016,7 +1096,7 @@ def outcome(s: dict[str, Any], built: dict[str, Any], probes: dict[str, Any]) ->
     if s["status"] != "build":
         return s["status"]
     b = built.get(s["id"]) or {}
-    if b.get("rows"):
+    if b.get("rows") or b.get("raster"):
         return "built"
     if s["kind"] == "page":
         return "page"
@@ -1089,11 +1169,51 @@ def cell_for(fam: str, f: dict[str, Any], cc: str, srcs: list[dict[str, Any]], b
             "note": (f"no source built in wave {WAVE}. " + " | ".join(notes)) if notes else f"no source found in wave {WAVE}"}  # fmt: skip
 
 
+RASTERS = ROOT / "agent" / "rasters_waves.yaml"
+
+
+def render_rasters(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
+    """agent/rasters_waves.yaml: one area_stats measure per built raster source of this wave
+    (`<pfx>_<id>`), the mean of the cells whose centre lies inside the area unless the registry
+    says `stat: sum`; the other waves' measures are kept."""
+    doc = yaml.safe_load(RASTERS.read_text(encoding="utf-8")) if RASTERS.exists() else None
+    ms = {
+        k: v for k, v in ((doc or {}).get("measures") or {}).items() if not k.startswith(f"{PFX}_")
+    }
+    for s in srcs:
+        b = built.get(s["id"]) or {}
+        if s["kind"] != "raster" or not b.get("raster"):
+            continue
+        stat = s.get("stat", "mean")
+        cover = s["places"] if isinstance(s["places"], str) else ", ".join(s["places"])
+        ms[f"{PFX}_{s['id']}"] = {
+            "title": title_of(s),
+            "unit": s.get("unit") or "as published",
+            "stat": stat,
+            "how": f"{'sum' if stat == 'sum' else 'mean'} of the cells whose centre lies inside the area"
+            + (f"; band: {s['band_meaning']}" if s.get("band_meaning") else ""),
+            "licence": s.get("licence", ""),
+            "layers": [
+                {"url": f"r2://infraatlas-raw/{f['key']}", "cell": f"{f['cell'][0]:g} x {f['cell'][1]:g} ({f['crs']})", "cover": cover}
+                for f in b["raster"]
+            ],
+        }  # fmt: skip
+    RASTERS.write_text(
+        "# Generated by scripts/wave9.py render (brief 30): the registry rasters of waves 9 and\n"
+        "# 10 as area_stats measures. Edit scripts/wave*_sources.yaml, not this file.\n"
+        + yaml.safe_dump(
+            {"measures": dict(sorted(ms.items()))}, sort_keys=False, allow_unicode=True, width=200
+        ),
+        encoding="utf-8",
+    )
+
+
 def render(args: argparse.Namespace) -> None:
     from coverage import COUNTRIES, REGISTRY
 
     srcs = sources()
     built = built_records()
+    render_rasters(srcs, built)
     probes = json.loads(PROBES.read_text(encoding="utf-8")) if PROBES.exists() else {}
     hits = json.loads(SEARCH.read_text(encoding="utf-8")) if SEARCH.exists() else {}
     fams = families()

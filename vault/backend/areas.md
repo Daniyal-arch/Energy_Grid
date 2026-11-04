@@ -1,8 +1,8 @@
 ---
 title: Areas
 tags: [backend, agent, areas]
-updated: 2026-10-29
-paths: [backend/data/areas.py, backend/tools/areas.py, backend/tools/area_stats.py, backend/data/duck.py, agent/areas/, agent/rasters.yaml, agent/skills/area-analysis/]
+updated: 2026-11-04
+paths: [agent/areas/named.yaml, agent/evals/area_names.yaml, backend/data/areas.py, backend/tools/areas.py, backend/tools/area_stats.py, backend/data/duck.py, agent/areas/, agent/rasters.yaml, agent/skills/area-analysis/]
 ---
 
 # Areas (brief 27 part A)
@@ -18,6 +18,18 @@ Any area the user names, draws or sees becomes one object the other tools use.
   `intersect_with`, unions; groups from `agent/areas/groups.yaml` (eu27, nordics, cwe, atlas29...).
   Ranking: exact match, wanted level, outline before point, in view, lake outline, population.
   Ambiguity only within one level class. The lake's `outlines/names` index is searched first.
+- **Other names** (brief 30): `outlines/aliases` (`scripts/build_outlines.py aliases`, wave8
+  `[w8: Oaliases]`) holds Overture divisions' `names.common` (English and EU languages) and
+  `names.rules` (alternate, official, short) with the name index's columns; `_names_index`
+  matches `alias_norm` exactly, so "Bavaria", "Apulia", "Silesian Voivodeship" resolve to the
+  local-name outline. Probe: `scripts/probe_overture_names.py`.
+- **Named areas** (`agent/areas/named.yaml`): names that are no single outline (the Ruhr = the
+  15 districts of the Regionalverband Ruhr; Silesia = the Silesian Voivodeship, with a note;
+  Greater Manchester = its 10 districts, only when no outline carries the name). Union of the
+  members found by name with country and level; a missing member means no area (never a
+  partial union). `tools/areas.py` `_named_area`.
+- Name evals: `agent/evals/area_names.yaml` (official km² with a 10 % band), run against the real
+  lake by `backend/probes/probe_latency.py`; fixture cases in `backend/tests/test_areas.py`.
 - **SQL**: `run_sql(..., areas=[ids])` registers temp table `areas` and macros `in_area(geom,
   id)`, `intersects_area`, `km_inside`, `km2_inside`; `expand_in_area` adds a literal bbox
   filter so Parquet row groups are skipped. Country and group areas: filter by the country key
