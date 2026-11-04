@@ -4,7 +4,7 @@ name: backend-probe
 # 3,008 MB) against the real lake on R2, with the fake model. Runs every data route and every
 # tool once, then the eval questions through /api/ask, and the load test when asked.
 # The table goes to the job summary; the raw records are an artifact.
-# Without the R2 read token the lake tools fall back to the app tables (the summary says so).
+# R2 is read with the credentials derived from CLOUDFLARE_API_TOKEN (scripts/r2_creds.sh), masked.
 
 on:
   # new workflows can be dispatched only from the default branch: the pull request runs it too
@@ -22,16 +22,19 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     env:
-      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
-      R2_ACCESS_KEY_ID: ${{ secrets.R2_READ_ACCESS_KEY_ID }}
-      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_READ_SECRET_ACCESS_KEY }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
+      # the lake's read keys: the R2 credentials derived from the Cloudflare token (as wave8 T)
+      - run: bash scripts/r2_creds.sh
+      - run: |
+          { echo "R2_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID"; echo "R2_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"; echo "R2_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"; } >> "$GITHUB_ENV"
       - name: Build the image (amd64; base images retried on registry rate limits)
         run: bash backend/deploy/build_image.sh infraatlas-backend:probe linux/amd64
       - name: Probe in a Lambda-sized container
         run: |
-          [ -n "$R2_ACCESS_KEY_ID" ] || echo "### R2 read token not set: lake tools use the app tables only" >> "$GITHUB_STEP_SUMMARY"
+          [ -n "$R2_ACCESS_KEY_ID" ] || echo "### R2 credentials missing: lake tools use the app tables only" >> "$GITHUB_STEP_SUMMARY"
           docker run --rm --cpus 2 --memory 3008m \
             -e R2_ACCOUNT_ID -e R2_ACCESS_KEY_ID -e R2_SECRET_ACCESS_KEY \
             -v "$PWD/backend/probes:/var/task/backend/probes:ro" -v "$PWD/out:/out" \

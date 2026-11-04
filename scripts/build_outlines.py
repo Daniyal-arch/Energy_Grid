@@ -109,6 +109,15 @@ def con_spatial() -> duckdb.DuckDBPyConnection:
     return con
 
 
+def overture_anonymous(con: duckdb.DuckDBPyConnection) -> None:
+    """Read Overture's public bucket without credentials: the R2 keys in AWS_* (r2_creds.sh)
+    would otherwise be sent to S3, which answers 403."""
+    con.execute(
+        "CREATE OR REPLACE SECRET overture (TYPE s3, KEY_ID '', SECRET '', REGION 'us-west-2', "
+        "SCOPE 's3://overturemaps-us-west-2')"
+    )
+
+
 def lake(args: argparse.Namespace, source: str, licence: str, version: str = ""):  # noqa: ANN201
     return w.lake_for("outlines", args.lake, source, licence, SCRIPT, version)
 
@@ -509,6 +518,7 @@ def aliases(args: argparse.Namespace) -> None:
     rel = newest_overture()
     con = con_spatial()
     con.execute("SET s3_region = 'us-west-2'")
+    overture_anonymous(con)
     base = f"s3://overturemaps-us-west-2/release/{rel}/theme=divisions/type=division/*"
     subtypes = ", ".join(f"'{k}'" for k in SUBTYPE_LEVEL)
     langs = ", ".join(f"'{x}'" for x in ALIAS_LANGS)
