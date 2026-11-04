@@ -28,10 +28,11 @@ def download(url: str, dest: Path, *, tries: int = 4, timeout: float = 600, **kw
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
     part = dest.with_suffix(dest.suffix + ".part")
+    headers = {**UA, **(kw.pop("headers", None) or {})}  # type: ignore[dict-item]
     for attempt in range(1, tries + 1):
         try:
             with httpx.stream(
-                "GET", url, timeout=timeout, follow_redirects=True, headers=UA, **kw
+                "GET", url, timeout=timeout, follow_redirects=True, headers=headers, **kw
             ) as r:  # type: ignore[arg-type]
                 r.raise_for_status()
                 total = int(r.headers.get("content-length") or 0)

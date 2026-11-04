@@ -295,6 +295,70 @@ def arcgis_pages(s: dict[str, Any], dest: Path) -> Path:
     return dest
 
 
+class KeyMissing(RuntimeError):
+    """A source whose URL or headers need a key that is not in the environment."""
+
+
+ENV_REF = re.compile(r"\{env:([A-Z0-9_]+)\}")
+
+
+def with_keys(s: dict[str, Any]) -> dict[str, Any]:
+    """`{env:NAME}` in url, urls or headers replaced by the environment's value (brief 30); a
+    missing key raises KeyMissing, so the build is a skip that names the key."""
+
+    def sub(v: Any) -> Any:
+        if isinstance(v, str):
+            for name in ENV_REF.findall(v):
+                if not os.environ.get(name):
+                    raise KeyMissing(f"{name} is not set: skipped (set it as a repo secret)")
+            return ENV_REF.sub(lambda m: os.environ[m.group(1)], v)
+        if isinstance(v, list):
+            return [sub(x) for x in v]
+        if isinstance(v, dict):
+            return {k: sub(x) for k, x in v.items()}
+        return v
+
+    return {k: sub(v) if k in ("url", "urls", "headers", "params") else v for k, v in s.items()}
+
+
+STATE_FIPS = (  # noqa: SIM905
+    "01 02 04 05 06 08 09 10 11 12 13 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 "
+    "34 35 36 37 38 39 40 41 42 44 45 46 47 48 49 50 51 53 54 55 56 72"
+).split()
+
+
+def census_tracts(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """kind census: an ACS table per tract, state by state (the API answers one state's tracts
+    at a time). `url` is the dataset endpoint, `get` the variables; values as published (the
+    Census Bureau's negative codes such as -666666666 mark a missing estimate, kept)."""
+    rows: list[list[str]] = []
+    head: list[str] = []
+    for st in STATE_FIPS:
+        r = httpx.get(
+            s["url"],
+            params={
+                "get": s["get"],
+                "for": "tract:*",
+                "in": f"state:{st}",
+                "key": os.environ.get("CENSUS_API_KEY", ""),
+            },
+            timeout=300,
+        )
+        r.raise_for_status()
+        data = r.json()
+        head, rows = data[0], rows + data[1:]
+    f = d / "src.csv"
+    import csv
+
+    with f.open("w", newline="", encoding="utf-8") as fh:
+        wr = csv.writer(fh)
+        wr.writerow([*head, "geoid"])
+        for row in rows:
+            rec = dict(zip(head, row, strict=False))
+            wr.writerow([*row, f"{rec['state']}{rec['county']}{rec['tract']}"])
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('{f}', all_varchar = true)")
+
+
 def load(con, s: dict[str, Any]) -> None:  # noqa: ANN001
     """The source into DuckDB table t, by kind; `urls` (several files of one kind) are stacked."""
     if s.get("urls"):
@@ -311,7 +375,9 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
     kind, url = s["kind"], s["url"]
     d = TMP / s["id"]
     d.mkdir(parents=True, exist_ok=True)
-    if kind == "arcgis":
+    if kind == "census":
+        census_tracts(con, s, d)
+    elif kind == "arcgis":
         read_geo(con, arcgis_pages(s, d / "layer.geojson"), {**s, "crs": "EPSG:4326"})
     elif kind in ("shp_zip", "gpkg_zip", "geojson_zip"):
         z = w.unzip(w.download(url, d / "src.zip", timeout=3600))
@@ -329,6 +395,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             d
             / ("src.zip" if kind == "csv_zip" else "src.csv.gz" if kind == "csv_gz" else "src.csv"),
             timeout=3600,
+            headers=s.get("headers"),
         )
         # Eurostat queues a large extraction (a SOAP "queued" answer) and serves it from its
         # cache once ready: ask again until the table comes
@@ -633,9 +700,7 @@ def build_raster(s: dict[str, Any]) -> dict[str, Any]:
         name = url.split("?")[0].rsplit("/", 1)[-1] or f"src{i}"
         src = d / name
         if not src.exists():
-            with httpx.stream(
-                "GET", url, headers={"User-Agent": UA}, timeout=600, follow_redirects=True
-            ) as r:
+            with httpx.stream("GET", url, headers=UA, timeout=600, follow_redirects=True) as r:
                 r.raise_for_status()
                 with src.open("wb") as f:
                     for chunk in r.iter_bytes(1 << 20):
@@ -1031,11 +1096,14 @@ def build(args: argparse.Namespace) -> None:
     for s in todo:
         print(f"== {s['id']}", flush=True)
         try:
-            status[s["id"]] = build_one(con, lk, s)
+            status[s["id"]] = build_one(con, lk, with_keys(s))
             print(
                 f"  {s['id']}: {status[s['id']]['rows']:,} rows in {status[s['id']]['seconds']} s",
                 flush=True,
             )
+        except KeyMissing as e:
+            print(f"  {s['id']}: {e}", flush=True)
+            status[s["id"]] = {"skipped": str(e), "built": None}
         except (SystemExit, Exception) as e:  # noqa: BLE001 - one source failing does not stop the others
             import traceback
 
@@ -1100,6 +1168,8 @@ def outcome(s: dict[str, Any], built: dict[str, Any], probes: dict[str, Any]) ->
         return "built"
     if s["kind"] == "page":
         return "page"
+    if b.get("skipped"):  # a key not set yet: not a failure
+        return "pending"
     return "failed" if b else "pending"
 
 
