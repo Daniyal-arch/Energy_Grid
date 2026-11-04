@@ -20,7 +20,7 @@ import logging
 import re
 import unicodedata
 from dataclasses import dataclass, field
-from functools import cached_property
+from functools import cached_property, lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -136,8 +136,10 @@ ISO2_TO_ISO3 = {
 }  # fmt: skip
 
 
+@lru_cache(maxsize=200_000)
 def norm(s: str) -> str:
-    """Lower case, no accents, single spaces: the form names are matched in."""
+    """Lower case, no accents, single spaces: the form names are matched in. Cached: a search
+    compares the query with every gazetteer name (about 10,000 per call)."""
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
     s = re.sub(r"[^a-z0-9 ]", " ", s.casefold().replace("-", " ").replace("'", ""))
     return re.sub(r"\s+", " ", s).strip()
