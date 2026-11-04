@@ -9,6 +9,9 @@ export const SNAPSHOT_REMOTE = "https://raw.githubusercontent.com/Daniyal-arch/E
 export const ARCHIVE_REMOTE = "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu";
 // recordings (frontend/scripts/record-video.mjs) wait for the archive instead of falling back
 const RECORDING = new URLSearchParams(window.location.search).has("record");
+// ?shapes=open: country outlines from Natural Earth (public domain) instead of Eurostat GISCO,
+// whose terms exclude commercial use (scripts/build_open_shapes.py; the owner decides the default)
+export const SHAPES_DIR = new URLSearchParams(window.location.search).get("shapes") === "open" ? "open/" : "";
 
 export async function getJson<T>(url: string): Promise<T> {
   const r = await fetch(url);
@@ -53,9 +56,9 @@ const archive = (name: string): Loader => (set) => newer(name, ARCHIVE_REMOTE, s
 const STATIC: Record<string, Loader> = {
   grid: bundled("grid.json"),
   plants: bundled("plants.json"),
-  countries: bundled("countries.json"),
+  countries: bundled(`${SHAPES_DIR}countries.json`),
   gas: bundled("gas.json"),
-  world: bundled("world.json"),
+  world: bundled(`${SHAPES_DIR}world.json`),
   transition: bundled("transition.json"),
   monthly: bundled("monthly.json"),
   worldPlants: bundled("world_plants.json"),

@@ -14,6 +14,7 @@ from the source unless a row says otherwise.
 | `gas.json` | 4,840 pipe segments, 29 LNG, 216 storages | SciGRID_gas IGGIELGN (2021, [Zenodo 4767098](https://zenodo.org/records/4767098)), CC BY 4.0; clipped to the mapped countries; capacities only where the dataset marks them as not estimated. Predates the 2022+ German LNG terminals |
 | `countries.json` | 35 countries: land, coast, borders | Eurostat GISCO countries 1:20M (2024); overseas territories dropped |
 | `world.json` | land of all other countries | Eurostat GISCO countries 1:20M, coarse outlines for the globe's base; no data shown on them |
+| `open/countries.json`, `open/world.json` | the same two files from Natural Earth (behind `?shapes=open`) | Natural Earth admin-0 countries 1:10m v5.1.2, public domain, same simplification (`scripts/build_open_shapes.py`); side-by-side check in `docs/research/gisco-replacement.md`; GISCO stays the default until the owner decides (`docs/owner-questions.md`) |
 
 ```sh
 uv run python scripts/fetch_eu_energy.py   # ~50 MB into data/eu/ (gitignored)
