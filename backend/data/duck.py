@@ -412,8 +412,16 @@ class Lake:
         ca = os.environ.get("SSL_CERT_FILE") or next(
             (c for c in CA_CANDIDATES if Path(c).exists()), None
         )
+        if not ca:  # no system bundle (Windows, macOS): certifi's, which httpx brings
+            try:
+                import certifi
+
+                ca = certifi.where()
+            except ImportError:
+                ca = None
         if ca:
-            con.execute(f"SET ca_cert_file = '{ca}'")
+            # GLOBAL: cursors are new connections and would not see a session setting
+            con.execute(f"SET GLOBAL ca_cert_file = '{ca}'")
             con.execute(f"SET allowed_paths = ['{ca}']")
         con.execute("SET enable_external_access = false")
         con.execute("SET lock_configuration = true")

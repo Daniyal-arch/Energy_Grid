@@ -41,6 +41,10 @@ updated: 2026-10-31
 - **rasterio on the laptop**: PostGIS sets `PROJ_LIB` to its own older `proj.db`, so the
   backend's raster tests fail with `CRSError: The EPSG code is unknown`; clear `PROJ_LIB` for the
   run (`Remove-Item Env:PROJ_LIB`). CI is unaffected.
+- **DuckDB's CA bundle on Windows**: the lockdown allows only the CA file it sets, and
+  `ca_cert_file` is per connection unless `SET GLOBAL`: cursors lost it and every R2 read failed
+  locally ("Cannot read a CA certificate bundle"). `data/duck.py` sets it globally and falls
+  back to certifi's bundle where no system bundle exists.
 - **public.ecr.aws rate limit**: the backend image job can fail with `429 Too Many Requests ...
   Data limit exceeded` pulling the Lambda adapter image anonymously; re-run the job.
 - **GitHub `contains()` on a string ignores case**: `contains(groups, 'C')` matched "Mworldcover";
