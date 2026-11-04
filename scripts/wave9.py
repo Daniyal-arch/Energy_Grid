@@ -386,7 +386,15 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             "gpkg_zip": (".gpkg",),
             "geojson_zip": (".geojson", ".json"),
         }
-        read_geo(con, first_file(z, ext[kind]), s)
+        if s.get("all_files"):  # every layer file of the zip (points and polygons), stacked
+            files = sorted(p for p in z.rglob("*") if p.is_file() and p.suffix.lower() in ext[kind])
+            for i, f in enumerate(files):
+                read_geo(con, f, s)
+                con.execute(f"CREATE OR REPLACE TABLE zpart_{i} AS SELECT *, '{f.stem}' AS src_file FROM t")
+            union = " UNION ALL BY NAME ".join(f"SELECT * FROM zpart_{i}" for i in range(len(files)))
+            con.execute(f"CREATE OR REPLACE TABLE t AS {union}")
+        else:
+            read_geo(con, first_file(z, ext[kind]), s)
     elif kind in ("geojson", "gpkg"):
         read_geo(con, w.download(url, d / f"src.{kind}", timeout=3600), s)
     elif kind in ("csv", "csv_zip", "csv_gz"):
@@ -440,7 +448,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(data))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000, sample_size = -1)"
         )
     elif kind == "socrata":
         rows: list[dict[str, Any]] = []
@@ -454,7 +462,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(rows))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000, sample_size = -1)"
         )
     elif kind == "jsonstat":
         con.execute("CREATE OR REPLACE TABLE t AS SELECT * FROM (VALUES (1)) LIMIT 0")
@@ -475,11 +483,13 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(rows))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000, sample_size = -1)"
         )
     elif kind == "ckan":
         # the newest CSV (or `fmt`) resource of the first package the search finds
         res = w.get_json(url)["result"]  # type: ignore[index]
+        if isinstance(res, list):  # package_list names packages only: no resources to pick from
+            raise SystemExit(f"CKAN answered a list of {len(res)} names: use package_show?id=<name>")
         pkgs = res.get("results", [res])
         fmt = (s.get("fmt") or "csv").lower()
         cand = [
@@ -756,6 +766,31 @@ def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     }  # fmt: skip
 
 
+def as_of(s: dict[str, Any]) -> dict[str, str]:
+    """The source's own date (brief 30): the registry's `as_of` when it names one (a release or
+    reference date stated by the publisher), else the newest Last-Modified header of the files
+    downloaded for it; empty when neither exists (the build date is then all we know)."""
+    if s.get("as_of"):
+        return {
+            "as_of": str(s["as_of"]),
+            "as_of_basis": s.get("as_of_basis", "stated by the publisher"),
+        }
+    from email.utils import parsedate_to_datetime
+
+    dates = []
+    for f in (TMP / s["id"]).rglob("*.last-modified"):
+        try:
+            dates.append(parsedate_to_datetime(f.read_text(encoding="utf-8").strip()))
+        except (TypeError, ValueError):
+            continue
+    if not dates:
+        return {}
+    return {
+        "as_of": max(dates).date().isoformat(),
+        "as_of_basis": "Last-Modified of the published file",
+    }
+
+
 def build_one(con, lk, s: dict[str, Any]) -> dict[str, Any]:  # noqa: ANN001
     """One source into the lake (table = its id); the example query's answer."""
     if s["kind"] == "raster":
@@ -799,12 +834,21 @@ def build_one(con, lk, s: dict[str, Any]) -> dict[str, Any]:  # noqa: ANN001
     import lake
 
     sort = [lake.hilbert()] if geometry else [f'"{cols[0]}"']
-    lk.write(con, s["id"], query, sort=sort, geometry=geometry)
+    asof = as_of(s)
+    lk.write(
+        con,
+        s["id"],
+        query,
+        sort=sort,
+        geometry=geometry,
+        meta={**asof, "refresh": s.get("refresh", "")},
+    )
     n = con.execute("SELECT count(*) FROM t").fetchone()[0]
     out = {
         "rows": n, "columns": cols[:60], "geometry": bool(geometry), "seconds": round(time.time() - t0),
         "example": {"sql": f"SELECT count(*) FROM {WN}.{s['id']}", "answer": n},
         "built": time.strftime("%Y-%m-%d"),
+        **asof,
     }  # fmt: skip
     if s.get("choro"):
         out["choro"] = choro_file(con, s)
