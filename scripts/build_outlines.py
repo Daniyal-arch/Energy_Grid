@@ -517,8 +517,7 @@ def aliases(args: argparse.Namespace) -> None:
     """
     rel = newest_overture()
     con = con_spatial()
-    con.execute("SET s3_region = 'us-west-2'")
-    overture_anonymous(con)
+    overture_anonymous(con)  # its own region: a global s3_region would reach the R2 secret too
     base = f"s3://overturemaps-us-west-2/release/{rel}/theme=divisions/type=division/*"
     subtypes = ", ".join(f"'{k}'" for k in SUBTYPE_LEVEL)
     langs = ", ".join(f"'{x}'" for x in ALIAS_LANGS)
