@@ -35,6 +35,16 @@ Any chat model by configuration for [[agent-graph]].
   `AWS_BEARER_TOKEN_BEDROCK` for boto3): the key authenticates (model lists), but every model
   answers `ThrottlingException`: the account's quotas are 0 (`probes/probe_bedrock.py`).
 
+- **Gemini** (2026-11-04; `uv sync --extra google`, `GOOGLE_API_KEY` from Google AI Studio;
+  `probes/probe_gemini.py`): on the free tier the pro and newest models answer
+  `429 RESOURCE_EXHAUSTED`; `gemini-3-flash-preview`, `gemini-3.5-flash`, `gemini-3.6-flash`,
+  `gemini-3.5-flash-lite`, `gemini-3.1-flash-lite` and `gemini-flash-lite-latest` call tools;
+  `gemini-2.5-*` are retired (404). With `gemini-3-flash-preview` (analyst) and
+  `gemini-3.5-flash-lite` (fast), the plants map question ran in 33 s (grounding 8/8, $0.021 at
+  list prices, $0 on the free tier) and the 3D edit in 6 s, against 150 s on Groq's free tier.
+  Gemini refuses a tool argument whose schema is a tuple (`prefixItems` without `items`): tool
+  arguments are lists (`tests/test_tools.py` checks).
+
 > [!warning] Groq free tier
 > 8,000 tokens per minute per model. One analyst call is ~4,300 tokens (system prompt ~3,600,
 > tool schemas ~670) plus tool results, so a question waits on HTTP 429 retries (150 s for a map

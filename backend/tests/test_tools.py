@@ -38,6 +38,15 @@ def test_tool_list_sorted_and_typed(ctx):
         assert t.args_schema is not None
 
 
+def test_tool_schemas_every_provider_accepts():
+    # Gemini refuses an array without `items` (a tuple's schema has only prefixItems)
+    for s in specs():
+        if s.name in ("make_map", "make_chart"):  # the cartographer writes these as JSON
+            continue
+        schema = json.dumps(s.args.model_json_schema())
+        assert "prefixItems" not in schema, s.name
+
+
 def test_search_catalog(ctx):
     hits = call(ctx, "search_catalog", query="negative day-ahead prices per zone")["data"][
         "matches"

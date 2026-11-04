@@ -62,6 +62,35 @@ models:
     tool_calling: true
     caching: google_implicit
     temperature: null
+  # Gemini models a free AI Studio key may call (backend/probes/probe_gemini.py, 2026-11-04):
+  # the newer and pro models answer 429 RESOURCE_EXHAUSTED on the free tier
+  - id: gemini-3-flash-preview
+    model: google_genai:gemini-3-flash-preview
+    role: main
+    prices: {input: 0.50, output: 3.00, cache_read: 0.05}
+    price_source: https://aistudio.google.com/docs/pricing (read 2026-11-04; free tier available)
+    context: 1048576
+    tool_calling: true
+    caching: google_implicit
+    temperature: null
+  - id: gemini-3.1-flash-lite
+    model: google_genai:gemini-3.1-flash-lite
+    role: fast
+    prices: {input: 0.25, output: 1.50, cache_read: 0.025}
+    price_source: https://aistudio.google.com/docs/pricing (read 2026-11-04; free tier available)
+    context: 1048576
+    tool_calling: true
+    caching: google_implicit
+    temperature: null
+  - id: gemini-3.5-flash-lite
+    model: google_genai:gemini-3.5-flash-lite
+    role: fast
+    prices: {input: 0.30, output: 2.50, cache_read: 0.03}
+    price_source: https://aistudio.google.com/docs/pricing (read 2026-11-04; free tier available)
+    context: 1048576
+    tool_calling: true
+    caching: google_implicit
+    temperature: null
   # Groq (uv sync --extra groq; GROQ_API_KEY): open models served fast; no cache discount listed
   - id: groq-gpt-oss-120b
     model: groq:openai/gpt-oss-120b

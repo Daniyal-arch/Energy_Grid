@@ -8,6 +8,12 @@ updated: 2026-11-03
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-04** (main, local): PR #18 (waves 9 and 10) checked: CI green, 658 new tables, 49
+  layers, 494 colourings; R2 holds 38.2 GB. Gemini tested locally (`probes/probe_gemini.py`):
+  free-tier flash models in the registry; tool arguments as lists (Gemini refuses tuples); the
+  lake's CA bundle set globally with a certifi fallback (R2 reads failed on Windows). Notes:
+  agent-models, gotchas.
+
 - **2026-11-03** (claude/funny-euler-7vwg1s): wave 10 (brief 29) gathered and built: 571
   sources (323 Eurostat tables, 225 WDI indicators, 23 GB district tables), colourings per
   country, world country and GB district (`gb_lad24`). The wave-9 machinery runs any wave

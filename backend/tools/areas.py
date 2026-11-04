@@ -37,7 +37,10 @@ class ResolveAreaArgs(BaseModel):
         description="'drawn': the polygon or circle the user drew; 'screen': the map on screen; "
         "'countries': the countries selected in the app",
     )
-    point: tuple[float, float] | None = Field(default=None, description="[lon, lat] of a circle")
+    # a list, not a tuple: a tuple's schema (prefixItems, no items) is refused by Gemini
+    point: list[float] | None = Field(
+        default=None, min_length=2, max_length=2, description="[lon, lat] of a circle"
+    )
     radius_km: float | None = Field(
         default=None,
         gt=0,
