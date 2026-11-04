@@ -16,7 +16,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
-from data.areas import LEVEL_CLASS, LEVEL_WORDS, Area, AreaError, Candidate
+from data.areas import LEVEL_CLASS, LEVEL_WORDS, Area, AreaError, Candidate, norm
 from tools.context import ToolContext, result
 
 
@@ -104,6 +104,45 @@ def _from_view(ctx: ToolContext, which: str) -> Area:
     return A.polygon([[ring]], "The map on screen", level="bbox")
 
 
+def _named_area(ctx: ToolContext, n: str, level: str | None, notes: list[str]) -> Area | None:
+    """A name from agent/areas/named.yaml (the Ruhr, Silesia...) as the union of its members'
+    outlines; None when the name is not one, or (when: fallback) an outline carries it."""
+    A = ctx.areas
+    na = A.named_areas.get(norm(n))
+    if na is None:
+        return None
+    if na.get("when") == "fallback" and any(
+        c.match == 0 and c.outline for c in A.search(n, level=level, view=ctx.view)
+    ):
+        return None
+    found: list[Area] = []
+    missing: list[str] = []
+    for m in na["members"]:
+        hits = [
+            c
+            for c in A.search(f"{m}, {na['iso3']}", level=na.get("level"), view=ctx.view)
+            if c.outline and c.match == 0
+        ]
+        if hits:
+            found.append(A.from_candidate(hits[0]))
+        else:
+            missing.append(m)
+    if missing:
+        notes.append(
+            f"{n!r} is {na['name']}: {na['note']}; but no outline was found for "
+            f"{', '.join(missing)}, so it is not built (a part would undercount)"
+        )
+        raise AreaError(notes[-1])
+    notes.append(f"{n!r} is {na['name']}: {na['note']} (membership: {na['source']})")
+    if len(found) == 1:
+        a = found[0]
+        if a.name != na["name"]:
+            a.name = f"{na['name']} ({a.name})" if norm(a.name) != norm(na["name"]) else a.name
+            ctx.area_store.put(a)
+        return a
+    return A.union(found, name=na["name"], level="group")
+
+
 def resolve_area(
     ctx: ToolContext,
     names: list[str] | None = None,
@@ -128,6 +167,10 @@ def resolve_area(
         elif names:
             parts: list[Area] = []
             for n in names:
+                named = _named_area(ctx, n, level, notes)
+                if named is not None:
+                    parts.append(named)
+                    continue
                 ref = n if ":" in n and " " not in n else None
                 found = A.search(n, level=level, view=ctx.view) if ref is None else []
                 if ref:

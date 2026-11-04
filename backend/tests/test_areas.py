@@ -163,3 +163,41 @@ def test_intersects_area_with_a_bbox_column_is_pruned(ctx):
         f"WHERE intersects_area(geometry, '{a['area_id']}', bbox)",
     )
     assert r["data"]["rows"] == [[1]], r
+
+
+# brief 30 Track 1.2: English and local names, exonyms and areas made of several outlines
+@pytest.mark.parametrize(
+    ("name", "level", "iso3"),
+    [
+        ("Bavaria", "region", "DEU"),
+        ("Bayern", "region", "DEU"),
+        ("Silesia", "region", "POL"),
+        ("Śląskie", "region", "POL"),
+        ("Silesian Voivodeship", "region", "POL"),
+    ],
+)
+def test_english_and_local_names_resolve_first_try(ctx, name, level, iso3):
+    d = area(ctx, names=[name])
+    assert d["area"]["level"] == level and d["area"]["iso3"] == [iso3], d
+    assert not d.get("ambiguous")
+
+
+@pytest.mark.parametrize("name", ["the Ruhr", "Ruhrgebiet", "Ruhr area"])
+def test_the_ruhr_is_its_fifteen_districts(ctx, name):
+    d = area(ctx, names=[name])
+    a = d["area"]
+    assert a["name"] == "Ruhr (Regionalverband Ruhr area)" and a["iso3"] == ["DEU"]
+    assert "Regionalverband Ruhr" in d["note"] and "rvr.ruhr" in d["note"]
+    # 15 boxes of 0.09 x 0.3 degrees: the union's area is their sum, nothing added
+    one = area(ctx, names=["Kreis Unna, DEU"], level="county")["area"]["area_km2"]
+    assert a["area_km2"] == pytest.approx(15 * one, rel=0.05)
+
+
+def test_named_area_with_a_missing_member_is_not_built(ctx, monkeypatch):
+    named = {
+        k: {**v, "members": [*v["members"], "Nowhere"]} if v["key"] == "ruhr" else v
+        for k, v in ctx.areas.named_areas.items()
+    }
+    monkeypatch.setitem(ctx.areas.__dict__, "named_areas", named)
+    r = resolve_area(ctx, names=["the Ruhr"])["data"]
+    assert r["area"] is None and "Nowhere" in r["error"]

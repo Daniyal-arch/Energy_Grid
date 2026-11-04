@@ -221,6 +221,39 @@ def load_test(url: str, n: int) -> dict[str, Any]:
     return {"n": n, "wall_s": time.perf_counter() - t0, "asks": asks, "routes": routes}
 
 
+def names_check() -> list[dict[str, Any]]:
+    """agent/evals/area_names.yaml: each name resolves first try to the right country, level
+    and an outline within 10 % of the official area."""
+    from app.settings import Settings
+    from tools.areas import resolve_area
+    from tools.context import ToolContext
+
+    ctx = ToolContext(Settings())
+    out = []
+    for c in yaml.safe_load((EVALS / "area_names.yaml").read_text(encoding="utf-8"))["questions"]:
+        t0 = time.perf_counter()
+        d = resolve_area(ctx, names=[c["q"]])["data"]
+        a = d.get("area") or {}
+        km2 = a.get("area_km2") or 0
+        ok = (
+            a.get("iso3") == [c["iso3"]]
+            and (not c.get("level") or a.get("level") == c["level"])
+            and abs(km2 - c["km2"]) <= 0.1 * c["km2"]
+            and not d.get("ambiguous")
+        )
+        out.append(
+            {
+                "id": c["id"],
+                "q": c["q"],
+                "ok": ok,
+                "s": time.perf_counter() - t0,
+                "got": {k: a.get(k) for k in ("name", "level", "iso3", "area_km2")},
+                "note": (d.get("note") or d.get("error") or "")[:160],
+            }
+        )
+    return out
+
+
 def pct(xs: list[float], p: float) -> float:
     if not xs:
         return float("nan")
@@ -277,6 +310,7 @@ def main() -> None:
         if a.load:
             rec["load"] = load_test(url, a.load)
         rec["tools"] = tool_runs()
+        rec["names"] = names_check()
     finally:
         if proc:
             proc.terminate()
@@ -293,6 +327,12 @@ def main() -> None:
     for t in rec["tools"]:
         print(
             f"| `{t['tool']}` {json.dumps(t['args'])[:60]} | {'yes' if t['ok'] else 'NO'} | {t['s']:.2f} | {t['error'][:80]} |"
+        )
+    print("\n| Name | OK | Resolved to | Time (s) |\n|---|---|---|---|")
+    for n in rec["names"]:
+        g = n["got"]
+        print(
+            f"| {n['q']} | {'yes' if n['ok'] else 'NO'} | {g['name']} ({g['level']}, {g['iso3']}, {g['area_km2']} km²) {n['note'][:60]} | {n['s']:.2f} |"
         )
     asks = [x for x in rec["asks"] if x.get("status") == 200]
     by_tool: dict[str, list[float]] = {}

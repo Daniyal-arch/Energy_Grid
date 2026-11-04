@@ -51,8 +51,18 @@ def write_fixture_lake(root: Path) -> None:
         f"""COPY (SELECT * FROM (VALUES
           ('fr-75056', 'Paris', 'locality', 'FRA', 'Ile-de-France', 2133111.0, ST_MakeEnvelope(2.22, 48.81, 2.47, 48.91)),
           ('us-4855893', 'Paris', 'us_place', 'USA', 'Texas', 24171.0, ST_MakeEnvelope(-95.62, 33.62, -95.48, 33.71)),
-          ('nl-BU03630000', 'Burgwallen-Oude Zijde', 'nl_buurt', 'NLD', 'Amsterdam', 4200.0, ST_MakeEnvelope(4.893, 52.369, 4.902, 52.377))
-        ) t(id, name, level, iso3, parent_name, population, geometry))
+          ('nl-BU03630000', 'Burgwallen-Oude Zijde', 'nl_buurt', 'NLD', 'Amsterdam', 4200.0, ST_MakeEnvelope(4.893, 52.369, 4.902, 52.377)),
+          ('de-by', 'Bayern', 'region', 'DEU', 'Deutschland', 13000000.0, ST_MakeEnvelope(9.0, 47.3, 13.8, 50.5)),
+          ('pl-24', 'Woj Śląskie', 'region', 'POL', 'Polska', 4300000.0, ST_MakeEnvelope(18.0, 49.4, 19.9, 51.1))
+        ) t(id, name, level, iso3, parent_name, population, geometry)
+        UNION ALL
+        -- the 15 districts of the Regionalverband Ruhr as small boxes in a row (named.yaml)
+        SELECT 'ruhr-' || i, n, 'county', 'DEU', 'Nordrhein-Westfalen', 300000.0,
+               ST_MakeEnvelope(6.5 + i * 0.1, 51.3, 6.59 + i * 0.1, 51.6)
+        FROM (SELECT unnest(['Duisburg', 'Essen', 'Mülheim an der Ruhr', 'Oberhausen', 'Bottrop',
+               'Gelsenkirchen', 'Bochum', 'Dortmund', 'Hagen', 'Hamm', 'Herne', 'Kreis Recklinghausen',
+               'Kreis Unna', 'Kreis Wesel', 'Ennepe-Ruhr-Kreis']) AS n,
+               unnest(range(15)) AS i))
         TO '{root}/outlines/divisions.parquet' (FORMAT parquet)"""
     )
     # the name index over the outline sets (scripts/build_outlines.py names)
@@ -62,6 +72,14 @@ def write_fixture_lake(root: Path) -> None:
                   ST_XMax(geometry) AS xmax, ST_YMax(geometry) AS ymax
            FROM read_parquet('{root}/outlines/divisions.parquet'))
         TO '{root}/outlines/names.parquet' (FORMAT parquet)"""
+    )
+    # other names (scripts/build_outlines.py aliases): Overture names.common and names.rules
+    con.execute(
+        f"""COPY (SELECT n.*, a.alias, a.alias_norm, a.language, 'common' AS variant
+           FROM read_parquet('{root}/outlines/names.parquet') n JOIN (VALUES
+             ('de-by', 'Bavaria', 'bavaria', 'en'), ('pl-24', 'Silesian Voivodeship', 'silesian voivodeship', 'en'),
+             ('pl-24', 'Śląskie', 'slaskie', NULL)) a(id, alias, alias_norm, language) ON a.id = n.id)
+        TO '{root}/outlines/aliases.parquet' (FORMAT parquet)"""
     )
     (root / "_catalog.json").write_text('{"updated": "2026-10-27T00:00:00Z"}')
 

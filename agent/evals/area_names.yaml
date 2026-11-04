@@ -1,0 +1,19 @@
+# Area names that must resolve first try (brief 30 Track 1.2): English and local names,
+# exonyms, and areas made of several outlines (agent/areas/named.yaml).
+# km2: the official area as published (rounded; statistics office or the body's own page), checked
+# with a 10 % band since the outlines are generalised; a check of the outline, never shown to users.
+# Run against the real lake by backend/probes/probe_latency.py (backend-probe.yml); the names
+# the fixture lake holds run in backend/tests/test_areas.py.
+questions:
+- {id: name-bavaria, q: Bavaria, iso3: DEU, level: region, km2: 70542, km2_source: "Destatis, Gebiet und Bevölkerung (70,542 km²)"}
+- {id: name-bayern, q: Bayern, iso3: DEU, level: region, km2: 70542, km2_source: "Destatis (70,542 km²)"}
+- {id: name-brittany, q: Brittany, iso3: FRA, level: region, km2: 27208, km2_source: "INSEE, région Bretagne (27,208 km²)"}
+- {id: name-bretagne, q: Bretagne, iso3: FRA, level: region, km2: 27208, km2_source: "INSEE (27,208 km²)"}
+- {id: name-lower-saxony, q: Lower Saxony, iso3: DEU, level: region, km2: 47710, km2_source: "Destatis (47,710 km²)"}
+- {id: name-silesia, q: Silesia, iso3: POL, level: region, km2: 12333, km2_source: "GUS, województwo śląskie (12,333 km²)"}
+- {id: name-ruhr, q: the Ruhr, iso3: DEU, level: group, km2: 4439, km2_source: "Regionalverband Ruhr (4,439 km²)"}
+- {id: name-greater-manchester, q: Greater Manchester, iso3: GBR, km2: 1277, km2_source: "ONS Standard Area Measurements (1,277 km²)"}
+- {id: name-puglia, q: Puglia, iso3: ITA, level: region, km2: 19541, km2_source: "ISTAT (19,541 km²)"}
+- {id: name-apulia, q: Apulia, iso3: ITA, level: region, km2: 19541, km2_source: "ISTAT (19,541 km²)"}
+- {id: name-nrw, q: North Rhine-Westphalia, iso3: DEU, level: region, km2: 34112, km2_source: "Destatis (34,112 km²)"}
+- {id: name-nrw-local, q: Nordrhein-Westfalen, iso3: DEU, level: region, km2: 34112, km2_source: "Destatis (34,112 km²)"}

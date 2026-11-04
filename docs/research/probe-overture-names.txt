@@ -1,0 +1,14 @@
+release 2026-10-21.0
+read 1,270 rows in 20 s
+names struct: STRUCT("primary" VARCHAR, common MAP(VARCHAR, VARCHAR), rules STRUCT(variant VARCHAR, "language" VARCHAR, perspectives STRUCT("mode" VARCHAR, countries VARCHAR[]), "value" VARCHAR, "between" DOUBLE[], side VARCHAR)[])
+DE 'Bayern': region primary='Bayern' en='Bavaria' languages=101 rules=[{'variant': 'alternate', 'language': None, 'perspectives': None, 'value': 'Bavaria', 'between': None, 'side': None}, {'variant': 'official', 'language': None, 'perspectives': None, 'value': 'Freistaa
+DE 'Niedersachsen': region primary='Niedersachsen' en='Lower Saxony' languages=62 rules=[{'variant': 'alternate', 'language': 'eo', 'perspectives': None, 'value': 'Malsupra Saksujo', 'between': None, 'side': None}, {'variant': 'alternate', 'language': 'pt', 'perspectives': None, 'value':
+DE 'Nordrhein-Westfalen': region primary='Nordrhein-Westfalen' en='North Rhine-Westphalia' languages=93 rules=[{'variant': 'alternate', 'language': 'br', 'perspectives': None, 'value': 'Nordrhein-Westfalen', 'between': None, 'side': None}, {'variant': 'short', 'language': None, 'perspectives': None, 'value': 
+DE 'Ruhr': no match
+DE 'Regionalverband Ruhr': no match
+FR 'Bretagne': region primary='Bretagne' en='Brittany' languages=62 rules=[{'variant': 'short', 'language': 'br', 'perspectives': None, 'value': 'Breizh', 'between': None, 'side': None}, {'variant': 'alternate', 'language': 'br', 'perspectives': None, 'value': 'Breizh', 'be
+PL 'województwo śląskie': no match
+PL 'Śląskie': no match
+PL 'Silesia': no match
+GB 'Greater Manchester': no match
+IT 'Puglia': region primary='Puglia' en='Apulia' languages=50 rules=[{'variant': 'short', 'language': None, 'perspectives': None, 'value': 'PUG', 'between': None, 'side': None}, {'variant': 'alternate', 'language': 'en', 'perspectives': None, 'value': 'Puglia', 'betwe

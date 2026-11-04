@@ -1,0 +1,38 @@
+# Areas people name that are no single outline in the outline sets (brief 30 Track 1.2).
+# Each one is the union of member outlines found by name (with the country and level given),
+# and the page that states the membership. Nothing is drawn by hand or estimated.
+# when: always - the named area replaces the search for the name
+#       fallback - used only when no outline carries the name itself
+areas:
+  ruhr:
+    name: Ruhr (Regionalverband Ruhr area)
+    aliases: [the Ruhr, Ruhr, Ruhrgebiet, das Ruhrgebiet, Ruhr area, the Ruhr area, Ruhr region, Ruhrpott, Metropole Ruhr, Regionalverband Ruhr]
+    when: always
+    iso3: DEU
+    level: county
+    members: [Duisburg, Essen, Mülheim an der Ruhr, Oberhausen, Bottrop, Gelsenkirchen, Bochum, Dortmund, Hagen, Hamm, Herne, Kreis Recklinghausen, Kreis Unna, Kreis Wesel, Ennepe-Ruhr-Kreis]
+    note: >-
+      the area of the Regionalverband Ruhr: its 11 county-free cities and 4 districts (the
+      Ruhr has no administrative outline of its own)
+    source: https://www.rvr.ruhr/themen/regionale-zusammenarbeit/ (Gesetz über den Regionalverband Ruhr, § 1)
+  silesia:
+    name: Silesian Voivodeship
+    aliases: [Silesia, Śląsk, Slask, Schlesien, Slezsko, Upper Silesia, województwo śląskie, Silesian Province]
+    when: always
+    iso3: POL
+    level: region
+    members: [Silesian Voivodeship]
+    note: >-
+      read as the Silesian Voivodeship (województwo śląskie); the historical region of Silesia
+      also spans the Opole and Lower Silesian voivodeships and parts of Czechia and Germany:
+      name those to add them
+    source: https://www.wikidata.org/wiki/Q54169
+  greater_manchester:
+    name: Greater Manchester
+    aliases: [Greater Manchester Combined Authority, GMCA, Manchester city region]
+    when: fallback
+    iso3: GBR
+    level: lad
+    members: [Bolton, Bury, Manchester, Oldham, Rochdale, Salford, Stockport, Tameside, Trafford, Wigan]
+    note: the ten districts of the Greater Manchester Combined Authority
+    source: https://www.greatermanchester-ca.gov.uk/who-we-are/

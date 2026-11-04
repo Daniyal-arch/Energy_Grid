@@ -54,7 +54,7 @@ jobs:
                    if "S" in words or f"S{n}" in words]
           mnames = [n for n in ("worldcover", "slope") if "M" in words or f"M{n}" in words]
           # O builds every outline set; O<set> (Ofr, Onational) only that one, then the name index
-          sets = ["us", "nl", "uk", "fr", "adm2", "ucdb", "grid", "national", "divisions"]
+          sets = ["us", "nl", "uk", "fr", "adm2", "ucdb", "grid", "national", "divisions", "aliases"]
           osets = sets if "O" in words else [x for x in sets if f"O{x}" in words]
           print("groups=" + groups)
           print("sjobs=" + str(sjobs).replace("'", '"'))

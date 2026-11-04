@@ -30,6 +30,7 @@ grid       Eurostat Census 2021 population grid, 1 km (GEOSTAT), 590 MB zip: the
 national   the national census small areas the research found open
            (docs/research/small-area-energy.md): one table `small_areas`.
 names      the search index over every set (no geometry): `outlines/names`.
+aliases    other names of the Overture divisions (English, local languages): `outlines/aliases`.
 """
 
 from __future__ import annotations
@@ -484,6 +485,90 @@ OUTLINE_SETS = (
 )  # fmt: skip
 
 
+# languages kept as alternative names: English and the official languages of the atlas places
+ALIAS_LANGS = (
+    "en", "de", "fr", "it", "es", "pt", "nl", "pl", "cs", "sk", "sl", "hr", "hu", "ro", "bg",
+    "el", "da", "sv", "fi", "et", "lv", "lt", "ga", "mt", "lb", "cy", "gd", "br", "ca", "eu",
+    "gl", "fy", "nb", "nn", "no", "is",
+)  # fmt: skip
+# the same normal form as the backend's norm() (backend/data/areas.py) and its SQL twin
+NORM_SQL = (
+    "trim(regexp_replace(replace(lower(strip_accents({x})), chr(39), ''), '[^a-z0-9]+', ' ', 'g'))"
+)
+
+
+def aliases(args: argparse.Namespace) -> None:
+    """Other names of the Overture divisions (English and local-language names, exonyms,
+    official and short forms) as a search index: `outlines/aliases`.
+
+    One row per (division, normalised name) that differs from the primary name, with the
+    columns of the name index (level, country, parent, population, box), so the backend finds
+    "Bavaria" or "Apulia" in one filtered read. Reads only the names columns of Overture's
+    `type=division` (about 0.58 GB) and the divisions rows of the name index.
+    """
+    rel = newest_overture()
+    con = con_spatial()
+    con.execute("SET s3_region = 'us-west-2'")
+    base = f"s3://overturemaps-us-west-2/release/{rel}/theme=divisions/type=division/*"
+    subtypes = ", ".join(f"'{k}'" for k in SUBTYPE_LEVEL)
+    langs = ", ".join(f"'{x}'" for x in ALIAS_LANGS)
+    t0 = time.time()
+    con.execute(
+        f"""CREATE TABLE al AS
+            WITH d AS (
+              SELECT id, names FROM read_parquet('{base}', hive_partitioning = false)
+              WHERE subtype IN ({subtypes}) AND names IS NOT NULL),
+            c AS (
+              SELECT id, names.primary AS primary_name, unnest(map_entries(names.common)) AS e
+              FROM d WHERE names.common IS NOT NULL),
+            r AS (
+              SELECT id, names.primary AS primary_name, unnest(names.rules) AS e
+              FROM d WHERE names.rules IS NOT NULL)
+            SELECT id, primary_name, e.value AS alias, e.key AS language, 'common' AS variant
+            FROM c WHERE e.key IN ({langs})
+            UNION ALL
+            SELECT id, primary_name, e.value, e.language, e.variant
+            FROM r WHERE e.variant IN ('alternate', 'official', 'short')
+              AND (e.language IS NULL OR e.language IN ({langs}))
+              AND e.perspectives IS NULL"""
+    )
+    print(
+        f"  aliases read: {con.execute('SELECT count(*) FROM al').fetchone()[0]:,} in {time.time() - t0:.0f} s",
+        flush=True,
+    )
+    src = Path(args.lake) / "outlines" / "names"
+    if src.exists() and any(src.rglob("*.parquet")):
+        names_src = f"{src}/**/*.parquet"
+    else:
+        key, secret = os.environ.get("AWS_ACCESS_KEY_ID"), os.environ.get("AWS_SECRET_ACCESS_KEY")
+        acct = os.environ.get("CLOUDFLARE_ACCOUNT_ID")
+        if not (key and secret and acct):
+            raise SystemExit("aliases needs the name index: build `names` first or set the R2 keys")
+        con.execute(
+            f"CREATE SECRET lake (TYPE r2, KEY_ID '{key}', SECRET '{secret}', ACCOUNT_ID '{acct}')"
+        )
+        names_src = "r2://infraatlas-raw/lake/outlines/names/**/*.parquet"
+    lk = lake(
+        args,
+        f"Overture Maps divisions, release {rel}: names.common and names.rules",
+        "ODbL 1.0 (OSM); CC BY 4.0 (geoBoundaries, Esri Community Maps)",
+        rel,
+    )
+    q = f"""
+        WITH a AS (
+          SELECT DISTINCT ON (id, alias_norm) id, alias, alias_norm, language, variant
+          FROM (SELECT *, {NORM_SQL.format(x="alias")} AS alias_norm FROM al
+                WHERE alias IS NOT NULL AND length(alias) > 1)
+          WHERE alias_norm <> {NORM_SQL.format(x="primary_name")} AND alias_norm <> ''
+          ORDER BY id, alias_norm, (language = 'en') DESC, language)
+        SELECT n."set", n.id, n.name, a.alias, a.alias_norm, a.language, a.variant, n.level,
+               n.subtype, n.iso3, n.parent_name, n.population, n.xmin, n.ymin, n.xmax, n.ymax
+        FROM a JOIN (SELECT * FROM read_parquet('{names_src}', hive_partitioning = false)
+                     WHERE "set" = 'divisions') n ON CAST(n.id AS VARCHAR) = CAST(a.id AS VARCHAR)"""
+    lk.write(con, "aliases", q, sort=["alias_norm"], bloom=["alias_norm"])
+    w.lake_done(lk, args.upload)
+
+
 def names(args: argparse.Namespace) -> None:
     """The search index: every outline's name, level, country, parent, population and box.
 
@@ -527,7 +612,7 @@ def names(args: argparse.Namespace) -> None:
 
 SETS = {
     "divisions": divisions, "adm2": adm2, "us": us, "uk": uk, "fr": fr, "nl": nl,
-    "ucdb": ucdb, "grid": grid, "national": national, "names": names,
+    "ucdb": ucdb, "grid": grid, "national": national, "names": names, "aliases": aliases,
 }  # fmt: skip
 
 

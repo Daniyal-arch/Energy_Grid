@@ -397,6 +397,20 @@ class Areas:
         return (yaml.safe_load(p.read_text(encoding="utf-8")) or {}).get("groups") or {}
 
     @cached_property
+    def named_areas(self) -> dict[str, dict[str, Any]]:
+        """Areas that are no single outline (agent/areas/named.yaml): the Ruhr as its 15
+        member districts, Silesia as the voivodeship; keyed by every normalised alias."""
+        f = self.agent_dir / "areas" / "named.yaml"
+        if not f.exists():
+            return {}
+        out: dict[str, dict[str, Any]] = {}
+        doc = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+        for key, a in doc.get("areas", {}).items():
+            for n in [key, a["name"], *a.get("aliases", [])]:
+                out[norm(n)] = {"key": key, **a}
+        return out
+
+    @cached_property
     def levels(self) -> dict[str, dict[str, str]]:
         p = self.agent_dir / "areas" / "levels.yaml"
         if not p.exists():
@@ -769,6 +783,17 @@ class Areas:
         except Exception as e:
             log.warning("name index search failed", extra={"error": str(e)[:200]})
             return []
+        if "outlines.aliases" in self.tables():
+            # English and local-language names, exonyms (Overture names.common and names.rules)
+            try:
+                rows += cur.execute(
+                    """SELECT "set", CAST(id AS VARCHAR), name, level, iso3, parent_name,
+                              population, xmin, ymin, xmax, ymax, 0
+                       FROM outlines.aliases WHERE alias_norm = $q LIMIT 200""",
+                    {"q": q},
+                ).fetchall()
+            except Exception as e:
+                log.warning("alias search failed", extra={"error": str(e)[:200]})
         out = []
         for st, rid, name, lv, iso, parent, pop, x0, y0, x1, y1, r in rows:
             s = SET_BY_KEY.get(st)
