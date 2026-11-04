@@ -1,17 +1,42 @@
 ---
 title: Log
 tags: [log]
-updated: 2026-10-31
+updated: 2026-11-03
 ---
 
 # Log
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-03** (claude/funny-euler-7vwg1s): wave 10 (brief 29) gathered and built: 571
+  sources (323 Eurostat tables, 225 WDI indicators, 23 GB district tables), colourings per
+  country, world country and GB district (`gb_lad24`). The wave-9 machinery runs any wave
+  (`WAVE=N`, ids `w<N>_`/`w<N>c_`); new loader kinds `wdi`, `eurostat_tsv` (tables over
+  Eurostat's 5 million row cap) and stacked workbook sheets. Country colourings now redraw when
+  their file loads (also wave 9). Skill `energy-statistics`, eight evals. Notes: wave10, wave9,
+  gotchas.
+
+- **2026-11-03** (claude/funny-euler-7vwg1s): GB local authority districts (ONS Dec 2021 BUC,
+  `gb_lad.json`) as the shapes of a new colouring scope `gb_lad`; DfT VEH0131 plug-in cars per
+  district coloured (2021 Q4, 385 districts). `wave9.py render` is idempotent again (coverage
+  cells merged each source once). Notes: wave9, map-rendering.
+
+- **2026-10-31** (claude/funny-euler-7vwg1s): every positioned wave 9 source on the map (vector
+  tiles for 24 large or line/polygon sources) and 16 area series as colourings (Eurostat
+  countries, USGS US counties); NPG and NGED tables gained BNG positions. Notes: wave9,
+  map-rendering.
+
 - **2026-10-31** (main, local): PR #17 (brief 27) checked: the backend image job's failure was
   public.ecr.aws's anonymous pull limit (429), green on main; coverage per family reviewed.
   Brief 28 written: finish wave 8 and wave 9 in 17 categories chosen by customer needs, with
   EU, UK and US sources, dashboards and agent skills per customer task. Notes: gotchas.
+
+- **2026-10-31** (claude/funny-euler-7vwg1s): brief 28: wave 9 registry (`scripts/wave9_sources.yaml`,
+  213 sources probed, 87 built), generic builder and `wave9.yml`, render of coverage families, research doc,
+  catalogue, levels and the app's layer list; Part A sources (EIA layers, EA flood zones, census
+  outlines, Zensus heating, CSO small areas); eleven Tasks dashboards, eleven task skills, 33
+  eval cases; wave 9 map files served as `app.w9_<id>`. Notes: wave9 (new), coverage-and-gaps,
+  lake, agent-tools, state-and-datasets, map-rendering, pipeline-and-workflows, gotchas, index.
 
 - **2026-10-29** (claude/funny-euler-7vwg1s): brief 27 built: areas (`resolve_area`, area
   object and store, `in_area()` macros with bbox pruning, `area_stats` over COGs, MapSpec

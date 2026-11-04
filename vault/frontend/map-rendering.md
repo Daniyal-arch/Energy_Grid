@@ -1,7 +1,7 @@
 ---
 title: Map rendering
 tags: [frontend, map]
-updated: 2026-10-29
+updated: 2026-10-31
 paths: [frontend/src/map/MapCanvas.tsx, frontend/src/map/build.ts, frontend/src/map/style.ts, frontend/src/map/tiles.ts, frontend/src/map/areaLayers.ts, frontend/src/map/tooltip.ts, frontend/src/map/memo.ts]
 ---
 
@@ -42,3 +42,6 @@ inside MapLibre's WebGL context. State comes from [[state-and-datasets]]; datase
 - **Wave 8 layers** (`map/wave8Layers.ts`): industrial facilities, dams, CO₂ storage, excess
   heat (points from `w8/*.json`) and fires (NIFC perimeters, FIRMS detections); hover cards list
   the published fields with the source. Agent areas draw as `shape` specs (`lib/area.ts`).
+- **Wave 9 layers** (`map/wave9Layers.ts`): one scatter layer per `w9:<id>` file, colour by group.
+- **Wave 9 tiles and colourings**: `map/wave9Tiles.ts` (MapLibre vector layers per source, minzoom
+  by size, click popup); `w9c_` colourings in `countryColour` and county polygons in wave9Layers.

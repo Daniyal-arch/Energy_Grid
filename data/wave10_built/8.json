@@ -1,0 +1,757 @@
+{
+ "gb_census_accommodation": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 318,
+   "period": "Census 2021",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "date_name",
+   "geography_code",
+   "geography_name",
+   "c2021_acctype_9_name",
+   "measures_name",
+   "obs_value"
+  ],
+  "example": {
+   "answer": 5724,
+   "sql": "SELECT count(*) FROM wave10.gb_census_accommodation"
+  },
+  "geometry": false,
+  "rows": 5724,
+  "seconds": 2
+ },
+ "gb_census_bedrooms": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 318,
+   "period": "Census 2021",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "date_name",
+   "geography_code",
+   "geography_name",
+   "c2021_bedrooms_5_name",
+   "measures_name",
+   "obs_value"
+  ],
+  "example": {
+   "answer": 3180,
+   "sql": "SELECT count(*) FROM wave10.gb_census_bedrooms"
+  },
+  "geometry": false,
+  "rows": 3180,
+  "seconds": 2
+ },
+ "gb_census_cars": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 318,
+   "period": "Census 2021",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "date_name",
+   "geography_code",
+   "geography_name",
+   "c2021_cars_5_name",
+   "measures_name",
+   "obs_value"
+  ],
+  "example": {
+   "answer": 3180,
+   "sql": "SELECT count(*) FROM wave10.gb_census_cars"
+  },
+  "geometry": false,
+  "rows": 3180,
+  "seconds": 2
+ },
+ "gb_census_density": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 331,
+   "period": "Census 2021",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "date_name",
+   "geography_code",
+   "geography_name",
+   "measures_name",
+   "obs_value"
+  ],
+  "example": {
+   "answer": 331,
+   "sql": "SELECT count(*) FROM wave10.gb_census_density"
+  },
+  "geometry": false,
+  "rows": 331,
+  "seconds": 1
+ },
+ "gb_census_heating": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 318,
+   "period": "Census 2021",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "date_name",
+   "geography_code",
+   "geography_name",
+   "c2021_heating_13_name",
+   "measures_name",
+   "obs_value"
+  ],
+  "example": {
+   "answer": 8268,
+   "sql": "SELECT count(*) FROM wave10.gb_census_heating"
+  },
+  "geometry": false,
+  "rows": 8268,
+  "seconds": 3
+ },
+ "gb_census_households": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 1,
+   "period": "Census 2021",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "date_name",
+   "geography_code",
+   "geography_name",
+   "measures_name",
+   "obs_value"
+  ],
+  "example": {
+   "answer": 1,
+   "sql": "SELECT count(*) FROM wave10.gb_census_households"
+  },
+  "geometry": false,
+  "rows": 1,
+  "seconds": 1
+ },
+ "gb_census_tenure": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 318,
+   "period": "Census 2021",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "date_name",
+   "geography_code",
+   "geography_name",
+   "c2021_tenure_9_name",
+   "measures_name",
+   "obs_value"
+  ],
+  "example": {
+   "answer": 9540,
+   "sql": "SELECT count(*) FROM wave10.gb_census_tenure"
+  },
+  "geometry": false,
+  "rows": 9540,
+  "seconds": 2
+ },
+ "gb_census_travel_distance": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 318,
+   "period": "Census 2021",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "date_name",
+   "geography_code",
+   "geography_name",
+   "c2021_ttwdist_11_name",
+   "measures_name",
+   "obs_value"
+  ],
+  "example": {
+   "answer": 6996,
+   "sql": "SELECT count(*) FROM wave10.gb_census_travel_distance"
+  },
+  "geometry": false,
+  "rows": 6996,
+  "seconds": 2
+ },
+ "gb_census_travel_method": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 318,
+   "period": "Census 2021",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "date_name",
+   "geography_code",
+   "geography_name",
+   "c2021_ttwmeth_12_name",
+   "measures_name",
+   "obs_value"
+  ],
+  "example": {
+   "answer": 7632,
+   "sql": "SELECT count(*) FROM wave10.gb_census_travel_method"
+  },
+  "geometry": false,
+  "rows": 7632,
+  "seconds": 2
+ },
+ "gb_desnz_co2_la": {
+  "built": "2026-11-03",
+  "columns": [
+   "region_country",
+   "second_tier_authority",
+   "local_authority",
+   "local_authority_code",
+   "calendar_year",
+   "industry_electricity",
+   "industry_gas",
+   "large_industrial_installations",
+   "industry_other",
+   "industry_total",
+   "commercial_electricity",
+   "commercial_gas",
+   "commercial_other",
+   "commercial_total",
+   "public_sector_electricity",
+   "public_sector_gas",
+   "public_sector_other",
+   "public_sector_total",
+   "domestic_electricity",
+   "domestic_gas",
+   "domestic_other",
+   "domestic_total",
+   "road_transport_a_roads",
+   "road_transport_minor_roads",
+   "transport_other",
+   "transport_total",
+   "agriculture_electricity",
+   "agriculture_gas",
+   "agriculture_other",
+   "agriculture_total",
+   "waste_other",
+   "waste_total",
+   "grand_total",
+   "population_000s_mid_year_estimate",
+   "per_capita_emissions_t_co2e",
+   "area_km2",
+   "emissions_per_km2_kt_co2e"
+  ],
+  "example": {
+   "answer": 7657,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_co2_la"
+  },
+  "geometry": false,
+  "rows": 7657,
+  "seconds": 3
+ },
+ "gb_desnz_elec_distribution": {
+  "built": "2026-11-03",
+  "columns": [
+   "distribution_of_domestic_electricity_consumption_great_britain_2015_2024"
+  ],
+  "example": {
+   "answer": 25,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_elec_distribution"
+  },
+  "geometry": false,
+  "rows": 25,
+  "seconds": 1
+ },
+ "gb_desnz_elec_la": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 350,
+   "period": "2024",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "sheet",
+   "code",
+   "country_or_region",
+   "local_authority",
+   "number_of_meters_thousands_domestic",
+   "number_of_meters_thousands_non_domestic",
+   "number_of_meters_thousands_all_meters",
+   "total_consumption_gwh_domestic",
+   "total_consumption_gwh_non_domestic",
+   "total_consumption_gwh_all_meters",
+   "mean_consumption_kwh_per_meter_domestic",
+   "mean_consumption_kwh_per_meter_non_domestic",
+   "mean_consumption_kwh_per_meter_all_meters",
+   "mean_domestic_consumption_kwh_per_household",
+   "number_of_meters_thousands_domestic_standard",
+   "number_of_meters_thousands_domestic_e7",
+   "number_of_meters_thousands_all_domestic",
+   "number_of_meters_thousands_all_non_domestic",
+   "total_consumption_gwh_domestic_standard",
+   "total_consumption_gwh_domestic_e7",
+   "total_consumption_gwh_all_domestic",
+   "total_consumption_gwh_all_non_domestic",
+   "mean_consumption_kwh_per_meter_domestic_standard",
+   "mean_consumption_kwh_per_meter_domestic_e7",
+   "mean_consumption_kwh_per_meter_all_domestic",
+   "mean_consumption_kwh_per_meter_all_non_domestic",
+   "median_consumption_kwh_per_meter_domestic_standard",
+   "median_consumption_kwh_per_meter_domestic_e7",
+   "median_consumption_kwh_per_meter_all_domestic",
+   "median_consumption_kwh_per_meter_all_non_domestic",
+   "median_consumption_kwh_per_meter_all_meters"
+  ],
+  "example": {
+   "answer": 7770,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_elec_la"
+  },
+  "geometry": false,
+  "rows": 7770,
+  "seconds": 3
+ },
+ "gb_desnz_gas_distribution": {
+  "built": "2026-11-03",
+  "columns": [
+   "distribution_of_domestic_gas_consumption_great_britain_2015_2024"
+  ],
+  "example": {
+   "answer": 35,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_gas_distribution"
+  },
+  "geometry": false,
+  "rows": 35,
+  "seconds": 1
+ },
+ "gb_desnz_gas_la": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 347,
+   "period": "2024",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "sheet",
+   "code",
+   "country_or_region",
+   "local_authority",
+   "notes",
+   "number_of_meters_thousands_domestic",
+   "number_of_meters_thousands_non_domestic",
+   "number_of_meters_thousands_all_meters",
+   "total_consumption_gwh_domestic",
+   "total_consumption_gwh_non_domestic",
+   "total_consumption_gwh_all_meters",
+   "mean_consumption_kwh_per_meter_domestic",
+   "mean_consumption_kwh_per_meter_non_domestic",
+   "mean_consumption_kwh_per_meter_all_meters",
+   "median_consumption_kwh_per_meter_domestic",
+   "median_consumption_kwh_per_meter_non_domestic",
+   "median_consumption_kwh_per_meter_all_meters",
+   "number_of_non_consuming_meters_thousands"
+  ],
+  "example": {
+   "answer": 7754,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_gas_la"
+  },
+  "geometry": false,
+  "rows": 7754,
+  "seconds": 3
+ },
+ "gb_desnz_ghg_dataset": {
+  "built": "2026-11-03",
+  "columns": [
+   "country",
+   "country_code",
+   "region",
+   "region_code",
+   "second_tier_authority",
+   "local_authority",
+   "local_authority_code",
+   "calendar_year",
+   "la_ghg_sector",
+   "la_ghg_sub_sector",
+   "greenhouse_gas",
+   "territorial_emissions_kt_co2e",
+   "emissions_within_the_scope_of_influence_of_las_kt_co2",
+   "mid_year_population_thousands",
+   "area_km2"
+  ],
+  "example": {
+   "answer": 559215,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_ghg_dataset"
+  },
+  "geometry": false,
+  "rows": 559215,
+  "seconds": 5
+ },
+ "gb_desnz_ghg_la": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 361,
+   "period": "2023",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "region_country",
+   "second_tier_authority",
+   "local_authority",
+   "local_authority_code",
+   "calendar_year",
+   "industry_electricity",
+   "industry_gas",
+   "large_industrial_installations",
+   "industry_other",
+   "industry_total",
+   "commercial_electricity",
+   "commercial_gas",
+   "commercial_other",
+   "commercial_total",
+   "public_sector_electricity",
+   "public_sector_gas",
+   "public_sector_other",
+   "public_sector_total",
+   "domestic_electricity",
+   "domestic_gas",
+   "domestic_other",
+   "domestic_total",
+   "road_transport_a_roads",
+   "road_transport_motorways",
+   "road_transport_minor_roads",
+   "diesel_railways",
+   "transport_other",
+   "transport_total",
+   "net_emissions_forestry",
+   "net_emissions_cropland_mineral_soils_change",
+   "net_emissions_grassland_mineral_soils_change",
+   "net_emissions_settlements",
+   "net_emissions_peatland",
+   "net_emissions_bioenergy_crops",
+   "net_emissions_other_lulucf",
+   "lulucf_net_emissions",
+   "agriculture_electricity",
+   "agriculture_gas",
+   "agriculture_other",
+   "agriculture_livestock",
+   "agriculture_soils",
+   "agriculture_total",
+   "landfill",
+   "waste_other",
+   "waste_total",
+   "grand_total",
+   "population_000s_mid_year_estimate",
+   "per_capita_emissions_t_co2e",
+   "area_km2",
+   "emissions_per_km2_kt_co2e"
+  ],
+  "example": {
+   "answer": 7657,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_ghg_la"
+  },
+  "geometry": false,
+  "rows": 7657,
+  "seconds": 6
+ },
+ "gb_desnz_ren_capacity_la": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 361,
+   "period": "LA - Capacity, 2025",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "sheet",
+   "local_authority_code_note_1",
+   "local_authority_name_note_5_note_6_note_7_note_8_note_9",
+   "region",
+   "country",
+   "estimated_number_of_households_note_2_note_3_note_4",
+   "onshore_wind",
+   "offshore_wind",
+   "wave_tidal",
+   "solar_pv",
+   "hydro",
+   "landfill_gas",
+   "sewage_gas",
+   "municipal_solid_waste",
+   "cofiring",
+   "animal_biomass",
+   "anaerobic_digestion",
+   "plant_biomass",
+   "total",
+   "local_authority_name_note_5_note_6_note_7",
+   "local_authority_name_note_5",
+   "local_authority_name"
+  ],
+  "example": {
+   "answer": 4606,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_ren_capacity_la"
+  },
+  "geometry": false,
+  "rows": 4606,
+  "seconds": 4
+ },
+ "gb_desnz_ren_generation_la": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 361,
+   "period": "LA - Generation, 2025",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "sheet",
+   "local_authority_code_note_1",
+   "local_authority_name_note_5_note_6_note_7_note_8_note_9",
+   "region",
+   "country",
+   "estimated_number_of_households_note_2_note_3_note_4",
+   "onshore_wind",
+   "offshore_wind",
+   "wave_tidal",
+   "solar_pv",
+   "hydro",
+   "landfill_gas",
+   "sewage_gas",
+   "municipal_solid_waste",
+   "cofiring",
+   "animal_biomass",
+   "anaerobic_digestion",
+   "plant_biomass",
+   "total",
+   "local_authority_name_note_5_note_6_note_7",
+   "local_authority_name_note_5",
+   "local_authority_name"
+  ],
+  "example": {
+   "answer": 4582,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_ren_generation_la"
+  },
+  "geometry": false,
+  "rows": 4582,
+  "seconds": 2
+ },
+ "gb_desnz_ren_sites_la": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 361,
+   "period": "LA - Sites 2025",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "sheet",
+   "local_authority_code_note_1",
+   "local_authority_name_note_5_note_6_note_7_note_8_note_9",
+   "region",
+   "country",
+   "estimated_number_of_households_note_2_note_3_note_4",
+   "onshore_wind",
+   "offshore_wind",
+   "wave_tidal",
+   "solar_pv",
+   "hydro",
+   "landfill_gas",
+   "sewage_gas",
+   "municipal_solid_waste",
+   "cofiring",
+   "animal_biomass",
+   "anaerobic_digestion",
+   "plant_biomass",
+   "total",
+   "local_authority_name_note_5_note_6_note_7",
+   "local_authority_name_note_5_note_6",
+   "local_authority_name"
+  ],
+  "example": {
+   "answer": 4606,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_ren_sites_la"
+  },
+  "geometry": false,
+  "rows": 4606,
+  "seconds": 2
+ },
+ "gb_desnz_tfec_la": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 361,
+   "period": "2023",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "sheet",
+   "code",
+   "country_or_region",
+   "local_authority",
+   "notes",
+   "all_fuels_domestic",
+   "all_fuels_transport_note_1",
+   "all_fuels_industrial_commercial_and_other",
+   "all_fuels_total",
+   "coal_industrial_note_2",
+   "coal_commercial",
+   "coal_domestic",
+   "coal_rail",
+   "coal_public_sector",
+   "coal_agriculture",
+   "coal_total_note_2",
+   "manufactured_fuels_industrial_note_3",
+   "manufactured_fuels_domestic_note_3",
+   "manufactured_fuels_total_note_3",
+   "petroleum_industrial_note_2",
+   "petroleum_commercial",
+   "petroleum_domestic",
+   "petroleum_road_transport_note_4",
+   "petroleum_rail",
+   "petroleum_public_sector",
+   "petroleum_agriculture",
+   "petroleum_total_notes_2_4",
+   "gas_domestic",
+   "gas_industrial_commercial_and_other",
+   "gas_total",
+   "electricity_domestic",
+   "electricity_industrial_commercial_and_other",
+   "electricity_total",
+   "bioenergy_and_wastes_domestic",
+   "bioenergy_and_wastes_road_transport_note_4",
+   "bioenergy_and_wastes_industrial_and_commercial",
+   "bioenergy_and_wastes_total_note_4"
+  ],
+  "example": {
+   "answer": 7315,
+   "sql": "SELECT count(*) FROM wave10.gb_desnz_tfec_la"
+  },
+  "geometry": false,
+  "rows": 7315,
+  "seconds": 4
+ },
+ "gb_dft_evcd_devices": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 361,
+   "period": "October 2025",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "local_authority_region_code",
+   "local_authority_region_name",
+   "oct_19",
+   "jan_20",
+   "apr_20",
+   "jul_20",
+   "oct_20",
+   "jan_21",
+   "apr_21",
+   "jul_21",
+   "oct_21",
+   "jan_22",
+   "apr_22",
+   "jul_22",
+   "oct_22",
+   "jan_23",
+   "apr_23",
+   "jul_23",
+   "oct_23",
+   "jan_24",
+   "apr_24",
+   "jul_24",
+   "oct_24_note_14",
+   "jan_25",
+   "apr_25",
+   "jul_25",
+   "oct_25"
+  ],
+  "example": {
+   "answer": 433,
+   "sql": "SELECT count(*) FROM wave10.gb_dft_evcd_devices"
+  },
+  "geometry": false,
+  "rows": 433,
+  "seconds": 6
+ },
+ "gb_dft_evcd_per_100k": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 361,
+   "period": "October 2025",
+   "scope": "gb_lad24"
+  },
+  "columns": [
+   "local_authority_region_code_note_5",
+   "local_authority_region_name",
+   "oct_19",
+   "jan_20",
+   "apr_20",
+   "jul_20",
+   "oct_20",
+   "jan_21",
+   "apr_21",
+   "jul_21",
+   "oct_21",
+   "jan_22",
+   "apr_22",
+   "jul_22",
+   "oct_22",
+   "jan_23",
+   "apr_23",
+   "jul_23",
+   "oct_23",
+   "jan_24",
+   "apr_24",
+   "jul_24",
+   "oct_24_note_14",
+   "jan_25",
+   "apr_25",
+   "jul_25",
+   "oct_25"
+  ],
+  "example": {
+   "answer": 433,
+   "sql": "SELECT count(*) FROM wave10.gb_dft_evcd_per_100k"
+  },
+  "geometry": false,
+  "rows": 433,
+  "seconds": 5
+ },
+ "gb_dft_evcd_rapid": {
+  "built": "2026-11-03",
+  "columns": [
+   "local_authority_region_code",
+   "local_authority_region_name",
+   "oct_19_25kw_and_above",
+   "jan_20_25kw_and_above",
+   "apr_20_25kw_and_above",
+   "jul_20_25kw_and_above",
+   "oct_20_25kw_and_above",
+   "jan_21_25kw_and_above",
+   "apr_21_25kw_and_above",
+   "july_21_25kw_and_above",
+   "oct_21_25kw_and_above",
+   "jan_22_25kw_and_above",
+   "apr_22_25kw_and_above",
+   "july_22_25kw_and_above",
+   "oct_22_25kw_and_above",
+   "jan_23_25kw_and_above",
+   "apr_23_25kw_and_above",
+   "jul_23_25kw_and_above_note_4",
+   "oct_23_50kw_and_above_note_4",
+   "jan_24_50kw_and_above",
+   "apr_24_50kw_and_above",
+   "jul_24_50kw_and_above",
+   "oct_24_50kw_and_above_note_14",
+   "jan_25_50kw_and_above",
+   "apr_25_50kw_and_above",
+   "jul_25_50kw_and_above",
+   "oct_25_50kw_and_above"
+  ],
+  "example": {
+   "answer": 433,
+   "sql": "SELECT count(*) FROM wave10.gb_dft_evcd_rapid"
+  },
+  "geometry": false,
+  "rows": 433,
+  "seconds": 4
+ }
+}

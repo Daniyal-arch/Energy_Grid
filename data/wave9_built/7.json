@@ -1,0 +1,220 @@
+{
+ "us_eia_biodiesel": {
+  "bbox": [
+   -155.05,
+   19.634,
+   -70.328,
+   61.164
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "company",
+   "site_name",
+   "cap_mmgal",
+   "state",
+   "source",
+   "period",
+   "longitude",
+   "latitude",
+   "padd",
+   "geometry"
+  ],
+  "example": {
+   "answer": 75,
+   "sql": "SELECT count(*) FROM wave9.us_eia_biodiesel"
+  },
+  "geometry": true,
+  "rows": 75,
+  "seconds": 0,
+  "with_position": 75
+ },
+ "us_eia_ethanol": {
+  "bbox": [
+   -121.336,
+   32.939,
+   -76.38,
+   47.371
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "company",
+   "site_name",
+   "capacity",
+   "state",
+   "padd",
+   "data_perio",
+   "source",
+   "longitude",
+   "latitude",
+   "geometry"
+  ],
+  "example": {
+   "answer": 197,
+   "sql": "SELECT count(*) FROM wave9.us_eia_ethanol"
+  },
+  "geometry": true,
+  "rows": 197,
+  "seconds": 0,
+  "with_position": 197
+ },
+ "us_epa_lmop": {
+  "bbox": [
+   -149.602,
+   18.291,
+   -65.679,
+   61.293
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "ghgrp_id",
+   "landfill_name",
+   "county_state",
+   "landfill_owner_org",
+   "initial_project_start_date",
+   "lfg_energy_project_type",
+   "project_type_category",
+   "total_mw_capacity",
+   "total_lfg_flow",
+   "end_users",
+   "project_developers",
+   "project_owners",
+   "latitude",
+   "longitude",
+   "product_supplier",
+   "layer",
+   "geometry"
+  ],
+  "example": {
+   "answer": 542,
+   "sql": "SELECT count(*) FROM wave9.us_epa_lmop"
+  },
+  "geometry": true,
+  "rows": 542,
+  "seconds": 0,
+  "with_position": 542
+ },
+ "us_epa_lmop_landfills": {
+  "bbox": [
+   -166.507,
+   13.43,
+   144.751,
+   64.805
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "category",
+   "ghgrp_id",
+   "landfill_name",
+   "county_state",
+   "landfill_owner_org",
+   "year_landfill_opened",
+   "landfill_closure_year",
+   "current_landfill_status",
+   "landfill_design_cap",
+   "waste_in_place_tons",
+   "waste_in_place_year",
+   "lfg_collection_system",
+   "lfg_collected_mmscfd",
+   "lfg_collected_year",
+   "latitude",
+   "longitude",
+   "layer",
+   "geometry"
+  ],
+  "example": {
+   "answer": 2323,
+   "sql": "SELECT count(*) FROM wave9.us_epa_lmop_landfills"
+  },
+  "geometry": true,
+  "rows": 2323,
+  "seconds": 1,
+  "with_position": 2323
+ },
+ "us_usgs_mrds": {
+  "bbox": [
+   -178.821,
+   -72.997,
+   179.132,
+   80.001
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "dep_id",
+   "url",
+   "mrds_id",
+   "mas_id",
+   "site_name",
+   "latitude",
+   "longitude",
+   "region",
+   "country",
+   "state",
+   "county",
+   "com_type",
+   "commod1",
+   "commod2",
+   "commod3",
+   "oper_type",
+   "dep_type",
+   "prod_size",
+   "dev_stat",
+   "ore",
+   "gangue",
+   "other_matl",
+   "orebody_fm",
+   "work_type",
+   "model",
+   "alteration",
+   "conc_proc",
+   "names",
+   "ore_ctrl",
+   "reporter",
+   "hrock_unit",
+   "hrock_type",
+   "arock_unit",
+   "arock_type",
+   "structure",
+   "tectonic",
+   "ref",
+   "yfp_ba",
+   "yr_fst_prd",
+   "ylp_ba",
+   "yr_lst_prd",
+   "dy_ba",
+   "disc_yr",
+   "prod_yrs",
+   "discr",
+   "score"
+  ],
+  "example": {
+   "answer": 304632,
+   "sql": "SELECT count(*) FROM wave9.us_usgs_mrds"
+  },
+  "geometry": true,
+  "rows": 304632,
+  "seconds": 5,
+  "tiles": {
+   "fields": [
+    "name",
+    "dep_id",
+    "url",
+    "mrds_id",
+    "mas_id",
+    "latitude",
+    "longitude"
+   ],
+   "kind": "point",
+   "minzoom": 6,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_mrds.pmtiles"
+  },
+  "with_position": 304613
+ }
+}

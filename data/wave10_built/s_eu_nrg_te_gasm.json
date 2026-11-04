@@ -1,0 +1,27 @@
+{
+ "eu_nrg_te_gasm": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 35,
+   "period": "2026-08",
+   "scope": "country"
+  },
+  "columns": [
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag"
+  ],
+  "example": {
+   "answer": 2440767,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_te_gasm"
+  },
+  "geometry": false,
+  "rows": 2440767,
+  "seconds": 6
+ }
+}

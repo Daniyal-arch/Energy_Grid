@@ -1,0 +1,15 @@
+# The coverage families of wave 10 (docs/tasks/29-wave10.md): name, what a cell shows, the level a
+# full cell has, the category, and the query for portal evidence. All new families: wave 10 adds
+# no cells to the families of earlier waves.
+families:
+  energy_balances: {cat: 1, name: Energy balances, supply and trade, shows: energy balances, supply, production, imports, exports and stocks as published by Eurostat, want: country, q: "energy balance"}
+  energy_infrastructure_stats: {cat: 1, name: Energy infrastructure and capacity statistics, shows: installed capacities, district heating, refineries and storage as published by Eurostat, want: country, q: "electricity generating capacity statistics"}
+  energy_prices_taxes: {cat: 2, name: Energy prices, taxes and market indicators, shows: energy prices, price components, taxes and market indicators, want: country, q: "energy prices statistics"}
+  emission_accounts: {cat: 3, name: Emission and environmental accounts, shows: air emission accounts, energy flow accounts, environmental protection and goods and services accounts, want: country, q: "air emissions accounts"}
+  vehicle_fleet: {cat: 4, name: Vehicle fleet and transport by fuel, shows: vehicle stock and new registrations by fuel, rail and inland waterway equipment and infrastructure, want: country, q: "vehicle registrations by fuel type"}
+  water_materials: {cat: 5, name: Water, materials and circular economy, shows: water use and wastewater, material flows, waste and recycling, want: country, q: "circular economy indicators"}
+  sdg_indicators: {cat: 6, name: Sustainable development indicators (energy, climate, cities, industry), shows: the EU SDG energy, climate, city and industry indicators, want: country, q: "sustainable development indicators energy"}
+  world_indicators: {cat: 7, name: World energy and climate indicators, shows: World Bank WDI energy, environment, infrastructure and climate indicators per country, want: country, q: "world development indicators energy"}
+  local_energy_gb: {cat: 8, name: GB local energy consumption and renewables, shows: electricity, gas and total energy consumption, renewable capacity and generation, EV charging per local authority, want: county, q: "local authority energy consumption"}
+  local_emissions_gb: {cat: 8, name: GB local greenhouse gas emissions, shows: territorial greenhouse gas and CO2 emissions per local authority, want: county, q: "local authority greenhouse gas emissions"}
+  local_homes_gb: {cat: 8, name: GB homes, heating and travel (Census 2021), shows: central heating, accommodation, tenure, cars and travel to work per local authority, want: county, q: "census central heating local authority"}

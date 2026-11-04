@@ -1,0 +1,317 @@
+{
+ "eu_land_prices": {
+  "built": "2026-10-31",
+  "choro": {
+   "areas": 23,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "agriprod",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 12354,
+   "sql": "SELECT count(*) FROM wave9.eu_land_prices"
+  },
+  "geometry": false,
+  "rows": 12354,
+  "seconds": 2
+ },
+ "fr_georisques_ssp": {
+  "built": null,
+  "error": "SystemExit: download failed: https://files.georisques.fr/SSP/ssp_casias_instruction.zip"
+ },
+ "gb_brownfield_register": {
+  "built": null,
+  "error": "CalledProcessError: Command '['tippecanoe', '-o', '/tmp/wave9/gb_brownfield_register/gb_brownfield_register.pmtiles', '-l', 'd', '-Z4', '-z12', '--no-feature-limit', '--no-tile-size-limit', '--simplification=4', '--force', '-P', '/tmp/wave9/gb_brownfield_register/tiles.geojsons']' returned non-zero exit status 110."
+ },
+ "gb_he_listed": {
+  "bbox": [
+   -6.446,
+   49.873,
+   1.758,
+   55.784
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "listentry",
+   "name",
+   "grade",
+   "listdate",
+   "amenddate",
+   "capturescale",
+   "hyperlink",
+   "ngr",
+   "easting",
+   "northing",
+   "geometry"
+  ],
+  "example": {
+   "answer": 379683,
+   "sql": "SELECT count(*) FROM wave9.gb_he_listed"
+  },
+  "geometry": true,
+  "rows": 379683,
+  "seconds": 106,
+  "tiles": {
+   "fields": [
+    "name",
+    "listentry",
+    "grade",
+    "listdate",
+    "amenddate",
+    "capturescale",
+    "hyperlink"
+   ],
+   "kind": "point",
+   "minzoom": 6,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_he_listed.pmtiles"
+  },
+  "with_position": 379683
+ },
+ "gb_ne_alc": {
+  "bbox": [
+   -6.365,
+   49.882,
+   1.766,
+   55.812
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "fid",
+   "geogext",
+   "area",
+   "alc_grade",
+   "perimeter",
+   "shape_leng",
+   "geometry"
+  ],
+  "example": {
+   "answer": 1826,
+   "sql": "SELECT count(*) FROM wave9.gb_ne_alc"
+  },
+  "geometry": true,
+  "rows": 1826,
+  "seconds": 5,
+  "tiles": {
+   "fields": [
+    "geogext",
+    "area",
+    "alc_grade",
+    "perimeter"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_ne_alc.pmtiles"
+  },
+  "with_position": 1826
+ },
+ "us_blm_solar_dla": {
+  "built": null,
+  "error": "SystemExit: https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_Solar_Energy_Zones/MapServer/0/query: HTTPStatusError Client error '404 Not Found' for url 'https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_Solar_Energy_Zones/MapServer/0/query?where=1%3D1&outFields=%2A&outSR=4326&f=geojson&resultOffset"
+ },
+ "us_nexrad": {
+  "bbox": [
+   -165.295,
+   13.456,
+   144.811,
+   65.035
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ncdcid",
+   "icao",
+   "wban",
+   "name",
+   "country",
+   "st",
+   "county",
+   "lat",
+   "lon",
+   "elev",
+   "utc",
+   "stntype"
+  ],
+  "example": {
+   "answer": 210,
+   "sql": "SELECT count(*) FROM wave9.us_nexrad"
+  },
+  "geometry": true,
+  "rows": 210,
+  "seconds": 1,
+  "with_position": 210
+ },
+ "us_nrhp": {
+  "bbox": [
+   -170.836,
+   -14.543,
+   172.906,
+   71.297
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "certdate",
+   "objectid",
+   "nris_refnum",
+   "resname",
+   "restype",
+   "address",
+   "city",
+   "county",
+   "state",
+   "vicinity",
+   "multiname",
+   "numcbldg",
+   "numcobj",
+   "numcsite",
+   "numcstru",
+   "is_nhl",
+   "bnd_type",
+   "bnd_other",
+   "is_extant",
+   "extant_oth",
+   "createdate",
+   "edit_date",
+   "map_method",
+   "map_mth_ot",
+   "source",
+   "src_date",
+   "src_scale",
+   "src_accu",
+   "src_coord",
+   "originator",
+   "constrant",
+   "cr_id",
+   "geom_id",
+   "property_id",
+   "status",
+   "nara_url",
+   "geometry"
+  ],
+  "example": {
+   "answer": 74636,
+   "sql": "SELECT count(*) FROM wave9.us_nrhp"
+  },
+  "geometry": true,
+  "rows": 74636,
+  "seconds": 25,
+  "tiles": {
+   "fields": [
+    "name",
+    "certdate",
+    "nris_refnum",
+    "restype",
+    "address",
+    "city",
+    "county"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_nrhp.pmtiles"
+  },
+  "with_position": 74636
+ },
+ "world_ourairports": {
+  "bbox": [
+   -179.877,
+   -90.0,
+   179.976,
+   83.091
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "id",
+   "ident",
+   "type",
+   "name",
+   "latitude_deg",
+   "longitude_deg",
+   "elevation_ft",
+   "continent",
+   "iso_country",
+   "iso_region",
+   "municipality",
+   "scheduled_service",
+   "icao_code",
+   "iata_code",
+   "gps_code",
+   "local_code",
+   "home_link",
+   "wikipedia_link",
+   "keywords"
+  ],
+  "example": {
+   "answer": 86322,
+   "sql": "SELECT count(*) FROM wave9.world_ourairports"
+  },
+  "geometry": true,
+  "rows": 86322,
+  "seconds": 1,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "ident",
+    "type",
+    "latitude_deg",
+    "longitude_deg",
+    "elevation_ft"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/world_ourairports.pmtiles"
+  },
+  "with_position": 86322
+ },
+ "world_ourairports_navaids": {
+  "bbox": [
+   -179.881,
+   -89.995,
+   179.315,
+   82.526
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "id",
+   "filename",
+   "ident",
+   "name",
+   "type",
+   "frequency_khz",
+   "latitude_deg",
+   "longitude_deg",
+   "elevation_ft",
+   "iso_country",
+   "dme_frequency_khz",
+   "dme_channel",
+   "dme_latitude_deg",
+   "dme_longitude_deg",
+   "dme_elevation_ft",
+   "slaved_variation_deg",
+   "magnetic_variation_deg",
+   "usagetype",
+   "power",
+   "associated_airport"
+  ],
+  "example": {
+   "answer": 11008,
+   "sql": "SELECT count(*) FROM wave9.world_ourairports_navaids"
+  },
+  "geometry": true,
+  "rows": 11008,
+  "seconds": 0,
+  "with_position": 11008
+ }
+}

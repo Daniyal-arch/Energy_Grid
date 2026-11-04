@@ -16,3 +16,7 @@ Relies on: `uk_ets`, the EU ETS (map file `ets.json`), `ghgrp` (US EPA), `edgar`
    comparing sources.
 4. Years: ETS compliance years; EDGAR covers 1970-2024. State the year of every figure.
 5. Totals are sums of the recorded emissions (computed): say so.
+
+## Wave 10
+
+Country and GB district series of wave 10 (`wave10.*`, skill `energy-statistics`): Eurostat air emission accounts (`wave10.eu_env_ac_*`, `wave10.eu_env_air_emis`), DESNZ local authority greenhouse gas emissions (`wave10.gb_desnz_ghg_la`, `wave10.gb_desnz_ghg_dataset`), WDI CO2 and methane indicators (`wave10.wb_en_*`).

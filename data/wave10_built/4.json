@@ -1,0 +1,1667 @@
+{
+ "eu_iww_eq_age": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 18,
+   "period": "2017",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "vessel",
+   "unit",
+   "y_const",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2236,
+   "sql": "SELECT count(*) FROM wave10.eu_iww_eq_age"
+  },
+  "geometry": false,
+  "rows": 2236,
+  "seconds": 2
+ },
+ "eu_iww_eq_age_loa": {
+  "built": "2026-11-03",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "y_const",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 559,
+   "sql": "SELECT count(*) FROM wave10.eu_iww_eq_age_loa"
+  },
+  "geometry": false,
+  "rows": 559,
+  "seconds": 1
+ },
+ "eu_iww_eq_loadcap": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 18,
+   "period": "2017",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "vessel",
+   "unit",
+   "weight",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2626,
+   "sql": "SELECT count(*) FROM wave10.eu_iww_eq_loadcap"
+  },
+  "geometry": false,
+  "rows": 2626,
+  "seconds": 1
+ },
+ "eu_iww_eq_power_lo": {
+  "built": "2026-11-03",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "weight",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 482,
+   "sql": "SELECT count(*) FROM wave10.eu_iww_eq_power_lo"
+  },
+  "geometry": false,
+  "rows": 482,
+  "seconds": 1
+ },
+ "eu_rail_eq_locon": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 33,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "vehicle",
+   "mot_nrg",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2381,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_eq_locon"
+  },
+  "geometry": false,
+  "rows": 2381,
+  "seconds": 2
+ },
+ "eu_rail_eq_locop": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 21,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "mot_nrg",
+   "vehicle",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1671,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_eq_locop"
+  },
+  "geometry": false,
+  "rows": 1671,
+  "seconds": 1
+ },
+ "eu_rail_eq_pa_csb": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 24,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "seat",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 836,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_eq_pa_csb"
+  },
+  "geometry": false,
+  "rows": 836,
+  "seconds": 1
+ },
+ "eu_rail_eq_pa_cty": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 24,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "vehicle",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 829,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_eq_pa_cty"
+  },
+  "geometry": false,
+  "rows": 829,
+  "seconds": 1
+ },
+ "eu_rail_eq_pa_nty": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 34,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "vehicle",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1683,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_eq_pa_nty"
+  },
+  "geometry": false,
+  "rows": 1683,
+  "seconds": 1
+ },
+ "eu_rail_eq_trset": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 18,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "vehicle",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1497,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_eq_trset"
+  },
+  "geometry": false,
+  "rows": 1497,
+  "seconds": 1
+ },
+ "eu_rail_eq_vans": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 17,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 241,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_eq_vans"
+  },
+  "geometry": false,
+  "rows": 241,
+  "seconds": 1
+ },
+ "eu_rail_eq_wagon": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 33,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "vehicle",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 3588,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_eq_wagon"
+  },
+  "geometry": false,
+  "rows": 3588,
+  "seconds": 1
+ },
+ "eu_rail_if_line_ga": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "tra_infr",
+   "gaugert",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 6897,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_if_line_ga"
+  },
+  "geometry": false,
+  "rows": 6897,
+  "seconds": 2
+ },
+ "eu_rail_if_line_na": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "tra_infr",
+   "tra_meas",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 5959,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_if_line_na"
+  },
+  "geometry": false,
+  "rows": 5959,
+  "seconds": 2
+ },
+ "eu_rail_if_line_sp": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "tra_infr",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2305,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_if_line_sp"
+  },
+  "geometry": false,
+  "rows": 2305,
+  "seconds": 1
+ },
+ "eu_rail_if_line_tr": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "tra_infr",
+   "n_tracks",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 5022,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_if_line_tr"
+  },
+  "geometry": false,
+  "rows": 5022,
+  "seconds": 1
+ },
+ "eu_rail_if_lvlcros": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "lvlcros",
+   "geo",
+   "unit",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1260,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_if_lvlcros"
+  },
+  "geometry": false,
+  "rows": 1260,
+  "seconds": 1
+ },
+ "eu_rail_if_tracks": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 35,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "tra_infr",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1421,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_if_tracks"
+  },
+  "geometry": false,
+  "rows": 1421,
+  "seconds": 1
+ },
+ "eu_rail_if_traff": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "signal",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 794,
+   "sql": "SELECT count(*) FROM wave10.eu_rail_if_traff"
+  },
+  "geometry": false,
+  "rows": 794,
+  "seconds": 1
+ },
+ "eu_road_eqr_busmot": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 41,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "mot_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 4897,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_busmot"
+  },
+  "geometry": false,
+  "rows": 4897,
+  "seconds": 2
+ },
+ "eu_road_eqr_bussea": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 20,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 285,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_bussea"
+  },
+  "geometry": false,
+  "rows": 285,
+  "seconds": 1
+ },
+ "eu_road_eqr_busveh": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 40,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "vehicle",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1306,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_busveh"
+  },
+  "geometry": false,
+  "rows": 1306,
+  "seconds": 1
+ },
+ "eu_road_eqr_carmot": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 41,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "mot_nrg",
+   "engine",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 4194,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_carmot"
+  },
+  "geometry": false,
+  "rows": 4194,
+  "seconds": 1
+ },
+ "eu_road_eqr_carpda": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 41,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "mot_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 6741,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_carpda"
+  },
+  "geometry": false,
+  "rows": 6741,
+  "seconds": 1
+ },
+ "eu_road_eqr_lormot": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "vehicle",
+   "unit",
+   "mot_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 9944,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_lormot"
+  },
+  "geometry": false,
+  "rows": 9944,
+  "seconds": 2
+ },
+ "eu_road_eqr_lorrit": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "weight",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 3557,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_lorrit"
+  },
+  "geometry": false,
+  "rows": 3557,
+  "seconds": 1
+ },
+ "eu_road_eqr_mopeds": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "vehicle",
+   "unit",
+   "mot_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2199,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_mopeds"
+  },
+  "geometry": false,
+  "rows": 2199,
+  "seconds": 1
+ },
+ "eu_road_eqr_motors": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "engine",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1305,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_motors"
+  },
+  "geometry": false,
+  "rows": 1305,
+  "seconds": 1
+ },
+ "eu_road_eqr_semit": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 32,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "weight",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2170,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_semit"
+  },
+  "geometry": false,
+  "rows": 2170,
+  "seconds": 2
+ },
+ "eu_road_eqr_spurp": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 33,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 442,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_spurp"
+  },
+  "geometry": false,
+  "rows": 442,
+  "seconds": 1
+ },
+ "eu_road_eqr_tracmot": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "mot_nrg",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 4458,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_tracmot"
+  },
+  "geometry": false,
+  "rows": 4458,
+  "seconds": 1
+ },
+ "eu_road_eqr_trail": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 36,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "weight",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2572,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_trail"
+  },
+  "geometry": false,
+  "rows": 2572,
+  "seconds": 1
+ },
+ "eu_road_eqr_trams": {
+  "built": "2026-11-03",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 163,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_trams"
+  },
+  "geometry": false,
+  "rows": 163,
+  "seconds": 1
+ },
+ "eu_road_eqr_unlweig": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 40,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "weight",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2011,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_unlweig"
+  },
+  "geometry": false,
+  "rows": 2011,
+  "seconds": 1
+ },
+ "eu_road_eqr_zev": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "mot_nrg",
+   "vehicle",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 11403,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqr_zev"
+  },
+  "geometry": false,
+  "rows": 11403,
+  "seconds": 2
+ },
+ "eu_road_eqs_busage": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 41,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "age",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 3174,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_busage"
+  },
+  "geometry": false,
+  "rows": 3174,
+  "seconds": 2
+ },
+ "eu_road_eqs_busmot": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "mot_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 5268,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_busmot"
+  },
+  "geometry": false,
+  "rows": 5268,
+  "seconds": 1
+ },
+ "eu_road_eqs_bussea": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 21,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 322,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_bussea"
+  },
+  "geometry": false,
+  "rows": 322,
+  "seconds": 1
+ },
+ "eu_road_eqs_busveh": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 41,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "vehicle",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1421,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_busveh"
+  },
+  "geometry": false,
+  "rows": 1421,
+  "seconds": 1
+ },
+ "eu_road_eqs_carage": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "age",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2729,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_carage"
+  },
+  "geometry": false,
+  "rows": 2729,
+  "seconds": 1
+ },
+ "eu_road_eqs_caremiss": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "estd_emis",
+   "geo",
+   "unit",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 89,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_caremiss"
+  },
+  "geometry": false,
+  "rows": 89,
+  "seconds": 1
+ },
+ "eu_road_eqs_carhab": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 654,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_carhab"
+  },
+  "geometry": false,
+  "rows": 654,
+  "seconds": 1
+ },
+ "eu_road_eqs_carmot": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 40,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "mot_nrg",
+   "engine",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 4431,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_carmot"
+  },
+  "geometry": false,
+  "rows": 4431,
+  "seconds": 1
+ },
+ "eu_road_eqs_lormot": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "vehicle",
+   "mot_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 10410,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_lormot"
+  },
+  "geometry": false,
+  "rows": 10410,
+  "seconds": 2
+ },
+ "eu_road_eqs_lorroa": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "vehicle",
+   "age",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 6990,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_lorroa"
+  },
+  "geometry": false,
+  "rows": 6990,
+  "seconds": 1
+ },
+ "eu_road_eqs_lorton": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 41,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "weight",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 3761,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_lorton"
+  },
+  "geometry": false,
+  "rows": 3761,
+  "seconds": 1
+ },
+ "eu_road_eqs_mopeds": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "mot_nrg",
+   "vehicle",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2353,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_mopeds"
+  },
+  "geometry": false,
+  "rows": 2353,
+  "seconds": 1
+ },
+ "eu_road_eqs_motorc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "engine",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1435,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_motorc"
+  },
+  "geometry": false,
+  "rows": 1435,
+  "seconds": 1
+ },
+ "eu_road_eqs_roaene": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 38,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "mot_nrg",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 4555,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_roaene"
+  },
+  "geometry": false,
+  "rows": 4555,
+  "seconds": 1
+ },
+ "eu_road_eqs_semit": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 31,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "weight",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2262,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_semit"
+  },
+  "geometry": false,
+  "rows": 2262,
+  "seconds": 1
+ },
+ "eu_road_eqs_spurp": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 33,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 486,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_spurp"
+  },
+  "geometry": false,
+  "rows": 486,
+  "seconds": 1
+ },
+ "eu_road_eqs_trail": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 33,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "weight",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2604,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_trail"
+  },
+  "geometry": false,
+  "rows": 2604,
+  "seconds": 1
+ },
+ "eu_road_eqs_trams": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 24,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 308,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_trams"
+  },
+  "geometry": false,
+  "rows": 308,
+  "seconds": 1
+ },
+ "eu_road_eqs_unlweig": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 39,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "weight",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2026,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_unlweig"
+  },
+  "geometry": false,
+  "rows": 2026,
+  "seconds": 1
+ },
+ "eu_road_eqs_zev": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "mot_nrg",
+   "vehicle",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 11334,
+   "sql": "SELECT count(*) FROM wave10.eu_road_eqs_zev"
+  },
+  "geometry": false,
+  "rows": 11334,
+  "seconds": 2
+ },
+ "eu_tran_hv_frmod": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 29,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "tra_mode",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 1840,
+   "sql": "SELECT count(*) FROM wave10.eu_tran_hv_frmod"
+  },
+  "geometry": false,
+  "rows": 1840,
+  "seconds": 1
+ },
+ "eu_tran_hv_frtra": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 28,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 445,
+   "sql": "SELECT count(*) FROM wave10.eu_tran_hv_frtra"
+  },
+  "geometry": false,
+  "rows": 445,
+  "seconds": 1
+ },
+ "eu_tran_hv_ms_frmod": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 28,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "tra_mode",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2205,
+   "sql": "SELECT count(*) FROM wave10.eu_tran_hv_ms_frmod"
+  },
+  "geometry": false,
+  "rows": 2205,
+  "seconds": 1
+ },
+ "eu_tran_hv_ms_frmod6": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "tra_mode",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2580,
+   "sql": "SELECT count(*) FROM wave10.eu_tran_hv_ms_frmod6"
+  },
+  "geometry": false,
+  "rows": 2580,
+  "seconds": 2
+ },
+ "eu_tran_hv_ms_psmod": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 29,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "vehicle",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2250,
+   "sql": "SELECT count(*) FROM wave10.eu_tran_hv_ms_psmod"
+  },
+  "geometry": false,
+  "rows": 2250,
+  "seconds": 1
+ },
+ "eu_tran_hv_psmod": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 34,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "vehicle",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 2180,
+   "sql": "SELECT count(*) FROM wave10.eu_tran_hv_psmod"
+  },
+  "geometry": false,
+  "rows": 2180,
+  "seconds": 1
+ },
+ "eu_tran_hv_pstra": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 34,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 535,
+   "sql": "SELECT count(*) FROM wave10.eu_tran_hv_pstra"
+  },
+  "geometry": false,
+  "rows": 535,
+  "seconds": 1
+ }
+}

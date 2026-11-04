@@ -1,0 +1,89 @@
+{
+ "eu_kohesio_2014_2020": {
+  "built": "2026-10-31",
+  "columns": [
+   "operation_unique_identifier",
+   "operation_name_english",
+   "operation_name_programme_language",
+   "country",
+   "postal_code",
+   "operation_start_date",
+   "operation_end_date",
+   "cofinancing_rate",
+   "total_eligible_expenditure_amount",
+   "total_eligible_expenditure_currency",
+   "project_eu_budget",
+   "beneficiary_unique_identifier",
+   "beneficiary_name",
+   "location_indicator_latitude_longitude",
+   "category_of_intervention",
+   "category_label",
+   "thematic_objective_id",
+   "thematic_objective_label",
+   "policy_objective_id",
+   "policy_objective_label",
+   "fund_code",
+   "fund_name",
+   "programme_code",
+   "programme_name",
+   "region",
+   "nuts3_code",
+   "programming_period",
+   "operation_summary_english",
+   "operation_summary_programme_language",
+   "managingauthority"
+  ],
+  "example": {
+   "answer": 1967976,
+   "sql": "SELECT count(*) FROM wave9.eu_kohesio_2014_2020"
+  },
+  "geometry": false,
+  "rows": 1967976,
+  "seconds": 573
+ },
+ "us_opportunity_zones": {
+  "bbox": [
+   -179.231,
+   -14.42,
+   179.86,
+   71.392
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "geoid10",
+   "state",
+   "county",
+   "tract",
+   "stusab",
+   "state_name",
+   "shape_area",
+   "shape_length",
+   "rural",
+   "geometry"
+  ],
+  "example": {
+   "answer": 8765,
+   "sql": "SELECT count(*) FROM wave9.us_opportunity_zones"
+  },
+  "geometry": true,
+  "rows": 8765,
+  "seconds": 69,
+  "tiles": {
+   "fields": [
+    "name",
+    "geoid10",
+    "state",
+    "county",
+    "tract",
+    "stusab",
+    "rural"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_opportunity_zones.pmtiles"
+  },
+  "with_position": 8765
+ }
+}

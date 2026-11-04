@@ -2,6 +2,8 @@
 // render loop (not by React); derived data is memoised, so per frame only the animation
 // uniforms change.
 
+import { isWaveColour, waveKey } from "../app/waves";
+import { type W9cFile, w9cStops } from "../lib/wave9";
 import { COORDINATE_SYSTEM, type Layer } from "@deck.gl/core";
 import { PathStyleExtension, type PathStyleExtensionProps } from "@deck.gl/extensions";
 import { BitmapLayer, ColumnLayer, LineLayer, PathLayer, ScatterplotLayer, SolidPolygonLayer, TextLayer } from "@deck.gl/layers";
@@ -120,6 +122,7 @@ import { tyndpLayers } from "./tyndpLayers";
 import { capacityGapLayers, connectHLayers } from "./connectHLayers";
 import { registerLayers } from "./registerLayers";
 import { wave8Layers } from "./wave8Layers";
+import { wave9Layers } from "./wave9Layers";
 import { comingLayers } from "./comingLayers";
 import { NZ_COLOR, NZ_POINT, ZA_COLOR, ZA_POINT, type NzFile, type ZaFile } from "../lib/regionalLive";
 import { SEA_CABLE_COLOR, seaPipeLayer, type SeaCable, type SeaCablesFile, type SeaPipe } from "../lib/seaCables";
@@ -282,6 +285,11 @@ export function countryColour(fr: Frame, iso: string): RGB {
         const k = irenaK(irena, fr.mode, (f.transition as TransitionFile | undefined)?.years, fr.yearK);
         return stopColor(IRENA_STOPS, irenaScale(irenaValue(irena, ISO3[iso], irenaMetricById(ir), k))) ?? TR_NO_DATA;
       }
+      if (isWaveColour(fr.colour)) {
+        const w9 = f[waveKey(fr.colour)] as W9cFile | undefined;
+        if (!w9 || w9.scope !== "country") return TR_NO_DATA;
+        return stopColor(memo(`w9cStops:${fr.colour}`, [w9], () => w9cStops(w9)), w9.values[iso]) ?? TR_NO_DATA;
+      }
       const pr = PR_METRIC[fr.colour];
       if (pr) {
         const p = f.prices as PricesFile | undefined;
@@ -338,7 +346,7 @@ export function buildLayers(fr: Frame): Layer[] {
   );
   // prices: each country a block as high as its price (map/priceTerrain.ts)
   const terrain = facingEurope && isOn("prices") && day?.region !== "us" ? priceTerrain(fr, dayK, shapes) : null;
-  const fillKey = [fr.colour, f.stats, f.outages, f.prices, f.transition, f.worldStats, f.irena, f.retail, fr.mode, day, dayK, fr.yearK, sel, Math.round(sunLight(fr) * 20)];
+  const fillKey = [fr.colour, isWaveColour(fr.colour) ? f[waveKey(fr.colour)] : null, f.stats, f.outages, f.prices, f.transition, f.worldStats, f.irena, f.retail, fr.mode, day, dayK, fr.yearK, sel, Math.round(sunLight(fr) * 20)];
   if (facingEurope) {
     layers.push(
       new SolidPolygonLayer<Shape>({
@@ -723,7 +731,7 @@ export function buildLayers(fr: Frame): Layer[] {
   layers.push(...usSolarLayers(fr));
   layers.push(...evLayers(fr), ...evEuLayers(fr), ...usGasLayers(fr));
   layers.push(...ghgrpLayers(fr));
-  layers.push(...wave8Layers(fr));
+  layers.push(...wave8Layers(fr), ...wave9Layers(fr));
   layers.push(...tyndpLayers(fr));
   layers.push(...worldLayers(fr, near));
   layers.push(...usLayers(fr));

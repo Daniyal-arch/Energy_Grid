@@ -1,7 +1,7 @@
 ---
 title: Agent tools
 tags: [backend, agent]
-updated: 2026-10-29
+updated: 2026-10-31
 paths: [backend/tools/, backend/agent/mapspec.py, backend/agent/skills.py, agent/skills/]
 ---
 
@@ -45,3 +45,5 @@ result: `{data, sources: [{dataset, table, licence, retrieved}], result_id?}`.
 - **Areas (brief 27)**: `resolve_area`, `area_stats`, `in_area()` in SQL; see [[areas]].
   Catalogue entries for wave 8: outlines, small_area_energy, industrial, dams, co2stop,
   hotmaps, gem_ownership, tri, uk_pi.
+- **Customer tasks (brief 28)**: eleven task skills (checklists, no composite score); wave 9
+  tables as `wave9.<id>` and map files as `app.w9_<id>`; evals `agent/evals/tasks.yaml`.

@@ -211,6 +211,8 @@ const STATIC: Record<string, Loader> = {
   // US outages per county (scripts/build_us_outages.py, EAGLE-I) and their outlines
   usOutages: bundled("us_outages.json"),
   usCounties: bundledUs("counties.json"),
+  gbLad: bundled("gb_lad.json"),
+  gbLad24: bundled("gb_lad24.json"),
   // water risk per river basin (scripts/build_aqueduct.py, WRI Aqueduct 4.0)
   water: bundled("water.json"),
   // offshore wind farms in European seas (scripts/fetch_emodnet_wind.py, EMODnet)
@@ -304,6 +306,7 @@ function loaderFor(key: string): Loader | null {
   const index = () => useDataStore.getState().files.dayIndex as { remote: string[]; local: string[] } | undefined;
   // recordings take a bundled copy first (the archive can be slow to answer)
   const inArchive = () => !(RECORDING && index()?.local.includes(arg)) && (index()?.remote.includes(arg) ?? true);
+  if (/^w\d+c?$/.test(kind)) return bundled(`${kind}/${arg}.json`); // registry waves (app/waves.ts)
   if (kind === "day") return inArchive() ? archiveFirst(`${ARCHIVE_REMOTE}/day/${arg}.json`, `/data/eu/day/${arg}.json`) : bundled(`day/${arg}.json`);
   if (kind === "dayWind") return inArchive() ? archiveFirst(`${ARCHIVE_REMOTE}/wind/${arg}.json`, `/data/eu/wind/${arg}.json`) : bundled(`wind/${arg}.json`);
   if (kind === "week")

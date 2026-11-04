@@ -1,7 +1,7 @@
 ---
 title: Coverage and gaps
 tags: [data, coverage]
-updated: 2026-10-29
+updated: 2026-10-31
 paths: [data/coverage.yaml, docs/COVERAGE.md, frontend/public/data/eu/coverage.json, docs/tasks/, docs/research/room-to-connect.md]
 ---
 
@@ -44,3 +44,6 @@ of `docs/tasks/`.
   (request form), HRL Water & Wetness (EU Login), CO2 Stored (account), EIA midstream (token),
   NWI (403). Keys still missing: FIRMS_MAP_KEY, CENSUS_API_KEY. Research per country:
   docs/research/small-area-energy.md.
+- **Wave 9** ([[wave9]]): 57 new families (17 categories) with 29 cells each, generated from the
+  registry; dark cells name the probe outcome and the open-data portal search. Keys still missing
+  for wave 9: CENSUS_API_KEY, NREL_API_KEY, CDSAPI_KEY, NASA_EARTHDATA_TOKEN, FINGRID_API_KEY.

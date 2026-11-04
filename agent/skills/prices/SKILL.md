@@ -18,3 +18,7 @@ Relies on: `app.eu_prices` (ENTSO-E A44, 12 months), `prices_gb_us_rt`, `jepx`, 
    both come from the same source and resolution.
 5. Retail prices (Eurostat bands, EIA states) are a different thing: name the band and the taxes.
 6. Units: EUR/MWh for wholesale, EUR/kWh or cents/kWh for retail; US prices in USD/MWh.
+
+## Wave 10
+
+Country and GB district series of wave 10 (`wave10.*`, skill `energy-statistics`): Eurostat price and price-component tables not in earlier waves (`wave10.eu_nrg_pc_*`), environmental taxes (`wave10.eu_env_ac_tax*`).

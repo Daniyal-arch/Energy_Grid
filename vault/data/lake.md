@@ -1,7 +1,7 @@
 ---
 title: Lake
 tags: [data, lake]
-updated: 2026-10-29
+updated: 2026-10-31
 paths: [docs/DATA_LAKE.md, agent/catalog/]
 ---
 
@@ -30,3 +30,4 @@ use of it is in [[agent-backend]].
   grid; `names` index), `small_area_energy/*` (one schema, iso3 partition), `rasters/*` COGs
   (GHSL tiles, class shares, Hotmaps heat density), and the asset tables (industrial, dams,
   co2stop, hotmaps, gem_ownership, tri, uk_pi). See [[areas]].
+- **Wave 9**: `wave9/<id>`, one table per source (passthrough), see [[wave9]].

@@ -1,0 +1,399 @@
+{
+ "eu_emodnet_aggregates": {
+  "bbox": [
+   -31.279,
+   27.662,
+   29.92,
+   60.281
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "code",
+   "name",
+   "id",
+   "material",
+   "country",
+   "site_type",
+   "status",
+   "year_start",
+   "year_end",
+   "notes",
+   "sourcetype",
+   "sourcedeta",
+   "service",
+   "sourcelink",
+   "lastaccess",
+   "metadavail",
+   "metalink",
+   "seabasin",
+   "sea",
+   "centroid_x",
+   "centroid_y",
+   "coast_dist",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 1202,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_aggregates"
+  },
+  "geometry": true,
+  "rows": 1202,
+  "seconds": 2,
+  "tiles": {
+   "fields": [
+    "name",
+    "code",
+    "id",
+    "material",
+    "country",
+    "site_type",
+    "status"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_aggregates.pmtiles"
+  },
+  "with_position": 1202
+ },
+ "eu_emodnet_military": {
+  "bbox": [
+   -18.984,
+   24.852,
+   29.35,
+   65.958
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "country",
+   "country_2",
+   "country_3",
+   "status",
+   "type_1",
+   "type_2",
+   "type_3",
+   "resource",
+   "areakm",
+   "coast_dist",
+   "geometry"
+  ],
+  "example": {
+   "answer": 746,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_military"
+  },
+  "geometry": true,
+  "rows": 746,
+  "seconds": 2,
+  "tiles": {
+   "fields": [
+    "id",
+    "country",
+    "country_2",
+    "country_3",
+    "status",
+    "type_1"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_military.pmtiles"
+  },
+  "with_position": 746
+ },
+ "eu_emodnet_mpa": {
+  "bbox": [
+   -42.001,
+   33.213,
+   35.785,
+   81.028
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "rsc",
+   "code",
+   "name",
+   "orig_name",
+   "country",
+   "designatio",
+   "iucn_cat",
+   "rep_m_area",
+   "gis_m_area",
+   "rep_area",
+   "gis_area",
+   "status",
+   "status_yr",
+   "mang_auth",
+   "link",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 826,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_mpa"
+  },
+  "geometry": true,
+  "rows": 826,
+  "seconds": 52,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "rsc",
+    "code",
+    "orig_name",
+    "country",
+    "designatio"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_mpa.pmtiles"
+  },
+  "with_position": 826
+ },
+ "eu_emodnet_msp_zoning": {
+  "built": null,
+  "error": "IOException: IO Error: Failed to read GeoJSON data\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/eu_emodnet_msp_zoning/src.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+ },
+ "eu_emodnet_ocean_energy": {
+  "bbox": [
+   -28.446,
+   28.037,
+   43.653,
+   70.664
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "id",
+   "id_1",
+   "latitude",
+   "longitude",
+   "country",
+   "seabasin",
+   "sea",
+   "location",
+   "coast_dist",
+   "posinfo",
+   "name",
+   "facid",
+   "start_year",
+   "end_year",
+   "resource",
+   "technology",
+   "device",
+   "device_sca",
+   "project_sc",
+   "status",
+   "project_ca",
+   "project_pr",
+   "web_page",
+   "source",
+   "service_or",
+   "link_to_so",
+   "source_det",
+   "date_of_la",
+   "metadata_a",
+   "metadata_l",
+   "otherlinks",
+   "eia",
+   "eialink",
+   "notes",
+   "geometry"
+  ],
+  "example": {
+   "answer": 361,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_ocean_energy"
+  },
+  "geometry": true,
+  "rows": 361,
+  "seconds": 0,
+  "with_position": 361
+ },
+ "eu_emodnet_platforms": {
+  "bbox": [
+   -11.059,
+   33.751,
+   32.713,
+   72.541
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "country",
+   "platformid",
+   "current_status",
+   "name",
+   "category",
+   "function",
+   "operator",
+   "location_blocks",
+   "primary_production",
+   "weight_sub",
+   "weight_top",
+   "production_start",
+   "valid_from",
+   "valid_to",
+   "water_depth",
+   "coast_dist",
+   "remarks",
+   "geometry"
+  ],
+  "example": {
+   "answer": 1617,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_platforms"
+  },
+  "geometry": true,
+  "rows": 1617,
+  "seconds": 1,
+  "with_position": 1617
+ },
+ "eu_emodnet_port_goods": {
+  "bbox": [
+   -61.533,
+   -20.936,
+   55.282,
+   77.85
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "id",
+   "data_src_c",
+   "port_coor",
+   "port",
+   "port_id",
+   "portcode",
+   "country",
+   "year",
+   "cargo_type",
+   "direct",
+   "cargo_type_code",
+   "thousand_of_tonnes",
+   "dateyear",
+   "geometry"
+  ],
+  "example": {
+   "answer": 429668,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_port_goods"
+  },
+  "geometry": true,
+  "rows": 429668,
+  "seconds": 20,
+  "tiles": {
+   "fields": [
+    "id",
+    "data_src_c",
+    "port_coor",
+    "port",
+    "port_id",
+    "portcode"
+   ],
+   "kind": "point",
+   "minzoom": 6,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_port_goods.pmtiles"
+  },
+  "with_position": 429668
+ },
+ "eu_emodnet_ports": {
+  "bbox": [
+   -61.533,
+   -20.936,
+   55.282,
+   77.85
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "port_id",
+   "data_src_c",
+   "port_coor",
+   "country",
+   "portname",
+   "port",
+   "source",
+   "pointx",
+   "pointy",
+   "traffic",
+   "geometry"
+  ],
+  "example": {
+   "answer": 946,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_ports"
+  },
+  "geometry": true,
+  "rows": 946,
+  "seconds": 1,
+  "with_position": 946
+ },
+ "eu_emodnet_substrate": {
+  "built": null,
+  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/wave9/eu_emodnet_substrate/src.geojson\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/eu_emodnet_substrate/src.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+ },
+ "eu_emodnet_wind_farms": {
+  "bbox": [
+   -16.59,
+   27.733,
+   24.738,
+   65.471
+  ],
+  "built": "2026-10-31",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "country",
+   "name",
+   "n_turbines",
+   "power_mw",
+   "status",
+   "type_inst",
+   "updateyear",
+   "year",
+   "dist_coast",
+   "area_sqkm",
+   "notes",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 600,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_wind_farms"
+  },
+  "geometry": true,
+  "rows": 600,
+  "seconds": 2,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "country",
+    "n_turbines",
+    "power_mw",
+    "status",
+    "type_inst"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_wind_farms.pmtiles"
+  },
+  "with_position": 600
+ },
+ "us_boem_active_leases": {
+  "built": null,
+  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/wave9/us_boem_active_leases/src.geojson\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/us_boem_active_leases/src.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+ },
+ "us_boem_wind_leases": {
+  "built": null,
+  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/wave9/us_boem_wind_leases/src.geojson\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/us_boem_wind_leases/src.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+ },
+ "world_port_index": {
+  "built": null,
+  "error": "SystemExit: download failed: https://msi.nga.mil/api/publications/download?key=16694622/SFH00000/UpdatedPub150.csv&type=download"
+ }
+}

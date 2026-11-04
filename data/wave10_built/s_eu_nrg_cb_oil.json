@@ -1,0 +1,27 @@
+{
+ "eu_nrg_cb_oil": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 37,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "freq",
+   "nrg_bal",
+   "siec",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag"
+  ],
+  "example": {
+   "answer": 8907863,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_cb_oil"
+  },
+  "geometry": false,
+  "rows": 8907863,
+  "seconds": 13
+ }
+}

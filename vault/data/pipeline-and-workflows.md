@@ -1,7 +1,7 @@
 ---
 title: Pipeline and workflows
 tags: [data, ci]
-updated: 2026-10-29
+updated: 2026-10-31
 paths: [scripts/, .github/workflows/, frontend/public/data/, docs/DATA_SOURCES.md]
 ---
 
@@ -41,3 +41,5 @@ the data branches. Every file and its source: `docs/DATA_SOURCES.md`. The lake: 
   (O outlines, R/Rpop/Rbuilt rasters, S/M class shares, C small-area energy, A asset layers,
   P probes, T in_area timing); A commits `frontend/public/data/eu/w8/*.json` to the branch, so
   pull before the next push.
+- **wave9.yml**: `[w9: P 0 1 ... 17]` (P probes, digits categories); a job per category,
+  `scripts/wave9_commit.sh` commits build records and map files; pull before pushing.

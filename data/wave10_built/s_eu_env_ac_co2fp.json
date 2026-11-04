@@ -1,0 +1,23 @@
+{
+ "eu_env_ac_co2fp": {
+  "built": "2026-11-03",
+  "columns": [
+   "freq",
+   "na_item",
+   "nace_r2",
+   "unit",
+   "c_dest",
+   "c_orig",
+   "time_period",
+   "obs_value",
+   "obs_flag"
+  ],
+  "example": {
+   "answer": 19233000,
+   "sql": "SELECT count(*) FROM wave10.eu_env_ac_co2fp"
+  },
+  "geometry": false,
+  "rows": 19233000,
+  "seconds": 50
+ }
+}

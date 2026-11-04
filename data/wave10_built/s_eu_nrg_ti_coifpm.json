@@ -1,0 +1,26 @@
+{
+ "eu_nrg_ti_coifpm": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 35,
+   "period": "2026-08",
+   "scope": "country"
+  },
+  "columns": [
+   "freq",
+   "crudeoil",
+   "indic_nrg",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag"
+  ],
+  "example": {
+   "answer": 7284668,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_ti_coifpm"
+  },
+  "geometry": false,
+  "rows": 7284668,
+  "seconds": 15
+ }
+}

@@ -1,0 +1,50 @@
+{
+ "eu_broadband_nuts2": {
+  "built": "2026-10-31",
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 4566,
+   "sql": "SELECT count(*) FROM wave9.eu_broadband_nuts2"
+  },
+  "geometry": false,
+  "rows": 4566,
+  "seconds": 1
+ },
+ "eu_internet_households": {
+  "built": "2026-10-31",
+  "choro": {
+   "areas": 39,
+   "period": "2019",
+   "scope": "country"
+  },
+  "columns": [
+   "dataflow",
+   "last_update",
+   "freq",
+   "unit",
+   "hhtyp",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag",
+   "conf_status"
+  ],
+  "example": {
+   "answer": 5585,
+   "sql": "SELECT count(*) FROM wave9.eu_internet_households"
+  },
+  "geometry": false,
+  "rows": 5585,
+  "seconds": 1
+ }
+}

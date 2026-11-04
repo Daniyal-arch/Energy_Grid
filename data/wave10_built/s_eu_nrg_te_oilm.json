@@ -1,0 +1,22 @@
+{
+ "eu_nrg_te_oilm": {
+  "built": "2026-11-03",
+  "columns": [
+   "freq",
+   "siec",
+   "partner",
+   "unit",
+   "geo",
+   "time_period",
+   "obs_value",
+   "obs_flag"
+  ],
+  "example": {
+   "answer": 23365824,
+   "sql": "SELECT count(*) FROM wave10.eu_nrg_te_oilm"
+  },
+  "geometry": false,
+  "rows": 23365824,
+  "seconds": 35
+ }
+}

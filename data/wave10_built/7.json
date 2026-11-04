@@ -1,0 +1,6077 @@
+{
+ "wb_ag_lnd_agri_k2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 208,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_agri_k2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_lnd_agri_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 208,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_agri_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_ag_lnd_arbl_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 205,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_arbl_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 2
+ },
+ "wb_ag_lnd_el5m_ru_k2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_el5m_ru_k2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_lnd_el5m_ru_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_el5m_ru_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_lnd_el5m_ur_k2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_el5m_ur_k2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_lnd_el5m_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_el5m_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_lnd_el5m_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_el5m_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_lnd_frst_k2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 209,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_frst_k2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_lnd_frst_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 209,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_frst_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_ag_lnd_irig_ag_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 67,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_irig_ag_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_lnd_prcp_mm": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 180,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_prcp_mm"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_lnd_totl_k2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 214,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_totl_k2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_ag_lnd_totl_ru_k2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_totl_ru_k2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_lnd_totl_ur_k2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_lnd_totl_ur_k2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ag_srf_totl_k2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 213,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_srf_totl_k2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_ag_yld_crel_kg": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 176,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ag_yld_crel_kg"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_bx_gsr_ccis_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 162,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_bx_gsr_ccis_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_bx_gsr_ccis_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 162,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_bx_gsr_ccis_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_bx_klt_dinv_wd_gd_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 184,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_bx_klt_dinv_wd_gd_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_cft_accs_ru_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 192,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_cft_accs_ru_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_cft_accs_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 192,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_cft_accs_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_cft_accs_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 192,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_cft_accs_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_egy_prim_pp_kd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 201,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_egy_prim_pp_kd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_accs_ru_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 210,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_accs_ru_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_accs_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 213,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_accs_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_accs_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_accs_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_eg_elc_coal_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 208,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_coal_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_fosl_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 207,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_fosl_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_hyro_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 208,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_hyro_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_loss_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 149,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_loss_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_ngas_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 209,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_ngas_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_nucl_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 208,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_nucl_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_petr_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 209,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_petr_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_rnew_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 204,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_rnew_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_rnwx_kh": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 208,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_rnwx_kh"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_elc_rnwx_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 208,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_elc_rnwx_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_fec_rnew_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 212,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_fec_rnew_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_eg_gdp_puse_ko_pp": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 171,
+   "period": "2007",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_gdp_puse_ko_pp"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_gdp_puse_ko_pp_kd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 169,
+   "period": "2007",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_gdp_puse_ko_pp_kd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_imp_cons_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 139,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_imp_cons_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_use_comm_cl_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 149,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_use_comm_cl_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_use_comm_fo_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 166,
+   "period": "2007",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_use_comm_fo_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_use_comm_gd_pp_kd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 169,
+   "period": "2007",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_use_comm_gd_pp_kd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_use_crnw_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 143,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_use_crnw_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_eg_use_elec_kh_pc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 149,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_use_elec_kh_pc"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_eg_use_pcap_kg_oe": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 177,
+   "period": "2007",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_eg_use_pcap_kg_oe"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_en_atm_pm25_mc_m3": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 200,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_atm_pm25_mc_m3"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_atm_pm25_mc_t1_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2017",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_atm_pm25_mc_t1_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_atm_pm25_mc_t2_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2017",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_atm_pm25_mc_t2_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_atm_pm25_mc_t3_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2017",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_atm_pm25_mc_t3_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_atm_pm25_mc_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2017",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_atm_pm25_mc_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_bir_thrd_no": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_bir_thrd_no"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_clc_drsk_xq": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 83,
+   "period": "2011",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_clc_drsk_xq"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_clc_mdat_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 168,
+   "period": "2009",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_clc_mdat_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_fsh_thrd_no": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_fsh_thrd_no"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_all_lu_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 176,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_all_lu_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_all_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_all_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_all_pc_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_all_pc_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_ch4_ag_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 198,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_ch4_ag_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_ch4_bu_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 197,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_ch4_bu_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_ch4_fe_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 192,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_ch4_fe_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_ch4_ic_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 193,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_ch4_ic_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_ch4_ip_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 94,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_ch4_ip_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_ch4_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_ch4_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_ch4_pi_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_ch4_pi_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_ch4_tr_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_ch4_tr_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_ch4_wa_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_ch4_wa_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_ch4_zg_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_ch4_zg_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_ag_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 109,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_ag_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_bu_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 193,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_bu_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_fe_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 190,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_fe_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_ic_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 193,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_ic_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_ip_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_ip_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_lu_df_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 167,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_lu_df_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_lu_fl_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 179,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_lu_fl_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_lu_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 183,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_lu_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_lu_ol_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 182,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_lu_ol_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_lu_os_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 184,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_lu_os_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_pc_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_pc_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_pi_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_pi_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_rt_gdp_kd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 191,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_rt_gdp_kd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_rt_gdp_pp_kd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 188,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_rt_gdp_pp_kd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_tr_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_tr_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_wa_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 96,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_wa_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_co2_zg_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 201,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_co2_zg_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_fgas_ip_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 154,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_fgas_ip_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_n2o_ag_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 198,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_n2o_ag_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_n2o_bu_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 197,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_n2o_bu_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_n2o_fe_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 187,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_n2o_fe_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_n2o_ic_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 193,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_n2o_ic_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_n2o_ip_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_n2o_ip_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_n2o_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_n2o_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_n2o_pi_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_n2o_pi_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_n2o_tr_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_n2o_tr_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_n2o_wa_mt_ce_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_n2o_wa_mt_ce_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_n2o_zg_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_n2o_zg_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_ghg_tot_zg_ar5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 203,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_ghg_tot_zg_ar5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_hpt_thrd_no": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_hpt_thrd_no"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_mam_thrd_no": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_mam_thrd_no"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_pop_el5m_ru_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_pop_el5m_ru_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_pop_el5m_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_pop_el5m_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_pop_el5m_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_pop_el5m_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_pop_slum_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 181,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_pop_slum_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_en_urb_mcty_tl_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 121,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_en_urb_mcty_tl_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_fsh_aqua_mt": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_fsh_aqua_mt"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_fsh_capt_mt": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_fsh_capt_mt"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_fsh_prod_mt": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_fsh_prod_mt"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_gdp_fwtl_m3_kd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 175,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_gdp_fwtl_m3_kd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_h2o_fwag_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 178,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_h2o_fwag_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_h2o_fwdm_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 178,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_h2o_fwdm_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_h2o_fwin_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 177,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_h2o_fwin_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_h2o_fwst_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 176,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_h2o_fwst_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_h2o_fwtl_k3": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 179,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_h2o_fwtl_k3"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_h2o_fwtl_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 175,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_h2o_fwtl_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_h2o_intr_k3": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 181,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_h2o_intr_k3"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_h2o_intr_pc": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 181,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_h2o_intr_pc"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_lnd_ptld_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 213,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_lnd_ptld_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_mrn_ptmr_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 174,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_mrn_ptmr_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_er_ptd_totl_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 213,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_er_ptd_totl_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ic_elc_durs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 62,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ic_elc_durs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ic_frm_bnks_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 62,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ic_frm_bnks_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ic_frm_outg_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 62,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ic_frm_outg_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ie_ppi_engy_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 53,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ie_ppi_engy_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ie_ppi_icti_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 35,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ie_ppi_icti_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ie_ppi_tran_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 27,
+   "period": "2017",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ie_ppi_tran_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ie_ppi_watr_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 13,
+   "period": "2001",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ie_ppi_watr_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ie_ppn_engy_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 53,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ie_ppn_engy_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ie_ppn_icti_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 35,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ie_ppn_icti_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ie_ppn_tran_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 26,
+   "period": "2017",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ie_ppn_tran_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ie_ppn_watr_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 11,
+   "period": "2012",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ie_ppn_watr_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ip_ids_nrct": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 118,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ip_ids_nrct"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ip_ids_rsct": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 120,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ip_ids_rsct"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ip_tmk_nrct": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 136,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ip_tmk_nrct"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ip_tmk_rsct": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 134,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ip_tmk_rsct"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_iq_cpa_pubs_xq": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 78,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_iq_cpa_pubs_xq"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_is_air_dprt": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 150,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_is_air_dprt"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_is_air_good_mt_k1": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 161,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_is_air_good_mt_k1"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_is_air_psgr": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 149,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_is_air_psgr"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_is_rrs_good_mt_k6": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 90,
+   "period": "2004",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_is_rrs_good_mt_k6"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_is_rrs_pasg_km": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 88,
+   "period": "2004",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_is_rrs_pasg_km"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_is_rrs_totl_km": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 89,
+   "period": "2002",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_is_rrs_totl_km"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_is_shp_gcnw_xq": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 165,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_is_shp_gcnw_xq"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_is_shp_good_tu": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 162,
+   "period": "2019",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_is_shp_good_tu"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_it_cel_sets": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 209,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_cel_sets"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_it_cel_sets_p2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 209,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_cel_sets_p2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_it_mlt_main": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 211,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_mlt_main"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_it_mlt_main_p2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 212,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_mlt_main_p2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_it_net_bbnd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 206,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_net_bbnd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_it_net_bbnd_p2": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 206,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_net_bbnd_p2"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_it_net_secr": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_net_secr"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_it_net_secr_p6": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 215,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_net_secr_p6"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_it_net_user_fe_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 92,
+   "period": "2019",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_net_user_fe_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_it_net_user_ma_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 92,
+   "period": "2019",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_net_user_ma_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_it_net_user_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 189,
+   "period": "2019",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_it_net_user_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_nv_agr_totl_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 187,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_nv_agr_totl_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_ny_adj_aedu_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 180,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_aedu_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_aedu_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 199,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_aedu_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dco2_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 208,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dco2_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dco2_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 186,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dco2_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dfor_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 183,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dfor_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dfor_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 169,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dfor_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dkap_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 194,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dkap_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dkap_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 186,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dkap_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dmin_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 216,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dmin_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dmin_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 187,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dmin_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dngy_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 206,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dngy_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dngy_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 185,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dngy_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dpem_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 164,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dpem_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dpem_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 160,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dpem_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_dres_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 169,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_dres_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_ictr_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 155,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_ictr_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_nnat_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 155,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_nnat_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_nnat_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 155,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_nnat_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_svng_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 141,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_svng_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_svng_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 141,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_svng_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_svnx_cd": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 144,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_svnx_cd"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_adj_svnx_gn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 144,
+   "period": "2020",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_adj_svnx_gn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_gdp_coal_rt_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 188,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_gdp_coal_rt_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_gdp_frst_rt_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 197,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_gdp_frst_rt_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_ny_gdp_minr_rt_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 197,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_gdp_minr_rt_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_ny_gdp_ngas_rt_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 190,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_gdp_ngas_rt_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_ny_gdp_petr_rt_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 190,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_gdp_petr_rt_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_ny_gdp_totl_rt_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 197,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_ny_gdp_totl_rt_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_se_enr_prsc_fm_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 135,
+   "period": "2015",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_se_enr_prsc_fm_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_se_prm_cmpt_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 137,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_se_prm_cmpt_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_dyn_mort": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 196,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_dyn_mort"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_sh_h2o_basw_ru_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 168,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_h2o_basw_ru_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_h2o_basw_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 178,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_h2o_basw_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_h2o_basw_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 202,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_h2o_basw_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_h2o_smdw_ru_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 83,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_h2o_smdw_ru_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_h2o_smdw_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 102,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_h2o_smdw_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_h2o_smdw_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 148,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_h2o_smdw_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_med_cmhw_p3": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 29,
+   "period": "2004",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_med_cmhw_p3"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_airp_p5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 183,
+   "period": "2019",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_airp_p5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_bass_ru_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 159,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_bass_ru_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_bass_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 171,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_bass_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_bass_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 193,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_bass_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_hygn_ru_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 99,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_hygn_ru_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_hygn_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 98,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_hygn_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_hygn_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 103,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_hygn_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_maln_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 56,
+   "period": "2000",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_maln_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_odfc_ru_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 155,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_odfc_ru_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_odfc_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 169,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_odfc_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_odfc_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 192,
+   "period": "2022",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_odfc_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_pois_p5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 185,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_pois_p5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_pois_p5_fe": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 185,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_pois_p5_fe"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_pois_p5_ma": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 185,
+   "period": "2021",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_pois_p5_ma"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_smss_ru_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 97,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_smss_ru_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_smss_ur_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 122,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_smss_ur_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_smss_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 141,
+   "period": "2024",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_smss_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sh_sta_wash_p5": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 183,
+   "period": "2019",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sh_sta_wash_p5"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_si_pov_dday": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 93,
+   "period": "2018",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_si_pov_dday"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_sp_pop_grow": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 217,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sp_pop_grow"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_sp_pop_totl": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 217,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sp_pop_totl"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_sp_urb_grow": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 217,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sp_urb_grow"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sp_urb_totl": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 217,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sp_urb_totl"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_sp_urb_totl_in_zs": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 217,
+   "period": "2025",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_sp_urb_totl_in_zs"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 0
+ },
+ "wb_tm_val_fuel_zs_un": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 163,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_tm_val_fuel_zs_un"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_tm_val_ictg_zs_un": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 160,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_tm_val_ictg_zs_un"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_tm_val_mmtl_zs_un": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 163,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_tm_val_mmtl_zs_un"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_tx_val_fuel_zs_un": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 160,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_tx_val_fuel_zs_un"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_tx_val_ictg_zs_un": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 158,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_tx_val_ictg_zs_un"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ },
+ "wb_tx_val_mmtl_zs_un": {
+  "built": "2026-11-03",
+  "choro": {
+   "areas": 163,
+   "period": "2023",
+   "scope": "country"
+  },
+  "columns": [
+   "indicator",
+   "indicator_name",
+   "iso2",
+   "iso3",
+   "country",
+   "aggregate",
+   "year",
+   "value",
+   "unit",
+   "obs_status"
+  ],
+  "example": {
+   "answer": 9576,
+   "sql": "SELECT count(*) FROM wave10.wb_tx_val_mmtl_zs_un"
+  },
+  "geometry": false,
+  "rows": 9576,
+  "seconds": 1
+ }
+}

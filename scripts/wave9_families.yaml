@@ -1,0 +1,64 @@
+# The coverage families of wave 9 (docs/tasks/28): name, what a cell shows, the level a full
+# cell has (a country publishing only a coarser level is marked partial and names its level),
+# the category, and the query run on data.europa.eu, catalog.data.gov and data.gov.uk for
+# evidence when no source was found. Families already in data/coverage.yaml (consumption,
+# heating, outlines, flood_zones, oil_gas_facilities, co2_storage, congestion) only gain cells.
+families:
+  acceleration_areas: {cat: 1, name: Renewables acceleration and zoning areas, shows: areas designated for renewables (RED III Art. 15c, regional wind areas, BLM zones), want: polygon, q: "renewables acceleration areas"}
+  farmland_quality: {cat: 1, name: Agricultural land quality, shows: agricultural land classification or prime farmland, want: polygon, q: "agricultural land classification"}
+  brownfield: {cat: 1, name: Brownfield and contaminated land, shows: brownfield registers and polluted sites, want: point, q: "brownfield land register"}
+  land_prices: {cat: 1, name: Land prices, shows: agricultural land prices and rents, want: region, q: "agricultural land prices"}
+  heritage_aviation: {cat: 1, name: Heritage and aviation constraints, shows: listed heritage, airports, navigation aids and radar sites, want: point, q: "listed buildings heritage"}
+  energy_consents: {cat: 1, name: Major energy consents, shows: consents and permits for large energy projects, want: point, q: "energy infrastructure planning consent register"}
+  planned_grid: {cat: 2, name: Planned grid, shows: grid projects of the national network plan, want: line, q: "network development plan transmission projects"}
+  network_charges: {cat: 2, name: Locational network charges, shows: transmission or distribution charges per zone or utility, want: region, q: "transmission network tariffs"}
+  large_load: {cat: 2, name: Large loads and data-centre demand, shows: large-load connection queues or data-centre consumption, want: point, q: "data centres electricity consumption"}
+  distribution_data: {cat: 2, name: Distribution network data, shows: DSO open data (embedded capacity, substations, heat maps), want: point, q: "distribution network operator open data embedded capacity"}
+  balancing: {cat: 3, name: Balancing and reserves, shows: reserve and balancing prices and volumes, want: zone, q: "balancing reserves prices"}
+  capacity_markets: {cat: 3, name: Capacity markets, shows: capacity auction results and registers, want: point, q: "capacity market auction results"}
+  support_contracts: {cat: 3, name: Support contracts, shows: contracts for difference and auction awards per project, want: point, q: "contracts for difference register"}
+  guarantees_origin: {cat: 3, name: Guarantees of origin, shows: issuance and cancellation of guarantees of origin, want: country, q: "guarantees of origin statistics"}
+  earthquake: {cat: 4, name: Earthquake hazard, shows: seismic hazard (peak ground acceleration), want: raster, q: "seismic hazard model"}
+  heat_projection: {cat: 4, name: Heat projections, shows: hot days per period and scenario (computed from climate projections), want: raster, q: "climate projections hot days"}
+  drought: {cat: 4, name: Drought, shows: drought indicators or drought monitor polygons, want: polygon, q: "drought indicator"}
+  wildfire_hazard: {cat: 4, name: Wildfire hazard, shows: wildfire hazard or danger, want: raster, q: "wildfire hazard map"}
+  coastal_flood: {cat: 4, name: Coastal flood and sea level, shows: coastal flood hazard and sea-level rise inundation, want: raster, q: "coastal flood hazard sea level rise"}
+  landslides: {cat: 4, name: Landslides, shows: landslide inventory or susceptibility, want: point, q: "landslide inventory"}
+  storms: {cat: 4, name: Storms, shows: storm events with position and damage, want: point, q: "storm events database"}
+  geomagnetic: {cat: 4, name: Geomagnetic hazard, shows: geoelectric hazard to transformers, want: raster, q: "geomagnetic geoelectric hazard"}
+  subsidence: {cat: 4, name: Ground motion and subsidence, shows: ground motion (InSAR), want: point, q: "ground motion subsidence"}
+  ev_registrations: {cat: 5, name: EV registrations per area, shows: electric vehicles registered per area, want: municipality, q: "electric vehicles registered municipality"}
+  heat_pumps: {cat: 5, name: Heat pumps, shows: heat pumps installed per area, want: municipality, q: "heat pumps installed"}
+  rooftop_solar: {cat: 5, name: Rooftop and small solar, shows: small solar installations per area, want: municipality, q: "solar photovoltaic installations municipality"}
+  building_certificates: {cat: 5, name: Building energy certificates, shows: energy performance certificates (aggregates per area), want: municipality, q: "energy performance certificates"}
+  data_centre_demand: {cat: 5, name: Data-centre electricity, shows: electricity used by data centres, want: country, q: "data centres energy consumption"}
+  degree_days: {cat: 5, name: Degree days, shows: heating and cooling degree days, want: county, q: "heating degree days"}
+  bathymetry: {cat: 6, name: Water depth, shows: bathymetry grid, want: raster, q: "bathymetry"}
+  shipping_density: {cat: 6, name: Shipping density, shows: vessel density or AIS transit counts, want: raster, q: "vessel density AIS"}
+  offshore_zones: {cat: 6, name: Offshore zones and leases, shows: offshore wind farms, leases, maritime plan zones, platforms, want: polygon, q: "offshore wind lease areas"}
+  seabed: {cat: 6, name: Seabed, shows: seabed substrate, want: polygon, q: "seabed substrate"}
+  ports: {cat: 6, name: Ports, shows: ports and their traffic, want: point, q: "ports"}
+  marine_protected: {cat: 6, name: Marine protected areas, shows: marine protected areas, want: polygon, q: "marine protected areas"}
+  cleantech_factories: {cat: 7, name: Clean-tech factories, shows: battery, solar, wind and electrolyser factories, want: point, q: "battery gigafactory"}
+  critical_minerals: {cat: 7, name: Critical minerals, shows: mineral deposits and occurrences, want: point, q: "mineral deposits occurrences"}
+  biogas: {cat: 7, name: Biogas, biomethane, landfill gas and biofuels, shows: digesters, landfill gas projects, biofuel plants, want: point, q: "biogas plants"}
+  h2_storage_potential: {cat: 7, name: Hydrogen storage potential, shows: salt caverns suited to hydrogen storage, want: polygon, q: "salt cavern hydrogen storage"}
+  public_funding: {cat: 8, name: Public grants and loans, shows: funded projects with their amounts, want: point, q: "funded projects cohesion policy"}
+  transition_areas: {cat: 8, name: Transition and incentive areas, shows: energy communities, opportunity zones, just transition territories, want: small_area, q: "just transition territories"}
+  income: {cat: 9, name: Income per area, shows: household income per area, want: small_area, q: "household income per area"}
+  community_energy: {cat: 9, name: Community energy, shows: community energy projects, want: point, q: "community energy cooperatives"}
+  ixp_colocation: {cat: 10, name: Exchange points and colocation, shows: internet exchange and colocation facilities, want: point, q: "internet exchange point data centre facilities"}
+  broadband: {cat: 10, name: Broadband coverage, shows: broadband coverage or take-up per area, want: region, q: "broadband coverage"}
+  water_stress: {cat: 11, name: Water use and stress, shows: water abstraction, use and stress, want: region, q: "water abstraction"}
+  wastewater: {cat: 11, name: Wastewater plants, shows: urban wastewater treatment plants, want: point, q: "urban wastewater treatment plants"}
+  river_discharge: {cat: 11, name: River discharge, shows: river flow gauges or discharge, want: point, q: "river discharge gauging stations"}
+  district_heating: {cat: 12, name: District heating areas, shows: district heating networks and zones, want: polygon, q: "district heating network"}
+  geothermal_heat_flow: {cat: 12, name: Geothermal heat flow, shows: heat-flow measurements, want: point, q: "geothermal heat flow"}
+  pumped_hydro: {cat: 12, name: Pumped hydro potential, shows: candidate pumped hydro sites, want: point, q: "pumped hydro storage potential"}
+  freight_corridors: {cat: 13, name: Freight and charging corridors, shows: TEN-T, strategic roads, alternative fuel corridors, want: line, q: "TEN-T network"}
+  rail_electrification: {cat: 13, name: Rail electrification, shows: electrified railway lines, want: line, q: "electrified railway lines"}
+  airports: {cat: 13, name: Airports, shows: airports, runways and passenger traffic, want: point, q: "airports passengers"}
+  reactors: {cat: 14, name: Nuclear reactors, shows: reactors in operation and planned, want: point, q: "nuclear power plants"}
+  air_quality: {cat: 15, name: Air quality, shows: measured air quality per station, want: point, q: "air quality monitoring stations"}
+  reliability_local: {cat: 16, name: Interruptions per area, shows: power interruptions below country level, want: county, q: "power outages interruptions per region"}
+  night_lights: {cat: 17, name: Night lights, shows: night-time lights (electrification, outages), want: raster, q: "night lights VIIRS"}
