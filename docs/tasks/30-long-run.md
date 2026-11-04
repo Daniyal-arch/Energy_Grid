@@ -8,7 +8,8 @@ tracks:
 1. Harden what exists.
 2. Fill data gaps.
 3. Add new data.
-4. Make the agent and backend faster and better.
+4. Make the backend and the agent's tools faster and better, with instant answers that need
+   no model.
 5. Polish the frontend.
 6. Build new product features end to end.
 7. Keep the docs and vault current.
@@ -25,9 +26,11 @@ reviews everything at the end.
   customer table.
 - PR #17 and PR #18 descriptions: what was built and what was blocked.
 - `docs/research/wave9-sources.md`, `docs/research/wave10-sources.md`,
-  `docs/research/small-area-energy.md`, `data/coverage.yaml`.
-- `vault/backend/agent-models.md` (Gemini on the free tier, 2026-11-04) and
-  `vault/gotchas.md`.
+  `docs/research/small-area-energy.md`, `data/coverage.yaml`, `vault/gotchas.md`.
+- **Models are out of scope for this run.** The owner tests and tunes the language models
+  (providers, model choice, prompts for a given model) separately. Work with the fake model
+  for tests and evals, and do not change `agent/models.yaml`, the provider code in
+  `backend/agent/models.py` or the model defaults.
 
 ## How to work (a run of days)
 
@@ -80,14 +83,14 @@ reviews everything at the end.
 |---|---|---|
 | `FIRMS_MAP_KEY` | repo secret | fires (wave 8 group A) |
 | `CENSUS_API_KEY` | repo secret | ACS heating fuel and income per tract (wave 8 C, wave 9) |
-| `GOOGLE_API_KEY` | repo secret and the cloud environment | the agent on Gemini's free tier (`gemini-3-flash-preview` main, `gemini-3.5-flash-lite` fast): real-model evals and backend tests |
 | `NREL_API_KEY` | repo secret (set) | Utility Rate Database, AFDC; the scripts said it was missing: check how they read it |
 
 ## Track 1. Harden what exists
 
-1. **Push-ready fixes from 2026-11-04 (on main):** tool arguments as lists (Gemini refuses
-   tuples), the lake's CA bundle `SET GLOBAL` with a certifi fallback. Keep both. Run the whole
-   backend on Gemini once end to end; fix what breaks.
+1. **Fixes from 2026-11-04 (on main):** tool arguments are lists, never tuples (some providers
+   refuse a tuple's schema; `tests/test_tools.py` checks); the lake's CA bundle is set with
+   `SET GLOBAL` and falls back to certifi's. Keep both. Run every data route and every tool
+   once against the real lake on R2 (fake model) and fix what breaks.
 2. **Area resolution.** "Bavaria", "Brittany", "Lower Saxony", "Silesia", "the Ruhr",
    "Greater Manchester", "Puglia/Apulia", "North Rhine-Westphalia" must resolve first try:
    English and local names, exonyms (Overture and Wikidata names where licensed). Add an eval
@@ -161,30 +164,66 @@ published, 100 blocked (2026-11-04).
 
 ## Track 4. Agent and backend: faster, cheaper, better
 
-Measure first. Write `backend/probes/probe_latency.py`: the 30 most common eval questions, run
-on Gemini, with time to first event, time to answer, tokens and tool calls per question. Put
-the before/after table in the PR.
+This track is about everything except the language model: the data layer, the tools, the
+API, the agent's plumbing and the answers it can give without a model.
 
-1. **Latency targets:** p50 under 20 s for a new map question, under 5 s for an edit, first
-   step on screen under 2 s.
-   - Warm the lake on start: the attach of `lake.duckdb` took 65 s on a slow line; cache its
+Measure first. Write `backend/probes/probe_latency.py`. It runs the 30 most common eval
+questions with the fake model, plus every data route, and records for each:
+
+- time to first event;
+- time per tool call: SQL, `resolve_area`, `area_stats`, map building;
+- lake read time and bytes read;
+- SSE overhead.
+
+Run it from the Lambda-sized container in Actions (2 vCPU, 3,008 MB) and put the
+before/after table in the PR.
+
+1. **Backend latency targets** (with the fake model, so only our own code is measured):
+   - tools: p50 under 2 s, p95 under 5 s for a city or region;
+   - a cold start under 10 s to the first event;
+   - data routes: p50 under 1 s.
+
+   Ways to get there:
+   - Warm the lake on start: attaching `lake.duckdb` took 65 s on a slow line. Cache its
      catalogue locally and reuse the connection.
    - Turn on DuckDB's HTTP metadata cache and the httpfs cache.
    - Pre-aggregate rollups per level (NUTS 3, county, LAU, H3 res 5-7) for the large tables
-     (MaStR, Overture power, GRW, wave 9 big tables), so `in_area` sums read rollups for large
-     areas and rows only for small ones. The answer must still say which.
-   - Run independent tool calls in parallel; keep a smaller system prompt.
-   - Stream the analyst's text early.
-2. **Provider resilience.**
-   - Gemini first (free tier), with fallback on 429/503: same family, then a lite model, then
-     Groq. The answer and trace name the model used.
-   - Rate-limit-aware retries with jitter; a per-provider token budget.
-   - `agent-evals.yml` runs on Gemini when `ANTHROPIC_API_KEY` is missing.
-3. **Model scorecard.** `docs/model-scorecard.md`: the eval suite on every model the keys allow
-   (Gemini flash and lite variants, Groq gpt-oss 120b/20b, the fake model as a baseline).
-   Columns: grounding score, pass rate, p50/p95 latency, tokens and cost at list prices.
-   Re-runnable by one command.
-4. **New agent tools** (each with tests, catalogue use and an eval):
+     (MaStR, Overture power, GRW, the big wave 9 tables). Then `in_area` sums read rollups for
+     large areas and rows only for small ones; the answer says which.
+   - Run independent tool calls in parallel.
+   - Cut the Lambda image size and import time (lazy imports, fewer packages).
+2. **Instant answers without a model** (new: fast, free and grounded by construction). Use SQL
+   templates for the questions most people ask:
+   - an area's profile (the area card's families);
+   - the top N assets of a kind in an area;
+   - totals by fuel or status;
+   - two areas compared;
+   - what is published here.
+
+   Serve them as `GET /api/quick/{template}?area=…` in under 1 s, each figure with its
+   source, method and "as of" date. Wire them in two places:
+   - **The app:** the area card and the Ask chat show the instant answer at once, and the
+     agent is only needed for open questions.
+   - **The agent:** a `quick` tool, so it reuses the templates instead of writing SQL.
+
+   A router rule sends a question that matches a template straight to it, with no model call.
+   Evals check that the template numbers equal the SQL ones.
+3. **Result cache.** Cache tool results keyed by the normalised SQL or the tool arguments
+   plus the lake catalogue date, locally and in R2 (`agent/cache/`, with a size cap and an
+   expiry). Repeated questions and map edits then read the cache; the trace says "cached".
+   Invalidate an entry when the lake catalogue date changes.
+4. **Robust streaming.**
+   - SSE resume after a dropped connection (`Last-Event-ID`) and a cancel route.
+   - A timeout per tool; on timeout, a partial answer that says what is missing.
+   - Load test with the fake model: 50 concurrent asks plus the data routes, with p95 and
+     errors reported in the PR.
+5. **Security tests.**
+   - Prompt-injection cases: data rows and tool results containing instructions must never
+     change the agent's behaviour. Add evals.
+   - Fuzz the SQL guard (functions, paths, comments, unicode).
+   - Rate limits per IP and per key, input size caps.
+   - Check that no route leaks a key or a stack trace.
+6. **New agent tools** (each with tests, catalogue use and an eval):
    - `nearest(point or area, dataset, k)`: assets nearest a point, with distance (computed).
    - `along(line or route, buffer_km, dataset)`: assets along a corridor.
    - `compare_areas(areas, measures)`: the same measures for 2-6 areas, in one result.
@@ -192,12 +231,13 @@ the before/after table in the PR.
    - `export(result_id, format)`: CSV, GeoJSON or Parquet of a result with its sources and
      licence. Refuse share-alike or no-redistribution sources, or apply their terms.
    - `explain_coverage(area, family)`: what is published there and why a cell is dark.
-5. **Answer quality.**
-   - Every answer ends with "as of" dates and coverage notes for the area.
-   - Follow-up suggestions come from the data the area actually has.
-   - Charts appear when the question is a trend or comparison.
+7. **Answer plumbing** (model-independent):
+   - Tool results carry "as of" dates and the area's coverage notes, so every answer can cite
+     them.
+   - Follow-up suggestions come from the data the area actually has, computed by the backend,
+     not the model.
    - The grounding check covers dates and percentages too.
-6. **MCP server:** document it for external agents (`docs/MCP.md`), add the new tools, and
+8. **MCP server:** document it for external agents (`docs/MCP.md`), add the new tools, and
    add a usage example.
 
 ## Track 5. Frontend polish
@@ -243,9 +283,10 @@ data and its limits.
    same keys, as maps and a table. The URL is shareable.
 4. **Embeds.** An iframe-able view of any dashboard, Maps view or agent map
    (`?embed=1`: no panels, a compact key, the source line), with an embed-code button.
-5. **Weekly brief.** A scheduled workflow asks the agent (Gemini, grounded) for a short
-   weekly summary of what changed, published as a page with every number grounded and linked.
-   It runs only when the grounding score is 1.0; otherwise it is skipped with a note.
+5. **Weekly brief.** A scheduled workflow builds a weekly summary of what changed: biggest
+   price moves, new queue entries, capacity added, outages, records. It is written from
+   templates over the change feeds and the instant answers, with no language model, and
+   published as a page. Every number is linked to its source and "as of" date.
 6. **Data API.** The backend's read-only data routes documented with OpenAPI, plus API keys
    and rate limits (no billing). Serve only datasets whose licence allows redistribution, each
    response with licence and attribution.
@@ -259,7 +300,8 @@ data and its limits.
   in step (generated blocks where the waves generate them).
 - `docs/product/`: one spec per feature.
 - `docs/owner-questions.md` and `docs/data-requests.md`: current.
-- The vault: notes for each new area (product features, latency, scorecard) linked from
+- The vault: notes for each new area (product features, latency, instant answers, cache)
+  linked from
   `vault/index.md`; `vault/log.md` per checkpoint.
 
 ## Done-check (per track, in the PR)
@@ -271,8 +313,9 @@ data and its limits.
   longer dark everywhere.
 - **Track 3:** refresh cadences and "as of" everywhere; at least one history table per
   customer task.
-- **Track 4:** the latency table before/after (targets met or the gap explained), the
-  scorecard, six new tools with tests and evals.
+- **Track 4:** the latency table before/after (targets met or the gap explained), the load
+  test, instant answers for at least six templates (numbers equal to the SQL), the result
+  cache, the security tests, six new tools with tests and evals.
 - **Track 5:** bundle sizes before/after, mobile and accessibility checks listed, the coverage
   explorer.
 - **Track 6:** each feature's spec and a working MVP (or the reason it stopped).
@@ -282,6 +325,8 @@ data and its limits.
 ## Out of scope
 
 - Estimates, composite scores, and non-commercial or login-only sources.
+- Model work: providers, model choice, model-specific prompts and real-model evals (the owner
+  does these).
 - Paid services, accounts, billing.
 - Deploying to AWS (the owner sets up the account).
 - Sending data requests (the owner sends them).
