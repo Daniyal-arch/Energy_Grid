@@ -107,3 +107,51 @@ def test_budget_cap_stops_before_any_model_call():
 def test_too_long_question():
     out, _ = run("x" * 3000)
     assert out["stop"] == "too_long"
+
+
+def test_loop_guard_after_two_similar_failures():
+    """Brief 30 Track 1.3: on 2026-11-04 the analyst called resolve_area five times after a
+    failed lookup. Two similar failures block a third call; two blocked calls end the loop."""
+
+    def call(i, name):
+        return AIMessage(
+            content="",
+            tool_calls=[{"name": "resolve_area", "args": {"names": [name]}, "id": f"c{i}"}],
+        )
+
+    d = scripted(
+        call(1, "Atlantis"),
+        call(2, "atlantis region"),
+        call(3, "Atlantis"),  # blocked
+        call(4, "Atlantis, the region"),  # blocked: the loop ends
+        call(5, "Atlantis"),  # never asked for tools: the analyst must answer
+        AIMessage(content="No outline named Atlantis is published."),
+    )
+    out, _ = run("How many plants are in Atlantis?", deps=d)
+    log = out["tool_log"]
+    assert [e["blocked"] for e in log] == [False, False, True, True]
+    assert "Change approach" in log[2]["result"]["data"]["error"]
+    assert any("repeated failed lookups" in str(m.content) for m in out["messages"])
+    assert out["tool_calls"] == 4
+
+
+def test_loop_guard_lets_a_changed_approach_run():
+    d = scripted(
+        AIMessage(
+            content="",
+            tool_calls=[{"name": "resolve_area", "args": {"names": ["Atlantis"]}, "id": "a"}],
+        ),
+        AIMessage(
+            content="",
+            tool_calls=[{"name": "resolve_area", "args": {"names": ["Atlantis"]}, "id": "b"}],
+        ),
+        AIMessage(
+            content="",
+            tool_calls=[{"name": "resolve_area", "args": {"names": ["Germany"]}, "id": "c"}],
+        ),
+        AIMessage(content="Germany resolved."),
+    )
+    out, _ = run("Atlantis or else Germany?", deps=d)
+    log = out["tool_log"]
+    assert [e["blocked"] for e in log] == [False, False, False]
+    assert log[2]["result"]["data"]["area"]["iso3"] == ["DEU"]
