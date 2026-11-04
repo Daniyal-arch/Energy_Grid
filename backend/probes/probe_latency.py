@@ -285,6 +285,7 @@ def main() -> None:
                     st, err = r.status_code, "" if r.status_code < 400 else r.text[:200]
                 except httpx.HTTPError as e:
                     st, err = 0, str(e)[:200]
+                print(f"route {method} {path}", file=sys.stderr, flush=True)
                 rec["routes"].append(
                     {
                         "route": f"{method} {path}",
@@ -305,8 +306,14 @@ def main() -> None:
                         "error": "",
                     }
                 )
-            for q in questions(a.questions):
+            for i, q in enumerate(questions(a.questions)):
                 rec["asks"].append(ask(c, url, q))
+                x = rec["asks"][-1]
+                print(
+                    f"ask {i + 1}: {x.get('total_s', 0):.1f} s {q[:60]}",
+                    file=sys.stderr,
+                    flush=True,
+                )
         if a.load:
             rec["load"] = load_test(url, a.load)
         rec["tools"] = tool_runs()
