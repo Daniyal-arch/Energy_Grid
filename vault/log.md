@@ -8,6 +8,10 @@ updated: 2026-11-03
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-04** (main, local): brief 30 written (`docs/tasks/30-long-run.md`): a multi-day
+  cloud run in seven tracks (harden, coverage, new data, agent speed, frontend, product MVPs,
+  docs). Notes: none.
+
 - **2026-11-04** (main, local): PR #18 (waves 9 and 10) checked: CI green, 658 new tables, 49
   layers, 494 colourings; R2 holds 38.2 GB. Gemini tested locally (`probes/probe_gemini.py`):
   free-tier flash models in the registry; tool arguments as lists (Gemini refuses tuples); the
