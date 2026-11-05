@@ -265,14 +265,12 @@ def read_geo(con, path: Path, s: dict[str, Any]) -> None:  # noqa: ANN001
     )
     if crs == "ESRI:104000":  # "GCS_Assumed_Geographic_1": degrees with no datum, as published
         crs = None
+    # a new table, not UPDATE: a column typed with the file's CRS refuses other geometries
+    g = f"ST_GeomFromWKB(ST_AsWKB({geom}))"
     if crs and crs not in ("EPSG:4326", "OGC:CRS84"):
         print(f"  {path.name}: {crs} to EPSG:4326", flush=True)
-        # through WKB first: a geometry typed with its file's CRS refuses a cast to another one
-        con.execute(
-            f"UPDATE t SET {geom} = ST_Transform(ST_GeomFromWKB(ST_AsWKB({geom})), '{crs}', "
-            "'EPSG:4326', always_xy := true)"
-        )
-    con.execute(f"UPDATE t SET {geom} = ST_GeomFromWKB(ST_AsWKB({geom}))")
+        g = f"ST_Transform({g}, '{crs}', 'EPSG:4326', always_xy := true)"
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * REPLACE ({g} AS {geom}) FROM t")
 
 
 def arcgis_pages(s: dict[str, Any], dest: Path) -> Path:
