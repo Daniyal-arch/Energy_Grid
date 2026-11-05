@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import contextlib
 import logging
+import threading
+import time
 import uuid
 from collections.abc import AsyncIterator, Awaitable, Callable
 
@@ -30,8 +32,26 @@ from mcp_server.server import mcp_app  # noqa: E402  (after settings and tracing
 mcp_asgi, mcp_lifespan = mcp_app(settings)
 
 
+def warm() -> None:
+    """Brief 30: open the lake (download lake.duckdb, attach, load the app tables) and the
+    catalogue index before the first question, in the background, so the cold start does not
+    land on a user's first tool call. Health answers at once meanwhile."""
+    t0 = time.perf_counter()
+    try:
+        from tools.context import ToolContext
+
+        ctx = ToolContext(settings)
+        ctx.lake.run("SELECT 1", guard=False)
+        ctx.catalogue.search("solar")
+        log.info("warm", extra={"s": round(time.perf_counter() - t0, 2)})
+    except Exception as e:  # noqa: BLE001 - a failed warm-up is retried by the first request
+        log.warning("warm-up failed", extra={"error": str(e)[:200]})
+
+
 @contextlib.asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    if settings.warm_on_start:
+        threading.Thread(target=warm, name="warm", daemon=True).start()
     async with mcp_lifespan():
         yield
 

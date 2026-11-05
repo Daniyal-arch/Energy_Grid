@@ -79,6 +79,9 @@ class Settings(BaseSettings):
     results_dir: Path = Path("/tmp/atlas-results")
     local_store_dir: Path = Path("/tmp/atlas-store")
 
+    # open the lake and the catalogue in the background at start (brief 30)
+    warm_on_start: bool = True
+
     # limits and caps
     max_tool_calls: int = 12
     soft_deadline_s: float = 60.0

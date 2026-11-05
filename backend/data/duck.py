@@ -108,6 +108,13 @@ class Lake:
         con.execute(f"SET memory_limit = '{s.duckdb_memory_limit}'")
         con.execute("SET temp_directory = '/tmp/duckdb'")
         con.execute("SET allow_persistent_secrets = false")
+        # brief 30: keep Parquet footers and HTTP metadata of R2 objects between queries (the
+        # same files are read again and again); each setting is skipped where unsupported
+        for opt in ("enable_http_metadata_cache = true", "enable_external_file_cache = true"):
+            try:
+                con.execute(f"SET GLOBAL {opt}")
+            except duckdb.Error:
+                log.warning("duckdb setting not available", extra={"setting": opt})
         try:  # lon/lat axis order for geodesic areas and lengths (areas, in_area)
             con.execute("SET GLOBAL geometry_always_xy = true")
         except duckdb.Error:
