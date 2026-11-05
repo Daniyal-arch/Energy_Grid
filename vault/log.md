@@ -8,6 +8,14 @@ updated: 2026-11-03
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-05** (claude/loving-dijkstra-5q8n1c, PR #19, brief 30): Track 1 (area names via
+  Overture aliases and named areas, loop guard, browser-fetch skips, ECR retries, 10 of 12
+  failed wave 9 builds fixed, GISCO replacement behind `?shapes=open`), Track 2 (91 page-only
+  sources decided, raster/census/parquet/data-fair kinds, coverage built 1,473 to 1,776 cells),
+  Track 3.1 (freshness), Track 4 (instant answers, cache, SSE resume/cancel, security tests, six
+  tools, MCP docs, name_norm index, warm start). Notes: areas, agent-graph, instant-answers,
+  freshness, wave9, gotchas, pipeline-and-workflows, index.
+
 - **2026-11-04** (main, local): brief 30 written (`docs/tasks/30-long-run.md`): a multi-day
   cloud run in seven tracks (harden, coverage, new data, agent speed, frontend, product MVPs,
   docs). Notes: none.

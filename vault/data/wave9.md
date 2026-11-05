@@ -1,7 +1,7 @@
 ---
 title: Wave 9
 tags: [data, wave9, coverage]
-updated: 2026-10-31
+updated: 2026-11-05
 paths: [scripts/wave9.py, scripts/wave9_sources.yaml, scripts/wave9_families.yaml, .github/workflows/wave9.yml, data/wave9_built/, data/wave9_probes.json, data/wave9_search.json]
 ---
 
@@ -36,3 +36,10 @@ See [[coverage-and-gaps]], [[lake]], [[agent-tools]], [[state-and-datasets]].
   `W9C_SHAPES`: `usCounties` or `gbLad` = `eu/gb_lad.json`, built by `wave9.py gb-lad`). A
   tippecanoe failure keeps the table and records `tiles.error`. A choro config may carry
   `period_label` when the period is a column name (VEH0131 `c_2021_q4`).
+
+- **Brief 30 kinds**: `raster` (COG to `lake/rasters/wave9/<id>.tif`, measure `w9_<id>` in
+  `agent/rasters_waves.yaml` by `render`), `census` (ACS per tract, needs CENSUS_API_KEY),
+  `parquet`, `datafair_agg`, json `coords`/`latlon`, csv_zip `member`/`inner` (zip-in-zip);
+  `{env:NAME}` in url/headers (missing key = `skipped` record, not a failure). Page-only
+  research: `docs/research/page-only-batch-{a,b,c}.md`; failed-build fixes:
+  `docs/research/wave9-failed-fixes.md`. See [[freshness]].
