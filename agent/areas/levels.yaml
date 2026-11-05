@@ -50,6 +50,8 @@ datasets:
   wave9.it_istat_sezioni: {small_area: "IT: ISTAT census sections 2021"}
   wave9.es_ine_secciones: {small_area: "ES: INE census sections 2024"}
   wave9.fi_paavo: {small_area: "FI: Statistics Finland Paavo postal areas 2024"}
+  wave9.cz_zsj: {small_area: "CZ: ČSÚ basic settlement units (ZSJ)"}
+  wave9.ee_grid: {small_area: "EE: Statistics Estonia statistical grid"}
   wave9.gb_ea_flood_zones: {polygon: "GB: Environment Agency Flood Map for Planning, flood zones 2 and 3"}
   wave9.us_eia_refineries: {point: "US: EIA petroleum refineries"}
   wave9.us_eia_gas_processing: {point: "US: EIA natural gas processing plants"}
@@ -63,36 +65,79 @@ datasets:
   wave9.us_eia_crude_rail: {point: "US: EIA crude-by-rail terminals"}
   wave9.us_eia_biodiesel: {point: "US: EIA biodiesel plants"}
   wave9.us_eia_ethanol: {point: "US: EIA ethanol plants"}
+  wave9.us_natcarb: {polygon: "US: NETL NATCARB CO2 storage resources"}
+  wave9.us_blm_solar_dla: {polygon: "US: BLM solar energy zones"}
   wave9.gb_ne_alc: {polygon: "GB: Natural England provisional Agricultural Land Classification"}
+  wave9.fr_georisques_ssp: {polygon: "FR: Géorisques polluted sites and soils"}
   wave9.gb_brownfield_register: {point: "GB: Brownfield land registers (planning.data.gov.uk)"}
+  wave9.us_epa_repowering: {point: "US: EPA RE-Powering screened sites"}
+  wave9.us_epa_frs_cleanups: {point: "US: EPA Facility Registry Service cleanups"}
   wave9.eu_land_prices: {region: "EU27: Eurostat agricultural land prices and rents (apri_lprc)"}
   wave9.world_ourairports: {point: "WORLD: OurAirports airports"}
   wave9.gb_he_listed: {point: "GB: Historic England National Heritage List"}
   wave9.us_nrhp: {point: "US: National Register of Historic Places"}
   wave9.us_nexrad: {point: "US: NEXRAD weather radar sites"}
+  wave9.gb_pins_dco: {point: "GB: Planning Inspectorate national infrastructure projects"}
+  wave9.gb_neso_etys: {line: "GB: NESO Electricity Ten Year Statement"}
   wave9.gb_neso_tnuos: {region: "GB: NESO TNUoS tariffs"}
   wave9.us_openei_urdb: {point: "US: OpenEI Utility Rate Database"}
   wave9.ie_cso_datacentres: {country: "IE: CSO data-centre electricity consumption (MEC02)"}
   wave9.gb_neso_constraint_costs: {country: "GB: NESO constraint cost breakdown"}
   wave9.gb_nged_opendata: {point: "GB: NGED embedded capacity register"}
+  wave9.gb_ssen_opendata: {point: "GB: SSEN embedded capacity register"}
   wave9.gb_npg_opendata: {point: "GB: Northern Powergrid connection queue"}
   wave9.dk_energinet_reserves: {country: "DK: Energinet FCR-D down reserve auctions (DK2)"}
   wave9.gb_elexon_balancing: {country: "GB: Elexon system buy and sell prices (one day per call)"}
+  wave9.us_iso_as_prices: {region: "US: ISO ancillary-service prices"}
+  wave9.gb_emr_cm_register: {point: "GB: EMR Capacity Market register"}
+  wave9.eu_eshm20: {point: "EUR: ESHM20 European seismic hazard model"}
+  wave9.us_usgs_nshm: {polygon: "US: USGS National Seismic Hazard Model 2023"}
   wave9.us_drought_monitor: {polygon: "US: US Drought Monitor (current)"}
+  wave9.eu_jrc_coastal_flood: {point: "EUR: JRC LISCoAsT coastal flood hazard"}
+  wave9.us_usgs_landslides: {point: "US: USGS landslide inventory"}
   wave9.us_noaa_storm_events: {point: "US: NOAA Storm Events (newest year)"}
+  wave9.us_usgs_geoelectric: {point: "US: USGS geoelectric hazard"}
   wave9.fr_ore_ev_commune: {municipality: "FR: Agence ORE vehicles per commune and energy"}
+  wave9.nl_rdw_vehicles: {country: "NL: RDW registered vehicles"}
+  wave9.de_kba_districts: {county: "DE: KBA vehicles per registration district"}
   wave9.gb_dft_veh0142: {small_area: "GB: DfT VEH0142 plug-in vehicles"}
+  wave9.us_afdc_registrations: {region: "US: AFDC EV registrations per state"}
+  wave9.fr_ore_solar_commune: {municipality: "FR: ODRÉ national register of production installations"}
+  wave9.nl_cbs_solar: {municipality: "NL: CBS solar power per region (85005NED)"}
+  wave9.gb_desnz_subregional_fit: {county: "GB: DESNZ solar deployment per local authority"}
+  wave9.fr_ademe_dpe: {county: "FR: ADEME energy performance diagnostics (DPE)"}
+  wave9.ie_seai_ber: {county: "IE: SEAI Building Energy Ratings"}
   wave9.gb_epc_stats: {county: "GB: MHCLG EPC live table D1 (domestic certificates per local authority)"}
+  wave9.us_nyc_ll84: {point: "US: NYC Local Law 84 building energy benchmarking"}
   wave9.eu_degree_days: {county: "EU27: Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)"}
+  wave9.us_cpc_degree_days: {region: "US: NOAA CPC degree days per state"}
   wave9.ie_cso_dc_consumption: {country: "IE: CSO metered electricity consumption (MEC03)"}
   wave9.eu_emodnet_wind_farms: {polygon: "EUSEA: EMODnet offshore wind farms"}
   wave9.us_boem_wind_leases: {polygon: "US: BOEM offshore wind lease outlines"}
   wave9.us_usgs_mrds: {point: "WORLD: USGS Mineral Resources Data System"}
+  wave9.eu_egdi_minerals: {point: "EUR: EGDI mineral deposits"}
   wave9.us_epa_lmop: {point: "US: EPA LMOP landfill gas energy projects"}
+  wave9.us_epa_agstar: {county: "US: EPA AgSTAR livestock digesters"}
+  wave9.eu_salt_caverns: {polygon: "EUR: Salt-cavern hydrogen storage potential (Zenodo)"}
+  wave9.us_usaspending_doe: {point: "US: USAspending DOE awards"}
+  wave9.us_ira_energy_communities: {county: "US: NETL IRA energy community layers"}
   wave9.us_opportunity_zones: {small_area: "US: HUD Opportunity Zones (census tracts)"}
   wave9.eu_household_income: {region: "EU27: Eurostat household income per NUTS 2 (nama_10r_2hhinc)"}
+  wave9.gb_ons_income_msoa: {small_area: "GB: ONS income estimates per MSOA"}
+  wave9.us_nrel_sharing_sun: {point: "US: NREL Sharing the Sun community solar projects"}
+  wave9.eu_broadband_coverage: {country: "EU27: Commission broadband coverage study"}
+  wave9.eu_eea_wei: {region: "EUR: EEA water exploitation index"}
   wave9.us_usgs_water_use: {county: "US: USGS estimated water use per county (2015)"}
+  wave9.us_usgs_nwis_sites: {point: "US: USGS NWIS stream gauges"}
+  wave9.world_ihfc_heat_flow: {point: "WORLD: IHFC Global Heat Flow Database 2024"}
+  wave9.dk_district_heating: {polygon: "DK: Danish Energy Agency district heating areas"}
+  wave9.eu_tent_network: {line: "EUR: TEN-T network (TENtec)"}
+  wave9.gb_srn: {line: "GB: National Highways Strategic Road Network"}
+  wave9.us_fhwa_afc: {line: "US: FHWA Alternative Fuel Corridors"}
+  wave9.gb_defra_aurn: {point: "GB: DEFRA AURN monitoring sites"}
   wave9.us_epa_aqs_annual: {point: "US: EPA AQS annual concentrations per monitor (2025)"}
+  wave9.fr_enedis_interruptions: {county: "FR: Enedis interruption time per department"}
+  wave9.us_eia861_reliability: {point: "US: EIA-861 reliability per utility"}
   wave9.eu_ev_stock_nuts2: {region: "EU27: Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst)"}
   wave9.eu_new_cars_fuel: {country: "EU27: Eurostat new passenger cars by fuel (road_eqs_carpda)"}
   wave9.eu_heat_pumps: {country: "EU27: Eurostat heat pump characteristics (nrg_inf_hptc)"}
@@ -110,9 +155,11 @@ datasets:
   wave9.us_boem_active_leases: {polygon: "US: BOEM active renewable energy leases"}
   wave9.gb_dec_certificates: {county: "GB: MHCLG table DEC1 (display energy certificates per local authority)"}
   wave9.gb_ulev_la: {county: "GB: DfT plug-in cars per local authority (VEH0131)"}
+  wave9.us_smu_heat_flow: {point: "US: SMU node heat flow data (Geothermal Data Repository)"}
   wave9.eu_emodnet_platforms: {point: "EUSEA: EMODnet offshore installations"}
   wave9.eu_emodnet_pipelines: {line: "EUSEA: EMODnet offshore pipelines"}
   wave9.eu_emodnet_ocean_energy: {point: "EUSEA: EMODnet wave and tidal energy projects"}
+  wave9.eu_emodnet_msp_zoning: {polygon: "EUSEA: EMODnet maritime spatial plan zones"}
   wave9.eu_emodnet_ports: {point: "EUSEA: EMODnet ports"}
   wave9.eu_emodnet_port_goods: {point: "EUSEA: EMODnet goods handled per port"}
   wave9.eu_emodnet_wwtp: {point: "EUR: EMODnet urban wastewater treatment plants (UWWTD)"}
@@ -122,8 +169,10 @@ datasets:
   wave9.eu_emodnet_mpa: {polygon: "EUSEA: EMODnet marine protected areas"}
   wave9.eu_emodnet_military: {polygon: "EUSEA: EMODnet military areas at sea"}
   wave9.eu_emodnet_aggregates: {polygon: "EUSEA: EMODnet marine aggregate areas"}
+  wave9.eu_emodnet_substrate: {polygon: "EUSEA: EMODnet seabed substrate 1:1M"}
   wave9.eu_kohesio_2014_2020: {point: "EU27: Cohesion policy projects 2014-2020 (Kohesio export)"}
   wave9.gb_npg_heatmap_substations: {point: "GB: Northern Powergrid heat map: substation headroom"}
+  wave9.gb_hnpd: {point: "GB: DESNZ Heat Networks Planning Database (Q2 2026)"}
   wave9.eu_heat_production: {country: "EU27: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)"}
   wave9.eu_network_costs: {country: "EU27: Eurostat non-household electricity price components incl. network costs (nrg_pc_205_c)"}
   wave9.eu_nonhousehold_prices: {country: "EU27: Eurostat non-household electricity prices (nrg_pc_206)"}

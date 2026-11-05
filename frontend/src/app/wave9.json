@@ -69,6 +69,43 @@
    "color": "rgb(214,160,255)"
   },
   {
+   "id": "w9_cz_zsj",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/cz_zsj.pmtiles",
+   "kind": "polygon",
+   "minzoom": 4,
+   "fields": [
+    "kod_zsj",
+    "naz_zsj",
+    "c_uo",
+    "kod_utj",
+    "naz_utj",
+    "kod_ku"
+   ],
+   "source": "ČSÚ basic settlement units (ZSJ) (ČSÚ open data terms (data.gov.cz))",
+   "label": "ČSÚ basic settlement units (ZSJ)",
+   "desc": "Outlines (shown from zoom 4: zoom in)",
+   "group": "Industry & demand",
+   "coverage": "CZ",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_ee_grid",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/ee_grid.pmtiles",
+   "kind": "polygon",
+   "minzoom": 4,
+   "fields": [
+    "id",
+    "gml_id",
+    "code"
+   ],
+   "source": "Statistics Estonia statistical grid (no conditions apply (INSPIRE metadata: \"tingimusi ei rakendata\"; no access restrictions))",
+   "label": "Statistics Estonia statistical grid",
+   "desc": "Outlines (shown from zoom 4: zoom in)",
+   "group": "Industry & demand",
+   "coverage": "EE",
+   "color": "rgb(214,160,255)"
+  },
+  {
    "id": "w9_gb_ea_flood_zones",
    "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_ea_flood_zones.pmtiles",
    "kind": "polygon",
@@ -215,6 +252,45 @@
    "color": "rgb(214,160,255)"
   },
   {
+   "id": "w9_us_natcarb",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_natcarb.pmtiles",
+   "kind": "polygon",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "col_row",
+    "partnershi",
+    "arra_proje",
+    "resource_n",
+    "rsc_area_c",
+    "vol_low"
+   ],
+   "source": "NETL NATCARB CO2 storage resources (public domain (US federal government work)",
+   "label": "NETL NATCARB CO2 storage resources",
+   "desc": "Co2 storage (shown from zoom 4: zoom in)",
+   "group": "Industry & demand",
+   "coverage": "US",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_blm_solar_dla",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_blm_solar_dla.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "stateoffice",
+    "status",
+    "comments"
+   ],
+   "source": "BLM solar energy zones (public domain (BLM)",
+   "label": "BLM solar energy zones",
+   "desc": "Areas designated for renewables (red iii art. 15c",
+   "group": "Land & planning",
+   "coverage": "US",
+   "color": "rgb(206,184,140)"
+  },
+  {
    "id": "w9_gb_ne_alc",
    "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_ne_alc.pmtiles",
    "kind": "polygon",
@@ -230,6 +306,26 @@
    "desc": "Agricultural land classification or prime farmland",
    "group": "Land & planning",
    "coverage": "GB",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_fr_georisques_ssp",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/fr_georisques_ssp.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "cd_metier",
+    "autre_id",
+    "nom_ets",
+    "nom_site",
+    "stat_instr",
+    "date_debut"
+   ],
+   "source": "Géorisques polluted sites and soils (Licence Ouverte 2.0)",
+   "label": "Géorisques polluted sites and soils",
+   "desc": "Brownfield registers and polluted sites",
+   "group": "Land & planning",
+   "coverage": "FR",
    "color": "rgb(206,184,140)"
   },
   {
@@ -251,6 +347,48 @@
    "desc": "Brownfield registers and polluted sites (shown from zoom 4: zoom in)",
    "group": "Land & planning",
    "coverage": "GB",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_us_epa_repowering",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_epa_repowering.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "cross_reference_number",
+    "epa_region",
+    "state",
+    "program",
+    "site_id",
+    "site_information"
+   ],
+   "source": "EPA RE-Powering screened sites (public domain (EPA geospatial data)",
+   "label": "EPA RE-Powering screened sites",
+   "desc": "Brownfield registers and polluted sites (shown from zoom 4: zoom in)",
+   "group": "Land & planning",
+   "coverage": "US",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_us_epa_frs_cleanups",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_epa_frs_cleanups.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "registry_id",
+    "site_id",
+    "location_address",
+    "city_name",
+    "county_name",
+    "state_code"
+   ],
+   "source": "EPA Facility Registry Service cleanups (public domain (EPA geospatial data)",
+   "label": "EPA Facility Registry Service cleanups",
+   "desc": "Brownfield registers and polluted sites (shown from zoom 4: zoom in)",
+   "group": "Land & planning",
+   "coverage": "US",
    "color": "rgb(206,184,140)"
   },
   {
@@ -325,12 +463,79 @@
    "color": "rgb(206,184,140)"
   },
   {
+   "id": "w9_gb_pins_dco",
+   "label": "Planning Inspectorate national infrastructure projects",
+   "desc": "Consents and permits for large energy projects",
+   "group": "Land & planning",
+   "coverage": "GB",
+   "color": "rgb(206,184,140)"
+  },
+  {
+   "id": "w9_gb_neso_etys",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_neso_etys.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "boundary_n",
+    "id"
+   ],
+   "source": "NESO Electricity Ten Year Statement (NESO Open Data Licence)",
+   "label": "NESO Electricity Ten Year Statement",
+   "desc": "Grid projects of the national network plan",
+   "group": "Power grid",
+   "coverage": "GB",
+   "color": "rgb(236,178,120)"
+  },
+  {
    "id": "w9_gb_nged_opendata",
    "label": "NGED embedded capacity register",
    "desc": "Dso open data (embedded capacity",
    "group": "Power grid",
    "coverage": "GB",
    "color": "rgb(236,178,120)"
+  },
+  {
+   "id": "w9_gb_ssen_opendata",
+   "label": "SSEN embedded capacity register",
+   "desc": "Dso open data (embedded capacity",
+   "group": "Power grid",
+   "coverage": "GB",
+   "color": "rgb(236,178,120)"
+  },
+  {
+   "id": "w9_eu_eshm20",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_eshm20.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "longitude",
+    "latitude",
+    "pga"
+   ],
+   "source": "ESHM20 European seismic hazard model (CC BY 4.0)",
+   "label": "ESHM20 European seismic hazard model",
+   "desc": "Seismic hazard (peak ground acceleration) (shown from zoom 4: zoom in)",
+   "group": "Risk",
+   "coverage": "Europe",
+   "color": "rgb(255,120,96)"
+  },
+  {
+   "id": "w9_us_usgs_nshm",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_nshm.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "low_cont",
+    "high_cont",
+    "range_cont",
+    "valley"
+   ],
+   "source": "USGS National Seismic Hazard Model 2023 (public domain (USGS))",
+   "label": "USGS National Seismic Hazard Model 2023",
+   "desc": "Seismic hazard (peak ground acceleration)",
+   "group": "Risk",
+   "coverage": "US",
+   "color": "rgb(255,120,96)"
   },
   {
    "id": "w9_us_drought_monitor",
@@ -343,6 +548,34 @@
    "source": "US Drought Monitor (current) (public (USDM, credit requested))",
    "label": "US Drought Monitor (current)",
    "desc": "Drought indicators or drought monitor polygons",
+   "group": "Risk",
+   "coverage": "US",
+   "color": "rgb(255,120,96)"
+  },
+  {
+   "id": "w9_eu_jrc_coastal_flood",
+   "label": "JRC LISCoAsT coastal flood hazard",
+   "desc": "Coastal flood hazard and sea-level rise inundation",
+   "group": "Risk",
+   "coverage": "Europe",
+   "color": "rgb(255,120,96)"
+  },
+  {
+   "id": "w9_us_usgs_landslides",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_landslides.pmtiles",
+   "kind": "point",
+   "minzoom": 6,
+   "fields": [
+    "usgs_id",
+    "date_min",
+    "date_max",
+    "fatalities",
+    "confidence",
+    "ls_type"
+   ],
+   "source": "USGS landslide inventory (CC0)",
+   "label": "USGS landslide inventory",
+   "desc": "Landslide inventory or susceptibility (shown from zoom 6: zoom in)",
    "group": "Risk",
    "coverage": "US",
    "color": "rgb(255,120,96)"
@@ -367,6 +600,35 @@
    "group": "Risk",
    "coverage": "US",
    "color": "rgb(255,120,96)"
+  },
+  {
+   "id": "w9_us_usgs_geoelectric",
+   "label": "USGS geoelectric hazard",
+   "desc": "Geoelectric hazard to transformers",
+   "group": "Risk",
+   "coverage": "US",
+   "color": "rgb(255,120,96)"
+  },
+  {
+   "id": "w9_us_nyc_ll84",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_nyc_ll84.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "report_year",
+    "property_id",
+    "parent_property_id",
+    "parent_property_name",
+    "year_ending",
+    "nyc_borough_block_and_lot"
+   ],
+   "source": "NYC Local Law 84 building energy benchmarking (public)",
+   "label": "NYC Local Law 84 building energy benchmarking",
+   "desc": "Energy performance certificates (aggregates per area) (shown from zoom 4: zoom in)",
+   "group": "Industry & demand",
+   "coverage": "US",
+   "color": "rgb(214,160,255)"
   },
   {
    "id": "w9_eu_emodnet_wind_farms",
@@ -432,12 +694,58 @@
    "color": "rgb(214,160,255)"
   },
   {
+   "id": "w9_eu_egdi_minerals",
+   "label": "EGDI mineral deposits",
+   "desc": "Mineral deposits and occurrences",
+   "group": "Industry & demand",
+   "coverage": "Europe",
+   "color": "rgb(214,160,255)"
+  },
+  {
    "id": "w9_us_epa_lmop",
    "label": "EPA LMOP landfill gas energy projects",
    "desc": "Digesters",
    "group": "Industry & demand",
    "coverage": "US",
    "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_eu_salt_caverns",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_salt_caverns.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "kwh_per_m3",
+    "gwh_per_km2",
+    "storage_type"
+   ],
+   "source": "Salt-cavern hydrogen storage potential (Zenodo) (CC BY 4.0)",
+   "label": "Salt-cavern hydrogen storage potential (Zenodo)",
+   "desc": "Salt caverns suited to hydrogen storage",
+   "group": "Industry & demand",
+   "coverage": "Europe",
+   "color": "rgb(214,160,255)"
+  },
+  {
+   "id": "w9_us_ira_energy_communities",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_ira_energy_communities.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "date_last_update",
+    "msa_area_name",
+    "fipstate_2020",
+    "ec_qual_status",
+    "ffe_ind_qual",
+    "geoid_cty_2020"
+   ],
+   "source": "NETL IRA energy community layers (CC BY (NETL))",
+   "label": "NETL IRA energy community layers",
+   "desc": "Energy communities",
+   "group": "Money",
+   "coverage": "US",
+   "color": "rgb(150,220,150)"
   },
   {
    "id": "w9_us_opportunity_zones",
@@ -459,6 +767,138 @@
    "group": "Money",
    "coverage": "US",
    "color": "rgb(150,220,150)"
+  },
+  {
+   "id": "w9_us_usgs_nwis_sites",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_nwis_sites.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "x",
+    "y",
+    "id",
+    "agency_code",
+    "monitoring_location_number",
+    "monitoring_location_name"
+   ],
+   "source": "USGS NWIS stream gauges (public domain)",
+   "label": "USGS NWIS stream gauges",
+   "desc": "River flow gauges or discharge (shown from zoom 4: zoom in)",
+   "group": "Water & telecom",
+   "coverage": "US",
+   "color": "rgb(120,200,230)"
+  },
+  {
+   "id": "w9_world_ihfc_heat_flow",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/world_ihfc_heat_flow.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "q",
+    "q_uncertainty",
+    "lat_ns",
+    "long_ew",
+    "elevation",
+    "environment"
+   ],
+   "source": "IHFC Global Heat Flow Database 2024 (CC BY 4.0)",
+   "label": "IHFC Global Heat Flow Database 2024",
+   "desc": "Heat-flow measurements (shown from zoom 4: zoom in)",
+   "group": "Resources",
+   "coverage": "World",
+   "color": "rgb(255,170,110)"
+  },
+  {
+   "id": "w9_dk_district_heating",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/dk_district_heating.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "id",
+    "uuid",
+    "temakode",
+    "temanavn",
+    "objekt_id",
+    "systid_fra"
+   ],
+   "source": "Danish Energy Agency district heating areas (CC BY 4.0)",
+   "label": "Danish Energy Agency district heating areas",
+   "desc": "District heating networks and zones",
+   "group": "Resources",
+   "coverage": "DK",
+   "color": "rgb(255,170,110)"
+  },
+  {
+   "id": "w9_eu_tent_network",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_tent_network.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "country_code",
+    "core_network",
+    "corridors",
+    "type",
+    "railways_activity"
+   ],
+   "source": "TEN-T network (TENtec) (CC BY 4.0 (European Commission))",
+   "label": "TEN-T network (TENtec)",
+   "desc": "Ten-t",
+   "group": "Mobility",
+   "coverage": "Europe",
+   "color": "rgb(190,190,255)"
+  },
+  {
+   "id": "w9_gb_srn",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_srn.pmtiles",
+   "kind": "linestring",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "linkid",
+    "linkref",
+    "linkcategory",
+    "linkdesc",
+    "linkform",
+    "directionality"
+   ],
+   "source": "National Highways Strategic Road Network (OGL v3)",
+   "label": "National Highways Strategic Road Network",
+   "desc": "Ten-t (shown from zoom 4: zoom in)",
+   "group": "Mobility",
+   "coverage": "GB",
+   "color": "rgb(190,190,255)"
+  },
+  {
+   "id": "w9_us_fhwa_afc",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_fhwa_afc.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "length",
+    "afc_number",
+    "roadtype",
+    "number",
+    "primary_na",
+    "alt_name_2"
+   ],
+   "source": "FHWA Alternative Fuel Corridors (public domain (U.S. DOT))",
+   "label": "FHWA Alternative Fuel Corridors",
+   "desc": "Ten-t",
+   "group": "Mobility",
+   "coverage": "US",
+   "color": "rgb(190,190,255)"
+  },
+  {
+   "id": "w9_gb_defra_aurn",
+   "label": "DEFRA AURN monitoring sites",
+   "desc": "Measured air quality per station",
+   "group": "Emissions",
+   "coverage": "GB",
+   "color": "rgb(200,200,200)"
   },
   {
    "id": "w9_us_epa_aqs_annual",
@@ -558,6 +998,27 @@
   {
    "id": "w9_eu_emodnet_ocean_energy",
    "label": "EMODnet wave and tidal energy projects",
+   "desc": "Offshore wind farms",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
+   "id": "w9_eu_emodnet_msp_zoning",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_msp_zoning.pmtiles",
+   "kind": "polygon",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "localid",
+    "versionid",
+    "offsource",
+    "ms",
+    "hiluclu",
+    "hilucsmsp"
+   ],
+   "source": "EMODnet maritime spatial plan zones (CC BY 4.0 (EMODnet Human Activities))",
+   "label": "EMODnet maritime spatial plan zones",
    "desc": "Offshore wind farms",
    "group": "Offshore",
    "coverage": "Europe",
@@ -699,12 +1160,41 @@
    "color": "rgb(96,190,255)"
   },
   {
+   "id": "w9_eu_emodnet_substrate",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_substrate.pmtiles",
+   "kind": "polygon",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "code",
+    "country",
+    "data_holde",
+    "contact",
+    "scale",
+    "original_s"
+   ],
+   "source": "EMODnet seabed substrate 1:1M (Commission reuse (EMODnet Geology, CC BY 4.0))",
+   "label": "EMODnet seabed substrate 1:1M",
+   "desc": "Seabed substrate (shown from zoom 4: zoom in)",
+   "group": "Offshore",
+   "coverage": "Europe",
+   "color": "rgb(96,190,255)"
+  },
+  {
    "id": "w9_gb_npg_heatmap_substations",
    "label": "Northern Powergrid heat map: substation headroom",
    "desc": "Dso open data (embedded capacity",
    "group": "Power grid",
    "coverage": "GB",
    "color": "rgb(236,178,120)"
+  },
+  {
+   "id": "w9_gb_hnpd",
+   "label": "DESNZ Heat Networks Planning Database (Q2 2026)",
+   "desc": "District heating networks and zones",
+   "group": "Resources",
+   "coverage": "GB",
+   "color": "rgb(255,170,110)"
   }
  ],
  "colours": [
@@ -957,6 +1447,44 @@
    ]
   },
   {
+   "id": "w9_cz_zsj",
+   "name": "ČSÚ basic settlement units (ZSJ)",
+   "category": "Industry & demand",
+   "description": "ČSÚ basic settlement units (ZSJ): 23,605 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "outlines",
+   "parts": [
+    {
+     "layer": "w9_cz_zsj",
+     "where": [
+      "CZ"
+     ],
+     "what": "outlines",
+     "source": "ČSÚ basic settlement units (ZSJ) (ČSÚ open data terms (data.gov.cz))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_ee_grid",
+   "name": "Statistics Estonia statistical grid",
+   "category": "Industry & demand",
+   "description": "Statistics Estonia statistical grid: 45,636 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "outlines",
+   "parts": [
+    {
+     "layer": "w9_ee_grid",
+     "where": [
+      "EE"
+     ],
+     "what": "outlines",
+     "source": "Statistics Estonia statistical grid (no conditions apply (INSPIRE metadata: \"tingimusi ei rakendata\"; no access restrictions))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
    "id": "w9_gb_ea_flood_zones",
    "name": "Environment Agency Flood Map for Planning, flood zones 2 and 3",
    "category": "Risk",
@@ -1204,6 +1732,44 @@
    ]
   },
   {
+   "id": "w9_us_natcarb",
+   "name": "NETL NATCARB CO2 storage resources",
+   "category": "Industry & demand",
+   "description": "NETL NATCARB CO2 storage resources: 186,675 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "co2_storage",
+   "parts": [
+    {
+     "layer": "w9_us_natcarb",
+     "where": [
+      "US"
+     ],
+     "what": "co2 storage",
+     "source": "NETL NATCARB CO2 storage resources (public domain (US federal government work)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_blm_solar_dla",
+   "name": "BLM solar energy zones",
+   "category": "Land & planning",
+   "description": "BLM solar energy zones: 153 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "acceleration_areas",
+   "parts": [
+    {
+     "layer": "w9_us_blm_solar_dla",
+     "where": [
+      "US"
+     ],
+     "what": "areas designated for renewables (RED III Art. 15c",
+     "source": "BLM solar energy zones (public domain (BLM)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
    "id": "w9_gb_ne_alc",
    "name": "Natural England provisional Agricultural Land Classification",
    "category": "Land & planning",
@@ -1218,6 +1784,25 @@
      ],
      "what": "agricultural land classification or prime farmland",
      "source": "Natural England provisional Agricultural Land Classification (OGL v3)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_fr_georisques_ssp",
+   "name": "Géorisques polluted sites and soils",
+   "category": "Land & planning",
+   "description": "Géorisques polluted sites and soils: 12,431 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "brownfield",
+   "parts": [
+    {
+     "layer": "w9_fr_georisques_ssp",
+     "where": [
+      "FR"
+     ],
+     "what": "brownfield registers and polluted sites",
+     "source": "Géorisques polluted sites and soils (Licence Ouverte 2.0)",
      "doc": "Wave 9 sources"
     }
    ]
@@ -1242,10 +1827,48 @@
    ]
   },
   {
+   "id": "w9_us_epa_repowering",
+   "name": "EPA RE-Powering screened sites",
+   "category": "Land & planning",
+   "description": "EPA RE-Powering screened sites: 190,976 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "brownfield",
+   "parts": [
+    {
+     "layer": "w9_us_epa_repowering",
+     "where": [
+      "US"
+     ],
+     "what": "brownfield registers and polluted sites",
+     "source": "EPA RE-Powering screened sites (public domain (EPA geospatial data)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_epa_frs_cleanups",
+   "name": "EPA Facility Registry Service cleanups",
+   "category": "Land & planning",
+   "description": "EPA Facility Registry Service cleanups: 45,924 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "brownfield",
+   "parts": [
+    {
+     "layer": "w9_us_epa_frs_cleanups",
+     "where": [
+      "US"
+     ],
+     "what": "brownfield registers and polluted sites",
+     "source": "EPA Facility Registry Service cleanups (public domain (EPA geospatial data)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
    "id": "colour-w9c_eu_land_prices",
    "name": "Arable land price",
    "category": "Land & planning",
-   "description": "Arable land price (€ per hectare), 23 countries, 2023: Eurostat agricultural land prices and rents (apri_lprc)",
+   "description": "Arable land price (€ per hectare), 22 countries, 2024: Eurostat agricultural land prices and rents (apri_lprc)",
    "color": "rgb(206,184,140)",
    "family": "land_prices",
    "colour": "w9c_eu_land_prices",
@@ -1264,7 +1887,7 @@
    "id": "w9_world_ourairports",
    "name": "OurAirports airports",
    "category": "Land & planning",
-   "description": "OurAirports airports: 86,322 records as published",
+   "description": "OurAirports airports: 86,337 records as published",
    "color": "rgb(206,184,140)",
    "family": "heritage_aviation",
    "parts": [
@@ -1283,7 +1906,7 @@
    "id": "w9_gb_he_listed",
    "name": "Historic England National Heritage List",
    "category": "Land & planning",
-   "description": "Historic England National Heritage List: 379,683 records as published",
+   "description": "Historic England National Heritage List: 379,686 records as published",
    "color": "rgb(206,184,140)",
    "family": "heritage_aviation",
    "parts": [
@@ -1337,6 +1960,44 @@
    ]
   },
   {
+   "id": "w9_gb_pins_dco",
+   "name": "Planning Inspectorate national infrastructure projects",
+   "category": "Land & planning",
+   "description": "Planning Inspectorate national infrastructure projects: 295 records as published",
+   "color": "rgb(206,184,140)",
+   "family": "energy_consents",
+   "parts": [
+    {
+     "layer": "w9_gb_pins_dco",
+     "where": [
+      "GB"
+     ],
+     "what": "consents and permits for large energy projects",
+     "source": "Planning Inspectorate national infrastructure projects (OGL v3)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_gb_neso_etys",
+   "name": "NESO Electricity Ten Year Statement",
+   "category": "Power grid",
+   "description": "NESO Electricity Ten Year Statement: 34 records as published",
+   "color": "rgb(236,178,120)",
+   "family": "planned_grid",
+   "parts": [
+    {
+     "layer": "w9_gb_neso_etys",
+     "where": [
+      "GB"
+     ],
+     "what": "grid projects of the national network plan",
+     "source": "NESO Electricity Ten Year Statement (NESO Open Data Licence)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
    "id": "w9_gb_nged_opendata",
    "name": "NGED embedded capacity register",
    "category": "Power grid",
@@ -1351,6 +2012,63 @@
      ],
      "what": "DSO open data (embedded capacity",
      "source": "NGED embedded capacity register (check)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_gb_ssen_opendata",
+   "name": "SSEN embedded capacity register",
+   "category": "Power grid",
+   "description": "SSEN embedded capacity register: 1,317 records as published",
+   "color": "rgb(236,178,120)",
+   "family": "distribution_data",
+   "parts": [
+    {
+     "layer": "w9_gb_ssen_opendata",
+     "where": [
+      "GB"
+     ],
+     "what": "DSO open data (embedded capacity",
+     "source": "SSEN embedded capacity register (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_eshm20",
+   "name": "ESHM20 European seismic hazard model",
+   "category": "Risk",
+   "description": "ESHM20 European seismic hazard model: 100,636 records as published",
+   "color": "rgb(255,120,96)",
+   "family": "earthquake",
+   "parts": [
+    {
+     "layer": "w9_eu_eshm20",
+     "where": [
+      "Europe"
+     ],
+     "what": "seismic hazard (peak ground acceleration)",
+     "source": "ESHM20 European seismic hazard model (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_usgs_nshm",
+   "name": "USGS National Seismic Hazard Model 2023",
+   "category": "Risk",
+   "description": "USGS National Seismic Hazard Model 2023: 9,794 records as published",
+   "color": "rgb(255,120,96)",
+   "family": "earthquake",
+   "parts": [
+    {
+     "layer": "w9_us_usgs_nshm",
+     "where": [
+      "US"
+     ],
+     "what": "seismic hazard (peak ground acceleration)",
+     "source": "USGS National Seismic Hazard Model 2023 (public domain (USGS))",
      "doc": "Wave 9 sources"
     }
    ]
@@ -1375,6 +2093,44 @@
    ]
   },
   {
+   "id": "w9_eu_jrc_coastal_flood",
+   "name": "JRC LISCoAsT coastal flood hazard",
+   "category": "Risk",
+   "description": "JRC LISCoAsT coastal flood hazard: 20,865 records as published",
+   "color": "rgb(255,120,96)",
+   "family": "coastal_flood",
+   "parts": [
+    {
+     "layer": "w9_eu_jrc_coastal_flood",
+     "where": [
+      "Europe"
+     ],
+     "what": "coastal flood hazard and sea-level rise inundation",
+     "source": "JRC LISCoAsT coastal flood hazard (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_usgs_landslides",
+   "name": "USGS landslide inventory",
+   "category": "Risk",
+   "description": "USGS landslide inventory: 680,497 records as published",
+   "color": "rgb(255,120,96)",
+   "family": "landslides",
+   "parts": [
+    {
+     "layer": "w9_us_usgs_landslides",
+     "where": [
+      "US"
+     ],
+     "what": "landslide inventory or susceptibility",
+     "source": "USGS landslide inventory (CC0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
    "id": "w9_us_noaa_storm_events",
    "name": "NOAA Storm Events (newest year)",
    "category": "Risk",
@@ -1389,6 +2145,44 @@
      ],
      "what": "storm events with position and damage",
      "source": "NOAA Storm Events (newest year) (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_usgs_geoelectric",
+   "name": "USGS geoelectric hazard",
+   "category": "Risk",
+   "description": "USGS geoelectric hazard: 1,616 records as published",
+   "color": "rgb(255,120,96)",
+   "family": "geomagnetic",
+   "parts": [
+    {
+     "layer": "w9_us_usgs_geoelectric",
+     "where": [
+      "US"
+     ],
+     "what": "geoelectric hazard to transformers",
+     "source": "USGS geoelectric hazard (CC0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_nyc_ll84",
+   "name": "NYC Local Law 84 building energy benchmarking",
+   "category": "Industry & demand",
+   "description": "NYC Local Law 84 building energy benchmarking: 103,259 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "building_certificates",
+   "parts": [
+    {
+     "layer": "w9_us_nyc_ll84",
+     "where": [
+      "US"
+     ],
+     "what": "energy performance certificates (aggregates per area)",
+     "source": "NYC Local Law 84 building energy benchmarking (public)",
      "doc": "Wave 9 sources"
     }
    ]
@@ -1470,6 +2264,25 @@
    ]
   },
   {
+   "id": "w9_eu_egdi_minerals",
+   "name": "EGDI mineral deposits",
+   "category": "Industry & demand",
+   "description": "EGDI mineral deposits: 28,223 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "critical_minerals",
+   "parts": [
+    {
+     "layer": "w9_eu_egdi_minerals",
+     "where": [
+      "Europe"
+     ],
+     "what": "mineral deposits and occurrences",
+     "source": "EGDI mineral deposits (CC BY 4.0 (Polish records CC BY-NC-ND 4.0, filtered out))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
    "id": "w9_us_epa_lmop",
    "name": "EPA LMOP landfill gas energy projects",
    "category": "Industry & demand",
@@ -1484,6 +2297,44 @@
      ],
      "what": "digesters",
      "source": "EPA LMOP landfill gas energy projects (CC0 (data.gov))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_salt_caverns",
+   "name": "Salt-cavern hydrogen storage potential (Zenodo)",
+   "category": "Industry & demand",
+   "description": "Salt-cavern hydrogen storage potential (Zenodo): 119 records as published",
+   "color": "rgb(214,160,255)",
+   "family": "h2_storage_potential",
+   "parts": [
+    {
+     "layer": "w9_eu_salt_caverns",
+     "where": [
+      "Europe"
+     ],
+     "what": "salt caverns suited to hydrogen storage",
+     "source": "Salt-cavern hydrogen storage potential (Zenodo) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_ira_energy_communities",
+   "name": "NETL IRA energy community layers",
+   "category": "Money",
+   "description": "NETL IRA energy community layers: 901 records as published",
+   "color": "rgb(150,220,150)",
+   "family": "transition_areas",
+   "parts": [
+    {
+     "layer": "w9_us_ira_energy_communities",
+     "where": [
+      "US"
+     ],
+     "what": "energy communities",
+     "source": "NETL IRA energy community layers (CC BY (NETL))",
      "doc": "Wave 9 sources"
     }
    ]
@@ -1511,7 +2362,7 @@
    "id": "colour-w9c_eu_household_income",
    "name": "Disposable household income per inhabitant",
    "category": "People & places",
-   "description": "Disposable household income per inhabitant (PPS), 28 countries, 2020: Eurostat household income per NUTS 2 (nama_10r_2hhinc)",
+   "description": "Disposable household income per inhabitant (PPS), 27 countries, 2023: Eurostat household income per NUTS 2 (nama_10r_2hhinc)",
    "color": "rgb(240,200,220)",
    "family": "income",
    "colour": "w9c_eu_household_income",
@@ -1541,6 +2392,139 @@
      ],
      "what": "Total water withdrawals",
      "source": "USGS estimated water use per county (2015) (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_usgs_nwis_sites",
+   "name": "USGS NWIS stream gauges",
+   "category": "Water & telecom",
+   "description": "USGS NWIS stream gauges: 147,741 records as published",
+   "color": "rgb(120,200,230)",
+   "family": "river_discharge",
+   "parts": [
+    {
+     "layer": "w9_us_usgs_nwis_sites",
+     "where": [
+      "US"
+     ],
+     "what": "river flow gauges or discharge",
+     "source": "USGS NWIS stream gauges (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_world_ihfc_heat_flow",
+   "name": "IHFC Global Heat Flow Database 2024",
+   "category": "Resources",
+   "description": "IHFC Global Heat Flow Database 2024: 91,182 records as published",
+   "color": "rgb(255,170,110)",
+   "family": "geothermal_heat_flow",
+   "parts": [
+    {
+     "layer": "w9_world_ihfc_heat_flow",
+     "where": [
+      "World"
+     ],
+     "what": "heat-flow measurements",
+     "source": "IHFC Global Heat Flow Database 2024 (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_dk_district_heating",
+   "name": "Danish Energy Agency district heating areas",
+   "category": "Resources",
+   "description": "Danish Energy Agency district heating areas: 6,263 records as published",
+   "color": "rgb(255,170,110)",
+   "family": "district_heating",
+   "parts": [
+    {
+     "layer": "w9_dk_district_heating",
+     "where": [
+      "DK"
+     ],
+     "what": "district heating networks and zones",
+     "source": "Danish Energy Agency district heating areas (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_tent_network",
+   "name": "TEN-T network (TENtec)",
+   "category": "Mobility",
+   "description": "TEN-T network (TENtec): 4,767 records as published",
+   "color": "rgb(190,190,255)",
+   "family": "freight_corridors",
+   "parts": [
+    {
+     "layer": "w9_eu_tent_network",
+     "where": [
+      "Europe"
+     ],
+     "what": "TEN-T",
+     "source": "TEN-T network (TENtec) (CC BY 4.0 (European Commission))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_gb_srn",
+   "name": "National Highways Strategic Road Network",
+   "category": "Mobility",
+   "description": "National Highways Strategic Road Network: 43,040 records as published",
+   "color": "rgb(190,190,255)",
+   "family": "freight_corridors",
+   "parts": [
+    {
+     "layer": "w9_gb_srn",
+     "where": [
+      "GB"
+     ],
+     "what": "TEN-T",
+     "source": "National Highways Strategic Road Network (OGL v3)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_fhwa_afc",
+   "name": "FHWA Alternative Fuel Corridors",
+   "category": "Mobility",
+   "description": "FHWA Alternative Fuel Corridors: 2,275 records as published",
+   "color": "rgb(190,190,255)",
+   "family": "freight_corridors",
+   "parts": [
+    {
+     "layer": "w9_us_fhwa_afc",
+     "where": [
+      "US"
+     ],
+     "what": "TEN-T",
+     "source": "FHWA Alternative Fuel Corridors (public domain (U.S. DOT))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_gb_defra_aurn",
+   "name": "DEFRA AURN monitoring sites",
+   "category": "Emissions",
+   "description": "DEFRA AURN monitoring sites: 2,448 records as published",
+   "color": "rgb(200,200,200)",
+   "family": "air_quality",
+   "parts": [
+    {
+     "layer": "w9_gb_defra_aurn",
+     "where": [
+      "GB"
+     ],
+     "what": "measured air quality per station",
+     "source": "DEFRA AURN monitoring sites (OGL v3)",
      "doc": "Wave 9 sources"
     }
    ]
@@ -1587,7 +2571,7 @@
    "id": "colour-w9c_eu_new_cars_fuel",
    "name": "New battery-electric cars registered",
    "category": "Industry & demand",
-   "description": "New battery-electric cars registered (cars), 41 countries, 2024: Eurostat new passenger cars by fuel (road_eqs_carpda)",
+   "description": "New battery-electric cars registered (cars), 38 countries, 2025: Eurostat new passenger cars by fuel (road_eqs_carpda)",
    "color": "rgb(214,160,255)",
    "family": "ev_registrations",
    "colour": "w9c_eu_new_cars_fuel",
@@ -1606,7 +2590,7 @@
    "id": "colour-w9c_eu_rail_electrified",
    "name": "Electrified railway lines",
    "category": "Mobility",
-   "description": "Electrified railway lines (km), 39 countries, 2021: Eurostat electrified railway lines (rail_if_electri)",
+   "description": "Electrified railway lines (km), 37 countries, 2024: Eurostat electrified railway lines (rail_if_electri)",
    "color": "rgb(190,190,255)",
    "family": "rail_electrification",
    "colour": "w9c_eu_rail_electrified",
@@ -1625,7 +2609,7 @@
    "id": "colour-w9c_eu_water_abstraction",
    "name": "Freshwater abstracted for electricity cooling",
    "category": "Water & telecom",
-   "description": "Freshwater abstracted for electricity cooling (million m³), 26 countries, 2020: Eurostat water abstraction (env_wat_abs)",
+   "description": "Freshwater abstracted for electricity cooling (million m³), 24 countries, 2022: Eurostat water abstraction (env_wat_abs)",
    "color": "rgb(120,200,230)",
    "family": "water_stress",
    "colour": "w9c_eu_water_abstraction",
@@ -1644,7 +2628,7 @@
    "id": "colour-w9c_eu_wastewater_connected",
    "name": "Population connected to urban wastewater collection",
    "category": "Water & telecom",
-   "description": "Population connected to urban wastewater collection (% of population), 35 countries, 2019: Eurostat population connected to wastewater treatment (env_ww_con)",
+   "description": "Population connected to urban wastewater collection (% of population), 32 countries, 2022: Eurostat population connected to wastewater treatment (env_ww_con)",
    "color": "rgb(120,200,230)",
    "family": "wastewater",
    "colour": "w9c_eu_wastewater_connected",
@@ -1682,7 +2666,7 @@
    "id": "colour-w9c_eu_energy_productivity",
    "name": "Unable to keep home adequately warm",
    "category": "People & places",
-   "description": "Unable to keep home adequately warm (% of population), 38 countries, 2018: Eurostat population unable to keep home adequately warm (sdg_07_60)",
+   "description": "Unable to keep home adequately warm (% of population), 35 countries, 2020: Eurostat population unable to keep home adequately warm (sdg_07_60)",
    "color": "rgb(240,200,220)",
    "family": "energy_poverty",
    "colour": "w9c_eu_energy_productivity",
@@ -1701,7 +2685,7 @@
    "id": "w9_world_ourairports_runways",
    "name": "OurAirports runways",
    "category": "Mobility",
-   "description": "OurAirports runways: 48,388 records as published",
+   "description": "OurAirports runways: 48,405 records as published",
    "color": "rgb(190,190,255)",
    "family": "airports",
    "parts": [
@@ -1845,6 +2829,25 @@
      ],
      "what": "offshore wind farms",
      "source": "EMODnet wave and tidal energy projects (CC BY 4.0 (EMODnet Human Activities))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eu_emodnet_msp_zoning",
+   "name": "EMODnet maritime spatial plan zones",
+   "category": "Offshore",
+   "description": "EMODnet maritime spatial plan zones: 4,257 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "offshore_zones",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_msp_zoning",
+     "where": [
+      "Europe"
+     ],
+     "what": "offshore wind farms",
+     "source": "EMODnet maritime spatial plan zones (CC BY 4.0 (EMODnet Human Activities))",
      "doc": "Wave 9 sources"
     }
    ]
@@ -2021,6 +3024,25 @@
    ]
   },
   {
+   "id": "w9_eu_emodnet_substrate",
+   "name": "EMODnet seabed substrate 1:1M",
+   "category": "Offshore",
+   "description": "EMODnet seabed substrate 1:1M: 67,254 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "seabed",
+   "parts": [
+    {
+     "layer": "w9_eu_emodnet_substrate",
+     "where": [
+      "Europe"
+     ],
+     "what": "seabed substrate",
+     "source": "EMODnet seabed substrate 1:1M (Commission reuse (EMODnet Geology, CC BY 4.0))",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
    "id": "w9_gb_npg_heatmap_substations",
    "name": "Northern Powergrid heat map: substation headroom",
    "category": "Power grid",
@@ -2040,10 +3062,29 @@
    ]
   },
   {
+   "id": "w9_gb_hnpd",
+   "name": "DESNZ Heat Networks Planning Database (Q2 2026)",
+   "category": "Resources",
+   "description": "DESNZ Heat Networks Planning Database (Q2 2026): 1,505 records as published",
+   "color": "rgb(255,170,110)",
+   "family": "district_heating",
+   "parts": [
+    {
+     "layer": "w9_gb_hnpd",
+     "where": [
+      "GB"
+     ],
+     "what": "district heating networks and zones",
+     "source": "DESNZ Heat Networks Planning Database (Q2 2026) (OGL v3)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
    "id": "colour-w9c_eu_heat_production",
    "name": "Derived heat produced",
    "category": "Resources",
-   "description": "Derived heat produced (GWh), 40 countries, 2019: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)",
+   "description": "Derived heat produced (GWh), 38 countries, 2024: Eurostat electricity and derived heat production by fuel (nrg_bal_peh)",
    "color": "rgb(255,170,110)",
    "family": "district_heating",
    "colour": "w9c_eu_heat_production",
@@ -2081,7 +3122,7 @@
    "id": "colour-w9c_eu_nonhousehold_prices",
    "name": "Transmission network costs, share of the non-household electricity price (NETC_TRANS)",
    "category": "Prices",
-   "description": "Transmission network costs, share of the non-household electricity price (NETC_TRANS) (%), 37 countries, 2023: Eurostat non-household electricity prices (nrg_pc_206)",
+   "description": "Transmission network costs, share of the non-household electricity price (NETC_TRANS) (%), 36 countries, 2025: Eurostat non-household electricity prices (nrg_pc_206)",
    "color": "rgb(255,196,90)",
    "family": "network_charges",
    "colour": "w9c_eu_nonhousehold_prices",
@@ -2100,7 +3141,7 @@
    "id": "colour-w9c_eu_renewable_capacity",
    "name": "Solar photovoltaic net capacity",
    "category": "Industry & demand",
-   "description": "Solar photovoltaic net capacity (MW), 41 countries, 2019: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)",
+   "description": "Solar photovoltaic net capacity (MW), 39 countries, 2024: Eurostat renewable electricity capacity by technology (nrg_inf_epcrw)",
    "color": "rgb(214,160,255)",
    "family": "rooftop_solar",
    "colour": "w9c_eu_renewable_capacity",
@@ -2119,7 +3160,7 @@
    "id": "colour-w9c_eu_internet_households",
    "name": "Households with internet access",
    "category": "Water & telecom",
-   "description": "Households with internet access (% of households), 39 countries, 2019: Eurostat household internet access (isoc_ci_in_h)",
+   "description": "Households with internet access (% of households), 37 countries, 2025: Eurostat household internet access (isoc_ci_in_h)",
    "color": "rgb(120,200,230)",
    "family": "broadband",
    "colour": "w9c_eu_internet_households",
