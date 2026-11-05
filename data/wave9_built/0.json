@@ -19,7 +19,7 @@
   },
   "geometry": true,
   "rows": 8842,
-  "seconds": 35,
+  "seconds": 33,
   "tiles": {
    "fields": [
     "name",
@@ -52,7 +52,7 @@
   },
   "geometry": false,
   "rows": 540342,
-  "seconds": 30
+  "seconds": 32
  },
  "cz_zsj": {
   "as_of": "2026-09-07",
@@ -93,7 +93,7 @@
   },
   "geometry": true,
   "rows": 23605,
-  "seconds": 81,
+  "seconds": 79,
   "tiles": {
    "fields": [
     "kod_zsj",
@@ -153,6 +153,40 @@
   },
   "with_position": 2628942
  },
+ "ee_grid": {
+  "bbox": [
+   21.749,
+   57.505,
+   28.225,
+   59.825
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "gml_id",
+   "code",
+   "geometry"
+  ],
+  "example": {
+   "answer": 45636,
+   "sql": "SELECT count(*) FROM wave9.ee_grid"
+  },
+  "geometry": true,
+  "rows": 45636,
+  "seconds": 4,
+  "tiles": {
+   "fields": [
+    "id",
+    "gml_id",
+    "code"
+   ],
+   "kind": "polygon",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/ee_grid.pmtiles"
+  },
+  "with_position": 45636
+ },
  "es_ine_secciones": {
   "as_of": "2024-03-21",
   "as_of_basis": "Last-Modified of the published file",
@@ -191,7 +225,7 @@
   },
   "geometry": true,
   "rows": 36477,
-  "seconds": 84,
+  "seconds": 77,
   "tiles": {
    "fields": [
     "cusec",
@@ -401,7 +435,7 @@
   },
   "geometry": true,
   "rows": 415408,
-  "seconds": 625,
+  "seconds": 649,
   "tiles": {
    "fields": [
     "origin",
@@ -531,7 +565,7 @@
   },
   "geometry": true,
   "rows": 756376,
-  "seconds": 409,
+  "seconds": 307,
   "tiles": {
    "fields": [
     "cod_reg",
@@ -918,5 +952,63 @@
   "rows": 130,
   "seconds": 1,
   "with_position": 130
+ },
+ "us_natcarb": {
+  "bbox": [
+   -178.916,
+   25.048,
+   -74.859,
+   73.24
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "col_row",
+   "partnershi",
+   "arra_proje",
+   "resource_n",
+   "basin_name",
+   "rsc_area_c",
+   "vol_low",
+   "vol_med",
+   "vol_high",
+   "depth_ft",
+   "thickness",
+   "salinity_t",
+   "pressure_p",
+   "temperatur",
+   "porosity_p",
+   "permeabili",
+   "assessed",
+   "cycle_of_l",
+   "overlap",
+   "duplicate",
+   "med_calced",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 186675,
+   "sql": "SELECT count(*) FROM wave9.us_natcarb"
+  },
+  "geometry": true,
+  "rows": 186675,
+  "seconds": 3,
+  "tiles": {
+   "fields": [
+    "name",
+    "col_row",
+    "partnershi",
+    "arra_proje",
+    "resource_n",
+    "rsc_area_c",
+    "vol_low"
+   ],
+   "kind": "polygon",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_natcarb.pmtiles"
+  },
+  "with_position": 186675
  }
 }
