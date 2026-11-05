@@ -1,9 +1,9 @@
 {
  "eu_heat_production": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "choro": {
-   "areas": 40,
-   "period": "2019",
+   "areas": 38,
+   "period": "2024",
    "scope": "country"
   },
   "columns": [
@@ -25,10 +25,83 @@
   },
   "geometry": false,
   "rows": 894510,
-  "seconds": 62
+  "seconds": 80
  },
  "gb_hnpd": {
-  "built": null,
-  "error": "StopIteration: "
+  "as_of": "2026-07-31",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -5.955,
+   50.121,
+   1.52,
+   57.648
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ref_id",
+   "record_last_updated_dd_mm_yyyy",
+   "operator_or_applicant",
+   "site_name",
+   "connection_to_communal_district_or_campus_heat_network",
+   "new_renovation_or_expansion_of_existing_heat_network",
+   "number_of_customer_connections",
+   "types_of_building_domestic_non_domestic_or_mixed",
+   "types_of_buildings",
+   "technology_type",
+   "secondary_plant_technology",
+   "third_plant_technology",
+   "backup_plant_technology",
+   "installed_capacity_mwelec",
+   "primary_fuel_type",
+   "heat_source",
+   "temperature_of_heat_supply_celsius",
+   "heat_storage",
+   "heat_storage_volume_m3",
+   "heat_enabled",
+   "cooling_enabled",
+   "chp_enabled",
+   "length_of_distribution_network_in_m",
+   "average_diameter_of_pipes_in_mm",
+   "development_status",
+   "development_status_short",
+   "are_they_re_applying_new_repd_ref",
+   "are_they_re_applying_old_repd_ref",
+   "address",
+   "county",
+   "region",
+   "country",
+   "post_code",
+   "x_coordinate",
+   "y_coordinate",
+   "planning_authority",
+   "planning_application_reference",
+   "appeal_reference",
+   "secretary_of_state_reference",
+   "type_of_secretary_of_state_intervention",
+   "judicial_review",
+   "planning_application_submitted",
+   "planning_application_withdrawn",
+   "planning_permission_refused",
+   "appeal_lodged",
+   "appeal_withdrawn",
+   "appeal_refused",
+   "appeal_granted",
+   "planning_permission_granted",
+   "secretary_of_state_intervened",
+   "secretary_of_state_refusal",
+   "secretary_of_state_granted",
+   "planning_permission_expired",
+   "under_construction",
+   "operational",
+   "decommissioned_abandoned_no_application_made"
+  ],
+  "example": {
+   "answer": 1505,
+   "sql": "SELECT count(*) FROM wave9.gb_hnpd"
+  },
+  "geometry": true,
+  "rows": 1505,
+  "seconds": 3,
+  "with_position": 1495
  }
 }
