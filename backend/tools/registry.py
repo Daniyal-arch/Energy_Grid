@@ -11,7 +11,6 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from langchain_core.tools import StructuredTool
 from pydantic import BaseModel, Field
 
 from agent.skills import get_skills
@@ -251,7 +250,9 @@ def specs() -> list[ToolSpec]:
     return sorted(out, key=lambda t: t.name)
 
 
-def langchain_tools(ctx: ToolContext) -> list[StructuredTool]:
+def langchain_tools(ctx: ToolContext) -> list[Any]:
+    from langchain_core.tools import StructuredTool  # the agent only: not at the service's start
+
     tools = []
     for spec in specs():
 

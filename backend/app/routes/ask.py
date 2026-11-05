@@ -10,14 +10,10 @@ from fastapi.responses import StreamingResponse
 from opentelemetry import context as otel_context
 from pydantic import BaseModel, Field
 
-from agent.deps import build_deps
-from agent.graph import GRAPH, initial_state
 from agent.limits import get_limits, hash_ip
-from agent.models import ModelError
 from app import live_runs
 from app.deps import settings
 from app.sse import event, graph_events, with_heartbeat
-from mcp_server.client import external_tools
 from obs import langfuse
 from obs.tracing import current_trace_id, flush, tracer
 
@@ -48,6 +44,13 @@ def client_ip(request: Request) -> str:
 
 @router.post("/api/ask")
 async def ask(body: AskRequest, request: Request) -> StreamingResponse:
+    # the agent (LangChain, LangGraph) is imported at the first question, not at start: data
+    # routes and health answer sooner after a cold start (brief 30)
+    from agent.deps import build_deps
+    from agent.graph import GRAPH, initial_state
+    from agent.models import ModelError
+    from mcp_server.client import external_tools
+
     s = settings()
     if not get_limits(s).take(hash_ip(client_ip(request), s.ip_hash_salt)):
         raise HTTPException(429, "too many questions from this address; try again later")
