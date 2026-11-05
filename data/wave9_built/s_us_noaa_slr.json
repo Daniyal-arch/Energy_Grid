@@ -1,0 +1,38 @@
+{
+ "us_noaa_slr": {
+  "band": "depth of ocean-connected inundation above ground for a sea level rise of N ft above MHHW (0-10 ft in 0.5 ft steps), float32 COG, nodata -3.4028e38",
+  "built": "2026-11-05",
+  "example": {
+   "answer": null,
+   "sql": "area_stats(measure='w9_us_noaa_slr')"
+  },
+  "raster": [
+   {
+    "bounds": [
+     -75.7899,
+     38.4501,
+     -74.9831,
+     39.8452
+    ],
+    "bytes": 292274799,
+    "cell": [
+     2.6949458523585846e-05,
+     2.6949458523585853e-05
+    ],
+    "crs": "EPSG:4269",
+    "dtype": "float32",
+    "key": "lake/rasters/wave9/us_noaa_slr.tif",
+    "max": 117.55121612548828,
+    "min": -42.76282501220703,
+    "nodata": -3.4028230607370965e+38,
+    "size": [
+     29940,
+     51766
+    ]
+   }
+  ],
+  "rows": 0,
+  "seconds": 151,
+  "unit": "m"
+ }
+}

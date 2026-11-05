@@ -1,0 +1,6 @@
+{
+ "us_noaa_mpa": {
+  "built": null,
+  "error": "IOException: IO Error: Failed to read GeoJSON data\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/us_noaa_mpa/layer.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+ }
+}

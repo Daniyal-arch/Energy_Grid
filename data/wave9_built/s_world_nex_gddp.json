@@ -1,0 +1,38 @@
+{
+ "world_nex_gddp": {
+  "band": "tasmax, daily maximum near-surface air temperature, 365 daily bands per file (NetCDF4 time × 600 × 1440, float32)",
+  "built": "2026-11-05",
+  "example": {
+   "answer": null,
+   "sql": "area_stats(measure='w9_world_nex_gddp')"
+  },
+  "raster": [
+   {
+    "bounds": [
+     0.0,
+     -60.0,
+     360.0,
+     90.0
+    ],
+    "bytes": 279926596,
+    "cell": [
+     0.25,
+     0.25
+    ],
+    "crs": "None",
+    "dtype": "float32",
+    "key": "lake/rasters/wave9/world_nex_gddp.tif",
+    "max": 319.2953796386719,
+    "min": 229.70855712890625,
+    "nodata": 1.0000000200408773e+20,
+    "size": [
+     1440,
+     600
+    ]
+   }
+  ],
+  "rows": 0,
+  "seconds": 213,
+  "unit": "K"
+ }
+}

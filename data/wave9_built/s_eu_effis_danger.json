@@ -1,0 +1,38 @@
+{
+ "eu_effis_danger": {
+  "band": "Fire Weather Index (FWI) from ECMWF data, one float32 band per day (TIME 2018-01-01 onwards, forecasts ahead)",
+  "built": "2026-11-05",
+  "example": {
+   "answer": null,
+   "sql": "area_stats(measure='w9_eu_effis_danger')"
+  },
+  "raster": [
+   {
+    "bounds": [
+     -18.0,
+     27.0,
+     42.0,
+     72.0
+    ],
+    "bytes": 587700,
+    "cell": [
+     0.10000000000000003,
+     0.10000000000000002
+    ],
+    "crs": "EPSG:4326",
+    "dtype": "float32",
+    "key": "lake/rasters/wave9/eu_effis_danger.tif",
+    "max": 154.62545776367188,
+    "min": 0.0,
+    "nodata": null,
+    "size": [
+     600,
+     450
+    ]
+   }
+  ],
+  "rows": 0,
+  "seconds": 6,
+  "unit": "index (dimensionless)"
+ }
+}

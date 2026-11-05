@@ -1,0 +1,6 @@
+{
+ "us_usfs_whp_service": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '/tmp/wave9/us_usfs_whp_service/ImageServer', '/tmp/wave9/us_usfs_whp_service/us_usfs_whp_service.tif']' returned non-zero exit status 1."
+ }
+}

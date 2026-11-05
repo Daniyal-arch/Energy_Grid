@@ -1,0 +1,6 @@
+{
+ "us_usseabed": {
+  "built": null,
+  "error": "BinderException: Binder Error: Cannot cast GEOMETRY with CRS 'ESRI:104000' to GEOMETRY with different CRS 'EPSG:4269'"
+ }
+}
