@@ -198,7 +198,13 @@ async def tools_node(state: AgentState, config: RunnableConfig) -> dict[str, Any
                     res = {"data": {"error": f"bad arguments: {e.errors()[:3]}"}, "sources": []}
                 except TimeoutError:
                     res = {
-                        "data": {"error": f"{name} took longer than {TOOL_TIMEOUT_S} s"},
+                        "data": {
+                            "error": f"{name} took longer than {TOOL_TIMEOUT_S} s and was stopped",
+                            "timeout": True,
+                            "missing": json.dumps(args, ensure_ascii=False)[:200],
+                            "instruction": "answer with the figures you have and say which "
+                            "figure is missing because this call timed out",
+                        },
                         "sources": [],
                     }
                 except Exception as e:

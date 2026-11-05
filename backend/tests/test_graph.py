@@ -155,3 +155,27 @@ def test_loop_guard_lets_a_changed_approach_run():
     log = out["tool_log"]
     assert [e["blocked"] for e in log] == [False, False, False]
     assert log[2]["result"]["data"]["area"]["iso3"] == ["DEU"]
+
+
+def test_tool_timeout_gives_a_partial_answer(monkeypatch):
+    """Brief 30 Track 4.4: a tool over its time limit is stopped; the result says what is
+    missing, and the analyst answers with what it has."""
+    import time as _t
+
+    import agent.analyst as an
+    from tools import registry
+
+    monkeypatch.setattr(an, "TOOL_TIMEOUT_S", 0.2)
+    monkeypatch.setattr(
+        registry, "find_place", lambda ctx, **kw: _t.sleep(1) or {"data": {}, "sources": []}
+    )
+    d = scripted(
+        AIMessage(
+            content="", tool_calls=[{"name": "find_place", "args": {"text": "Texas"}, "id": "c"}]
+        ),
+        AIMessage(content="The place lookup timed out, so its figures are missing."),
+    )
+    out, _ = run("Where is Texas?", deps=d)
+    res = out["tool_log"][0]["result"]["data"]
+    assert res["timeout"] is True and "Texas" in res["missing"]
+    assert "missing" in out["answer"]
