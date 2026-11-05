@@ -14,6 +14,7 @@ from agent.deps import build_deps
 from agent.graph import GRAPH, initial_state
 from agent.limits import get_limits, hash_ip
 from agent.models import ModelError
+from app import live_runs
 from app.deps import settings
 from app.sse import event, graph_events, with_heartbeat
 from mcp_server.client import external_tools
@@ -89,8 +90,37 @@ async def ask(body: AskRequest, request: Request) -> StreamingResponse:
         flush()
         langfuse.flush(s)
 
+    run = live_runs.start(stream())
+    return sse_response(run)
+
+
+def sse_response(run: live_runs.LiveRun, after: int = -1) -> StreamingResponse:
     return StreamingResponse(
-        with_heartbeat(stream()),
+        with_heartbeat(live_runs.follow(run, after)),
         media_type="text/event-stream",
-        headers={"cache-control": "no-cache", "x-accel-buffering": "no"},
+        headers={"cache-control": "no-cache", "x-accel-buffering": "no", "x-run-id": run.run_id},
     )
+
+
+@router.get("/api/ask/{run_id}/stream")
+async def resume(run_id: str, request: Request, after: int | None = None) -> StreamingResponse:
+    """The events after Last-Event-ID (or `after`), then the rest live (brief 30)."""
+    run = live_runs.RUNS.get(run_id)
+    if run is None:
+        raise HTTPException(
+            404, "no such run here (finished over 15 minutes ago, or another instance)"
+        )
+    last = request.headers.get("last-event-id")
+    if after is None and last is not None:
+        try:
+            after = int(last)
+        except ValueError as e:
+            raise HTTPException(422, "Last-Event-ID is the number of an event") from e
+    return sse_response(run, -1 if after is None else after)
+
+
+@router.post("/api/ask/{run_id}/cancel")
+async def cancel(run_id: str) -> dict[str, Any]:
+    if not live_runs.cancel(run_id):
+        raise HTTPException(404, "no running run with this id here")
+    return {"run_id": run_id, "cancelled": True}

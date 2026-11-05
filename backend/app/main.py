@@ -99,8 +99,14 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["content-type", "x-request-id", "traceparent", "x-conversation-id"],
-    expose_headers=["x-request-id", "x-trace-id"],
+    allow_headers=[
+        "content-type",
+        "x-request-id",
+        "traceparent",
+        "x-conversation-id",
+        "last-event-id",
+    ],
+    expose_headers=["x-request-id", "x-trace-id", "x-run-id"],
 )
 for r in (health, catalog, places, areas, site, maps, quick, ask, admin):
     app.include_router(r.router)
