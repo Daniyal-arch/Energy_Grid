@@ -280,7 +280,7 @@ def arcgis_pages(s: dict[str, Any], dest: Path) -> Path:
         page = w.get_json(
             s["url"] + "/query",
             params={
-                "where": s.get("where", "1=1"), "outFields": "*", "outSR": "4326", "f": "geojson",
+                "where": s.get("where", "1=1"), "outFields": s.get("fields", "*"), "outSR": "4326", "f": "geojson",
                 "resultOffset": len(feats), "resultRecordCount": step, "orderByFields": s.get("order", ""),
             },
             timeout=300,
@@ -390,8 +390,12 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             files = sorted(p for p in z.rglob("*") if p.is_file() and p.suffix.lower() in ext[kind])
             for i, f in enumerate(files):
                 read_geo(con, f, s)
-                con.execute(f"CREATE OR REPLACE TABLE zpart_{i} AS SELECT *, '{f.stem}' AS src_file FROM t")
-            union = " UNION ALL BY NAME ".join(f"SELECT * FROM zpart_{i}" for i in range(len(files)))
+                con.execute(
+                    f"CREATE OR REPLACE TABLE zpart_{i} AS SELECT *, '{f.stem}' AS src_file FROM t"
+                )
+            union = " UNION ALL BY NAME ".join(
+                f"SELECT * FROM zpart_{i}" for i in range(len(files))
+            )
             con.execute(f"CREATE OR REPLACE TABLE t AS {union}")
         else:
             read_geo(con, first_file(z, ext[kind]), s)
@@ -489,7 +493,9 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         # the newest CSV (or `fmt`) resource of the first package the search finds
         res = w.get_json(url)["result"]  # type: ignore[index]
         if isinstance(res, list):  # package_list names packages only: no resources to pick from
-            raise SystemExit(f"CKAN answered a list of {len(res)} names: use package_show?id=<name>")
+            raise SystemExit(
+                f"CKAN answered a list of {len(res)} names: use package_show?id=<name>"
+            )
         pkgs = res.get("results", [res])
         fmt = (s.get("fmt") or "csv").lower()
         cand = [
