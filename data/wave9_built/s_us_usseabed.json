@@ -1,6 +1,71 @@
 {
  "us_usseabed": {
-  "built": null,
-  "error": "BinderException: Binder Error: Cannot cast GEOMETRY with CRS 'ESRI:104000' to GEOMETRY with different CRS 'EPSG:4269'"
+  "as_of": "2006-05-30",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -128.666,
+   16.667,
+   -63.8,
+   48.998
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "latitude",
+   "longitude",
+   "waterdepth",
+   "sampletop",
+   "samplebase",
+   "sitename",
+   "datasetkey",
+   "sitekey",
+   "samplekey",
+   "sampler",
+   "datatypes",
+   "gravel",
+   "sand",
+   "mud",
+   "clay",
+   "grainsize",
+   "sorting",
+   "seabedcls",
+   "clsmshp",
+   "folkcode",
+   "shepardcod",
+   "rockmshp",
+   "weedmshp",
+   "carbonate",
+   "munslcode",
+   "orgcarbon",
+   "lgshearstr",
+   "porosity",
+   "pwavevel",
+   "roughness",
+   "lgcrshst",
+   "samplephas",
+   "geometry"
+  ],
+  "example": {
+   "answer": 117031,
+   "sql": "SELECT count(*) FROM wave9.us_usseabed"
+  },
+  "geometry": true,
+  "rows": 117031,
+  "seconds": 5,
+  "tiles": {
+   "fields": [
+    "name",
+    "latitude",
+    "longitude",
+    "waterdepth",
+    "sampletop",
+    "samplebase",
+    "datasetkey"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usseabed.pmtiles"
+  },
+  "with_position": 117031
  }
 }
