@@ -399,6 +399,34 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
     d.mkdir(parents=True, exist_ok=True)
     if kind == "census":
         census_tracts(con, s, d)
+    elif kind == "parquet":  # (Geo)Parquet: read as is; a WKB `geometry` becomes a geometry
+        f = w.download(url, d / "src.parquet", timeout=3600)
+        con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_parquet('{f}')")
+        cols = dict(con.execute("SELECT column_name, column_type FROM (DESCRIBE t)").fetchall())
+        if cols.get("geometry") == "BLOB":
+            con.execute(
+                "CREATE OR REPLACE TABLE t AS SELECT * EXCLUDE (geometry), "
+                "ST_GeomFromWKB(geometry) AS geometry FROM t"
+            )
+    elif kind == "datafair_agg":  # data-fair values_agg: nested counts flattened to rows
+        data = w.get_json(url, timeout=600)
+        fields = re.search(r"field=([^&]+)", url).group(1).split(";")  # type: ignore[union-attr]
+        rows: list[dict[str, Any]] = []
+
+        def walk(aggs: list[dict[str, Any]], keys: dict[str, Any], depth: int) -> None:
+            for a in aggs:
+                k = {**keys, fields[depth]: a.get("value")}
+                if a.get("aggs") and depth + 1 < len(fields):
+                    walk(a["aggs"], k, depth + 1)
+                else:
+                    rows.append({**k, "count": a.get("total")})
+
+        walk(data.get("aggs") or [], {}, 0)  # type: ignore[union-attr]
+        f = d / "src.json"
+        f.write_text(json.dumps(rows), encoding="utf-8")
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array')"
+        )
     elif kind == "arcgis":
         read_geo(con, arcgis_pages(s, d / "layer.geojson"), {**s, "crs": "EPSG:4326"})
     elif kind in ("shp_zip", "gpkg_zip", "geojson_zip"):
@@ -471,6 +499,16 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             data = data[k]  # type: ignore[index]
         if isinstance(data, dict):
             data = [data]
+        if s.get(
+            "coords"
+        ):  # a nested [a, b] pair, e.g. "geometry.coordinates" (`latlon`: lat first)
+            for rec in data:  # type: ignore[union-attr]
+                v: Any = rec
+                for k in s["coords"].split("."):
+                    v = v.get(k) if isinstance(v, dict) else None
+                if isinstance(v, list) and len(v) >= 2:
+                    rec["lon"], rec["lat"] = (v[1], v[0]) if s.get("latlon") else (v[0], v[1])
+                rec.pop(s["coords"].split(".")[0], None)  # the pair now lives in lon and lat
         f = d / "src.json"
         f.write_text(json.dumps(data))
         con.execute(
