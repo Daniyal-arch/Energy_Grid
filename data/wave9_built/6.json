@@ -58,6 +58,10 @@
   },
   "with_position": 1202
  },
+ "eu_emodnet_bathy": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'Depth: mean water depth of the EMODnet DTM (float32; sample -71.8 to -5.1 in the 1° probe tile); full grid 108,960 × 75,840, lon -70.5..43, lat 11..90', '/tmp/wave9/eu_emodnet_bathy/wcs', '/tmp/wave9/eu_"
+ },
  "eu_emodnet_military": {
   "bbox": [
    -18.984,
@@ -87,7 +91,7 @@
   },
   "geometry": true,
   "rows": 746,
-  "seconds": 2,
+  "seconds": 1,
   "tiles": {
    "fields": [
     "id",
@@ -139,7 +143,7 @@
   },
   "geometry": true,
   "rows": 826,
-  "seconds": 57,
+  "seconds": 51,
   "tiles": {
    "fields": [
     "name",
@@ -205,7 +209,7 @@
   },
   "geometry": true,
   "rows": 4257,
-  "seconds": 111,
+  "seconds": 14,
   "tiles": {
    "fields": [
     "name",
@@ -345,7 +349,7 @@
   },
   "geometry": true,
   "rows": 429668,
-  "seconds": 23,
+  "seconds": 19,
   "tiles": {
    "fields": [
     "id",
@@ -442,7 +446,7 @@
   },
   "geometry": true,
   "rows": 67254,
-  "seconds": 57,
+  "seconds": 77,
   "tiles": {
    "fields": [
     "name",
@@ -458,6 +462,10 @@
    "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_substrate.pmtiles"
   },
   "with_position": 67254
+ },
+ "eu_emodnet_vessel_density": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'vessel density, annual average, all ship types (float32); per-type coverages emodnet__vesseldensity_NNavg and monthly ones; years 2017-2024', '/tmp/wave9/eu_emodnet_vessel_density/wcs', '/tmp/wave9/eu_em"
  },
  "eu_emodnet_wind_farms": {
   "bbox": [
@@ -491,7 +499,7 @@
   },
   "geometry": true,
   "rows": 600,
-  "seconds": 2,
+  "seconds": 1,
   "tiles": {
    "fields": [
     "name",
@@ -545,7 +553,7 @@
   },
   "geometry": true,
   "rows": 4892,
-  "seconds": 4,
+  "seconds": 6,
   "tiles": {
    "fields": [
     "name",
@@ -617,6 +625,22 @@
    "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_boem_wind_leases.pmtiles"
   },
   "with_position": 52
+ },
+ "us_marinecadastre_ais": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'annual vessel transit count 2024 (uint32, 126,318 × 51,893, nodata 0): one transit each time a track passes through, starts or stops in a 100 m cell', '/tmp/wave9/us_marinecadastre_ais/ais-transit-count-"
+ },
+ "us_noaa_mpa": {
+  "built": null,
+  "error": "IOException: IO Error: Failed to read GeoJSON data\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/us_noaa_mpa/layer.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+ },
+ "us_usseabed": {
+  "built": null,
+  "error": "BinderException: Binder Error: Cannot cast GEOMETRY with CRS 'ESRI:104000' to GEOMETRY with different CRS 'EPSG:4269'"
+ },
+ "world_gebco": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'elevation of ocean floor and land (GEBCO_2026 Grid, 8 tiles of 90° × 90°); a TID grid gives the source type', '/tmp/wave9/world_gebco/gebco_2026_n0.0_s-90.0_w0.0_e90.0_geotiff.tif', '/tmp/wave9/world_geb"
  },
  "world_port_index": {
   "built": null,
