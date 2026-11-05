@@ -12,6 +12,7 @@ unset. Connect from Claude Code:
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import hmac
 import json
 from collections.abc import AsyncIterator, Callable
@@ -48,9 +49,13 @@ async def _send(send: Send, status: int, body: dict[str, Any]) -> None:
 class BearerAuth:
     """Only /mcp paths, and only with one of the keys."""
 
-    def __init__(self, app: ASGIApp, keys: list[str]) -> None:
+    def __init__(self, app: ASGIApp, keys: list[str], per_hour: int = 600) -> None:
         self.app = app
         self.keys = [k.encode() for k in keys]
+        # per key (brief 30): each key has its own budget of requests per hour
+        from agent.limits import MemoryLimits
+
+        self.limits = MemoryLimits(per_hour)
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] != "http":
@@ -61,6 +66,8 @@ class BearerAuth:
         token = auth[7:] if auth.lower().startswith(b"bearer ") else b""
         if not any(hmac.compare_digest(token, k) for k in self.keys):
             return await _send(send, 401, {"detail": "MCP needs a bearer key"})
+        if not self.limits.take("key:" + hashlib.sha256(token).hexdigest()[:16]):
+            return await _send(send, 429, {"detail": "too many requests for this key; try later"})
         await self.app(scope, receive, send)
 
 
