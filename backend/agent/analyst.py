@@ -19,6 +19,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.config import get_stream_writer
 from pydantic import ValidationError
 
+from agent.cache import ResultCache
 from agent.deps import Deps, deps_of
 from agent.models import stop_reason, system_message, text_of
 from agent.state import AgentState
@@ -163,6 +164,7 @@ async def tools_node(state: AgentState, config: RunnableConfig) -> dict[str, Any
     specs = by_name()
     extra = {t.name: t for t in d.extra_tools}
     count = state.get("tool_calls", 0)
+    cache = ResultCache(d.ctx)
     messages, log, rids = [], [], []
     for call in last.tool_calls:
         name, args, cid = call["name"], call.get("args") or {}, call.get("id") or ""
@@ -170,6 +172,7 @@ async def tools_node(state: AgentState, config: RunnableConfig) -> dict[str, Any
         t0 = time.perf_counter()
         writer({"event": "tool", "data": {"name": name, "args": args, "status": "running"}})
         res: dict[str, Any]
+        cached = False
         why_blocked = blocked_reason([*(state.get("tool_log") or []), *log], name, args)
         with span("agent.tool", {"gen_ai.tool.name": name}) as sp:
             if why_blocked:
@@ -183,9 +186,14 @@ async def tools_node(state: AgentState, config: RunnableConfig) -> dict[str, Any
                 spec = specs[name]
                 try:
                     parsed = spec.args.model_validate(args).model_dump()
-                    res = await asyncio.wait_for(
-                        asyncio.to_thread(spec.run, d.ctx, **parsed), TOOL_TIMEOUT_S
-                    )
+                    hit = cache.get(name, parsed)
+                    if hit is not None:
+                        res, cached = hit, True
+                    else:
+                        res = await asyncio.wait_for(
+                            asyncio.to_thread(spec.run, d.ctx, **parsed), TOOL_TIMEOUT_S
+                        )
+                        cache.put(name, parsed, res)
                 except ValidationError as e:
                     res = {"data": {"error": f"bad arguments: {e.errors()[:3]}"}, "sources": []}
                 except TimeoutError:
@@ -230,6 +238,7 @@ async def tools_node(state: AgentState, config: RunnableConfig) -> dict[str, Any
                     "ms": ms,
                     "rows": rows,
                     "result_id": res.get("result_id"),
+                    "cached": cached,
                 },
             }
         )
@@ -241,6 +250,7 @@ async def tools_node(state: AgentState, config: RunnableConfig) -> dict[str, Any
                 "ms": ms,
                 "error": bool(err),
                 "blocked": bool(why_blocked),
+                "cached": cached,
                 "sql": args.get("sql") if name == "run_sql" else None,
             }
         )
