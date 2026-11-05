@@ -263,10 +263,14 @@ def read_geo(con, path: Path, s: dict[str, Any]) -> None:  # noqa: ANN001
         for (c,) in con.execute("SELECT column_name FROM (DESCRIBE t)").fetchall()
         if c.lower() in ("geom", "geometry", "shape", "wkb_geometry")
     )
+    if crs == "ESRI:104000":  # "GCS_Assumed_Geographic_1": degrees with no datum, as published
+        crs = None
     if crs and crs not in ("EPSG:4326", "OGC:CRS84"):
         print(f"  {path.name}: {crs} to EPSG:4326", flush=True)
+        # through WKB first: a geometry typed with its file's CRS refuses a cast to another one
         con.execute(
-            f"UPDATE t SET {geom} = ST_Transform({geom}, '{crs}', 'EPSG:4326', always_xy := true)"
+            f"UPDATE t SET {geom} = ST_Transform(ST_GeomFromWKB(ST_AsWKB({geom})), '{crs}', "
+            "'EPSG:4326', always_xy := true)"
         )
     con.execute(f"UPDATE t SET {geom} = ST_GeomFromWKB(ST_AsWKB({geom}))")
 
@@ -331,6 +335,8 @@ def census_tracts(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
     """kind census: an ACS table per tract, state by state (the API answers one state's tracts
     at a time). `url` is the dataset endpoint, `get` the variables; values as published (the
     Census Bureau's negative codes such as -666666666 mark a missing estimate, kept)."""
+    if not os.environ.get("CENSUS_API_KEY"):
+        raise KeyMissing("CENSUS_API_KEY is not set: skipped (set it as a repo secret)")
     rows: list[list[str]] = []
     head: list[str] = []
     for st in STATE_FIPS:
@@ -752,7 +758,7 @@ def build_raster(s: dict[str, Any]) -> dict[str, Any]:
         subprocess.run(["gdalbuildvrt", gd, *inputs], check=True)
     out = d / f"{s['id']}.tif"
     cmd = ["gdal_translate", "-of", "COG", "-co", "COMPRESS=ZSTD", "-co", "PREDICTOR=YES"]
-    if s.get("band"):
+    if isinstance(s.get("band"), int):  # a band number; a text `band` only describes it
         cmd += ["-b", str(s["band"])]
     if s.get("assign_crs"):  # a file without a CRS: the one its publisher states
         cmd += ["-a_srs", s["assign_crs"]]
@@ -782,7 +788,7 @@ def build_raster(s: dict[str, Any]) -> dict[str, Any]:
             check=True,
         )  # fmt: skip
     return {
-        "rows": 0, "raster": files, "unit": s.get("unit"), "band": s.get("band_meaning") or s.get("band"),
+        "rows": 0, "raster": files, "unit": s.get("unit"), "band": s.get("band_meaning") or str(s.get("band") or ""),
         "seconds": round(time.time() - t0), "built": time.strftime("%Y-%m-%d"),
         "example": {"sql": f"area_stats(measure='{PFX}_{s['id']}')", "answer": None},
     }  # fmt: skip
