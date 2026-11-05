@@ -7,7 +7,7 @@ session. Each request should also ask the licence question:
 
 > May we redistribute the data, and show it in a commercial product, under an open licence (CC BY 4.0 or equivalent) with attribution?
 
-31 requests to 31 publishers.
+37 requests to 37 publishers.
 
 ## Bundesnetzagentur
 
@@ -45,6 +45,12 @@ session. Each request should also ask the licence question:
   - Why: elia.be keeps scripts and an automated browser on Cloudflare's check (2026-10-19, 2026-11-03).
   - Request: Elia, the capacity file for new decentralised generation as a direct download (or on the Elia open-data portal) under an open licence.
 
+## EPA
+
+- **EPA Clean Watersheds Needs Survey** (scripts/wave9_sources.yaml `us_epa_cwns`)
+  - Why: the 2022 CWNS dataset (nationwide CSV) is served only by an Oracle APEX app whose download links carry a per-session checksum and open a 'Help us learn more about who uses our data' dialog; no stable file URL (2026-11-04)
+  - Request: EPA, a stable URL for the nationwide 2022 CWNS facility CSV (e.g. on catalog.data.gov)
+
 ## Eurostat (GISCO)
 
 - **Administrative units: countries, NUTS 2024 and LAU outlines** (docs/owner-questions.md)
@@ -62,6 +68,12 @@ session. Each request should also ask the licence question:
 - **FERC hydropower licences** (scripts/wave9_sources.yaml `us_ferc_hydro`)
   - Why: ferc.gov answers HTTP 403 to an honest client (2026-10-31)
   - Request: FERC, the hydropower licence list as an open file
+
+## IAEA
+
+- **IAEA PRIS reactors** (scripts/wave9_sources.yaml `world_iaea_pris`)
+  - Why: pris.iaea.org redirects to pris-stats.iaea.org, a single-page app with no file or documented API; the IAEA terms of use page answers HTTP 403 to an honest client, so no licence could be read (2026-11-04)
+  - Request: IAEA, the PRIS reactor list (name, country, type, capacity, status, coordinates) as an open file with a stated licence
 
 ## INE Portugal
 
@@ -92,6 +104,12 @@ session. Each request should also ask the licence question:
 - **LCCC Contracts for Difference register** (scripts/wave9_sources.yaml `gb_lccc_cfd`)
   - Why: HTTP 403 to an honest client (2026-10-31)
   - Request: LCCC, a download of the CfD register that answers scripted clients (or its CKAN API)
+
+## MCS Service Company
+
+- **MCS heat pump installations** (scripts/wave9_sources.yaml `gb_mcs_heat_pumps`)
+  - Why: the MCS Data Dashboard is a Blazor app: exports only from the browser per visualisation (with a unique ID and timestamp stamped on each download), no file or API, and no licence stated on the dashboard or mcscertified.com/about-the-mcs-data-dashboard (2026-11-04)
+  - Request: MCS Service Company, MCS-certified heat pump installations per local authority and month as an open file under the Open Government Licence or CC BY 4.0
 
 ## MISO
 
@@ -147,6 +165,12 @@ session. Each request should also ask the licence question:
   - Why: the CDS retrieve API answers HTTP 401 "authentication required" without a key (POST .../processes/sis-heat-and-cold-spells/execution, 2026-11-04); downloads need a (free) ECMWF account, the accepted dataset licence and CDSAPI_KEY
   - Request: Register at https://cds.climate.copernicus.eu, accept the CC BY 4.0 licence of sis-heat-and-cold-spells and set CDSAPI_KEY as a repo secret (and in .env.example); a workflow then fetches the heat and cold spell day counts
 
+## Rhodium Group / MIT CEEPR
+
+- **Clean Investment Monitor** (scripts/wave9_sources.yaml `us_clean_investment_monitor`)
+  - Why: facility-level data are downloadable only from Rhodium Group's ClimateDeck after creating an account ('Create a free, secure account to browse and download data'); the database page has no file (2026-11-04)
+  - Request: Rhodium Group / MIT CEEPR, the Clean Investment Monitor facility list as an open CC BY download without an account
+
 ## Terna
 
 - **Terna electricity consumption per province** (scripts/wave9_sources.yaml `it_terna_province`)
@@ -185,5 +209,7 @@ session. Each request should also ask the licence question:
 
 ## Keys to set (not requests: the owner adds them as repo secrets)
 
+- set CDSAPI_KEY (https: GloFAS river discharge
 - set CENSUS_API_KEY (free) as a repo secret: Income per area (US)
 - set FINGRID_API_KEY as a repo secret: Balancing and reserves (FI)
+- set NASA_EARTHDATA_TOKEN (https: NASA Black Marble night lights
