@@ -62,6 +62,13 @@ def test_lists_tools_and_runs_search_catalog(base_url):
         "resolve_area",
         "site_figures",
         "live",
+        "quick",
+        "nearest",
+        "along",
+        "compare_areas",
+        "trend",
+        "export",
+        "explain_coverage",
     }
     assert "app.eu_prices" in res.content[0].text
     assert '"rows": [\n      [\n        4' in sql.content[0].text or "[[4]]" in sql.content[
