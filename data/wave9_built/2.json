@@ -25,7 +25,7 @@
   },
   "geometry": false,
   "rows": 81164,
-  "seconds": 7
+  "seconds": 9
  },
  "gb_neso_constraint_costs": {
   "as_of": "2026-10-31",
@@ -48,7 +48,41 @@
   },
   "geometry": false,
   "rows": 210,
-  "seconds": 3
+  "seconds": 4
+ },
+ "gb_neso_etys": {
+  "as_of": "2025-06-02",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -7.322,
+   50.209,
+   2.997,
+   59.308
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "boundary_n",
+   "id",
+   "geometry"
+  ],
+  "example": {
+   "answer": 34,
+   "sql": "SELECT count(*) FROM wave9.gb_neso_etys"
+  },
+  "geometry": true,
+  "rows": 34,
+  "seconds": 4,
+  "tiles": {
+   "fields": [
+    "boundary_n",
+    "id"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_neso_etys.pmtiles"
+  },
+  "with_position": 34
  },
  "gb_neso_tnuos": {
   "as_of": "2026-10-19",
@@ -152,7 +186,7 @@
   },
   "geometry": true,
   "rows": 7211,
-  "seconds": 1,
+  "seconds": 2,
   "with_position": 6053
  },
  "gb_npg_curtailment_events": {
@@ -231,7 +265,7 @@
   },
   "geometry": true,
   "rows": 670,
-  "seconds": 2,
+  "seconds": 1,
   "with_position": 670
  },
  "gb_npg_opendata": {
@@ -254,7 +288,7 @@
   },
   "geometry": false,
   "rows": 445,
-  "seconds": 1
+  "seconds": 2
  },
  "gb_ssen_opendata": {
   "as_of": "2026-10-12",
@@ -428,6 +462,6 @@
   },
   "geometry": false,
   "rows": 58920,
-  "seconds": 7
+  "seconds": 6
  }
 }
