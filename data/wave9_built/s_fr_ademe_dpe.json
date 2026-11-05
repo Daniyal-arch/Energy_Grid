@@ -1,0 +1,17 @@
+{
+ "fr_ademe_dpe": {
+  "built": "2026-11-05",
+  "columns": [
+   "code_departement_ban",
+   "etiquette_dpe",
+   "count"
+  ],
+  "example": {
+   "answer": 715,
+   "sql": "SELECT count(*) FROM wave9.fr_ademe_dpe"
+  },
+  "geometry": false,
+  "rows": 715,
+  "seconds": 1
+ }
+}

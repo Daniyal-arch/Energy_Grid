@@ -1,0 +1,35 @@
+{
+ "eu_salt_caverns": {
+  "bbox": [
+   -9.779,
+   37.051,
+   25.524,
+   58.058
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "kwh_per_m3",
+   "gwh_per_km2",
+   "storage_type",
+   "geometry"
+  ],
+  "example": {
+   "answer": 119,
+   "sql": "SELECT count(*) FROM wave9.eu_salt_caverns"
+  },
+  "geometry": true,
+  "rows": 119,
+  "seconds": 3,
+  "tiles": {
+   "fields": [
+    "kwh_per_m3",
+    "gwh_per_km2",
+    "storage_type"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_salt_caverns.pmtiles"
+  },
+  "with_position": 119
+ }
+}
