@@ -1,4 +1,52 @@
 {
+ "de_kba_districts": {
+  "as_of": "2026-04-28",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
+  "columns": [
+   "col_0",
+   "col_1",
+   "col_2",
+   "col_3",
+   "col_4",
+   "benzin",
+   "diesel",
+   "gas_einschl_bivalent",
+   "hybrid_insgesamt",
+   "darunter_plug_in_hybrid",
+   "elektro_bev",
+   "sonstige",
+   "euro_1",
+   "euro_2",
+   "euro_3",
+   "euro_4",
+   "euro_5",
+   "euro_6",
+   "darunter_euro_6d_temp",
+   "darunter_euro_6d",
+   "darunter_euro_6e",
+   "sonstige_21",
+   "schadstoff_reduzierte_insgesamt",
+   "euro_1_23",
+   "euro_2_24",
+   "euro_3_25",
+   "euro_4_26",
+   "euro_5_27",
+   "euro_6_28",
+   "darunter_euro_6d_temp_29",
+   "darunter_euro_6d_30",
+   "darunter_euro_6e_31",
+   "sonstige_32",
+   "schadstoffred_mit_dieselantrieb_insgesamt"
+  ],
+  "example": {
+   "answer": 448,
+   "sql": "SELECT count(*) FROM wave9.de_kba_districts"
+  },
+  "geometry": false,
+  "rows": 448,
+  "seconds": 2
+ },
  "eu_degree_days": {
   "built": "2026-11-05",
   "choro": {
@@ -24,7 +72,7 @@
   },
   "geometry": false,
   "rows": 39600,
-  "seconds": 4
+  "seconds": 14
  },
  "eu_energy_productivity": {
   "built": "2026-10-31",
@@ -74,7 +122,7 @@
   },
   "geometry": false,
   "rows": 15106,
-  "seconds": 2
+  "seconds": 3
  },
  "eu_heat_pumps": {
   "built": "2026-11-05",
@@ -98,7 +146,7 @@
   },
   "geometry": false,
   "rows": 24857,
-  "seconds": 3
+  "seconds": 10
  },
  "eu_new_cars_fuel": {
   "built": "2026-11-05",
@@ -154,7 +202,7 @@
   },
   "geometry": false,
   "rows": 18961,
-  "seconds": 2
+  "seconds": 3
  },
  "fr_ore_ev_commune": {
   "as_of": "2026-10-06",
@@ -176,7 +224,71 @@
   },
   "geometry": false,
   "rows": 773782,
-  "seconds": 6
+  "seconds": 5
+ },
+ "fr_ore_solar_commune": {
+  "as_of": "2026-10-23",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
+  "columns": [
+   "nominstallation",
+   "codeeicresourceobject",
+   "codeiris",
+   "codeinseecommune",
+   "commune",
+   "codeepci",
+   "epci",
+   "codedepartement",
+   "departement",
+   "coderegion",
+   "region",
+   "codeiriscommuneimplantation",
+   "codeinseecommuneimplantation",
+   "codes3renr",
+   "dateraccordement",
+   "datederaccordement",
+   "datemiseenservice",
+   "datedebutversion",
+   "postesource",
+   "tensionraccordement",
+   "moderaccordement",
+   "codefiliere",
+   "filiere",
+   "codecombustible",
+   "combustible",
+   "codescombustiblessecondaires",
+   "combustiblessecondaires",
+   "codetechnologie",
+   "technologie",
+   "typestockage",
+   "puismaxinstallee",
+   "puismaxraccharge",
+   "puismaxcharge",
+   "puismaxrac",
+   "puismaxinstalleedischarge",
+   "nbgroupes",
+   "nbinstallations",
+   "regime",
+   "energiestockable",
+   "capacitereservoir",
+   "hauteurchute",
+   "productible",
+   "debitmaximal",
+   "codegestionnaire",
+   "gestionnaire",
+   "energieannuelleglissanteinjectee",
+   "energieannuelleglissanteproduite",
+   "energieannuelleglissantesoutiree",
+   "energieannuelleglissantestockee",
+   "datemiseenservice_date"
+  ],
+  "example": {
+   "answer": 141589,
+   "sql": "SELECT count(*) FROM wave9.fr_ore_solar_commune"
+  },
+  "geometry": false,
+  "rows": 141589,
+  "seconds": 4
  },
  "gb_dec_certificates": {
   "as_of": "2026-10-27",
@@ -203,7 +315,43 @@
   },
   "geometry": false,
   "rows": 90,
-  "seconds": 25
+  "seconds": 19
+ },
+ "gb_desnz_subregional_fit": {
+  "as_of": "2026-09-28",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
+  "columns": [
+   "sheet",
+   "local_authority_code_note_1",
+   "local_authority_name_note_5_note_6_note_7_note_8_note_9",
+   "region",
+   "country",
+   "estimated_number_of_households_note_2_note_3_note_4",
+   "onshore_wind",
+   "offshore_wind",
+   "wave_tidal",
+   "solar_pv",
+   "hydro",
+   "landfill_gas",
+   "sewage_gas",
+   "municipal_solid_waste",
+   "cofiring",
+   "animal_biomass",
+   "anaerobic_digestion",
+   "plant_biomass",
+   "total",
+   "local_authority_name_note_5_note_6_note_7",
+   "local_authority_name_note_5",
+   "local_authority_name"
+  ],
+  "example": {
+   "answer": 4606,
+   "sql": "SELECT count(*) FROM wave9.gb_desnz_subregional_fit"
+  },
+  "geometry": false,
+  "rows": 4606,
+  "seconds": 2
  },
  "gb_dft_veh0142": {
   "as_of": "2026-09-18",
@@ -226,7 +374,7 @@
   },
   "geometry": false,
   "rows": 2520,
-  "seconds": 9
+  "seconds": 7
  },
  "gb_epc_stats": {
   "as_of": "2026-10-27",
@@ -252,7 +400,7 @@
   },
   "geometry": false,
   "rows": 90,
-  "seconds": 23
+  "seconds": 19
  },
  "gb_ulev_la": {
   "as_of": "2022-05-20",
@@ -337,6 +485,33 @@
   "rows": 1650,
   "seconds": 1
  },
+ "ie_seai_ber": {
+  "built": "2026-11-05",
+  "columns": [
+   "c04586v05371",
+   "c04586v05371_code",
+   "c03444v04153",
+   "c03444v04153_code",
+   "c03442v04151",
+   "c03442v04151_code",
+   "c03151v03803",
+   "c03151v03803_code",
+   "c03440v04149",
+   "c03440v04149_code",
+   "tlist_q1",
+   "tlist_q1_code",
+   "statistic",
+   "statistic_code",
+   "value"
+  ],
+  "example": {
+   "answer": 5698560,
+   "sql": "SELECT count(*) FROM wave9.ie_seai_ber"
+  },
+  "geometry": false,
+  "rows": 5698560,
+  "seconds": 40
+ },
  "nl_cbs_solar": {
   "built": "2026-11-05",
   "columns": [
@@ -355,7 +530,111 @@
   },
   "geometry": false,
   "rows": 78944,
-  "seconds": 26
+  "seconds": 33
+ },
+ "nl_rdw_vehicles": {
+  "built": "2026-11-05",
+  "columns": [
+   "brandstof_omschrijving",
+   "count"
+  ],
+  "example": {
+   "answer": 9,
+   "sql": "SELECT count(*) FROM wave9.nl_rdw_vehicles"
+  },
+  "geometry": false,
+  "rows": 9,
+  "seconds": 2
+ },
+ "us_afdc_registrations": {
+  "as_of": "2025-12-09",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
+  "columns": [
+   "state",
+   "registration_count"
+  ],
+  "example": {
+   "answer": 51,
+   "sql": "SELECT count(*) FROM wave9.us_afdc_registrations"
+  },
+  "geometry": false,
+  "rows": 51,
+  "seconds": 1
+ },
+ "us_cpc_degree_days": {
+  "as_of": "2026-01-02",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
+  "columns": [
+   "region",
+   "c_20250101",
+   "c_20250102",
+   "c_20250103",
+   "c_20250104",
+   "c_20250105",
+   "c_20250106",
+   "c_20250107",
+   "c_20250108",
+   "c_20250109",
+   "c_20250110",
+   "c_20250111",
+   "c_20250112",
+   "c_20250113",
+   "c_20250114",
+   "c_20250115",
+   "c_20250116",
+   "c_20250117",
+   "c_20250118",
+   "c_20250119",
+   "c_20250120",
+   "c_20250121",
+   "c_20250122",
+   "c_20250123",
+   "c_20250124",
+   "c_20250125",
+   "c_20250126",
+   "c_20250127",
+   "c_20250128",
+   "c_20250129",
+   "c_20250130",
+   "c_20250131",
+   "c_20250201",
+   "c_20250202",
+   "c_20250203",
+   "c_20250204",
+   "c_20250205",
+   "c_20250206",
+   "c_20250207",
+   "c_20250208",
+   "c_20250209",
+   "c_20250210",
+   "c_20250211",
+   "c_20250212",
+   "c_20250213",
+   "c_20250214",
+   "c_20250215",
+   "c_20250216",
+   "c_20250217",
+   "c_20250218",
+   "c_20250219",
+   "c_20250220",
+   "c_20250221",
+   "c_20250222",
+   "c_20250223",
+   "c_20250224",
+   "c_20250225",
+   "c_20250226",
+   "c_20250227",
+   "c_20250228"
+  ],
+  "example": {
+   "answer": 48,
+   "sql": "SELECT count(*) FROM wave9.us_cpc_degree_days"
+  },
+  "geometry": false,
+  "rows": 48,
+  "seconds": 1
  },
  "us_nyc_ll84": {
   "bbox": [
@@ -433,7 +712,7 @@
   },
   "geometry": true,
   "rows": 103259,
-  "seconds": 158,
+  "seconds": 390,
   "tiles": {
    "fields": [
     "name",
