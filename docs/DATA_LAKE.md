@@ -1196,3 +1196,17 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 | `wave9/wb_tx_val_ictg_zs_un` | Parquet | 9,576 | no |
 | `wave9/wb_tx_val_mmtl_zs_un` | Parquet | 9,576 | no |
 <!-- wave10:end -->
+
+## Brief 30 additions (2026-11-05)
+
+| Dataset / table | Built by | What | Size (measured) |
+|---|---|---|---|
+| `outlines/aliases` | `scripts/build_outlines.py aliases` (wave8 `Oaliases`) | other names of Overture divisions (English and EU languages, official and short forms), with the name index's columns; `alias_norm` sorted with a bloom filter | 634,255 rows, 34.7 MB |
+| `outlines/names` (`name_norm` added) | `build_outlines.py names` | the precomputed normal form the backend matches on | 3,397,857 rows, 129.0 MB |
+| `rollups/<dataset>__<table>_r<res>` | `scripts/build_rollups.py` (wave8 `U`) | per H3 cell (res 5, 6, 7) and up to three text columns: `n` and sums of capacity-like columns of every positioned table of 1 M rows or more | see the job summary |
+| `history/<dataset>__<table>` (partition `snapshot`) | `scripts/snapshot_tables.py` (`history.yml`, weekly) | copies of room-to-connect, queue and register tables, one partition per date, never overwritten | grows weekly |
+| `rasters/wave9/<id>.tif` | `scripts/wave9.py` kind `raster` | COGs of the wave rasters (fire danger, sea level rise, bathymetry, vessel density, climate projections...), measures in `agent/rasters_waves.yaml` | see `data/wave9_built/` |
+
+Per-table metadata (`TableInfo.meta` in `scripts/lake.py`, in each Parquet file's KV metadata and
+in `lake/_catalog.json`): `as_of` (the source's own date: stated in the registry, or the
+file's Last-Modified) with `as_of_basis`, and `refresh` (scripts/freshness.py).
