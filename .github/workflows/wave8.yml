@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
     inputs:
       groups:
-        description: "Groups (O R S M C A P T)"
+        description: "Groups (O R S M C A P T U)"
         type: string
         default: "O R S M C A P"
   push:
@@ -202,6 +202,21 @@ jobs:
         with: {python-version: "3.12"}
       - run: pip install httpx
       - run: python scripts/probe_wave8.py all | tee -a "$GITHUB_STEP_SUMMARY"
+
+  U:
+    # brief 30: H3 rollups (res 5-7) of the lake's large point tables (scripts/build_rollups.py)
+    needs: plan
+    if: contains(fromJSON(needs.plan.outputs.words), 'U')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - run: pip install httpx duckdb pycountry
+      - run: bash scripts/r2_creds.sh
+      - working-directory: scripts
+        run: python build_rollups.py --lake ../lake-out --upload | tee -a "$GITHUB_STEP_SUMMARY"
 
   T:
     needs: plan
