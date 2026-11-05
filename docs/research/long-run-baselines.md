@@ -18,3 +18,17 @@ in a Linux cloud container.
 | `index-*.css` | 110.25 kB | 18.14 kB |
 
 Vite warns: a chunk over 500 kB. Target (Track 5): initial JS under 500 kB gzip.
+
+## Frontend bundle after code-splitting (2026-11-05, Track 5.1)
+| Chunk | gzip | Loaded |
+|---|---|---|
+| `index-*.js` (entry: map, Layers panel, store) | 207.69 kB (was 863.14 kB with everything) | at start |
+| `maplibre-*.js` | 284.74 kB | at start (the map) |
+| `deckgl-*.js` (deck.gl, luma.gl, math.gl, loaders.gl) | 233.14 kB | at start (the map's layers) |
+| `react-*.js` | 45.49 kB | at start |
+| `Panel-*.js` (context panel and its cards) | 72.24 kB | after the first frame |
+| `WorldCards`, `CountryReport`, `Catalogue`, Ask, Maps view, dashboard builder | 1.7-15 kB each | when shown |
+
+Initial JS (entry + map libraries + React): 771 kB gzip, against the 500 kB target. MapLibre
+alone is 285 kB and deck.gl 233 kB; reaching 500 kB means loading deck.gl after the base map's
+first frame (a change to the render loop in `map/MapCanvas.tsx`), left for a follow-up.
