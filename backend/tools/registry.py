@@ -22,6 +22,7 @@ from tools.context import ToolContext, result
 from tools.live import LiveArgs, live
 from tools.maps import MakeChartArgs, MakeMapArgs, make_chart, make_map
 from tools.places import FindPlaceArgs, find_place
+from tools.quick import TEMPLATES, QuickArgs, quick
 from tools.site import SiteArgs, site_figures
 from tools.sql import DescribeTableArgs, RunSqlArgs, describe_table, run_sql
 
@@ -101,6 +102,15 @@ def specs() -> list[ToolSpec]:
             "and charts. 25 s limit.",
             RunSqlArgs,
             run_sql,
+        ),
+        ToolSpec(
+            "quick",
+            "Instant answers from fixed SQL templates over the app tables (no SQL to write), "
+            "each figure with source, method and as-of date: "
+            + "; ".join(f"{k} = {v}" for k, v in TEMPLATES.items())
+            + ". Prefer it over run_sql when a template fits.",
+            QuickArgs,
+            quick,
         ),
         ToolSpec(
             "find_place",
