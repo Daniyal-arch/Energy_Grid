@@ -385,6 +385,7 @@ class Areas:
     """Builds areas: searches outlines, unions, buffers and intersections in DuckDB spatial."""
 
     def __init__(self, lake: Any, gazetteer: Gazetteer, agent_dir: Path, store: AreaStore) -> None:
+        self._has_norm: bool | None = None
         self.lake = lake
         self.gaz = gazetteer
         self.agent_dir = agent_dir
@@ -769,17 +770,34 @@ class Areas:
                 )
         return out
 
+    def _names_norm(self, cur: Any) -> bool:
+        """Whether the name index carries `name_norm` (built since 2026-11-05)."""
+        if self._has_norm is None:
+            try:
+                cols = {r[0] for r in cur.execute("DESCRIBE outlines.names").fetchall()}
+                self._has_norm = "name_norm" in cols
+            except Exception:  # noqa: BLE001 - no index: the older query path
+                self._has_norm = False
+        return self._has_norm
+
     def _names_index(self, cur: Any, q: str) -> list[Candidate]:
         nn = (
             "trim(regexp_replace(replace(lower(strip_accents(name)), chr(39), ''), "
             "'[^a-z0-9]+', ' ', 'g'))"
         )
         try:
+            if self._names_norm(cur):  # the precomputed normal form: no scan of every name
+                where, rank = "name_norm = $q", "0"
+                if re.fullmatch(r"[a-z0-9 _-]*\d[a-z0-9 _-]*", q):  # a code (DE21, fr-75056): ids
+                    where += " OR lower(CAST(id AS VARCHAR)) = $q"
+                    rank = "CASE WHEN name_norm = $q THEN 0 ELSE 1 END"
+            else:
+                where = f"{nn} = $q OR lower(CAST(id AS VARCHAR)) = $q"
+                rank = f"CASE WHEN {nn} = $q THEN 0 ELSE 1 END"
             rows = cur.execute(
                 f"""SELECT "set", CAST(id AS VARCHAR), name, level, iso3, parent_name, population,
-                           xmin, ymin, xmax, ymax, CASE WHEN {nn} = $q THEN 0 ELSE 1 END
-                    FROM outlines.names WHERE {nn} = $q OR lower(CAST(id AS VARCHAR)) = $q
-                    LIMIT 400""",
+                           xmin, ymin, xmax, ymax, {rank}
+                    FROM outlines.names WHERE {where} LIMIT 400""",
                 {"q": q},
             ).fetchall()
         except Exception as e:

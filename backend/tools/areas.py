@@ -104,6 +104,33 @@ def _from_view(ctx: ToolContext, which: str) -> Area:
     return A.polygon([[ring]], "The map on screen", level="bbox")
 
 
+def _same_place(a: Candidate, b: Candidate) -> bool:
+    """One place found in two outline sets (Overture's region and the NUTS shape of Bayern):
+    the same country and boxes that overlap by half the smaller one."""
+    if tuple(a.iso3) != tuple(b.iso3):
+        return False
+    if not (a.bbox and b.bbox):
+        return (a.parent or "") == (b.parent or "")
+    w = min(a.bbox[2], b.bbox[2]) - max(a.bbox[0], b.bbox[0])
+    h = min(a.bbox[3], b.bbox[3]) - max(a.bbox[1], b.bbox[1])
+    if w <= 0 or h <= 0:
+        return False
+
+    def size(x: list[float]) -> float:
+        return max((x[2] - x[0]) * (x[3] - x[1]), 1e-12)
+
+    return w * h >= 0.5 * min(size(a.bbox), size(b.bbox))
+
+
+def _places(cands: list[Candidate]) -> list[Candidate]:
+    """The distinct places among candidates: one per group of the same place."""
+    out: list[Candidate] = []
+    for c in cands:
+        if not any(_same_place(c, o) for o in out):
+            out.append(c)
+    return out
+
+
 def _named_area(ctx: ToolContext, n: str, level: str | None, notes: list[str]) -> Area | None:
     """A name from agent/areas/named.yaml (the Ruhr, Silesia...) as the union of its members'
     outlines; None when the name is not one, or (when: fallback) an outline carries it."""
@@ -188,11 +215,7 @@ def resolve_area(
                     pick = found[0]
                     exact = [c for c in found if c.match == 0]
                     cls = LEVEL_CLASS.get(pick.level, 3)
-                    others = {
-                        (tuple(c.iso3), c.parent)
-                        for c in exact
-                        if LEVEL_CLASS.get(c.level, 3) == cls
-                    }
+                    others = _places([c for c in exact if LEVEL_CLASS.get(c.level, 3) == cls])
                     if len(names) == 1:
                         candidates = found
                     if len(others) > 1:

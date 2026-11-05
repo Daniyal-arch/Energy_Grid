@@ -69,7 +69,9 @@ def write_fixture_lake(root: Path) -> None:
     con.execute(
         f"""COPY (SELECT 'divisions' AS "set", id, name, level, NULL AS subtype, iso3, parent_name,
                   population, ST_XMin(geometry) AS xmin, ST_YMin(geometry) AS ymin,
-                  ST_XMax(geometry) AS xmax, ST_YMax(geometry) AS ymax
+                  ST_XMax(geometry) AS xmax, ST_YMax(geometry) AS ymax,
+                  trim(regexp_replace(replace(lower(strip_accents(name)), chr(39), ''),
+                       '[^a-z0-9]+', ' ', 'g')) AS name_norm
            FROM read_parquet('{root}/outlines/divisions.parquet'))
         TO '{root}/outlines/names.parquet' (FORMAT parquet)"""
     )

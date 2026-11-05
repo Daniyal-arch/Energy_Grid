@@ -18,6 +18,11 @@ on:
 permissions:
   contents: read
 
+# the pull request's path filter matches every push (it compares the whole PR): keep only the newest
+concurrency:
+  group: backend-probe-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   probe:
     runs-on: ubuntu-latest

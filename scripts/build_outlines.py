@@ -610,12 +610,15 @@ def names(args: argparse.Namespace) -> None:
     print(f"  indexing: {', '.join(sorted(local))}", flush=True)
     parts = [
         f"""SELECT '{t}' AS "set", id, name, level, subtype, iso3, parent_name, population,
-                   bbox.xmin AS xmin, bbox.ymin AS ymin, bbox.xmax AS xmax, bbox.ymax AS ymax
+                   bbox.xmin AS xmin, bbox.ymin AS ymin, bbox.xmax AS xmax, bbox.ymax AS ymax,
+                   {NORM_SQL.format(x="name")} AS name_norm
             FROM read_parquet('{src}', hive_partitioning = false)"""
         for t, src in sorted(local.items())
     ]
     lk = lake(args, "search index over the outline sets", "as each set")
-    lk.write(con, "names", " UNION ALL ".join(parts), sort=["name"], bloom=["name"])
+    # name_norm (the backend's normal form, precomputed): an equality test the row-group
+    # statistics and bloom filters answer, instead of normalising 3.4 M names per search
+    lk.write(con, "names", " UNION ALL ".join(parts), sort=["name_norm"], bloom=["name_norm"])
     w.lake_done(lk, args.upload)
 
 
