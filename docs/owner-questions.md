@@ -33,3 +33,26 @@ Croatia 0.892 (coastlines and islands). The open `countries.json` is 664 kB agai
 `frontend/src/app/data.ts`), plus option 3 for NUTS: no open dataset carries the NUTS codes the
 Eurostat series join on (geoBoundaries ADM1/ADM2 are CC BY 4.0 but carry their own codes, so
 every NUTS join would need a crosswalk by overlap).
+
+## 2. European Drought Observatory CDI: is the licence CC BY 4.0? (2026-11-05, Track 2.1)
+
+**Decision.** The Combined Drought Indicator NetCDF says in its own attributes that it is for
+"non-commercial purposes", while the file's `copyright.txt` and the JRC data catalogue entry
+both say CC BY 4.0. Evidence: `docs/research/page-only-batch-a.md` (`eu_edo_cdi`).
+
+**Options.** 1. Use it under CC BY 4.0 (the catalogue's licence). 2. Leave it out and ask JRC
+which statement applies (request in `docs/data-requests.md`).
+
+**Recommendation.** Option 2: the source is left out (`status: left_out`) until JRC confirms;
+drought is still covered for the US by other sources.
+
+## 3. The Crown Estate offshore wind sites: accept the licence? (2026-11-05, Track 2.1)
+
+**Decision.** The Crown Estate's open data licence for its offshore wind site layers is
+revocable and bars reuse "on a similar website or portal". Entry `gb_tce_offshore_wind` is left
+out.
+
+**Options.** 1. Keep it out. 2. Ask The Crown Estate for permission to show the layer in the
+atlas.
+
+**Recommendation.** Option 2 (the layer would fill GB's offshore zones cell); until then, out.

@@ -42,6 +42,21 @@ HAND = [
         "the Elia open-data portal) under an open licence.",
     ),
     (
+        "JRC (European Drought Observatory)",
+        "Combined Drought Indicator (CDI)",
+        "The NetCDF's attributes say 'non-commercial purposes'; copyright.txt and the JRC catalogue "
+        "say CC BY 4.0 (2026-11-05).",
+        "JRC EDO, which licence applies to the Combined Drought Indicator files, and confirmation "
+        "that commercial reuse under CC BY 4.0 is allowed.",
+    ),
+    (
+        "The Crown Estate",
+        "Offshore wind sites (England, Wales, Northern Ireland)",
+        "The open data licence is revocable and bars reuse on a similar website or portal.",
+        "The Crown Estate, permission to show the offshore wind site layers in the InfraAtlas map "
+        "with attribution.",
+    ),
+    (
         "IRENA",
         "Renewable Power Generation Costs, data file",
         "irena.org answers automated browsers with its Azure WAF page (2026-11-03).",

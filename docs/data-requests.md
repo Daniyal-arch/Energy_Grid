@@ -7,7 +7,7 @@ session. Each request should also ask the licence question:
 
 > May we redistribute the data, and show it in a commercial product, under an open licence (CC BY 4.0 or equivalent) with attribution?
 
-20 requests to 20 publishers.
+26 requests to 26 publishers.
 
 ## CLMS
 
@@ -57,11 +57,23 @@ session. Each request should also ask the licence question:
   - Why: ferc.gov answers HTTP 403 to an honest client (2026-10-31)
   - Request: FERC, the hydropower licence list as an open file
 
+## INE Portugal
+
+- **INE Portugal BGRI 2021 statistical subsections** (scripts/wave9_sources.yaml `pt_ine_bgri`)
+  - Why: mapas.ine.pt redirects every download (HTTP 302) to autenticacao.ine.pt/manutencao.html, "Site em manutenção" (2026-11-04); no other copy of BGRI 2021 on dados.gov.pt; rebuild when INE is back
+  - Request: INE Portugal, the BGRI 2021 subsections (GeoPackage) at a working download URL, with its licence stated
+
 ## IRENA
 
 - **Renewable Power Generation Costs, data file** (docs/owner-questions.md)
   - Why: irena.org answers automated browsers with its Azure WAF page (2026-11-03).
   - Request: IRENA, a direct download URL for the Renewable Power Generation Costs data file and its licence for reuse with attribution.
+
+## JRC (European Drought Observatory)
+
+- **Combined Drought Indicator (CDI)** (docs/owner-questions.md)
+  - Why: The NetCDF's attributes say 'non-commercial purposes'; copyright.txt and the JRC catalogue say CC BY 4.0 (2026-11-05).
+  - Request: JRC EDO, which licence applies to the Combined Drought Indicator files, and confirmation that commercial reuse under CC BY 4.0 is allowed.
 
 ## LBNL
 
@@ -81,6 +93,12 @@ session. Each request should also ask the licence question:
   - Why: misoenergy.org answers HTTP 403 to an honest client (2026-10-31)
   - Request: MISO, the MTEP project list as an open file
 
+## NGA
+
+- **NGA World Port Index (Pub 150)** (scripts/wave9_sources.yaml `world_port_index`)
+  - Why: the NGA MSI portal answers HTTP 503 "MSI is currently under maintenance" to the file, the WPI API and the WPI page (2026-11-04); rebuild when MSI is back
+  - Request: NGA, the World Port Index (Pub 150) CSV at its MSI download URL
+
 ## NSO Malta
 
 - **NSO Malta electricity consumption** (scripts/wave9_sources.yaml `mt_nso_consumption`)
@@ -92,6 +110,24 @@ session. Each request should also ask the licence question:
 - **Ofcom Connected Nations** (scripts/wave9_sources.yaml `gb_ofcom_connected_nations`)
   - Why: ofcom.org.uk answers HTTP 403 to an honest client (2026-10-31)
   - Request: Ofcom, Connected Nations data downloads reachable by scripts
+
+## RE100 Group
+
+- **ANU RE100 pumped hydro atlas** (scripts/wave9_sources.yaml `world_anu_phes`)
+  - Why: the site lists come only through the Pumped Hydro Shortlisting Tool, which needs a registered account (Register / Login, "Accounts are also used to manage user permissions"); the map layers are rendered WMS only, and no licence beyond "please acknowledge the RE100 Group" is stated (2026-11-05)
+  - Request: RE100 Group, ANU: the global greenfield and bluefield PHES site lists (coordinates, head, energy GWh, storage hours, cost class) as an open file under a stated licence that allows commercial reuse
+
+## Register at https
+
+- **Copernicus CDS heat and cold spell indicators** (scripts/wave9_sources.yaml `eu_cds_indicators`)
+  - Why: the CDS retrieve API answers HTTP 401 "authentication required" without a key (POST .../processes/sis-heat-and-cold-spells/execution, 2026-11-04); downloads need a (free) ECMWF account, the accepted dataset licence and CDSAPI_KEY
+  - Request: Register at https://cds.climate.copernicus.eu, accept the CC BY 4.0 licence of sis-heat-and-cold-spells and set CDSAPI_KEY as a repo secret (and in .env.example); a workflow then fetches the heat and cold spell day counts
+
+## The Crown Estate
+
+- **Offshore wind sites (England, Wales, Northern Ireland)** (docs/owner-questions.md)
+  - Why: The open data licence is revocable and bars reuse on a similar website or portal.
+  - Request: The Crown Estate, permission to show the offshore wind site layers in the InfraAtlas map with attribution.
 
 ## The Crown Estate / BGS
 
@@ -119,5 +155,5 @@ session. Each request should also ask the licence question:
 
 ## Keys to set (not requests: the owner adds them as repo secrets)
 
-- set CENSUS_API_KEY (free) as a repo secret: ACS median household income per tract
-- set FINGRID_API_KEY as a repo secret: Fingrid reserve markets
+- set CENSUS_API_KEY (free) as a repo secret: Income per area (US)
+- set FINGRID_API_KEY as a repo secret: Balancing and reserves (FI)

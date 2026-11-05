@@ -359,6 +359,22 @@ def census_tracts(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
     con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('{f}', all_varchar = true)")
 
 
+def zip_member(folder: Path, s: dict[str, Any]) -> Path:
+    """The table file of an unzipped archive: the one whose path matches `member` (a regex),
+    else the first CSV or text file. A matching zip inside the zip (zip-in-zip, e.g. SMU's heat
+    flow release) is unzipped in turn and read the same way with `inner`."""
+    if not s.get("member"):
+        return first_file(folder, (".csv", ".txt"))
+    rx = re.compile(s["member"], re.I)
+    hits = sorted(p for p in folder.rglob("*") if p.is_file() and rx.search(p.as_posix()))
+    if not hits:
+        raise SystemExit(f"no file matching {s['member']!r} in the archive")
+    f = hits[0]
+    if f.suffix.lower() == ".zip":
+        return zip_member(w.unzip(f), {"member": s.get("inner")} if s.get("inner") else {})
+    return f
+
+
 def load(con, s: dict[str, Any]) -> None:  # noqa: ANN001
     """The source into DuckDB table t, by kind; `urls` (several files of one kind) are stacked."""
     if s.get("urls"):
@@ -419,7 +435,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             time.sleep(30)
             f = w.download(url, f, timeout=3600)
         if kind == "csv_zip":
-            f = first_file(w.unzip(f), (".csv", ".txt"))
+            f = zip_member(w.unzip(f), s)
         if s.get("recode"):  # a legacy encoding DuckDB does not read: to UTF-8 first
             utf8 = f.with_suffix(".utf8.csv")
             utf8.write_text(f.read_bytes().decode(s["recode"], errors="replace"), encoding="utf-8")
