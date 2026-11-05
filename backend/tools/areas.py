@@ -104,6 +104,28 @@ def _from_view(ctx: ToolContext, which: str) -> Area:
     return A.polygon([[ring]], "The map on screen", level="bbox")
 
 
+def _coverage_counts(ctx: ToolContext, iso3: list[str]) -> dict[str, Any] | None:
+    """The coverage registry's cells for the area's countries, counted by status (brief 30):
+    every answer can say how much is published there; explain_coverage gives the reasons."""
+    from tools.quick import ISO3_TO_ISO2, _coverage
+
+    cov = _coverage(str(ctx.settings.atlas_root))
+    if not cov or not iso3 or len(iso3) > 3:
+        return None
+    out: dict[str, Any] = {}
+    for i3 in iso3:
+        cc = "US" if i3 == "USA" else "GB" if i3 == "GBR" else ISO3_TO_ISO2.get(i3, "")
+        counts: dict[str, int] = {}
+        for c in (cov["countries"].get(cc) or {}).values():
+            counts[c.get("status") or "?"] = counts.get(c.get("status") or "?", 0) + 1
+        if counts:
+            out[cc] = counts
+    if not out:
+        return None
+    why = "explain_coverage(area, family)"
+    return {"cells": out, "checked": cov.get("checked"), "reasons": why}
+
+
 def _same_place(a: Candidate, b: Candidate) -> bool:
     """One place found in two outline sets (Overture's region and the NUTS shape of Bayern):
     the same country and boxes that overlap by half the smaller one."""
@@ -309,6 +331,9 @@ def resolve_area(
             "outlines leave coastal and offshore records outside)"
         )
     data["datasets_at_level"] = ctx.areas.datasets_at(area.level)
+    cov = _coverage_counts(ctx, area.iso3)
+    if cov:
+        data["coverage"] = cov
     if candidates and (ambiguous or len(candidates) > 1):
         data["candidates"] = [c.as_dict() for c in candidates[:6]]
     if ambiguous:

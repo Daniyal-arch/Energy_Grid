@@ -16,7 +16,7 @@ def call(ctx, tool, **kw):
     out = by_name()[tool].run(ctx, **kw)
     assert set(out) >= {"data", "sources"}
     for s in out["sources"]:
-        assert set(s) == {"dataset", "table", "licence", "retrieved"}
+        assert set(s) - {"as_of"} == {"dataset", "table", "licence", "retrieved"}
     return out
 
 

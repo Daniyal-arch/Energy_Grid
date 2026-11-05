@@ -7,7 +7,8 @@
   map      {"id", "spec"}                   a validated MapSpec (open with ?map=<id>)
   chart    {"spec", "rows"}
   sources  {"sources": [{dataset, table, licence, retrieved}]}
-  done     {"trace_id", "answer", "grounding", "cost_usd", "latency_ms", "model", "maps"}
+  done     {"trace_id", "answer", "grounding", "cost_usd", "latency_ms", "model", "maps",
+            "suggestions"}   follow-up questions with data behind them (agent/suggest.py)
   error    {"message"}
 and a comment line (": heartbeat") every 15 s so proxies keep the connection open.
 """
@@ -77,6 +78,7 @@ async def graph_events(stream: AsyncIterator[tuple[str, Any]]) -> AsyncIterator[
                     "latency_ms": run["latency_ms"],
                     "model": run["model"],
                     "maps": run["maps"],
+                    "suggestions": run.get("suggestions", []),
                     "stop": run["stop"],
                 },
             )

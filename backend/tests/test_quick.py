@@ -119,3 +119,20 @@ def test_route_under_a_second():
         assert r.status_code == 200 and r.json()["tables"] and r.json()["text"]
         assert c.get("/api/quick/nope", params={"area": "Benelux"}).status_code == 404
         assert c.get("/api/quick/profile", params={"area": "Atlantis"}).status_code == 404
+
+
+def test_sources_carry_as_of_and_done_has_suggestions():
+    """Brief 30 Track 4.7: sources name their date; follow-up chips come from the data."""
+    out = asyncio.run(
+        GRAPH.ainvoke(
+            initial_state("Tell me about Germany", trace_id="t" * 32),
+            {"configurable": {"deps": build_deps(settings())}, "recursion_limit": 80},
+        )
+    )
+    srcs = out["tool_log"][0]["result"]["sources"]
+    assert any(s.get("as_of") for s in srcs)
+    from agent.suggest import area_ids_of, suggestions
+
+    chips = suggestions(build_deps(settings()).ctx, area_ids_of(out), "Tell me about Germany")
+    assert "Top 10 power plants in Germany" in chips and "Prices in Germany" in chips
+    assert all(match(c) for c in chips)
