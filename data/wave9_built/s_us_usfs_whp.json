@@ -1,38 +1,6 @@
 {
  "us_usfs_whp": {
-  "band": "whp2023_cnt_conus.tif (143 MB): continuous integer WHP index; whp2023_cls_conus.tif (23 MB): class 1 very low, 2 low, 3 moderate, 4 high, 5 very high, 6 non-burnable, 7 water; AK and HI files too",
-  "built": "2026-11-05",
-  "example": {
-   "answer": null,
-   "sql": "area_stats(measure='w9_us_usfs_whp')"
-  },
-  "raster": [
-   {
-    "bounds": [
-     -2189925.0,
-     389535.0001,
-     1548495.0,
-     2395635.0001
-    ],
-    "bytes": 6094389,
-    "cell": [
-     270.0,
-     270.0
-    ],
-    "crs": "EPSG:3338",
-    "dtype": "uint8",
-    "key": "lake/rasters/wave9/us_usfs_whp.tif",
-    "max": 8.0,
-    "min": 0.0,
-    "nodata": 255.0,
-    "size": [
-     13846,
-     7430
-    ]
-   }
-  ],
-  "rows": 0,
-  "seconds": 7,
-  "unit": "index (dimensionless) / class code"
+  "built": null,
+  "error": "HTTPStatusError: Server error '504 Gateway Time-out' for url 'https://www.fs.usda.gov/rds/archive/products/RDS-2015-0047-4/RDS-2015-0047-4_Data.zip'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504"
  }
 }
