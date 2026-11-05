@@ -56,3 +56,19 @@ out.
 atlas.
 
 **Recommendation.** Option 2 (the layer would fill GB's offshore zones cell); until then, out.
+
+## 4. Korea (KPX) live grid: is the licence open enough? (2026-11-05, Track 3.4)
+
+**Decision.** `scripts/fetch_kpx.py` reads KPX's public real-time pages (robots.txt allows them):
+demand, supply capacity, reserve and 13 source columns every 5 minutes (a test run: demand
+58,584 MW, the columns sum to 58,584.1 MW). KPX's own generation dataset on data.go.kr
+(15106744) says "이용허락범위 제한 없음" (no restriction on use), but the KPX site's footer says
+"ALL RIGHTS RESERVED". Evidence: `docs/research/live-grids-beyond-europe.md`.
+
+**Options.** 1. Wire it (eu-snapshot.yml step, a `korea` loader and card) on the strength of the
+data.go.kr licence. 2. Ask KPX which statement covers the real-time figures first.
+
+**Recommendation.** Option 2; the fetcher is ready and not wired. Alberta (AESO) was built too
+but its terms allow only non-commercial use, so it is left out (probe kept:
+`scripts/probe_aeso.py`). Chile (CEN) and Turkey (EPİAŞ) need accounts; India (Grid-India)
+answers neither the sandbox nor GitHub runners.
