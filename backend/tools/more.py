@@ -255,6 +255,29 @@ class CoverageArgs(BaseModel):
     family: str = Field(default="", description="a coverage family id or name; empty: all")
 
 
+def coverage_cells(ctx: ToolContext, iso3: list[str], family: str = "") -> list[dict[str, Any]]:
+    """The registry's cells for these countries and a family id or name (all when empty)."""
+    cov = _coverage(str(ctx.settings.atlas_root))
+    if not cov:
+        return []
+    fams = {f["id"]: f for f in cov["families"]}
+    f0 = family.lower()
+    want = [
+        k
+        for k, f in fams.items()
+        if not f0 or f0 in (k, f["name"].lower()) or f0 in f["name"].lower()
+    ]
+    cells = []
+    for i3 in iso3:
+        cc = "US" if i3 == "USA" else "GB" if i3 == "GBR" else ISO3_TO_ISO2.get(i3, "")
+        for k in want:
+            c = (cov["countries"].get(cc) or {}).get(k)
+            if c:
+                cells.append({"country": cc, "family": fams[k]["name"], "shows": fams[k].get("shows"),
+                              **{x: c.get(x) for x in ("status", "source", "note", "url", "dataset", "licence", "checked")}})  # fmt: skip
+    return cells
+
+
 def explain_coverage(ctx: ToolContext, area: str, family: str = "") -> dict[str, Any]:
     cov = _coverage(str(ctx.settings.atlas_root))
     if not cov:
@@ -263,22 +286,7 @@ def explain_coverage(ctx: ToolContext, area: str, family: str = "") -> dict[str,
         a = _area(ctx, area)
     except QuickError as e:
         return result({"error": str(e)}, [])
-    fams = {f["id"]: f for f in cov["families"]}
-    want = [
-        k
-        for k, f in fams.items()
-        if not family
-        or family.lower() in (k, f["name"].lower())
-        or family.lower() in f["name"].lower()
-    ]
-    cells = []
-    for i3 in a.get("iso3") or []:
-        cc = "US" if i3 == "USA" else "GB" if i3 == "GBR" else ISO3_TO_ISO2.get(i3, "")
-        for k in want:
-            c = (cov["countries"].get(cc) or {}).get(k)
-            if c:
-                cells.append({"country": cc, "family": fams[k]["name"], "shows": fams[k].get("shows"),
-                              **{x: c.get(x) for x in ("status", "source", "note", "url", "dataset", "licence", "checked")}})  # fmt: skip
+    cells = coverage_cells(ctx, a.get("iso3") or [], family)
     src = [
         {
             "dataset": "coverage registry",
