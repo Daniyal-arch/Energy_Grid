@@ -9,6 +9,7 @@ import time
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from app.deps import settings
@@ -70,3 +71,14 @@ def get_map(map_id: str) -> dict[str, Any]:
     if rec is None:
         raise HTTPException(404, "no such map")
     return rec
+
+
+@router.get("/api/exports/{name}")
+def export_file(name: str) -> FileResponse:
+    """A file the export tool wrote (brief 30): CSV, GeoJSON or Parquet with sources and terms."""
+    if not re.fullmatch(r"x_[0-9a-f]{12}\.(csv|geojson|parquet)", name):
+        raise HTTPException(404, "no such export")
+    p = settings().results_dir / name
+    if not p.exists():
+        raise HTTPException(404, "no such export (exports are kept on the instance that made them)")
+    return FileResponse(p, filename=name)
