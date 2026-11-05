@@ -7,7 +7,13 @@ session. Each request should also ask the licence question:
 
 > May we redistribute the data, and show it in a commercial product, under an open licence (CC BY 4.0 or equivalent) with attribution?
 
-26 requests to 26 publishers.
+31 requests to 31 publishers.
+
+## Bundesnetzagentur
+
+- **BNetzA grid expansion projects (Netzausbau)** (scripts/wave9_sources.yaml `de_netzausbau`)
+  - Why: the netzausbau.de map reads public ArcGIS layers (Monitoring_gdb 0 Vorhaben_BBPlG 157 lines, 1 Vorhaben_EnLAG 26 lines; Vorhabenpunkte 205; 2026-11-05) but the Impressum states the content is copyright of the Bundesnetzagentur: "Bitte kontaktieren Sie uns, falls Sie die Inhalte dieses Internetangebots verwenden wollen"; no open licence on the layers
+  - Request: Bundesnetzagentur, the Netzausbau project lines (BBPlG and EnLAG monitoring layers) under dl-de/by-2-0
 
 ## CLMS
 
@@ -111,17 +117,41 @@ session. Each request should also ask the licence question:
   - Why: ofcom.org.uk answers HTTP 403 to an honest client (2026-10-31)
   - Request: Ofcom, Connected Nations data downloads reachable by scripts
 
+## PJM
+
+- **PJM RPM capacity auction results** (scripts/wave9_sources.yaml `us_pjm_rpm`)
+  - Why: the public workbook answers (26,293 bytes, sheet RCP: resource clearing prices of every RPM auction per LDA, 2026-11-05) but no reuse terms could be read: the legal page renders no text without JavaScript and the old terms URLs go to /not-found; Data Miner 2 (api.pjm.com) answers 401 without a key
+  - Request: PJM, the terms of use for the RPM auction result workbooks (commercial reuse with attribution)
+
+## re-probe renewablesandchp.ofgem.gov.uk public reports from GitHub Actions
+
+- **Ofgem REGO register** (scripts/wave9_sources.yaml `gb_ofgem_rego`)
+  - Why: Ofgem points to the public reports of the Renewable Electricity Register for the accredited REGO stations, but renewablesandchp.ofgem.gov.uk could not be reached from the probe (proxy CONNECT tunnel failed, HTTP 502, twice on 2026-11-05); the ofgem.gov.uk REGO data page links no file
+  - Request: re-probe renewablesandchp.ofgem.gov.uk public reports from GitHub Actions; or Ofgem, the REGO accredited-station list as an open file (OGL)
+
 ## RE100 Group
 
 - **ANU RE100 pumped hydro atlas** (scripts/wave9_sources.yaml `world_anu_phes`)
   - Why: the site lists come only through the Pumped Hydro Shortlisting Tool, which needs a registered account (Register / Login, "Accounts are also used to manage user permissions"); the map layers are rendered WMS only, and no licence beyond "please acknowledge the RE100 Group" is stated (2026-11-05)
   - Request: RE100 Group, ANU: the global greenfield and bluefield PHES site lists (coordinates, head, energy GWh, storage hours, cost class) as an open file under a stated licence that allows commercial reuse
 
+## register a Quick Stats API key at https
+
+- **USDA NASS land values per state** (scripts/wave9_sources.yaml `us_nass_land_values`)
+  - Why: the Quick Stats API needs a key (free registration); the bulk file qs.economics_20260926.txt.gz listed on https://www.nass.usda.gov/datasets answers HTTP 404 with header x-nass-file-access: denied (HEAD 403) to the probe (2026-11-05)
+  - Request: register a Quick Stats API key at https://quickstats.nass.usda.gov/api and set NASS_API_KEY as a repo secret (query source_desc=SURVEY, statisticcat_desc=ASSET VALUE, short_desc AG LAND, INCL BUILDINGS - ASSET VALUE, MEASURED IN $ / ACRE, agg_level_desc=STATE)
+
 ## Register at https
 
 - **Copernicus CDS heat and cold spell indicators** (scripts/wave9_sources.yaml `eu_cds_indicators`)
   - Why: the CDS retrieve API answers HTTP 401 "authentication required" without a key (POST .../processes/sis-heat-and-cold-spells/execution, 2026-11-04); downloads need a (free) ECMWF account, the accepted dataset licence and CDSAPI_KEY
   - Request: Register at https://cds.climate.copernicus.eu, accept the CC BY 4.0 licence of sis-heat-and-cold-spells and set CDSAPI_KEY as a repo secret (and in .env.example); a workflow then fetches the heat and cold spell day counts
+
+## Terna
+
+- **Terna electricity consumption per province** (scripts/wave9_sources.yaml `it_terna_province`)
+  - Why: dati.terna.it download centre answers a JSON POST per year (filterDataset ElectricalEnergy, db dati: 428 rows a year, Anno/Regione/Provincia/Settore/Consumo (GWh), 2000-2024; 2026-11-04), but Terna states no reuse licence: the portal's "Note legali" link goes to the API portal terms, which allow use "esclusivamente per la fruizione dei servizi ... Ogni altro uso non sarà ritenuto lecito"
+  - Request: Terna, a reuse licence (e.g. CC BY 4.0) for the dati.terna.it download-centre statistics (consumption per province and sector)
 
 ## The Crown Estate
 
