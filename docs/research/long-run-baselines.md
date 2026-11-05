@@ -32,3 +32,12 @@ Vite warns: a chunk over 500 kB. Target (Track 5): initial JS under 500 kB gzip.
 Initial JS (entry + map libraries + React): 771 kB gzip, against the 500 kB target. MapLibre
 alone is 285 kB and deck.gl 233 kB; reaching 500 kB means loading deck.gl after the base map's
 first frame (a change to the render loop in `map/MapCanvas.tsx`), left for a follow-up.
+
+## Mobile and accessibility checks (2026-11-05, Track 5.4-5.5; headless Chromium, vite preview)
+- No horizontal scroll at 375, 768 and 1,280 px (`scrollWidth` equals the viewport).
+- Every button, input and select has a name (text, aria-label, title or placeholder): 0 unnamed.
+- Keyboard: 40 Tab stops from the map canvas through the top bar, Live/Years, the Layers panel
+  search and switches; 39 of 40 show a focus ring or outline (the one without is the map canvas).
+- New controls (coverage explorer cells, Ask chips, "Ask about this area") have
+  `focus-visible` outlines and aria labels; the explorer's statuses are named in each cell's
+  label, not by colour alone.

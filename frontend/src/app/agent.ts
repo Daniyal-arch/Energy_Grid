@@ -64,6 +64,8 @@ export interface Done {
   latency_ms?: number;
   model?: string;
   stop?: string | null;
+  /** follow-up questions with data behind them (the backend's agent/suggest.py) */
+  suggestions?: string[];
 }
 /** The router's plan: what kind of answer, a map, a chart, an edit, the skills it loads. */
 export interface Plan {
@@ -262,6 +264,58 @@ function onEvent(name: string, data: Record<string, unknown>): void {
   }
 }
 
+/** Read SSE events until the stream closes: the last event id seen and whether `done` (or
+ * `error`) arrived. Events at or before `after` (already shown) are skipped. */
+async function readStream(
+  body: ReadableStream<Uint8Array>,
+  after: number | null = null,
+): Promise<{ id: number | null; ended: boolean }> {
+  const reader = body.getReader();
+  const dec = new TextDecoder();
+  let buf = "";
+  let id = after;
+  let ended = false;
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let cut: number;
+    while ((cut = buf.indexOf("\n\n")) >= 0) {
+      const block = buf.slice(0, cut);
+      buf = buf.slice(cut + 2);
+      let ev = "";
+      let payload = "";
+      let eid: number | null = null;
+      for (const line of block.split("\n")) {
+        if (line.startsWith("event:")) ev = line.slice(6).trim();
+        else if (line.startsWith("data:")) payload += line.slice(5).trim();
+        else if (line.startsWith("id:")) eid = Number(line.slice(3).trim());
+      }
+      if (eid != null && after != null && eid <= after) continue;
+      if (eid != null) id = eid;
+      if (ev === "done" || ev === "error") ended = true;
+      if (ev && payload) {
+        try {
+          onEvent(ev, JSON.parse(payload));
+        } catch {
+          /* a malformed event is skipped */
+        }
+      }
+    }
+  }
+  return { id, ended };
+}
+
+/** An error as a sentence that says what to try. */
+function advice(msg: string): string {
+  if (/HTTP 429/.test(msg)) return "Too many questions from this address in the last hour: try again in a few minutes.";
+  if (/HTTP 413|longer than/.test(msg)) return "The question is too long: ask it in fewer words, or split it in two.";
+  if (/HTTP 5\d\d|Failed to fetch|NetworkError|connection dropped/.test(msg))
+    return `The answer service did not answer (${msg}). Try again; the map's own panels work without it.`;
+  if (/HTTP 404/.test(msg)) return "The answer service is not set up on this site yet: the map and its panels work without it.";
+  return msg;
+}
+
 /** Ask a question; the answer streams into the last message. */
 export async function ask(question: string): Promise<void> {
   const q = question.trim();
@@ -290,34 +344,20 @@ export async function ask(question: string): Promise<void> {
       const detail = await r.text().catch(() => "");
       throw new Error(`HTTP ${r.status}${detail ? `: ${detail.slice(0, 200)}` : ""}`);
     }
-    const reader = r.body.getReader();
-    const dec = new TextDecoder();
-    let buf = "";
-    for (;;) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream: true });
-      let cut: number;
-      while ((cut = buf.indexOf("\n\n")) >= 0) {
-        const block = buf.slice(0, cut);
-        buf = buf.slice(cut + 2);
-        let ev = "";
-        let payload = "";
-        for (const line of block.split("\n")) {
-          if (line.startsWith("event:")) ev = line.slice(6).trim();
-          else if (line.startsWith("data:")) payload += line.slice(5).trim();
-        }
-        if (ev && payload) {
-          try {
-            onEvent(ev, JSON.parse(payload));
-          } catch {
-            /* a malformed event is skipped */
-          }
-        }
-      }
+    // brief 30: the run outlives the connection; a stream that ends before `done` is resumed
+    // from the last event id it saw (GET /api/ask/{run_id}/stream, Last-Event-ID), twice at most
+    const runId = r.headers.get("x-run-id");
+    let last = await readStream(r.body);
+    for (let tries = 0; runId && last.ended === false && tries < 2; tries++) {
+      const again = await fetch(`${API_BASE}/api/ask/${runId}/stream`, {
+        headers: last.id != null ? { "Last-Event-ID": String(last.id) } : {},
+      });
+      if (!again.ok || !again.body) break;
+      last = await readStream(again.body, last.id);
     }
+    if (!last.ended) throw new Error("the connection dropped before the answer finished");
   } catch (e) {
-    patchLast((m) => ({ ...m, error: e instanceof Error ? e.message : String(e) }));
+    patchLast((m) => ({ ...m, error: advice(e instanceof Error ? e.message : String(e)) }));
   } finally {
     patchLast((m) => ({ ...m, pending: false }));
     useAgent.setState({ busy: false });

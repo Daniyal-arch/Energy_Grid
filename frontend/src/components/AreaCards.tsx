@@ -8,6 +8,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { useFile } from "../app/data";
+import { ask, useAgent } from "../app/agent";
 import type { CountriesFile, GasFile, GridFile, PlantsFile, ReferenceFile, StatsFile, WorldFile } from "../app/types";
 import { inside, kmInside, km2Text, makeShape, pick, readGrid, type AreaShape } from "../lib/area";
 import type { AtlasFile } from "../lib/atlas";
@@ -302,6 +303,13 @@ export function AreaOverviewCard({ s }: { s: AreaShape }) {
         People: the sum of the GHSL 0.1° cells whose centre lies inside (computed). Resources: the mean of the atlases' 0.1° lookup cells inside (computed; every n-th row and column for larger areas, as
         said), long-term averages. {!small && "These grids are read for areas under 2 million km²: draw a smaller area or pick a country."}
       </Note>
+      <button
+        onClick={() => askAbout(s)}
+        className="mt-1.5 rounded-md border border-sky-300/30 px-2 py-0.5 text-[11px] text-sky-200 hover:bg-sky-400/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+        title="Opens the Ask chat with this area: a named place gets an instant answer from the data"
+      >
+        ✦ Ask about this area
+      </button>
     </Card>
   );
 }
@@ -911,3 +919,12 @@ export function AreaCards({ s }: { s: AreaShape }) {
   );
 }
 
+
+
+/** Brief 30: the Ask chat about the area on the card. Countries go by name (an instant answer
+ * from the data); a drawn shape or circle goes to the agent, which reads it from the view. */
+function askAbout(s: AreaShape): void {
+  useAgent.setState({ open: true });
+  const named = s.kind === "countries" && s.label ? s.label : "";
+  void ask(named ? `Tell me about ${named}` : "What is in the area I drew? Plants, substations, lines and what is published there.");
+}

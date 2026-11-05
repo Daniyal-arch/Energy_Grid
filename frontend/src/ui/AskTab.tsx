@@ -247,6 +247,20 @@ function AgentMsg({ m }: { m: Msg }) {
         </div>
       )}
       {m.error && <div className="mt-1 text-[11px] text-red-300">{m.error}</div>}
+      {m.done?.suggestions?.length ? (
+        <div className="mt-1.5 flex flex-wrap gap-1" aria-label="Follow-up questions">
+          {m.done.suggestions.map((q) => (
+            <button
+              key={q}
+              onClick={() => void ask(q)}
+              className="rounded-full border border-white/10 px-2 py-0.5 text-[10.5px] text-slate-300 hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+              title="Answered at once from the data (no language model)"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
