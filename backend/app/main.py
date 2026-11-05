@@ -6,6 +6,8 @@ uv run uvicorn app.main:app --port 8080
 from __future__ import annotations
 
 import contextlib
+import hashlib
+import hmac
 import logging
 import threading
 import time
@@ -17,6 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from opentelemetry import propagate
 
+from agent.limits import MemoryLimits
 from app.routes import admin, areas, ask, catalog, feeds, health, maps, places, quick, report, site
 from app.settings import get_settings
 from obs import logging as jlog
@@ -56,7 +59,42 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         yield
 
 
-app = FastAPI(title="InfraAtlas backend", version=settings.version, lifespan=lifespan)
+app = FastAPI(
+    title="InfraAtlas data API",
+    version=settings.version,
+    lifespan=lifespan,
+    openapi_url="/api/openapi.json",
+    docs_url="/api/docs",
+    redoc_url=None,
+    description="Read-only figures of the power system, each with its sources and licences "
+    "(docs/product/data-api.md). Send X-API-Key for a key's own budget.",
+)
+
+
+# brief 30 Track 6.6: the read-only data routes as an API (OpenAPI at /api/openapi.json, docs
+# at /api/docs): an X-API-Key from DATA_API_KEYS gets its own budget, anonymous callers a budget
+# per address; 429 above it. Every response names its sources and licences in `sources`.
+DATA_ROUTES = (
+    "/api/quick", "/api/report", "/api/feed", "/api/catalog", "/api/places", "/api/areas",
+    "/api/shapes", "/api/site", "/api/exports",
+)  # fmt: skip
+_key_limits = MemoryLimits(settings.data_api_per_key_hour)
+_ip_limits = MemoryLimits(settings.data_api_per_ip_hour)
+
+
+def data_limit(request: Request) -> Response | None:
+    key = request.headers.get("x-api-key")
+    if key:
+        if not any(hmac.compare_digest(key, k) for k in settings.data_api_keys):
+            return JSONResponse({"error": "unknown API key"}, status_code=401)
+        ok = _key_limits.take("key:" + hashlib.sha256(key.encode()).hexdigest()[:16])
+    else:
+        h = request.headers
+        ip = h.get("cf-connecting-ip") or (h.get("x-forwarded-for") or "").split(",")[0].strip()
+        ok = _ip_limits.take("ip:" + (ip or (request.client.host if request.client else "?")))
+    if not ok:
+        return JSONResponse({"error": "too many requests; try again later"}, status_code=429)
+    return None
 
 
 @app.middleware("http")
@@ -76,6 +114,10 @@ async def context(
     length = int(request.headers.get("content-length") or 0)
     if length > settings.max_body_bytes:
         return JSONResponse({"error": "request body too large"}, status_code=413)
+    if path.startswith(DATA_ROUTES):
+        limited = data_limit(request)
+        if limited is not None:
+            return limited
     ctx = propagate.extract(dict(request.headers))
     from opentelemetry import context as otel_context
 

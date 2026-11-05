@@ -229,3 +229,26 @@ def test_rate_limit_per_mcp_key():
     call(b"k2")
     call(b"bad")
     assert sent == ["ok", "ok", 429, "ok", 401]
+
+
+def test_data_api_keys_and_budget(monkeypatch):
+    import app.main as m
+
+    monkeypatch.setattr(m.settings, "data_api_keys", ["k-data"])
+    monkeypatch.setattr(m, "_key_limits", m.MemoryLimits(2))
+    monkeypatch.setattr(m, "_ip_limits", m.MemoryLimits(1))
+    with TestClient(app) as c:
+        h = {"x-api-key": "k-data"}
+        assert [
+            c.get("/api/places", params={"q": "Lyon"}, headers=h).status_code for _ in range(3)
+        ] == [200, 200, 429]
+        assert (
+            c.get("/api/places", params={"q": "Lyon"}, headers={"x-api-key": "nope"}).status_code
+            == 401
+        )
+        assert [c.get("/api/places", params={"q": "Lyon"}).status_code for _ in range(2)] == [
+            200,
+            429,
+        ]
+        assert c.get("/api/health").status_code == 200  # not a data route
+        assert c.get("/api/openapi.json").json()["info"]["title"] == "InfraAtlas data API"
