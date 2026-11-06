@@ -1424,6 +1424,57 @@ def admie_files(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
 CUSTOM["gr_admie_balancing"] = admie_files
 
 
+def regelleistung_results(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """regelleistung.net tender results (cpp-publisher API, one xlsx per day, market and
+    product type: `markets`, e.g. "CAPACITY:FCR"), every day from `start`; rows as published (the
+    workbook's columns per country), with `market` and `product_type`. Four requests at a time."""
+    import datetime as dt
+    import io
+
+    import pandas as pd
+
+    api = "https://www.regelleistung.net/apps/cpp-publisher/api/v1/download/tenders/resultsoverview"
+    start, today = dt.date.fromisoformat(s["start"]), dt.date.today()
+    jobs = [
+        (start + dt.timedelta(days=i), *m.split(":"))
+        for i in range((today - start).days + 1)
+        for m in s["markets"]
+    ]
+    with httpx.Client(headers=UA, timeout=120, follow_redirects=True) as c:
+
+        def one(job: tuple[Any, str, str]) -> bytes:
+            day, market, product = job
+            q = {
+                "date": day.isoformat(),
+                "exportFormat": "xlsx",
+                "market": market,
+                "productTypes": product,
+            }
+            r = c.get(api, params=q)
+            return r.content if r.status_code == 200 and r.content.startswith(b"PK") else b""
+
+        with cf.ThreadPoolExecutor(4) as ex:
+            blobs = list(ex.map(one, jobs))
+    rows: list[dict[str, Any]] = []
+    for (_, market, product), blob in zip(jobs, blobs, strict=True):
+        if not blob:  # no tender that day (or no file yet)
+            continue
+        df = pd.read_excel(io.BytesIO(blob))  # parsed here: openpyxl is not thread-safe to import
+        df.insert(0, "market", market)
+        df.insert(1, "product_type", product)
+        rows += json.loads(df.to_json(orient="records", date_format="iso"))
+    if not rows:
+        raise SystemExit("no tender results read")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows), encoding="utf-8")
+    con.execute(
+        f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array', sample_size = -1, union_by_name = true)"
+    )
+
+
+CUSTOM["de_regelleistung"] = regelleistung_results
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
