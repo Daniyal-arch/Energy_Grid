@@ -1,6 +1,6 @@
 {
  "eu_entsoe_balancing": {
   "built": null,
-  "error": "ModuleNotFoundError: No module named 'dotenv'"
+  "error": "ParseError: not well-formed (invalid token): line 1, column 2"
  }
 }
