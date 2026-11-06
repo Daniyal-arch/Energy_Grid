@@ -908,6 +908,66 @@ def overture_comm_lines(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN00
 CUSTOM["eur_overture_comm_lines"] = overture_comm_lines
 
 
+def eirgrid_dispatch_down(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """EirGrid's dispatch-down workbook, sheet `sheet`: a band per year (a title row naming
+    each section, a header row, month and quarter rows) and, side by side, one section per area
+    and technology (All Island / Ireland / Northern Ireland; wind, solar), each with a
+    "Volumes (MWh)" and a "Percentages" group. Long form: area, year, period, measure, unit,
+    value, as published (quarters are the workbook's own sums, kept and labelled)."""
+    import pandas as pd
+
+    f = w.download(s["url"], d / "src.xlsx", timeout=600)
+    df = pd.read_excel(f, sheet_name=s["sheet"], header=None)
+    rows: list[dict[str, Any]] = []
+    i = 0
+    while i < len(df) - 1:
+        title = df.iloc[i]
+        groups = {c: str(v).strip() for c, v in title.items() if isinstance(v, str)}
+        areas = {
+            c: v for c, v in groups.items() if not v.lower().startswith(("volumes", "percent"))
+        }
+        if not areas or not any(v.lower().startswith("volumes") for v in groups.values()):
+            i += 1
+            continue
+        head = df.iloc[i + 1]
+        starts = sorted(areas)
+        j = i + 2
+        while j < len(df) and not any(
+            isinstance(df.iloc[j, c], str) and c in areas for c in starts
+        ):
+            r = df.iloc[j]
+            for k, c0 in enumerate(starts):
+                end = starts[k + 1] if k + 1 < len(starts) else len(r)
+                year, period = r.iloc[c0], r.iloc[c0 + 1]
+                if pd.isna(period):
+                    continue
+                if not pd.isna(year):
+                    areas_year = int(year) if str(year).strip().isdigit() else None
+                    groups[("year", c0)] = areas_year  # type: ignore[index]
+                y = groups.get(("year", c0))  # type: ignore[call-overload]
+                unit = "MWh"
+                for c in range(c0 + 2, end):
+                    g = groups.get(c, "")
+                    if g.lower().startswith("percent"):
+                        unit = "%"
+                    elif g.lower().startswith("volumes"):
+                        unit = "MWh"
+                    name, v = head.iloc[c], r.iloc[c]
+                    if isinstance(name, str) and not pd.isna(v) and isinstance(v, int | float):
+                        rows.append({"area": areas[c0], "year": y, "period": str(period).strip(),
+                                     "measure": " ".join(name.split()), "unit": unit, "value": float(v)})  # fmt: skip
+            j += 1
+        i = j
+    if not rows:
+        raise SystemExit("no rows read from the workbook")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["ie_eirgrid_dispatch_down"] = eirgrid_dispatch_down
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
