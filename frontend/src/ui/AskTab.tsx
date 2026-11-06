@@ -6,7 +6,7 @@
 
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 
-import { ask, clearConversation, removeAgentMap, showAgentMap, useAgent, type ChartMsg, type Msg, type ToolStep } from "../app/agent";
+import { API_BASE, ask, clearConversation, removeAgentMap, showAgentMap, useAgent, type ChartMsg, type Msg, type ToolStep } from "../app/agent";
 import { useApp } from "../app/store";
 import type { Overlay } from "../lib/mapspec";
 import { rgbCss } from "../lib/theme";
@@ -247,6 +247,26 @@ function AgentMsg({ m }: { m: Msg }) {
         </div>
       )}
       {m.error && <div className="mt-1 text-[11px] text-red-300">{m.error}</div>}
+      {m.done && m.tools.some((t) => t.result_id) && (
+        <div className={`mt-1 text-[10px] ${muted}`}>
+          Data:{" "}
+          {m.tools
+            .filter((t) => t.result_id)
+            .slice(-3)
+            .map((t) => (
+              <span key={t.result_id!} className="mr-2">
+                {t.name} ({t.rows ?? "?"} rows){" "}
+                <a className="text-sky-300 hover:text-sky-200" href={`${API_BASE}/api/export?result_id=${t.result_id}&format=csv`}>
+                  CSV
+                </a>{" "}
+                <a className="text-sky-300 hover:text-sky-200" href={`${API_BASE}/api/export?result_id=${t.result_id}&format=geojson`}>
+                  GeoJSON
+                </a>
+              </span>
+            ))}
+          <span>(with sources and licence terms; refused where a source forbids redistribution)</span>
+        </div>
+      )}
       {m.done?.suggestions?.length ? (
         <div className="mt-1.5 flex flex-wrap gap-1" aria-label="Follow-up questions">
           {m.done.suggestions.map((q) => (

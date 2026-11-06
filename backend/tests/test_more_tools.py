@@ -71,3 +71,17 @@ def test_export_csv_with_terms_and_refusal(ctx):
 def test_explain_coverage(ctx):
     d = explain_coverage(ctx, "France", "room to connect")["data"]
     assert d["cells"] and d["cells"][0]["country"] == "FR" and d["cells"][0]["status"]
+
+
+def test_export_route():
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+
+    ctx = ToolContext(settings())
+    r = run_sql(ctx, "SELECT name, lon, lat FROM app.eu_plants WHERE country = 'LU'")
+    with TestClient(app) as c:
+        got = c.get("/api/export", params={"result_id": r["result_id"], "format": "csv"})
+        assert got.status_code == 200 and got.text.startswith("name,lon,lat")
+        assert c.get("/api/export", params={"result_id": "r_000000000000"}).status_code == 404
+        assert c.get("/api/export", params={"result_id": "x"}).status_code == 422

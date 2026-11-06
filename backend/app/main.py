@@ -76,7 +76,7 @@ app = FastAPI(
 # per address; 429 above it. Every response names its sources and licences in `sources`.
 DATA_ROUTES = (
     "/api/quick", "/api/report", "/api/feed", "/api/catalog", "/api/places", "/api/areas",
-    "/api/shapes", "/api/site", "/api/exports",
+    "/api/shapes", "/api/site", "/api/export",
 )  # fmt: skip
 _key_limits = MemoryLimits(settings.data_api_per_key_hour)
 _ip_limits = MemoryLimits(settings.data_api_per_ip_hour)

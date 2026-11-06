@@ -52,6 +52,8 @@ export interface ToolStep {
   ms?: number;
   rows?: number | null;
   error?: string | null;
+  /** the stored result (export as CSV or GeoJSON: GET /api/export) */
+  result_id?: string | null;
 }
 export interface ChartMsg {
   spec: ChartSpec;
@@ -243,7 +245,7 @@ function onEvent(name: string, data: Record<string, unknown>): void {
       if (t.status === "running") return { ...m, tools: [...m.tools, { name: t.name, args: t.args, status: "running" }] };
       const tools = m.tools.slice();
       const i = tools.map((x) => x.name).lastIndexOf(t.name);
-      if (i >= 0) tools[i] = { ...tools[i], status: "done", ms: t.ms, rows: t.rows, error: t.error };
+      if (i >= 0) tools[i] = { ...tools[i], status: "done", ms: t.ms, rows: t.rows, error: t.error, result_id: t.result_id };
       return { ...m, tools };
     });
   } else if (name === "plan") {

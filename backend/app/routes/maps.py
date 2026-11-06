@@ -82,3 +82,18 @@ def export_file(name: str) -> FileResponse:
     if not p.exists():
         raise HTTPException(404, "no such export (exports are kept on the instance that made them)")
     return FileResponse(p, filename=name)
+
+
+@router.get("/api/export")
+def export_result(result_id: str, format: str = "csv") -> FileResponse:
+    """A stored result as a file with its sources and terms (the export tool, brief 30)."""
+    from tools.more import ExportArgs, export
+
+    try:
+        args = ExportArgs.model_validate({"result_id": result_id, "format": format})
+    except Exception as e:
+        raise HTTPException(422, "result_id r_... and format csv, geojson or parquet") from e
+    r = export(ToolContext(settings()), args.result_id, args.format)
+    if "error" in r["data"]:
+        raise HTTPException(404, r["data"]["error"])
+    return FileResponse(settings().results_dir / r["data"]["file"], filename=r["data"]["file"])
