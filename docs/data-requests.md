@@ -7,7 +7,7 @@ session. Each request should also ask the licence question:
 
 > May we redistribute the data, and show it in a commercial product, under an open licence (CC BY 4.0 or equivalent) with attribution?
 
-49 requests to 44 publishers.
+51 requests to 46 publishers.
 
 ## BMWE / BfEE
 
@@ -38,6 +38,18 @@ session. Each request should also ask the licence question:
 - **Destatis regional table 43531 (industry energy use per district)** (scripts/wave9_sources.yaml `de_destatis_43531`)
   - Why: GENESIS (Regionalstatistik) tables are downloadable only with a registered account
   - Request: Destatis, an open download URL for table 43531-01-02-4 (dl-de/by-2-0)
+
+## EAC (Distribution System Operator)
+
+- **EAC DSO daily PV curtailment reports (Cyprus)** (scripts/wave9_sources.yaml `cy_eac_pv_curtailment`)
+  - Why: monthly PDFs CURTAILMENTS_MM_YYYY.pdf / ΠΕΡΙΚΟΠΕΣ_MM_YYYY.pdf (2022-2025 yearly, 2026-01..10 monthly; Oct 2026 = 31 pages, 9 MB) hold one page per curtailment day: date, start/end of curtailment per group, "Instruction from TSOC", reason, total estimated energy (MWh), estimated curtailed energy (MWh), % curtailed, ripple/IoT cut-off energy (e.g. 01/10/2026: 1110.8 of 1674 MWh, 66.36 %). The EAC terms allow own use only and forbid reproduction on another site without written consent
+  - Request: EAC (Distribution System Operator), a reuse licence allowing commercial use (e.g. CC BY 4.0) for the daily PV curtailment reports, ideally also as one CSV (date, estimated energy, curtailed energy, percent)
+
+## EAC / TSOC
+
+- **EAC/TSOC RES hosting capacity of transmission substations (Cyprus)** (scripts/wave9_sources.yaml `cy_eac_hosting_capacity`)
+  - Why: EAC's RES page links the dashboard "Δυναμικότητα ΑΠΕ Υποσταθμών Μεταφοράς" (ArcGIS Online item 134fdd8988d44ade8dd33b5c1c26ca65, owner eacYIoannou: hosted and available RES capacity per transmission substation, DSO-EAC and TSOC). Its two feature layers (Transmission_Substations_RES_Hosting_WFL1 and _SArea) are utility.arcgis.com secured proxies that answer 403 GWM_0003 to a direct query (2026-11-06; not bypassed), and no licence is stated
+  - Request: EAC / TSOC, the substation hosting-capacity layer as a public feature service or file with a reuse licence allowing commercial use
 
 ## EFFIS
 

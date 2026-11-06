@@ -572,6 +572,7 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 | `wave9/eu_tent_network` | GeoParquet (bbox, Hilbert order) | 4,767 | 4767 |
 | `wave9/gb_srn` | GeoParquet (bbox, Hilbert order) | 43,040 | 43040 |
 | `wave9/us_fhwa_afc` | GeoParquet (bbox, Hilbert order) | 2,275 | 2275 |
+| `wave9/eu_eea_aq_stats` | GeoParquet (bbox, Hilbert order) | 16,343 | 16343 |
 | `wave9/gb_defra_aurn` | GeoParquet (bbox, Hilbert order) | 2,448 | 2446 |
 | `wave9/us_epa_aqs_annual` | GeoParquet (bbox, Hilbert order) | 65,709 | 65709 |
 | `wave9/fr_enedis_interruptions` | Parquet | 94 | no |

@@ -156,6 +156,15 @@ balancing:
       A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
       (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
 congestion:
+  BG:
+    checked: '2026-11-06'
+    note: 'Searched in Bulgarian (''редиспечиране'', ''ограничаване'', ''ограничения ВЕИ'', ESO, КЕВР): eso.bg publishes live generation/load, historical generation, balancing forecasts, the free-capacity
+      map (connect) and the MMS portal; no redispatch or curtailment series. Press (Capital 2024) reports ESO curtailment orders, and the ministry required ESO to publish its justification, but no such
+      list or file was found on eso.bg.'
+  CY:
+    checked: '2026-11-06'
+    note: 'Searched in Greek and English (''περικοπές ΑΠΕ'', ''curtailment''): EAC''s DSO publishes daily PV curtailment reports as monthly PDFs (2022 onward; per day: estimated energy, curtailed MWh, %,
+      TSOC instruction), but EAC''s terms allow own use only and forbid reproduction without written consent: cy_eac_pv_curtailment (blocked). TSOC answers 403 behind Cloudflare.'
   DK:
     checked: '2026-11-05'
     note: 'Searched Energi Data Service (Danish/English catalogue, ''countertrade'', ''special regulation''): new source dk_energinet_countertrade (CountertradeIntraday_v2, 15-min up/down MW, CC BY 4.0).'
@@ -168,24 +177,96 @@ congestion:
   GR:
     checked: '2026-11-05'
     note: IPTO's file API list for 2026-10-01 holds no redispatch or curtailment file (balancing, ISP, availability, load); and IPTO states no reuse licence (see gr_admie_balancing).
+  HR:
+    checked: '2026-11-06'
+    note: 'Searched in Croatian (''redispečiranje'', ''ograničenja'', HOPS, HERA, data.gov.hr: nothing): HOPS market and balancing pages link rules only; the yearly ''Temeljni podaci'' PDFs (2009-2025;
+      2025 read) carry no redispatch figures; HERA publishes approvals of the HOPS-HEP cross-border redispatch contract (2026) and congestion-income reports (PDF) without a series.'
   IE:
     checked: '2026-11-05'
     note: 'Searched EirGrid (English, ''dispatch down'', ''constraints and curtailment''): new source ie_eirgrid_dispatch_down (monthly MWh and % per jurisdiction and region, EirGrid Group Open Data Licence).'
+  LU:
+    checked: '2026-11-06'
+    note: 'Searched in German, French and English (''Redispatch'', ''Netzengpass'', ''congestion'', Creos, ILR, data.public.lu: 0 datasets for redispatch/Creos): Creos publishes no redispatch or curtailment
+      series; Luxembourg is in Amprion''s load-frequency control block, so redispatch involving it is reported on the German side (netztransparenz.de / SMARD), not per LU.'
+  MT:
+    checked: '2026-11-06'
+    note: 'Searched in English (''curtailment'', Enemalta, REWS): Enemalta''s site search and WordPress API return no curtailment page (its ''Available Capacity'' page belongs to connect); REWS and the
+      NAO''s 2024 distribution review are reports (PDF) without a series. Not published as data.'
+  RO:
+    checked: '2026-11-06'
+    note: 'Searched in Romanian (''redispecerizare'', ''congestii'', ''contrapartidă'', Transelectrica, ANRE): Transelectrica''s market, balancing and system-services pages link no redispatch data; congestion
+      costs appear only in quarterly financial reports and the ANRE-approved structural congestion report (PDF, 2020). Not published as data.'
   SE:
     checked: '2026-11-05'
     note: 'Searched SVK''s data service (Swedish ''mothandel'', ''specialreglering'', ''countertrade'', ''redispatch''): its CKAN lists 10 packages, none on countertrade or redispatch; Mimer states no licence.
       Still not published as open data.'
+  SI:
+    checked: '2026-11-06'
+    note: 'Searched in Slovenian (''redispečing'', ''prerazporejanje'', ''omejitve'', ELES, Agencija za energijo, podatki.gov.si: 0 datasets): ELES operation, system-services and notices pages carry no
+      redispatch or countertrading data; only cross-border capacity, balancing auctions and the hosting-capacity PDF (connect). Not published as data.'
   SK:
     checked: '2026-11-05'
     note: 'Searched in Slovak (''redispečing'', SEPS, ÚRSO): only tender documents and ÚRSO decisions (PDF), no series as data.'
 connect:
+  AL:
+    checked: '2026-11-06'
+    note: 'Searched in Albanian (''kapaciteti i lirë'', ''lidhje në rrjetin e transmetimit'', OST, ERE): ost.al still answers 403 (Cloudflare challenge, not bypassed); OST''s 2022 activity report (PDF)
+      gives substation counts only; press reports >10 GW waiting for grid access, but no queue or capacity file found.'
+  BA:
+    checked: '2026-11-06'
+    note: 'Searched in Bosnian/Serbian (''raspoloživi kapacitet'', ''priključenje'', ''registar zahtjeva'', Elektroprenos BiH, NOS BiH, DERK): elprenos.ba and nosbih.ba home pages carry no connection or
+      capacity links (2026-11-06); DERK lists licence and permit registers only; press cites NOS BiH''s indicative generation plan (PDF) but no per-substation capacity or queue file.'
   BE:
     checked: '2026-11-05'
     note: 'Searched Elia Open Data (110 datasets listed): ods183 congestion risk indicator per electrical zone exists but is an operational signal, not connection capacity: be_elia_congestion_risk (left_out).
       Elia''s hosting-capacity map still behind Cloudflare.'
+  CY:
+    checked: '2026-11-06'
+    note: 'Searched in Greek and English (EAC DSO site pilot.eac.com.cy WordPress search/media API: ''δυναμικότητα'', ''χωρητικότητα'', ''hosting capacity''; TSOC and CERA answer 403 behind Cloudflare).
+      EAC''s RES page links the ArcGIS dashboard ''Δυναμικότητα ΑΠΕ Υποσταθμών Μεταφοράς'' (hosted and available RES capacity per transmission substation), but both feature layers are utility.arcgis.com
+      secured proxies answering 403 to a direct query (not bypassed) and EAC''s terms forbid reproduction without written consent: cy_eac_hosting_capacity (blocked).'
+  IS:
+    checked: '2026-11-06'
+    note: 'Searched in Icelandic (''laus flutningsgeta'', ''tengigeta'', ''afhendingargeta'', ''tenging við flutningskerfið''): Landsnet publishes connection guidance, an enquiry form, the system plan (kerfisáætlun,
+      PDF) and a grid map viewer (map.is/landsnet) with no capacity layer; RARIK''s distribution map (arcgis-y1.rarik.is) did not answer from the sandbox. No capacity map, list or file published.'
+  LV:
+    checked: '2026-11-06'
+    note: 'Searched in Latvian (''brīvā jauda'', ''pieslēgums'', ''apakšstacija''; data.gov.lv CKAN: nothing; AST answers 403 behind Cloudflare). Sadales tīkls'' map karte.sadalestikls.lv/lv/briva-jauda
+      now answers HTTP 200 to an honest client and its page JS reads <url>/all: 132 medium-voltage substations with free capacity for load and generation (MW), name, number, LKS-92 coordinates, update date
+      2026-11-02: new source lv_st_free_capacity (build; licence quote pending, sadalestikls.lv terms page unreachable from the sandbox).'
+  MD:
+    checked: '2026-11-06'
+    note: 'Searched in Romanian (''capacitate disponibilă'', ''racordare'', Moldelectrica, Premier Energy Distribution, RED Nord, ANRE): moldelectrica.md answers 403 (Cloudflare challenge); only connection
+      request forms and the TYNDP (PDF) are indexed; a 2024 government decision requires informing producers of available capacity, but no map or file is published.'
+  ME:
+    checked: '2026-11-06'
+    note: 'Searched in Montenegrin (''priključenje na prenosnu mrežu'', ''kapacitet'', CGES, CEDIS): CGES''s connection page describes the procedure and links cross-border capacity auctions only; CEDIS
+      publishes forms and technical requirements for small plants; no capacity map, list or file.'
+  MK:
+    checked: '2026-11-06'
+    note: 'Searched in Macedonian (''слободен капацитет за приклучување'', ''приклучоци'', MEPSO, Електродистрибуција, ERC): MEPSO''s ''Приклучоци'' page holds the connection request form and templates
+      only (''© 2026 МЕПСО. Сите права се задржани''); ERC decisions show Elektrodistribucija refusing connections for lack of capacity, but no capacity data is published.'
   'NO':
     checked: '2026-11-05'
     note: 'Searched in Norwegian (''ledig kapasitet'', ''kapasitetskart'', Statnett, Elvia): only reports and press; Statnett''s request/reservation view is Power BI. Still not published as data.'
+  RO:
+    checked: '2026-11-06'
+    note: 'Searched in Romanian (''capacitate disponibilă'', ''alocarea capacității'', ''zone de rețea'', Transelectrica, ANRE, data.gov.ro unreachable). Transelectrica''s capacity-allocation page now publishes
+      as HTML tables the available capacity (MW) and auction starting price (lei/MW) per grid zone A-J and allocation year 2028-2037 (ANRE Order 53/2024 art. 6); zones are defined by counties in Anexa 4
+      (PDF): new source ro_transelectrica_zone_capacity (build; needs an HTML-table kind; no licence stated, public notice as for AT/BG). The requested capacity per zone stays an image.'
+  RS:
+    checked: '2026-11-06'
+    note: 'Searched in Serbian (Cyrillic and Latin: ''прикључење на преносни систем'', ''списак захтева'', ''slobodni kapacitet''). EMS publishes no free-capacity map, but its connection page links the
+      list of all connection requests (one-page PDF, 2026-11-04: plant, type, kV, requested and approved MW, location, phase, dates) required by the RES law, plus a storage/customer project table: new source
+      rs_ems_connection_queue (build; needs a PDF-table kind; no licence stated, public notice). Elektrodistribucija Srbije: no capacity file found.'
+  UA:
+    checked: '2026-11-06'
+    note: 'Searched in Ukrainian (''вільна потужність для приєднання'', ''резерв потужності'', Укренерго, обленерго, НКРЕКП): ua.energy answers 403 (Cloudflare); DTEK Grids publishes overload/replacement
+      summaries (PDF) only; no per-substation capacity map or file found (grid data publication is limited under martial law).'
+  XK:
+    checked: '2026-11-06'
+    note: 'Searched in Albanian (''kapacitete të lira për kyçje'', ''kërkesat për kyçje'', KOSTT, ZRrE/ERO): kostt.com still fails the TLS handshake from the sandbox; web results show only annual reports
+      and tariff PDFs; ero-ks.org home page has no capacity links. Nothing published as data.'
 consumption:
   AT:
     checked: 2026-11-05

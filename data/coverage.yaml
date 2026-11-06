@@ -41,9 +41,11 @@ families:
       CY:
         status: not_published
         url: https://www.eac.com.cy/EN/RegulatedActivities/Distribution/renewableenergy/Pages/hosting-capacity.aspx
-        note: TSO Cyprus answers HTTP 403 behind Cloudflare; EAC's hosting-capacity page resets the connection (2026-10-27). Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the
-          check.
-        checked: '2026-10-28'
+        note: 'TSO Cyprus answers HTTP 403 behind Cloudflare; EAC''s hosting-capacity page resets the connection (2026-10-27). Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass
+          the check. Second pass (2026-11-06): Searched in Greek and English (EAC DSO site pilot.eac.com.cy WordPress search/media API: ''δυναμικότητα'', ''χωρητικότητα'', ''hosting capacity''; TSOC and
+          CERA answer 403 behind Cloudflare). EAC''s RES page links the ArcGIS dashboard ''Δυναμικότητα ΑΠΕ Υποσταθμών Μεταφοράς'' (hosted and available RES capacity per transmission substation), but both
+          feature layers are utility.arcgis.com secured proxies answering 403 to a direct query (not bypassed) and EAC''s terms forbid reproduction without written consent: cy_eac_hosting_capacity (blocked).'
+        checked: '2026-11-06'
       CZ:
         status: built
         licence: public notice; reuse with the source named
@@ -133,9 +135,12 @@ families:
       LV:
         status: not_published
         url: https://karte.sadalestikls.lv/lv/briva-jauda
-        note: AST answers HTTP 403 behind Cloudflare; Sadales tīkls' free-capacity map loads from an obfuscated host and answers HTTP 451 to a script that names itself (not bypassed). Browser discovery
-          in Actions (2026-10-28, an honest Chromium) did not pass the check.
-        checked: '2026-10-28'
+        note: 'AST answers HTTP 403 behind Cloudflare; Sadales tīkls'' free-capacity map loads from an obfuscated host and answers HTTP 451 to a script that names itself (not bypassed). Browser discovery
+          in Actions (2026-10-28, an honest Chromium) did not pass the check. Second pass (2026-11-06): Searched in Latvian (''brīvā jauda'', ''pieslēgums'', ''apakšstacija''; data.gov.lv CKAN: nothing;
+          AST answers 403 behind Cloudflare). Sadales tīkls'' map karte.sadalestikls.lv/lv/briva-jauda now answers HTTP 200 to an honest client and its page JS reads <url>/all: 132 medium-voltage substations
+          with free capacity for load and generation (MW), name, number, LKS-92 coordinates, update date 2026-11-02: new source lv_st_free_capacity (build; licence quote pending, sadalestikls.lv terms page
+          unreachable from the sandbox).'
+        checked: '2026-11-06'
       LT:
         status: built
         licence: public notice; reuse with the source named
@@ -184,8 +189,11 @@ families:
         status: not_published
         url: https://www.transelectrica.ro/web/tel/racordare
         note: 'Transelectrica (browser discovery passed, 2026-10-28) publishes only the requested capacity per grid zone A-J as an image and says the available capacity per zone is on its auction platform
-          (data request); Delgaz and E-Distribuție: the browser did not pass the check; Distribuție Energie Electrică publishes no capacity file; Rețele Electrice 403'
-        checked: '2026-10-28'
+          (data request); Delgaz and E-Distribuție: the browser did not pass the check; Distribuție Energie Electrică publishes no capacity file; Rețele Electrice 403 Second pass (2026-11-06): Searched
+          in Romanian (''capacitate disponibilă'', ''alocarea capacității'', ''zone de rețea'', Transelectrica, ANRE, data.gov.ro unreachable). Transelectrica''s capacity-allocation page now publishes as
+          HTML tables the available capacity (MW) and auction starting price (lei/MW) per grid zone A-J and allocation year 2028-2037 (ANRE Order 53/2024 art. 6); zones are defined by counties in Anexa
+          4 (PDF): new source ro_transelectrica_zone_capacity (build; needs an HTML-table kind; no licence stated, public notice as for AT/BG). The requested capacity per zone stays an image.'
+        checked: '2026-11-06'
       SK:
         status: built
         url: https://www.zsdis.sk/Uvod/Online-sluzby/Mapa-pripojitelnosti
@@ -370,48 +378,65 @@ families:
       IS:
         status: not_published
         url: https://www.landsnet.is/
-        note: Landsnet and RARIK publish no capacity map or file
-        checked: '2026-10-28'
+        note: 'Landsnet and RARIK publish no capacity map or file Second pass (2026-11-06): Searched in Icelandic (''laus flutningsgeta'', ''tengigeta'', ''afhendingargeta'', ''tenging við flutningskerfið''):
+          Landsnet publishes connection guidance, an enquiry form, the system plan (kerfisáætlun, PDF) and a grid map viewer (map.is/landsnet) with no capacity layer; RARIK''s distribution map (arcgis-y1.rarik.is)
+          did not answer from the sandbox. No capacity map, list or file published.'
+        checked: '2026-11-06'
       RS:
         status: not_published
         url: https://ems.rs/opis-i-kapaciteti/
-        note: EMS publishes cross-border capacity only; Elektrodistribucija Srbije no capacity file
-        checked: '2026-10-28'
+        note: 'EMS publishes cross-border capacity only; Elektrodistribucija Srbije no capacity file Second pass (2026-11-06): Searched in Serbian (Cyrillic and Latin: ''прикључење на преносни систем'',
+          ''списак захтева'', ''slobodni kapacitet''). EMS publishes no free-capacity map, but its connection page links the list of all connection requests (one-page PDF, 2026-11-04: plant, type, kV, requested
+          and approved MW, location, phase, dates) required by the RES law, plus a storage/customer project table: new source rs_ems_connection_queue (build; needs a PDF-table kind; no licence stated, public
+          notice). Elektrodistribucija Srbije: no capacity file found.'
+        checked: '2026-11-06'
       BA:
         status: not_published
         url: https://www.elprenos.ba/
-        note: NOS BiH timed out; Elektroprenos BiH publishes no capacity file
-        checked: '2026-10-28'
+        note: 'NOS BiH timed out; Elektroprenos BiH publishes no capacity file Second pass (2026-11-06): Searched in Bosnian/Serbian (''raspoloživi kapacitet'', ''priključenje'', ''registar zahtjeva'',
+          Elektroprenos BiH, NOS BiH, DERK): elprenos.ba and nosbih.ba home pages carry no connection or capacity links (2026-11-06); DERK lists licence and permit registers only; press cites NOS BiH''s
+          indicative generation plan (PDF) but no per-substation capacity or queue file.'
+        checked: '2026-11-06'
       ME:
         status: not_published
         url: https://cges.me/o-nama/karta-prenosnog-sistema/prikljucenje-na-prenosnu-mrezu/
-        note: CGES connection page describes the procedure only; CEDIS no capacity file
-        checked: '2026-10-28'
+        note: 'CGES connection page describes the procedure only; CEDIS no capacity file Second pass (2026-11-06): Searched in Montenegrin (''priključenje na prenosnu mrežu'', ''kapacitet'', CGES, CEDIS):
+          CGES''s connection page describes the procedure and links cross-border capacity auctions only; CEDIS publishes forms and technical requirements for small plants; no capacity map, list or file.'
+        checked: '2026-11-06'
       MK:
         status: not_published
         url: https://www.mepso.com.mk/index.php/mk/doma/za-nas/prikluchoci
-        note: MEPSO connection page and Elektrodistribucija procedures only; no capacity file
-        checked: '2026-10-28'
+        note: 'MEPSO connection page and Elektrodistribucija procedures only; no capacity file Second pass (2026-11-06): Searched in Macedonian (''слободен капацитет за приклучување'', ''приклучоци'', MEPSO,
+          Електродистрибуција, ERC): MEPSO''s ''Приклучоци'' page holds the connection request form and templates only (''© 2026 МЕПСО. Сите права се задржани''); ERC decisions show Elektrodistribucija
+          refusing connections for lack of capacity, but no capacity data is published.'
+        checked: '2026-11-06'
       AL:
         status: not_published
         url: https://www.ost.al/
-        note: OST answers a Cloudflare challenge (403); OSHEE describes new connections only. Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the check.
-        checked: '2026-10-28'
+        note: 'OST answers a Cloudflare challenge (403); OSHEE describes new connections only. Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the check. Second pass (2026-11-06):
+          Searched in Albanian (''kapaciteti i lirë'', ''lidhje në rrjetin e transmetimit'', OST, ERE): ost.al still answers 403 (Cloudflare challenge, not bypassed); OST''s 2022 activity report (PDF) gives
+          substation counts only; press reports >10 GW waiting for grid access, but no queue or capacity file found.'
+        checked: '2026-11-06'
       XK:
         status: not_published
         url: https://www.kostt.com/
-        note: KOSTT's certificate chain fails for scripts; KEDS publishes no capacity file
-        checked: '2026-10-28'
+        note: 'KOSTT''s certificate chain fails for scripts; KEDS publishes no capacity file Second pass (2026-11-06): Searched in Albanian (''kapacitete të lira për kyçje'', ''kërkesat për kyçje'', KOSTT,
+          ZRrE/ERO): kostt.com still fails the TLS handshake from the sandbox; web results show only annual reports and tariff PDFs; ero-ks.org home page has no capacity links. Nothing published as data.'
+        checked: '2026-11-06'
       MD:
         status: not_published
         url: https://moldelectrica.md/
-        note: Moldelectrica answers a Cloudflare challenge (403); Premier Energy Distribution no capacity file. Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the check.
-        checked: '2026-10-28'
+        note: 'Moldelectrica answers a Cloudflare challenge (403); Premier Energy Distribution no capacity file. Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the check. Second
+          pass (2026-11-06): Searched in Romanian (''capacitate disponibilă'', ''racordare'', Moldelectrica, Premier Energy Distribution, RED Nord, ANRE): moldelectrica.md answers 403 (Cloudflare challenge);
+          only connection request forms and the TYNDP (PDF) are indexed; a 2024 government decision requires informing producers of available capacity, but no map or file is published.'
+        checked: '2026-11-06'
       UA:
         status: not_published
         url: https://ua.energy/
-        note: Ukrenergo answers a Cloudflare challenge (403); NEURC publishes connection rules only. Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the check.
-        checked: '2026-10-28'
+        note: 'Ukrenergo answers a Cloudflare challenge (403); NEURC publishes connection rules only. Browser discovery in Actions (2026-10-28, an honest Chromium) did not pass the check. Second pass (2026-11-06):
+          Searched in Ukrainian (''вільна потужність для приєднання'', ''резерв потужності'', Укренерго, обленерго, НКРЕКП): ua.energy answers 403 (Cloudflare); DTEK Grids publishes overload/replacement
+          summaries (PDF) only; no per-substation capacity map or file found (grid data publication is limited under martial law).'
+        checked: '2026-11-06'
   units:
     name: Every generating unit
     shows: national registers of generating units (layer per country under Power plants)
@@ -859,20 +884,26 @@ families:
       BG:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-06'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-06): Searched in Bulgarian (''редиспечиране'', ''ограничаване'', ''ограничения ВЕИ'', ESO, КЕВР): eso.bg publishes live generation/load, historical generation,
+          balancing forecasts, the free-capacity map (connect) and the MMS portal; no redispatch or curtailment series. Press (Capital 2024) reports ESO curtailment orders, and the ministry required ESO
+          to publish its justification, but no such list or file was found on eso.bg.'
       HR:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-06'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-06): Searched in Croatian (''redispečiranje'', ''ograničenja'', HOPS, HERA, data.gov.hr: nothing): HOPS market and balancing pages link rules only; the
+          yearly ''Temeljni podaci'' PDFs (2009-2025; 2025 read) carry no redispatch figures; HERA publishes approvals of the HOPS-HEP cross-border redispatch contract (2026) and congestion-income reports
+          (PDF) without a series.'
       CY:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: Cyprus is an isolated system without a control area on the ENTSO-E platform; its operator publishes no redispatch or curtailment series as data
+        checked: '2026-11-06'
+        note: 'Cyprus is an isolated system without a control area on the ENTSO-E platform; its operator publishes no redispatch or curtailment series as data Second pass (2026-11-06): Searched in Greek
+          and English (''περικοπές ΑΠΕ'', ''curtailment''): EAC''s DSO publishes daily PV curtailment reports as monthly PDFs (2022 onward; per day: estimated energy, curtailed MWh, %, TSOC instruction),
+          but EAC''s terms allow own use only and forbid reproduction without written consent: cy_eac_pv_curtailment (blocked). TSOC answers 403 behind Cloudflare.'
       CZ:
         status: built
         source: ENTSO-E Transparency Platform (A63, A91, A92)
@@ -978,14 +1009,18 @@ families:
       LU:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-06'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-06): Searched in German, French and English (''Redispatch'', ''Netzengpass'', ''congestion'', Creos, ILR, data.public.lu: 0 datasets for redispatch/Creos):
+          Creos publishes no redispatch or curtailment series; Luxembourg is in Amprion''s load-frequency control block, so redispatch involving it is reported on the German side (netztransparenz.de / SMARD),
+          not per LU.'
       MT:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: Malta is an isolated system without a control area on the ENTSO-E platform; its operator publishes no redispatch or curtailment series as data
+        checked: '2026-11-06'
+        note: 'Malta is an isolated system without a control area on the ENTSO-E platform; its operator publishes no redispatch or curtailment series as data Second pass (2026-11-06): Searched in English
+          (''curtailment'', Enemalta, REWS): Enemalta''s site search and WordPress API return no curtailment page (its ''Available Capacity'' page belongs to connect); REWS and the NAO''s 2024 distribution
+          review are reports (PDF) without a series. Not published as data.'
       NL:
         status: built
         source: ENTSO-E Transparency Platform (A63, A91, A92)
@@ -1016,9 +1051,10 @@ families:
       RO:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-06'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-06): Searched in Romanian (''redispecerizare'', ''congestii'', ''contrapartidă'', Transelectrica, ANRE): Transelectrica''s market, balancing and system-services
+          pages link no redispatch data; congestion costs appear only in quarterly financial reports and the ANRE-approved structural congestion report (PDF, 2020). Not published as data.'
       SK:
         status: not_published
         url: https://transparency.entsoe.eu
@@ -1028,9 +1064,10 @@ families:
       SI:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-06'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-06): Searched in Slovenian (''redispečing'', ''prerazporejanje'', ''omejitve'', ELES, Agencija za energijo, podatki.gov.si: 0 datasets): ELES operation,
+          system-services and notices pages carry no redispatch or countertrading data; only cross-border capacity, balancing auctions and the hosting-capacity PDF (connect). Not published as data.'
       ES:
         status: built
         source: ENTSO-E Transparency Platform (A63, A91, A92)
@@ -7933,11 +7970,11 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located |
-          data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 answered
-          nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
-          10YCA-BULGARIA-R: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
-          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ModuleNotFoundError: No
+          module named ''dotenv'') | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the
+          route. ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox,
+          no key here), controlArea_Domain 10YCA-BULGARIA-R: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices;
+          A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       HR:
         status: have
         source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
@@ -7949,9 +7986,9 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located |
-          data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched
-          beyond that).'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ModuleNotFoundError: No
+          module named ''dotenv'') | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market
+          data published (not re-searched beyond that).'
       CZ:
         status: have
         source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
@@ -8016,12 +8053,12 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located |
-          SEMO balancing and imbalance market cost view (half-hourly) probed (https://reports.sem-o.com/api/v1/documents/static-reports?DPuG_ID=BM-095&page_size=100&sor, HTTP None): no machine-readable
-          download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): New source ie_semo_imbalance (SEMO report API, EirGrid Group Open Data
-          Licence, commercial use allowed). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY;
-          not run from the sandbox, no key here), controlArea_Domain 10YIE-1001A00010: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
-          and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ModuleNotFoundError: No
+          module named ''dotenv'') | SEMO balancing and imbalance market cost view (half-hourly) probed (https://reports.sem-o.com/api/v1/documents/static-reports?DPuG_ID=BM-095&page_size=100&sor, HTTP
+          None): no machine-readable download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): New source ie_semo_imbalance (SEMO report API,
+          EirGrid Group Open Data Licence, commercial use allowed). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in
+          Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YIE-1001A00010: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
+          A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       IT:
         status: have
         source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
@@ -8051,18 +8088,18 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located |
-          data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Luxembourg (Creos) sits in Amprion''s LFC block; reserves are procured in the German market
-          (regelleistung.net, licence missing). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY;
-          not run from the sandbox, no key here), controlArea_Domain 10YLU-CEGEDEL-NQ: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
-          and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ModuleNotFoundError: No
+          module named ''dotenv'') | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Luxembourg (Creos) sits in Amprion''s LFC block; reserves are procured
+          in the German market (regelleistung.net, licence missing). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in
+          Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLU-CEGEDEL-NQ: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
+          A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       MT:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located |
-          data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched
-          beyond that).'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ModuleNotFoundError: No
+          module named ''dotenv'') | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market
+          data published (not re-searched beyond that).'
       NL:
         status: have
         source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
@@ -17959,181 +17996,201 @@ families:
     category: 15
     cells:
       AT:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 2 results, top: Representativeness and classification of air quality monitoring stations; Representativeness
-          and classification of air quality monitoring stations'
       BE:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       BG:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       HR:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       CY:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       CZ:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 2 results, top: INSPIRE – Air quality monitoring stations; Air quality monitoring stations (2018–2024)'
       DK:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       EE:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       FI:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       FR:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       DE:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 2 results, top: WFS Hamburger Luftmessnetz (HaLm); WMS Hamburger Luftmessnetz (HaLm)'
       GR:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       HU:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       IE:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 4 results, top: INSPIRE Air Quality Monitoring Stations; INSPIRE Air Quality Monitoring Stations; INSPIRE
-          Air Quality Monitoring Stations - HVD'
       IT:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       LV:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       LT:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 6 results, top: INSPIRE Priority Data Set (as-is) - Air quality monitoring stations (including assessment
-          ; Annex III. Atmospheric conditions (INSPIRE Download Service); Annex III. Atmospheric conditions (INSPIRE dataset)'
       LU:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 4 results, top: INSPIRE - Annex III Theme Environmental Monitoring Facilities - EnvironmentalMonitoringFac;
-          INSPIRE - Annex III Theme Environmental Monitoring Facilities - EnvironmentalMonitoringNet; INSPIRE - Annex III Theme Environmental Monitoring Facilities - EnvironmentalMonitoringFac'
       MT:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       NL:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       PL:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       PT:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 1 results, top: Air Quality Monitoring Network - Autonomous Region of the Azores (RAA)'
       RO:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 172 results, top: Information on the distribution of air quality monitoring stations by zones and agglomerat;
-          Station RO0179A, ''Ploiești'' : List of validated air quality measurements, 2007 - 2014; Station RO0170A: List of validated air quality measurements, 2007 - 2014'
       SK:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 5 results, top: INSPIRE PD 3.01 Air quality monitoring stations; INSPIRE PD 3,01 Air quality monitoring
-          stations: Storage service; INSPIRE PD 3,01 Air quality monitoring stations: Viewing service'
       SI:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       ES:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 0 results'
       SE:
-        status: not_published
+        status: built
+        source: EEA air quality statistics per station
         url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement)
+        dataset: lake wave9.eu_eea_aq_stats
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EEA air quality statistics per station probed (https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityS, HTTP 200): no machine-readable
-          download located | data.europa.eu search ''air quality monitoring stations'' (2026-10-31): 2 results, top: Air quality measurements of particular matter PM2.5 and PM10; Air quality data, ATOM
-          download service'
       GB:
         status: built
-        source: DEFRA AURN monitoring sites
-        url: https://uk-air.defra.gov.uk/sos-ukair/api/v1/stations?expanded=false
-        licence: OGL v3
-        dataset: lake wave9.gb_defra_aurn
-        checked: '2026-11-05'
+        source: EEA air quality statistics per station; DEFRA AURN monitoring sites
+        url: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+        licence: EEA reuse (commercial use allowed, with acknowledgement); OGL v3
+        dataset: lake wave9.eu_eea_aq_stats, lake wave9.gb_defra_aurn
+        checked: '2026-11-06'
       US:
         status: built
         source: EPA AQS annual concentrations per monitor (2025)

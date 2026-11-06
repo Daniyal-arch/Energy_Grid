@@ -135,6 +135,7 @@ datasets:
   wave9.eu_tent_network: {line: "EUR: TEN-T network (TENtec)"}
   wave9.gb_srn: {line: "GB: National Highways Strategic Road Network"}
   wave9.us_fhwa_afc: {line: "US: FHWA Alternative Fuel Corridors"}
+  wave9.eu_eea_aq_stats: {point: "EUR: EEA air quality statistics per station"}
   wave9.gb_defra_aurn: {point: "GB: DEFRA AURN monitoring sites"}
   wave9.us_epa_aqs_annual: {point: "US: EPA AQS annual concentrations per monitor (2025)"}
   wave9.fr_enedis_interruptions: {county: "FR: Enedis interruption time per department"}

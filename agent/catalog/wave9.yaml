@@ -1014,6 +1014,19 @@ tables:
     - q: how many records in FHWA Alternative Fuel Corridors
       sql: SELECT count(*) FROM wave9.us_fhwa_afc
       answer: 2275
+  eu_eea_aq_stats:
+    grain: 'EEA air quality statistics per station: one row per record as published (EUR; level point)'
+    source: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+    licence: EEA reuse (commercial use allowed, with acknowledgement)
+    category: 15. Air quality near plants
+    columns: country, air_quality_network, air_quality_network_name, air_quality_station_eoi_code, air_quality_station_name, sampling_point_id, air_pollutant, air_pollutant_description,
+      data_aggregation_process_id, data_aggregation_process, year, air_pollution_level, unit_of_air_pollution_level, data_coverage, verification, air_quality_station_type,
+      air_quality_station_area, longitude, latitude, altitude, city, city_code, city_population, source_of_data_flow, calculation_time, link_to_raw_data_only_e1a_validated_data_from_aq_e_reporting,
+      observation_frequency
+    examples:
+    - q: how many records in EEA air quality statistics per station
+      sql: SELECT count(*) FROM wave9.eu_eea_aq_stats
+      answer: 16343
   gb_defra_aurn:
     grain: 'DEFRA AURN monitoring sites: one row per record as published (GB; level point)'
     source: https://uk-air.defra.gov.uk/sos-ukair/api/v1/stations?expanded=false
