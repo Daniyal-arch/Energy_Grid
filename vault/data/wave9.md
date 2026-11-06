@@ -51,4 +51,13 @@ See [[coverage-and-gaps]], [[lake]], [[agent-tools]], [[state-and-datasets]].
   otherwise dispatch `wave9.yml` with `groups: "s:<id> ..."`. The single-source job gets the
   same keys as the category jobs. FEMA NFHL is queried in place by the `live` tool
   (`fema_nfhl`).
+- **Readers for page-only sources (2026-11-06, `CUSTOM` in `scripts/wave9.py`)**: `pxweb`
+  batches the largest variable under `max_cells` (100,000; the API answers 403 above its cell
+  limit); `eirgrid_dispatch_down` (workbook bands per year, sections per area and technology,
+  MWh and %); `xlsx_multihead` (census sheets with multi-row headers: `head`, `data`, `ids`,
+  `id_names`, `group`; ELSTAT); `ine_pt_indicator` (INE JSON `Dados`); `semo_reports` (the
+  report API's listed XML files, about two weeks kept); `bfee_abwaerme` (public list, 100 a
+  page: 500 was refused). csv `lenient` (DuckDB `strict_mode = false`, SVK); ArcGIS `page` and
+  a stop on a server error or an empty layer (GDAL's 200 MB GeoJSON cap lifted); raster
+  `member` is a name or a regex. Romania and Serbia connection data wait on owner question 5.
 
