@@ -7,7 +7,13 @@ session. Each request should also ask the licence question:
 
 > May we redistribute the data, and show it in a commercial product, under an open licence (CC BY 4.0 or equivalent) with attribution?
 
-37 requests to 37 publishers.
+38 requests to 37 publishers.
+
+## BMWE / BfEE
+
+- **Energieeffizienzregister für Rechenzentren (Germany** (scripts/wave9_sources.yaml `de_rzreg_datacentres`)
+  - Why: the public register (published 14 Aug 2026; 319 data centres per UBA) fails TLS verification from the sandbox (server sends an incomplete chain) and answers HTTP 503 to a fetch (2026-11-05); no download or licence found; the operator portal rzreg.bundeswirtschaftsministerium.de is login-only (Keycloak); UBA notes large international operators are missing
+  - Request: BMWE / BfEE, the public part of the data-centre register as an open file (CSV) under dl-de/by-2-0 or CC BY 4.0
 
 ## Bundesnetzagentur
 
@@ -51,6 +57,12 @@ session. Each request should also ask the licence question:
   - Why: the 2022 CWNS dataset (nationwide CSV) is served only by an Oracle APEX app whose download links carry a per-session checksum and open a 'Help us learn more about who uses our data' dialog; no stable file URL (2026-11-04)
   - Request: EPA, a stable URL for the nationwide 2022 CWNS facility CSV (e.g. on catalog.data.gov)
 
+## European Commission (DG ENER)
+
+- **European database of data centres - aggregated results (EED Art. 12)** (scripts/wave9_sources.yaml `eu_eed_datacentres_dashboard`)
+  - Why: the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July 2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05)
+  - Request: European Commission (DG ENER), the dashboard's aggregates per Member State and year (energy consumption, PUE, renewable share) as an open CSV under CC BY 4.0
+
 ## Eurostat (GISCO)
 
 - **Administrative units: countries, NUTS 2024 and LAU outlines** (docs/owner-questions.md)
@@ -68,6 +80,9 @@ session. Each request should also ask the licence question:
 - **FERC hydropower licences** (scripts/wave9_sources.yaml `us_ferc_hydro`)
   - Why: ferc.gov answers HTTP 403 to an honest client (2026-10-31)
   - Request: FERC, the hydropower licence list as an open file
+- **FERC Electric Quarterly Reports (contracts)** (scripts/wave9_sources.yaml `us_ferc_eqr`)
+  - Why: www.ferc.gov answers a Cloudflare challenge (HTTP 403 "Just a moment...") to the sandbox (2026-11-05); EQR lists contracts of FERC-jurisdictional sellers with purchaser, term and product, but does not mark corporate offtakers
+  - Request: FERC, the EQR bulk contract files on a host without a browser challenge (or run the fetch in GitHub Actions)
 
 ## IAEA
 
@@ -210,6 +225,4 @@ session. Each request should also ask the licence question:
 ## Keys to set (not requests: the owner adds them as repo secrets)
 
 - set CDSAPI_KEY (https: GloFAS river discharge
-- set CENSUS_API_KEY (free) as a repo secret: Income per area (US)
-- set FINGRID_API_KEY as a repo secret: Balancing and reserves (FI)
 - set NASA_EARTHDATA_TOKEN (https: NASA Black Marble night lights
