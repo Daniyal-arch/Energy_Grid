@@ -968,6 +968,64 @@ def eirgrid_dispatch_down(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN
 CUSTOM["ie_eirgrid_dispatch_down"] = eirgrid_dispatch_down
 
 
+def xlsx_multihead(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """A census workbook whose column names span several header rows (`head`: first and last
+    row, 0-based; the data start at `data`). Each header cell covers the columns up to the next
+    cell in its row or the end of its parent's span; the parts join into one column name with
+    " / ". The first `ids` columns identify the row (named `id_names`); every other column becomes a long row
+    (measure, value) as published. With `group: true` an area's first row names the area and the
+    rows after it with the same code are its categories (category "Total" for the first)."""
+    import pandas as pd
+
+    f = w.download(s["url"], d / "src.xlsx", timeout=600)
+    df = pd.read_excel(f, sheet_name=s["sheet"], header=None, dtype=str)
+    h0, h1 = s["head"]
+    n_ids, width = int(s.get("ids", 3)), df.shape[1]
+    names: list[list[str]] = [[] for _ in range(width)]
+    bounds = {0, width}
+    for r in range(h0, h1 + 1):
+        cells = {c for c in range(width) if pd.notna(df.iat[r, c]) and str(df.iat[r, c]).strip()}
+        stops = sorted(bounds | cells)
+        for c in sorted(cells):
+            end = next(x for x in stops if x > c)
+            for k in range(c, end):
+                names[k].append(" ".join(str(df.iat[r, c]).split()))
+        bounds |= cells
+    cols = [" / ".join(n) for n in names]
+    cols[:n_ids] = s.get("id_names", cols[:n_ids])  # stable names for the identifying columns
+    rows: list[dict[str, Any]] = []
+    area, code = "", None
+    for r in range(int(s["data"]), len(df)):
+        ident = [df.iat[r, c] for c in range(n_ids)]
+        if any(pd.isna(v) for v in ident[:2]):
+            continue
+        base = {cols[c]: str(ident[c]).strip() for c in range(n_ids)}
+        if s.get("group"):
+            label = base[cols[n_ids - 1]]
+            if ident[1] != code:
+                area, code, cat = label, ident[1], "Total"
+            else:
+                cat = label
+            base = {
+                **{cols[c]: base[cols[c]] for c in range(n_ids - 1)},
+                "area": area,
+                "category": cat,
+            }
+        for c in range(n_ids, width):
+            v = df.iat[r, c]
+            if pd.notna(v):
+                rows.append({**base, "measure": cols[c], "value": float(v)})
+    if not rows:
+        raise SystemExit("no rows read from the workbook")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["gr_elstat_heating_energy_regional_unit"] = xlsx_multihead
+CUSTOM["gr_elstat_heating_settlement"] = xlsx_multihead
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
