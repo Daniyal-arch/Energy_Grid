@@ -850,6 +850,27 @@ def jsonstat_rows(d: dict[str, Any]) -> list[dict[str, Any]]:
 CUSTOM: dict[str, Any] = {}
 
 
+def overture_comm_lines(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """OSM communication lines through Overture's base/infrastructure theme (class
+    communication_line) in the Europe box, read in place from Overture's public bucket (no
+    credentials: the R2 keys in AWS_* would be refused there); OSM tags kept as published."""
+    con.execute(
+        "CREATE OR REPLACE SECRET overture (TYPE s3, KEY_ID '', SECRET '', REGION 'us-west-2', "
+        "SCOPE 's3://overturemaps-us-west-2')"
+    )
+    con.execute(
+        f"""CREATE OR REPLACE TABLE t AS
+            SELECT id, class, subtype, names.primary AS name, source_tags,
+                   ST_GeomFromWKB(ST_AsWKB(geometry)) AS geometry
+            FROM read_parquet('{s["url"]}', hive_partitioning = false)
+            WHERE class = 'communication_line'
+              AND bbox.xmin < 45 AND bbox.xmax > -25 AND bbox.ymin < 72 AND bbox.ymax > 34"""
+    )
+
+
+CUSTOM["eur_overture_comm_lines"] = overture_comm_lines
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
