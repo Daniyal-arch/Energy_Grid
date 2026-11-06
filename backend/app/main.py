@@ -46,6 +46,7 @@ def warm() -> None:
         ctx = ToolContext(settings)
         ctx.lake.run("SELECT 1", guard=False)
         ctx.catalogue.search("solar")
+        ctx.areas.search("Bavaria")  # opens the name index and its aliases (their first reads)
         log.info("warm", extra={"s": round(time.perf_counter() - t0, 2)})
     except Exception as e:  # noqa: BLE001 - a failed warm-up is retried by the first request
         log.warning("warm-up failed", extra={"error": str(e)[:200]})

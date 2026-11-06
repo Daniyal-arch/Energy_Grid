@@ -441,6 +441,13 @@ class Lake:
         return cur
 
     def tables(self) -> list[str]:
+        """The lake's and the app's tables (cached: the catalogue does not change while the
+        service runs, and a search asked for it several times; brief 30)."""
+        if getattr(self, "_tables", None) is None:
+            self._tables = self._list_tables()
+        return list(self._tables)
+
+    def _list_tables(self) -> list[str]:
         rows = (
             self.con.cursor()
             .execute(
