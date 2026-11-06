@@ -7864,29 +7864,23 @@ families:
     name: Balancing and reserves
     shows: reserve and balancing prices and volumes
     category: 3
+    regions:
+    - neighbours
     cells:
       AT:
-        status: blocked
-        source: regelleistung.net balancing tenders
-        url: https://www.regelleistung.net/apps/datacenter/tenders/
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
-          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): APG markttransparenz.apg.at / transparency.apg.at did not answer from the sandbox
-          (connection failed, 2026-11-06). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price
-          built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YAT-APG------L: A81 contracted reserves (businessType B95;
-          processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing
-          capacity (processType A51/A47) for EB GL areas'
       BE:
-        status: blocked
-        source: regelleistung.net balancing tenders
-        url: https://www.regelleistung.net/apps/datacenter/tenders/
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
-          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): Elia Open Data (French/Dutch/English portal) has balancing price and reserve bid
-          sets: new source be_elia_balancing (ods166, ods207, ods206; licence page down at the probe, quote before build). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
-          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
-          10YBE----------2: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
-          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       BG:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
@@ -7897,14 +7891,12 @@ families:
           (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16);
           A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       HR:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
-          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
-          10YHR-HEP------M: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
-          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       CY:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
@@ -7912,59 +7904,40 @@ families:
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
           prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched beyond that).'
       CZ:
-        status: blocked
-        source: ČEPS data (web service CepsData.asmx)
-        url: https://www.ceps.cz/_layouts/CepsData.asmx
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'the SOAP web service and the data pages answer (HTTP 200), but no reuse terms were found (Czech search ''podmínky užití'', ''uvedení zdroje''); only a 2008 mailing-list note. ENTSO-E A85
-          already answers for CZ. Data request: ČEPS, a licence statement for the data on ceps.cz/cs/data and CepsData.asmx Second pass (2026-11-05): Searched ČEPS in Czech (podpůrné služby, podmínky užití):
-          cz_ceps_balancing (blocked, no licence statement). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial''
-          now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YCZ-CEPS-----N: A81 contracted reserves
-          (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16);
-          A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       DK:
         status: built
-        source: Energinet FCR-D down reserve auctions (DK2)
-        url: https://api.energidataservice.dk/dataset/FcrNdDK2?limit=0&start=2025-01-01
-        licence: CC BY 4.0
-        dataset: lake wave9.dk_energinet_reserves
-        checked: '2026-11-05'
-        partial: true
-        note: published at country level (Energinet FCR-D down reserve auctions (DK2))
+        source: Energinet FCR-D down reserve auctions (DK2); ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: CC BY 4.0; ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.dk_energinet_reserves, eu/imbalance.json (Imbalance layer and card)
+        checked: '2026-11-06'
       EE:
-        status: blocked
-        source: Baltic transparency dashboard and Elering balance API
-        url: https://baltic.transparency-dashboard.eu/
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'baltic.transparency-dashboard.eu answers a Cloudflare ''Attention Required'' page (403), not bypassed; Elering''s dashboard API /api/balance (imbalance, regulate_up/down, imbalance_buy/sell_price)
-          answers HTTP 200 but every value is null for 2024-10, 2025-01, 2025-03 and 2026-10 (series stopped). Data request: the Baltic TSOs, an open download of the Baltic balancing market data (or keep
-          ENTSO-E A81/A84/A89) Second pass (2026-11-05): Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API
-          all null). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not).
-          ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10Y1001A1001A39I: A81 contracted reserves (businessType B95; processType A52 FCR,
-          A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType
-          A51/A47) for EB GL areas'
       FI:
-        status: not_published
-        url: https://data.fingrid.fi/api/datasets/317/data?format=csv&pageSize=20000&sortOrder=desc
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Fingrid reserve markets (dataset 317) probed (https://data.fingrid.fi/api/datasets/317/data?format=csv&pageSize=20000&sortOrder=desc, HTTP 401): no machine-readable
-          download located | ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves prices''
-          (2026-10-31): 0 results Second pass (2026-11-05): Not dark: fi_fingrid_reserves is ready and answers 401 only because FINGRID_API_KEY is not set (register at data.fingrid.fi, set the repo secret).
-          ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E
-          reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YFI-1--------U: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR,
-          A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47)
-          for EB GL areas'
       FR:
-        status: blocked
-        source: regelleistung.net balancing tenders
-        url: https://www.regelleistung.net/apps/datacenter/tenders/
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
-          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): Searched ODRÉ (French: ''mécanisme d''ajustement'', ''réserve'', ''services système''):
-          new source fr_odre_balancing_volumes (annual activated volumes and mean costs, Licence Ouverte 2.0); daily reserve data need RTE''s data-portal OAuth key (credential) or ENTSO-E. ENTSO-E A85 imbalance
-          prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions
-          (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YFR-RTE------C: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
-          A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       DE:
         status: blocked
         source: regelleistung.net balancing tenders
@@ -7977,26 +7950,19 @@ families:
           reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType
           A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       GR:
-        status: blocked
-        source: IPTO (ADMIE) balancing market settlement files
-        url: https://www.admie.gr/getOperationMarketFilewRange?dateStart=2026-10-01&dateEnd=2026-10-01
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'the file API answers (JSON list: file_path, file_description, file_datatype ...); weekly IMBABE xlsx (sheet Activated_bal_Energy_and_Prices: STARTDATE, ENDDATE, Total Activated Balancing
-          Energy UP/Down MWh, System deviation, Imbalance Price, mFRR Price UP/Down, Uplift Accounts 1-3; 672 rows a week), BalancingCapacityProduct and BalancingEnergyProduct xls. IPTO''s ''Terms and Services''
-          cover liability and accuracy only and grant no reuse right. Data request: IPTO (info@admie.gr), a reuse licence (e.g. CC BY 4.0) for the market and operation data files (balancing settlement)
-          Second pass (2026-11-05): Searched IPTO (Greek: Αγορά Εξισορρόπησης): file API with weekly balancing settlement xlsx, no reuse licence: gr_admie_balancing (blocked, request). ENTSO-E A85 imbalance
-          prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions
-          (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YGR-HTSO-----Y: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
-          A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       HU:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
-          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
-          10YHU-MAVIR----U: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
-          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       IE:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
@@ -8008,26 +7974,19 @@ families:
           10YIE-1001A00010: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
           prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       IT:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): Terna''s download centre states no reuse licence (see it_terna_province); MSD results on GME not checked as data. ENTSO-E A85 imbalance
-          prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions
-          (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YIT-GRTN-----B: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
-          A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       LV:
-        status: blocked
-        source: Baltic transparency dashboard and Elering balance API
-        url: https://baltic.transparency-dashboard.eu/
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'baltic.transparency-dashboard.eu answers a Cloudflare ''Attention Required'' page (403), not bypassed; Elering''s dashboard API /api/balance (imbalance, regulate_up/down, imbalance_buy/sell_price)
-          answers HTTP 200 but every value is null for 2024-10, 2025-01, 2025-03 and 2026-10 (series stopped). Data request: the Baltic TSOs, an open download of the Baltic balancing market data (or keep
-          ENTSO-E A81/A84/A89) Second pass (2026-11-05): Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API
-          all null). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not).
-          ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLV-1001A00074: A81 contracted reserves (businessType B95; processType A52 FCR,
-          A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType
-          A51/A47) for EB GL areas'
       LT:
         status: blocked
         source: Baltic transparency dashboard and Elering balance API
@@ -8055,98 +8014,68 @@ families:
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
           prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched beyond that).'
       NL:
-        status: blocked
-        source: regelleistung.net balancing tenders
-        url: https://www.regelleistung.net/apps/datacenter/tenders/
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
-          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): TenneT''s API (api.tennet.eu) answers 403 without a key (free registration, credential:
-          TENNET_API_KEY); the old export_data.aspx did not answer. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial''
-          now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YNL----------L: A81 contracted reserves
-          (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16);
-          A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       PL:
-        status: blocked
-        source: PSE balancing prices and reserve capacity prices (raporty.pse.pl API)
-        url: https://api.raporty.pse.pl/api/cmbp-tp?$filter=business_date%20eq%20'2026-10-01'
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'the open API answers (no key, OData-style $filter/$first, nextLink): cmbp-tp balancing capacity prices per hour (fcr_g/d, afrr_g/d, mfrrd_g/d, rr_g/d, business_date) and crb-rozl settlement
-          prices per quarter-hour (cen_cost, ckoeb_cost, ceb_pp_cost, ceb_sr_cost, ceb_sr_afrrg/d_cost); neither raporty.pse.pl (app bundle searched for licencja/regulamin/warunki) nor the API states reuse
-          terms; a web search (Polish) found none. Data request: PSE S.A., a reuse licence statement (e.g. CC BY 4.0) for raporty.pse.pl / api.raporty.pse.pl Second pass (2026-11-05): Searched in Polish
-          (rynek bilansujący, ceny rezerw): PSE''s open API answers balancing and reserve prices but states no licence: pl_pse_balancing (blocked, request). ENTSO-E A85 imbalance prices already answer for
-          this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not
-          run from the sandbox, no key here), controlArea_Domain 10YPL-AREA-----S: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
-          and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       PT:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
-          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
-          10YPT-REN------W: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
-          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       RO:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
-          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
-          10YRO-TEL------P: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
-          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       SK:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
-          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
-          10YSK-SEPS-----K: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
-          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       SI:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
-          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
-          10YSI-ELES-----O: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
-          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       ES:
-        status: blocked
-        source: REE e·sios balancing indicators
-        url: https://api.esios.ree.es/indicators
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'e·sios answers HTTP 403 without a personal token; REData (apidatos.ree.es) answers balance/* but its mercados/* widgets answer an Incapsula challenge (403/503) to a script: not bypassed.
-          Data request: request an e·sios API token (email consultasios@ree.es) and set ESIOS_TOKEN as a repo secret Second pass (2026-11-05): Searched REE in Spanish (servicios de ajuste, regulación secundaria):
-          es_ree_esios (blocked: token; REData mercados behind Incapsula). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can
-          be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YES-REE------0: A81 contracted
-          reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType
-          A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       SE:
-        status: not_published
-        url: https://data.svk.se/datastore/dump/6093d167-dece-45c8-8ac7-d307e6ac45e9?format=csv
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Svenska kraftnät reserve markets (Mimer) probed (https://data.svk.se/datastore/dump/6093d167-dece-45c8-8ac7-d307e6ac45e9?format=csv, HTTP 200): build failed (InvalidInputException:
-          Invalid Input Error: Error when sniffing file "/tmp/wave9/se_svk_reserves/src.csv".
-
-          It was not po) | ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves prices''
-          (2026-10-31): 0 results Second pass (2026-11-05): Not dark: se_svk_reserves (CC BY 4.0) answers 200; the CSV is plain (header _id,start_time_sweden,start_time_utc,reserve_product,reserve_direction,auction_round,price,price_unit,volume,volume_unit,soda_hashbyte,soda_identity),
-          so the DuckDB sniff failure is a reader issue: read with sample_size=-1 / all_varchar or explicit columns. Sister CKAN sets afrr_capacity_market, mfrr_capacity_market (CC-BY-4.0, package_show).
-          ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E
-          reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain SE1-SE4 zones: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR,
-          A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47)
-          for EB GL areas'
       GB:
         status: built
-        source: Elexon system buy and sell prices (one day per call)
-        url: https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices/2026-10-01?format=json
-        licence: Elexon BMRS licence (open, attribution)
-        dataset: lake wave9.gb_elexon_balancing
-        checked: '2026-11-05'
-        partial: true
-        note: published at country level (Elexon system buy and sell prices (one day per call))
+        source: Elexon system buy and sell prices (one day per call); ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: Elexon BMRS licence (open, attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.gb_elexon_balancing, eu/imbalance.json (Imbalance layer and card)
+        checked: '2026-11-06'
       US:
         status: built
         source: ISO ancillary-service prices
@@ -8154,6 +8083,84 @@ families:
         licence: CAISO public materials, use with credit to the California ISO
         dataset: lake wave9.us_iso_as_prices
         checked: '2026-11-05'
+      'NO':
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      CH:
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      IS:
+        status: not_published
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        checked: '2026-11-06'
+        note: no source of this family covers IS; its national sources were not searched
+      BA:
+        status: not_published
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        checked: '2026-11-06'
+        note: no source of this family covers BA; its national sources were not searched
+      RS:
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      ME:
+        status: not_published
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        checked: '2026-11-06'
+        note: no source of this family covers ME; its national sources were not searched
+      MK:
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      AL:
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      XK:
+        status: not_published
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        checked: '2026-11-06'
+        note: no source of this family covers XK; its national sources were not searched
+      MD:
+        status: not_published
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        checked: '2026-11-06'
+        note: no source of this family covers MD; its national sources were not searched
+      UA:
+        status: have
+        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: eu/imbalance.json (Imbalance layer and card)
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      TR:
+        status: not_published
+        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
+        checked: '2026-11-06'
+        note: no source of this family covers TR; its national sources were not searched
   capacity_markets:
     name: Capacity markets
     shows: capacity auction results and registers
