@@ -176,3 +176,11 @@ def test_skills_tools(ctx):
     assert (
         "error" in call(ctx, "read_skill_file", name="lake-sql", path="../../models.yaml")["data"]
     )
+
+
+def test_live_fema_needs_an_area_or_box():
+    from tools.live import live
+
+    ctx = ToolContext(settings())
+    assert "error" in live(ctx, "fema_nfhl", {})["data"]
+    assert "resolve_area" in live(ctx, "fema_nfhl", {"area_id": "a_000000000000"})["data"]["error"]

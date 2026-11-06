@@ -7933,11 +7933,11 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 answered nothing for this area in build_imbalance.py
-          (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YCA-BULGARIA-R: A81 contracted reserves
-          (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16);
-          A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located |
+          data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 answered
+          nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+          10YCA-BULGARIA-R: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
+          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       HR:
         status: have
         source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
@@ -7949,8 +7949,9 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched beyond that).'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located |
+          data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched
+          beyond that).'
       CZ:
         status: have
         source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
@@ -8015,12 +8016,12 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | SEMO balancing and imbalance market
-          cost view (half-hourly) probed (https://reports.sem-o.com/api/v1/documents/static-reports?DPuG_ID=BM-095&page_size=100&sor, HTTP None): no machine-readable download located | data.europa.eu search
-          ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): New source ie_semo_imbalance (SEMO report API, EirGrid Group Open Data Licence, commercial use allowed). ENTSO-E
-          A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
-          10YIE-1001A00010: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
-          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located |
+          SEMO balancing and imbalance market cost view (half-hourly) probed (https://reports.sem-o.com/api/v1/documents/static-reports?DPuG_ID=BM-095&page_size=100&sor, HTTP None): no machine-readable
+          download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): New source ie_semo_imbalance (SEMO report API, EirGrid Group Open Data
+          Licence, commercial use allowed). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY;
+          not run from the sandbox, no key here), controlArea_Domain 10YIE-1001A00010: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
+          and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       IT:
         status: have
         source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
@@ -8050,17 +8051,18 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): Luxembourg (Creos) sits in Amprion''s LFC block; reserves are procured in the German market (regelleistung.net, licence missing). ENTSO-E
-          A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
-          10YLU-CEGEDEL-NQ: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
-          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located |
+          data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Luxembourg (Creos) sits in Amprion''s LFC block; reserves are procured in the German market
+          (regelleistung.net, licence missing). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY;
+          not run from the sandbox, no key here), controlArea_Domain 10YLU-CEGEDEL-NQ: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
+          and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       MT:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched beyond that).'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located |
+          data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched
+          beyond that).'
       NL:
         status: have
         source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
