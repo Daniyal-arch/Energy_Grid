@@ -8,7 +8,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { useFile } from "../app/data";
-import { ask, useAgent } from "../app/agent";
+import { API_BASE, ask, useAgent } from "../app/agent";
 import type { CountriesFile, GasFile, GridFile, PlantsFile, ReferenceFile, StatsFile, WorldFile } from "../app/types";
 import { inside, kmInside, km2Text, makeShape, pick, readGrid, type AreaShape } from "../lib/area";
 import type { AtlasFile } from "../lib/atlas";
@@ -310,6 +310,7 @@ export function AreaOverviewCard({ s }: { s: AreaShape }) {
       >
         ✦ Ask about this area
       </button>
+      {s.kind === "countries" && s.label && <AreaActions name={s.label} />}
     </Card>
   );
 }
@@ -927,4 +928,86 @@ function askAbout(s: AreaShape): void {
   useAgent.setState({ open: true });
   const named = s.kind === "countries" && s.label ? s.label : "";
   void ask(named ? `Tell me about ${named}` : "What is in the area I drew? Plants, substations, lines and what is published there.");
+}
+
+
+// ---------------------------------------------------------------- compare and watch (brief 30)
+const WATCH_KEY = "atlas.watch";
+type Seen = Record<string, string>; // area name -> the date of the last visit
+
+function readSeen(): Seen {
+  try {
+    return JSON.parse(localStorage.getItem(WATCH_KEY) || "{}") as Seen;
+  } catch {
+    return {};
+  }
+}
+
+type Change = { table: string; key: string; change: string; from: string; to: string; as_of: string };
+
+/** Compare with other places (the compare page) and watch the area: its change feed
+ * (GET /api/feed/<name>.json), the changes since this browser's last visit, and the RSS link. */
+function AreaActions({ name }: { name: string }) {
+  const [seen, setSeen] = useState<Seen>(readSeen);
+  const watched = name in seen;
+  const feed = useAsync(watched ? `feed|${name}` : null, async () => {
+    const r = await fetch(`${API_BASE}/api/feed/${encodeURIComponent(name)}.json`);
+    if (!r.ok) throw new Error(String(r.status));
+    return (await r.json()) as { changes: Change[]; snapshots: string[] };
+  });
+  const since = seen[name];
+  const fresh = (feed.v?.changes ?? []).filter((c) => !since || c.to > since);
+  // this visit becomes the last one for next time (the list above keeps the old date)
+  useEffect(() => {
+    if (!feed.v || !watched) return;
+    try {
+      localStorage.setItem(WATCH_KEY, JSON.stringify({ ...readSeen(), [name]: new Date().toISOString().slice(0, 10) }));
+    } catch {
+      /* storage blocked */
+    }
+  }, [feed.v, watched, name]);
+  const toggle = () => {
+    const next = { ...readSeen() };
+    if (watched) delete next[name];
+    else next[name] = new Date().toISOString().slice(0, 10);
+    try {
+      localStorage.setItem(WATCH_KEY, JSON.stringify(next));
+    } catch {
+      /* storage blocked: the watch lasts this visit */
+    }
+    setSeen(next);
+  };
+  return (
+    <div className="mt-1.5 space-y-1 text-[11px]">
+      <div className="flex flex-wrap gap-1.5">
+        <a href={`?compare=${encodeURIComponent(name)};`} className="rounded-md border border-white/10 px-2 py-0.5 text-slate-300 hover:bg-white/[0.06]">
+          Compare with…
+        </a>
+        <button onClick={toggle} aria-pressed={watched} className="rounded-md border border-white/10 px-2 py-0.5 text-slate-300 hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400">
+          {watched ? "★ Watching" : "☆ Watch this area"}
+        </button>
+        {watched && (
+          <a href={`${API_BASE}/api/feed/${encodeURIComponent(name)}.rss`} className="px-1 py-0.5 text-sky-300/90 hover:text-sky-200">
+            RSS
+          </a>
+        )}
+      </div>
+      {watched && (
+        <div className="text-slate-400">
+          {feed.failed
+            ? "The change feed needs the answer service, not set up on this site yet."
+            : !feed.v
+              ? "Reading the change feed…"
+              : fresh.length
+                ? `Since your last visit (${since}):`
+                : `No change since your last visit (${since}); the feed keeps one snapshot a day from ${feed.v.snapshots[0] ?? "today"}.`}
+          {fresh.slice(0, 6).map((c, i) => (
+            <div key={i} className="text-slate-300">
+              {c.table}, {c.key}: {c.change} ({c.from} to {c.to})
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
