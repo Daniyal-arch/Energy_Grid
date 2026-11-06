@@ -109,6 +109,10 @@ export const WORLD_SOURCES: Sources = [
     "Eskom data portal (hourly demand and station build-up files, MW as published) and the load-shedding status from loadshedding.eskom.co.za (its answer minus 1 is the stage). The marker is placed for reading.",
   ],
   [
+    "South Korea",
+    "KPX (Korea Power Exchange) real-time pages, no key, every 5 minutes: demand, supply capacity and reserve, and generation by source (MW as published; the generation total is the sum of the source columns, computed). Behind-the-meter and PPA solar are KPX's own estimates; ESS and pumped storage are net. Licence: KPX's generation data on data.go.kr (dataset 15106744) is marked no restriction on use, while the KPX site footer says all rights reserved; shown on the owner's decision (2026-11-06). The marker is placed for reading.",
+  ],
+  [
     "Taiwan",
     "Taipower open data (data.gov.tw dataset 8931), every 10 minutes: net generation and installed capacity of every unit Taipower owns or buys from, with its status note. Type totals are Taipower's subtotals; the island total is their sum (computed). No interconnectors. The marker is placed for reading.",
   ],

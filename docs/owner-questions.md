@@ -73,6 +73,9 @@ but its terms allow only non-commercial use, so it is left out (probe kept:
 `scripts/probe_aeso.py`). Chile (CEN) and Turkey (EPİAŞ) need accounts; India (Grid-India)
 answers neither the sandbox nor GitHub runners.
 
+**Answer (2026-11-06).** Build where the licence is unclear: Korea is wired (snapshot step, `korea.json`,
+a World live-grid marker and card, both licence statements named on the card and in the sources).
+
 ## 5. Romania and Serbia connection data: build on the "public notice" basis? (2026-11-06, Track 2)
 
 **Decision.** Two connection datasets are verified and ready to read but state no licence:

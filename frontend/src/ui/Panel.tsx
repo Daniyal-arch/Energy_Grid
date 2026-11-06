@@ -28,8 +28,8 @@ import type { FinanceFile } from "../lib/finance";
 import { AggregateCard, RankingCard, type RankRow } from "../components/TransitionCards";
 import { AuctionsCard, CostsCard } from "../components/ComingCards";
 import { Ferc714Card } from "../components/ReliabilityCards";
-import { EsRegionsCard, FrRegionsCard, NzCard, ZaCard } from "../components/RegionalLiveCards";
-import type { NzFile, ZaFile } from "../lib/regionalLive";
+import { EsRegionsCard, FrRegionsCard, KrCard, NzCard, ZaCard } from "../components/RegionalLiveCards";
+import type { KrFile, NzFile, ZaFile } from "../lib/regionalLive";
 import type { IrenaFile } from "../lib/irena";
 import { AccessCard, BrazilCard, DataCentresCard, NemCard, OntarioCard, PlantsCard, TaiwanCard, UsCard, WorldCountryCard } from "../components/WorldCards";
 import { UsCapacityCard, UsHubPricesCard, UsLiveQueuesCard, UsNodeSpreadCard, UsPipelineCard, UsPlantsCard, UsQueueCard, UsQueueStatesCard, UsTurbinesCard, useStateNames } from "../components/UsCards";
@@ -708,6 +708,7 @@ function WorldPanel() {
   const on = useFile<OntarioFile>("ontario");
   const nzLive = useFile<NzFile>("nz");
   const zaLive = useFile<ZaFile>("za");
+  const krLive = useFile<KrFile>("korea");
   const wp = useFile<WorldPlantsFile>("worldPlants");
   const ws = useFile<WorldStatsFile>("worldStats");
   const dc = useFile<DataCentresFile>("datacentres");
@@ -736,10 +737,11 @@ function WorldPanel() {
           {tw && <TaiwanCard tw={tw} />}
           {nzLive && <NzCard nz={nzLive} />}
           {zaLive && <ZaCard za={zaLive} />}
+          {krLive && <KrCard kr={krLive} />}
           {on && <OntarioCard on={on} />}
           {jepx && <JepxCard f={jepx} />}
           {cenace && <CenaceCard f={cenace} />}
-          <SourcesCard items={WORLD_SOURCES.filter(([k]) => ["United States", "Brazil", "Australia", "Taiwan", "Ontario"].includes(k))} />
+          <SourcesCard items={WORLD_SOURCES.filter(([k]) => ["United States", "Brazil", "Australia", "Taiwan", "Ontario", "South Korea"].includes(k))} />
         </>
       ),
     },
@@ -1035,7 +1037,7 @@ function WorldCountryPanel({ code }: { code: string }) {
   return <Frame title={name} tabs={withDashboard(tabs, code)} action={<ReportButton code={code} />} />;
 }
 
-function RegionPanel({ grid, id }: { grid: "us" | "br" | "au" | "tw" | "on" | "nz" | "za"; id: string }) {
+function RegionPanel({ grid, id }: { grid: "us" | "br" | "au" | "tw" | "on" | "nz" | "za" | "kr"; id: string }) {
   const us = useFile<UsFile>(grid === "us" ? "us" : null);
   const br = useFile<BrazilFile>(grid === "br" ? "brazil" : null);
   const au = useFile<AemoFile>(grid === "au" ? "aemo" : null);
@@ -1043,8 +1045,9 @@ function RegionPanel({ grid, id }: { grid: "us" | "br" | "au" | "tw" | "on" | "n
   const on = useFile<OntarioFile>(grid === "on" ? "ontario" : null);
   const nz = useFile<NzFile>(grid === "nz" ? "nz" : null);
   const za = useFile<ZaFile>(grid === "za" ? "za" : null);
-  const title = grid === "us" ? (us?.regions[id]?.name ?? id) : grid === "br" ? (br?.subsystems[id]?.name ?? id) : grid === "tw" ? "Taiwan" : grid === "on" ? "Ontario" : grid === "nz" ? "New Zealand" : grid === "za" ? "South Africa" : (NEM_NAME[id] ?? id);
-  const sub = grid === "us" ? "United States · EIA-930" : grid === "br" ? "Brazil · ONS" : grid === "tw" ? "Taipower · every unit" : grid === "on" ? "IESO · Canada" : grid === "nz" ? "Transpower · em6" : grid === "za" ? "Eskom" : "Australia · AEMO";
+  const kr = useFile<KrFile>(grid === "kr" ? "korea" : null);
+  const title = grid === "us" ? (us?.regions[id]?.name ?? id) : grid === "br" ? (br?.subsystems[id]?.name ?? id) : grid === "tw" ? "Taiwan" : grid === "on" ? "Ontario" : grid === "nz" ? "New Zealand" : grid === "za" ? "South Africa" : grid === "kr" ? "South Korea" : (NEM_NAME[id] ?? id);
+  const sub = grid === "us" ? "United States · EIA-930" : grid === "br" ? "Brazil · ONS" : grid === "tw" ? "Taipower · every unit" : grid === "on" ? "IESO · Canada" : grid === "nz" ? "Transpower · em6" : grid === "za" ? "Eskom" : grid === "kr" ? "KPX" : "Australia · AEMO";
   const body = () => (
     <>
       {us && <UsCard us={us} />}
@@ -1055,7 +1058,8 @@ function RegionPanel({ grid, id }: { grid: "us" | "br" | "au" | "tw" | "on" | "n
       {on && <OntarioCard on={on} />}
       {nz && <NzCard nz={nz} />}
       {za && <ZaCard za={za} />}
-      <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === (grid === "us" ? "United States" : grid === "br" ? "Brazil" : grid === "tw" ? "Taiwan" : grid === "on" ? "Ontario" : grid === "nz" ? "New Zealand" : grid === "za" ? "South Africa" : "Australia"))} />
+      {kr && <KrCard kr={kr} />}
+      <SourcesCard items={WORLD_SOURCES.filter(([k]) => k === (grid === "us" ? "United States" : grid === "br" ? "Brazil" : grid === "tw" ? "Taiwan" : grid === "on" ? "Ontario" : grid === "nz" ? "New Zealand" : grid === "za" ? "South Africa" : grid === "kr" ? "South Korea" : "Australia"))} />
     </>
   );
   return <Frame title={title} sub={sub} tabs={[{ id: "now", label: "Now", body }]} />;

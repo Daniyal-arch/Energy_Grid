@@ -37,7 +37,7 @@ import type { UsGasPipesFile } from "../lib/usGas";
 import type { EvEuCell } from "./evEuLayers";
 import type { GhgrpFile } from "../lib/ghgrp";
 import type { TyndpFeature, TyndpFile } from "../lib/tyndp";
-import type { NzFile, ZaFile } from "../lib/regionalLive";
+import type { KrFile, NzFile, ZaFile } from "../lib/regionalLive";
 import { type GasProjectsFile, type H2Project, type HydrogenFile } from "../lib/coming";
 import { SEA_CABLE_SOURCE, type SeaCable, type SeaPipe } from "../lib/seaCables";
 import { frValue, itTotals, type FrFile, type FrSite, type IeFile, type IeStation, type ItFile } from "../lib/connectMore";
@@ -509,6 +509,11 @@ function tooltipHtml(id: string, object: unknown): string | null {
       const nz = fileOf<NzFile>("nz");
       if (!nz) return null;
       return `<b>New Zealand</b><div>Generation ${power(nz.total_mw)}</div>${SRC(`Transpower (em6), ${nz.at} · click for details`)}`;
+    }
+    case "w-kr-regions": {
+      const kr = fileOf<KrFile>("korea");
+      if (!kr) return null;
+      return `<b>South Korea</b><div>Demand ${kr.demand?.mw != null ? power(kr.demand.mw) : "–"}${kr.demand?.reserve_pct != null ? ` · reserve ${kr.demand.reserve_pct} %` : ""}</div>${SRC(`KPX, every 5 min${kr.demand?.at ? `, ${kr.demand.at.slice(11, 16)} Seoul time` : ""} · click for details`)}`;
     }
     case "w-za-regions": {
       const za = fileOf<ZaFile>("za");

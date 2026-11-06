@@ -132,6 +132,7 @@ const STATIC: Record<string, Loader> = {
   ontario: snapshot("ontario.json"),
   // New Zealand (Transpower) and South Africa (Eskom) live; France's regions (éCO2mix) every snapshot; Spain's regions daily
   nz: snapshot("nz.json"),
+  korea: snapshot("korea.json"),
   za: snapshot("za.json"),
   frRegions: snapshot("fr_regions.json"),
   esRegions: archive("es_regions.json"),
@@ -371,7 +372,7 @@ export function useFile<T>(key: string | null): T | undefined {
 export const fileOf = <T,>(key: string): T | undefined => useDataStore.getState().files[key] as T | undefined;
 
 /** Live files, reloaded every 10 minutes while the page is open. */
-export const LIVE_KEYS = ["flows", "stats", "outages", "wind", "aemo", "us", "brazil", "taiwan", "ontario", "nz", "za", "frRegions", "windWorld", "gbCarbon", "dkLive"];
+export const LIVE_KEYS = ["flows", "stats", "outages", "wind", "aemo", "us", "brazil", "taiwan", "ontario", "nz", "za", "korea", "frRegions", "windWorld", "gbCarbon", "dkLive"];
 
 // development only: lets headless checks read what has loaded
 if (import.meta.env.DEV) (window as unknown as { __data: typeof useDataStore }).__data = useDataStore;
