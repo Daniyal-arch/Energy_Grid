@@ -6,7 +6,7 @@ import { Suspense, lazy, useEffect, useState } from "react";
 import MapCanvas from "../map/MapCanvas";
 import { LIVE_KEYS, ensure, useDataStore } from "../app/data";
 import { MOBILE_QUERY } from "../app/geo";
-import { actions, readUrl, useApp, writeUrl } from "../app/store";
+import { EMBED, actions, readUrl, useApp, writeUrl } from "../app/store";
 import { DashboardList, DashboardsMenu } from "./Dashboards";
 import { MapsButton } from "./MapsView";
 import { AskButton } from "./AskTab";
@@ -16,6 +16,7 @@ import MapOptions from "./MapOptions";
 import Search from "./Search";
 import TimeBar, { TimeControl } from "./TimeBar";
 import { CREDITS } from "./sources";
+import { EmbedCredit } from "./Embed";
 
 // brief 30: the context panel, the Ask chat, the Maps view, the catalogue, the dashboard
 // builder and the country report load as their own chunks, after the map's first frame
@@ -134,6 +135,25 @@ function Desktop() {
   );
 }
 
+/** ?embed=1: the map, its compact key and the sources line; no bars or panels (docs/product/embeds.md). */
+function Embedded() {
+  // the Maps view keys each map itself
+  const maps = useApp((s) => s.compare);
+  return (
+    <>
+      {!maps && (
+        <div className="absolute left-2 top-2 z-20">
+          <MapLegend />
+        </div>
+      )}
+      <Suspense fallback={null}>
+        <MapsView />
+      </Suspense>
+      <EmbedCredit />
+    </>
+  );
+}
+
 function Phone() {
   const sheet = useApp((s) => s.sheet);
   const set = (v: typeof sheet) => useApp.setState({ sheet: sheet === v ? "none" : v });
@@ -207,7 +227,7 @@ export default function App() {
     <div className="relative h-full w-full overflow-hidden bg-[#05070b] print:h-auto print:overflow-visible print:bg-white">
       <div className="contents print:hidden">
         <MapCanvas />
-        {narrow ? <Phone /> : <Desktop />}
+        {EMBED ? <Embedded /> : narrow ? <Phone /> : <Desktop />}
       </div>
       {report && (
         <Suspense fallback={null}>
@@ -216,8 +236,8 @@ export default function App() {
       )}
       <div className="print:hidden">
         <Suspense fallback={null}>
-          <DashboardBuilder />
-          <Catalogue />
+          {!EMBED && <DashboardBuilder />}
+          {!EMBED && <Catalogue />}
         </Suspense>
       </div>
     </div>

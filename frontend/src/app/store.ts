@@ -783,6 +783,9 @@ export let yearFromUrl: string | null = null;
 export const clearYearFromUrl = () => (yearFromUrl = null);
 
 /** Old links (?day=, ?view=prices, ?story=, ?country=FR, ...) and new ones (?dash=, ?layers=, ?area=, ...). */
+/** ?embed=1: the map in someone else's page (no panels; docs/product/embeds.md). */
+export const EMBED = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("embed") === "1";
+
 export function readUrl(): void {
   const p = new URLSearchParams(window.location.search);
   const view = p.get("view");
@@ -927,6 +930,7 @@ export function writeUrl(camera?: Camera): void {
     const tilt = camera.pitch || camera.bearing ? `,${(camera.pitch ?? 0).toFixed(0)},${(camera.bearing ?? 0).toFixed(0)}` : "";
     p.set("cam", `${camera.center[0].toFixed(2)},${camera.center[1].toFixed(2)},${camera.zoom.toFixed(2)}${tilt}`);
   }
+  if (EMBED) p.set("embed", "1");
   window.history.replaceState(null, "", `?${p.toString()}`);
 }
 
