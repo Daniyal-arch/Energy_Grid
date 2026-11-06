@@ -1091,6 +1091,34 @@ def semo_reports(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
 CUSTOM["ie_semo_imbalance"] = semo_reports
 
 
+def bfee_abwaerme(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """The BfEE excess-heat platform's public list (zvi-api/pfa/abwaermepotenziale, no
+    registration): every reported potential, 100 a page (`seite`, `anzahl`; larger pages are
+    refused), one request a second. Records as published, the platform's own estimated-figure
+    flags included; addresses only, no coordinates."""
+    rows: list[dict[str, Any]] = []
+    with httpx.Client(headers=UA, timeout=120, follow_redirects=True) as c:
+        page, total = 0, None
+        while total is None or len(rows) < total:
+            j = c.get(s["api"], params={"seite": page, "anzahl": 100}).raise_for_status().json()
+            total = j["total"]
+            if not j["inhalt"]:
+                break
+            rows += j["inhalt"]
+            page += 1
+            time.sleep(1)
+    if len(rows) != total:
+        raise SystemExit(f"read {len(rows):,} of {total:,} records")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(
+        f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array', sample_size = -1)"
+    )
+
+
+CUSTOM["de_bfee_abwaerme"] = bfee_abwaerme
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
