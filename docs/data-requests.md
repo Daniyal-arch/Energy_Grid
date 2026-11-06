@@ -7,7 +7,7 @@ session. Each request should also ask the licence question:
 
 > May we redistribute the data, and show it in a commercial product, under an open licence (CC BY 4.0 or equivalent) with attribution?
 
-56 requests to 51 publishers.
+54 requests to 51 publishers.
 
 ## BMWE / BfEE
 
@@ -275,9 +275,6 @@ session. Each request should also ask the licence question:
 - **Baltic transparency dashboard and Elering balance API** (scripts/wave9_sources.yaml `ee_lv_lt_baltic_balancing`)
   - Why: baltic.transparency-dashboard.eu answers a Cloudflare 'Attention Required' page (403), not bypassed; Elering's dashboard API /api/balance (imbalance, regulate_up/down, imbalance_buy/sell_price) answers HTTP 200 but every value is null for 2024-10, 2025-01, 2025-03 and 2026-10 (series stopped)
   - Request: the Baltic TSOs, an open download of the Baltic balancing market data (or keep ENTSO-E A81/A84/A89)
-- **Balancing and reserves (LT)** (data/coverage.yaml `balancing.LT`)
-  - Why: baltic.transparency-dashboard.eu answers a Cloudflare 'Attention Required' page (403), not bypassed; Elering's dashboard API /api/balance (imbalance, regulate_up/down, imbalance_buy/sell_price) answers HTTP 200 but every value is null for 2024-10, 2025-01, 2025-03 and 2026-10 (series stopped).
-  - Request: the Baltic TSOs, an open download of the Baltic balancing market data (or keep ENTSO-E A81/A84/A89) Second pass (2026-11-05): Searched Baltic sources (Estonian 'tasakaalustamine', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API all null). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json 'none', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLT-1001A0008Q: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas
 
 ## The Crown Estate
 
@@ -296,9 +293,6 @@ session. Each request should also ask the licence question:
 - **regelleistung.net balancing tenders** (scripts/wave9_sources.yaml `de_regelleistung`)
   - Why: the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31)
   - Request: the German TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)
-- **Balancing and reserves (DE)** (data/coverage.yaml `balancing.DE`)
-  - Why: the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31).
-  - Request: the German TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): Alternatives to regelleistung.net (licence missing): netztransparenz.de API needs an OAuth client (free registration, credential: NETZTRANSPARENZ_CLIENT_ID/SECRET), terms to read after registration. ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json 'none', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10Y1001A1001A83F (or the four TSO LFC areas): A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas
 
 ## UNESCO
 

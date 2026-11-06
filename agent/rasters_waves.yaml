@@ -59,7 +59,7 @@ measures:
     licence: public (USFS
     layers:
     - url: r2://infraatlas-raw/lake/rasters/wave9/us_usfs_whp.tif
-      cell: 270 x 270 (EPSG:3338)
+      cell: 270 x 270 (EPSG:5070)
       cover: US
   w9_world_gebco:
     title: GEBCO bathymetry grid

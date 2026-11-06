@@ -973,12 +973,14 @@ families:
           (A91)
         partial: true
       IE:
-        status: not_published
-        url: https://transparency.entsoe.eu
-        checked: '2026-11-05'
-        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
-          series found as data Second pass (2026-11-05): Searched EirGrid (English, ''dispatch down'', ''constraints and curtailment''): new source ie_eirgrid_dispatch_down (monthly MWh and % per jurisdiction
-          and region, EirGrid Group Open Data Licence).'
+        status: built
+        source: EirGrid renewable dispatch-down (constraints and curtailment) summary
+        url: https://www.eirgrid.ie/sites/default/files/publications/DD-Summary-Report-V23.xlsx
+        licence: EirGrid Group Open Data Licence (commercial use allowed, credit 'Supported by EirGrid Group Data')
+        dataset: lake wave9.ie_eirgrid_dispatch_down
+        checked: '2026-11-06'
+        partial: true
+        note: published at country level (EirGrid renewable dispatch-down (constraints and curtailment) summary)
       IT:
         status: built
         source: ENTSO-E Transparency Platform (A63, A91, A92)
@@ -3737,12 +3739,14 @@ families:
         partial: true
         note: published at municipality level (Statistics Estonia census 2011 dwellings by main heating method per municipality (RL0223))
       FI:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-11-05'
-        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-05): Searched StatFin in Finnish ("rakennukset
-          lämmitysaineen mukaan"): table raku/15er gives buildings and floor area by heating fuel (district heat, oil/gas, electricity, coal, wood/peat, ground heat, other) per kunta, 2025, CC BY 4.0. New
-          source fi_statfin_heating_fuel_municipality'
+        status: built
+        source: Statistics Finland buildings by heating fuel per municipality (StatFin raku 15er)
+        url: https://pxdata.stat.fi/PxWeb/api/v1/fi/StatFin/raku/15er.px
+        licence: CC BY 4.0
+        dataset: lake wave9.fi_statfin_heating_fuel_municipality
+        checked: '2026-11-06'
+        partial: true
+        note: published at municipality level (Statistics Finland buildings by heating fuel per municipality (StatFin raku 15er))
       DE:
         status: built
         source: Zensus 2022 heating type per 100 m cell
@@ -3751,13 +3755,15 @@ families:
         dataset: lake wave9.de_zensus_heating
         checked: '2026-11-05'
       GR:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        status: built
+        source: ELSTAT Census 2021 households by main energy source for heating, cooking and hot water, per regional unit (SAM05 table Α13); ELSTAT Census 2021 conventional dwellings by occupancy and heating
+          availability and type, per settlement (SAM05 table Γ09)
+        url: https://www.statistics.gr/el/statistics?p_p_id=documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_cacheability=cacheLevelPage&p_p_col_id=column-2&p_p_col_count=4&p_p_col_pos=2&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_javax.faces.resource=document&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_ln=downloadResources&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_documentID=532485&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_locale=el
+        licence: ELSTAT reuse policy (free reuse, commercial included, with source)
+        dataset: lake wave9.gr_elstat_heating_energy_regional_unit, lake wave9.gr_elstat_heating_settlement
         checked: '2026-11-06'
-        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-06): Searched ELSTAT in Greek ("θέρμανση",
-          "κύρια πηγή ενέργειας", SAM05 census 2021 dwellings and households): table Α13 gives households by main energy source for heating (electricity, natural gas, oil, solar, biomass, other) per Περιφερειακή
-          Ενότητα (75), and table Γ09 dwellings with central (autonomous / non-autonomous), other or no heating per settlement (13,586 οικισμοί); ELSTAT reuse policy allows commercial reuse with the source.
-          New sources gr_elstat_heating_energy_regional_unit (fuel, regional unit), gr_elstat_heating_settlement (type, settlement)'
+        partial: true
+        note: published at small_area level (ELSTAT Census 2021 conventional dwellings by occupancy and heating availability and type, per settlement (SAM05 table Γ09))
       HU:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3782,11 +3788,14 @@ families:
           abitazioni impianto di riscaldamento combustibile comune 2021"): the permanent census 2021 housing release has no heating variable per comune; heating per comune exists only for census 2011 (regional
           PDFs, e.g. Emilia-Romagna) and ISTAT household energy survey results are by area type. ISTAT SDMX catalogue timed out from the sandbox (90 s)'
       LV:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-11-05'
-        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-05): Walked CSP PxWeb housing tables
-          in Latvian ("apkure"): MAS080 gives dwellings with/without central heating per novads, valstspilsēta and Riga apkaime, 2011 and 2021, CC0 (data.gov.lv). No fuel. New source lv_csp_central_heating'
+        status: built
+        source: CSP census dwellings with and without central heating per municipality and Riga neighbourhood (MAS080)
+        url: https://data.stat.gov.lv/api/v1/lv/OSP_PUB/POP/MA/MAS/MAS080
+        licence: CC0 1.0
+        dataset: lake wave9.lv_csp_central_heating
+        checked: '2026-11-06'
+        partial: true
+        note: published at small_area level (CSP census dwellings with and without central heating per municipality and Riga neighbourhood (MAS080))
       LT:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3814,12 +3823,14 @@ families:
           ciepła gmina dane.gov.pl", "sposób ogrzewania"): CEEB (GUNB building emission register) gives municipal heat-source breakdowns only to authorised bodies (public maps blurred); dane.gov.pl and
           BDL APIs timed out from the sandbox. NSP 2021 publishes only central heating yes/no per gmina (not probed)'
       PT:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-11-05'
-        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-05): Searched dados.gov.pt / INE in Portuguese
-          ("tipo de aquecimento alojamentos freguesia"): INE indicator 0011526, Census 2021 dwellings by heating type used most often per freguesia, CC BY 4.0 (INE API answers, 5 MB JSON); 2011 indicator
-          0006297 has the main heating energy source per freguesia. New source pt_ine_heating_freguesia'
+        status: built
+        source: INE Portugal Census 2021 dwellings by heating type used most often
+        url: https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0011526&lang=PT
+        licence: CC BY 4.0
+        dataset: lake wave9.pt_ine_heating_freguesia
+        checked: '2026-11-06'
+        partial: true
+        note: published at small_area level (INE Portugal Census 2021 dwellings by heating type used most often)
       RO:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -8087,10 +8098,10 @@ families:
         checked: '2026-11-06'
       IE:
         status: built
-        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; SEMO balancing and imbalance market cost view (half-hourly)
         url: https://web-api.tp.entsoe.eu/api
-        licence: ENTSO-E terms (reuse with attribution)
-        dataset: lake wave9.eu_entsoe_balancing
+        licence: ENTSO-E terms (reuse with attribution); EirGrid Group Open Data Licence (covers SEMO; commercial use allowed with credit)
+        dataset: lake wave9.eu_entsoe_balancing, lake wave9.ie_semo_imbalance
         checked: '2026-11-06'
       IT:
         status: built
@@ -8178,10 +8189,11 @@ families:
         checked: '2026-11-06'
       SE:
         status: built
-        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        source: Svenska kraftnät reserve markets (Mimer); ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices
+          for GB
         url: https://web-api.tp.entsoe.eu/api
-        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
+        licence: CC BY 4.0; ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.se_svk_reserves, lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       GB:
         status: built
@@ -31748,12 +31760,12 @@ families:
         dataset: lake hotmaps.industrial_sites, lake industrial.lcp
         checked: '2026-11-05'
       DE:
-        status: have
-        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
-        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        status: built
+        source: BfEE Plattform für Abwärme (reported excess heat per site; Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://elan1.bafa.bund.de/zvi-ui/pfa/abwaermepotentiale
         licence: CC BY 4.0
-        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
-        checked: '2026-11-05'
+        dataset: lake wave9.de_bfee_abwaerme, lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-06'
       GR:
         status: have
         source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
