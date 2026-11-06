@@ -270,8 +270,8 @@ def resolve_profile() -> str:
 
     ctx = ToolContext(Settings())
     out = []
-    for name in ("Lower Saxony", "Lyon"):
-        resolve_area(ctx, names=[name])
+    resolve_area(ctx, names=["Lower Saxony"])  # opens the sets
+    for name in ("Saxony-Anhalt", "Toulouse"):  # names not asked before (a repeat is in memory)
         prof = cProfile.Profile()
         prof.enable()
         resolve_area(ctx, names=[name])
@@ -280,7 +280,7 @@ def resolve_profile() -> str:
         st = pstats.Stats(prof, stream=buf).sort_stats("cumulative")
         st.print_stats(r"(areas|area_stats|duck|gazetteer)\.py", 14)
         out.append(
-            f"### resolve_area({name!r}), second call\n```\n"
+            f"### resolve_area({name!r}), first call after the sets are open\n```\n"
             + "\n".join(
                 line
                 for line in buf.getvalue().splitlines()

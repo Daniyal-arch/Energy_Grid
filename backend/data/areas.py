@@ -212,6 +212,8 @@ class Area:
 
 # one background writer: area records reach the object store in the order they were made
 _WRITER = ThreadPoolExecutor(max_workers=1, thread_name_prefix="area-store")
+# reads of the name index that run beside the main query
+_READER = ThreadPoolExecutor(max_workers=4, thread_name_prefix="area-read")
 
 
 class AreaStore:
@@ -808,26 +810,39 @@ class Areas:
             else:
                 where = f"{nn} = $q OR lower(CAST(id AS VARCHAR)) = $q"
                 rank = f"CASE WHEN {nn} = $q THEN 0 ELSE 1 END"
-            rows = cur.execute(
-                f"""SELECT "set", CAST(id AS VARCHAR), name, level, iso3, parent_name, population,
-                           xmin, ymin, xmax, ymax, {rank}
-                    FROM outlines.names WHERE {where} LIMIT 400""",
-                {"q": q},
-            ).fetchall()
+            names_sql = f"""SELECT "set", CAST(id AS VARCHAR), name, level, iso3, parent_name,
+                           population, xmin, ymin, xmax, ymax, {rank}
+                    FROM outlines.names WHERE {where} LIMIT 400"""
         except Exception as e:
             log.warning("name index search failed", extra={"error": str(e)[:200]})
             return []
-        if "outlines.aliases" in self.tables():
+
+        def aliases() -> list[tuple]:
             # English and local-language names, exonyms (Overture names.common and names.rules)
             try:
-                rows += cur.execute(
-                    """SELECT "set", CAST(id AS VARCHAR), name, level, iso3, parent_name,
-                              population, xmin, ymin, xmax, ymax, 0
-                       FROM outlines.aliases WHERE alias_norm = $q LIMIT 200""",
-                    {"q": q},
-                ).fetchall()
+                return (
+                    self.lake.cursor()
+                    .execute(
+                        """SELECT "set", CAST(id AS VARCHAR), name, level, iso3, parent_name,
+                                  population, xmin, ymin, xmax, ymax, 0
+                           FROM outlines.aliases WHERE alias_norm = $q LIMIT 200""",
+                        {"q": q},
+                    )
+                    .fetchall()
+                )
             except Exception as e:
                 log.warning("alias search failed", extra={"error": str(e)[:200]})
+                return []
+
+        # the two reads at once (each about 0.9 s on R2; brief 30)
+        pending = _READER.submit(aliases) if "outlines.aliases" in self.tables() else None
+        try:
+            rows = cur.execute(names_sql, {"q": q}).fetchall()
+        except Exception as e:
+            log.warning("name index search failed", extra={"error": str(e)[:200]})
+            rows = []
+        if pending is not None:
+            rows += pending.result()
         out = []
         for st, rid, name, lv, iso, parent, pop, x0, y0, x1, y1, r in rows:
             s = SET_BY_KEY.get(st)
