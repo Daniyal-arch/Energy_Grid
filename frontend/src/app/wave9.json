@@ -1318,6 +1318,25 @@
    "group": "Water & telecom",
    "coverage": "MT",
    "color": "rgb(120,200,230)"
+  },
+  {
+   "id": "w9_eur_overture_comm_lines",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eur_overture_comm_lines.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "id",
+    "class",
+    "subtype",
+    "source_tags"
+   ],
+   "source": "OpenStreetMap communication lines (Overture base/infrastructure) (ODbL (OpenStreetMap contributors, via Overture))",
+   "label": "OpenStreetMap communication lines (Overture base/infrastructure)",
+   "desc": "Fibre and submarine telecom cable routes",
+   "group": "Water & telecom",
+   "coverage": "Europe",
+   "color": "rgb(120,200,230)"
   }
  ],
  "colours": [
@@ -3529,6 +3548,26 @@
      ],
      "what": "fibre and submarine telecom cable routes",
      "source": "EMODnet telecommunication cables - MT IOI-MOC (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_eur_overture_comm_lines",
+   "name": "OpenStreetMap communication lines (Overture base/infrastructure)",
+   "category": "Water & telecom",
+   "description": "OpenStreetMap communication lines (Overture base/infrastructure): 6,991 records as published",
+   "color": "rgb(120,200,230)",
+   "family": "telecom_routes",
+   "updates": "built 2026-11-06 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
+   "parts": [
+    {
+     "layer": "w9_eur_overture_comm_lines",
+     "where": [
+      "Europe"
+     ],
+     "what": "fibre and submarine telecom cable routes",
+     "source": "OpenStreetMap communication lines (Overture base/infrastructure) (ODbL (OpenStreetMap contributors, via Overture))",
      "doc": "Wave 9 sources"
     }
    ]

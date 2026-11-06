@@ -474,6 +474,16 @@ tables:
     - q: how many records in Energinet FCR-D down reserve auctions (DK2)
       sql: SELECT count(*) FROM wave9.dk_energinet_reserves
       answer: 728595
+  eu_entsoe_balancing:
+    grain: 'ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days: one row per record as published (EU27; level zone)'
+    source: https://web-api.tp.entsoe.eu/api
+    licence: ENTSO-E terms (reuse with attribution)
+    category: 3. Markets and revenues
+    columns: area, start_utc, minutes, value, businesstype, type_marketagreement_type, flowdirection_direction, currency_unit_name, quantity_measure_unit_name
+    examples:
+    - q: how many records in ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
+      sql: SELECT count(*) FROM wave9.eu_entsoe_balancing
+      answer: 77480
   gb_elexon_balancing:
     grain: 'Elexon system buy and sell prices (one day per call): one row per record as published (GB; level country)'
     source: https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices/2026-10-01?format=json
@@ -1609,6 +1619,16 @@ tables:
     - q: how many records in EMODnet telecommunication cables - MT IOI-MOC
       sql: SELECT count(*) FROM wave9.mt_emodnet_telecom
       answer: 6
+  eur_overture_comm_lines:
+    grain: 'OpenStreetMap communication lines (Overture base/infrastructure): one row per record as published (EUR; level line)'
+    source: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+    licence: ODbL (OpenStreetMap contributors, via Overture)
+    category: 10. Telecom and digital
+    columns: id, class, subtype, name, source_tags, geometry
+    examples:
+    - q: how many records in OpenStreetMap communication lines (Overture base/infrastructure)
+      sql: SELECT count(*) FROM wave9.eur_overture_comm_lines
+      answer: 6991
   dk_energinet_countertrade:
     grain: 'Energinet countertrade procured in intraday (DK1): one row per record as published (DK; level country)'
     source: https://api.energidataservice.dk/dataset/CountertradeIntraday_v2?limit=0&start=2025-10-15
@@ -1619,6 +1639,18 @@ tables:
     - q: how many records in Energinet countertrade procured in intraday (DK1)
       sql: SELECT count(*) FROM wave9.dk_energinet_countertrade
       answer: 26976
+  fr_odre_balancing_volumes:
+    grain: 'RTE balancing mechanism activated volumes per year (ODRÉ): one row per record as published (FR; level country)'
+    source: https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/volumes-actives-ma/exports/csv
+    licence: Licence Ouverte 2.0
+    category: 3. Markets and revenues
+    columns: annee, vab_hydraulique, vab_nucleaire, vab_thermique, vab_consommation, vab_ech_grt_acteur, vab_ech_grt_grt, vah_hydraulique, vah_nucleaire, vah_thermique,
+      vah_effacement, vah_ech_grt_acteur, vah_ech_grt_grt, cout_moy_baisse_en_eur_mwh, cout_moy_hausse_en_eur_mwh, nb_situations_tendues_b_en_1_2j, nb_situations_tendues_h_en_1_2j,
+      vab_terre, vah_terre
+    examples:
+    - q: how many records in RTE balancing mechanism activated volumes per year (ODRÉ)
+      sql: SELECT count(*) FROM wave9.fr_odre_balancing_volumes
+      answer: 12
   us_eia861m_small_solar:
     grain: 'EIA-861M estimated small-scale solar PV capacity and generation per state: one row per record as published (US; level region)'
     source: https://www.eia.gov/electricity/data/eia861m/xls/small_scale_solar_2026.xlsx
@@ -1700,3 +1732,13 @@ tables:
     - q: how many records in EIA RECS 2020 main space-heating equipment per state (central heat pump share)
       sql: SELECT count(*) FROM wave9.us_eia_recs_heat_pumps_state
       answer: 1
+  sk_susr_energy_consumption_okres:
+    grain: 'ŠÚ SR consumption of fuels, electricity and heat per district (okres), yearly (DATAcube en3001rr): one row per record as published (SK; level district)'
+    source: https://statdata.statistics.sk/public/api/dc/opendata/cube/dataset/en3001rr/download?lang=SK&type=CSV
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: e_nuts14, e_indic, e_unit, e_year, hodnota
+    examples:
+    - q: how many records in ŠÚ SR consumption of fuels, electricity and heat per district (okres), yearly (DATAcube en3001rr)
+      sql: SELECT count(*) FROM wave9.sk_susr_energy_consumption_okres
+      answer: 13800

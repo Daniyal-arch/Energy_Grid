@@ -3614,13 +3614,14 @@ families:
           Searched in Romanian (INS TEMPO-Online "gaze naturale distribuite pe localități", "energie termică distribuită"; data.gov.ro "energie"): TEMPO is plain HTTP on port 8077, which the sandbox proxy
           does not carry; insse.ro and data.gov.ro gave no answer. Registered ro_ins_tempo_locality (blocked: probe from Actions; licence to read)'
       SK:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
+        status: built
+        source: ŠÚ SR consumption of fuels, electricity and heat per district (okres), yearly (DATAcube en3001rr)
+        url: https://statdata.statistics.sk/public/api/dc/opendata/cube/dataset/en3001rr/download?lang=SK&type=CSV
+        licence: CC BY 4.0
+        dataset: lake wave9.sk_susr_energy_consumption_okres
         checked: '2026-11-06'
-        note: 'no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note Second pass (2026-11-06):
-          Searched ŠÚ SR STATdata in Slovak ("spotreba elektriny", "spotreba palív, elektriny, tepla") and data.slovensko.sk (SPARQL): DATAcube en3001rr gives electricity (MWh), natural gas (tisíc m3),
-          heat (GJ), heating oil, diesel and coal consumption per okres (79 districts), kraj and oblasť, 2000-2024, CC BY 4.0 (data.gov.sk terms of use); covers the reporting organisations of the ŠÚ SR
-          survey (sums to 14.4 TWh electricity 2024, not households). New source sk_susr_energy_consumption_okres'
+        partial: true
+        note: published at district level (ŠÚ SR consumption of fuels, electricity and heat per district (okres), yearly (DATAcube en3001rr))
       SI:
         status: built
         source: SURS electricity consumption (kWh) per municipality and consumer type, yearly (1817609S)
@@ -7992,209 +7993,195 @@ families:
     - neighbours
     cells:
       AT:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       BE:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       BG:
-        status: not_published
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
         url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake wave9.eu_entsoe_balancing
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ParseError: not well-formed
-          (invalid token): line 1, column 2) | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E
-          is the route. ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox,
-          no key here), controlArea_Domain 10YCA-BULGARIA-R: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices;
-          A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       HR:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       CY:
-        status: not_published
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
         url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake wave9.eu_entsoe_balancing
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ParseError: not well-formed
-          (invalid token): line 1, column 2) | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing
-          market data published (not re-searched beyond that).'
       CZ:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       DK:
         status: built
-        source: Energinet FCR-D down reserve auctions (DK2); ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: CC BY 4.0; ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: lake wave9.dk_energinet_reserves, eu/imbalance.json (Imbalance layer and card)
+        source: Energinet FCR-D down reserve auctions (DK2); ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices
+          for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: CC BY 4.0; ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.dk_energinet_reserves, lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       EE:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       FI:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       FR:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; RTE balancing mechanism activated volumes per year (ODRÉ); ENTSO-E imbalance prices (A85) per balancing zone, and Elexon
+          system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); Licence Ouverte 2.0; ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, lake wave9.fr_odre_balancing_volumes, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       DE:
-        status: blocked
-        source: regelleistung.net balancing tenders
-        url: https://www.regelleistung.net/apps/datacenter/tenders/
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake wave9.eu_entsoe_balancing
         checked: '2026-11-06'
-        note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
-          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): Alternatives to regelleistung.net (licence missing): netztransparenz.de API needs
-          an OAuth client (free registration, credential: NETZTRANSPARENZ_CLIENT_ID/SECRET), terms to read after registration. ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json
-          ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10Y1001A1001A83F (or the four TSO LFC areas): A81 contracted
-          reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType
-          A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       GR:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       HU:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       IE:
-        status: not_published
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
         url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake wave9.eu_entsoe_balancing
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ParseError: not well-formed
-          (invalid token): line 1, column 2) | SEMO balancing and imbalance market cost view (half-hourly) probed (https://reports.sem-o.com/api/v1/documents/static-reports?DPuG_ID=BM-095&page_size=100&sor,
-          HTTP None): no machine-readable download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): New source ie_semo_imbalance (SEMO report
-          API, EirGrid Group Open Data Licence, commercial use allowed). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run
-          in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YIE-1001A00010: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
-          A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       IT:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       LV:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       LT:
-        status: blocked
-        source: Baltic transparency dashboard and Elering balance API
-        url: https://baltic.transparency-dashboard.eu/
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake wave9.eu_entsoe_balancing
         checked: '2026-11-06'
-        note: 'baltic.transparency-dashboard.eu answers a Cloudflare ''Attention Required'' page (403), not bypassed; Elering''s dashboard API /api/balance (imbalance, regulate_up/down, imbalance_buy/sell_price)
-          answers HTTP 200 but every value is null for 2024-10, 2025-01, 2025-03 and 2026-10 (series stopped). Data request: the Baltic TSOs, an open download of the Baltic balancing market data (or keep
-          ENTSO-E A81/A84/A89) Second pass (2026-11-05): Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API
-          all null). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox,
-          no key here), controlArea_Domain 10YLT-1001A0008Q: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices;
-          A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       LU:
-        status: not_published
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
         url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake wave9.eu_entsoe_balancing
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ParseError: not well-formed
-          (invalid token): line 1, column 2) | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Luxembourg (Creos) sits in Amprion''s LFC block; reserves
-          are procured in the German market (regelleistung.net, licence missing). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves
-          to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLU-CEGEDEL-NQ: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR;
-          type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB
-          GL areas'
       MT:
-        status: not_published
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
         url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution)
+        dataset: lake wave9.eu_entsoe_balancing
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ParseError: not well-formed
-          (invalid token): line 1, column 2) | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing
-          market data published (not re-searched beyond that).'
       NL:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       PL:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       PT:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       RO:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       SK:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       SI:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       ES:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       SE:
-        status: have
-        source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
-        url: https://transparency.entsoe.eu/balancing/r2/imbalance/show
-        licence: ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: eu/imbalance.json (Imbalance layer and card)
+        status: built
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        url: https://web-api.tp.entsoe.eu/api
+        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       GB:
         status: built
@@ -31484,226 +31471,201 @@ families:
     category: 10
     cells:
       AT:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       BE:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       BG:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       HR:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       CY:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       CZ:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       DK:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       EE:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       FI:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       FR:
         status: built
-        source: EMODnet telecommunication cables - FR SHOM; EMODnet telecommunication cables - FR SIGCables
+        source: EMODnet telecommunication cables - FR SHOM; EMODnet telecommunication cables - FR SIGCables; OpenStreetMap communication lines (Overture base/infrastructure)
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:shomcables&outputFormat=application/json
-        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
-        dataset: lake wave9.fr_emodnet_telecom_shom, lake wave9.fr_emodnet_telecom_sigcables
+        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged; ODbL (OpenStreetMap contributors, via Overture)'
+        dataset: lake wave9.fr_emodnet_telecom_shom, lake wave9.fr_emodnet_telecom_sigcables, lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
       DE:
         status: built
-        source: EMODnet telecommunication cables - DE BSH-CONTIS
+        source: EMODnet telecommunication cables - DE BSH-CONTIS; OpenStreetMap communication lines (Overture base/infrastructure)
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:bshcontiscables&outputFormat=application/json
-        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
-        dataset: lake wave9.de_emodnet_telecom_bsh
+        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged; ODbL (OpenStreetMap contributors, via Overture)'
+        dataset: lake wave9.de_emodnet_telecom_bsh, lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
       GR:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       HU:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       IE:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       IT:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       LV:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       LT:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       LU:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       MT:
         status: built
-        source: EMODnet telecommunication cables - MT IOI-MOC
+        source: EMODnet telecommunication cables - MT IOI-MOC; OpenStreetMap communication lines (Overture base/infrastructure)
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:maltacables&outputFormat=application/json
-        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
-        dataset: lake wave9.mt_emodnet_telecom
+        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged; ODbL (OpenStreetMap contributors, via Overture)'
+        dataset: lake wave9.mt_emodnet_telecom, lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
       NL:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       PL:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       PT:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       RO:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       SK:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       SI:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       ES:
         status: built
-        source: EMODnet telecommunication cables - ES CICA
+        source: EMODnet telecommunication cables - ES CICA; OpenStreetMap communication lines (Overture base/infrastructure)
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:cicacables&outputFormat=application/json
-        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
-        dataset: lake wave9.es_emodnet_telecom_cica
+        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged; ODbL (OpenStreetMap contributors, via Overture)'
+        dataset: lake wave9.es_emodnet_telecom_cica, lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
       SE:
-        status: not_published
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
-          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       GB:
-        status: not_published
-        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:ukfibrecables&outputFormat=application/json
+        status: built
+        source: OpenStreetMap communication lines (Overture base/infrastructure)
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        licence: ODbL (OpenStreetMap contributors, via Overture)
+        dataset: lake wave9.eur_overture_comm_lines
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EMODnet telecommunication cables - UK OGA left out: the layer answers (30 cables; NSTA pipeline-style columns pipe_name, operator, ins_date, ...) but its primary
-          source is NSTA (ex-OGA) data, licensed for non-commercial use only (as gb_nsta_pipelines) | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*,
-          HTTP None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference
-          to a TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
-          3.0, non-commercial)'
       US:
         status: not_published
         url: https://www.submarinecablemap.com/api/v3/cable/cable-geo.json
