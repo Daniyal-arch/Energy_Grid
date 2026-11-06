@@ -30,7 +30,7 @@ Any area the user names, draws or sees becomes one object the other tools use.
   partial union). `tools/areas.py` `_named_area`.
 - Name evals: `agent/evals/area_names.yaml` (official km² with a 10 % band), run against the real
   lake by `backend/probes/probe_latency.py`; fixture cases in `backend/tests/test_areas.py`.
-- **Speed** (brief 30): `outlines.names.name_norm` (sorted, bloom) for the match; `geometry_of(ref, bbox)` reads an outline by its box and id (row groups skipped); `Lake.tables()` cached. On R2 a name still takes ~5 s (p50, 2026-11-06): not yet broken down.
+- **Speed** (brief 30): `outlines.names.name_norm` (sorted, bloom) for the match; the aliases and the older outline sets read in parallel beside it (`_READER`); `geometry_of(ref, bbox)` reads an outline by its box and id; `AreaStore.put` writes the object store's copy in the background (`_WRITER`) and only when changed; a resolved name is kept in memory (`tools/areas._RESOLVED`); `Lake.tables()` cached. Profile of one call on R2 (2026-11-06, before these): 6.5 s = store writes 2.9-3.4, outline 1.0-1.8, name search 1.8.
 - **SQL**: `run_sql(..., areas=[ids])` registers temp table `areas` and macros `in_area(geom,
   id)`, `intersects_area`, `km_inside`, `km2_inside`; `expand_in_area` adds a literal bbox
   filter so Parquet row groups are skipped. Country and group areas: filter by the country key

@@ -43,3 +43,12 @@ See [[coverage-and-gaps]], [[lake]], [[agent-tools]], [[state-and-datasets]].
   `{env:NAME}` in url/headers (missing key = `skipped` record, not a failure). Page-only
   research: `docs/research/page-only-batch-{a,b,c}.md`; failed-build fixes:
   `docs/research/wave9-failed-fixes.md`. See [[freshness]].
+- **More kinds (2026-11-06)**: `pxweb` (GET the table's variables, POST every one with "all",
+  json-stat2), `aqviewer` (EEA AQ Viewer: one POST per country and year, a capped answer
+  refused), `entsoe` (any Transparency document per area via `scripts/entsoe.py`, points as
+  published), custom `eur_overture_comm_lines` (Overture infrastructure read anonymously).
+  Builds are started by the `[w9: ...]` tag only when that commit is the head of its push;
+  otherwise dispatch `wave9.yml` with `groups: "s:<id> ..."`. The single-source job gets the
+  same keys as the category jobs. FEMA NFHL is queried in place by the `live` tool
+  (`fema_nfhl`).
+
