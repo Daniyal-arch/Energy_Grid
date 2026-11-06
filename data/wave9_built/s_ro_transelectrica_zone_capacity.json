@@ -1,0 +1,19 @@
+{
+ "ro_transelectrica_zone_capacity": {
+  "built": "2026-11-06",
+  "columns": [
+   "zone",
+   "year",
+   "capacity_mw",
+   "start_price_lei_per_mw",
+   "cell"
+  ],
+  "example": {
+   "answer": 100,
+   "sql": "SELECT count(*) FROM wave9.ro_transelectrica_zone_capacity"
+  },
+  "geometry": false,
+  "rows": 100,
+  "seconds": 1
+ }
+}
