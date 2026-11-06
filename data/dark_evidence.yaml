@@ -1,0 +1,193 @@
+# Second research pass for dark cells (brief 30 Track 2.3): what was searched, in which language,
+# and what was found. scripts/wave9.py render appends each note to its cell; scripts/apply_evidence.py
+# does the same for the families kept by hand in data/coverage.yaml.
+balancing:
+  AT:
+    checked: '2026-11-05'
+    note: 'APG markttransparenz.apg.at / transparency.apg.at did not answer from the sandbox (connection failed, 2026-11-06). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+      2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+      10YAT-APG------L: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices
+      and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  BE:
+    checked: '2026-11-05'
+    note: 'Elia Open Data (French/Dutch/English portal) has balancing price and reserve bid sets: new source be_elia_balancing (ods166, ods207, ods206; licence page down at the probe, quote before build).
+      ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves
+      to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YBE----------2: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR;
+      type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL
+      areas'
+  BG:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves
+      to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YCA-BULGARIA-R: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR;
+      type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL
+      areas'
+  CY:
+    checked: '2026-11-05'
+    note: Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched beyond that).
+  CZ:
+    checked: '2026-11-05'
+    note: 'Searched ČEPS in Czech (podpůrné služby, podmínky užití): cz_ceps_balancing (blocked, no licence statement). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+      2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+      10YCZ-CEPS-----N: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices
+      and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  DE:
+    checked: '2026-11-05'
+    note: 'Alternatives to regelleistung.net (licence missing): netztransparenz.de API needs an OAuth client (free registration, credential: NETZTRANSPARENZ_CLIENT_ID/SECRET), terms to read after registration.
+      ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here),
+      controlArea_Domain 10Y1001A1001A83F (or the four TSO LFC areas): A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their
+      prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  EE:
+    checked: '2026-11-05'
+    note: 'Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API all null). ENTSO-E A85 imbalance prices already
+      answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY;
+      not run from the sandbox, no key here), controlArea_Domain 10Y1001A1001A39I: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
+      and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  ES:
+    checked: '2026-11-05'
+    note: 'Searched REE in Spanish (servicios de ajuste, regulación secundaria): es_ree_esios (blocked: token; REData mercados behind Incapsula). ENTSO-E A85 imbalance prices already answer for this area
+      (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the
+      sandbox, no key here), controlArea_Domain 10YES-REE------0: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices;
+      A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  FI:
+    checked: '2026-11-05'
+    note: 'Not dark: fi_fingrid_reserves is ready and answers 401 only because FINGRID_API_KEY is not set (register at data.fingrid.fi, set the repo secret). ENTSO-E A85 imbalance prices already answer
+      for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not
+      run from the sandbox, no key here), controlArea_Domain 10YFI-1--------U: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and
+      A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  FR:
+    checked: '2026-11-05'
+    note: 'Searched ODRÉ (French: ''mécanisme d''ajustement'', ''réserve'', ''services système''): new source fr_odre_balancing_volumes (annual activated volumes and mean costs, Licence Ouverte 2.0); daily
+      reserve data need RTE''s data-portal OAuth key (credential) or ENTSO-E. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell
+      can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YFR-RTE------C: A81 contracted
+      reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16);
+      A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  GR:
+    checked: '2026-11-05'
+    note: 'Searched IPTO (Greek: Αγορά Εξισορρόπησης): file API with weekly balancing settlement xlsx, no reuse licence: gr_admie_balancing (blocked, request). ENTSO-E A85 imbalance prices already answer
+      for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not
+      run from the sandbox, no key here), controlArea_Domain 10YGR-HTSO-----Y: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and
+      A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  HR:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YHR-HEP------M:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  HU:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YHU-MAVIR----U:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  IE:
+    checked: '2026-11-05'
+    note: 'New source ie_semo_imbalance (SEMO report API, EirGrid Group Open Data Licence, commercial use allowed). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'',
+      2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YIE-1001A00010: A81 contracted reserves (businessType B95; processType
+      A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType
+      A51/A47) for EB GL areas'
+  IT:
+    checked: '2026-11-05'
+    note: 'Terna''s download centre states no reuse licence (see it_terna_province); MSD results on GME not checked as data. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+      2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+      10YIT-GRTN-----B: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices
+      and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  LT:
+    checked: '2026-11-05'
+    note: 'Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API all null). ENTSO-E A85 answered nothing for this
+      area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLT-1001A0008Q:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  LU:
+    checked: '2026-11-05'
+    note: 'Luxembourg (Creos) sits in Amprion''s LFC block; reserves are procured in the German market (regelleistung.net, licence missing). ENTSO-E A85 answered nothing for this area in build_imbalance.py
+      (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLU-CEGEDEL-NQ: A81 contracted reserves (businessType
+      B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing
+      capacity (processType A51/A47) for EB GL areas'
+  LV:
+    checked: '2026-11-05'
+    note: 'Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API all null). ENTSO-E A85 imbalance prices already
+      answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY;
+      not run from the sandbox, no key here), controlArea_Domain 10YLV-1001A00074: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
+      and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  MT:
+    checked: '2026-11-05'
+    note: Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched beyond that).
+  NL:
+    checked: '2026-11-05'
+    note: 'TenneT''s API (api.tennet.eu) answers 403 without a key (free registration, credential: TENNET_API_KEY); the old export_data.aspx did not answer. ENTSO-E A85 imbalance prices already answer for
+      this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run
+      from the sandbox, no key here), controlArea_Domain 10YNL----------L: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89
+      their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  PL:
+    checked: '2026-11-05'
+    note: 'Searched in Polish (rynek bilansujący, ceny rezerw): PSE''s open API answers balancing and reserve prices but states no licence: pl_pse_balancing (blocked, request). ENTSO-E A85 imbalance prices
+      already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY;
+      not run from the sandbox, no key here), controlArea_Domain 10YPL-AREA-----S: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
+      and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  PT:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YPT-REN------W:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  RO:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YRO-TEL------P:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  SE:
+    checked: '2026-11-05'
+    note: 'Not dark: se_svk_reserves (CC BY 4.0) answers 200; the CSV is plain (header _id,start_time_sweden,start_time_utc,reserve_product,reserve_direction,auction_round,price,price_unit,volume,volume_unit,soda_hashbyte,soda_identity),
+      so the DuckDB sniff failure is a reader issue: read with sample_size=-1 / all_varchar or explicit columns. Sister CKAN sets afrr_capacity_market, mfrr_capacity_market (CC-BY-4.0, package_show). ENTSO-E
+      A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to
+      run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain SE1-SE4 zones: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
+      A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  SI:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YSI-ELES-----O:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  SK:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YSK-SEPS-----K:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+congestion:
+  DK:
+    checked: '2026-11-05'
+    note: 'Searched Energi Data Service (Danish/English catalogue, ''countertrade'', ''special regulation''): new source dk_energinet_countertrade (CountertradeIntraday_v2, 15-min up/down MW, CC BY 4.0).'
+  EE:
+    checked: '2026-11-05'
+    note: Elering dashboard API (OpenAPI listed, 2026-11-06) has no redispatch or countertrade endpoint; the Baltic dashboard is behind Cloudflare. Not published as open data.
+  FI:
+    checked: '2026-11-05'
+    note: 'Searched Fingrid (Finnish ''erikoissäätö'', ''vastakauppa''): new source fi_fingrid_special_regulation (dataset 391, CC BY 4.0, needs FINGRID_API_KEY).'
+  GR:
+    checked: '2026-11-05'
+    note: IPTO's file API list for 2026-10-01 holds no redispatch or curtailment file (balancing, ISP, availability, load); and IPTO states no reuse licence (see gr_admie_balancing).
+  IE:
+    checked: '2026-11-05'
+    note: 'Searched EirGrid (English, ''dispatch down'', ''constraints and curtailment''): new source ie_eirgrid_dispatch_down (monthly MWh and % per jurisdiction and region, EirGrid Group Open Data Licence).'
+  SE:
+    checked: '2026-11-05'
+    note: 'Searched SVK''s data service (Swedish ''mothandel'', ''specialreglering'', ''countertrade'', ''redispatch''): its CKAN lists 10 packages, none on countertrade or redispatch; Mimer states no licence.
+      Still not published as open data.'
+  SK:
+    checked: '2026-11-05'
+    note: 'Searched in Slovak (''redispečing'', SEPS, ÚRSO): only tender documents and ÚRSO decisions (PDF), no series as data.'
+connect:
+  BE:
+    checked: '2026-11-05'
+    note: 'Searched Elia Open Data (110 datasets listed): ods183 congestion risk indicator per electrical zone exists but is an operational signal, not connection capacity: be_elia_congestion_risk (left_out).
+      Elia''s hosting-capacity map still behind Cloudflare.'
+  'NO':
+    checked: '2026-11-05'
+    note: 'Searched in Norwegian (''ledig kapasitet'', ''kapasitetskart'', Statnett, Elvia): only reports and press; Statnett''s request/reservation view is Power BI. Still not published as data.'
+rooftop_solar:
+  US:
+    checked: '2026-11-05'
+    note: 'Searched EIA (English, small-scale solar): new source us_eia861m_small_solar (EIA-861M estimated small-scale PV capacity and generation per state and month, public domain); LBNL Tracking the
+      Sun stays blocked (403).'

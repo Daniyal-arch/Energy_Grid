@@ -1216,6 +1216,100 @@
    "group": "Resources",
    "coverage": "GB",
    "color": "rgb(255,170,110)"
+  },
+  {
+   "id": "w9_de_emodnet_telecom_bsh",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/de_emodnet_telecom_bsh.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "id",
+    "featureid",
+    "featurespe",
+    "status",
+    "featuretyp",
+    "uuid"
+   ],
+   "source": "EMODnet telecommunication cables - DE BSH-CONTIS (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
+   "label": "EMODnet telecommunication cables - DE BSH-CONTIS",
+   "desc": "Fibre and submarine telecom cable routes",
+   "group": "Water & telecom",
+   "coverage": "DE",
+   "color": "rgb(120,200,230)"
+  },
+  {
+   "id": "w9_es_emodnet_telecom_cica",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/es_emodnet_telecom_cica.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "id",
+    "length",
+    "location"
+   ],
+   "source": "EMODnet telecommunication cables - ES CICA (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
+   "label": "EMODnet telecommunication cables - ES CICA",
+   "desc": "Fibre and submarine telecom cable routes",
+   "group": "Water & telecom",
+   "coverage": "ES",
+   "color": "rgb(120,200,230)"
+  },
+  {
+   "id": "w9_fr_emodnet_telecom_shom",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/fr_emodnet_telecom_shom.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "id",
+    "catcbl",
+    "status",
+    "inspireid"
+   ],
+   "source": "EMODnet telecommunication cables - FR SHOM (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
+   "label": "EMODnet telecommunication cables - FR SHOM",
+   "desc": "Fibre and submarine telecom cable routes",
+   "group": "Water & telecom",
+   "coverage": "FR",
+   "color": "rgb(120,200,230)"
+  },
+  {
+   "id": "w9_fr_emodnet_telecom_sigcables",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/fr_emodnet_telecom_sigcables.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "id",
+    "sgc_id",
+    "status",
+    "inst_year",
+    "dism_year",
+    "length"
+   ],
+   "source": "EMODnet telecommunication cables - FR SIGCables (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
+   "label": "EMODnet telecommunication cables - FR SIGCables",
+   "desc": "Fibre and submarine telecom cable routes",
+   "group": "Water & telecom",
+   "coverage": "FR",
+   "color": "rgb(120,200,230)"
+  },
+  {
+   "id": "w9_mt_emodnet_telecom",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/mt_emodnet_telecom.pmtiles",
+   "kind": "linestring",
+   "minzoom": 0,
+   "fields": [
+    "name",
+    "id"
+   ],
+   "source": "EMODnet telecommunication cables - MT IOI-MOC (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
+   "label": "EMODnet telecommunication cables - MT IOI-MOC",
+   "desc": "Fibre and submarine telecom cable routes",
+   "group": "Water & telecom",
+   "coverage": "MT",
+   "color": "rgb(120,200,230)"
   }
  ],
  "colours": [
@@ -3307,6 +3401,106 @@
      ],
      "what": "Households with internet access",
      "source": "Eurostat household internet access (isoc_ci_in_h) (CC BY 4.0)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_de_emodnet_telecom_bsh",
+   "name": "EMODnet telecommunication cables - DE BSH-CONTIS",
+   "category": "Water & telecom",
+   "description": "EMODnet telecommunication cables - DE BSH-CONTIS: 28 records as published",
+   "color": "rgb(120,200,230)",
+   "family": "telecom_routes",
+   "updates": "built 2026-11-06 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
+   "parts": [
+    {
+     "layer": "w9_de_emodnet_telecom_bsh",
+     "where": [
+      "DE"
+     ],
+     "what": "fibre and submarine telecom cable routes",
+     "source": "EMODnet telecommunication cables - DE BSH-CONTIS (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_es_emodnet_telecom_cica",
+   "name": "EMODnet telecommunication cables - ES CICA",
+   "category": "Water & telecom",
+   "description": "EMODnet telecommunication cables - ES CICA: 29 records as published",
+   "color": "rgb(120,200,230)",
+   "family": "telecom_routes",
+   "updates": "built 2026-11-06 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
+   "parts": [
+    {
+     "layer": "w9_es_emodnet_telecom_cica",
+     "where": [
+      "ES"
+     ],
+     "what": "fibre and submarine telecom cable routes",
+     "source": "EMODnet telecommunication cables - ES CICA (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_fr_emodnet_telecom_shom",
+   "name": "EMODnet telecommunication cables - FR SHOM",
+   "category": "Water & telecom",
+   "description": "EMODnet telecommunication cables - FR SHOM: 603 records as published",
+   "color": "rgb(120,200,230)",
+   "family": "telecom_routes",
+   "updates": "built 2026-11-06 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
+   "parts": [
+    {
+     "layer": "w9_fr_emodnet_telecom_shom",
+     "where": [
+      "FR"
+     ],
+     "what": "fibre and submarine telecom cable routes",
+     "source": "EMODnet telecommunication cables - FR SHOM (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_fr_emodnet_telecom_sigcables",
+   "name": "EMODnet telecommunication cables - FR SIGCables",
+   "category": "Water & telecom",
+   "description": "EMODnet telecommunication cables - FR SIGCables: 60 records as published",
+   "color": "rgb(120,200,230)",
+   "family": "telecom_routes",
+   "updates": "built 2026-11-06 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
+   "parts": [
+    {
+     "layer": "w9_fr_emodnet_telecom_sigcables",
+     "where": [
+      "FR"
+     ],
+     "what": "fibre and submarine telecom cable routes",
+     "source": "EMODnet telecommunication cables - FR SIGCables (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_mt_emodnet_telecom",
+   "name": "EMODnet telecommunication cables - MT IOI-MOC",
+   "category": "Water & telecom",
+   "description": "EMODnet telecommunication cables - MT IOI-MOC: 6 records as published",
+   "color": "rgb(120,200,230)",
+   "family": "telecom_routes",
+   "updates": "built 2026-11-06 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
+   "parts": [
+    {
+     "layer": "w9_mt_emodnet_telecom",
+     "where": [
+      "MT"
+     ],
+     "what": "fibre and submarine telecom cable routes",
+     "source": "EMODnet telecommunication cables - MT IOI-MOC (EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged)",
      "doc": "Wave 9 sources"
     }
    ]

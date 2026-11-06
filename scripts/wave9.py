@@ -1351,6 +1351,10 @@ def cell_for(fam: str, f: dict[str, Any], cc: str, srcs: list[dict[str, Any]], b
 
 
 RASTERS = ROOT / "agent" / "rasters_waves.yaml"
+_EV = ROOT / "data" / "dark_evidence.yaml"
+EVIDENCE: dict[str, dict[str, dict[str, str]]] = (
+    (yaml.safe_load(_EV.read_text(encoding="utf-8")) or {}) if _EV.exists() else {}
+)
 
 
 def updates_text(s: dict[str, Any], b: dict[str, Any]) -> str:
@@ -1414,13 +1418,21 @@ def render(args: argparse.Namespace) -> None:
     reg = yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))
     for fam, f in fams.items():
         cells = {cc: cell_for(fam, f, cc, srcs, built, probes, hits) for cc in COUNTRIES}
+        for cc, ev in (EVIDENCE.get(fam) or {}).items():  # the second research pass (brief 30)
+            c = cells.get(cc)
+            if c and c.get("status") in ("not_published", "blocked") and ev.get("note"):
+                c["note"] = (
+                    f"{c.get('note', '')} Second pass ({ev.get('checked', '')}): {ev['note']}".strip()
+                )
         # brief 30 Track 2.5: neighbours get a cell where a built source covers them (a world
         # source, or one naming the country); elsewhere they stay unassessed, not "dark"
         near = {}
         for cc in NEIGHBOURS:
             c = cell_for(fam, f, cc, srcs, built, probes, hits)
             if c and c.get("status") in ("built", "have"):
-                c["note"] = "; ".join(x for x in (c.get("note"), "neighbour: the source covers it") if x)
+                c["note"] = "; ".join(
+                    x for x in (c.get("note"), "neighbour: the source covers it") if x
+                )
                 near[cc] = c
         if near:  # the family then lists the neighbours, each with a cell (scripts/coverage.py)
             for cc in NEIGHBOURS:

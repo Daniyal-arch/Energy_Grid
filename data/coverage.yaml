@@ -19,9 +19,10 @@ families:
       BE:
         status: not_published
         url: https://www.elia.be/en/customers/connection/grid-hosting-capacity
-        note: Elia and Sibelga answer HTTP 403 behind Cloudflare's check (2026-10-27); Elia's open-data portal holds no hosting-capacity set; Fluvius and ORES pages answer 404. Browser discovery in Actions
-          (2026-10-28, an honest Chromium) did not pass the check.
-        checked: '2026-10-28'
+        note: 'Elia and Sibelga answer HTTP 403 behind Cloudflare''s check (2026-10-27); Elia''s open-data portal holds no hosting-capacity set; Fluvius and ORES pages answer 404. Browser discovery in Actions
+          (2026-10-28, an honest Chromium) did not pass the check. Second pass (2026-11-05): Searched Elia Open Data (110 datasets listed): ods183 congestion risk indicator per electrical zone exists but
+          is an operational signal, not connection capacity: be_elia_congestion_risk (left_out). Elia''s hosting-capacity map still behind Cloudflare.'
+        checked: '2026-11-05'
       BG:
         status: built
         licence: public notice; reuse with the source named
@@ -363,8 +364,9 @@ families:
       'NO':
         status: not_published
         url: https://www.statnett.no/nettkapasitet-til-produksjon-og-forbruk/foresporsler-og-reservasjon-i-nettet/
-        note: Statnett publishes connection requests and reservations as Power BI reports only (no export); Elvia and NVE publish no capacity map or file
-        checked: '2026-10-28'
+        note: 'Statnett publishes connection requests and reservations as Power BI reports only (no export); Elvia and NVE publish no capacity map or file Second pass (2026-11-05): Searched in Norwegian
+          (''ledig kapasitet'', ''kapasitetskart'', Statnett, Elvia): only reports and press; Statnett''s request/reservation view is Power BI. Still not published as data.'
+        checked: '2026-11-05'
       IS:
         status: not_published
         url: https://www.landsnet.is/
@@ -884,21 +886,23 @@ families:
       DK:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-05'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-05): Searched Energi Data Service (Danish/English catalogue, ''countertrade'', ''special regulation''): new source dk_energinet_countertrade (CountertradeIntraday_v2,
+          15-min up/down MW, CC BY 4.0).'
       EE:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-05'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-05): Elering dashboard API (OpenAPI listed, 2026-11-06) has no redispatch or countertrade endpoint; the Baltic dashboard is behind Cloudflare. Not published
+          as open data.'
       FI:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-05'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-05): Searched Fingrid (Finnish ''erikoissäätö'', ''vastakauppa''): new source fi_fingrid_special_regulation (dataset 391, CC BY 4.0, needs FINGRID_API_KEY).'
       FR:
         status: built
         source: ENTSO-E Transparency Platform (A63, A91, A92)
@@ -921,9 +925,10 @@ families:
       GR:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-05'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-05): IPTO''s file API list for 2026-10-01 holds no redispatch or curtailment file (balancing, ISP, availability, load); and IPTO states no reuse licence
+          (see gr_admie_balancing).'
       HU:
         status: built
         source: ENTSO-E Transparency Platform (A63, A91, A92)
@@ -937,9 +942,10 @@ families:
       IE:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-05'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-05): Searched EirGrid (English, ''dispatch down'', ''constraints and curtailment''): new source ie_eirgrid_dispatch_down (monthly MWh and % per jurisdiction
+          and region, EirGrid Group Open Data Licence).'
       IT:
         status: built
         source: ENTSO-E Transparency Platform (A63, A91, A92)
@@ -1016,9 +1022,9 @@ families:
       SK:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-05'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-05): Searched in Slovak (''redispečing'', SEPS, ÚRSO): only tender documents and ÚRSO decisions (PDF), no series as data.'
       SI:
         status: not_published
         url: https://transparency.entsoe.eu
@@ -1037,9 +1043,10 @@ families:
       SE:
         status: not_published
         url: https://transparency.entsoe.eu
-        checked: '2026-10-20'
-        note: ENTSO-E answered 'No matching data' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national series
-          found as data
+        checked: '2026-11-05'
+        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
+          series found as data Second pass (2026-11-05): Searched SVK''s data service (Swedish ''mothandel'', ''specialreglering'', ''countertrade'', ''redispatch''): its CKAN lists 10 packages, none on
+          countertrade or redispatch; Mimer states no licence. Still not published as open data.'
       GB:
         status: built
         source: NESO Constraint Breakdown Costs and Volume; NESO constraint cost breakdown
@@ -7864,38 +7871,57 @@ families:
         url: https://www.regelleistung.net/apps/datacenter/tenders/
         checked: '2026-11-06'
         note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
-          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)'
+          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): APG markttransparenz.apg.at / transparency.apg.at did not answer from the sandbox
+          (connection failed, 2026-11-06). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price
+          built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YAT-APG------L: A81 contracted reserves (businessType B95;
+          processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing
+          capacity (processType A51/A47) for EB GL areas'
       BE:
         status: blocked
         source: regelleistung.net balancing tenders
         url: https://www.regelleistung.net/apps/datacenter/tenders/
         checked: '2026-11-06'
         note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
-          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)'
+          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): Elia Open Data (French/Dutch/English portal) has balancing price and reserve bid
+          sets: new source be_elia_balancing (ods166, ods207, ods206; licence page down at the probe, quote before build). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+          10YBE----------2: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
+          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       BG:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 answered nothing for this area in build_imbalance.py
+          (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YCA-BULGARIA-R: A81 contracted reserves
+          (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16);
+          A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       HR:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+          10YHR-HEP------M: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
+          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       CY:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched beyond that).'
       CZ:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: blocked
+        source: ČEPS data (web service CepsData.asmx)
+        url: https://www.ceps.cz/_layouts/CepsData.asmx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+        note: 'the SOAP web service and the data pages answer (HTTP 200), but no reuse terms were found (Czech search ''podmínky užití'', ''uvedení zdroje''); only a 2008 mailing-list note. ENTSO-E A85
+          already answers for CZ. Data request: ČEPS, a licence statement for the data on ceps.cz/cs/data and CepsData.asmx Second pass (2026-11-05): Searched ČEPS in Czech (podpůrné služby, podmínky užití):
+          cz_ceps_balancing (blocked, no licence statement). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial''
+          now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YCZ-CEPS-----N: A81 contracted reserves
+          (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16);
+          A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       DK:
         status: built
         source: Energinet FCR-D down reserve auctions (DK2)
@@ -7906,123 +7932,198 @@ families:
         partial: true
         note: published at country level (Energinet FCR-D down reserve auctions (DK2))
       EE:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: blocked
+        source: Baltic transparency dashboard and Elering balance API
+        url: https://baltic.transparency-dashboard.eu/
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+        note: 'baltic.transparency-dashboard.eu answers a Cloudflare ''Attention Required'' page (403), not bypassed; Elering''s dashboard API /api/balance (imbalance, regulate_up/down, imbalance_buy/sell_price)
+          answers HTTP 200 but every value is null for 2024-10, 2025-01, 2025-03 and 2026-10 (series stopped). Data request: the Baltic TSOs, an open download of the Baltic balancing market data (or keep
+          ENTSO-E A81/A84/A89) Second pass (2026-11-05): Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API
+          all null). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not).
+          ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10Y1001A1001A39I: A81 contracted reserves (businessType B95; processType A52 FCR,
+          A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType
+          A51/A47) for EB GL areas'
       FI:
         status: not_published
         url: https://data.fingrid.fi/api/datasets/317/data?format=csv&pageSize=20000&sortOrder=desc
         checked: '2026-11-06'
         note: 'no source built in wave 9. Fingrid reserve markets (dataset 317) probed (https://data.fingrid.fi/api/datasets/317/data?format=csv&pageSize=20000&sortOrder=desc, HTTP 401): no machine-readable
           download located | ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves prices''
-          (2026-10-31): 0 results'
+          (2026-10-31): 0 results Second pass (2026-11-05): Not dark: fi_fingrid_reserves is ready and answers 401 only because FINGRID_API_KEY is not set (register at data.fingrid.fi, set the repo secret).
+          ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E
+          reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YFI-1--------U: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR,
+          A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47)
+          for EB GL areas'
       FR:
         status: blocked
         source: regelleistung.net balancing tenders
         url: https://www.regelleistung.net/apps/datacenter/tenders/
         checked: '2026-11-06'
         note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
-          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)'
+          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): Searched ODRÉ (French: ''mécanisme d''ajustement'', ''réserve'', ''services système''):
+          new source fr_odre_balancing_volumes (annual activated volumes and mean costs, Licence Ouverte 2.0); daily reserve data need RTE''s data-portal OAuth key (credential) or ENTSO-E. ENTSO-E A85 imbalance
+          prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions
+          (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YFR-RTE------C: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
+          A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       DE:
         status: blocked
         source: regelleistung.net balancing tenders
         url: https://www.regelleistung.net/apps/datacenter/tenders/
         checked: '2026-11-06'
         note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
-          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)'
+          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): Alternatives to regelleistung.net (licence missing): netztransparenz.de API needs
+          an OAuth client (free registration, credential: NETZTRANSPARENZ_CLIENT_ID/SECRET), terms to read after registration. ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json
+          ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10Y1001A1001A83F (or the four TSO LFC areas): A81 contracted
+          reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType
+          A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       GR:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: blocked
+        source: IPTO (ADMIE) balancing market settlement files
+        url: https://www.admie.gr/getOperationMarketFilewRange?dateStart=2026-10-01&dateEnd=2026-10-01
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+        note: 'the file API answers (JSON list: file_path, file_description, file_datatype ...); weekly IMBABE xlsx (sheet Activated_bal_Energy_and_Prices: STARTDATE, ENDDATE, Total Activated Balancing
+          Energy UP/Down MWh, System deviation, Imbalance Price, mFRR Price UP/Down, Uplift Accounts 1-3; 672 rows a week), BalancingCapacityProduct and BalancingEnergyProduct xls. IPTO''s ''Terms and Services''
+          cover liability and accuracy only and grant no reuse right. Data request: IPTO (info@admie.gr), a reuse licence (e.g. CC BY 4.0) for the market and operation data files (balancing settlement)
+          Second pass (2026-11-05): Searched IPTO (Greek: Αγορά Εξισορρόπησης): file API with weekly balancing settlement xlsx, no reuse licence: gr_admie_balancing (blocked, request). ENTSO-E A85 imbalance
+          prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions
+          (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YGR-HTSO-----Y: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
+          A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       HU:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+          10YHU-MAVIR----U: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
+          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       IE:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | SEMO balancing and imbalance market
+          cost view (half-hourly) probed (https://reports.sem-o.com/api/v1/documents/static-reports?DPuG_ID=BM-095&page_size=100&sor, HTTP None): no machine-readable download located | data.europa.eu search
+          ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): New source ie_semo_imbalance (SEMO report API, EirGrid Group Open Data Licence, commercial use allowed). ENTSO-E
+          A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+          10YIE-1001A00010: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
+          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       IT:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): Terna''s download centre states no reuse licence (see it_terna_province); MSD results on GME not checked as data. ENTSO-E A85 imbalance
+          prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions
+          (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YIT-GRTN-----B: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
+          A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       LV:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: blocked
+        source: Baltic transparency dashboard and Elering balance API
+        url: https://baltic.transparency-dashboard.eu/
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+        note: 'baltic.transparency-dashboard.eu answers a Cloudflare ''Attention Required'' page (403), not bypassed; Elering''s dashboard API /api/balance (imbalance, regulate_up/down, imbalance_buy/sell_price)
+          answers HTTP 200 but every value is null for 2024-10, 2025-01, 2025-03 and 2026-10 (series stopped). Data request: the Baltic TSOs, an open download of the Baltic balancing market data (or keep
+          ENTSO-E A81/A84/A89) Second pass (2026-11-05): Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API
+          all null). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not).
+          ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLV-1001A00074: A81 contracted reserves (businessType B95; processType A52 FCR,
+          A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType
+          A51/A47) for EB GL areas'
       LT:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: blocked
+        source: Baltic transparency dashboard and Elering balance API
+        url: https://baltic.transparency-dashboard.eu/
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+        note: 'baltic.transparency-dashboard.eu answers a Cloudflare ''Attention Required'' page (403), not bypassed; Elering''s dashboard API /api/balance (imbalance, regulate_up/down, imbalance_buy/sell_price)
+          answers HTTP 200 but every value is null for 2024-10, 2025-01, 2025-03 and 2026-10 (series stopped). Data request: the Baltic TSOs, an open download of the Baltic balancing market data (or keep
+          ENTSO-E A81/A84/A89) Second pass (2026-11-05): Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API
+          all null). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox,
+          no key here), controlArea_Domain 10YLT-1001A0008Q: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices;
+          A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       LU:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): Luxembourg (Creos) sits in Amprion''s LFC block; reserves are procured in the German market (regelleistung.net, licence missing). ENTSO-E
+          A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+          10YLU-CEGEDEL-NQ: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
+          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       MT:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched beyond that).'
       NL:
         status: blocked
         source: regelleistung.net balancing tenders
         url: https://www.regelleistung.net/apps/datacenter/tenders/
         checked: '2026-11-06'
         note: 'the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31). Data request: the German
-          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)'
+          TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): TenneT''s API (api.tennet.eu) answers 403 without a key (free registration, credential:
+          TENNET_API_KEY); the old export_data.aspx did not answer. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial''
+          now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YNL----------L: A81 contracted reserves
+          (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16);
+          A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       PL:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: blocked
+        source: PSE balancing prices and reserve capacity prices (raporty.pse.pl API)
+        url: https://api.raporty.pse.pl/api/cmbp-tp?$filter=business_date%20eq%20'2026-10-01'
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+        note: 'the open API answers (no key, OData-style $filter/$first, nextLink): cmbp-tp balancing capacity prices per hour (fcr_g/d, afrr_g/d, mfrrd_g/d, rr_g/d, business_date) and crb-rozl settlement
+          prices per quarter-hour (cen_cost, ckoeb_cost, ceb_pp_cost, ceb_sr_cost, ceb_sr_afrrg/d_cost); neither raporty.pse.pl (app bundle searched for licencja/regulamin/warunki) nor the API states reuse
+          terms; a web search (Polish) found none. Data request: PSE S.A., a reuse licence statement (e.g. CC BY 4.0) for raporty.pse.pl / api.raporty.pse.pl Second pass (2026-11-05): Searched in Polish
+          (rynek bilansujący, ceny rezerw): PSE''s open API answers balancing and reserve prices but states no licence: pl_pse_balancing (blocked, request). ENTSO-E A85 imbalance prices already answer for
+          this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not
+          run from the sandbox, no key here), controlArea_Domain 10YPL-AREA-----S: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
+          and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       PT:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+          10YPT-REN------W: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
+          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       RO:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+          10YRO-TEL------P: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
+          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       SK:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+          10YSK-SEPS-----K: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
+          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       SI:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
         note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+          prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+          2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+          10YSI-ELES-----O: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy
+          prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       ES:
-        status: not_published
-        url: https://web-api.tp.entsoe.eu/api
+        status: blocked
+        source: REE e·sios balancing indicators
+        url: https://api.esios.ree.es/indicators
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves
-          prices'' (2026-10-31): 0 results'
+        note: 'e·sios answers HTTP 403 without a personal token; REData (apidatos.ree.es) answers balance/* but its mercados/* widgets answer an Incapsula challenge (403/503) to a script: not bypassed.
+          Data request: request an e·sios API token (email consultasios@ree.es) and set ESIOS_TOKEN as a repo secret Second pass (2026-11-05): Searched REE in Spanish (servicios de ajuste, regulación secundaria):
+          es_ree_esios (blocked: token; REData mercados behind Incapsula). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can
+          be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YES-REE------0: A81 contracted
+          reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType
+          A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       SE:
         status: not_published
         url: https://data.svk.se/datastore/dump/6093d167-dece-45c8-8ac7-d307e6ac45e9?format=csv
@@ -8031,7 +8132,12 @@ families:
           Invalid Input Error: Error when sniffing file "/tmp/wave9/se_svk_reserves/src.csv".
 
           It was not po) | ENTSO-E balancing data (A81-A89) probed (https://web-api.tp.entsoe.eu/api, HTTP 401): no machine-readable download located | data.europa.eu search ''balancing reserves prices''
-          (2026-10-31): 0 results'
+          (2026-10-31): 0 results Second pass (2026-11-05): Not dark: se_svk_reserves (CC BY 4.0) answers 200; the CSV is plain (header _id,start_time_sweden,start_time_utc,reserve_product,reserve_direction,auction_round,price,price_unit,volume,volume_unit,soda_hashbyte,soda_identity),
+          so the DuckDB sniff failure is a reader issue: read with sample_size=-1 / all_varchar or explicit columns. Sister CKAN sets afrr_capacity_market, mfrr_capacity_market (CC-BY-4.0, package_show).
+          ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E
+          reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain SE1-SE4 zones: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR,
+          A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47)
+          for EB GL areas'
       GB:
         status: built
         source: Elexon system buy and sell prices (one day per call)
@@ -11288,7 +11394,8 @@ families:
         source: LBNL Tracking the Sun
         url: https://emp.lbl.gov/tracking-the-sun
         checked: '2026-11-06'
-        note: 'emp.lbl.gov answers HTTP 403 to an honest client (2026-10-31). Data request: LBNL, the Tracking the Sun public file URL'
+        note: 'emp.lbl.gov answers HTTP 403 to an honest client (2026-10-31). Data request: LBNL, the Tracking the Sun public file URL Second pass (2026-11-05): Searched EIA (English, small-scale solar):
+          new source us_eia861m_small_solar (EIA-861M estimated small-scale PV capacity and generation per state and month, public domain); LBNL Tracking the Sun stays blocked (403).'
   building_certificates:
     name: Building energy certificates
     shows: energy performance certificates (aggregates per area)
@@ -11614,13 +11721,12 @@ families:
           2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
           PUE, renewable share) as an open CSV under CC BY 4.0'
       NL:
-        status: blocked
-        source: European database of data centres - aggregated results (EED Art. 12)
-        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
+        status: built
+        source: CBS electricity delivered to data centres 2017-2024 (Netherlands)
+        url: https://www.cbs.nl/-/media/_excel/2025/51/datacenters_elektriciteitsleveringen_2017_2024.xlsx
+        licence: CC BY 4.0
+        dataset: lake wave9.nl_cbs_datacentres
         checked: '2026-11-06'
-        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
-          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
-          PUE, renewable share) as an open CSV under CC BY 4.0'
       PL:
         status: blocked
         source: European database of data centres - aggregated results (EED Art. 12)
@@ -13151,313 +13257,257 @@ families:
     category: 7
     cells:
       AT:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       BE:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       BG:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       HR:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       CY:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       CZ:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       DK:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       EE:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       FI:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       FR:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       DE:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       GR:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       HU:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       IE:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       IT:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       LV:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       LT:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       LU:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       MT:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       NL:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       PL:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       PT:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       RO:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       SK:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       SI:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       ES:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       SE:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
-          (2026-10-31): 0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       GB:
-        status: not_published
+        status: built
+        source: Clean Hydrogen Observatory electrolyser manufacturing capacity
         url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+        licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+        dataset: lake wave9.eu_cleanh2_electrolyser_mfg
         checked: '2026-11-06'
-        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
-          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
-          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
-          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
-          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
-          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.gov.uk search ''battery gigafactory'' (2026-10-31):
-          0 results'
+        partial: true
+        note: published at total level (Clean Hydrogen Observatory electrolyser manufacturing capacity)
       US:
         status: blocked
         source: Clean Investment Monitor
@@ -31180,205 +31230,222 @@ families:
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       BE:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       BG:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       HR:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       CY:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       CZ:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       DK:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       EE:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       FI:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       FR:
-        status: not_published
+        status: built
+        source: EMODnet telecommunication cables - FR SHOM; EMODnet telecommunication cables - FR SIGCables
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:shomcables&outputFormat=application/json
+        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+        dataset: lake wave9.fr_emodnet_telecom_shom, lake wave9.fr_emodnet_telecom_sigcables
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EMODnet telecommunication cables - FR SHOM probed (https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&ty, HTTP None): no machine-readable
-          download located | EMODnet telecommunication cables - FR SIGCables probed (https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&ty, HTTP None): no machine-readable
-          download located | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP None): no machine-readable
-          download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map, URL, or any related screen
-          capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
       DE:
-        status: not_published
+        status: built
+        source: EMODnet telecommunication cables - DE BSH-CONTIS
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:bshcontiscables&outputFormat=application/json
+        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+        dataset: lake wave9.de_emodnet_telecom_bsh
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EMODnet telecommunication cables - DE BSH-CONTIS probed (https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&ty, HTTP None):
-          no machine-readable download located | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*,
-          HTTP None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography
-          map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)
-          | BNetzA Infrastrukturatlas left out: "Der Infrastrukturatlas ist nicht öffentlich zugänglich": viewing needs a registered account and a reviewed application, limited in time and area (BNetzA
-          fact sheet)'
       GR:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       HU:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       IE:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       IT:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       LV:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       LT:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       LU:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       MT:
-        status: not_published
+        status: built
+        source: EMODnet telecommunication cables - MT IOI-MOC
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:maltacables&outputFormat=application/json
+        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+        dataset: lake wave9.mt_emodnet_telecom
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EMODnet telecommunication cables - MT IOI-MOC probed (https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&ty, HTTP None): no
-          machine-readable download located | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*,
-          HTTP None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography
-          map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
       NL:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       PL:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       PT:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       RO:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       SK:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       SI:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       ES:
-        status: not_published
+        status: built
+        source: EMODnet telecommunication cables - ES CICA
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:cicacables&outputFormat=application/json
+        licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+        dataset: lake wave9.es_emodnet_telecom_cica
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EMODnet telecommunication cables - ES CICA probed (https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&ty, HTTP None): no machine-readable
-          download located | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP None): no machine-readable
-          download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map, URL, or any related screen
-          capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
       SE:
         status: not_published
         url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
         checked: '2026-11-06'
         note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
-          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
-          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a
+          TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       GB:
         status: not_published
         url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:ukfibrecables&outputFormat=application/json
         checked: '2026-11-06'
         note: 'no source built in wave 9. EMODnet telecommunication cables - UK OGA left out: the layer answers (30 cables; NSTA pipeline-style columns pipe_name, operator, ins_date, ...) but its primary
           source is NSTA (ex-OGA) data, licensed for non-commercial use only (as gb_nsta_pipelines) | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*,
-          HTTP None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography
-          map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+          HTTP None): build failed (KeyError: ''eur_overture_comm_lines'') | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference
+          to a TeleGeography map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA
+          3.0, non-commercial)'
       US:
         status: not_published
         url: https://www.submarinecablemap.com/api/v3/cable/cable-geo.json

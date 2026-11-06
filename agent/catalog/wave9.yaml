@@ -1526,3 +1526,73 @@ tables:
     - q: how many records in NRC operating reactors list
       sql: SELECT count(*) FROM wave9.us_nrc_operating_reactors
       answer: 93
+  nl_cbs_datacentres:
+    grain: 'CBS electricity delivered to data centres 2017-2024 (Netherlands): one row per record as published (NL; level country)'
+    source: https://www.cbs.nl/-/media/_excel/2025/51/datacenters_elektriciteitsleveringen_2017_2024.xlsx
+    licence: CC BY 4.0
+    category: 5. Demand and electrification
+    columns: a, b, c, d, e, f, g, h, i, j, k
+    examples:
+    - q: how many records in CBS electricity delivered to data centres 2017-2024 (Netherlands)
+      sql: SELECT count(*) FROM wave9.nl_cbs_datacentres
+      answer: 16
+  eu_cleanh2_electrolyser_mfg:
+    grain: 'Clean Hydrogen Observatory electrolyser manufacturing capacity: one row per record as published (EUR; level total)'
+    source: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+    licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+    category: 7. Supply chain, materials and industry
+    columns: b, c, d, e
+    examples:
+    - q: how many records in Clean Hydrogen Observatory electrolyser manufacturing capacity
+      sql: SELECT count(*) FROM wave9.eu_cleanh2_electrolyser_mfg
+      answer: 11
+  de_emodnet_telecom_bsh:
+    grain: 'EMODnet telecommunication cables - DE BSH-CONTIS: one row per record as published (DE; level line)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:bshcontiscables&outputFormat=application/json
+    licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+    category: 10. Telecom and digital
+    columns: ogc_fid, id, featureid, featurespe, status, featuretyp, name, uuid, shape_leng, geometry
+    examples:
+    - q: how many records in EMODnet telecommunication cables - DE BSH-CONTIS
+      sql: SELECT count(*) FROM wave9.de_emodnet_telecom_bsh
+      answer: 28
+  es_emodnet_telecom_cica:
+    grain: 'EMODnet telecommunication cables - ES CICA: one row per record as published (ES; level line)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:cicacables&outputFormat=application/json
+    licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+    category: 10. Telecom and digital
+    columns: ogc_fid, id, length, name, location, geometry
+    examples:
+    - q: how many records in EMODnet telecommunication cables - ES CICA
+      sql: SELECT count(*) FROM wave9.es_emodnet_telecom_cica
+      answer: 29
+  fr_emodnet_telecom_shom:
+    grain: 'EMODnet telecommunication cables - FR SHOM: one row per record as published (FR; level line)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:shomcables&outputFormat=application/json
+    licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+    category: 10. Telecom and digital
+    columns: ogc_fid, id, catcbl, status, inspireid, geometry
+    examples:
+    - q: how many records in EMODnet telecommunication cables - FR SHOM
+      sql: SELECT count(*) FROM wave9.fr_emodnet_telecom_shom
+      answer: 603
+  fr_emodnet_telecom_sigcables:
+    grain: 'EMODnet telecommunication cables - FR SIGCables: one row per record as published (FR; level line)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:sigcables&outputFormat=application/json
+    licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+    category: 10. Telecom and digital
+    columns: ogc_fid, id, name, sgc_id, status, inst_year, dism_year, length, location, geometry
+    examples:
+    - q: how many records in EMODnet telecommunication cables - FR SIGCables
+      sql: SELECT count(*) FROM wave9.fr_emodnet_telecom_sigcables
+      answer: 60
+  mt_emodnet_telecom:
+    grain: 'EMODnet telecommunication cables - MT IOI-MOC: one row per record as published (MT; level line)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:maltacables&outputFormat=application/json
+    licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+    category: 10. Telecom and digital
+    columns: ogc_fid, id, name, geometry
+    examples:
+    - q: how many records in EMODnet telecommunication cables - MT IOI-MOC
+      sql: SELECT count(*) FROM wave9.mt_emodnet_telecom
+      answer: 6
