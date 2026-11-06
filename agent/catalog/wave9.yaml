@@ -1609,3 +1609,94 @@ tables:
     - q: how many records in EMODnet telecommunication cables - MT IOI-MOC
       sql: SELECT count(*) FROM wave9.mt_emodnet_telecom
       answer: 6
+  dk_energinet_countertrade:
+    grain: 'Energinet countertrade procured in intraday (DK1): one row per record as published (DK; level country)'
+    source: https://api.energidataservice.dk/dataset/CountertradeIntraday_v2?limit=0&start=2025-10-15
+    licence: CC BY 4.0
+    category: 2. Grid planning, connection and network charges
+    columns: timeutc, timedk, version, volumeupmw, volumedownmw, publicationdate
+    examples:
+    - q: how many records in Energinet countertrade procured in intraday (DK1)
+      sql: SELECT count(*) FROM wave9.dk_energinet_countertrade
+      answer: 26976
+  us_eia861m_small_solar:
+    grain: 'EIA-861M estimated small-scale solar PV capacity and generation per state: one row per record as published (US; level region)'
+    source: https://www.eia.gov/electricity/data/eia861m/xls/small_scale_solar_2026.xlsx
+    licence: public domain
+    category: 5. Demand and electrification
+    columns: estimated_small_scale_solar_pv_capacity_and_generation_monthly_totals_for_states
+    examples:
+    - q: how many records in EIA-861M estimated small-scale solar PV capacity and generation per state
+      sql: SELECT count(*) FROM wave9.us_eia861m_small_solar
+      answer: 411
+  si_surs_electricity_municipality:
+    grain: 'SURS electricity consumption (kWh) per municipality and consumer type, yearly (1817609S): one row per record as published (SI; level municipality)'
+    source: https://pxweb.stat.si/SiStatData/api/v1/sl/Data/1817609S.px
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: leto, leto_code, vrsta_odjemalca, vrsta_odjemalca_code, ob_ine, ob_ine_code, value
+    examples:
+    - q: how many records in SURS electricity consumption (kWh) per municipality and consumer type, yearly (1817609S)
+      sql: SELECT count(*) FROM wave9.si_surs_electricity_municipality
+      answer: 3852
+  si_surs_heating_settlement:
+    grain: 'SURS dwellings by heating method per settlement (0871205S) and per municipality (0861120S): one row per record as published (SI; level small_area)'
+    source: https://pxweb.stat.si/SiStatData/api/v1/sl/Data/0871205S.px
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: meritve, meritve_code, leto, leto_code, na_in_ogrevanja, na_in_ogrevanja_code, naselja, naselja_code, value, vrsta_ogrevanja, vrsta_ogrevanja_code, naseljenost,
+      naseljenost_code, ob_ine, ob_ine_code
+    examples:
+    - q: how many records in SURS dwellings by heating method per settlement (0871205S) and per municipality (0861120S)
+      sql: SELECT count(*) FROM wave9.si_surs_heating_settlement
+      answer: 192648
+  cz_csu_sldb_heating_energy:
+    grain: 'ČSÚ Census 2021 occupied dwellings by main energy source for heating: one row per record as published (CZ; level municipality)'
+    source: https://csu.gov.cz/docs/107508/cf59a324-f403-7444-58c3-7b26bdbf01ec/sldb2021_byty_energie.csv?version=1.0
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: idhod, hodnota, ukaz_kod, energie_cis, energie_kod, uzemi_cis, uzemi_kod, sldb_rok, sldb_datum, ukaz_txt, energie_txt, uzemi_txt, uzemi_typ
+    examples:
+    - q: how many records in ČSÚ Census 2021 occupied dwellings by main energy source for heating
+      sql: SELECT count(*) FROM wave9.cz_csu_sldb_heating_energy
+      answer: 87413
+  cz_csu_sldb_heating_mode:
+    grain: 'ČSÚ Census 2021 occupied dwellings by heating method: one row per record as published (CZ; level municipality)'
+    source: https://csu.gov.cz/docs/107508/d0e84fb3-8e98-0d05-0254-db4465ff8f65/sldb2021_byty_vytapeni.csv?version=1.0
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: idhod, hodnota, ukaz_kod, vytapeni_cis, vytapeni_kod, uzemi_cis, uzemi_kod, sldb_rok, sldb_datum, ukaz_txt, vytapeni_txt, uzemi_txt, uzemi_typ
+    examples:
+    - q: how many records in ČSÚ Census 2021 occupied dwellings by heating method
+      sql: SELECT count(*) FROM wave9.cz_csu_sldb_heating_mode
+      answer: 47069
+  ee_stat_heating_2011:
+    grain: 'Statistics Estonia census 2011 dwellings by main heating method per municipality (RL0223): one row per record as published (EE; level municipality)'
+    source: https://andmed.stat.ee/api/v1/et/stat/rahvaloendus/rel2011/eluruumid/RL0223.PX
+    licence: CC BY-SA 4.0
+    category: 'Part A: finishing wave 8'
+    columns: peamine_k_tmisviis, peamine_k_tmisviis_code, asustatus, asustatus_code, hoone_liik, hoone_liik_code, asukoht, asukoht_code, value
+    examples:
+    - q: how many records in Statistics Estonia census 2011 dwellings by main heating method per municipality (RL0223)
+      sql: SELECT count(*) FROM wave9.ee_stat_heating_2011
+      answer: 18256
+  gb_bus_heat_pumps_la:
+    grain: 'DESNZ Boiler Upgrade Scheme redemptions per local authority (heat pumps): one row per record as published (GB; level county)'
+    source: statistics/boiler-upgrade-scheme-statistics-september-2026
+    licence: OGL v3
+    category: 5. Demand and electrification
+    columns: table_q1_2_number_of_redemptions_paid_by_local_authority_england_and_wales_may_2022_to_september_2026
+    examples:
+    - q: how many records in DESNZ Boiler Upgrade Scheme redemptions per local authority (heat pumps)
+      sql: SELECT count(*) FROM wave9.gb_bus_heat_pumps_la
+      answer: 371
+  us_eia_recs_heat_pumps_state:
+    grain: 'EIA RECS 2020 main space-heating equipment per state (central heat pump share): one row per record as published (US; level region)'
+    source: https://www.eia.gov/consumption/residential/data/2020/state/xls/State%20Space%20Heating.xlsx
+    licence: public domain
+    category: 5. Demand and electrification
+    columns: preliminary_data_release_date_june_2022_final_data_release_date_march_2023
+    examples:
+    - q: how many records in EIA RECS 2020 main space-heating equipment per state (central heat pump share)
+      sql: SELECT count(*) FROM wave9.us_eia_recs_heat_pumps_state
+      answer: 1

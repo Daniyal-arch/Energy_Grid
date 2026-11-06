@@ -915,12 +915,14 @@ families:
           (A91)
         partial: true
       DK:
-        status: not_published
-        url: https://transparency.entsoe.eu
-        checked: '2026-11-05'
-        note: 'ENTSO-E answered ''No matching data'' for internal and cross-border redispatch, countertrading and congestion costs over 400 days (2025-09-15 to 2026-10-20, every month asked); no national
-          series found as data Second pass (2026-11-05): Searched Energi Data Service (Danish/English catalogue, ''countertrade'', ''special regulation''): new source dk_energinet_countertrade (CountertradeIntraday_v2,
-          15-min up/down MW, CC BY 4.0).'
+        status: built
+        source: Energinet countertrade procured in intraday (DK1)
+        url: https://api.energidataservice.dk/dataset/CountertradeIntraday_v2?limit=0&start=2025-10-15
+        licence: CC BY 4.0
+        dataset: lake wave9.dk_energinet_countertrade
+        checked: '2026-11-06'
+        partial: true
+        note: published at country level (Energinet countertrade procured in intraday (DK1))
       EE:
         status: not_published
         url: https://transparency.entsoe.eu
@@ -3503,18 +3505,24 @@ families:
       BG:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+        checked: '2026-11-06'
+        note: 'no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note Second pass (2026-11-06):
+          Searched NSI in Bulgarian (nsi.bg "Енергетика" section 74, regional statistics section 46, "потребление на електроенергия по общини"): energy balances, final consumption and district heating are
+          national; monthly energy-product deliveries national (PDF). data.egov.bg answers HTTP 403 to the probe. No per-obshtina electricity or gas consumption from NSI, KEVR or the DSOs found. Stays not_published'
       HR:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+        checked: '2026-11-06'
+        note: 'no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note Second pass (2026-11-06):
+          Searched data.gov.hr CKAN in Croatian ("energija", "energije", "potrošnja", "plin", "električne"): DZS publishes PEFA energy accounts (PC-Axis, national) and short-term energy indicators (msi-energija.xlsx,
+          national); HERA a register of heat customers; city sets only (Rijeka ENERGO tariffs, Zagreb municipal buildings). No HEP ODS or DZS consumption per grad/općina. Stays not_published'
       CY:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+        checked: '2026-11-06'
+        note: 'no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note Second pass (2026-11-06):
+          Walked CYSTAT-DB (PxWeb API, Greek, all folders, terms "ηλεκτρ", "κατανάλ", "καύσιμ"): Energy holds only petroleum sales and imports (0900010G-0900015G), national. data.gov.cy search returns no
+          matching set. No EAC/DSO Cyprus consumption per municipality or community found. Stays not_published'
       CZ:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3525,8 +3533,10 @@ families:
       EE:
         status: not_published
         url: https://elering.ee/en/node/1352
-        checked: '2026-10-29'
-        note: Elering sells postal-code aggregates (not open) (docs/research/small-area-energy.md)
+        checked: '2026-11-06'
+        note: 'Elering sells postal-code aggregates (not open) (docs/research/small-area-energy.md) Second pass (2026-11-06): Searched Statistics Estonia PxWeb in Estonian ("elektrienergia tarbimine", "maakonna")
+          and avaandmed.eesti.ee ("tarbimine", "elektritarbimine", "Elering"): live energy tables are national; archived KE07 gives fuel consumption per maakond 1991-2019 (county, fuels only): registered
+          ee_stat_ke07_fuel_county (left_out). Only an Elektrilevi weekly network total 2020 on the portal; Elering postcode aggregates are paid. Stays not_published'
       FI:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3545,13 +3555,17 @@ families:
       GR:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+        checked: '2026-11-06'
+        note: 'no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note Second pass (2026-11-06):
+          Searched ELSTAT census 2021 (Greek, SAM04/SAM05 publication lists) and HEDNO (deddie.gr, "Στατιστικά", "καταναλώσεις"): ELSTAT has no metered consumption per Δήμος; deddie.gr links statistics
+          only for the non-interconnected islands; data.gov.gr API paths answer 404 without a token (registered API). No per-municipality electricity or gas consumption found. Stays not_published'
       HU:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+        checked: '2026-11-06'
+        note: 'no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note Second pass (2026-11-06):
+          Searched in Hungarian (KSH STADAT "villamosenergia", "vezetékes gáz településenként"; MEKH statisztikák; TEIR): www.ksh.hu and statinfo.ksh.hu answer an F5 "Request Rejected" page to every request
+          (not bypassed); MEKH pages are a JavaScript app; settlement utility data sit in TEIR behind a login; data.gov.hu reset the connection. Registered hu_ksh_energy_settlement (blocked)'
       IT:
         status: not_published
         url: https://www.terna.it/it/sistema-elettrico/statistiche
@@ -3575,13 +3589,16 @@ families:
       LU:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+        checked: '2026-11-06'
+        note: 'no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note Second pass (2026-11-06):
+          Searched data.public.lu in French and German ("électricité", "consommation", "gaz", "Stromverbrauch", "compteur", "Creos") and LUSTAT: ILR electricity and gas dashboards (CC BY 4.0) give monthly
+          kWh by customer class for the whole country only; LUSTAT DF_A4300-A4304 national; Creos publishes nothing there. Registered lu_ilr_energy_statistics (left_out, national)'
       MT:
         status: not_published
         url: https://nso.gov.mt/statistical_insights/non-residential-smart-meter-statistics/
-        checked: '2026-10-29'
-        note: NSO publishes non-residential consumption per district (2024); residential not found (docs/research/small-area-energy.md)
+        checked: '2026-11-06'
+        note: 'NSO publishes non-residential consumption per district (2024); residential not found (docs/research/small-area-energy.md) Second pass (2026-11-06): Re-probed nso.gov.mt (non-residential smart-meter
+          statistics per district), open.data.gov.mt and rews.org.mt: all answer a Cloudflare challenge (HTTP 403), not bypassed; mt_nso_consumption stays blocked'
       PL:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3592,20 +3609,27 @@ families:
       RO:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+        checked: '2026-11-06'
+        note: 'no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note Second pass (2026-11-06):
+          Searched in Romanian (INS TEMPO-Online "gaze naturale distribuite pe localități", "energie termică distribuită"; data.gov.ro "energie"): TEMPO is plain HTTP on port 8077, which the sandbox proxy
+          does not carry; insse.ro and data.gov.ro gave no answer. Registered ro_ins_tempo_locality (blocked: probe from Actions; licence to read)'
       SK:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note
+        checked: '2026-11-06'
+        note: 'no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note Second pass (2026-11-06):
+          Searched ŠÚ SR STATdata in Slovak ("spotreba elektriny", "spotreba palív, elektriny, tepla") and data.slovensko.sk (SPARQL): DATAcube en3001rr gives electricity (MWh), natural gas (tisíc m3),
+          heat (GJ), heating oil, diesel and coal consumption per okres (79 districts), kraj and oblasť, 2000-2024, CC BY 4.0 (data.gov.sk terms of use); covers the reporting organisations of the ŠÚ SR
+          survey (sums to 14.4 TWh electricity 2024, not households). New source sk_susr_energy_consumption_okres'
       SI:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-11-05'
-        note: 'no open table of electricity or gas consumption below the region found (statistics office, regulator, operators, national portal); data request in the research note Second pass (2026-11-05):
-          Searched SURS SiStat (Slovene: "poraba električne energije občine"): table 1817609S gives electricity consumption in kWh per občina (212 + total) by consumer type (households / business), 2020-2025,
-          CC BY 4.0 via podatki.gov.si; monthly 1817607S and NACE split 1817610S too. New source si_surs_electricity_municipality (needs a pxweb kind)'
+        status: built
+        source: SURS electricity consumption (kWh) per municipality and consumer type, yearly (1817609S)
+        url: https://pxweb.stat.si/SiStatData/api/v1/sl/Data/1817609S.px
+        licence: CC BY 4.0
+        dataset: lake wave9.si_surs_electricity_municipality
+        checked: '2026-11-06'
+        partial: true
+        note: published at municipality level (SURS electricity consumption (kWh) per municipality and consumer type, yearly (1817609S))
   heating:
     name: Heating fuel per small area
     shows: how homes are heated per small area, as published (counts or shares)
@@ -3622,8 +3646,10 @@ families:
         status: blocked
         source: Census ACS 2019-2023 B25040 house heating fuel
         url: https://api.census.gov/data/key_signup.html
-        checked: '2026-10-29'
-        note: 'the Census API refuses requests without a key (redirect to missing_key.html); set CENSUS_API_KEY (free) and run wave8.yml group C. Request: a Census API key for the project account'
+        checked: '2026-11-06'
+        note: 'the Census API refuses requests without a key (redirect to missing_key.html); set CENSUS_API_KEY (free) and run wave8.yml group C. Request: a Census API key for the project account Second
+          pass (2026-11-06): Census API: ACS 5-year 2024 (2020-2024) group B25040 house heating fuel (10 categories, estimate and MOE) answers its metadata without a key; data calls redirect to missing_key.html,
+          so it waits for CENSUS_API_KEY. New source us_acs_heating_fuel (kind census, per tract)'
       NL:
         status: built
         source: CBS Kerncijfers wijken en buurten 2024
@@ -3675,8 +3701,10 @@ families:
       BG:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+        checked: '2026-11-06'
+        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-06): Searched NSI in Bulgarian ("отопление",
+          Census 2021 results page 151/1349): the census asked the energy used for heating, but it is published only nationally (Census2021_housing_conditions.pdf, table 4); the open xlsx workbooks (buildings
+          and dwellings, households) per oblast/obshtina have no heating column. Registered bg_nsi_census2021_heating (not_published)'
       HR:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3686,22 +3714,27 @@ families:
       CY:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+        checked: '2026-11-06'
+        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-06): Walked CYSTAT-DB in Greek ("θέρμανση",
+          census 2021 and 2011 folders): Living Quarters has year of construction, tenure and building type per Επαρχία only; no heating system or fuel table. Registered cy_cystat_census2021_heating (not_published)'
       CZ:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-11-05'
-        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-05): Searched ČSÚ in Czech ("SLDB 2021
-          způsob vytápění obce"): Census 2021 open data give occupied dwellings by main heating energy source (incl. Tepelné čerpadlo, Elektřina, Dřevo, Uhlí, Z kotelny) and by heating method per obec,
-          CC BY 4.0. New sources cz_csu_sldb_heating_energy, cz_csu_sldb_heating_mode'
+        status: built
+        source: ČSÚ Census 2021 occupied dwellings by main energy source for heating; ČSÚ Census 2021 occupied dwellings by heating method
+        url: https://csu.gov.cz/docs/107508/cf59a324-f403-7444-58c3-7b26bdbf01ec/sldb2021_byty_energie.csv?version=1.0
+        licence: CC BY 4.0
+        dataset: lake wave9.cz_csu_sldb_heating_energy, lake wave9.cz_csu_sldb_heating_mode
+        checked: '2026-11-06'
+        partial: true
+        note: published at municipality level (ČSÚ Census 2021 occupied dwellings by main energy source for heating)
       EE:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-11-05'
-        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-05): Walked Statistics Estonia PxWeb
-          census folders in Estonian ("kütmisviis"): 2011 RL0223 main heating method per municipality (district, local central, stove, electric); 2021 RL21217 only with/without central heating. Licence
-          CC BY-SA 4.0. New source ee_stat_heating_2011 (2011 boundaries)'
+        status: built
+        source: Statistics Estonia census 2011 dwellings by main heating method per municipality (RL0223)
+        url: https://andmed.stat.ee/api/v1/et/stat/rahvaloendus/rel2011/eluruumid/RL0223.PX
+        licence: CC BY-SA 4.0
+        dataset: lake wave9.ee_stat_heating_2011
+        checked: '2026-11-06'
+        partial: true
+        note: published at municipality level (Statistics Estonia census 2011 dwellings by main heating method per municipality (RL0223))
       FI:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3719,8 +3752,11 @@ families:
       GR:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+        checked: '2026-11-06'
+        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-06): Searched ELSTAT in Greek ("θέρμανση",
+          "κύρια πηγή ενέργειας", SAM05 census 2021 dwellings and households): table Α13 gives households by main energy source for heating (electricity, natural gas, oil, solar, biomass, other) per Περιφερειακή
+          Ενότητα (75), and table Γ09 dwellings with central (autonomous / non-autonomous), other or no heating per settlement (13,586 οικισμοί); ELSTAT reuse policy allows commercial reuse with the source.
+          New sources gr_elstat_heating_energy_regional_unit (fuel, regional unit), gr_elstat_heating_settlement (type, settlement)'
       HU:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3766,8 +3802,9 @@ families:
       MT:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-10-29'
-        note: heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md)
+        checked: '2026-11-06'
+        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-06): Searched NSO Malta (Census 2021
+          dwellings, heating) and open.data.gov.mt: both answer a Cloudflare challenge (HTTP 403), not bypassed; nothing read. Registered mt_nso_census2021_heating (blocked)'
       PL:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -3797,12 +3834,14 @@ families:
           podľa spôsobu vykurovania obce"): ŠÚ SR multidimensional tables (SAS Visual Analytics) offer CSV export at region/district level; scitanie.sk open-data paths answered 404, data.statistics.sk reset
           the connection, data.slovensko.sk returned no JSON. Nothing machine-readable per obec verified'
       SI:
-        status: not_published
-        url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
-        checked: '2026-11-05'
-        note: 'heating fuel per small area is not in the EU census programme; no national open table found (docs/research/small-area-energy.md) Second pass (2026-11-05): Searched SiStat in Slovene ("stanovanja
-          po načinu ogrevanja"): 0871205S per naselje (settlement) and 0861120S per občina, heating method (district / central / other / none), 2011-2021, CC BY 4.0. New source si_surs_heating_settlement
-          (method, not fuel)'
+        status: built
+        source: SURS dwellings by heating method per settlement (0871205S) and per municipality (0861120S)
+        url: https://pxweb.stat.si/SiStatData/api/v1/sl/Data/0871205S.px
+        licence: CC BY 4.0
+        dataset: lake wave9.si_surs_heating_settlement
+        checked: '2026-11-06'
+        partial: true
+        note: published at small_area level (SURS dwellings by heating method per settlement (0871205S) and per municipality (0861120S))
       ES:
         status: not_published
         url: https://github.com/Daniyal-arch/Energy_Grid/blob/main/docs/research/small-area-energy.md
@@ -7970,9 +8009,9 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ModuleNotFoundError: No
-          module named ''dotenv'') | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E is the
-          route. ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox,
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ParseError: not well-formed
+          (invalid token): line 1, column 2) | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): No national source re-probed in this pass (time); ENTSO-E
+          is the route. ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox,
           no key here), controlArea_Domain 10YCA-BULGARIA-R: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices;
           A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       HR:
@@ -7986,9 +8025,9 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ModuleNotFoundError: No
-          module named ''dotenv'') | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market
-          data published (not re-searched beyond that).'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ParseError: not well-formed
+          (invalid token): line 1, column 2) | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing
+          market data published (not re-searched beyond that).'
       CZ:
         status: have
         source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
@@ -8053,11 +8092,11 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ModuleNotFoundError: No
-          module named ''dotenv'') | SEMO balancing and imbalance market cost view (half-hourly) probed (https://reports.sem-o.com/api/v1/documents/static-reports?DPuG_ID=BM-095&page_size=100&sor, HTTP
-          None): no machine-readable download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): New source ie_semo_imbalance (SEMO report API,
-          EirGrid Group Open Data Licence, commercial use allowed). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in
-          Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YIE-1001A00010: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ParseError: not well-formed
+          (invalid token): line 1, column 2) | SEMO balancing and imbalance market cost view (half-hourly) probed (https://reports.sem-o.com/api/v1/documents/static-reports?DPuG_ID=BM-095&page_size=100&sor,
+          HTTP None): no machine-readable download located | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): New source ie_semo_imbalance (SEMO report
+          API, EirGrid Group Open Data Licence, commercial use allowed). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run
+          in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YIE-1001A00010: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
           A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
       IT:
         status: have
@@ -8088,18 +8127,19 @@ families:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ModuleNotFoundError: No
-          module named ''dotenv'') | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Luxembourg (Creos) sits in Amprion''s LFC block; reserves are procured
-          in the German market (regelleistung.net, licence missing). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in
-          Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLU-CEGEDEL-NQ: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
-          A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ParseError: not well-formed
+          (invalid token): line 1, column 2) | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Luxembourg (Creos) sits in Amprion''s LFC block; reserves
+          are procured in the German market (regelleistung.net, licence missing). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves
+          to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLU-CEGEDEL-NQ: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR;
+          type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB
+          GL areas'
       MT:
         status: not_published
         url: https://web-api.tp.entsoe.eu/api
         checked: '2026-11-06'
-        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ModuleNotFoundError: No
-          module named ''dotenv'') | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing market
-          data published (not re-searched beyond that).'
+        note: 'no source built in wave 9. ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days probed (https://web-api.tp.entsoe.eu/api, HTTP 401): build failed (ParseError: not well-formed
+          (invalid token): line 1, column 2) | data.europa.eu search ''balancing reserves prices'' (2026-10-31): 0 results Second pass (2026-11-05): Isolated system without an ENTSO-E control area; no balancing
+          market data published (not re-searched beyond that).'
       NL:
         status: have
         source: ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
@@ -9825,12 +9865,12 @@ families:
         dataset: lake wave9.eu_effis_danger
         checked: '2026-11-05'
       US:
-        status: have
-        source: Fires layer (NIFC perimeters; FIRMS detections when keyed)
-        url: https://data-nifc.opendata.arcgis.com/
-        licence: public domain
-        dataset: eu/w8/fires.json
-        checked: '2026-10-29'
+        status: built
+        source: USFS Wildfire Hazard Potential; Fires layer (NIFC perimeters; FIRMS detections when keyed)
+        url: https://www.fs.usda.gov/rds/archive/products/RDS-2015-0047-4/RDS-2015-0047-4_Data.zip
+        licence: public (USFS; public domain
+        dataset: lake wave9.us_usfs_whp, eu/w8/fires.json
+        checked: '2026-11-06'
   coastal_flood:
     name: Coastal flood and sea level
     shows: coastal flood hazard and sea-level rise inundation
@@ -11217,22 +11257,23 @@ families:
         partial: true
         note: published at country level (Eurostat heat pump characteristics (nrg_inf_hptc))
       GB:
-        status: blocked
-        source: MCS heat pump installations
-        url: https://datadashboard.mcscertified.com/
+        status: built
+        source: DESNZ Boiler Upgrade Scheme redemptions per local authority (heat pumps)
+        url: https://www.gov.uk/government/collections/boiler-upgrade-scheme-statistics
+        licence: OGL v3
+        dataset: lake wave9.gb_bus_heat_pumps_la
         checked: '2026-11-06'
-        note: 'the MCS Data Dashboard is a Blazor app: exports only from the browser per visualisation (with a unique ID and timestamp stamped on each download), no file or API, and no licence stated on
-          the dashboard or mcscertified.com/about-the-mcs-data-dashboard (2026-11-04). Data request: MCS Service Company, MCS-certified heat pump installations per local authority and month as an open file
-          under the Open Government Licence or CC BY 4.0 Second pass (2026-11-05): Searched gov.uk (DESNZ/Ofgem Boiler Upgrade Scheme statistics): monthly workbook, table Q1.2 heat pump redemptions per
-          local authority district and Q1.3 per constituency, England and Wales, OGL v3. New source gb_bus_heat_pumps_la (grant-funded installs only; MCS stays blocked)'
+        partial: true
+        note: published at county level (DESNZ Boiler Upgrade Scheme redemptions per local authority (heat pumps))
       US:
-        status: not_published
+        status: built
+        source: EIA RECS 2020 main space-heating equipment per state (central heat pump share)
         url: https://www.eia.gov/consumption/residential/data/2020/state/xls/State%20Space%20Heating.xlsx
+        licence: public domain
+        dataset: lake wave9.us_eia_recs_heat_pumps_state
         checked: '2026-11-06'
-        note: 'no source built in wave 9. EIA RECS 2020 main space-heating equipment per state (central heat pump share) probed (https://www.eia.gov/consumption/residential/data/2020/state/xls/State%20Space%20Heating.xl,
-          HTTP None): no machine-readable download located | catalog.data.gov search ''heat pumps installed'' (2026-10-31): 3 results, top: NYSERDA-Supported Air Source Heat Pump Projects: 2017-2019; NYSERDA-Supported
-          Air Source Heat Pump Equipment: 2017-2019; Conway St Apartments - Olive Street Development Second pass (2026-11-05): Searched EIA RECS 2020 state data: "State Space Heating.xlsx" gives million
-          homes and % with a central heat pump as main heating equipment per state (survey estimates, Q/N marks), public domain. New source us_eia_recs_heat_pumps_state'
+        partial: true
+        note: published at region level (EIA RECS 2020 main space-heating equipment per state (central heat pump share))
   rooftop_solar:
     name: Rooftop and small solar
     shows: small solar installations per area
@@ -11487,12 +11528,14 @@ families:
         partial: true
         note: published at county level (DESNZ solar deployment per local authority)
       US:
-        status: blocked
-        source: LBNL Tracking the Sun
-        url: https://emp.lbl.gov/tracking-the-sun
+        status: built
+        source: EIA-861M estimated small-scale solar PV capacity and generation per state
+        url: https://www.eia.gov/electricity/data/eia861m/xls/small_scale_solar_2026.xlsx
+        licence: public domain
+        dataset: lake wave9.us_eia861m_small_solar
         checked: '2026-11-06'
-        note: 'emp.lbl.gov answers HTTP 403 to an honest client (2026-10-31). Data request: LBNL, the Tracking the Sun public file URL Second pass (2026-11-05): Searched EIA (English, small-scale solar):
-          new source us_eia861m_small_solar (EIA-861M estimated small-scale PV capacity and generation per state and month, public domain); LBNL Tracking the Sun stays blocked (403).'
+        partial: true
+        note: published at region level (EIA-861M estimated small-scale solar PV capacity and generation per state)
   building_certificates:
     name: Building energy certificates
     shows: energy performance certificates (aggregates per area)
@@ -12103,210 +12146,308 @@ families:
     name: Water depth
     shows: bathymetry grid
     category: 6
+    regions:
+    - neighbours
     cells:
       AT:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       BE:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       BG:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       HR:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       CY:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       CZ:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       DK:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       EE:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       FI:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       FR:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       DE:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       GR:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       HU:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       IE:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       IT:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       LV:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       LT:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       LU:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       MT:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       NL:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       PL:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       PT:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       RO:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       SK:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       SI:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       ES:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       SE:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
+        source: GEBCO bathymetry grid; EMODnet bathymetry
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
+        checked: '2026-11-06'
       GB:
         status: built
-        source: EMODnet bathymetry
-        url: https://ows.emodnet-bathymetry.eu/wcs?service=WCS&version=2.0.1&request=GetCoverage&coverageId=emodnet__mean&format=image/tiff&subset=Long(2,3)&subset=Lat(52,53)
-        licence: CC BY 4.0
-        dataset: lake wave9.eu_emodnet_bathy
-        checked: '2026-11-05'
-      US:
-        status: not_published
+        source: GEBCO bathymetry grid; EMODnet bathymetry
         url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO); CC BY 4.0
+        dataset: lake wave9.world_gebco, lake wave9.eu_emodnet_bathy
         checked: '2026-11-06'
-        note: 'no source built in wave 9. GEBCO bathymetry grid probed (https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_20, HTTP 200): build failed (CalledProcessError:
-          Command ''[''gdal_translate'', ''-of'', ''COG'', ''-co'', ''COMPRESS=ZSTD'', ''-co'', ''PREDICTOR=YES'', ''-b'', ''ele) | catalog.data.gov search ''bathymetry'' (2026-10-31): 20 results, top:
-          Crowdsourced Bathymetry; Great Lakes Bathymetry; Multibeam Bathymetry Database (MBBDB)'
+      US:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+      'NO':
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      CH:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      IS:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      BA:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      RS:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      ME:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      MK:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      AL:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      XK:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      MD:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      UA:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
+      TR:
+        status: built
+        source: GEBCO bathymetry grid
+        url: https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2026/ice_surface_elevation/geotiff/gebco_2026_geotiff.zip?download=1
+        licence: public domain (GEBCO)
+        dataset: lake wave9.world_gebco
+        checked: '2026-11-06'
+        note: 'neighbour: the source covers it'
   shipping_density:
     name: Shipping density
     shows: vessel density or AIS transit counts

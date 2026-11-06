@@ -7,7 +7,7 @@ session. Each request should also ask the licence question:
 
 > May we redistribute the data, and show it in a commercial product, under an open licence (CC BY 4.0 or equivalent) with attribution?
 
-51 requests to 46 publishers.
+56 requests to 51 publishers.
 
 ## BMWE / BfEE
 
@@ -33,6 +33,12 @@ session. Each request should also ask the licence question:
   - Why: download behind EU Login
   - Request: Copernicus Land, a public bulk URL for EGMS ortho products
 
+## CYSTAT
+
+- **CYSTAT Census 2021 dwellings (Cyprus)** (scripts/wave9_sources.yaml `cy_cystat_census2021_heating`)
+  - Why: CYSTAT-DB (PxWeb API, Greek) census 2021 Living Quarters has three tables only (1893007G, 1893010G, 1893015G: year of construction, tenure, building type per Επαρχία), Households two per Επαρχία and Δήμος/Κοινότητα (size, type); no heating or fuel table in the 2021 or 2011 census folders, and the Energy folder holds oil sales and imports only (2026-11-06)
+  - Request: CYSTAT, Census 2021 dwellings by heating system and fuel per municipality/community in CYSTAT-DB
+
 ## Destatis
 
 - **Destatis regional table 43531 (industry energy use per district)** (scripts/wave9_sources.yaml `de_destatis_43531`)
@@ -56,6 +62,12 @@ session. Each request should also ask the licence question:
 - **Fires (AT)** (data/coverage.yaml `fires.AT`)
   - Why: FIRMS needs FIRMS_MAP_KEY (free; not set); EFFIS burnt-area perimeters are given through EFFIS's data request form.
   - Request: EFFIS, burnt area perimeters for reuse under CC BY 4.0.
+
+## Elering (Estfeed data hub)
+
+- **Statistics Estonia fuel consumption by type of fuel and county (KE07** (scripts/wave9_sources.yaml `ee_stat_ke07_fuel_county`)
+  - Why: county (maakond) level only and archived (1991-2019, fuels, not electricity); the live energy folder (majandus/energeetika: KE0230, KE0240, KE032-KE035, KE062, KE08, KE20-KE23, KE31-KE36) is national. avaandmed.eesti.ee lists only an Elektrilevi weekly network total for 2020; Elering's postal-code consumption aggregates are a paid data service and its old open-data pages answer 404 (2026-11-06)
+  - Request: Elering (Estfeed data hub), yearly metered electricity consumption per omavalitsus or postal code as open data
 
 ## Elia
 
@@ -102,6 +114,12 @@ session. Each request should also ask the licence question:
   - Why: pris.iaea.org redirects to pris-stats.iaea.org, a single-page app with no file or documented API; the IAEA terms of use page answers HTTP 403 to an honest client, so no licence could be read (2026-11-04)
   - Request: IAEA, the PRIS reactor list (name, country, type, capacity, status, coordinates) as an open file with a stated licence
 
+## ILR or Creos
+
+- **ILR electricity and natural gas sector statistics (Luxembourg)** (scripts/wave9_sources.yaml `lu_ilr_energy_statistics`)
+  - Why: national only: the ILR dashboards (électricité and gaz naturel workbooks, version 01/09/2026 and 03/09/2026, "licensed under Creative Commons Attribution 4.0 International") give monthly withdrawals in kWh by customer class (industriels > 2 GWh, professionnels, résidentiels) and customer counts for the whole country; no commune, network or postcode split. data.public.lu (French and German searches: électricité, consommation, gaz, Stromverbrauch, compteur) and LUSTAT (DF_A4300-A4304, national) have nothing per commune; Creos has no dataset on data.public.lu
+  - Request: ILR or Creos, yearly electricity and gas withdrawals per commune (residential / non-residential) as an open file
+
 ## INE Portugal
 
 - **INE Portugal BGRI 2021 statistical subsections** (scripts/wave9_sources.yaml `pt_ine_bgri`)
@@ -137,15 +155,15 @@ session. Each request should also ask the licence question:
 - **KSH Census 2022 dwellings by heating (settlement level)** (scripts/wave9_sources.yaml `hu_ksh_census2022_heating`)
   - Why: the census database is a JavaScript application (no file or documented API found) and the results page nepszamlalas2022.ksh.hu/eredmenyek/vegleges-adatok/ answers HTTP 403 to the probe (2026-11-06); settlement-level heating tables exist only inside the app
   - Request: KSH, Census 2022 dwellings by heating mode and energy source per settlement as an open CSV with its licence
+- **KSH electricity and gas supplied per settlement (Hungary)** (scripts/wave9_sources.yaml `hu_ksh_energy_settlement`)
+  - Why: every www.ksh.hu and statinfo.ksh.hu page answers "Request Rejected" (an F5 web-application firewall page, HTTP 200, 244 bytes) to the probe (2026-11-06), so the STADAT energy and settlement (ter) tables could not be read; settlement-level public-utility data (villamosenergia, vezetékes gáz per település) sit in TEIR (teir.hu), which needs a registered account; MEKH statistics pages are a JavaScript app and data.gov.hu reset the connection
+  - Request: KSH, household electricity and piped-gas consumption per settlement (település) as an open CSV with its licence, reachable without the WAF block
 
 ## LBNL
 
 - **LBNL Tracking the Sun** (scripts/wave9_sources.yaml `us_lbnl_tts`)
   - Why: emp.lbl.gov answers HTTP 403 to an honest client (2026-10-31)
   - Request: LBNL, the Tracking the Sun public file URL
-- **Rooftop and small solar (US)** (data/coverage.yaml `rooftop_solar.US`)
-  - Why: emp.lbl.gov answers HTTP 403 to an honest client (2026-10-31).
-  - Request: LBNL, the Tracking the Sun public file URL Second pass (2026-11-05): Searched EIA (English, small-scale solar): new source us_eia861m_small_solar (EIA-861M estimated small-scale PV capacity and generation per state and month, public domain); LBNL Tracking the Sun stays blocked (403).
 
 ## LCCC
 
@@ -158,9 +176,6 @@ session. Each request should also ask the licence question:
 - **MCS heat pump installations** (scripts/wave9_sources.yaml `gb_mcs_heat_pumps`)
   - Why: the MCS Data Dashboard is a Blazor app: exports only from the browser per visualisation (with a unique ID and timestamp stamped on each download), no file or API, and no licence stated on the dashboard or mcscertified.com/about-the-mcs-data-dashboard (2026-11-04)
   - Request: MCS Service Company, MCS-certified heat pump installations per local authority and month as an open file under the Open Government Licence or CC BY 4.0
-- **Heat pumps (GB)** (data/coverage.yaml `heat_pumps.GB`)
-  - Why: the MCS Data Dashboard is a Blazor app: exports only from the browser per visualisation (with a unique ID and timestamp stamped on each download), no file or API, and no licence stated on the dashboard or mcscertified.com/about-the-mcs-data-dashboard (2026-11-04).
-  - Request: MCS Service Company, MCS-certified heat pump installations per local authority and month as an open file under the Open Government Licence or CC BY 4.0 Second pass (2026-11-05): Searched gov.uk (DESNZ/Ofgem Boiler Upgrade Scheme statistics): monthly workbook, table Q1.2 heat pump redemptions per local authority district and Q1.3 per constituency, England and Wales, OGL v3. New source gb_bus_heat_pumps_la (grant-funded installs only; MCS stays blocked)
 
 ## MISO
 
@@ -174,11 +189,20 @@ session. Each request should also ask the licence question:
   - Why: the NGA MSI portal answers HTTP 503 "MSI is currently under maintenance" to the file, the WPI API and the WPI page (2026-11-04); rebuild when MSI is back
   - Request: NGA, the World Port Index (Pub 150) CSV at its MSI download URL
 
+## NSI
+
+- **NSI Census 2021 occupied dwellings by energy used for heating (Bulgaria)** (scripts/wave9_sources.yaml `bg_nsi_census2021_heating`)
+  - Why: the census asked the energy used for heating (multiple answers), but NSI publishes it only nationally in the PDF Census2021_housing_conditions.pdf (table 4: electricity 1,241,240 occupied dwellings, wood 944,332, district heat 347,421, ...); the open workbooks (Census2021_Buildings and dwellings_BG.xlsx: sheets 1-3 buildings and dwellings by type per oblast and obshtina; Households_BG.xlsx) carry no heating column; Infostat now redirects to nsi.bg (2026-11-06)
+  - Request: NSI, Census 2021 occupied dwellings by energy used for heating per obshtina (or settlement) as xlsx/CSV
+
 ## NSO Malta
 
 - **NSO Malta electricity consumption** (scripts/wave9_sources.yaml `mt_nso_consumption`)
   - Why: nso.gov.mt answers HTTP 403 to an honest client (2026-10-31)
   - Request: NSO Malta, electricity consumption per locality or district as an open file
+- **NSO Malta Census 2021 dwellings (heating)** (scripts/wave9_sources.yaml `mt_nso_census2021_heating`)
+  - Why: nso.gov.mt, open.data.gov.mt and rews.org.mt answer a Cloudflare "Attention Required" challenge (HTTP 403) to an honest client (2026-11-06); not bypassed, nothing read
+  - Request: NSO Malta, Census 2021 dwellings by heating type or fuel per locality, and residential electricity per locality, as open files reachable without the challenge
 
 ## Ofcom
 
@@ -233,6 +257,12 @@ session. Each request should also ask the licence question:
 - **Clean Investment Monitor** (scripts/wave9_sources.yaml `us_clean_investment_monitor`)
   - Why: facility-level data are downloadable only from Rhodium Group's ClimateDeck after creating an account ('Create a free, secure account to browse and download data'); the database page has no file (2026-11-04)
   - Request: Rhodium Group / MIT CEEPR, the Clean Investment Monitor facility list as an open CC BY download without an account
+
+## run the TEMPO matrix probe from GitHub Actions (http
+
+- **INS TEMPO-Online utility tables per county and locality (natural gas and heat distributed)** (scripts/wave9_sources.yaml `ro_ins_tempo_locality`)
+  - Why: TEMPO-Online is served only over plain HTTP on port 8077, which the sandbox proxy does not carry (direct connection times out; insse.ro and data.gov.ro gave no answer either, 2026-11-06): nothing verified. The GOS (gospodărie comunală) tables of natural gas and thermal energy distributed per judeţ and localitate are the candidates (Romanian "gaze naturale distribuite pe localități"); no electricity per UAT is known
+  - Request: run the TEMPO matrix probe from GitHub Actions (http://statistici.insse.ro:8077/tempo-ins/matrix/<code>), and INS: the reuse licence of TEMPO data
 
 ## Terna
 

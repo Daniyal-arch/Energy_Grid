@@ -51,6 +51,26 @@ measures:
     - url: r2://infraatlas-raw/lake/rasters/wave9/us_noaa_slr.tif
       cell: 2.69495e-05 x 2.69495e-05 (EPSG:4269)
       cover: US
+  w9_us_usfs_whp:
+    title: USFS Wildfire Hazard Potential
+    unit: index (dimensionless) / class code
+    stat: mean
+    how: mean of the cells whose centre lies inside the area
+    licence: public (USFS
+    layers:
+    - url: r2://infraatlas-raw/lake/rasters/wave9/us_usfs_whp.tif
+      cell: 270 x 270 (EPSG:3338)
+      cover: US
+  w9_world_gebco:
+    title: GEBCO bathymetry grid
+    unit: m
+    stat: mean
+    how: mean of the cells whose centre lies inside the area
+    licence: public domain (GEBCO)
+    layers:
+    - url: r2://infraatlas-raw/lake/rasters/wave9/world_gebco.tif
+      cell: 0.00416667 x 0.00416667 (EPSG:4326)
+      cover: WORLD
   w9_world_nex_gddp:
     title: NASA NEX-GDDP-CMIP6 climate projections
     unit: K
