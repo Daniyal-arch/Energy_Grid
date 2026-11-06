@@ -279,7 +279,8 @@ def read_geo(con, path: Path, s: dict[str, Any]) -> None:  # noqa: ANN001
 def arcgis_pages(s: dict[str, Any], dest: Path) -> Path:
     """Every feature of an ArcGIS layer, paged (its maxRecordCount), as one GeoJSON file."""
     meta = w.get_json(s["url"], params={"f": "json"})
-    step = min(int(meta.get("maxRecordCount") or 1000), 2000)  # type: ignore[union-attr]
+    # `page`: a smaller page for layers of large polygons (a full page can time out server-side)
+    step = min(int(meta.get("maxRecordCount") or 1000), 2000, int(s.get("page", 2000)))  # type: ignore[union-attr]
     feats: list[dict[str, Any]] = []
     while True:
         page = w.get_json(
@@ -290,12 +291,16 @@ def arcgis_pages(s: dict[str, Any], dest: Path) -> Path:
             },
             timeout=300,
         )  # fmt: skip
+        if page.get("error"):  # type: ignore[union-attr]
+            raise SystemExit(f"ArcGIS error at offset {len(feats):,}: {page['error']}")  # type: ignore[index]
         got = page.get("features") or []  # type: ignore[union-attr]
         feats += got
         if len(feats) % 20000 < step:
             print(f"  {s['id']}: {len(feats):,} features", flush=True)
         if not got or not (page.get("exceededTransferLimit") or len(got) == step):  # type: ignore[union-attr]
             break
+    if not feats:
+        raise SystemExit("the layer returned no features")
     dest.write_text(json.dumps({"type": "FeatureCollection", "features": feats}))
     return dest
 
