@@ -1,12 +1,18 @@
 ---
 title: Log
 tags: [log]
-updated: 2026-11-03
+updated: 2026-11-06
 ---
 
 # Log
 
 Newest first. One entry per session or merged pull request.
+
+- **2026-11-06** (PR #19, remaining readers): ELSTAT census workbooks (`xlsx_multihead`), INE
+  Portugal JSON, SEMO report XML, BfEE excess heat, EirGrid dispatch-down, PxWeb batching (FI, LV),
+  SVK reserves (lenient CSV), NOAA MPAs (ArcGIS quota waits), WHP CONUS raster; NGED blocked
+  (login), ACS a named skip (CENSUS_API_KEY), owner question 5 (Romania, Serbia). Built 184 of
+  290 wave 9 sources. Notes: wave9.
 
 - **2026-11-06** (PR #19, after "finish all"): resolve_area 5.3 to 1.7 s p50 on R2 (profiled: R2
   writes moved to the background, parallel name reads, outline by box, name cache); readers for
