@@ -122,6 +122,11 @@ jobs:
       WAVE: ${{ needs.plan.outputs.wave }}
       CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
       NREL_API_KEY: ${{ secrets.NREL_API_KEY }}
+      FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+      CDSAPI_KEY: ${{ secrets.CDSAPI_KEY }}
+      NASA_EARTHDATA_TOKEN: ${{ secrets.NASA_EARTHDATA_TOKEN }}
+      FINGRID_API_KEY: ${{ secrets.FINGRID_API_KEY }}
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
