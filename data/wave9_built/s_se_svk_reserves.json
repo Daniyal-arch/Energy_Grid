@@ -1,6 +1,26 @@
 {
  "se_svk_reserves": {
-  "built": null,
-  "error": "InvalidInputException: Invalid Input Error: Error when sniffing file \"/tmp/wave9/se_svk_reserves/src.csv\".\nIt was not possible to automatically detect the CSV parsing dialect\nThe search space used was:\nDelimiter Candidates: ','\nQuote/Escape Candidates: ['(no quote)','(no escape)'],['\"','(no escape)'],['\"','\"'],['\"','''],["
+  "built": "2026-11-06",
+  "columns": [
+   "id",
+   "start_time_sweden",
+   "start_time_utc",
+   "reserve_product",
+   "reserve_direction",
+   "auction_round",
+   "price",
+   "price_unit",
+   "volume",
+   "volume_unit",
+   "soda_hashbyte",
+   "soda_identity"
+  ],
+  "example": {
+   "answer": 439314,
+   "sql": "SELECT count(*) FROM wave9.se_svk_reserves"
+  },
+  "geometry": false,
+  "rows": 439314,
+  "seconds": 6
  }
 }

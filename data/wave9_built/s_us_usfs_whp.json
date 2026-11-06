@@ -9,30 +9,30 @@
   "raster": [
    {
     "bounds": [
-     -2189925.0,
-     389535.0001,
-     1548495.0,
-     2395635.0001
+     -2362635.0,
+     221265.0,
+     2327805.0,
+     3267675.0
     ],
-    "bytes": 6094389,
+    "bytes": 174680825,
     "cell": [
      270.0,
      270.0
     ],
-    "crs": "EPSG:3338",
-    "dtype": "uint8",
+    "crs": "EPSG:5070",
+    "dtype": "int32",
     "key": "lake/rasters/wave9/us_usfs_whp.tif",
-    "max": 8.0,
-    "min": 0.0,
-    "nodata": 255.0,
+    "max": 94239.0,
+    "min": -2099.0,
+    "nodata": 2147483647.0,
     "size": [
-     13846,
-     7430
+     17372,
+     11283
     ]
    }
   ],
   "rows": 0,
-  "seconds": 113,
+  "seconds": 25,
   "unit": "index (dimensionless) / class code"
  }
 }
