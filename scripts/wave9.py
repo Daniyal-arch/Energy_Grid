@@ -1231,6 +1231,54 @@ def odata_paged(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
 CUSTOM["pl_pse_balancing"] = odata_paged
 
 
+def pjm_rpm_rcp(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """PJM's RPM resource clearing price summary (sheet RCP): a header row of LDAs, then per
+    delivery year ("DY 07/08") one row per auction (BRA, 1IA-3IA) and product type, a price
+    ($/MW-day) per LDA. Long form: delivery_year, auction, product, lda, value; the workbook's
+    marks (" **" LDA not modelled, "AUCTION CANCELLED", blanks for auctions not yet held) are
+    kept in `flag`, not turned into numbers."""
+    import pandas as pd
+
+    f = w.download(s["url"], d / "src.xlsx", timeout=300)
+    df = pd.read_excel(f, sheet_name=s.get("sheet", "RCP"), header=None, dtype=str)
+    head = {c: str(v).strip() for c, v in df.iloc[1].items() if c >= 2 and pd.notna(v)}
+    rows: list[dict[str, Any]] = []
+    dy = auction = None
+    for i in range(2, len(df)):
+        first, second = df.iat[i, 0], df.iat[i, 1]
+        if isinstance(first, str) and first.strip().upper().startswith("DY"):
+            dy = first.strip().replace("DY ", "DY").replace("DY", "DY ")
+            continue
+        if isinstance(first, str) and first.strip().startswith(("*", "Note")):
+            break
+        if isinstance(first, str) and first.strip():
+            auction = first.strip()
+        elif pd.isna(second):
+            continue
+        product = None if pd.isna(second) else str(second).strip()
+        if product and "CANCELLED" in product.upper():
+            rows.append({"delivery_year": dy, "auction": auction, "product": None, "lda": None,
+                         "value": None, "flag": " ".join(product.strip("* ").split())})  # fmt: skip
+            continue
+        for c, lda in head.items():
+            v = df.iat[i, c]
+            txt = None if pd.isna(v) else str(v).strip()
+            try:
+                num = float(txt) if txt else None
+            except ValueError:
+                num = None
+            rows.append({"delivery_year": dy, "auction": auction, "product": product, "lda": lda,
+                         "value": num, "flag": None if num is not None else (txt or "blank")})  # fmt: skip
+    if not rows:
+        raise SystemExit("no rows read from the workbook")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["us_pjm_rpm"] = pjm_rpm_rcp
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
