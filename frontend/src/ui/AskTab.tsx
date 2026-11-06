@@ -8,6 +8,7 @@ import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 
 import { API_BASE, ask, clearConversation, removeAgentMap, showAgentMap, useAgent, type ChartMsg, type Msg, type ToolStep } from "../app/agent";
 import { useApp } from "../app/store";
+import { isNarrow } from "../app/geo";
 import type { Overlay } from "../lib/mapspec";
 import { rgbCss } from "../lib/theme";
 import { rampCss, useAgentKeys } from "../map/agentLayers";
@@ -89,7 +90,11 @@ export function AskPanel() {
   }, [messages, open]);
   if (!open) return null;
   return (
-    <aside className="absolute bottom-14 right-3 top-16 z-[24] flex w-[400px] flex-col overflow-hidden rounded-xl border border-sky-300/20 bg-[#080b11]/97 shadow-2xl shadow-black/50 backdrop-blur">
+    <aside
+      className={`absolute z-[24] flex flex-col overflow-hidden bg-[#080b11]/97 shadow-2xl shadow-black/50 backdrop-blur ${
+        isNarrow() ? "inset-x-0 bottom-12 top-0 border-b border-sky-300/20" : "bottom-14 right-3 top-16 w-[400px] rounded-xl border border-sky-300/20"
+      }`}
+    >
       <div className="flex items-center gap-2 border-b border-white/[0.07] px-3.5 py-2.5">
         <span className="text-[13px] text-sky-200">✦</span>
         <div className="min-w-0 flex-1">

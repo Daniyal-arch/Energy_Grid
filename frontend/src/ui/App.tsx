@@ -16,6 +16,7 @@ import MapOptions from "./MapOptions";
 import Search from "./Search";
 import TimeBar, { TimeControl } from "./TimeBar";
 import { CREDITS } from "./sources";
+import { useAgent } from "../app/agent";
 import { EmbedCredit } from "./Embed";
 
 // brief 30: the context panel, the Ask chat, the Maps view, the catalogue, the dashboard
@@ -198,7 +199,14 @@ function Phone() {
             {label}
           </button>
         ))}
+        {/* brief 30: the Ask chat on a phone, full screen */}
+        <button onClick={() => useAgent.setState((st) => ({ open: !st.open }))} className="flex-1 text-[12.5px] text-sky-200">
+          ✦ Ask
+        </button>
       </nav>
+      <Suspense fallback={null}>
+        <AskPanel />
+      </Suspense>
     </>
   );
 }
