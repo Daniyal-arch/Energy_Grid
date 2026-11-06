@@ -1,6 +1,27 @@
 {
  "lv_csp_central_heating": {
-  "built": null,
-  "error": "HTTPStatusError: Client error '403 Forbidden' for url 'https://data.stat.gov.lv/api/v1/lv/OSP_PUB/POP/MA/MAS/MAS080'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+  "built": "2026-11-06",
+  "columns": [
+   "time",
+   "time_code",
+   "contentscode",
+   "contentscode_code",
+   "amenities",
+   "amenities_code",
+   "poc",
+   "poc_code",
+   "ocs",
+   "ocs_code",
+   "area",
+   "area_code",
+   "value"
+  ],
+  "example": {
+   "answer": 329160,
+   "sql": "SELECT count(*) FROM wave9.lv_csp_central_heating"
+  },
+  "geometry": false,
+  "rows": 329160,
+  "seconds": 18
  }
 }

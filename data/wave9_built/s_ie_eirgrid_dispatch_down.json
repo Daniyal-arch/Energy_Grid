@@ -4,14 +4,19 @@
   "as_of_basis": "Last-Modified of the published file",
   "built": "2026-11-06",
   "columns": [
-   "all_island_wind"
+   "area",
+   "year",
+   "period",
+   "measure",
+   "unit",
+   "value"
   ],
   "example": {
-   "answer": 0,
+   "answer": 16905,
    "sql": "SELECT count(*) FROM wave9.ie_eirgrid_dispatch_down"
   },
   "geometry": false,
-  "rows": 0,
-  "seconds": 1
+  "rows": 16905,
+  "seconds": 3
  }
 }
