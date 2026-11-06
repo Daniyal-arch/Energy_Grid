@@ -25,6 +25,9 @@ from typing import Any
 import httpx
 import yaml
 
+# GDAL caps a GeoJSON object at 200 MB by default: ArcGIS layers written whole can be larger
+os.environ.setdefault("OGR_GEOJSON_MAX_OBJ_SIZE", "0")
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import wave5_common as w  # noqa: E402
 
@@ -582,6 +585,8 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             parts.append(f"encoding = '{s['encoding']}'")
         if s.get("varchar"):
             parts.append("all_varchar = true")
+        if s.get("lenient"):  # rows whose line endings or quoting the strict sniffer refuses
+            parts.append("strict_mode = false")
         opts = ", ".join(parts)
         con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('{f}', {opts})")
     elif kind == "xlsx" and not (s.get("sheets") or s.get("pandas")):
@@ -1076,9 +1081,13 @@ def build_raster(s: dict[str, Any]) -> dict[str, Any]:
                         f.write(chunk)
         if zipfile.is_zipfile(src):
             with zipfile.ZipFile(src) as z:
-                member = s.get("member") or next(
-                    m for m in z.namelist() if m.lower().endswith((".tif", ".tiff", ".nc", ".asc"))
-                )
+                names, want = z.namelist(), s.get("member")
+                # `member`: the file's name in the archive, or a regex for it (the first match)
+                member = (
+                    want if want in names
+                    else next(m for m in names if re.search(want, m, re.I)) if want
+                    else next(m for m in names if m.lower().endswith((".tif", ".tiff", ".nc", ".asc")))
+                )  # fmt: skip
                 z.extract(member, d)
                 src = d / member
         inputs.append(f'NETCDF:"{src}":{s["var"]}' if s.get("var") else str(src))
