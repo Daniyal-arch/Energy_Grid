@@ -11,6 +11,8 @@ const EuropeView = lazy(() => import("./components/EuropeView"));
 const CoverageExplorer = lazy(() => import("./ui/CoverageExplorer"));
 // ?compare=France;Germany: two to six places side by side (?compare=1 stays the Maps view)
 const ComparePage = lazy(() => import("./ui/ComparePage"));
+// ?downloads: per dataset its files, licence, attribution and as-of date (brief 30)
+const Downloads = lazy(() => import("./ui/Downloads"));
 const cmp = new URLSearchParams(window.location.search).get("compare");
 const params = new URLSearchParams(window.location.search);
 const capture = params.has("capture") && !params.has("app");
@@ -24,6 +26,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     ) : cmp && cmp !== "1" ? (
       <Suspense fallback={null}>
         <ComparePage />
+      </Suspense>
+    ) : params.has("downloads") ? (
+      <Suspense fallback={null}>
+        <Downloads />
       </Suspense>
     ) : params.has("coverage") ? (
       <Suspense fallback={null}>

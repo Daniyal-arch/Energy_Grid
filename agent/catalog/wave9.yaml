@@ -769,6 +769,18 @@ tables:
     - q: how many records in BOEM offshore wind lease outlines
       sql: SELECT count(*) FROM wave9.us_boem_wind_leases
       answer: 52
+  us_usseabed:
+    grain: 'USGS usSEABED: one row per record as published (US; level point)'
+    source: https://pubs.usgs.gov/ds/2005/118/data/atl_ext.zip
+    licence: public domain (USGS)
+    category: 6. Offshore and maritime
+    columns: ogc_fid, latitude, longitude, waterdepth, sampletop, samplebase, sitename, datasetkey, sitekey, samplekey, sampler, datatypes, gravel, sand, mud, clay,
+      grainsize, sorting, seabedcls, clsmshp, folkcode, shepardcod, rockmshp, weedmshp, carbonate, munslcode, orgcarbon, lgshearstr, porosity, pwavevel, roughness,
+      lgcrshst, samplephas, geometry
+    examples:
+    - q: how many records in USGS usSEABED
+      sql: SELECT count(*) FROM wave9.us_usseabed
+      answer: 117031
   us_usgs_mrds:
     grain: 'USGS Mineral Resources Data System: one row per record as published (WORLD; level point)'
     source: https://mrdata.usgs.gov/mrds/mrds-csv.zip

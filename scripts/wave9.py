@@ -1244,6 +1244,9 @@ EXISTING = (
 LANDLOCKED = ("AT", "CZ", "HU", "LU", "SK")  # marine sources (EMODnet) do not cover them
 
 
+NEIGHBOURS = ("NO", "CH", "IS", "BA", "RS", "ME", "MK", "AL", "XK", "MD", "UA", "TR")
+
+
 def covers(places: list[str], cc: str) -> bool:
     from coverage import EU27
 
@@ -1398,10 +1401,26 @@ def render(args: argparse.Namespace) -> None:
     reg = yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))
     for fam, f in fams.items():
         cells = {cc: cell_for(fam, f, cc, srcs, built, probes, hits) for cc in COUNTRIES}
+        # brief 30 Track 2.5: neighbours get a cell where a built source covers them (a world
+        # source, or one naming the country); elsewhere they stay unassessed, not "dark"
+        near = {}
+        for cc in NEIGHBOURS:
+            c = cell_for(fam, f, cc, srcs, built, probes, hits)
+            if c and c.get("status") in ("built", "have"):
+                c["note"] = "; ".join(x for x in (c.get("note"), "neighbour: the source covers it") if x)
+                near[cc] = c
+        if near:  # the family then lists the neighbours, each with a cell (scripts/coverage.py)
+            for cc in NEIGHBOURS:
+                cells[cc] = near.get(cc) or {
+                    "status": "not_published", "url": next(iter(near.values()))["url"],
+                    "checked": time.strftime("%Y-%m-%d"),
+                    "note": f"no source of this family covers {cc}; its national sources were not searched",
+                }  # fmt: skip
         reg["families"][fam] = {
             "name": f["name"],
             "shows": f["shows"],
             "category": f["cat"],
+            **({"regions": ["neighbours"]} if any(cc in cells for cc in NEIGHBOURS) else {}),
             "cells": cells,
         }
     for fam in EXISTING:

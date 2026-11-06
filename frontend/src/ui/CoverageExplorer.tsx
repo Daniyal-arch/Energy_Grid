@@ -28,10 +28,11 @@ const STATUS: Record<string, { label: string; color: string }> = {
   not_published: { label: "Not published", color: "#3a4150" },
   blocked: { label: "Blocked", color: "#b5543c" },
   left_out: { label: "Left out (licence)", color: "#6b4f8a" },
+  unassessed: { label: "Not assessed (neighbour)", color: "#1a1f29" },
 };
 // EU-27 first, then GB and the US
 const rank = (cc: string): number => (cc === "US" ? 2 : cc === "GB" ? 1 : 0);
-const statusOf = (c?: Cell): string => (c?.status && STATUS[c.status] ? c.status : "not_published");
+const statusOf = (c?: Cell): string => (!c ? "unassessed" : c.status && STATUS[c.status] ? c.status : "not_published");
 
 export default function CoverageExplorer() {
   const [file, setFile] = useState<CoverageFile | null>(null);

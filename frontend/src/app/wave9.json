@@ -673,6 +673,27 @@
    "color": "rgb(96,190,255)"
   },
   {
+   "id": "w9_us_usseabed",
+   "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usseabed.pmtiles",
+   "kind": "point",
+   "minzoom": 4,
+   "fields": [
+    "name",
+    "latitude",
+    "longitude",
+    "waterdepth",
+    "sampletop",
+    "samplebase",
+    "datasetkey"
+   ],
+   "source": "USGS usSEABED (public domain (USGS))",
+   "label": "USGS usSEABED",
+   "desc": "Seabed substrate (shown from zoom 4: zoom in)",
+   "group": "Offshore",
+   "coverage": "US",
+   "color": "rgb(96,190,255)"
+  },
+  {
    "id": "w9_us_usgs_mrds",
    "tiles": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_mrds.pmtiles",
    "kind": "point",
@@ -2240,6 +2261,25 @@
      ],
      "what": "offshore wind farms",
      "source": "BOEM offshore wind lease outlines (public domain)",
+     "doc": "Wave 9 sources"
+    }
+   ]
+  },
+  {
+   "id": "w9_us_usseabed",
+   "name": "USGS usSEABED",
+   "category": "Offshore",
+   "description": "USGS usSEABED: 117,031 records as published",
+   "color": "rgb(96,190,255)",
+   "family": "seabed",
+   "parts": [
+    {
+     "layer": "w9_us_usseabed",
+     "where": [
+      "US"
+     ],
+     "what": "seabed substrate",
+     "source": "USGS usSEABED (public domain (USGS))",
      "doc": "Wave 9 sources"
     }
    ]

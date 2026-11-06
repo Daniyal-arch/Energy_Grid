@@ -551,6 +551,7 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 | `wave9/ie_cso_dc_consumption` | Parquet | 1,650 | no |
 | `wave9/eu_emodnet_wind_farms` | GeoParquet (bbox, Hilbert order) | 600 | 600 |
 | `wave9/us_boem_wind_leases` | GeoParquet (bbox, Hilbert order) | 52 | 52 |
+| `wave9/us_usseabed` | GeoParquet (bbox, Hilbert order) | 117,031 | 117031 |
 | `wave9/us_usgs_mrds` | GeoParquet (bbox, Hilbert order) | 304,632 | 304613 |
 | `wave9/eu_egdi_minerals` | GeoParquet (bbox, Hilbert order) | 28,223 | 28223 |
 | `wave9/us_epa_lmop` | GeoParquet (bbox, Hilbert order) | 542 | 542 |

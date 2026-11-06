@@ -114,6 +114,7 @@ datasets:
   wave9.ie_cso_dc_consumption: {country: "IE: CSO metered electricity consumption (MEC03)"}
   wave9.eu_emodnet_wind_farms: {polygon: "EUSEA: EMODnet offshore wind farms"}
   wave9.us_boem_wind_leases: {polygon: "US: BOEM offshore wind lease outlines"}
+  wave9.us_usseabed: {point: "US: USGS usSEABED"}
   wave9.us_usgs_mrds: {point: "WORLD: USGS Mineral Resources Data System"}
   wave9.eu_egdi_minerals: {point: "EUR: EGDI mineral deposits"}
   wave9.us_epa_lmop: {point: "US: EPA LMOP landfill gas energy projects"}

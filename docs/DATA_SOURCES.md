@@ -1840,6 +1840,7 @@ sources probed, with the ones blocked or left out, is docs/research/wave9-source
 | [CSO metered electricity consumption (MEC03)](https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/MEC03/JSON-stat/2.0/en) | 5. Demand and electrification | IE | country | CC BY 4.0 | 1,650 | `wave9.ie_cso_dc_consumption` |
 | [EMODnet offshore wind farms](https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:windfarmspoly&outputFormat=application/json) | 6. Offshore and maritime | Europe | polygon | CC BY 4.0 | 600 | `wave9.eu_emodnet_wind_farms` |
 | [BOEM offshore wind lease outlines](https://boem-metaport-boem.hub.arcgis.com/api/download/v1/items/709831444a234968966667d84bcc0357/geojson?layers=8) | 6. Offshore and maritime | US | polygon | public domain | 52 | `wave9.us_boem_wind_leases` |
+| [USGS usSEABED](https://pubs.usgs.gov/ds/2005/118/data/atl_ext.zip) | 6. Offshore and maritime | US | point | public domain (USGS) | 117,031 | `wave9.us_usseabed` |
 | [USGS Mineral Resources Data System](https://mrdata.usgs.gov/mrds/mrds-csv.zip) | 7. Supply chain, materials and industry | World | point | public domain | 304,632 | `wave9.us_usgs_mrds` |
 | [EGDI mineral deposits](https://maps.europe-geology.eu/wfs/?service=WFS&version=2.0.0&request=GetFeature&typeNames=ms:egdi_mineraloccurr_critical_raw_materials_2023&outputFormat=geojson&FILTER=%3CFilter%20xmlns%3D%22http%3A//www.opengis.net/fes/2.0%22%3E%3CPropertyIsNotEqualTo%3E%3CValueReference%3Ecountry%3C/ValueReference%3E%3CLiteral%3EPoland%3C/Literal%3E%3C/PropertyIsNotEqualTo%3E%3C/Filter%3E) | 7. Supply chain, materials and industry | Europe | point | CC BY 4.0 (Polish records CC BY-NC-ND 4.0, filtered out) | 28,223 | `wave9.eu_egdi_minerals` |
 | [EPA LMOP landfill gas energy projects](https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/LMOP_Projects/FeatureServer/0) | 7. Supply chain, materials and industry | US | point | CC0 (data.gov) | 542 | `wave9.us_epa_lmop` |
@@ -2496,3 +2497,33 @@ sources probed, with the ones blocked or left out, is docs/research/wave9-source
 | [World Bank WDI ICT goods exports (% of total goods exports) (TX.VAL.ICTG.ZS.UN)](https://api.worldbank.org/v2/country/all/indicator/TX.VAL.ICTG.ZS.UN?format=json&date=1990:2026) | 7. World energy and climate indicators | World | country | CC BY 4.0 (World Bank WDI) | 9,576 | `wave10.wb_tx_val_ictg_zs_un` |
 | [World Bank WDI Ores and metals exports (% of merchandise exports) (TX.VAL.MMTL.ZS.UN)](https://api.worldbank.org/v2/country/all/indicator/TX.VAL.MMTL.ZS.UN?format=json&date=1990:2026) | 7. World energy and climate indicators | World | country | CC BY 4.0 (World Bank WDI) | 9,576 | `wave10.wb_tx_val_mmtl_zs_un` |
 <!-- wave10:end -->
+
+## Weekly brief (`scripts/weekly_brief.py`, `brief/latest.json`, `brief/latest.html`)
+
+Built weekly by `.github/workflows/weekly-brief.yml` (spec: docs/product/weekly-brief.md), from
+fixed templates (the `TEMPLATES` table in the script, also in the JSON) with no language model and
+no new source. It reads the app's own files: the day archive (`eu-days` branch `eu/day/`),
+`prices.json` (eu-days), `outages.json` (eu-data), and the bundled `us/queues_live.json`,
+`us/plants.json` and `eu/plants.json`. Each sentence carries its source, the file's URL and that
+file's "as of" date.
+
+| Figure | Rule |
+|---|---|
+| Weekly mean day-ahead price per zone | mean of the 15-minute prices of the newest 7 archive days (computed), against the 7 days before; only zones with prices in at least 95 % of the slots of both weeks; the two weeks must be consecutive, else the section is skipped |
+| Week's highest / lowest price | the largest / smallest 15-minute price of the 7 days, passed through; a zone is named when it exceeds the max (or undercuts the min) of `prices.json` for its 12-month `period` |
+| Solar, wind, load records | the day files' `highlights` (scripts/day_highlights.py: EU sums of the member states reporting), the week's largest against all archive days |
+| Plants offline | `outages.json` `total` and the three largest `countries`, passed through; compared with the previous brief's stored figure (`carry`) |
+| US queues | `queues_live.json` `active` and `active_mw` per market, passed through; compared with the previous brief when the queue's `read` date changed |
+| Capacity added | US: sum of EIA-860M `points` with status operating whose year (earliest operating year of the plant's fuel group) is the release year; Europe: count and sum of powerplantmatching units >= 20 MW by commissioning year, newest year and the one before |
+
+## Download centre index (`scripts/build_downloads.py`, `downloads.json`)
+
+Per dataset of the Layers panel (`app/datasets.json`, `wave9.json`, `wave10.json`): its files
+(the paths `frontend/src/app/data.ts` loads, the live copy on `eu-data`/`eu-days`, public R2
+tiles), lake table names from `agent/catalog/*.yaml`, and per file the licence (the file's own
+`licence`, else the table in the script as this document or the catalogue states it, else the
+licence named in the file's `source`), the attribution (the file's `source`) and the "as of"
+date (the file's `as_of`, `fetched`, `at`, `date`, `release` or `edition`). The page
+`?downloads` (`frontend/src/ui/Downloads.tsx`) links a file only when every part of its
+licence is on its allowlist; Global Energy Monitor files stay view only by project rule.
+Spec: docs/product/download-centre.md.
