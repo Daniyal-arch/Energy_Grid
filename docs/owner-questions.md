@@ -91,3 +91,9 @@ for a reuse statement first. 3. Leave them out.
 **Recommendation.** Option 2 for Transelectrica (its copyright line is explicit), option 1 for
 EMS once the owner agrees the legal-notice basis is enough; until then both stay unbuilt with the
 reason in the registry.
+
+**Answer (2026-11-06).** The owner asked to build sources whose licence is not stated or could
+not be read. Both are built (Transelectrica: 100 zone-year cells; EMS: 88 requests), each labelled
+"licence not stated" with the legal basis it is published under. The same instruction covers
+the other unclear cases (EDO drought, PSE, PJM, INS Romania, Elia balancing); sources whose terms
+clearly forbid reuse, need a login or refuse the client stay out.
