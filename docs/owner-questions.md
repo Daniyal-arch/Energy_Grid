@@ -72,3 +72,22 @@ data.go.kr licence. 2. Ask KPX which statement covers the real-time figures firs
 but its terms allow only non-commercial use, so it is left out (probe kept:
 `scripts/probe_aeso.py`). Chile (CEN) and Turkey (EPİAŞ) need accounts; India (Grid-India)
 answers neither the sandbox nor GitHub runners.
+
+## 5. Romania and Serbia connection data: build on the "public notice" basis? (2026-11-06, Track 2)
+
+**Decision.** Two connection datasets are verified and ready to read but state no licence:
+Transelectrica's available capacity per grid zone and year (HTML tables, published under ANRE
+Order 53/2024 art. 6; footer "Copyright © Transelectrica 2013 - 2026") and EMS's list of every
+connection request (a one-page PDF published under Serbia's renewable-energy law; ems.rs has no
+terms page). The Austrian and Bulgarian connection cards were built on the same "a notice the
+regulator requires to be public" basis, but their sites carry no copyright line against it.
+Registry rows: `ro_transelectrica_zone_capacity`, `rs_ems_connection_queue`
+(`scripts/wave9_sources.yaml`, notes with the columns and an example value each).
+
+**Options.** 1. Build both as the AT/BG cards (an HTML-table and a PDF-table reader, the zones as
+the union of their counties from Transelectrica's Anexa 4). 2. Write to Transelectrica and EMS
+for a reuse statement first. 3. Leave them out.
+
+**Recommendation.** Option 2 for Transelectrica (its copyright line is explicit), option 1 for
+EMS once the owner agrees the legal-notice basis is enough; until then both stay unbuilt with the
+reason in the registry.
