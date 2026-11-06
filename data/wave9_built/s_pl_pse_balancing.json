@@ -1,0 +1,37 @@
+{
+ "pl_pse_balancing": {
+  "built": "2026-11-06",
+  "columns": [
+   "dataset",
+   "onmb",
+   "rr_d",
+   "rr_g",
+   "dtime",
+   "fcr_d",
+   "fcr_g",
+   "afrr_d",
+   "afrr_g",
+   "mfrrd_d",
+   "mfrrd_g",
+   "dtime_utc",
+   "business_date",
+   "publication_ts",
+   "publication_ts_utc",
+   "period",
+   "cen_cost",
+   "ckoeb_cost",
+   "period_utc",
+   "ceb_pp_cost",
+   "ceb_sr_cost",
+   "ceb_sr_afrrd_cost",
+   "ceb_sr_afrrg_cost"
+  ],
+  "example": {
+   "answer": 105053,
+   "sql": "SELECT count(*) FROM wave9.pl_pse_balancing"
+  },
+  "geometry": false,
+  "rows": 105053,
+  "seconds": 639
+ }
+}

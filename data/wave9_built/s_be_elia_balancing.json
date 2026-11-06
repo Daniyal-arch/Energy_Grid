@@ -1,0 +1,53 @@
+{
+ "be_elia_balancing": {
+  "built": "2026-11-06",
+  "columns": [
+   "datetime",
+   "resolutioncode",
+   "qualitystatus",
+   "systemimbalance",
+   "ace",
+   "marginalincrementalprice",
+   "floorprice",
+   "afrrpriceup",
+   "upwardavailablemfrrprice",
+   "mfrrdaup",
+   "mfrrsaup",
+   "marginaldecrementalprice",
+   "cap",
+   "afrrpricedown",
+   "downwardavailablemfrrprice",
+   "mfrrdadown",
+   "mfrrsadown",
+   "intertsopriceimport",
+   "intertsopriceexport",
+   "source_url",
+   "deliverydate",
+   "capacitybiddeliveryperiod",
+   "tenderdate",
+   "selectedbyoptimizer",
+   "regulationdirection",
+   "bidid",
+   "afrrofferedvolume",
+   "selectedvolumeafterstep2",
+   "selectedvolumeafterstep3",
+   "selectedvolumeafterstep4",
+   "selectedvolumeafterstep5",
+   "afrrawardedvolumemw",
+   "price",
+   "delivery_date_cet_1_cest_2",
+   "mfrrofferedvolume",
+   "mfrrstdawardedvolume",
+   "mfrrstdcapbidprice",
+   "mfrrflexawardedvolume",
+   "mfrrflexcapbidprice"
+  ],
+  "example": {
+   "answer": 1004448,
+   "sql": "SELECT count(*) FROM wave9.be_elia_balancing"
+  },
+  "geometry": false,
+  "rows": 1004448,
+  "seconds": 185
+ }
+}
