@@ -59,5 +59,5 @@ See [[coverage-and-gaps]], [[lake]], [[agent-tools]], [[state-and-datasets]].
   report API's listed XML files, about two weeks kept); `bfee_abwaerme` (public list, 100 a
   page: 500 was refused). csv `lenient` (DuckDB `strict_mode = false`, SVK); ArcGIS `page` and
   a stop on a server error or an empty layer (GDAL's 200 MB GeoJSON cap lifted); raster
-  `member` is a name or a regex. Romania and Serbia connection data wait on owner question 5.
+  `member` is a name or a regex. Unclear licences are built on the owner's decision (2026-11-06) and labelled so; clear restrictions, logins and refusals stay out. More readers: `odata_paged` (`endpoints`), `admie_files`, `regelleistung_results`, `ceps_soap`, `pjm_rpm_rcp`, `transelectrica_zones`, `pdf_tables` (`names`, `numbers`), `ins_ro_census_blocks`; `tag_urls` adds `source_url` to stacked datasets.
 

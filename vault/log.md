@@ -8,6 +8,12 @@ updated: 2026-11-06
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-06** (PR #19, owner: build unclear licences): PSE (`odata_paged`), IPTO (`admie_files`),
+  ČEPS (`ceps_soap`), regelleistung.net, Elia (`tag_urls`), PJM RPM, Transelectrica (HTML),
+  EMS (`pdf_tables`), EDO raster built and labelled; KPX Korea wired (snapshot, card, marker).
+  Out: clear restrictions, logins, refusals (Sadales tīkls 451); INS Romania refused by GitHub
+  runners. Owner questions 2, 4, 5 answered. Notes: wave9.
+
 - **2026-11-06** (PR #19, remaining readers): ELSTAT census workbooks (`xlsx_multihead`), INE
   Portugal JSON, SEMO report XML, BfEE excess heat, EirGrid dispatch-down, PxWeb batching (FI, LV),
   SVK reserves (lenient CSV), NOAA MPAs (ArcGIS quota waits), WHP CONUS raster; NGED blocked
