@@ -1321,6 +1321,52 @@ def transelectrica_zones(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN0
 CUSTOM["ro_transelectrica_zone_capacity"] = transelectrica_zones
 
 
+def pdf_tables(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """Tables of a PDF (pdfplumber): the header is the first row of the first table whose
+    cells start with `head` (e.g. "Ред."); every row whose first cell is a number is a record,
+    with `table` (the table's place in the document) and its cells as published (named by
+    `names` when given, else by the header). Columns named
+    in `numbers` are also parsed as numbers ("42,00" to 42.0) into `<column> (number)`."""
+    import pdfplumber
+
+    f = w.download(s["url"], d / "src.pdf", timeout=300)
+    header: list[str] | None = None
+    rows: list[dict[str, Any]] = []
+    with pdfplumber.open(f) as pdf:
+        n = 0
+        for page in pdf.pages:
+            for tb in page.extract_tables():
+                n += 1
+                for r in tb:
+                    cells = [" ".join(str(c).split()) if c is not None else "" for c in r]
+                    if (
+                        header is None
+                        and cells
+                        and cells[0].startswith(s.get("head", ""))
+                        and s.get("head")
+                    ):
+                        header = (
+                            s.get("names") or cells
+                        )  # `names`: stable names, in the header order
+                    elif header and cells and cells[0].isdigit() and len(cells) == len(header):
+                        rows.append({"table": n, **dict(zip(header, cells, strict=True))})
+    if not rows:
+        raise SystemExit("no table rows found in the PDF")
+    for r in rows:
+        for col in s.get("numbers", []):
+            txt = str(r.get(col, "")).replace(".", "").replace(",", ".")
+            try:
+                r[f"{col} (number)"] = float(txt) if txt else None
+            except ValueError:
+                r[f"{col} (number)"] = None
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["rs_ems_connection_queue"] = pdf_tables
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
