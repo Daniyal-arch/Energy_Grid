@@ -1054,6 +1054,43 @@ def ine_pt_indicator(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
 CUSTOM["pt_ine_heating_freguesia"] = ine_pt_indicator
 
 
+def semo_reports(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """A SEMO static report (`url`: the report API's list for one DPuG_ID): every file the API
+    still lists (SEMO keeps about two weeks), each an XML document of rows whose attributes are
+    the columns. Read four at a time; one row per XML row, attributes as published, with the
+    file's name and publish time."""
+    import xml.etree.ElementTree as ET
+
+    base, items, page = s["url"], [], 1
+    with httpx.Client(headers=UA, timeout=120, follow_redirects=True) as c:
+        while True:
+            j = c.get(f"{base}&page={page}").raise_for_status().json()
+            items += j["items"]
+            if page >= j["pagination"]["totalPages"]:
+                break
+            page += 1
+        docs = "https://reports.sem-o.com/documents/"
+
+        def one(it: dict[str, Any]) -> list[dict[str, Any]]:
+            root = ET.fromstring(c.get(docs + it["ResourceName"]).raise_for_status().content)
+            return [
+                {"file": it["ResourceName"], "published": it["PublishTime"], **e.attrib}
+                for e in root
+                if e.attrib
+            ]
+
+        with cf.ThreadPoolExecutor(4) as ex:
+            rows = [r for part in ex.map(one, items) for r in part]
+    if not rows:
+        raise SystemExit("no rows in the listed reports")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["ie_semo_imbalance"] = semo_reports
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
