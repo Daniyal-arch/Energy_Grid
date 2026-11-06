@@ -1475,6 +1475,61 @@ def regelleistung_results(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN
 CUSTOM["de_regelleistung"] = regelleistung_results
 
 
+def ceps_soap(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """ČEPS data web service (CepsData.asmx, SOAP): each of `operations` asked month by month
+    from `start` (aggregation QH, function AVG, param1 all, as the ČEPS site asks). Every answer
+    names its series ("aFRR+ [MW]" ...); one row per item: operation, dataset (the answer's own
+    name), date and a column per series, values as published."""
+    import datetime as dt
+    import xml.etree.ElementTree as ET
+
+    ns = "{https://www.ceps.cz/CepsData/StructuredData/1.0}"
+    url = "https://www.ceps.cz/_layouts/CepsData.asmx"
+    rows: list[dict[str, Any]] = []
+    with httpx.Client(headers=UA, timeout=300) as c:
+        for op in s["operations"]:
+            day, today = dt.date.fromisoformat(s["start"]), dt.date.today()
+            while day <= today:
+                nxt = (day.replace(day=28) + dt.timedelta(days=4)).replace(day=1)
+                body = (
+                    '<?xml version="1.0" encoding="utf-8"?><soap:Envelope '
+                    'xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body>'
+                    f'<{op} xmlns="https://www.ceps.cz/CepsData/"><dateFrom>{day}T00:00:00</dateFrom>'
+                    f"<dateTo>{nxt}T00:00:00</dateTo><agregation>QH</agregation><function>AVG</function>"
+                    f"<param1>all</param1></{op}></soap:Body></soap:Envelope>"
+                )
+                r = c.post(url, content=body.encode(), headers={
+                    "Content-Type": "text/xml; charset=utf-8", "SOAPAction": f'"https://www.ceps.cz/CepsData/{op}"'})  # fmt: skip
+                r.raise_for_status()
+                root = ET.fromstring(r.content).find(f".//{ns}root")
+                if root is not None:
+                    name = root.findtext(f"{ns}information/{ns}name")
+                    series = {x.get("id"): x.get("name") for x in root.iter(f"{ns}serie")}
+                    for it in root.iter(f"{ns}item"):
+                        row: dict[str, Any] = {
+                            "operation": op,
+                            "dataset": name,
+                            "date": it.get("date"),
+                        }
+                        for k, v in it.attrib.items():
+                            if k != "date":
+                                row[series.get(k, k)] = v
+                        rows.append(row)
+                day = nxt
+                time.sleep(0.5)
+            print(f"  {s['id']}: {op} read to {today}", flush=True)
+    if not rows:
+        raise SystemExit("no data in the answers")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(
+        f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array', sample_size = -1, union_by_name = true)"
+    )
+
+
+CUSTOM["cz_ceps_balancing"] = ceps_soap
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
