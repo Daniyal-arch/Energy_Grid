@@ -257,6 +257,40 @@ def names_check() -> list[dict[str, Any]]:
     return out
 
 
+def resolve_profile() -> str:
+    """Where one resolve_area call spends its time on the real lake (brief 30): cProfile of a
+    second call for a region and a city (the first call of each opens the sets)."""
+    import cProfile
+    import io
+    import pstats
+
+    from app.settings import Settings
+    from tools.areas import resolve_area
+    from tools.context import ToolContext
+
+    ctx = ToolContext(Settings())
+    out = []
+    for name in ("Lower Saxony", "Lyon"):
+        resolve_area(ctx, names=[name])
+        prof = cProfile.Profile()
+        prof.enable()
+        resolve_area(ctx, names=[name])
+        prof.disable()
+        buf = io.StringIO()
+        st = pstats.Stats(prof, stream=buf).sort_stats("cumulative")
+        st.print_stats(r"(areas|area_stats|duck|gazetteer)\.py", 14)
+        out.append(
+            f"### resolve_area({name!r}), second call\n```\n"
+            + "\n".join(
+                line
+                for line in buf.getvalue().splitlines()
+                if line.strip()[:1].isdigit() or "cumtime" in line
+            )[:3000]
+            + "\n```"
+        )
+    return "\n".join(out)
+
+
 def pct(xs: list[float], p: float) -> float:
     if not xs:
         return float("nan")
@@ -321,6 +355,7 @@ def main() -> None:
             rec["load"] = load_test(url, a.load)
         rec["tools"] = tool_runs()
         rec["names"] = names_check()
+        rec["resolve_profile"] = resolve_profile()
     finally:
         if proc:
             proc.terminate()
@@ -344,6 +379,7 @@ def main() -> None:
         print(
             f"| {n['q']} | {'yes' if n['ok'] else 'NO'} | {g['name']} ({g['level']}, {g['iso3']}, {g['area_km2']} km²) {n['note'][:60]} | {n['s']:.2f} |"
         )
+    print("\n" + rec["resolve_profile"])
     asks = [x for x in rec["asks"] if x.get("status") == 200]
     by_tool: dict[str, list[float]] = {}
     for x in asks:
