@@ -406,6 +406,39 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
                 "CREATE OR REPLACE TABLE t AS SELECT * EXCLUDE (geometry), "
                 "ST_GeomFromWKB(geometry) AS geometry FROM t"
             )
+    elif (
+        kind == "aqviewer"
+    ):  # EEA AQ Viewer: a POSTed filter, a zipped CSV, one country and year at a time
+        import io
+        import zipfile
+
+        frames = []
+        for country in s["countries"]:
+            for year in s["years"]:
+                body = {"Page": 0, "SortBy": None, "SortAscending": True, "RequestFilter": {
+                    "Country": {"FieldName": "Country", "Values": [country]},
+                    "ReportingYear": {"FieldName": "ReportingYear", "Values": [str(year)]}}}  # fmt: skip
+                r = httpx.post(url, json=body, headers=UA, timeout=600)
+                r.raise_for_status()
+                if r.content[:2] != b"PK":
+                    continue  # no rows for this country and year
+                z = zipfile.ZipFile(io.BytesIO(r.content))
+                f = d / f"{country}_{year}.csv".replace(" ", "_")
+                f.write_bytes(z.read(z.namelist()[0]))
+                n = con.execute(
+                    f"SELECT count(*) FROM read_csv('{f}', all_varchar = true)"
+                ).fetchone()[0]
+                if n >= 100_000:  # the viewer stops at 100,000 rows: a cut answer is not kept
+                    raise SystemExit(
+                        f"{country} {year}: {n} rows, the viewer's cap; split the request"
+                    )
+                frames.append(str(f))
+        if not frames:
+            raise SystemExit("no rows for any country and year")
+        files = ", ".join(f"'{f}'" for f in frames)
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv([{files}], all_varchar = true, union_by_name = true)"
+        )
     elif kind == "datafair_agg":  # data-fair values_agg: nested counts flattened to rows
         data = w.get_json(url, timeout=600)
         fields = re.search(r"field=([^&]+)", url).group(1).split(";")  # type: ignore[union-attr]
