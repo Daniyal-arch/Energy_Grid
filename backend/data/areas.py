@@ -744,12 +744,11 @@ class Areas:
         out: list[Candidate] = []
         sets = [s for s in OUTLINE_SETS if s.table in tables and s.key != "zones"]
         cur = self.lake.cursor()
-        if "outlines.names" in tables:  # the name index covers every brief-27 set
+        use_index = "outlines.names" in tables  # the name index covers every brief-27 set
+        if use_index:
             sets = [s for s in sets if s.key not in B1_SETS]
-            out += self._names_index(cur, q)
-        if not sets:
-            return out
-        for s in sets:
+
+        def one(s: OutlineSet) -> list[tuple]:
             # the same normal form as norm(): no accents or apostrophes, other signs as spaces
             nn = (
                 f"trim(regexp_replace(replace(lower(strip_accents({s.name})), chr(39), ''), "
@@ -765,10 +764,17 @@ class Areas:
                 WHERE {nn} = $q OR lower(CAST({s.id} AS VARCHAR)) = $q
                 LIMIT 200"""
             try:
-                rows = cur.execute(sql, {"q": q}).fetchall()
+                return self.lake.cursor().execute(sql, {"q": q}).fetchall()
             except Exception as e:
                 log.warning("outline search failed", extra={"set": s.key, "error": str(e)[:200]})
-                continue
+                return []
+
+        # every set at once, beside the name index (each a read of its own on R2; brief 30)
+        pending = [_READER.submit(one, s) for s in sets]
+        if use_index:
+            out += self._names_index(cur, q)
+        for s, fut in zip(sets, pending, strict=True):
+            rows = fut.result()
             for rid, name, lv, iso, parent, pop, x0, y0, x1, y1, r in rows:
                 i3 = iso3_of(iso)
                 out.append(
