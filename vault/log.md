@@ -8,6 +8,12 @@ updated: 2026-11-03
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-06** (claude/loving-dijkstra-5q8n1c, PR #19): Track 3 (H3 rollups, history
+  snapshots, customer-gap sources, live grids: KPX ready but not wired), Track 4 (lazy agent
+  import, data API), Track 5 (code-split bundle 863 to 208 kB entry, recently used, coverage
+  explorer, Ask chips/resume, colour-blind palettes, as-of on layer cards), Track 6 (seven MVPs),
+  neighbours in the coverage registry. Notes: product, instant-answers, freshness, wave9, index.
+
 - **2026-11-05** (claude/loving-dijkstra-5q8n1c, PR #19, brief 30): Track 1 (area names via
   Overture aliases and named areas, loop guard, browser-fetch skips, ECR retries, 10 of 12
   failed wave 9 builds fixed, GISCO replacement behind `?shapes=open`), Track 2 (91 page-only

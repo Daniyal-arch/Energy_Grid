@@ -1,7 +1,7 @@
 ---
 title: Panels and cards
 tags: [frontend, ui]
-updated: 2026-10-29
+updated: 2026-11-06
 paths: [frontend/src/ui/App.tsx, frontend/src/ui/LayersPanel.tsx, frontend/src/ui/Panel.tsx, frontend/src/ui/DashboardTab.tsx, frontend/src/ui/Dashboards.tsx, frontend/src/ui/Catalogue.tsx, frontend/src/components/AreaCards.tsx, frontend/src/components/RoomCards.tsx]
 ---
 
@@ -33,3 +33,11 @@ One Layers panel on the left, one context panel on the right, a time bar at the 
   for countries, by position for drawn areas; runs card by card after the panel draws.
 - `components/RoomCards.tsx`: room to connect per country (PR #13). Other cards: one file per
   family in `components/`.
+
+- **Brief 30**: the context panel, Ask, Maps view, catalogue, dashboard builder and country
+  report load as lazy chunks (`ui/App.tsx`); map libraries in their own chunks
+  (`vite.config.ts`). Layers panel: "Recently used" (localStorage `atlas.recentDatasets`).
+  Area card: "Ask about this area", "Compare with…", "Watch this area" ([[product]]). Wave
+  layer cards show `updates` (as-of and refresh) from `scripts/wave9.py render`. Agent
+  palettes checked for colour vision (`docs/research/colour-vision-check.md`).
+
