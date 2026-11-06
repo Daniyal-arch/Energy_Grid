@@ -844,8 +844,10 @@ class Areas:
             raise AreaError("the spatial extension is not loaded in this service") from e
         return cur
 
-    def geometry_of(self, ref: str) -> str:
-        """GeoJSON text of a candidate's outline (by its ref)."""
+    def geometry_of(self, ref: str, bbox: list[float] | None = None) -> str:
+        """GeoJSON text of a candidate's outline (by its ref). With the candidate's box (from the
+        name index), the lake's bbox column skips every row group but the one holding it (an id
+        alone scanned the whole 2.26 GB divisions table, about 5 s on R2; brief 30)."""
         kind, _, key = ref.partition(":")
         if kind == "world":
             ring = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]]
@@ -866,15 +868,27 @@ class Areas:
             s = SET_BY_KEY[kind]
             if s.table not in self.tables():
                 raise AreaError(f"the outline table {s.table} is not in this service's lake")
-            row = (
-                self._cur()
-                .execute(
+            cur = self._cur()
+            row = None
+            if bbox and all(v is not None for v in bbox):
+                e = 1e-6
+                try:
+                    row = cur.execute(
+                        f"SELECT ST_AsGeoJSON({s.geometry}) FROM {s.table} "
+                        "WHERE bbox.xmin BETWEEN ? AND ? AND bbox.ymin BETWEEN ? AND ? "
+                        "AND bbox.xmax BETWEEN ? AND ? AND bbox.ymax BETWEEN ? AND ? "
+                        f"AND CAST({s.id} AS VARCHAR) = ? LIMIT 1",
+                        [bbox[0] - e, bbox[0] + e, bbox[1] - e, bbox[1] + e,
+                         bbox[2] - e, bbox[2] + e, bbox[3] - e, bbox[3] + e, key],
+                    ).fetchone()  # fmt: skip
+                except Exception:  # noqa: BLE001 - a table without the bbox column
+                    row = None
+            if row is None:
+                row = cur.execute(
                     f"SELECT ST_AsGeoJSON({s.geometry}) FROM {s.table} "
                     f"WHERE CAST({s.id} AS VARCHAR) = ? LIMIT 1",
                     [key],
-                )
-                .fetchone()
-            )
+                ).fetchone()
             if not row:
                 raise AreaError(f"no outline {ref}")
             return row[0]
@@ -953,7 +967,7 @@ class Areas:
             )
         if not c.outline:
             raise AreaError(f"{c.name} has no outline here ({c.source['dataset']})")
-        gj = self.geometry_of(c.ref)
+        gj = self.geometry_of(c.ref, c.bbox)
         parents = [p for p in [c.parent] if p]
         for i3 in c.iso3:
             n = self.country_names.get(i3)

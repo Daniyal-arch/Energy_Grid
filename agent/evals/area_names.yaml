@@ -6,7 +6,7 @@
 # the fixture lake holds run in backend/tests/test_areas.py.
 questions:
 - {id: name-bavaria, q: Bavaria, iso3: DEU, level: region, km2: 70542, km2_source: "Destatis, Gebiet und Bevölkerung (70,542 km²)"}
-- {id: name-bayern, q: Bayern, iso3: DEU, level: region, km2: 70542, km2_source: "Destatis (70,542 km²)"}
+- {id: name-bayern, q: Bayern, iso3: DEU, level: [region, nuts1], km2: 70542, km2_source: "Destatis (70,542 km²)"}
 - {id: name-brittany, q: Brittany, iso3: FRA, level: region, km2: 27208, km2_source: "INSEE, région Bretagne (27,208 km²)"}
 - {id: name-bretagne, q: Bretagne, iso3: FRA, level: region, km2: 27208, km2_source: "INSEE (27,208 km²)"}
 - {id: name-lower-saxony, q: Lower Saxony, iso3: DEU, level: region, km2: 47710, km2_source: "Destatis (47,710 km²)"}

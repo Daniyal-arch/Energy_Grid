@@ -237,7 +237,10 @@ def names_check() -> list[dict[str, Any]]:
         km2 = a.get("area_km2") or 0
         ok = (
             a.get("iso3") == [c["iso3"]]
-            and (not c.get("level") or a.get("level") == c["level"])
+            and (
+                not c.get("level")
+                or a.get("level") in (c["level"] if isinstance(c["level"], list) else [c["level"]])
+            )
             and abs(km2 - c["km2"]) <= 0.1 * c["km2"]
             and not d.get("ambiguous")
         )
