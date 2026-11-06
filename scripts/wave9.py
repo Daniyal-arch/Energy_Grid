@@ -1026,6 +1026,29 @@ CUSTOM["gr_elstat_heating_energy_regional_unit"] = xlsx_multihead
 CUSTOM["gr_elstat_heating_settlement"] = xlsx_multihead
 
 
+def ine_pt_indicator(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """An INE Portugal indicator from its JSON API (pindica.jsp?op=2): one record per period,
+    area (geocod: the NUTS / municipality / freguesia code, geodsg its name) and dimension
+    value (dim_N, dim_N_t), with valor as published. Flattened to one row per record."""
+    f = w.download(s["url"], d / "src.json", timeout=600)
+    j = json.loads(Path(f).read_text(encoding="utf-8"))[0]
+    rows = [
+        {"period": p, **{k: v for k, v in r.items() if k != "valor"}, "value": float(r["valor"])}
+        if str(r.get("valor", "")).replace(".", "", 1).replace("-", "", 1).isdigit()
+        else {"period": p, **r, "value": None}
+        for p, recs in j["Dados"].items()
+        for r in recs
+    ]
+    if not rows:
+        raise SystemExit("no records in the indicator")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["pt_ine_heating_freguesia"] = ine_pt_indicator
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
