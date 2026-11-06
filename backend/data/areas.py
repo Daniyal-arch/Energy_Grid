@@ -19,6 +19,7 @@ import json
 import logging
 import re
 import unicodedata
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from functools import cached_property, lru_cache
 from pathlib import Path
@@ -209,6 +210,10 @@ class Area:
         )
 
 
+# one background writer: area records reach the object store in the order they were made
+_WRITER = ThreadPoolExecutor(max_workers=1, thread_name_prefix="area-store")
+
+
 class AreaStore:
     """Areas by id: in the results directory (this container) and in the object store (saved
     maps and later turns in another container)."""
@@ -219,13 +224,22 @@ class AreaStore:
         self.store = store
 
     def put(self, area: Area) -> None:
+        """The local copy at once; the object store's copy in the background (brief 30: two
+        R2 writes took ~3 s of a 6.5 s resolve_area), and only when the record changed."""
         d = area.as_dict()
-        (self.root / f"{area.area_id}.json").write_text(json.dumps(d), encoding="utf-8")
+        text = json.dumps(d)
+        p = self.root / f"{area.area_id}.json"
+        if p.exists() and p.read_text(encoding="utf-8") == text:
+            return
+        p.write_text(text, encoding="utf-8")
         if self.store is not None:
-            try:
-                self.store.put_json(f"agent/areas/{area.area_id}.json", d)
-            except Exception:  # the local copy serves this container
-                log.warning("area not saved to the store", extra={"area_id": area.area_id})
+            _WRITER.submit(self._to_store, area.area_id, d)
+
+    def _to_store(self, area_id: str, d: dict[str, Any]) -> None:
+        try:
+            self.store.put_json(f"agent/areas/{area_id}.json", d)  # type: ignore[union-attr]
+        except Exception:  # the local copy serves this container
+            log.warning("area not saved to the store", extra={"area_id": area_id})
 
     def get(self, area_id: str) -> Area | None:
         if not re.fullmatch(r"a_[0-9a-f]{12}", area_id):

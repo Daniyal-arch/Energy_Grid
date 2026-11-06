@@ -203,8 +203,41 @@ def resolve_area(
     intersect_with: str | None = None,
     name: str | None = None,
 ) -> dict[str, Any]:
-    A = ctx.areas
     names = [n for n in (names or []) if n.strip()]
+    # a name asked before (same level, same view) is answered from memory (brief 30)
+    key = None
+    if names and not (from_view or point or radius_km or buffer_km or intersect_with or name):
+        key = json.dumps([[norm(n) for n in names], level, ctx.view], sort_keys=True, default=str)
+        hit = _RESOLVED.get(key)
+        if hit and hit["data"].get("area") and ctx.area_store.get(hit["data"]["area"]["area_id"]):
+            a = hit["data"]["area"]
+            if a["area_id"] not in ctx.turn_areas:
+                ctx.turn_areas.append(a["area_id"])
+            ctx.emit("area", {"area_id": a["area_id"], "name": a["name"], "level": a["level"]})
+            return hit
+    out = _resolve(ctx, names, level, from_view, point, radius_km, buffer_km, intersect_with, name)
+    if key and out["data"].get("area"):
+        if len(_RESOLVED) > 2000:
+            _RESOLVED.clear()
+        _RESOLVED[key] = out
+    return out
+
+
+_RESOLVED: dict[str, dict[str, Any]] = {}
+
+
+def _resolve(
+    ctx: ToolContext,
+    names: list[str],
+    level: str | None,
+    from_view: str | None,
+    point: tuple[float, float] | None,
+    radius_km: float | None,
+    buffer_km: float | None,
+    intersect_with: str | None,
+    name: str | None,
+) -> dict[str, Any]:
+    A = ctx.areas
     candidates: list[Candidate] = []
     notes: list[str] = []
     ambiguous = False

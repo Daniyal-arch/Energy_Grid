@@ -199,5 +199,19 @@ def test_named_area_with_a_missing_member_is_not_built(ctx, monkeypatch):
         for k, v in ctx.areas.named_areas.items()
     }
     monkeypatch.setitem(ctx.areas.__dict__, "named_areas", named)
+    import tools.areas
+
+    monkeypatch.setattr(tools.areas, "_RESOLVED", {})  # the earlier answer is kept in memory
     r = resolve_area(ctx, names=["the Ruhr"])["data"]
     assert r["area"] is None and "Nowhere" in r["error"]
+
+
+def test_a_name_asked_again_comes_from_memory(ctx, monkeypatch):
+    import tools.areas
+
+    first = area(ctx, names=["Kreis Unna, DEU"], level="county")
+    monkeypatch.setattr(
+        tools.areas, "_resolve", lambda *a, **k: (_ for _ in ()).throw(AssertionError("not cached"))
+    )
+    again = area(ctx, names=["Kreis Unna, DEU"], level="county")
+    assert again["area"]["area_id"] == first["area"]["area_id"]
