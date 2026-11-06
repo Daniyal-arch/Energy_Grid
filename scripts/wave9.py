@@ -627,22 +627,33 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         con.execute(
             f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000, sample_size = -1)"
         )
-    elif (
-        kind == "pxweb"
-    ):  # brief 30: a PxWeb table, every variable asked for (left out, it is summed away)
+    elif kind == "pxweb":  # a PxWeb table, every variable asked for (left out, it is summed away)
         meta = w.get_json(url, timeout=300)
-        query = [
-            {"code": v["code"], "selection": {"filter": "all", "values": ["*"]}}
-            for v in (meta.get("variables") or [])  # type: ignore[union-attr]
-        ]
-        r = httpx.post(
-            url,
-            json={"query": query, "response": {"format": "json-stat2"}},
-            headers=UA,
-            timeout=600,
-        )
-        r.raise_for_status()
-        rows = jsonstat_rows(r.json())
+        variables = meta.get("variables") or []  # type: ignore[union-attr]
+        # the API refuses a request over its cell limit (403): the largest variable in batches
+        limit = int(s.get("max_cells", 100_000))
+        sizes = [len(v["values"]) for v in variables] or [1]
+        cells = 1
+        for n in sizes:
+            cells *= n
+        big = max(range(len(sizes)), key=lambda i: sizes[i])
+        per = max(1, limit // max(1, cells // sizes[big]))
+        rows = []
+        for k in range(0, sizes[big], per):
+            query = [
+                {
+                    "code": v["code"],
+                    "selection": {"filter": "item", "values": v["values"][k : k + per]},
+                }
+                if i == big
+                else {"code": v["code"], "selection": {"filter": "all", "values": ["*"]}}
+                for i, v in enumerate(variables)
+            ]
+            body = {"query": query, "response": {"format": "json-stat2"}}
+            r = httpx.post(url, json=body, headers=UA, timeout=600)
+            r.raise_for_status()
+            rows += jsonstat_rows(r.json())
+            time.sleep(1)  # the APIs allow a few requests a second
         f = d / "src.json"
         f.write_text(json.dumps(rows))
         con.execute(
