@@ -384,6 +384,25 @@ def zip_member(folder: Path, s: dict[str, Any]) -> Path:
     return f
 
 
+def _entsoe_docs(client: httpx.Client, params: dict[str, str]) -> list[Any]:
+    """The documents of one ENTSO-E request: plain XML, or a zip of XML documents (balancing
+    data is often zipped); an acknowledgement (no data) gives none."""
+    import io
+    import xml.etree.ElementTree as ET
+    import zipfile
+
+    q = {"securityToken": os.environ["ENTSOE_API_KEY"].strip(), **params}
+    r = client.get("https://web-api.tp.entsoe.eu/api", params=q)
+    if r.status_code != 200:
+        return []
+    blobs = [r.content]
+    if r.content[:2] == b"PK":
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        blobs = [z.read(n) for n in z.namelist() if n.lower().endswith(".xml")]
+    roots = [ET.fromstring(b) for b in blobs]
+    return [x for x in roots if not x.tag.endswith("Acknowledgement_MarketDocument")]
+
+
 def load(con, s: dict[str, Any]) -> None:  # noqa: ANN001
     """The source into DuckDB table t, by kind; `urls` (several files of one kind) are stacked."""
     if s.get("urls"):
@@ -400,6 +419,10 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
     kind, url = s["kind"], s["url"]
     d = TMP / s["id"]
     d.mkdir(parents=True, exist_ok=True)
+    if kind == "ods_api":  # an Opendatasoft dataset: its CSV export (semicolons), as published
+        url = url if "/exports/" in url else url.rstrip("/") + "/exports/csv"
+        url += ("&" if "?" in url else "?") + "delimiter=%3B"
+        s, kind = {**s, "url": url, "kind": "csv", "sep": ";"}, "csv"
     if kind == "census":
         census_tracts(con, s, d)
     elif kind == "parquet":  # (Geo)Parquet: read as is; a WKB `geometry` becomes a geometry
@@ -468,14 +491,17 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
                     s["domain_param"]: eic,
                     **stamp,
                 }
-                for meta, points in entsoe.points_of(
-                    entsoe.request(client, params), s.get("value_tag", "quantity")
-                ):
+                docs = _entsoe_docs(client, params)
+                for meta, points in [
+                    p
+                    for root in docs
+                    for p in entsoe.points_of(root, s.get("value_tag", "quantity"))
+                ]:
                     for t, minutes, value in points:
                         rows.append({"area": area, "start_utc": t.isoformat(), "minutes": minutes, "value": value,
                                      **{k: v for k, v in meta.items() if k in ENTSOE_META}})  # fmt: skip
         if not rows:
-            raise SystemExit(f"no data for any area ({dict(entsoe.OUTCOMES)})")
+            raise SystemExit("no data for any area in the window")
         f = d / "src.json"
         f.write_text(json.dumps(rows), encoding="utf-8")
         con.execute(
