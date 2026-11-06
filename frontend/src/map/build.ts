@@ -124,7 +124,7 @@ import { registerLayers } from "./registerLayers";
 import { wave8Layers } from "./wave8Layers";
 import { wave9Layers } from "./wave9Layers";
 import { comingLayers } from "./comingLayers";
-import { NZ_COLOR, NZ_POINT, ZA_COLOR, ZA_POINT, type NzFile, type ZaFile } from "../lib/regionalLive";
+import { KR_COLOR, KR_POINT, NZ_COLOR, NZ_POINT, ZA_COLOR, ZA_POINT, type KrFile, type NzFile, type ZaFile } from "../lib/regionalLive";
 import { SEA_CABLE_COLOR, seaPipeLayer, type SeaCable, type SeaCablesFile, type SeaPipe } from "../lib/seaCables";
 import type { MastrTech } from "../lib/mastr";
 
@@ -1520,11 +1520,12 @@ function worldLayers(fr: Frame, near: (p: [number, number]) => boolean): Layer[]
     for (const [key, grid, at, color, text] of [
       ["nz", "nz", NZ_POINT, NZ_COLOR, (v: NzFile) => [v.total_mw, `NZ ${(v.total_mw / 1000).toFixed(1)} GW`]],
       ["za", "za", ZA_POINT, ZA_COLOR, (v: ZaFile) => [3000, v.loadshedding_stage ? `ZA stage ${v.loadshedding_stage}` : "ZA"]],
+      ["korea", "kr", KR_POINT, KR_COLOR, (v: KrFile) => [v.demand?.mw ?? v.generation?.total_mw ?? 0, `KR ${((v.demand?.mw ?? v.generation?.total_mw ?? 0) / 1000).toFixed(0)} GW`]],
     ] as const) {
-      const v = f[key] as (NzFile & ZaFile) | undefined;
+      const v = f[key] as (NzFile & ZaFile & KrFile) | undefined;
       if (!v || !near(at)) continue;
       const [mw, txt] = text(v) as [number, string];
-      const dots = memo(`${key}Dots`, [v], () => [{ id: key.toUpperCase(), at, mw, label: txt }]);
+      const dots = memo(`${key}Dots`, [v], () => [{ id: grid.toUpperCase(), at, mw, label: txt }]);
       parts.push(memo(`lbl-${key}`, [dots, fr.zoom >= 2.2], () => (fr.zoom >= 2.2 ? dots.map((d) => label("region", d.at, d.label, "", -d.mw)) : [])));
       out.push(...regionDotLayers(`w-${grid}`, dots, color, false));
     }

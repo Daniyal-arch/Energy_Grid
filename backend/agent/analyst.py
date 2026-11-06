@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import asyncio
 import json
+import re
 import time
+import unicodedata
 from datetime import UTC, datetime
 from typing import Any
 
@@ -17,6 +19,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.config import get_stream_writer
 from pydantic import ValidationError
 
+from agent.cache import ResultCache
 from agent.deps import Deps, deps_of
 from agent.models import stop_reason, system_message, text_of
 from agent.state import AgentState
@@ -55,10 +58,17 @@ async def analyst(state: AgentState, config: RunnableConfig) -> dict[str, Any]:
     d = deps_of(config)
     s = d.settings
     late = time.time() - state["started"] > s.soft_deadline_s
-    capped = state.get("tool_calls", 0) >= s.max_tool_calls
+    stuck = sum(1 for e in state.get("tool_log") or [] if e.get("blocked")) >= MAX_BLOCKED
+    capped = state.get("tool_calls", 0) >= s.max_tool_calls or stuck
     extra: list[BaseMessage] = []
     if late or capped:
-        why = "the time limit" if late else f"the limit of {s.max_tool_calls} tool calls"
+        why = (
+            "the time limit"
+            if late
+            else "repeated failed lookups"
+            if stuck
+            else f"the limit of {s.max_tool_calls} tool calls"
+        )
         extra.append(
             HumanMessage(
                 content=f"Stop calling tools ({why} is reached). "
@@ -83,6 +93,49 @@ async def analyst(state: AgentState, config: RunnableConfig) -> dict[str, Any]:
     return out
 
 
+# the loop guard (brief 30 Track 1.3): after two failures of the same tool with similar
+# arguments, a third such call is not run; two blocked calls end the tool loop
+MAX_SIMILAR_FAILURES = 2
+MAX_BLOCKED = 2
+
+
+def failed(entry: dict[str, Any]) -> bool:
+    """A tool call that found nothing: an error, or resolve_area without an area."""
+    if entry.get("error"):
+        return True
+    data = (entry.get("result") or {}).get("data")
+    return entry.get("name") == "resolve_area" and isinstance(data, dict) and not data.get("area")
+
+
+def _words(args: dict[str, Any]) -> set[str]:
+    text = json.dumps(args, sort_keys=True, default=str, ensure_ascii=False)
+    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().casefold()
+    return {w for w in re.findall(r"[a-z0-9]+", text) if w not in _STOP}
+
+
+_STOP = {"names", "name", "level", "text", "query", "the", "of", "null", "true", "false"}
+
+
+def similar(a: dict[str, Any], b: dict[str, Any]) -> bool:
+    """Arguments that ask the same thing: equal, or sharing half their words."""
+    wa, wb = _words(a), _words(b)
+    if not wa or not wb:
+        return wa == wb
+    return len(wa & wb) / min(len(wa), len(wb)) >= 0.5
+
+
+def blocked_reason(log: list[dict[str, Any]], name: str, args: dict[str, Any]) -> str | None:
+    fails = [e for e in log if e.get("name") == name and failed(e) and similar(e["args"], args)]
+    if len(fails) < MAX_SIMILAR_FAILURES:
+        return None
+    tried = "; ".join(json.dumps(e["args"], ensure_ascii=False)[:80] for e in fails[-2:])
+    return (
+        f"not run: {name} already failed {len(fails)} times with similar arguments ({tried}). "
+        "Change approach: a parent level or the country, find_place, another tool, or tell "
+        "the user what cannot be answered and why."
+    )
+
+
 def wants_tools(state: AgentState, max_calls: int) -> bool:
     msgs = state.get("messages") or []
     last = msgs[-1] if msgs else None
@@ -91,6 +144,7 @@ def wants_tools(state: AgentState, max_calls: int) -> bool:
         and bool(last.tool_calls)
         and state.get("stop") is None
         and state.get("tool_calls", 0) < max_calls
+        and sum(1 for e in state.get("tool_log") or [] if e.get("blocked")) < MAX_BLOCKED
     )
 
 
@@ -110,15 +164,21 @@ async def tools_node(state: AgentState, config: RunnableConfig) -> dict[str, Any
     specs = by_name()
     extra = {t.name: t for t in d.extra_tools}
     count = state.get("tool_calls", 0)
+    cache = ResultCache(d.ctx)
     messages, log, rids = [], [], []
     for call in last.tool_calls:
         name, args, cid = call["name"], call.get("args") or {}, call.get("id") or ""
         count += 1
         t0 = time.perf_counter()
         writer({"event": "tool", "data": {"name": name, "args": args, "status": "running"}})
+        res: dict[str, Any]
+        cached = False
+        why_blocked = blocked_reason([*(state.get("tool_log") or []), *log], name, args)
         with span("agent.tool", {"gen_ai.tool.name": name}) as sp:
-            if count > d.settings.max_tool_calls:
-                res: dict[str, Any] = {
+            if why_blocked:
+                res = {"data": {"error": why_blocked}, "sources": []}
+            elif count > d.settings.max_tool_calls:
+                res = {
                     "data": {"error": f"limit of {d.settings.max_tool_calls} tool calls reached"},
                     "sources": [],
                 }
@@ -126,14 +186,25 @@ async def tools_node(state: AgentState, config: RunnableConfig) -> dict[str, Any
                 spec = specs[name]
                 try:
                     parsed = spec.args.model_validate(args).model_dump()
-                    res = await asyncio.wait_for(
-                        asyncio.to_thread(spec.run, d.ctx, **parsed), TOOL_TIMEOUT_S
-                    )
+                    hit = cache.get(name, parsed)
+                    if hit is not None:
+                        res, cached = hit, True
+                    else:
+                        res = await asyncio.wait_for(
+                            asyncio.to_thread(spec.run, d.ctx, **parsed), TOOL_TIMEOUT_S
+                        )
+                        cache.put(name, parsed, res)
                 except ValidationError as e:
                     res = {"data": {"error": f"bad arguments: {e.errors()[:3]}"}, "sources": []}
                 except TimeoutError:
                     res = {
-                        "data": {"error": f"{name} took longer than {TOOL_TIMEOUT_S} s"},
+                        "data": {
+                            "error": f"{name} took longer than {TOOL_TIMEOUT_S} s and was stopped",
+                            "timeout": True,
+                            "missing": json.dumps(args, ensure_ascii=False)[:200],
+                            "instruction": "answer with the figures you have and say which "
+                            "figure is missing because this call timed out",
+                        },
                         "sources": [],
                     }
                 except Exception as e:
@@ -173,6 +244,7 @@ async def tools_node(state: AgentState, config: RunnableConfig) -> dict[str, Any
                     "ms": ms,
                     "rows": rows,
                     "result_id": res.get("result_id"),
+                    "cached": cached,
                 },
             }
         )
@@ -183,6 +255,8 @@ async def tools_node(state: AgentState, config: RunnableConfig) -> dict[str, Any
                 "result": res,
                 "ms": ms,
                 "error": bool(err),
+                "blocked": bool(why_blocked),
+                "cached": cached,
                 "sql": args.get("sql") if name == "run_sql" else None,
             }
         )

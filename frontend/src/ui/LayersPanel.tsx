@@ -6,7 +6,7 @@
 
 import { isWaveColour, waveKey } from "../app/waves";
 import { type W9cFile, w9cNumber, w9cStops } from "../lib/wave9";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { FUEL_COLOR, FUEL_LABEL } from "../lib/energy";
 import { GAS_FLOW, GAS_TRANSIT, GAS_TRANSIT_LABEL_GWH, type GasFlowsFile } from "../lib/gasFlows";
@@ -1181,6 +1181,12 @@ export default function LayersPanel() {
   const [onlyHere, setOnlyHere] = useState(true);
   const names = useCountryNames();
   const active = DATASETS.filter((d) => partsIn(d, mode).length > 0 && datasetOn(d, layers, colour));
+  const recent = useRecent(active.map((d) => d.id));
+  const recentRows = recent
+    .filter((id) => !active.some((d) => d.id === id))
+    .map((id) => DATASETS.find((d) => d.id === id))
+    .filter((d): d is Dataset => !!d && partsIn(d, mode).length > 0)
+    .slice(0, 5);
   const groupHasActive = (g: LayerGroup) => active.some((d) => d.category === g);
   const found = t ? DATASETS.filter((d) => matches(d, t)).length : 0;
   // the categories list what is not on the map yet; with an area, what has data there
@@ -1219,6 +1225,16 @@ export default function LayersPanel() {
           <DatasetRow key={d.id} d={d} />
         ))}
       </div>
+      {recentRows.length > 0 && !t && (
+        <>
+          <div className="border-t border-white/[0.06] px-3 pb-1 pt-2.5 text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">Recently used</div>
+          <div className="px-1.5 pb-2">
+            {recentRows.map((d) => (
+              <DatasetRow key={d.id} d={d} />
+            ))}
+          </div>
+        </>
+      )}
 
 
 
@@ -1249,4 +1265,32 @@ export default function LayersPanel() {
       <div className="h-2" />
     </div>
   );
+}
+
+
+/** The datasets switched on lately, newest first, kept in this browser only (brief 30). */
+const RECENT_KEY = "atlas.recentDatasets";
+function useRecent(onIds: string[]): string[] {
+  const [list, setList] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]") as string[];
+    } catch {
+      return [];
+    }
+  });
+  const key = onIds.join(",");
+  useEffect(() => {
+    if (!onIds.length) return;
+    setList((old) => {
+      const next = [...onIds.filter((id) => !old.includes(id)), ...old].slice(0, 12);
+      try {
+        localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+      } catch {
+        /* storage blocked: the list lives for this visit */
+      }
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+  return list;
 }

@@ -1,0 +1,17 @@
+{
+ "us_eia_recs_heat_pumps_state": {
+  "as_of": "2023-04-27",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-06",
+  "columns": [
+   "preliminary_data_release_date_june_2022_final_data_release_date_march_2023"
+  ],
+  "example": {
+   "answer": 1,
+   "sql": "SELECT count(*) FROM wave9.us_eia_recs_heat_pumps_state"
+  },
+  "geometry": false,
+  "rows": 1,
+  "seconds": 0
+ }
+}

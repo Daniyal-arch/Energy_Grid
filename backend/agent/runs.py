@@ -13,6 +13,7 @@ from langchain_core.runnables import RunnableConfig
 from agent.deps import deps_of
 from agent.limits import get_limits
 from agent.state import AgentState
+from agent.suggest import area_ids_of, suggestions
 from obs import langfuse, metrics
 from obs.tracing import span
 
@@ -76,6 +77,9 @@ async def finish(state: AgentState, config: RunnableConfig) -> dict[str, Any]:
                 k: g.get(k) for k in ("numbers", "grounded", "ungrounded", "score") if k in g
             },
             "maps": [m["id"] for m in state.get("maps", [])],
+            "suggestions": suggestions(d.ctx, area_ids_of(state), state["question"])
+            if not state.get("stop")
+            else [],
             "stop": state.get("stop"),
             "sources": sources_of(state),
             "version": s.version,

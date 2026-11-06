@@ -1,0 +1,38 @@
+{
+ "eu_emodnet_vessel_density": {
+  "band": "vessel density, annual average, all ship types (float32); per-type coverages emodnet__vesseldensity_NNavg and monthly ones; years 2017-2024",
+  "built": "2026-11-05",
+  "example": {
+   "answer": null,
+   "sql": "area_stats(measure='w9_eu_emodnet_vessel_density')"
+  },
+  "raster": [
+   {
+    "bounds": [
+     177402.3102,
+     6580064.2714,
+     417748.5271,
+     6820702.5869
+    ],
+    "bytes": 41817,
+    "cell": [
+     1754.351947944476,
+     1756.4840549500796
+    ],
+    "crs": "EPSG:3857",
+    "dtype": "float32",
+    "key": "lake/rasters/wave9/eu_emodnet_vessel_density.tif",
+    "max": 15971.7822265625,
+    "min": 0.0,
+    "nodata": -3.4028234663852886e+38,
+    "size": [
+     137,
+     137
+    ]
+   }
+  ],
+  "rows": 0,
+  "seconds": 3,
+  "unit": "hours per km² per month"
+ }
+}

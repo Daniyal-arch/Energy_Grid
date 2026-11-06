@@ -1,10 +1,38 @@
 {
  "at_zaehlsprengel": {
-  "built": null,
-  "error": "CalledProcessError: Command '['tippecanoe', '-o', '/tmp/wave9/at_zaehlsprengel/at_zaehlsprengel.pmtiles', '-l', 'd', '-Z0', '-z12', '--no-feature-limit', '--no-tile-size-limit', '--simplification=4', '--force', '-P', '/tmp/wave9/at_zaehlsprengel/tiles.geojsons']' returned non-zero exit status 110."
+  "bbox": [
+   9.531,
+   46.372,
+   17.161,
+   49.021
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "g_id",
+   "g_name",
+   "geometry"
+  ],
+  "example": {
+   "answer": 8842,
+   "sql": "SELECT count(*) FROM wave9.at_zaehlsprengel"
+  },
+  "geometry": true,
+  "rows": 8842,
+  "seconds": 33,
+  "tiles": {
+   "fields": [
+    "name",
+    "g_id"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/at_zaehlsprengel.pmtiles"
+  },
+  "with_position": 8842
  },
  "be_fluvius_consumption": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "verbruiksjaar",
    "markt",
@@ -24,20 +52,73 @@
   },
   "geometry": false,
   "rows": 540342,
-  "seconds": 43
+  "seconds": 32
  },
  "cz_zsj": {
-  "built": null,
-  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/src-y8hw4ajl/Zakladni_sidelni_jednotky_20260701.gpkg\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/src-y8hw4ajl/Zakladni_sidelni_jednotky_20260701...\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+  "as_of": "2026-09-07",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   12.091,
+   48.552,
+   18.859,
+   51.056
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "kod_zsj",
+   "naz_zsj",
+   "c_uo",
+   "kod_utj",
+   "naz_utj",
+   "kod_ku",
+   "naz_ku",
+   "kod_obec",
+   "naz_obec",
+   "lau1",
+   "kod_okres",
+   "naz_okres",
+   "nuts3_kraj",
+   "kod_kraj",
+   "naz_kraj",
+   "platiod",
+   "neplatipo",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 23605,
+   "sql": "SELECT count(*) FROM wave9.cz_zsj"
+  },
+  "geometry": true,
+  "rows": 23605,
+  "seconds": 79,
+  "tiles": {
+   "fields": [
+    "kod_zsj",
+    "naz_zsj",
+    "c_uo",
+    "kod_utj",
+    "naz_utj",
+    "kod_ku"
+   ],
+   "kind": "polygon",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/cz_zsj.pmtiles"
+  },
+  "with_position": 23605
  },
  "de_zensus_heating": {
+  "as_of": "2024-10-08",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    5.873,
    47.335,
    15.032,
    55.024
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "gitter_id_100m",
    "x_mp_100m",
@@ -56,7 +137,7 @@
   },
   "geometry": true,
   "rows": 2628942,
-  "seconds": 11,
+  "seconds": 10,
   "tiles": {
    "fields": [
     "gitter_id_100m",
@@ -72,14 +153,50 @@
   },
   "with_position": 2628942
  },
+ "ee_grid": {
+  "bbox": [
+   21.749,
+   57.505,
+   28.225,
+   59.825
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "gml_id",
+   "code",
+   "geometry"
+  ],
+  "example": {
+   "answer": 45636,
+   "sql": "SELECT count(*) FROM wave9.ee_grid"
+  },
+  "geometry": true,
+  "rows": 45636,
+  "seconds": 4,
+  "tiles": {
+   "fields": [
+    "id",
+    "gml_id",
+    "code"
+   ],
+   "kind": "polygon",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/ee_grid.pmtiles"
+  },
+  "with_position": 45636
+ },
  "es_ine_secciones": {
+  "as_of": "2024-03-21",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -18.161,
    27.638,
    4.328,
    43.79
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "cusec",
@@ -108,7 +225,7 @@
   },
   "geometry": true,
   "rows": 36477,
-  "seconds": 64,
+  "seconds": 77,
   "tiles": {
    "fields": [
     "cusec",
@@ -131,7 +248,7 @@
    35.838,
    80.683
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "id",
@@ -164,7 +281,7 @@
    28.142,
    71.569
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "id",
@@ -188,7 +305,7 @@
   },
   "geometry": true,
   "rows": 3951,
-  "seconds": 6,
+  "seconds": 5,
   "tiles": {
    "fields": [
     "name",
@@ -212,7 +329,7 @@
    31.587,
    70.092
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "id",
    "postinumeroalue",
@@ -281,7 +398,7 @@
   },
   "geometry": true,
   "rows": 3026,
-  "seconds": 6,
+  "seconds": 5,
   "tiles": {
    "fields": [
     "id",
@@ -304,7 +421,7 @@
    1.764,
    55.812
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "objectid",
    "origin",
@@ -318,7 +435,7 @@
   },
   "geometry": true,
   "rows": 415408,
-  "seconds": 679,
+  "seconds": 649,
   "tiles": {
    "fields": [
     "origin",
@@ -332,7 +449,9 @@
   "with_position": 415408
  },
  "ie_cso_saps_heating": {
-  "built": "2026-10-31",
+  "as_of": "2026-07-14",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
   "columns": [
    "guid",
    "geogid",
@@ -404,13 +523,15 @@
   "seconds": 5
  },
  "it_istat_sezioni": {
+  "as_of": "2026-02-27",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    6.627,
    35.493,
    18.52,
    47.092
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "cod_reg",
@@ -444,7 +565,7 @@
   },
   "geometry": true,
   "rows": 756376,
-  "seconds": 135,
+  "seconds": 307,
   "tiles": {
    "fields": [
     "cod_reg",
@@ -465,13 +586,15 @@
   "error": "BadZipFile: File is not a zip file"
  },
  "us_eia_crude_pipelines": {
+  "as_of": "2020-04-27",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -150.992,
    26.655,
    -70.299,
    70.51
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "opername",
@@ -498,13 +621,15 @@
   "with_position": 236
  },
  "us_eia_crude_rail": {
+  "as_of": "2019-01-16",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -1.7976931348623157e+308,
    -1.7976931348623157e+308,
    -70.286,
    48.888
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "site_name",
@@ -528,13 +653,15 @@
   "with_position": 99
  },
  "us_eia_gas_pipelines": {
+  "as_of": "2020-04-27",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -151.559,
    25.386,
    -67.44,
    60.5
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "typepipe",
@@ -563,13 +690,15 @@
   "with_position": 32921
  },
  "us_eia_gas_processing": {
+  "as_of": "2020-01-10",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -120.433,
    26.421,
    -78.659,
    48.874
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "plant_name",
@@ -600,13 +729,15 @@
   "with_position": 478
  },
  "us_eia_gas_storage": {
+  "as_of": "2022-01-31",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -151.274,
    28.993,
    -76.253,
    61.263
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "state",
@@ -640,13 +771,15 @@
   "with_position": 412
  },
  "us_eia_hgl_pipelines": {
+  "as_of": "2020-04-27",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -114.489,
    25.274,
    -73.788,
    53.769
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "opername",
@@ -673,13 +806,15 @@
   "with_position": 133
  },
  "us_eia_lng": {
+  "as_of": "2020-04-27",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -97.276,
    27.891,
    -70.36,
    42.605
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "facility",
@@ -708,13 +843,15 @@
   "with_position": 8
  },
  "us_eia_product_pipelines": {
+  "as_of": "2020-04-27",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -123.111,
    25.959,
    -68.78,
    53.521
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "opername",
@@ -741,13 +878,15 @@
   "with_position": 329
  },
  "us_eia_product_terminals": {
+  "as_of": "2022-02-03",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -176.658,
    13.416,
    144.687,
    66.902
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "objectid",
@@ -770,13 +909,15 @@
   "with_position": 1474
  },
  "us_eia_refineries": {
+  "as_of": "2022-02-03",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -158.091,
    17.709,
    -64.749,
    70.325
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "objectid",
@@ -811,5 +952,63 @@
   "rows": 130,
   "seconds": 1,
   "with_position": 130
+ },
+ "us_natcarb": {
+  "bbox": [
+   -178.916,
+   25.048,
+   -74.859,
+   73.24
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "col_row",
+   "partnershi",
+   "arra_proje",
+   "resource_n",
+   "basin_name",
+   "rsc_area_c",
+   "vol_low",
+   "vol_med",
+   "vol_high",
+   "depth_ft",
+   "thickness",
+   "salinity_t",
+   "pressure_p",
+   "temperatur",
+   "porosity_p",
+   "permeabili",
+   "assessed",
+   "cycle_of_l",
+   "overlap",
+   "duplicate",
+   "med_calced",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 186675,
+   "sql": "SELECT count(*) FROM wave9.us_natcarb"
+  },
+  "geometry": true,
+  "rows": 186675,
+  "seconds": 3,
+  "tiles": {
+   "fields": [
+    "name",
+    "col_row",
+    "partnershi",
+    "arra_proje",
+    "resource_n",
+    "rsc_area_c",
+    "vol_low"
+   ],
+   "kind": "polygon",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_natcarb.pmtiles"
+  },
+  "with_position": 186675
  }
 }

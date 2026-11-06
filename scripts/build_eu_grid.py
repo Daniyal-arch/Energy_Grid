@@ -312,9 +312,14 @@ def build_plants() -> tuple[dict, dict[str, dict]]:
     return main, files
 
 
-def build_countries() -> dict:
-    with (SRC / "countries.geojson").open(encoding="utf-8") as f:
-        fc = json.load(f)
+def build_countries(
+    fc: dict | None = None, source: str = "Eurostat GISCO countries 1:20M (2024)"
+) -> dict:
+    """Europe's country polygons, borders and coast. `fc` is a FeatureCollection with GISCO's
+    properties (CNTR_ID, NAME_ENGL, ISO3_CODE); the default reads GISCO's file."""
+    if fc is None:
+        with (SRC / "countries.geojson").open(encoding="utf-8") as f:
+            fc = json.load(f)
     wanted = {GISCO_ID.get(c, c): c for c in COUNTRIES}
     countries = []
     shapes = []
@@ -351,7 +356,7 @@ def build_countries() -> dict:
         borders += [flat(ls, 3) for ls in lines_of(inner) if ls.length > 0.05]
     coastline = [flat(ls, 3) for ls in lines_of(coast.simplify(LAND_TOL)) if ls.length > 0.05]
     return {
-        "source": "Eurostat GISCO countries 1:20M (2024)",
+        "source": source,
         "countries": countries,
         "borders": borders,
         "coast": coastline,
@@ -364,11 +369,12 @@ def write(name: str, payload: dict) -> None:
     print(f"{name}: {path.stat().st_size / 1e6:.1f} MB")
 
 
-def build_world() -> dict:
+def build_world(fc: dict | None = None) -> dict:
     """Land of every country, coarse, as the globe's base (Europe's data draws on top),
     with its ISO 3166-1 alpha-3 code."""
-    with (SRC / "countries.geojson").open(encoding="utf-8") as f:
-        fc = json.load(f)
+    if fc is None:
+        with (SRC / "countries.geojson").open(encoding="utf-8") as f:
+            fc = json.load(f)
     features = []
     for feat in fc["features"]:
         geom = shape(feat["geometry"]).simplify(WORLD_TOL)

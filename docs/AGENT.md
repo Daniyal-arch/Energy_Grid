@@ -356,3 +356,43 @@ The agent answers for whatever area a question means and shows only the data ins
   with the fake model, and 22 over wave 9 lake tables, answers computed from the built tables by
   `backend/scripts/build_task_evals.py --lake DIR`).
 - **Dashboards**: the Tasks group of the Dashboards menu sets the layers and camera per task.
+
+## 14. Faster, cheaper, sturdier without the model (brief 30, 2026-11-05)
+
+Everything here is model-independent; models, providers and prompts per model are the owner's
+(agent/models.yaml and backend/agent/models.py are unchanged). Notes: vault `instant-answers`.
+
+- **Instant answers.** `tools/quick.py`: six SQL templates (`profile`, `top`, `totals`,
+  `compare`, `published`, `prices`) over the app tables, through `run_sql`, each table with its
+  method, sources and as-of date. Served as `GET /api/quick/{template}?area=`, as the `quick`
+  tool, and by the graph's `quick` node: a question that a template answers as asked
+  ("Tell me about Bavaria", "top 5 power plants in Spain", "compare France and Germany",
+  "what is published for Ireland", "prices in Denmark") is answered with **no model call**;
+  the grounding check still runs. Questions about maps or charts go to the agent.
+- **New tools** (also on MCP, docs/MCP.md): `nearest` (great-circle km), `along` (a corridor
+  around a route), `compare_areas`, `trend` (capacity of today's plants by commissioning year:
+  the fleet's age profile, retired plants not included), `export` (CSV, GeoJSON, Parquet with
+  sources and terms; refused for non-commercial or no-redistribution sources) and
+  `explain_coverage` (the registry's cell and its evidence).
+- **Answer plumbing.** Every source carries `as_of` (the date in its `retrieved` text);
+  `resolve_area` returns the area's coverage counts; `done` carries follow-up `suggestions`
+  computed from the data (`agent/suggest.py`), each an instant answer; the grounding check also
+  covers ISO dates.
+- **Loop guard.** Two failures of a tool with similar arguments block a third such call; two
+  blocked calls end the tool loop and the analyst answers with what it has.
+- **Result cache.** `agent/cache.py`: tool + normalised arguments + lake catalogue date; local
+  and R2 `agent/cache/`; 7 days; errors not cached; "cached" in the trace.
+- **Streaming.** Events carry ids; the run outlives its connection: `GET /api/ask/{run_id}/stream`
+  with `Last-Event-ID` resumes, `POST /api/ask/{run_id}/cancel` stops. A tool over its time limit
+  returns what is missing and the analyst answers with the rest.
+- **Latency design.** Name search on a precomputed `name_norm` (sorted, bloom filter) and an
+  aliases table (English and local names); the lake and catalogue warmed in the background at
+  start; DuckDB HTTP metadata and file caches; the agent imported at the first question (app
+  import 1.96 to 1.04 s); H3 rollups (res 5-7) of the large tables for country-sized areas
+  (`agent/catalog/rollups.yaml`: the answer says it summed cells whose centre is inside).
+  Measured by `backend/probes/probe_latency.py` in `backend-probe.yml` (the PR has the table).
+- **Security.** `tests/test_security.py`: the SQL guard fuzzed, tool rows kept as data, size
+  caps, per-IP, per-MCP-key and per-data-API-key budgets, no key or stack trace in any answer;
+  real-model injection cases in `agent/evals/injection.yaml`.
+- **Product routes.** Site report (`/api/report`), change feeds (`/api/feed/{area}.rss`), the
+  data API's OpenAPI (`/api/openapi.json`): specs in `docs/product/`.

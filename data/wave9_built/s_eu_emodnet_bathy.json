@@ -1,0 +1,38 @@
+{
+ "eu_emodnet_bathy": {
+  "band": "Depth: mean water depth of the EMODnet DTM (float32; sample -71.8 to -5.1 in the 1° probe tile); full grid 108,960 × 75,840, lon -70.5..43, lat 11..90",
+  "built": "2026-11-05",
+  "example": {
+   "answer": null,
+   "sql": "area_stats(measure='w9_eu_emodnet_bathy')"
+  },
+  "raster": [
+   {
+    "bounds": [
+     2.0,
+     52.0,
+     3.0,
+     53.0
+    ],
+    "bytes": 2611338,
+    "cell": [
+     0.0010416666666666667,
+     0.0010416666666666667
+    ],
+    "crs": "EPSG:4326",
+    "dtype": "float32",
+    "key": "lake/rasters/wave9/eu_emodnet_bathy.tif",
+    "max": -5.050000190734863,
+    "min": -71.81999969482422,
+    "nodata": null,
+    "size": [
+     960,
+     960
+    ]
+   }
+  ],
+  "rows": 0,
+  "seconds": 8,
+  "unit": "m (negative below sea level)"
+ }
+}

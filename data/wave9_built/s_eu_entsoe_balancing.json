@@ -1,0 +1,23 @@
+{
+ "eu_entsoe_balancing": {
+  "built": "2026-11-06",
+  "columns": [
+   "area",
+   "start_utc",
+   "minutes",
+   "value",
+   "businesstype",
+   "type_marketagreement_type",
+   "flowdirection_direction",
+   "currency_unit_name",
+   "quantity_measure_unit_name"
+  ],
+  "example": {
+   "answer": 77480,
+   "sql": "SELECT count(*) FROM wave9.eu_entsoe_balancing"
+  },
+  "geometry": false,
+  "rows": 77480,
+  "seconds": 278
+ }
+}

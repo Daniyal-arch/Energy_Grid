@@ -1,0 +1,21 @@
+{
+ "pt_ine_heating_freguesia": {
+  "built": "2026-11-06",
+  "columns": [
+   "period",
+   "geocod",
+   "geodsg",
+   "dim_3",
+   "dim_3_t",
+   "ind_string",
+   "value"
+  ],
+  "example": {
+   "answer": 24052,
+   "sql": "SELECT count(*) FROM wave9.pt_ine_heating_freguesia"
+  },
+  "geometry": false,
+  "rows": 24052,
+  "seconds": 3
+ }
+}

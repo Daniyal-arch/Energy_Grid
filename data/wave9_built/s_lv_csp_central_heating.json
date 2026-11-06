@@ -1,0 +1,27 @@
+{
+ "lv_csp_central_heating": {
+  "built": "2026-11-06",
+  "columns": [
+   "time",
+   "time_code",
+   "contentscode",
+   "contentscode_code",
+   "amenities",
+   "amenities_code",
+   "poc",
+   "poc_code",
+   "ocs",
+   "ocs_code",
+   "area",
+   "area_code",
+   "value"
+  ],
+  "example": {
+   "answer": 329160,
+   "sql": "SELECT count(*) FROM wave9.lv_csp_central_heating"
+  },
+  "geometry": false,
+  "rows": 329160,
+  "seconds": 18
+ }
+}

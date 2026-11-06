@@ -1,0 +1,6 @@
+{
+ "fi_fingrid_special_regulation": {
+  "built": null,
+  "skipped": "FINGRID_API_KEY is not set: skipped (set it as a repo secret)"
+ }
+}

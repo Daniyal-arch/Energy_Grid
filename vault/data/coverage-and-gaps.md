@@ -1,7 +1,7 @@
 ---
 title: Coverage and gaps
 tags: [data, coverage]
-updated: 2026-10-31
+updated: 2026-11-06
 paths: [data/coverage.yaml, docs/COVERAGE.md, frontend/public/data/eu/coverage.json, docs/tasks/, docs/research/room-to-connect.md]
 ---
 
@@ -47,3 +47,10 @@ of `docs/tasks/`.
 - **Wave 9** ([[wave9]]): 57 new families (17 categories) with 29 cells each, generated from the
   registry; dark cells name the probe outcome and the open-data portal search. Keys still missing
   for wave 9: CENSUS_API_KEY, NREL_API_KEY, CDSAPI_KEY, NASA_EARTHDATA_TOKEN, FINGRID_API_KEY.
+
+- **Brief 30** (2026-11-06): built cells 1,473 to 1,855 of 2,842 (98 families x 29 places);
+  the second research pass's evidence per dark cell lives in `data/dark_evidence.yaml` (render
+  and `scripts/apply_evidence.py` append it to the cells); neighbours get cells where a world
+  source covers them (a family then lists `regions: [neighbours]`); `?coverage` shows the
+  matrix. Requests: `docs/data-requests.md` (`scripts/data_requests.py`).
+

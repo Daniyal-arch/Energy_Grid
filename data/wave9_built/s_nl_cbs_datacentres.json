@@ -1,0 +1,27 @@
+{
+ "nl_cbs_datacentres": {
+  "as_of": "2025-12-15",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-06",
+  "columns": [
+   "a",
+   "b",
+   "c",
+   "d",
+   "e",
+   "f",
+   "g",
+   "h",
+   "i",
+   "j",
+   "k"
+  ],
+  "example": {
+   "answer": 16,
+   "sql": "SELECT count(*) FROM wave9.nl_cbs_datacentres"
+  },
+  "geometry": false,
+  "rows": 16,
+  "seconds": 1
+ }
+}

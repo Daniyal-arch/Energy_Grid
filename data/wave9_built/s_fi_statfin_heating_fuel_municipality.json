@@ -1,0 +1,27 @@
+{
+ "fi_statfin_heating_fuel_municipality": {
+  "built": "2026-11-06",
+  "columns": [
+   "contentscode",
+   "contentscode_code",
+   "polttoaineet_12_20260101",
+   "polttoaineet_12_20260101_code",
+   "rak_valm_v_10_20210101",
+   "rak_valm_v_10_20210101_code",
+   "timeperiod_y",
+   "timeperiod_y_code",
+   "rakennus_6_20180101",
+   "rakennus_6_20180101_code",
+   "alue_23_20260101",
+   "alue_23_20260101_code",
+   "value"
+  ],
+  "example": {
+   "answer": 1067904,
+   "sql": "SELECT count(*) FROM wave9.fi_statfin_heating_fuel_municipality"
+  },
+  "geometry": false,
+  "rows": 1067904,
+  "seconds": 39
+ }
+}

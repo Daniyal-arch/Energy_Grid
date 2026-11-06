@@ -1,6 +1,6 @@
 {
  "dk_energinet_reserves": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "hourutc",
    "hourdk",
@@ -12,18 +12,18 @@
    "pricetotaleur"
   ],
   "example": {
-   "answer": 723195,
+   "answer": 728595,
    "sql": "SELECT count(*) FROM wave9.dk_energinet_reserves"
   },
   "geometry": false,
-  "rows": 723195,
-  "seconds": 17
+  "rows": 728595,
+  "seconds": 13
  },
  "eu_nonhousehold_prices": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "choro": {
-   "areas": 37,
-   "period": "2023",
+   "areas": 36,
+   "period": "2025",
    "scope": "country"
   },
   "columns": [
@@ -48,8 +48,12 @@
   "rows": 2307,
   "seconds": 1
  },
+ "fi_fingrid_reserves": {
+  "built": null,
+  "skipped": "FINGRID_API_KEY is not set: skipped (set it as a repo secret)"
+ },
  "gb_elexon_balancing": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "settlementdate",
    "settlementperiod",
@@ -80,6 +84,66 @@
   },
   "geometry": false,
   "rows": 48,
+  "seconds": 1
+ },
+ "gb_emr_cm_register": {
+  "as_of": "2026-11-04",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
+  "columns": [
+   "auction_name",
+   "application_id",
+   "cmu_id",
+   "delivery_year",
+   "component_id",
+   "type",
+   "generating_technology_class",
+   "permitted_on_site_generating_unit",
+   "primary_fuel_of_component",
+   "connection_or_dsr_capacity",
+   "de_rated_capacity",
+   "pre_refurbishing_de_rated_capacity",
+   "post_refurbishing_de_rated_capacity",
+   "generating_capacity_of_on_site_generating_unit",
+   "description_of_cmu_components",
+   "location_and_post_code",
+   "os_grid_reference",
+   "number_of_components"
+  ],
+  "example": {
+   "answer": 29864,
+   "sql": "SELECT count(*) FROM wave9.gb_emr_cm_register"
+  },
+  "geometry": false,
+  "rows": 29864,
+  "seconds": 4
+ },
+ "se_svk_reserves": {
+  "built": null,
+  "error": "InvalidInputException: Invalid Input Error: Error when sniffing file \"/tmp/wave9/se_svk_reserves/src.csv\".\nIt was not possible to automatically detect the CSV parsing dialect\nThe search space used was:\nDelimiter Candidates: ',', '|', ';', '\t'\nQuote/Escape Candidates: ['(no quote)','(no escape)'],['\"','(no escape)'],['\"','"
+ },
+ "us_iso_as_prices": {
+  "built": "2026-11-05",
+  "columns": [
+   "intervalstarttime_gmt",
+   "intervalendtime_gmt",
+   "opr_dt",
+   "opr_hr",
+   "opr_interval",
+   "opr_type",
+   "anc_type",
+   "anc_region",
+   "market_run_id",
+   "xml_data_item",
+   "mw",
+   "group"
+  ],
+  "example": {
+   "answer": 19344,
+   "sql": "SELECT count(*) FROM wave9.us_iso_as_prices"
+  },
+  "geometry": false,
+  "rows": 19344,
   "seconds": 1
  }
 }

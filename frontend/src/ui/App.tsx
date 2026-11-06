@@ -1,24 +1,32 @@
 // The app: one map, a top bar (dashboards, search, time), datasets on the left, the dashboard panel
 // on the right, the clock below. Phones get the same pieces as bottom sheets.
 
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 
 import MapCanvas from "../map/MapCanvas";
 import { LIVE_KEYS, ensure, useDataStore } from "../app/data";
 import { MOBILE_QUERY } from "../app/geo";
-import { actions, readUrl, useApp, writeUrl } from "../app/store";
-import { DashboardBuilder, DashboardList, DashboardsMenu } from "./Dashboards";
-import { Catalogue } from "./Catalogue";
-import { MapsButton, MapsView } from "./MapsView";
-import { AskButton, AskPanel } from "./AskTab";
+import { EMBED, actions, readUrl, useApp, writeUrl } from "../app/store";
+import { DashboardList, DashboardsMenu } from "./Dashboards";
+import { MapsButton } from "./MapsView";
+import { AskButton } from "./AskTab";
 import LayersPanel from "./LayersPanel";
 import MapLegend from "./MapLegend";
 import MapOptions from "./MapOptions";
-import Panel from "./Panel";
 import Search from "./Search";
-import CountryReport from "../components/CountryReport";
 import TimeBar, { TimeControl } from "./TimeBar";
 import { CREDITS } from "./sources";
+import { useAgent } from "../app/agent";
+import { EmbedCredit } from "./Embed";
+
+// brief 30: the context panel, the Ask chat, the Maps view, the catalogue, the dashboard
+// builder and the country report load as their own chunks, after the map's first frame
+const Panel = lazy(() => import("./Panel"));
+const MapsView = lazy(() => import("./MapsView").then((m) => ({ default: m.MapsView })));
+const AskPanel = lazy(() => import("./AskTab").then((m) => ({ default: m.AskPanel })));
+const Catalogue = lazy(() => import("./Catalogue").then((m) => ({ default: m.Catalogue })));
+const DashboardBuilder = lazy(() => import("./Dashboards").then((m) => ({ default: m.DashboardBuilder })));
+const CountryReport = lazy(() => import("../components/CountryReport"));
 
 readUrl();
 
@@ -111,15 +119,38 @@ function Desktop() {
         )}
       </aside>
       <aside className="absolute bottom-14 right-3 top-16 z-20 flex w-[372px] flex-col overflow-hidden rounded-xl border border-white/10 bg-[#080b11]/92 backdrop-blur">
-        <Panel />
+        <Suspense fallback={null}>
+          <Panel />
+        </Suspense>
       </aside>
       <div className="absolute bottom-3 left-[290px] right-[396px] z-20">
         <TimeBar />
       </div>
-      <MapsView />
-      <AskPanel />
+      <Suspense fallback={null}>
+        <MapsView />
+        <AskPanel />
+      </Suspense>
       <MapOptions />
       <div className="pointer-events-none absolute bottom-1 left-3 z-10 max-w-[260px] text-[8.5px] leading-tight text-slate-500">{CREDITS}</div>
+    </>
+  );
+}
+
+/** ?embed=1: the map, its compact key and the sources line; no bars or panels (docs/product/embeds.md). */
+function Embedded() {
+  // the Maps view keys each map itself
+  const maps = useApp((s) => s.compare);
+  return (
+    <>
+      {!maps && (
+        <div className="absolute left-2 top-2 z-20">
+          <MapLegend />
+        </div>
+      )}
+      <Suspense fallback={null}>
+        <MapsView />
+      </Suspense>
+      <EmbedCredit />
     </>
   );
 }
@@ -154,7 +185,7 @@ function Phone() {
       {(sheet === "layers" || sheet === "panel") && (
         <div className="absolute inset-x-0 bottom-12 z-30 flex max-h-[68vh] flex-col overflow-hidden rounded-t-2xl border-t border-white/10 bg-[#080b11]/97 backdrop-blur">
           <div className="mx-auto mt-1.5 h-1 w-10 shrink-0 rounded-full bg-white/20" />
-          <div className="min-h-0 flex-1 overflow-y-auto">{sheet === "layers" ? <LayersPanel /> : <Panel />}</div>
+          <div className="min-h-0 flex-1 overflow-y-auto">{sheet === "layers" ? <LayersPanel /> : <Suspense fallback={null}><Panel /></Suspense>}</div>
         </div>
       )}
       <nav className="absolute inset-x-0 bottom-0 z-40 flex h-12 border-t border-white/10 bg-[#080b11]/95 backdrop-blur">
@@ -168,7 +199,14 @@ function Phone() {
             {label}
           </button>
         ))}
+        {/* brief 30: the Ask chat on a phone, full screen */}
+        <button onClick={() => useAgent.setState((st) => ({ open: !st.open }))} className="flex-1 text-[12.5px] text-sky-200">
+          ✦ Ask
+        </button>
       </nav>
+      <Suspense fallback={null}>
+        <AskPanel />
+      </Suspense>
     </>
   );
 }
@@ -197,12 +235,18 @@ export default function App() {
     <div className="relative h-full w-full overflow-hidden bg-[#05070b] print:h-auto print:overflow-visible print:bg-white">
       <div className="contents print:hidden">
         <MapCanvas />
-        {narrow ? <Phone /> : <Desktop />}
+        {EMBED ? <Embedded /> : narrow ? <Phone /> : <Desktop />}
       </div>
-      {report && <CountryReport code={report} />}
+      {report && (
+        <Suspense fallback={null}>
+          <CountryReport code={report} />
+        </Suspense>
+      )}
       <div className="print:hidden">
-        <DashboardBuilder />
-        <Catalogue />
+        <Suspense fallback={null}>
+          {!EMBED && <DashboardBuilder />}
+          {!EMBED && <Catalogue />}
+        </Suspense>
       </div>
     </div>
   );

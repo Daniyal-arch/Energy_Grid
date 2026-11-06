@@ -1,0 +1,19 @@
+{
+ "gr_elstat_heating_settlement": {
+  "built": "2026-11-06",
+  "columns": [
+   "level",
+   "code",
+   "name",
+   "measure",
+   "value"
+  ],
+  "example": {
+   "answer": 444864,
+   "sql": "SELECT count(*) FROM wave9.gr_elstat_heating_settlement"
+  },
+  "geometry": false,
+  "rows": 444864,
+  "seconds": 14
+ }
+}

@@ -1,12 +1,51 @@
 ---
 title: Log
 tags: [log]
-updated: 2026-11-03
+updated: 2026-11-06
 ---
 
 # Log
 
 Newest first. One entry per session or merged pull request.
+
+- **2026-11-06** (PR #19, owner: build unclear licences): PSE (`odata_paged`), IPTO (`admie_files`),
+  ČEPS (`ceps_soap`), regelleistung.net, Elia (`tag_urls`), PJM RPM, Transelectrica (HTML),
+  EMS (`pdf_tables`), EDO raster built and labelled; KPX Korea wired (snapshot, card, marker).
+  Out: clear restrictions, logins, refusals (Sadales tīkls 451); INS Romania refused by GitHub
+  runners. Owner questions 2, 4, 5 answered. Notes: wave9.
+
+- **2026-11-06** (PR #19, remaining readers): ELSTAT census workbooks (`xlsx_multihead`), INE
+  Portugal JSON, SEMO report XML, BfEE excess heat, EirGrid dispatch-down, PxWeb batching (FI, LV),
+  SVK reserves (lenient CSV), NOAA MPAs (ArcGIS quota waits), WHP CONUS raster; NGED blocked
+  (login), ACS a named skip (CENSUS_API_KEY), owner question 5 (Romania, Serbia). Built 184 of
+  290 wave 9 sources. Notes: wave9.
+
+- **2026-11-06** (PR #19, after "finish all"): resolve_area 5.3 to 1.7 s p50 on R2 (profiled: R2
+  writes moved to the background, parallel name reads, outline by box, name cache); readers for
+  FEMA (live), ENTSO-E (`entsoe`), EEA AQ (`aqviewer`), Overture telecom; conversation
+  permalinks; every remaining dark cell of the customer families re-searched. Decided against:
+  deck.gl after the first frame. Notes: areas, wave9.
+
+- **2026-11-06** (claude/loving-dijkstra-5q8n1c, PR #19 ready): brief 30 done-check. Real-lake
+  probe: names 12/12, first event 0.01 s, run_sql p50 0.46 s, resolve_area p50 5.3 s (not met;
+  outlines now fetched by box, table list cached). Second dark-cell pass merged (64 cells,
+  `data/dark_evidence.yaml`, pxweb kind). Coverage built 1,473 to 1,855 of the 29 places' cells.
+  Open: resolve_area breakdown, deck.gl after first frame (bundle 771 kB), FEMA/ENTSO-E balancing/
+  EEA AQ readers, conversation permalinks, KPX wiring (owner). Notes: areas, coverage-and-gaps.
+
+- **2026-11-06** (claude/loving-dijkstra-5q8n1c, PR #19): Track 3 (H3 rollups, history
+  snapshots, customer-gap sources, live grids: KPX ready but not wired), Track 4 (lazy agent
+  import, data API), Track 5 (code-split bundle 863 to 208 kB entry, recently used, coverage
+  explorer, Ask chips/resume, colour-blind palettes, as-of on layer cards), Track 6 (seven MVPs),
+  neighbours in the coverage registry. Notes: product, instant-answers, freshness, wave9, index.
+
+- **2026-11-05** (claude/loving-dijkstra-5q8n1c, PR #19, brief 30): Track 1 (area names via
+  Overture aliases and named areas, loop guard, browser-fetch skips, ECR retries, 10 of 12
+  failed wave 9 builds fixed, GISCO replacement behind `?shapes=open`), Track 2 (91 page-only
+  sources decided, raster/census/parquet/data-fair kinds, coverage built 1,473 to 1,776 cells),
+  Track 3.1 (freshness), Track 4 (instant answers, cache, SSE resume/cancel, security tests, six
+  tools, MCP docs, name_norm index, warm start). Notes: areas, agent-graph, instant-answers,
+  freshness, wave9, gotchas, pipeline-and-workflows, index.
 
 - **2026-11-04** (main, local): brief 30 written (`docs/tasks/30-long-run.md`): a multi-day
   cloud run in seven tracks (harden, coverage, new data, agent speed, frontend, product MVPs,

@@ -7,6 +7,7 @@ import { Protocol } from "pmtiles";
 import { HV_STEPS, HV_TILES, PREDICTED_TILES } from "../lib/worldPlants";
 import { US_BANDS, US_LINES_TILES } from "../lib/us";
 import { isNarrow } from "../app/geo";
+import { SHAPES_DIR } from "../app/data";
 
 export const OCEAN = "#0a111c";
 export const LAND = "#161a22";
@@ -33,7 +34,7 @@ export const STYLE: maplibregl.StyleSpecification = {
   // label glyphs bundled with the site (public/fonts/README.md)
   glyphs: `${window.location.origin}/fonts/{fontstack}/{range}.pbf`,
   sources: {
-    world: { type: "geojson", data: "/data/eu/world.json" },
+    world: { type: "geojson", data: `/data/eu/${SHAPES_DIR}world.json` },
     labels: { type: "geojson", data: { type: "FeatureCollection", features: [] } },
   },
   layers: [

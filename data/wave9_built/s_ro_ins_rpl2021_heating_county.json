@@ -1,0 +1,6 @@
+{
+ "ro_ins_rpl2021_heating_county": {
+  "built": null,
+  "error": "SystemExit: download failed: https://www.recensamantromania.ro/wp-content/uploads/2026/02/RPL2021_Tabel-8.9.xlsx"
+ }
+}

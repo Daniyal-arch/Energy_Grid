@@ -12,7 +12,7 @@ import { shapeOf } from "../app/areaShape";
 import { ensure, useDataStore } from "../app/data";
 import { CATEGORIES, DATASETS, DATASET_BY_ID, covers, datasetsOn, layersOfDatasets, partsIn } from "../app/datasets";
 import { defaultMaps, panelOf, type MapPanel, type Style } from "../app/maps";
-import { actions, currentCamera, layersOf, useApp } from "../app/store";
+import { EMBED, actions, currentCamera, layersOf, useApp } from "../app/store";
 import type { CountriesFile, WorldFile } from "../app/types";
 import { km2Text } from "../lib/area";
 import { useRasterCache } from "../lib/rasterCache";
@@ -91,15 +91,17 @@ function Maps() {
   const cols = n <= 1 ? 1 : n <= 4 ? 2 : 3;
   const rows = Math.ceil(n / cols);
   return (
-    <div className="absolute bottom-14 left-[290px] right-[396px] top-16 z-[15] flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#05070b]">
+    <div className={`absolute z-[15] flex flex-col overflow-hidden rounded-xl border border-white/10 bg-[#05070b] ${EMBED ? "inset-x-2 bottom-9 top-2" : "bottom-14 left-[290px] right-[396px] top-16"}`}>
       <div className="flex shrink-0 items-center gap-2 border-b border-white/[0.07] px-2.5 py-1.5">
         <span className="text-[11.5px] font-medium text-slate-100">{maps.length} {maps.length === 1 ? "map" : "maps"}</span>
         <span className={`truncate text-[10.5px] ${muted}`}>{shape ? `${shape.label} · ${km2Text(shape.km2)} · ` : ""}one camera for all; each map keeps to the area</span>
         <span className="flex-1" />
-        <AddMap area={area} count={maps.length} />
-        <button onClick={() => actions.setCompare(false)} className="rounded-md border border-white/10 bg-[#0b0f16]/95 px-2 py-0.5 text-[11px] text-slate-200 hover:bg-white/[0.08]">
-          Back to one map
-        </button>
+        {!EMBED && <AddMap area={area} count={maps.length} />}
+        {!EMBED && (
+          <button onClick={() => actions.setCompare(false)} className="rounded-md border border-white/10 bg-[#0b0f16]/95 px-2 py-0.5 text-[11px] text-slate-200 hover:bg-white/[0.08]">
+            Back to one map
+          </button>
+        )}
       </div>
       {maps.length === 0 ? (
         <div className={`m-auto max-w-sm text-center text-[11.5px] ${muted}`}>No maps yet. Add one above, or switch on a dataset in the Layers panel and choose “As a new map”.</div>

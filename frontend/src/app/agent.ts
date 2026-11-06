@@ -52,6 +52,8 @@ export interface ToolStep {
   ms?: number;
   rows?: number | null;
   error?: string | null;
+  /** the stored result (export as CSV or GeoJSON: GET /api/export) */
+  result_id?: string | null;
 }
 export interface ChartMsg {
   spec: ChartSpec;
@@ -64,6 +66,8 @@ export interface Done {
   latency_ms?: number;
   model?: string;
   stop?: string | null;
+  /** follow-up questions with data behind them (the backend's agent/suggest.py) */
+  suggestions?: string[];
 }
 /** The router's plan: what kind of answer, a map, a chart, an edit, the skills it loads. */
 export interface Plan {
@@ -241,7 +245,7 @@ function onEvent(name: string, data: Record<string, unknown>): void {
       if (t.status === "running") return { ...m, tools: [...m.tools, { name: t.name, args: t.args, status: "running" }] };
       const tools = m.tools.slice();
       const i = tools.map((x) => x.name).lastIndexOf(t.name);
-      if (i >= 0) tools[i] = { ...tools[i], status: "done", ms: t.ms, rows: t.rows, error: t.error };
+      if (i >= 0) tools[i] = { ...tools[i], status: "done", ms: t.ms, rows: t.rows, error: t.error, result_id: t.result_id };
       return { ...m, tools };
     });
   } else if (name === "plan") {
@@ -260,6 +264,58 @@ function onEvent(name: string, data: Record<string, unknown>): void {
   } else if (name === "error") {
     patchLast((m) => ({ ...m, error: String(data.message ?? "error"), pending: false }));
   }
+}
+
+/** Read SSE events until the stream closes: the last event id seen and whether `done` (or
+ * `error`) arrived. Events at or before `after` (already shown) are skipped. */
+async function readStream(
+  body: ReadableStream<Uint8Array>,
+  after: number | null = null,
+): Promise<{ id: number | null; ended: boolean }> {
+  const reader = body.getReader();
+  const dec = new TextDecoder();
+  let buf = "";
+  let id = after;
+  let ended = false;
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let cut: number;
+    while ((cut = buf.indexOf("\n\n")) >= 0) {
+      const block = buf.slice(0, cut);
+      buf = buf.slice(cut + 2);
+      let ev = "";
+      let payload = "";
+      let eid: number | null = null;
+      for (const line of block.split("\n")) {
+        if (line.startsWith("event:")) ev = line.slice(6).trim();
+        else if (line.startsWith("data:")) payload += line.slice(5).trim();
+        else if (line.startsWith("id:")) eid = Number(line.slice(3).trim());
+      }
+      if (eid != null && after != null && eid <= after) continue;
+      if (eid != null) id = eid;
+      if (ev === "done" || ev === "error") ended = true;
+      if (ev && payload) {
+        try {
+          onEvent(ev, JSON.parse(payload));
+        } catch {
+          /* a malformed event is skipped */
+        }
+      }
+    }
+  }
+  return { id, ended };
+}
+
+/** An error as a sentence that says what to try. */
+function advice(msg: string): string {
+  if (/HTTP 429/.test(msg)) return "Too many questions from this address in the last hour: try again in a few minutes.";
+  if (/HTTP 413|longer than/.test(msg)) return "The question is too long: ask it in fewer words, or split it in two.";
+  if (/HTTP 5\d\d|Failed to fetch|NetworkError|connection dropped/.test(msg))
+    return `The answer service did not answer (${msg}). Try again; the map's own panels work without it.`;
+  if (/HTTP 404/.test(msg)) return "The answer service is not set up on this site yet: the map and its panels work without it.";
+  return msg;
 }
 
 /** Ask a question; the answer streams into the last message. */
@@ -290,34 +346,20 @@ export async function ask(question: string): Promise<void> {
       const detail = await r.text().catch(() => "");
       throw new Error(`HTTP ${r.status}${detail ? `: ${detail.slice(0, 200)}` : ""}`);
     }
-    const reader = r.body.getReader();
-    const dec = new TextDecoder();
-    let buf = "";
-    for (;;) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream: true });
-      let cut: number;
-      while ((cut = buf.indexOf("\n\n")) >= 0) {
-        const block = buf.slice(0, cut);
-        buf = buf.slice(cut + 2);
-        let ev = "";
-        let payload = "";
-        for (const line of block.split("\n")) {
-          if (line.startsWith("event:")) ev = line.slice(6).trim();
-          else if (line.startsWith("data:")) payload += line.slice(5).trim();
-        }
-        if (ev && payload) {
-          try {
-            onEvent(ev, JSON.parse(payload));
-          } catch {
-            /* a malformed event is skipped */
-          }
-        }
-      }
+    // brief 30: the run outlives the connection; a stream that ends before `done` is resumed
+    // from the last event id it saw (GET /api/ask/{run_id}/stream, Last-Event-ID), twice at most
+    const runId = r.headers.get("x-run-id");
+    let last = await readStream(r.body);
+    for (let tries = 0; runId && last.ended === false && tries < 2; tries++) {
+      const again = await fetch(`${API_BASE}/api/ask/${runId}/stream`, {
+        headers: last.id != null ? { "Last-Event-ID": String(last.id) } : {},
+      });
+      if (!again.ok || !again.body) break;
+      last = await readStream(again.body, last.id);
     }
+    if (!last.ended) throw new Error("the connection dropped before the answer finished");
   } catch (e) {
-    patchLast((m) => ({ ...m, error: e instanceof Error ? e.message : String(e) }));
+    patchLast((m) => ({ ...m, error: advice(e instanceof Error ? e.message : String(e)) }));
   } finally {
     patchLast((m) => ({ ...m, pending: false }));
     useAgent.setState({ busy: false });
@@ -400,4 +442,42 @@ if (linkedArea && /^a_[0-9a-f]{12}$/.test(linkedArea)) {
       if (a) actions.setDrawn(specOfArea(a));
     })
     .catch(() => undefined);
+}
+
+
+// ---------------------------------------------------------------- permalinks (brief 30)
+
+/** Save the conversation (questions, answers as shown, sources, map ids): a ?chat= link. */
+export async function shareConversation(): Promise<string> {
+  const { messages } = useAgent.getState();
+  const turns = messages
+    .filter((m) => m.text && !m.pending)
+    .map((m) => ({
+      role: m.role,
+      text: m.text.slice(0, 20000),
+      maps: m.maps.slice(0, 10),
+      sources: m.sources.slice(0, 30).map((x) => Object.fromEntries(Object.entries(x).map(([k, v]) => [k, String(v ?? "")]))),
+    }));
+  const r = await fetch(`${API_BASE}/api/conversations`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ turns }),
+  });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const { link } = (await r.json()) as { link: string };
+  return `${window.location.origin}${window.location.pathname}${link}`;
+}
+
+// ?chat=k_...: a saved conversation, opened read-only in the Ask panel
+const linkedChat = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("chat") : null;
+if (linkedChat && /^k_[0-9a-f]{12}$/.test(linkedChat)) {
+  fetch(`${API_BASE}/api/conversations/${linkedChat}`)
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+    .then((rec: { turns: { role: "user" | "assistant"; text: string; maps: string[]; sources: Source[] }[] }) => {
+      useAgent.setState({
+        open: true,
+        messages: rec.turns.map((t) => ({ id: nextId(), role: t.role, text: t.text, tools: [], maps: t.maps, charts: [], sources: t.sources, pending: false })),
+      });
+    })
+    .catch(() => {});
 }

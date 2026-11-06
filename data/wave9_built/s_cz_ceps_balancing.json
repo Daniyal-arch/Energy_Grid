@@ -1,0 +1,26 @@
+{
+ "cz_ceps_balancing": {
+  "built": "2026-11-06",
+  "columns": [
+   "operation",
+   "dataset",
+   "date",
+   "afrr_mw",
+   "aFRR- [MW]",
+   "mfrr_mw",
+   "mFRR- [MW]",
+   "mfrr5_mw",
+   "aktu_ln_odchylka_mw",
+   "estimated_price_k_mwh",
+   "date_1",
+   "interval"
+  ],
+  "example": {
+   "answer": 194355,
+   "sql": "SELECT count(*) FROM wave9.cz_ceps_balancing"
+  },
+  "geometry": false,
+  "rows": 194355,
+  "seconds": 59
+ }
+}

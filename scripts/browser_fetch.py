@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import shlex
 import subprocess
@@ -68,6 +69,9 @@ SOURCES: dict[str, dict] = {
         "links": [r"[^\"'\s>]*\.xlsx", r"[^\"'\s>]*\.csv"],
         "refresh": "quarterly; checked monthly",
         "build": "python scripts/build_connect_more.py be --file {file} --upload",
+        # a known refusal: a failure is a skip (said so), not a failed run, until a file arrives
+        "blocked": "elia.be keeps Chromium on Cloudflare's 'Just a moment...' page (runs of "
+        "2026-10-19 and 2026-11-03); upload the file to sources/elia_capacity/manual/",
     },
     "irena_costs": {
         "title": "IRENA Renewable Power Generation Costs, data file (brief 21, dataset 16)",
@@ -78,6 +82,8 @@ SOURCES: dict[str, dict] = {
         "links": [r"[^\"'\s>]*(?:[Dd]ata|DATA)[^\"'\s>]*\.xlsx", r"[^\"'\s>]*\.xlsx"],
         "refresh": "yearly (the report appears in July); checked monthly",
         "build": "python scripts/build_coming.py irena --file {file}",
+        "blocked": "irena.org answers Chromium with its 'Azure WAF' page (run of 2026-11-03); "
+        "upload the file to sources/irena_costs/manual/",
     },
 }
 
@@ -191,7 +197,8 @@ def main() -> None:
     ap.add_argument("--force", action="store_true", help="build even if the file did not change")
     ap.add_argument("--no-build", action="store_true")
     args = ap.parse_args()
-    failed = []
+    failed: list[str] = []
+    skipped: list[str] = []
     for name in args.names:
         src = SOURCES[name]
         print(f"{name}: {src['title']}", flush=True)
@@ -203,7 +210,11 @@ def main() -> None:
             path = manual_file(name)
             if not path:
                 print(f"  no file in r2://{BUCKET}/sources/{name}/manual/ either", flush=True)
-                failed.append(name)
+                if src.get("blocked"):
+                    print(f"  skipped (known block): {src['blocked']}", flush=True)
+                    skipped.append(f"{name}: {src['blocked']}")
+                else:
+                    failed.append(name)
                 continue
             url, how = f"r2://{BUCKET}/sources/{name}/manual/{path.name}", "uploaded by hand"
         digest = sha256(path)
@@ -233,6 +244,12 @@ def main() -> None:
                 failed.append(name)
                 continue  # latest.json not written: the next run builds again
         r2_put(meta, f"sources/{name}/latest.json")
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary and (skipped or failed):
+        with open(summary, "a", encoding="utf-8") as f:
+            f.write("### Browser fetch\n")
+            f.writelines(f"- skipped, known block: {x}\n" for x in skipped)
+            f.writelines(f"- **failed** (new error): {x}\n" for x in failed)
     if failed:
         raise SystemExit(f"failed: {failed}")
 

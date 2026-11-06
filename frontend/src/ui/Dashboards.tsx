@@ -9,6 +9,7 @@ import { CATEGORIES, DATASETS, DATASET_BY_ID, EU27, colourOfDatasets, covers, co
 import { DASHBOARDS, DASHBOARD_GROUPS, actions, findDashboard, layersOf, useApp, type DashboardGroup } from "../app/store";
 import type { WorldFile } from "../app/types";
 import { EUROPE_ISO3 } from "../lib/transition";
+import { EmbedCode } from "./Embed";
 
 const muted = "text-[#8d94a1]";
 
@@ -196,6 +197,7 @@ export function DashboardsMenu() {
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div className="absolute left-0 top-full z-50 mt-1 max-h-[75vh] w-80 overflow-y-auto rounded-xl border border-white/10 bg-[#0b0f16]/95 p-1.5 shadow-2xl backdrop-blur">
             <DashboardList onDone={() => setOpen(false)} />
+            <EmbedCode />
           </div>
         </>
       )}

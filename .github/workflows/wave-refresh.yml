@@ -1,0 +1,45 @@
+name: Wave refresh
+
+# Brief 30 Track 3.1: rebuild the registry sources whose cadence is due. Each wave source has
+# `refresh` (its publisher's rhythm, or the interval we check it at; scripts/freshness.py); a
+# source is due when its last build (data/wave*_built/) is older than that. Weekly, and by hand.
+# It lists what is due in the job summary; it starts the builds (wave9.yml with s:<id> groups,
+# at most 40 per wave and run) only when the repository variable WAVE_REFRESH is "on", since
+# the builds commit their records back to the branch they run on.
+
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "Start the builds now (else only list them)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  due:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - run: pip install pyyaml
+      - name: What is due
+        run: |
+          python scripts/freshness.py due --max 40 | tee due.txt
+          { echo "### Sources due for a rebuild"; echo; sed 's/^/- wave /' due.txt; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Start the builds
+        if: ${{ vars.WAVE_REFRESH == 'on' || inputs.start }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          while read -r wave groups; do
+            [ -n "$groups" ] || continue
+            gh workflow run wave9.yml --ref "${{ github.ref_name }}" -f wave="$wave" -f groups="$groups"
+            echo "- started wave $wave: $(echo "$groups" | wc -w) sources" >> "$GITHUB_STEP_SUMMARY"
+          done < due.txt

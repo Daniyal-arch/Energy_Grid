@@ -11,7 +11,6 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from langchain_core.tools import StructuredTool
 from pydantic import BaseModel, Field
 
 from agent.skills import get_skills
@@ -21,7 +20,22 @@ from tools.catalog import APP_TABLES
 from tools.context import ToolContext, result
 from tools.live import LiveArgs, live
 from tools.maps import MakeChartArgs, MakeMapArgs, make_chart, make_map
+from tools.more import (
+    AlongArgs,
+    CompareArgs,
+    CoverageArgs,
+    ExportArgs,
+    NearestArgs,
+    TrendArgs,
+    along,
+    compare_areas,
+    explain_coverage,
+    export,
+    nearest,
+    trend,
+)
 from tools.places import FindPlaceArgs, find_place
+from tools.quick import TEMPLATES, QuickArgs, quick
 from tools.site import SiteArgs, site_figures
 from tools.sql import DescribeTableArgs, RunSqlArgs, describe_table, run_sql
 
@@ -101,6 +115,57 @@ def specs() -> list[ToolSpec]:
             "and charts. 25 s limit.",
             RunSqlArgs,
             run_sql,
+        ),
+        ToolSpec(
+            "quick",
+            "Instant answers from fixed SQL templates over the app tables (no SQL to write), "
+            "each figure with source, method and as-of date: "
+            + "; ".join(f"{k} = {v}" for k, v in TEMPLATES.items())
+            + ". Prefer it over run_sql when a template fits.",
+            QuickArgs,
+            quick,
+        ),
+        ToolSpec(
+            "nearest",
+            "The k assets of a dataset nearest a point (or an area's middle), with the "
+            "great-circle distance in km (computed).",
+            NearestArgs,
+            nearest,
+        ),
+        ToolSpec(
+            "along",
+            "Assets within buffer_km of a route given as [[lon, lat], ...] (a corridor area is "
+            "made and kept; its area_id works in run_sql and maps).",
+            AlongArgs,
+            along,
+        ),
+        ToolSpec(
+            "compare_areas",
+            "The same measures (plants, substations, line length, data centres) for 2-6 areas "
+            "in one result.",
+            CompareArgs,
+            compare_areas,
+        ),
+        ToolSpec(
+            "trend",
+            "A time series for an area: capacity of today's plants by commissioning year and "
+            "fuel (the age profile of the present fleet; retired plants are not in it).",
+            TrendArgs,
+            trend,
+        ),
+        ToolSpec(
+            "export",
+            "A stored result (result_id) as a CSV, GeoJSON or Parquet file with its sources and "
+            "licence terms; refused when a source does not allow redistribution.",
+            ExportArgs,
+            export,
+        ),
+        ToolSpec(
+            "explain_coverage",
+            "What is published for an area's countries in a coverage family (or all), and why a "
+            "dark cell is dark, with the evidence.",
+            CoverageArgs,
+            explain_coverage,
         ),
         ToolSpec(
             "find_place",
@@ -185,7 +250,9 @@ def specs() -> list[ToolSpec]:
     return sorted(out, key=lambda t: t.name)
 
 
-def langchain_tools(ctx: ToolContext) -> list[StructuredTool]:
+def langchain_tools(ctx: ToolContext) -> list[Any]:
+    from langchain_core.tools import StructuredTool  # the agent only: not at the service's start
+
     tools = []
     for spec in specs():
 

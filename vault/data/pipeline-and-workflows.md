@@ -1,7 +1,7 @@
 ---
 title: Pipeline and workflows
 tags: [data, ci]
-updated: 2026-10-31
+updated: 2026-11-04
 paths: [scripts/, .github/workflows/, frontend/public/data/, docs/DATA_SOURCES.md]
 ---
 
@@ -25,7 +25,10 @@ the data branches. Every file and its source: `docs/DATA_SOURCES.md`. The lake: 
 - `lake-entsoe.yml` daily 04:41, `lake-catalog.yml` daily 09:47, `lake-datasets.yml`,
   `lake-overture.yml` monthly: the lake on R2.
 - `gem.yml` weekly (GEM trackers; raw files only in the private bucket), `mastr.yml` monthly,
-  `us-grid.yml` monthly, `us-queues.yml` weekly, `browser-fetch.yml` monthly.
+  `us-grid.yml` monthly, `us-queues.yml` weekly, `browser-fetch.yml` monthly (a source with a
+  `blocked` reason in `scripts/browser_fetch.py` is a skip, listed in the job summary; only new
+  errors fail the run). `backend-probe.yml`: latency, smoke and load test of the backend image
+  in a Lambda-sized container against the lake (on pull requests that change the probe).
 - On demand: `atlas.yml`, `world-grid.yml`, `world-hv.yml`, `water-risk.yml`, `us-outages.yml`,
   `wave5/6/7.yml` (dataset waves), `probe-*.yml`, `diag-entsoe.yml`.
 - Room to connect: `wave7.yml` job R runs `build_connect_h23.py all`, `build_connect_h26.py all`,

@@ -1,0 +1,48 @@
+{
+ "eu_eea_aq_stats": {
+  "bbox": [
+   -63.081,
+   -21.334,
+   55.58,
+   68.477
+  ],
+  "built": "2026-11-06",
+  "columns": [
+   "country",
+   "air_quality_network",
+   "air_quality_network_name",
+   "air_quality_station_eoi_code",
+   "air_quality_station_name",
+   "sampling_point_id",
+   "air_pollutant",
+   "air_pollutant_description",
+   "data_aggregation_process_id",
+   "data_aggregation_process",
+   "year",
+   "air_pollution_level",
+   "unit_of_air_pollution_level",
+   "data_coverage",
+   "verification",
+   "air_quality_station_type",
+   "air_quality_station_area",
+   "longitude",
+   "latitude",
+   "altitude",
+   "city",
+   "city_code",
+   "city_population",
+   "source_of_data_flow",
+   "calculation_time",
+   "link_to_raw_data_only_e1a_validated_data_from_aq_e_reporting",
+   "observation_frequency"
+  ],
+  "example": {
+   "answer": 16343,
+   "sql": "SELECT count(*) FROM wave9.eu_eea_aq_stats"
+  },
+  "geometry": true,
+  "rows": 16343,
+  "seconds": 16,
+  "with_position": 16343
+ }
+}

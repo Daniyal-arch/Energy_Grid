@@ -1,7 +1,7 @@
 ---
 title: Agent graph
 tags: [backend, agent]
-updated: 2026-10-29
+updated: 2026-11-04
 paths: [backend/agent/graph.py, backend/agent/analyst.py, backend/agent/grounding.py, backend/agent/prompts/]
 ---
 
@@ -27,3 +27,7 @@ edit of the map on screen goes straight to the cartographer) -> `analyst`
 - `agent/grounding.py`: numbers in text vs tool data and sources; precision of the text;
   factors 1e3/1e6/100; skips years, dates, integers up to 12, names like `DK1`.
 - State is per request; the browser sends the trimmed history.
+- **Loop guard** (`agent/analyst.py`, brief 30): a call is not run when the same tool already
+  failed twice with similar arguments (half their words shared; resolve_area without an area is a
+  failure); the tool result tells the model to change approach. Two blocked calls end the tool
+  loop: the analyst answers ("repeated failed lookups"). Tests in `tests/test_graph.py`.

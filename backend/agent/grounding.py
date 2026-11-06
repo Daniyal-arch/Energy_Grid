@@ -3,7 +3,8 @@ results, within the precision the answer shows.
 
 A number in the text (1,234.5 / -3 / 12.3 % / 4.2k) matches a value v when v rounded to the
 text's decimals equals it, also after a factor of 1,000, 1,000,000 or 1/1,000 (MW shown as GW,
-...) or 100 (shares shown as per cent). Left out: years (1900-2100 without decimals), dates,
+...) or 100 (shares shown as per cent). ISO dates must be in the results, the question or be
+today. Left out: years (1900-2100 without decimals),
 integers up to 12 (counts like "top 5", months), numbers in the question, and numbers inside
 table or code names.
 """
@@ -13,6 +14,7 @@ from __future__ import annotations
 import contextlib
 import json
 import re
+from datetime import UTC, datetime
 from typing import Any
 
 NUM = re.compile(
@@ -77,6 +79,15 @@ def check(answer: str, tool_results: list[Any], question: str = "") -> dict[str,
             found.append(raw)
         else:
             missing.append(raw)
+    # dates (brief 30): an ISO date in the answer must be in the tool results, the question
+    # or be today (UTC); "as of" dates come from the sources' retrieved fields
+    blob = json.dumps(tool_results, default=str)
+    today = datetime.now(UTC).date().isoformat()
+    for d in sorted({m.group(0)[:10] for m in DATE.finditer(answer) if len(m.group(0)) >= 10}):
+        if d in blob or d in question or d == today:
+            found.append(d)
+        else:
+            missing.append(d)
     total = len(found) + len(missing)
     return {
         "numbers": total,
