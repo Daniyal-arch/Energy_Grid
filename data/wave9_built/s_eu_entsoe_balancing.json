@@ -1,6 +1,6 @@
 {
  "eu_entsoe_balancing": {
   "built": null,
-  "skipped": "ENTSOE_API_KEY is not set: skipped (set it as a repo secret)"
+  "error": "ModuleNotFoundError: No module named 'dotenv'"
  }
 }
