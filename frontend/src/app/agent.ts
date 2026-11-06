@@ -443,3 +443,41 @@ if (linkedArea && /^a_[0-9a-f]{12}$/.test(linkedArea)) {
     })
     .catch(() => undefined);
 }
+
+
+// ---------------------------------------------------------------- permalinks (brief 30)
+
+/** Save the conversation (questions, answers as shown, sources, map ids): a ?chat= link. */
+export async function shareConversation(): Promise<string> {
+  const { messages } = useAgent.getState();
+  const turns = messages
+    .filter((m) => m.text && !m.pending)
+    .map((m) => ({
+      role: m.role,
+      text: m.text.slice(0, 20000),
+      maps: m.maps.slice(0, 10),
+      sources: m.sources.slice(0, 30).map((x) => Object.fromEntries(Object.entries(x).map(([k, v]) => [k, String(v ?? "")]))),
+    }));
+  const r = await fetch(`${API_BASE}/api/conversations`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ turns }),
+  });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const { link } = (await r.json()) as { link: string };
+  return `${window.location.origin}${window.location.pathname}${link}`;
+}
+
+// ?chat=k_...: a saved conversation, opened read-only in the Ask panel
+const linkedChat = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("chat") : null;
+if (linkedChat && /^k_[0-9a-f]{12}$/.test(linkedChat)) {
+  fetch(`${API_BASE}/api/conversations/${linkedChat}`)
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+    .then((rec: { turns: { role: "user" | "assistant"; text: string; maps: string[]; sources: Source[] }[] }) => {
+      useAgent.setState({
+        open: true,
+        messages: rec.turns.map((t) => ({ id: nextId(), role: t.role, text: t.text, tools: [], maps: t.maps, charts: [], sources: t.sources, pending: false })),
+      });
+    })
+    .catch(() => {});
+}

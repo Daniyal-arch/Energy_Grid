@@ -190,3 +190,21 @@ def test_cancel_a_running_run():
 
     got = asyncio.run(go())
     assert '"stop": "cancelled"' in got[-1] and len(got) == 3
+
+
+def test_conversation_permalink(client):
+    r = client.post(
+        "/api/conversations",
+        json={
+            "turns": [
+                {"role": "user", "text": "Tell me about Luxembourg"},
+                {"role": "assistant", "text": "**Luxembourg** ...", "maps": []},
+            ]
+        },
+    )
+    cid = r.json()["id"]
+    assert r.json()["link"] == f"?chat={cid}"
+    got = client.get(f"/api/conversations/{cid}").json()
+    assert [t["role"] for t in got["turns"]] == ["user", "assistant"]
+    assert client.get("/api/conversations/k_000000000000").status_code == 404
+    assert client.get("/api/conversations/../x").status_code == 404

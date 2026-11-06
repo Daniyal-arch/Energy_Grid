@@ -6,7 +6,7 @@
 
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 
-import { API_BASE, ask, clearConversation, removeAgentMap, showAgentMap, useAgent, type ChartMsg, type Msg, type ToolStep } from "../app/agent";
+import { API_BASE, ask, clearConversation, shareConversation, removeAgentMap, showAgentMap, useAgent, type ChartMsg, type Msg, type ToolStep } from "../app/agent";
 import { useApp } from "../app/store";
 import { isNarrow } from "../app/geo";
 import type { Overlay } from "../lib/mapspec";
@@ -101,6 +101,7 @@ export function AskPanel() {
           <div className="text-[14px] font-light tracking-wide text-slate-100">Ask the atlas</div>
           <div className={`truncate text-[10px] ${muted}`}>answers from the atlas&apos;s own data, with its steps and maps</div>
         </div>
+        {messages.length > 0 && <ShareButton />}
         {messages.length > 0 && (
           <button onClick={clearConversation} className="rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] text-slate-300 hover:bg-white/[0.07]" title="Clears the conversation and the agent's maps">
             New
@@ -524,4 +525,26 @@ function Markdown({ text }: { text: string }) {
     i++;
   }
   return <Fragment>{blocks}</Fragment>;
+}
+
+
+/** A permalink to the conversation (brief 30): saved by the backend, copied to the clipboard. */
+function ShareButton() {
+  const [state, setState] = useState<"" | "saving" | "copied" | "failed">("");
+  const share = async () => {
+    setState("saving");
+    try {
+      const link = await shareConversation();
+      await navigator.clipboard?.writeText(link).catch(() => {});
+      window.history.replaceState(null, "", link);
+      setState("copied");
+    } catch {
+      setState("failed");
+    }
+  };
+  return (
+    <button onClick={() => void share()} className="rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] text-slate-300 hover:bg-white/[0.07]" title="A link to this conversation (questions, answers, sources and maps), read-only">
+      {state === "saving" ? "…" : state === "copied" ? "Link copied" : state === "failed" ? "Not saved" : "Share"}
+    </button>
+  );
 }

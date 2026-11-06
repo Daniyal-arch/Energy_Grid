@@ -97,3 +97,40 @@ def export_result(result_id: str, format: str = "csv") -> FileResponse:
     if "error" in r["data"]:
         raise HTTPException(404, r["data"]["error"])
     return FileResponse(settings().results_dir / r["data"]["file"], filename=r["data"]["file"])
+
+
+class SavedTurn(BaseModel):
+    role: str = Field(pattern="^(user|assistant)$")
+    text: str = Field(max_length=20_000)
+    maps: list[str] = Field(default_factory=list, max_length=10)
+    sources: list[dict[str, str]] = Field(default_factory=list, max_length=30)
+
+
+class SaveConversation(BaseModel):
+    turns: list[SavedTurn] = Field(min_length=1, max_length=40)
+
+
+@router.post("/api/conversations")
+def save_conversation(body: SaveConversation) -> dict[str, Any]:
+    """A permalink to a conversation (brief 30): the questions, the answers as shown, their
+    sources and the ids of their saved maps; `?chat=<id>` opens it read-only."""
+    cid = "k_" + secrets.token_hex(6)
+    ToolContext(settings()).store.put_json(
+        f"agent/conversations/{cid}.json",
+        {
+            "id": cid,
+            "created": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "turns": [t.model_dump() for t in body.turns],
+        },  # fmt: skip
+    )
+    return {"id": cid, "link": f"?chat={cid}"}
+
+
+@router.get("/api/conversations/{cid}")
+def get_conversation(cid: str) -> dict[str, Any]:
+    if not re.fullmatch(r"k_[0-9a-f]{12}", cid):
+        raise HTTPException(404, "no such conversation")
+    rec = ToolContext(settings()).store.get_json(f"agent/conversations/{cid}.json")
+    if rec is None:
+        raise HTTPException(404, "no such conversation")
+    return rec
