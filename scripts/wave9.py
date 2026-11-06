@@ -1279,6 +1279,48 @@ def pjm_rpm_rcp(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
 CUSTOM["us_pjm_rpm"] = pjm_rpm_rcp
 
 
+def transelectrica_zones(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """Transelectrica's capacity-allocation page: HTML tables with a row per grid zone and a
+    column per year, each cell "<MW> MW / <starting price> lei/MW" ("0 / –" where nothing is
+    offered). Long form: zone, year, capacity_mw, start_price_lei_per_mw, cell (the text as
+    published)."""
+    import io
+
+    import pandas as pd
+
+    f = w.download(s["url"], d / "page.html", timeout=120)
+    tables = pd.read_html(io.StringIO(Path(f).read_bytes().decode("utf-8")))
+    num = re.compile(r"[\d\s.,]+")
+    rows: list[dict[str, Any]] = []
+    for t in tables:
+        for _, r in t.iterrows():
+            zone = str(r.iloc[0]).strip()
+            for col, v in list(r.items())[1:]:
+                year = next((str(x) for x in col if str(x).strip().isdigit()), None)
+                cell = " ".join(str(v).split())
+                parts = [p.strip() for p in cell.split("/")]
+
+                def value(p: str) -> float | None:
+                    m = num.match(p)
+                    txt = (
+                        m.group(0).replace(" ", "").replace(".", "").replace(",", ".") if m else ""
+                    )
+                    return float(txt) if txt else None
+
+                rows.append({"zone": zone, "year": int(year) if year else None,
+                             "capacity_mw": value(parts[0]) if parts else None,
+                             "start_price_lei_per_mw": value(parts[1]) if len(parts) > 1 else None,
+                             "cell": cell})  # fmt: skip
+    if not rows:
+        raise SystemExit("no tables on the page")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["ro_transelectrica_zone_capacity"] = transelectrica_zones
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
