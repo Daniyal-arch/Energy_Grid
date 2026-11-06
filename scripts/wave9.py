@@ -423,7 +423,10 @@ def load(con, s: dict[str, Any]) -> None:  # noqa: ANN001
     if s.get("urls"):
         for i, u in enumerate(s["urls"]):
             load_one(con, {**s, "url": u, "id": f"{s['id']}/{i}"})
-            con.execute(f"CREATE OR REPLACE TABLE part_{i} AS SELECT * FROM t")
+            tag = (
+                f", '{u}' AS source_url" if s.get("tag_urls") else ""
+            )  # several datasets: which one
+            con.execute(f"CREATE OR REPLACE TABLE part_{i} AS SELECT *{tag} FROM t")
         union = " UNION ALL BY NAME ".join(f"SELECT * FROM part_{i}" for i in range(len(s["urls"])))
         con.execute(f"CREATE OR REPLACE TABLE t AS {union}")
         return
@@ -1198,6 +1201,34 @@ def ins_ro_census_blocks(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN0
 
 
 CUSTOM["ro_ins_rpl2021_heating_county"] = ins_ro_census_blocks
+
+
+def odata_paged(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """OData-style APIs (`endpoints`: one URL per dataset, each with its $filter): rows under "value",
+    pages followed through "nextLink" (or "@odata.nextLink") to the end. One row per record as
+    published, with the endpoint's name as `dataset`."""
+    rows: list[dict[str, Any]] = []
+    with httpx.Client(headers=UA, timeout=300, follow_redirects=True) as c:
+        for url in s.get("endpoints") or [s["url"]]:
+            name, nxt, n = url.split("?")[0].rstrip("/").rsplit("/", 1)[-1], url, 0
+            while nxt:
+                j = c.get(nxt).raise_for_status().json()
+                part = j.get("value") or []
+                rows += [{"dataset": name, **r} for r in part]
+                n += len(part)
+                nxt = j.get("nextLink") or j.get("@odata.nextLink")
+                time.sleep(0.2)
+            print(f"  {s['id']}: {name} {n:,} rows", flush=True)
+    if not rows:
+        raise SystemExit("no records")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(
+        f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array', sample_size = -1, union_by_name = true)"
+    )
+
+
+CUSTOM["pl_pse_balancing"] = odata_paged
 
 
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
