@@ -484,6 +484,23 @@ tables:
     - q: how many records in Energinet FCR-D down reserve auctions (DK2)
       sql: SELECT count(*) FROM wave9.dk_energinet_reserves
       answer: 728595
+  de_regelleistung:
+    grain: 'regelleistung.net balancing tenders: one row per record as published (DE, AT, BE, NL, FR; level country)'
+    source: https://www.regelleistung.net/apps/datacenter/tenders/
+    licence: not stated (no reuse licence on regelleistung.net; imprint checked 2026-10-31); built on the owner's instruction (2026-11-06) to build sources whose
+      licence is not clear
+    category: 3. Markets and revenues
+    columns: market, product_type, date_from, date_to, product_type_1, tender_number, productname, crossborder_settlementcapacity_price_eur_mw, austria_demand_mw,
+      austria_settlementcapacity_price_eur_mw, austria_deficit_surplus_mw, belgium_demand_mw, belgium_settlementcapacity_price_eur_mw, belgium_deficit_surplus_mw,
+      denmark_demand_mw, denmark_settlementcapacity_price_eur_mw, denmark_deficit_surplus_mw, france_demand_mw, france_settlementcapacity_price_eur_mw, france_deficit_surplus_mw,
+      germany_demand_mw, germany_settlementcapacity_price_eur_mw, germany_deficit_surplus_mw, netherlands_demand_mw, netherlands_settlementcapacity_price_eur_mw,
+      netherlands_deficit_surplus_mw, slovenia_demand_mw, slovenia_settlementcapacity_price_eur_mw, slovenia_deficit_surplus_mw, switzerland_demand_mw, switzerland_settlementcapacity_price_eur_mw,
+      switzerland_deficit_surplus_mw, czech_republic_demand_mw, czech_republic_settlementcapacity_price_eur_mw, czech_republic_deficit_surplus_mw, type_of_reserves,
+      product, total_min_capacity_price_eur_mw_h, total_average_capacity_price_eur_mw_h, total_marginal_capacity_price_eur_mw_h
+    examples:
+    - q: how many records in regelleistung.net balancing tenders
+      sql: SELECT count(*) FROM wave9.de_regelleistung
+      answer: 279266
   eu_entsoe_balancing:
     grain: 'ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days: one row per record as published (EU27; level zone)'
     source: https://web-api.tp.entsoe.eu/api
@@ -529,6 +546,17 @@ tables:
     - q: how many records in EMR Capacity Market register
       sql: SELECT count(*) FROM wave9.gb_emr_cm_register
       answer: 29864
+  us_pjm_rpm:
+    grain: 'PJM RPM capacity auction results: one row per record as published (US; level zone)'
+    source: https://www.pjm.com/-/media/DotCom/markets-ops/rpm/rpm-auction-info/rpm-auctions-resource-clearing-price-summary.xlsx
+    licence: not stated (the legal page renders no text without JavaScript; the old terms URLs are gone); built on the owner's instruction (2026-11-06) to build sources
+      whose licence is not clear
+    category: 3. Markets and revenues
+    columns: delivery_year, auction, product, lda, value, flag
+    examples:
+    - q: how many records in PJM RPM capacity auction results
+      sql: SELECT count(*) FROM wave9.us_pjm_rpm
+      answer: 2083
   eu_eshm20:
     grain: 'ESHM20 European seismic hazard model: one row per record as published (EUR; level point)'
     source: https://efehrappsrvr.ethz.ch/share/map?id=81&lon1=-32&lat1=27&lon2=45&lat2=72&imt=PGA&hmapexceedprob=0.002103&hmapexceedyears=1&soiltype=rock_vs30_800ms-1&aggregationtype=arithmetic&aggregationlevel=0.5
@@ -1694,6 +1722,21 @@ tables:
     - q: how many records in SEMO balancing and imbalance market cost view (half-hourly)
       sql: SELECT count(*) FROM wave9.ie_semo_imbalance
       answer: 651
+  be_elia_balancing:
+    grain: 'Elia balancing energy prices and reserve capacity bids: one row per record as published (BE; level country)'
+    source: https://opendata.elia.be/api/explore/v2.1/catalog/datasets/ods166/exports/csv
+    licence: Elia Open Data Licence (named in every dataset's metas; the licence page did not answer, 2026-11-05 and 2026-11-06, so its terms are not quoted); built
+      on the owner's instruction (2026-11-06)
+    category: 3. Markets and revenues
+    columns: datetime, resolutioncode, qualitystatus, systemimbalance, ace, marginalincrementalprice, floorprice, afrrpriceup, upwardavailablemfrrprice, mfrrdaup,
+      mfrrsaup, marginaldecrementalprice, cap, afrrpricedown, downwardavailablemfrrprice, mfrrdadown, mfrrsadown, intertsopriceimport, intertsopriceexport, source_url,
+      deliverydate, capacitybiddeliveryperiod, tenderdate, selectedbyoptimizer, regulationdirection, bidid, afrrofferedvolume, selectedvolumeafterstep2, selectedvolumeafterstep3,
+      selectedvolumeafterstep4, selectedvolumeafterstep5, afrrawardedvolumemw, price, delivery_date_cet_1_cest_2, mfrrofferedvolume, mfrrstdawardedvolume, mfrrstdcapbidprice,
+      mfrrflexawardedvolume, mfrrflexcapbidprice
+    examples:
+    - q: how many records in Elia balancing energy prices and reserve capacity bids
+      sql: SELECT count(*) FROM wave9.be_elia_balancing
+      answer: 1004448
   fr_odre_balancing_volumes:
     grain: 'RTE balancing mechanism activated volumes per year (ODRÉ): one row per record as published (FR; level country)'
     source: https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/volumes-actives-ma/exports/csv
@@ -1706,6 +1749,41 @@ tables:
     - q: how many records in RTE balancing mechanism activated volumes per year (ODRÉ)
       sql: SELECT count(*) FROM wave9.fr_odre_balancing_volumes
       answer: 12
+  gr_admie_balancing:
+    grain: 'IPTO (ADMIE) balancing market settlement files: one row per record as published (GR; level country)'
+    source: https://www.admie.gr/getOperationMarketFilewRange?dateStart=2026-10-01&dateEnd=2026-10-01
+    licence: not stated (IPTO's Terms and Services cover liability and accuracy only); built on the owner's instruction (2026-11-06) to build sources whose licence
+      is not clear
+    category: 3. Markets and revenues
+    columns: period, version, file, startdate, enddate, total_activated_balancing_energy_up_mwh, total_activated_balancing_energy_down_mwh, balancing_energy_idev_mwh,
+      balancing_energy_udev_mwh, total_activated_balancing_energy_mwh, imbalance_price_mwh, mfrr_price_up_mwh, mfrr_price_down_mwh, uplift_account_1_mwh, uplift_account_2_mwh,
+      uplift_account_3_mwh, (ΔP + kΔf) "ISP energy" (MWh), system_deviation_mwh, curt_flag, Imbalance Price  (€/MWh), latest
+    examples:
+    - q: how many records in IPTO (ADMIE) balancing market settlement files
+      sql: SELECT count(*) FROM wave9.gr_admie_balancing
+      answer: 202936
+  pl_pse_balancing:
+    grain: 'PSE balancing prices and reserve capacity prices (raporty.pse.pl API): one row per record as published (PL; level country)'
+    source: https://api.raporty.pse.pl/api/cmbp-tp?$filter=business_date%20ge%20'2024-06-14'
+    licence: not stated (neither raporty.pse.pl nor the API states reuse terms); built on the owner's instruction (2026-11-06) to build sources whose licence is not
+      stated
+    category: 3. Markets and revenues
+    columns: dataset, onmb, rr_d, rr_g, dtime, fcr_d, fcr_g, afrr_d, afrr_g, mfrrd_d, mfrrd_g, dtime_utc, business_date, publication_ts, publication_ts_utc, period,
+      cen_cost, ckoeb_cost, period_utc, ceb_pp_cost, ceb_sr_cost, ceb_sr_afrrd_cost, ceb_sr_afrrg_cost
+    examples:
+    - q: how many records in PSE balancing prices and reserve capacity prices (raporty.pse.pl API)
+      sql: SELECT count(*) FROM wave9.pl_pse_balancing
+      answer: 105053
+  cz_ceps_balancing:
+    grain: 'ČEPS data (web service CepsData.asmx): one row per record as published (CZ; level country)'
+    source: https://www.ceps.cz/_layouts/CepsData.asmx
+    licence: not stated (no reuse terms found on ceps.cz); built on the owner's instruction (2026-11-06) to build sources whose licence is not clear
+    category: 3. Markets and revenues
+    columns: operation, dataset, date, afrr_mw, aFRR- [MW], mfrr_mw, mFRR- [MW], mfrr5_mw, aktu_ln_odchylka_mw, estimated_price_k_mwh, date_1, interval
+    examples:
+    - q: how many records in ČEPS data (web service CepsData.asmx)
+      sql: SELECT count(*) FROM wave9.cz_ceps_balancing
+      answer: 194355
   us_eia861m_small_solar:
     grain: 'EIA-861M estimated small-scale solar PV capacity and generation per state: one row per record as published (US; level region)'
     source: https://www.eia.gov/electricity/data/eia861m/xls/small_scale_solar_2026.xlsx
@@ -1818,6 +1896,29 @@ tables:
     - q: how many records in EIA RECS 2020 main space-heating equipment per state (central heat pump share)
       sql: SELECT count(*) FROM wave9.us_eia_recs_heat_pumps_state
       answer: 1
+  ro_transelectrica_zone_capacity:
+    grain: 'Transelectrica available capacity per grid zone and allocation year (capacity auctions): one row per record as published (RO; level zone)'
+    source: https://www.transelectrica.ro/web/tel/procesul-de-alocare-a-capacitatii-retelei-electrice
+    licence: not stated (site footer "Copyright © Transelectrica 2013 - 2026"); a public notice required by ANRE Order 53/2024 art. 6 (1)-(2); built on the owner's
+      instruction (2026-11-06) to build sources whose licence is not clear
+    category: 2. Grid planning, connection and network charges
+    columns: zone, year, capacity_mw, start_price_lei_per_mw, cell
+    examples:
+    - q: how many records in Transelectrica available capacity per grid zone and allocation year (capacity auctions)
+      sql: SELECT count(*) FROM wave9.ro_transelectrica_zone_capacity
+      answer: 100
+  rs_ems_connection_queue:
+    grain: 'EMS list of all connection requests (generation and storage) on the transmission system: one row per record as published (RS; level plant)'
+    source: https://ems.rs/wp-content/uploads/2026/11/20261104-proizvodjaci-Spisak-prikljucenja2.pdf
+    licence: not stated (ems.rs has no terms or copyright page); a list published under the Law on the Use of Renewable Energy Sources (Službeni glasnik RS 40/2021,
+      35/2023, 94/2024); built on the owner's instruction (2026-11-06)
+    category: 2. Grid planning, connection and network charges
+    columns: table, row_no, type, project, applicant, voltage_kv, requested_mw, approved_mw, location, year_in_service, phase, trial_operation_date, permanent_connection_date,
+      requested_mw_number, approved_mw_number
+    examples:
+    - q: how many records in EMS list of all connection requests (generation and storage) on the transmission system
+      sql: SELECT count(*) FROM wave9.rs_ems_connection_queue
+      answer: 88
   sk_susr_energy_consumption_okres:
     grain: 'ŠÚ SR consumption of fuels, electricity and heat per district (okres), yearly (DATAcube en3001rr): one row per record as published (SK; level district)'
     source: https://statdata.statistics.sk/public/api/dc/opendata/cube/dataset/en3001rr/download?lang=SK&type=CSV

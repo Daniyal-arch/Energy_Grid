@@ -88,10 +88,12 @@ datasets:
   wave9.gb_npg_opendata: {point: "GB: Northern Powergrid connection queue"}
   wave9.se_svk_reserves: {country: "SE: Svenska kraftnät reserve markets (Mimer)"}
   wave9.dk_energinet_reserves: {country: "DK: Energinet FCR-D down reserve auctions (DK2)"}
+  wave9.de_regelleistung: {country: "DE, AT, BE, NL, FR: regelleistung.net balancing tenders"}
   wave9.eu_entsoe_balancing: {region: "EU27: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days"}
   wave9.gb_elexon_balancing: {country: "GB: Elexon system buy and sell prices (one day per call)"}
   wave9.us_iso_as_prices: {region: "US: ISO ancillary-service prices"}
   wave9.gb_emr_cm_register: {point: "GB: EMR Capacity Market register"}
+  wave9.us_pjm_rpm: {region: "US: PJM RPM capacity auction results"}
   wave9.eu_eshm20: {point: "EUR: ESHM20 European seismic hazard model"}
   wave9.us_usgs_nshm: {polygon: "US: USGS National Seismic Hazard Model 2023"}
   wave9.us_drought_monitor: {polygon: "US: US Drought Monitor (current)"}
@@ -197,7 +199,11 @@ datasets:
   wave9.dk_energinet_countertrade: {country: "DK: Energinet countertrade procured in intraday (DK1)"}
   wave9.ie_eirgrid_dispatch_down: {country: "IE: EirGrid renewable dispatch-down (constraints and curtailment) summary"}
   wave9.ie_semo_imbalance: {region: "IE: SEMO balancing and imbalance market cost view (half-hourly)"}
+  wave9.be_elia_balancing: {country: "BE: Elia balancing energy prices and reserve capacity bids"}
   wave9.fr_odre_balancing_volumes: {country: "FR: RTE balancing mechanism activated volumes per year (ODRÉ)"}
+  wave9.gr_admie_balancing: {country: "GR: IPTO (ADMIE) balancing market settlement files"}
+  wave9.pl_pse_balancing: {country: "PL: PSE balancing prices and reserve capacity prices (raporty.pse.pl API)"}
+  wave9.cz_ceps_balancing: {country: "CZ: ČEPS data (web service CepsData.asmx)"}
   wave9.us_eia861m_small_solar: {region: "US: EIA-861M estimated small-scale solar PV capacity and generation per state"}
   wave9.si_surs_electricity_municipality: {municipality: "SI: SURS electricity consumption (kWh) per municipality and consumer type, yearly (1817609S)"}
   wave9.si_surs_heating_settlement: {small_area: "SI: SURS dwellings by heating method per settlement (0871205S) and per municipality (0861120S)"}
@@ -209,6 +215,8 @@ datasets:
   wave9.lv_csp_central_heating: {small_area: "LV: CSP census dwellings with and without central heating per municipality and Riga neighbourhood (MAS080)"}
   wave9.gb_bus_heat_pumps_la: {county: "GB: DESNZ Boiler Upgrade Scheme redemptions per local authority (heat pumps)"}
   wave9.us_eia_recs_heat_pumps_state: {region: "US: EIA RECS 2020 main space-heating equipment per state (central heat pump share)"}
+  wave9.ro_transelectrica_zone_capacity: {region: "RO: Transelectrica available capacity per grid zone and allocation year (capacity auctions)"}
+  wave9.rs_ems_connection_queue: {plant: "RS: EMS list of all connection requests (generation and storage) on the transmission system"}
   wave9.sk_susr_energy_consumption_okres: {district: "SK: ŠÚ SR consumption of fuels, electricity and heat per district (okres), yearly (DATAcube en3001rr)"}
   wave9.gr_elstat_heating_energy_regional_unit: {county: "GR: ELSTAT Census 2021 households by main energy source for heating, cooking and hot water, per regional unit (SAM05 table Α13)"}
   wave9.gr_elstat_heating_settlement: {small_area: "GR: ELSTAT Census 2021 conventional dwellings by occupancy and heating availability and type, per settlement (SAM05 table Γ09)"}

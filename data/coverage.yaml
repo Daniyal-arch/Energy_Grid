@@ -8005,17 +8005,22 @@ families:
     cells:
       AT:
         status: built
-        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        source: regelleistung.net balancing tenders; ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for
+          GB
         url: https://web-api.tp.entsoe.eu/api
-        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
+        licence: not stated (no reuse licence on regelleistung.net; imprint checked 2026-10-31); built on the owner's instruction (2026-11-06) to build sources whose licence is not clear; ENTSO-E terms
+          (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.de_regelleistung, lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       BE:
         status: built
-        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        source: regelleistung.net balancing tenders; ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; Elia balancing energy prices and reserve capacity bids; ENTSO-E imbalance prices
+          (A85) per balancing zone, and Elexon system prices for GB
         url: https://web-api.tp.entsoe.eu/api
-        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
+        licence: not stated (no reuse licence on regelleistung.net; imprint checked 2026-10-31); built on the owner's instruction (2026-11-06) to build sources whose licence is not clear; ENTSO-E terms
+          (reuse with attribution); Elia Open Data Licence (named in every dataset's metas; the licence page did not answer, 2026-11-05 and 2026-11-06, so its terms are not quoted); built on the owner's
+          instruction (2026-11-06); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.de_regelleistung, lake wave9.eu_entsoe_balancing, lake wave9.be_elia_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       BG:
         status: built
@@ -8040,10 +8045,12 @@ families:
         checked: '2026-11-06'
       CZ:
         status: built
-        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ČEPS data (web service CepsData.asmx); ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for
+          GB
         url: https://web-api.tp.entsoe.eu/api
-        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
+        licence: ENTSO-E terms (reuse with attribution); not stated (no reuse terms found on ceps.cz); built on the owner's instruction (2026-11-06) to build sources whose licence is not clear; ENTSO-E
+          Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, lake wave9.cz_ceps_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       DK:
         status: built
@@ -8069,25 +8076,29 @@ families:
         checked: '2026-11-06'
       FR:
         status: built
-        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; RTE balancing mechanism activated volumes per year (ODRÉ); ENTSO-E imbalance prices (A85) per balancing zone, and Elexon
-          system prices for GB
+        source: regelleistung.net balancing tenders; ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; RTE balancing mechanism activated volumes per year (ODRÉ); ENTSO-E imbalance prices
+          (A85) per balancing zone, and Elexon system prices for GB
         url: https://web-api.tp.entsoe.eu/api
-        licence: ENTSO-E terms (reuse with attribution); Licence Ouverte 2.0; ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: lake wave9.eu_entsoe_balancing, lake wave9.fr_odre_balancing_volumes, eu/imbalance.json (Imbalance layer and card)
+        licence: not stated (no reuse licence on regelleistung.net; imprint checked 2026-10-31); built on the owner's instruction (2026-11-06) to build sources whose licence is not clear; ENTSO-E terms
+          (reuse with attribution); Licence Ouverte 2.0; ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.de_regelleistung, lake wave9.eu_entsoe_balancing, lake wave9.fr_odre_balancing_volumes, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       DE:
         status: built
-        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
+        source: regelleistung.net balancing tenders; ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
         url: https://web-api.tp.entsoe.eu/api
-        licence: ENTSO-E terms (reuse with attribution)
-        dataset: lake wave9.eu_entsoe_balancing
+        licence: not stated (no reuse licence on regelleistung.net; imprint checked 2026-10-31); built on the owner's instruction (2026-11-06) to build sources whose licence is not clear; ENTSO-E terms
+          (reuse with attribution)
+        dataset: lake wave9.de_regelleistung, lake wave9.eu_entsoe_balancing
         checked: '2026-11-06'
       GR:
         status: built
-        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; IPTO (ADMIE) balancing market settlement files; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system
+          prices for GB
         url: https://web-api.tp.entsoe.eu/api
-        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
+        licence: ENTSO-E terms (reuse with attribution); not stated (IPTO's Terms and Services cover liability and accuracy only); built on the owner's instruction (2026-11-06) to build sources whose licence
+          is not clear; ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, lake wave9.gr_admie_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       HU:
         status: built
@@ -8140,17 +8151,21 @@ families:
         checked: '2026-11-06'
       NL:
         status: built
-        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        source: regelleistung.net balancing tenders; ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for
+          GB
         url: https://web-api.tp.entsoe.eu/api
-        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
+        licence: not stated (no reuse licence on regelleistung.net; imprint checked 2026-10-31); built on the owner's instruction (2026-11-06) to build sources whose licence is not clear; ENTSO-E terms
+          (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.de_regelleistung, lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       PL:
         status: built
-        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; ENTSO-E imbalance prices (A85) per balancing zone, and Elexon system prices for GB
+        source: ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days; PSE balancing prices and reserve capacity prices (raporty.pse.pl API); ENTSO-E imbalance prices (A85) per balancing
+          zone, and Elexon system prices for GB
         url: https://web-api.tp.entsoe.eu/api
-        licence: ENTSO-E terms (reuse with attribution); ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
-        dataset: lake wave9.eu_entsoe_balancing, eu/imbalance.json (Imbalance layer and card)
+        licence: ENTSO-E terms (reuse with attribution); not stated (neither raporty.pse.pl nor the API states reuse terms); built on the owner's instruction (2026-11-06) to build sources whose licence
+          is not stated; ENTSO-E Transparency terms (reuse with attribution); Elexon BMRS licence
+        dataset: lake wave9.eu_entsoe_balancing, lake wave9.pl_pse_balancing, eu/imbalance.json (Imbalance layer and card)
         checked: '2026-11-06'
       PT:
         status: built
@@ -8436,13 +8451,14 @@ families:
         dataset: lake wave9.gb_emr_cm_register
         checked: '2026-11-05'
       US:
-        status: blocked
+        status: built
         source: PJM RPM capacity auction results
         url: https://www.pjm.com/-/media/DotCom/markets-ops/rpm/rpm-auction-info/rpm-auctions-resource-clearing-price-summary.xlsx
+        licence: not stated (the legal page renders no text without JavaScript; the old terms URLs are gone); built on the owner's instruction (2026-11-06) to build sources whose licence is not clear
+        dataset: lake wave9.us_pjm_rpm
         checked: '2026-11-06'
-        note: 'the public workbook answers (26,293 bytes, sheet RCP: resource clearing prices of every RPM auction per LDA, 2026-11-05) but no reuse terms could be read: the legal page renders no text without
-          JavaScript and the old terms URLs go to /not-found; Data Miner 2 (api.pjm.com) answers 401 without a key. Data request: PJM, the terms of use for the RPM auction result workbooks (commercial reuse
-          with attribution)'
+        partial: true
+        note: published at zone level (PJM RPM capacity auction results)
   support_contracts:
     name: Support contracts
     shows: contracts for difference and auction awards per project
@@ -9296,257 +9312,229 @@ families:
     - neighbours
     cells:
       AT:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       BE:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       BG:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       HR:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       CY:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       CZ:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       DK:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       EE:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       FI:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       FR:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       DE:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       GR:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       HU:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       IE:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       IT:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       LV:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       LT:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       LU:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       MT:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       NL:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       PL:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       PT:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       RO:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       SK:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       SI:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       ES:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       SE:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       GB:
-        status: have
-        source: WRI Aqueduct 4.0 drought risk (earlier wave)
-        url: https://www.wri.org/data/aqueduct-global-maps-40-data
-        licence: CC BY 4.0
-        dataset: water layer (Aqueduct)
-        checked: '2026-10-20'
-        partial: true
-        note: published at region level (WRI Aqueduct 4.0 drought risk (earlier wave))
+        status: built
+        source: European Drought Observatory combined drought indicator; WRI Aqueduct 4.0 drought risk (earlier wave)
+        url: https://drought.emergency.copernicus.eu/data/Drought_Observatories_datasets/EDO_Combined_Drought_Indicator/ver4-1-1/cdinx_m_edo_20260101_20261011_t.nc
+        licence: CC BY 4.0 (copyright.txt, the file licence attribute, the JRC catalogue); the NetCDF citation attribute is narrower (quoted in the note). Built on the owner's instruction (2026-11-06) to
+          build sources whose licence is not clear; CC BY 4.0
+        dataset: lake wave9.eu_edo_cdi, water layer (Aqueduct)
+        checked: '2026-11-06'
       US:
         status: built
         source: US Drought Monitor (current); WRI Aqueduct 4.0 drought risk (earlier wave)

@@ -7,7 +7,7 @@ session. Each request should also ask the licence question:
 
 > May we redistribute the data, and show it in a commercial product, under an open licence (CC BY 4.0 or equivalent) with attribution?
 
-54 requests to 51 publishers.
+49 requests to 46 publishers.
 
 ## BMWE / BfEE
 
@@ -129,14 +129,7 @@ session. Each request should also ask the licence question:
 ## INS Romania
 
 - **INS RPL 2021 conventional dwellings by heating mode, per county and urban/rural (table 8.9)** (scripts/wave9_sources.yaml `ro_ins_rpl2021_heating_county`)
-  - Why: no licence stated on the file or the census site (2026-11-05)
   - Request: INS Romania, the licence of the RPL2021 tables (commercial reuse with attribution?)
-
-## IPTO (info@admie.gr)
-
-- **IPTO (ADMIE) balancing market settlement files** (scripts/wave9_sources.yaml `gr_admie_balancing`)
-  - Why: the file API answers (JSON list: file_path, file_description, file_datatype ...); weekly IMBABE xlsx (sheet Activated_bal_Energy_and_Prices: STARTDATE, ENDDATE, Total Activated Balancing Energy UP/Down MWh, System deviation, Imbalance Price, mFRR Price UP/Down, Uplift Accounts 1-3; 672 rows a week), BalancingCapacityProduct and BalancingEnergyProduct xls. IPTO's 'Terms and Services' cover liability and accuracy only and grant no reuse right
-  - Request: IPTO (info@admie.gr), a reuse licence (e.g. CC BY 4.0) for the market and operation data files (balancing settlement)
 
 ## IRENA
 
@@ -210,18 +203,6 @@ session. Each request should also ask the licence question:
   - Why: ofcom.org.uk answers HTTP 403 to an honest client (2026-10-31)
   - Request: Ofcom, Connected Nations data downloads reachable by scripts
 
-## PJM
-
-- **PJM RPM capacity auction results** (scripts/wave9_sources.yaml `us_pjm_rpm`)
-  - Why: the public workbook answers (26,293 bytes, sheet RCP: resource clearing prices of every RPM auction per LDA, 2026-11-05) but no reuse terms could be read: the legal page renders no text without JavaScript and the old terms URLs go to /not-found; Data Miner 2 (api.pjm.com) answers 401 without a key
-  - Request: PJM, the terms of use for the RPM auction result workbooks (commercial reuse with attribution)
-
-## PSE S.A.
-
-- **PSE balancing prices and reserve capacity prices (raporty.pse.pl API)** (scripts/wave9_sources.yaml `pl_pse_balancing`)
-  - Why: the open API answers (no key, OData-style $filter/$first, nextLink): cmbp-tp balancing capacity prices per hour (fcr_g/d, afrr_g/d, mfrrd_g/d, rr_g/d, business_date) and crb-rozl settlement prices per quarter-hour (cen_cost, ckoeb_cost, ceb_pp_cost, ceb_sr_cost, ceb_sr_afrrg/d_cost); neither raporty.pse.pl (app bundle searched for licencja/regulamin/warunki) nor the API states reuse terms; a web search (Polish) found none
-  - Request: PSE S.A., a reuse licence statement (e.g. CC BY 4.0) for raporty.pse.pl / api.raporty.pse.pl
-
 ## re-probe renewablesandchp.ofgem.gov.uk public reports from GitHub Actions
 
 - **Ofgem REGO register** (scripts/wave9_sources.yaml `gb_ofgem_rego`)
@@ -288,12 +269,6 @@ session. Each request should also ask the licence question:
   - Why: CO2 Stored needs an account and its terms were not found for paid use; NSTA licences not located (see oil and gas).
   - Request: The Crown Estate / BGS, licence terms for CO2 Stored in a commercial product.
 
-## the German TSOs (regelleistung.net)
-
-- **regelleistung.net balancing tenders** (scripts/wave9_sources.yaml `de_regelleistung`)
-  - Why: the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31)
-  - Request: the German TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)
-
 ## UNESCO
 
 - **UNESCO World Heritage List** (scripts/wave9_sources.yaml `world_unesco_whc`)
@@ -305,12 +280,6 @@ session. Each request should also ask the licence question:
 - **Wetlands (US)** (data/coverage.yaml `wetlands.US`)
   - Why: the CONUS and state downloads answer HTTP 403 to automated clients, from this sandbox and from GitHub Actions (2026-10-29).
   - Request: USFWS, a download URL open to scripts or a bulk copy of the NWI (public domain)
-
-## ČEPS
-
-- **ČEPS data (web service CepsData.asmx)** (scripts/wave9_sources.yaml `cz_ceps_balancing`)
-  - Why: the SOAP web service and the data pages answer (HTTP 200), but no reuse terms were found (Czech search 'podmínky užití', 'uvedení zdroje'); only a 2008 mailing-list note. ENTSO-E A85 already answers for CZ
-  - Request: ČEPS, a licence statement for the data on ceps.cz/cs/data and CepsData.asmx
 
 ## Keys to set (not requests: the owner adds them as repo secrets)
 

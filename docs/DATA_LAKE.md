@@ -525,10 +525,12 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 | `wave9/gb_npg_opendata` | Parquet | 445 | no |
 | `wave9/se_svk_reserves` | Parquet | 439,314 | no |
 | `wave9/dk_energinet_reserves` | Parquet | 728,595 | no |
+| `wave9/de_regelleistung` | Parquet | 279,266 | no |
 | `wave9/eu_entsoe_balancing` | Parquet | 77,480 | no |
 | `wave9/gb_elexon_balancing` | Parquet | 48 | no |
 | `wave9/us_iso_as_prices` | Parquet | 19,344 | no |
 | `wave9/gb_emr_cm_register` | Parquet | 29,864 | no |
+| `wave9/us_pjm_rpm` | Parquet | 2,083 | no |
 | `wave9/eu_eshm20` | GeoParquet (bbox, Hilbert order) | 100,636 | 100636 |
 | `wave9/us_usgs_nshm` | GeoParquet (bbox, Hilbert order) | 9,794 | 9794 |
 | `wave9/us_drought_monitor` | GeoParquet (bbox, Hilbert order) | 5 | 5 |
@@ -634,7 +636,11 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 | `wave9/dk_energinet_countertrade` | Parquet | 26,976 | no |
 | `wave9/ie_eirgrid_dispatch_down` | Parquet | 16,905 | no |
 | `wave9/ie_semo_imbalance` | Parquet | 651 | no |
+| `wave9/be_elia_balancing` | Parquet | 1,004,448 | no |
 | `wave9/fr_odre_balancing_volumes` | Parquet | 12 | no |
+| `wave9/gr_admie_balancing` | Parquet | 202,936 | no |
+| `wave9/pl_pse_balancing` | Parquet | 105,053 | no |
+| `wave9/cz_ceps_balancing` | Parquet | 194,355 | no |
 | `wave9/us_eia861m_small_solar` | Parquet | 411 | no |
 | `wave9/si_surs_electricity_municipality` | Parquet | 3,852 | no |
 | `wave9/si_surs_heating_settlement` | Parquet | 192,648 | no |
@@ -646,6 +652,8 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 | `wave9/lv_csp_central_heating` | Parquet | 329,160 | no |
 | `wave9/gb_bus_heat_pumps_la` | Parquet | 371 | no |
 | `wave9/us_eia_recs_heat_pumps_state` | Parquet | 1 | no |
+| `wave9/ro_transelectrica_zone_capacity` | Parquet | 100 | no |
+| `wave9/rs_ems_connection_queue` | Parquet | 88 | no |
 | `wave9/sk_susr_energy_consumption_okres` | Parquet | 13,800 | no |
 | `wave9/gr_elstat_heating_energy_regional_unit` | Parquet | 3,906 | no |
 | `wave9/gr_elstat_heating_settlement` | Parquet | 444,864 | no |
