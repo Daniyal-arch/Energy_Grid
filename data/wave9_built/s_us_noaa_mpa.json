@@ -1,26 +1,6 @@
 {
  "us_noaa_mpa": {
-  "bbox": [
-   null,
-   null,
-   null,
-   null
-  ],
-  "built": "2026-11-06",
-  "columns": [
-   "ogc_fid",
-   "geometry"
-  ],
-  "example": {
-   "answer": 0,
-   "sql": "SELECT count(*) FROM wave9.us_noaa_mpa"
-  },
-  "geometry": true,
-  "rows": 0,
-  "seconds": 0,
-  "tiles": {
-   "error": "Merging index                  | 0 features, 12 bytes of geometry and attributes, 0 bytes of string pool, 0 bytes of vertices, 0 bytes of nodes | Did not read any valid geometries"
-  },
-  "with_position": 0
+  "built": null,
+  "error": "SystemExit: ArcGIS error at offset 400: {'code': 429, 'message': 'Unable to perform operation. Too many large geometry non-cacheable requests.', 'details': ['API calls for large geometry quota exceeded (61)! maximum allowed (60) per Minute. Retry after 60 sec.']}"
  }
 }
