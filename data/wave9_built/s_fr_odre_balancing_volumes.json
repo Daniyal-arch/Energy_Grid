@@ -1,6 +1,33 @@
 {
  "fr_odre_balancing_volumes": {
-  "built": null,
-  "error": "SystemExit: kind ods_api is not built"
+  "built": "2026-11-06",
+  "columns": [
+   "annee",
+   "vab_hydraulique",
+   "vab_nucleaire",
+   "vab_thermique",
+   "vab_consommation",
+   "vab_ech_grt_acteur",
+   "vab_ech_grt_grt",
+   "vah_hydraulique",
+   "vah_nucleaire",
+   "vah_thermique",
+   "vah_effacement",
+   "vah_ech_grt_acteur",
+   "vah_ech_grt_grt",
+   "cout_moy_baisse_en_eur_mwh",
+   "cout_moy_hausse_en_eur_mwh",
+   "nb_situations_tendues_b_en_1_2j",
+   "nb_situations_tendues_h_en_1_2j",
+   "vab_terre",
+   "vah_terre"
+  ],
+  "example": {
+   "answer": 12,
+   "sql": "SELECT count(*) FROM wave9.fr_odre_balancing_volumes"
+  },
+  "geometry": false,
+  "rows": 12,
+  "seconds": 1
  }
 }
