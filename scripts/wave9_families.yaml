@@ -62,3 +62,6 @@ families:
   air_quality: {cat: 15, name: Air quality, shows: measured air quality per station, want: point, q: "air quality monitoring stations"}
   reliability_local: {cat: 16, name: Interruptions per area, shows: power interruptions below country level, want: county, q: "power outages interruptions per region"}
   night_lights: {cat: 17, name: Night lights, shows: night-time lights (electrification, outages), want: raster, q: "night lights VIIRS"}
+  telecom_routes: {cat: 10, name: Telecom routes, shows: fibre and submarine telecom cable routes, want: line, q: telecommunication cables}
+  industrial_heat: {cat: 7, name: Industrial heat per site, shows: reported heat use or excess heat per industrial site, want: point, q: industrial excess heat}
+  corporate_ppas: {cat: 7, name: Corporate PPAs, shows: corporate power purchase agreements per project or buyer, want: point, q: power purchase agreements}
