@@ -1367,6 +1367,63 @@ def pdf_tables(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
 CUSTOM["rs_ems_connection_queue"] = pdf_tables
 
 
+def admie_files(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """IPTO (ADMIE) market files: the file API (getOperationMarketFilewRange) asked month by
+    month from `start`, the files whose description contains `match` read (sheet `sheet`), every
+    published version kept: `file`, `version` (v1, v2 ...) and `latest` (the newest version of
+    that period), rows as published."""
+    import datetime as dt
+
+    import pandas as pd
+
+    api = "https://www.admie.gr/getOperationMarketFilewRange"
+    files: dict[str, dict[str, Any]] = {}
+    day, today = dt.date.fromisoformat(s["start"]), dt.date.today()
+    with httpx.Client(headers=UA, timeout=120, follow_redirects=True) as c:
+        while day <= today:
+            end = min(
+                (day.replace(day=28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1),
+                today,
+            )
+            for x in (
+                c.get(api, params={"dateStart": day.isoformat(), "dateEnd": end.isoformat()})
+                .raise_for_status()
+                .json()
+            ):
+                if s["match"] in x["file_description"]:
+                    files[x["file_path"]] = x
+            day = end + dt.timedelta(days=1)
+            time.sleep(0.5)
+        frames = []
+        for path, x in sorted(files.items()):
+            f = d / path.rsplit("/", 1)[-1]
+            f.write_bytes(c.get(path).raise_for_status().content)
+            df = pd.read_excel(f, sheet_name=s["sheet"])
+            m = re.search(r"\bv(\d+)\s*$", x["file_description"])
+            df.insert(0, "period", x["file_description"].split()[0])
+            df.insert(1, "version", int(m.group(1)) if m else None)
+            df.insert(2, "file", path.rsplit("/", 1)[-1])
+            frames.append(df)
+            time.sleep(0.3)
+    if not frames:
+        raise SystemExit(f"no files matching {s['match']!r}")
+    t = pd.concat(frames, ignore_index=True)
+    data_cols = [c for c in t.columns if c not in ("period", "version", "file")][2:]
+    t = t.dropna(how="all", subset=data_cols)  # footnote lines under the table, not records
+    t["latest"] = t["version"] == t.groupby("period")["version"].transform("max")
+    t.columns = [str(c) for c in t.columns]
+    out = d / "rows.json"  # dates as ISO text: the files mix text and Excel dates
+    out.write_text(
+        t.to_json(orient="records", date_format="iso", force_ascii=False), encoding="utf-8"
+    )
+    con.execute(
+        f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array', sample_size = -1)"
+    )
+
+
+CUSTOM["gr_admie_balancing"] = admie_files
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
