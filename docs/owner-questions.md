@@ -46,6 +46,9 @@ which statement applies (request in `docs/data-requests.md`).
 **Recommendation.** Option 2: the source is left out (`status: left_out`) until JRC confirms;
 drought is still covered for the US by other sources.
 
+**Answer (2026-11-06).** Built: the owner asked to build sources whose licence is unclear. The
+registry labels it CC BY 4.0 and quotes the narrower NetCDF attribute in its note.
+
 ## 3. The Crown Estate offshore wind sites: accept the licence? (2026-11-05, Track 2.1)
 
 **Decision.** The Crown Estate's open data licence for its offshore wind site layers is
@@ -56,6 +59,9 @@ out.
 atlas.
 
 **Recommendation.** Option 2 (the layer would fill GB's offshore zones cell); until then, out.
+
+**Status (2026-11-06).** Still out: the owner's instruction covers unclear licences, and this one
+is clear and restrictive (revocable; bars reuse on a similar portal). Option 2 stands.
 
 ## 4. Korea (KPX) live grid: is the licence open enough? (2026-11-05, Track 3.4)
 
