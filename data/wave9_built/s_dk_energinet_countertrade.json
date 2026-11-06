@@ -1,0 +1,20 @@
+{
+ "dk_energinet_countertrade": {
+  "built": "2026-11-06",
+  "columns": [
+   "timeutc",
+   "timedk",
+   "version",
+   "volumeupmw",
+   "volumedownmw",
+   "publicationdate"
+  ],
+  "example": {
+   "answer": 26976,
+   "sql": "SELECT count(*) FROM wave9.dk_energinet_countertrade"
+  },
+  "geometry": false,
+  "rows": 26976,
+  "seconds": 2
+ }
+}

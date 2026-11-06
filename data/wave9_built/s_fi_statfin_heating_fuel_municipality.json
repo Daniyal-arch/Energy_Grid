@@ -1,0 +1,6 @@
+{
+ "fi_statfin_heating_fuel_municipality": {
+  "built": null,
+  "error": "HTTPStatusError: Client error '403 Forbidden' for url 'https://pxdata.stat.fi/PxWeb/api/v1/fi/StatFin/raku/15er.px'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+ }
+}

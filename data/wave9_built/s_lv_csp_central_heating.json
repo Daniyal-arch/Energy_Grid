@@ -1,0 +1,6 @@
+{
+ "lv_csp_central_heating": {
+  "built": null,
+  "error": "HTTPStatusError: Client error '403 Forbidden' for url 'https://data.stat.gov.lv/api/v1/lv/OSP_PUB/POP/MA/MAS/MAS080'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403"
+ }
+}

@@ -1,6 +1,38 @@
 {
  "world_gebco": {
-  "built": null,
-  "error": "CalledProcessError: Command '['aws', 's3', 'cp', '--only-show-errors', '--endpoint-url', 'https://a8ebfc5ad3d6228569de28c66a5f6367.r2.cloudflarestorage.com', '/tmp/wave9/world_gebco/world_gebco.tif', 's3://infraatlas-raw/lake/rasters/wave9/world_gebco.tif']' returned non-zero exit status 1."
+  "band": "elevation of ocean floor and land (GEBCO_2026 Grid, 8 tiles of 90° × 90°); a TID grid gives the source type",
+  "built": "2026-11-06",
+  "example": {
+   "answer": null,
+   "sql": "area_stats(measure='w9_world_gebco')"
+  },
+  "raster": [
+   {
+    "bounds": [
+     -0.0,
+     -90.0,
+     90.0,
+     0.0
+    ],
+    "bytes": 360643007,
+    "cell": [
+     0.004166666666666666,
+     0.004166666666666667
+    ],
+    "crs": "EPSG:4326",
+    "dtype": "int16",
+    "key": "lake/rasters/wave9/world_gebco.tif",
+    "max": 4902.0,
+    "min": -6570.0,
+    "nodata": -32767.0,
+    "size": [
+     21600,
+     21600
+    ]
+   }
+  ],
+  "rows": 0,
+  "seconds": 239,
+  "unit": "m"
  }
 }
