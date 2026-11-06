@@ -1131,6 +1131,75 @@ def bfee_abwaerme(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
 CUSTOM["de_bfee_abwaerme"] = bfee_abwaerme
 
 
+def ins_ro_census_blocks(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """An INS Romania census table laid out in blocks: a medium heading (ROMANIA, URBAN,
+    RURAL), then an area name row (the country or a county, with its total) and the category
+    rows below it, nested by indentation. Column names from the header rows (`head`, as
+    xlsx_multihead). Long form: medium, area, row (order in the block), label (trimmed),
+    indent (leading spaces as published), section (the top-level category above the row),
+    measure, value; "-" (none) kept as a null value with flag "-"."""
+    import pandas as pd
+
+    f = w.download(s["url"], d / "src.xlsx", timeout=600)
+    df = pd.read_excel(f, sheet_name=s["sheet"], header=None, dtype=str)
+    h0, h1 = s["head"]
+    width = df.shape[1]
+    names: list[list[str]] = [[] for _ in range(width)]
+    bounds = {0, width}
+    for r in range(h0, h1 + 1):
+        cells = {c for c in range(1, width) if pd.notna(df.iat[r, c]) and str(df.iat[r, c]).strip()}
+        stops = sorted(bounds | cells)
+        for c in sorted(cells):
+            for k in range(c, next(x for x in stops if x > c)):
+                names[k].append(" ".join(str(df.iat[r, c]).split()))
+        bounds |= cells
+    cols = [" / ".join(dict.fromkeys(n)) for n in names]
+    media, skip = set(s.get("media", ["ROMANIA", "URBAN", "RURAL"])), set(s.get("headings", []))
+    rows: list[dict[str, Any]] = []
+    medium = area = section = ""
+    order = 0
+    for r in range(int(s["data"]), len(df)):
+        raw = df.iat[r, 0]
+        if not isinstance(raw, str) or not raw.strip():
+            continue
+        label = " ".join(raw.split())
+        vals = [df.iat[r, c] for c in range(1, width)]
+        has = any(pd.notna(v) for v in vals)
+        if label in media and not has:
+            medium, area = label, label
+            continue
+        if label in skip or not has:
+            continue
+        spaces = len(raw) - len(raw.lstrip(" "))
+        if label == s.get("total_label"):  # the medium's own total (country, urban or rural)
+            area, section, order = medium, "", 0
+            label = "Total"
+        elif spaces == 0 and label.isupper():  # an area name row: a county and its total
+            area, section, order = label, "", 0
+            label = "Total"
+        elif spaces <= 1 and not label.startswith("-"):
+            section = label
+        order += 1
+        for c, v in zip(range(1, width), vals, strict=True):
+            if pd.isna(v):
+                continue
+            num = str(v).strip()
+            rows.append({
+                "medium": medium, "area": area, "row": order, "label": label.lstrip("- ").strip(),
+                "indent": spaces, "section": section, "measure": cols[c],
+                "value": float(num) if num.replace(".", "", 1).isdigit() else None,
+                "flag": None if num.replace(".", "", 1).isdigit() else num,
+            })  # fmt: skip
+    if not rows:
+        raise SystemExit("no rows read from the workbook")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["ro_ins_rpl2021_heating_county"] = ins_ro_census_blocks
+
+
 def build_raster(s: dict[str, Any]) -> dict[str, Any]:
     """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
     `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
