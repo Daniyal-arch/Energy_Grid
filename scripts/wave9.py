@@ -297,6 +297,11 @@ def arcgis_pages(s: dict[str, Any], dest: Path) -> Path:
     return dest
 
 
+# ENTSO-E time-series fields kept with each point (what the value is)
+ENTSOE_META = ("businessType", "flowDirection.direction", "type_MarketAgreement.type", "mktPSRType",
+               "psrType", "quantity_Measure_Unit.name", "price_Measure_Unit.name", "currency_Unit.name")  # fmt: skip
+
+
 class KeyMissing(RuntimeError):
     """A source whose URL or headers need a key that is not in the environment."""
 
@@ -438,6 +443,43 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         files = ", ".join(f"'{f}'" for f in frames)
         con.execute(
             f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv([{files}], all_varchar = true, union_by_name = true)"
+        )
+    elif kind == "entsoe":  # brief 30: any Transparency document per area, points as published
+        if not os.environ.get("ENTSOE_API_KEY"):
+            raise KeyMissing("ENTSOE_API_KEY is not set: skipped (set it as a repo secret)")
+        from datetime import UTC, datetime, timedelta
+
+        import entsoe
+
+        end = datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
+        start = end - timedelta(days=int(s.get("days", 30)))
+        stamp = {
+            "periodStart": start.strftime("%Y%m%d%H%M"),
+            "periodEnd": end.strftime("%Y%m%d%H%M"),
+        }
+        rows = []
+        with httpx.Client(timeout=120) as client:
+            for area in s["areas"]:
+                eic = entsoe.AREA_EIC.get(area) or entsoe.ZONE_EIC.get(area)
+                if not eic:
+                    continue
+                params = {
+                    **{k: str(v) for k, v in s["params"].items()},
+                    s["domain_param"]: eic,
+                    **stamp,
+                }
+                for meta, points in entsoe.points_of(
+                    entsoe.request(client, params), s.get("value_tag", "quantity")
+                ):
+                    for t, minutes, value in points:
+                        rows.append({"area": area, "start_utc": t.isoformat(), "minutes": minutes, "value": value,
+                                     **{k: v for k, v in meta.items() if k in ENTSOE_META}})  # fmt: skip
+        if not rows:
+            raise SystemExit(f"no data for any area ({dict(entsoe.OUTCOMES)})")
+        f = d / "src.json"
+        f.write_text(json.dumps(rows), encoding="utf-8")
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array')"
         )
     elif kind == "datafair_agg":  # data-fair values_agg: nested counts flattened to rows
         data = w.get_json(url, timeout=600)
