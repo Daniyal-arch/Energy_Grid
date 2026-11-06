@@ -282,6 +282,7 @@ def arcgis_pages(s: dict[str, Any], dest: Path) -> Path:
     # `page`: a smaller page for layers of large polygons (a full page can time out server-side)
     step = min(int(meta.get("maxRecordCount") or 1000), 2000, int(s.get("page", 2000)))  # type: ignore[union-attr]
     feats: list[dict[str, Any]] = []
+    tries = 0
     while True:
         page = w.get_json(
             s["url"] + "/query",
@@ -291,7 +292,13 @@ def arcgis_pages(s: dict[str, Any], dest: Path) -> Path:
             },
             timeout=300,
         )  # fmt: skip
-        if page.get("error"):  # type: ignore[union-attr]
+        err = page.get("error") or {}  # type: ignore[union-attr]
+        if err.get("code") == 429 and tries < 5:  # a per-minute quota: wait as asked, same page
+            tries += 1
+            time.sleep(61)
+            continue
+        tries = 0
+        if err:
             raise SystemExit(f"ArcGIS error at offset {len(feats):,}: {page['error']}")  # type: ignore[index]
         got = page.get("features") or []  # type: ignore[union-attr]
         feats += got
