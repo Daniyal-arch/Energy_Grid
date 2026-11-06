@@ -1,7 +1,7 @@
 ---
 title: Areas
 tags: [backend, agent, areas]
-updated: 2026-11-04
+updated: 2026-11-06
 paths: [agent/areas/named.yaml, agent/evals/area_names.yaml, backend/data/areas.py, backend/tools/areas.py, backend/tools/area_stats.py, backend/data/duck.py, agent/areas/, agent/rasters.yaml, agent/skills/area-analysis/]
 ---
 
@@ -30,6 +30,7 @@ Any area the user names, draws or sees becomes one object the other tools use.
   partial union). `tools/areas.py` `_named_area`.
 - Name evals: `agent/evals/area_names.yaml` (official km² with a 10 % band), run against the real
   lake by `backend/probes/probe_latency.py`; fixture cases in `backend/tests/test_areas.py`.
+- **Speed** (brief 30): `outlines.names.name_norm` (sorted, bloom) for the match; `geometry_of(ref, bbox)` reads an outline by its box and id (row groups skipped); `Lake.tables()` cached. On R2 a name still takes ~5 s (p50, 2026-11-06): not yet broken down.
 - **SQL**: `run_sql(..., areas=[ids])` registers temp table `areas` and macros `in_area(geom,
   id)`, `intersects_area`, `km_inside`, `km2_inside`; `expand_in_area` adds a literal bbox
   filter so Parquet row groups are skipped. Country and group areas: filter by the country key

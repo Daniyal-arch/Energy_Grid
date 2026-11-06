@@ -8,6 +8,13 @@ updated: 2026-11-03
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-06** (claude/loving-dijkstra-5q8n1c, PR #19 ready): brief 30 done-check. Real-lake
+  probe: names 12/12, first event 0.01 s, run_sql p50 0.46 s, resolve_area p50 5.3 s (not met;
+  outlines now fetched by box, table list cached). Second dark-cell pass merged (64 cells,
+  `data/dark_evidence.yaml`, pxweb kind). Coverage built 1,473 to 1,855 of the 29 places' cells.
+  Open: resolve_area breakdown, deck.gl after first frame (bundle 771 kB), FEMA/ENTSO-E balancing/
+  EEA AQ readers, conversation permalinks, KPX wiring (owner). Notes: areas, coverage-and-gaps.
+
 - **2026-11-06** (claude/loving-dijkstra-5q8n1c, PR #19): Track 3 (H3 rollups, history
   snapshots, customer-gap sources, live grids: KPX ready but not wired), Track 4 (lazy agent
   import, data API), Track 5 (code-split bundle 863 to 208 kB entry, recently used, coverage
