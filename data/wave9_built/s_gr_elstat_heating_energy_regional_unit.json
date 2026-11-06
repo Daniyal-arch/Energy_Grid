@@ -1,0 +1,20 @@
+{
+ "gr_elstat_heating_energy_regional_unit": {
+  "built": "2026-11-06",
+  "columns": [
+   "level",
+   "code",
+   "area",
+   "category",
+   "measure",
+   "value"
+  ],
+  "example": {
+   "answer": 3906,
+   "sql": "SELECT count(*) FROM wave9.gr_elstat_heating_energy_regional_unit"
+  },
+  "geometry": false,
+  "rows": 3906,
+  "seconds": 3
+ }
+}
