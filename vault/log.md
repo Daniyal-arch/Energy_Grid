@@ -8,6 +8,12 @@ updated: 2026-11-03
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-06** (PR #19, after "finish all"): resolve_area 5.3 to 1.7 s p50 on R2 (profiled: R2
+  writes moved to the background, parallel name reads, outline by box, name cache); readers for
+  FEMA (live), ENTSO-E (`entsoe`), EEA AQ (`aqviewer`), Overture telecom; conversation
+  permalinks; every remaining dark cell of the customer families re-searched. Decided against:
+  deck.gl after the first frame. Notes: areas, wave9.
+
 - **2026-11-06** (claude/loving-dijkstra-5q8n1c, PR #19 ready): brief 30 done-check. Real-lake
   probe: names 12/12, first event 0.01 s, run_sql p50 0.46 s, resolve_area p50 5.3 s (not met;
   outlines now fetched by box, table list cached). Second dark-cell pass merged (64 cells,

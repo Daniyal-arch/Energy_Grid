@@ -41,3 +41,9 @@ first frame (a change to the render loop in `map/MapCanvas.tsx`), left for a fol
 - New controls (coverage explorer cells, Ask chips, "Ask about this area") have
   `focus-visible` outlines and aria labels; the explorer's statuses are named in each cell's
   label, not by colour alone.
+
+## Latency after the area fixes (2026-11-06, backend-probe run 42197509006)
+Fake model, Lambda-sized container, real lake on R2: ask total p50 2.20 s / p95 5.97 s;
+`resolve_area` p50 1.68 s / p95 4.00 s; `run_sql` p50 0.36 s / p95 0.59 s; data routes warm
+p50 0.01 s / p95 0.37 s; cold start to health 4.40 s; load test (50 asks + 50 route reads)
+wall 59.5 s, 0 errors. All 12 area names resolve first try.
