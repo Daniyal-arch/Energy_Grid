@@ -1353,6 +1353,19 @@ def cell_for(fam: str, f: dict[str, Any], cc: str, srcs: list[dict[str, Any]], b
 RASTERS = ROOT / "agent" / "rasters_waves.yaml"
 
 
+def updates_text(s: dict[str, Any], b: dict[str, Any]) -> str:
+    """The layer card's "Updated:" line (brief 30): the source's own date when known (stated, or
+    the file's Last-Modified), else the date it was built here, and its refresh rhythm."""
+    from freshness import refresh_of
+
+    every, basis = refresh_of(s)
+    if b.get("as_of"):
+        when = f"as of {b['as_of']} ({b.get('as_of_basis', 'stated by the publisher')})"
+    else:
+        when = f"built {b.get('built') or 'n/a'} (the source states no date)"
+    return f"{when}; refreshed {every} ({basis})"
+
+
 def render_rasters(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
     """agent/rasters_waves.yaml: one area_stats measure per built raster source of this wave
     (`<pfx>_<id>`), the mean of the cells whose centre lies inside the area unless the registry
@@ -1662,7 +1675,7 @@ def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
             layers.append({**layer, "label": title_of(s), "desc": desc, "group": group,
                            "coverage": ", ".join(w for w in where if w != "World") or "World", "color": colour})  # fmt: skip
             datasets.append({"id": lid, "name": title_of(s), "category": group, "description": f"{title_of(s)}: {b['rows']:,} records as published",
-                             "color": colour, "family": s["fam"],
+                             "color": colour, "family": s["fam"], "updates": updates_text(s, b),
                              "parts": [{"layer": lid, "where": where, "what": shows, "source": src, "doc": f"Wave {WAVE} sources"}]})  # fmt: skip
         ch = b.get("choro")
         if ch and (APPC / f"{s['id']}.json").exists():
@@ -1680,7 +1693,7 @@ def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
             )
             datasets.append({"id": f"colour-{cid}", "name": label, "category": group,
                              "description": f"{label} ({s['choro'].get('unit', '')}), {ch['areas']} {AREA_WORD[ch['scope']]}, {ch.get('period') or ''}: {title_of(s)}",
-                             "color": colour, "family": s["fam"], "colour": cid,
+                             "color": colour, "family": s["fam"], "colour": cid, "updates": updates_text(s, b),
                              "parts": [{"where": where if ch["scope"] == "country" else [SCOPE_PLACE[ch["scope"]]], "what": label, "source": src, "doc": f"Wave {WAVE} sources"}]})  # fmt: skip
     (ROOT / "frontend" / "src" / "app" / f"{WN}.json").write_text(
         json.dumps(

@@ -1398,6 +1398,7 @@
    "description": "Zensus 2022 heating type per 100 m cell: 2,628,942 records as published",
    "color": "rgb(214,160,255)",
    "family": "heating",
+   "updates": "as of 2024-10-08 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_de_zensus_heating",
@@ -1417,6 +1418,7 @@
    "description": "ISTAT census sections 2021: 756,376 records as published",
    "color": "rgb(214,160,255)",
    "family": "outlines",
+   "updates": "as of 2026-02-27 (Last-Modified of the published file); refreshed yearly (census geography, redrawn with each census: checked yearly)",
    "parts": [
     {
      "layer": "w9_it_istat_sezioni",
@@ -1436,6 +1438,7 @@
    "description": "INE census sections 2024: 36,477 records as published",
    "color": "rgb(214,160,255)",
    "family": "outlines",
+   "updates": "as of 2024-03-21 (Last-Modified of the published file); refreshed yearly (census geography, redrawn with each census: checked yearly)",
    "parts": [
     {
      "layer": "w9_es_ine_secciones",
@@ -1455,6 +1458,7 @@
    "description": "Statistics Finland Paavo postal areas 2024: 3,026 records as published",
    "color": "rgb(214,160,255)",
    "family": "outlines",
+   "updates": "built 2026-11-05 (the source states no date); refreshed yearly (census geography, redrawn with each census: checked yearly)",
    "parts": [
     {
      "layer": "w9_fi_paavo",
@@ -1474,6 +1478,7 @@
    "description": "ČSÚ basic settlement units (ZSJ): 23,605 records as published",
    "color": "rgb(214,160,255)",
    "family": "outlines",
+   "updates": "as of 2026-09-07 (Last-Modified of the published file); refreshed yearly (census geography, redrawn with each census: checked yearly)",
    "parts": [
     {
      "layer": "w9_cz_zsj",
@@ -1493,6 +1498,7 @@
    "description": "Statistics Estonia statistical grid: 45,636 records as published",
    "color": "rgb(214,160,255)",
    "family": "outlines",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_ee_grid",
@@ -1512,6 +1518,7 @@
    "description": "Environment Agency Flood Map for Planning, flood zones 2 and 3: 415,408 records as published",
    "color": "rgb(255,120,96)",
    "family": "flood_zones",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_gb_ea_flood_zones",
@@ -1531,6 +1538,7 @@
    "description": "EIA petroleum refineries: 130 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "as of 2022-02-03 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_refineries",
@@ -1550,6 +1558,7 @@
    "description": "EIA natural gas processing plants: 478 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "as of 2020-01-10 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_gas_processing",
@@ -1569,6 +1578,7 @@
    "description": "EIA interstate and intrastate gas pipelines: 32,961 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "as of 2020-04-27 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_gas_pipelines",
@@ -1588,6 +1598,7 @@
    "description": "EIA crude oil pipelines: 236 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "as of 2020-04-27 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_crude_pipelines",
@@ -1607,6 +1618,7 @@
    "description": "EIA LNG import and export terminals: 8 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "as of 2020-04-27 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_lng",
@@ -1626,6 +1638,7 @@
    "description": "EIA petroleum product terminals: 1,474 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "as of 2022-02-03 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_product_terminals",
@@ -1645,6 +1658,7 @@
    "description": "EIA underground gas storage: 412 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "as of 2022-01-31 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_gas_storage",
@@ -1664,6 +1678,7 @@
    "description": "EIA hydrocarbon gas liquids pipelines: 133 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "as of 2020-04-27 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_hgl_pipelines",
@@ -1683,6 +1698,7 @@
    "description": "EIA petroleum product pipelines: 329 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "as of 2020-04-27 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_product_pipelines",
@@ -1702,6 +1718,7 @@
    "description": "EIA crude-by-rail terminals: 99 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "as of 2019-01-16 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_crude_rail",
@@ -1721,6 +1738,7 @@
    "description": "EIA biodiesel plants: 75 records as published",
    "color": "rgb(214,160,255)",
    "family": "biogas",
+   "updates": "as of 2022-02-03 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_biodiesel",
@@ -1740,6 +1758,7 @@
    "description": "EIA ethanol plants: 197 records as published",
    "color": "rgb(214,160,255)",
    "family": "biogas",
+   "updates": "as of 2022-02-03 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_eia_ethanol",
@@ -1759,6 +1778,7 @@
    "description": "NETL NATCARB CO2 storage resources: 186,675 records as published",
    "color": "rgb(214,160,255)",
    "family": "co2_storage",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_natcarb",
@@ -1778,6 +1798,7 @@
    "description": "BLM solar energy zones: 153 records as published",
    "color": "rgb(206,184,140)",
    "family": "acceleration_areas",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live service))",
    "parts": [
     {
      "layer": "w9_us_blm_solar_dla",
@@ -1797,6 +1818,7 @@
    "description": "Natural England provisional Agricultural Land Classification: 1,826 records as published",
    "color": "rgb(206,184,140)",
    "family": "farmland_quality",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_gb_ne_alc",
@@ -1816,6 +1838,7 @@
    "description": "Géorisques polluted sites and soils: 12,431 records as published",
    "color": "rgb(206,184,140)",
    "family": "brownfield",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_fr_georisques_ssp",
@@ -1835,6 +1858,7 @@
    "description": "Brownfield land registers (planning.data.gov.uk): 40,229 records as published",
    "color": "rgb(206,184,140)",
    "family": "brownfield",
+   "updates": "built 2026-10-31 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_gb_brownfield_register",
@@ -1854,6 +1878,7 @@
    "description": "EPA RE-Powering screened sites: 190,976 records as published",
    "color": "rgb(206,184,140)",
    "family": "brownfield",
+   "updates": "as of 2023-05-09 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_epa_repowering",
@@ -1873,6 +1898,7 @@
    "description": "EPA Facility Registry Service cleanups: 45,924 records as published",
    "color": "rgb(206,184,140)",
    "family": "brownfield",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live service))",
    "parts": [
     {
      "layer": "w9_us_epa_frs_cleanups",
@@ -1893,6 +1919,7 @@
    "color": "rgb(206,184,140)",
    "family": "land_prices",
    "colour": "w9c_eu_land_prices",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -1911,6 +1938,7 @@
    "description": "OurAirports airports: 86,337 records as published",
    "color": "rgb(206,184,140)",
    "family": "heritage_aviation",
+   "updates": "as of 2026-11-05 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_world_ourairports",
@@ -1930,6 +1958,7 @@
    "description": "Historic England National Heritage List: 379,686 records as published",
    "color": "rgb(206,184,140)",
    "family": "heritage_aviation",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live service))",
    "parts": [
     {
      "layer": "w9_gb_he_listed",
@@ -1949,6 +1978,7 @@
    "description": "National Register of Historic Places: 74,636 records as published",
    "color": "rgb(206,184,140)",
    "family": "heritage_aviation",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live service))",
    "parts": [
     {
      "layer": "w9_us_nrhp",
@@ -1968,6 +1998,7 @@
    "description": "NEXRAD weather radar sites: 210 records as published",
    "color": "rgb(206,184,140)",
    "family": "heritage_aviation",
+   "updates": "as of 2026-10-01 (Last-Modified of the published file); refreshed monthly (NCEI Storm Events are updated monthly (NCEI))",
    "parts": [
     {
      "layer": "w9_us_nexrad",
@@ -1987,6 +2018,7 @@
    "description": "Planning Inspectorate national infrastructure projects: 295 records as published",
    "color": "rgb(206,184,140)",
    "family": "energy_consents",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_gb_pins_dco",
@@ -2006,6 +2038,7 @@
    "description": "NESO Electricity Ten Year Statement: 34 records as published",
    "color": "rgb(236,178,120)",
    "family": "planned_grid",
+   "updates": "as of 2025-06-02 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_gb_neso_etys",
@@ -2025,6 +2058,7 @@
    "description": "NGED embedded capacity register: 7,211 records as published",
    "color": "rgb(236,178,120)",
    "family": "distribution_data",
+   "updates": "as of 2026-08-14 (Last-Modified of the published file); refreshed monthly (the publisher states no rhythm: checked monthly (a live portal))",
    "parts": [
     {
      "layer": "w9_gb_nged_opendata",
@@ -2044,6 +2078,7 @@
    "description": "SSEN embedded capacity register: 1,317 records as published",
    "color": "rgb(236,178,120)",
    "family": "distribution_data",
+   "updates": "as of 2026-10-12 (Last-Modified of the published file); refreshed monthly (the publisher states no rhythm: checked monthly (a live portal))",
    "parts": [
     {
      "layer": "w9_gb_ssen_opendata",
@@ -2063,6 +2098,7 @@
    "description": "ESHM20 European seismic hazard model: 100,636 records as published",
    "color": "rgb(255,120,96)",
    "family": "earthquake",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_eu_eshm20",
@@ -2082,6 +2118,7 @@
    "description": "USGS National Seismic Hazard Model 2023: 9,794 records as published",
    "color": "rgb(255,120,96)",
    "family": "earthquake",
+   "updates": "as of 2026-11-05 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_usgs_nshm",
@@ -2101,6 +2138,7 @@
    "description": "US Drought Monitor (current): 5 records as published",
    "color": "rgb(255,120,96)",
    "family": "drought",
+   "updates": "as of 2026-10-29 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_drought_monitor",
@@ -2120,6 +2158,7 @@
    "description": "JRC LISCoAsT coastal flood hazard: 20,865 records as published",
    "color": "rgb(255,120,96)",
    "family": "coastal_flood",
+   "updates": "as of 2020-02-26 (Last-Modified of the published file); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "layer": "w9_eu_jrc_coastal_flood",
@@ -2139,6 +2178,7 @@
    "description": "USGS landslide inventory: 680,497 records as published",
    "color": "rgb(255,120,96)",
    "family": "landslides",
+   "updates": "as of 2026-11-05 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_usgs_landslides",
@@ -2158,6 +2198,7 @@
    "description": "NOAA Storm Events (newest year): 72,360 records as published",
    "color": "rgb(255,120,96)",
    "family": "storms",
+   "updates": "as of 2026-08-19 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_noaa_storm_events",
@@ -2177,6 +2218,7 @@
    "description": "USGS geoelectric hazard: 1,616 records as published",
    "color": "rgb(255,120,96)",
    "family": "geomagnetic",
+   "updates": "as of 2026-11-05 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_usgs_geoelectric",
@@ -2196,6 +2238,7 @@
    "description": "NYC Local Law 84 building energy benchmarking: 103,259 records as published",
    "color": "rgb(214,160,255)",
    "family": "building_certificates",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_nyc_ll84",
@@ -2216,6 +2259,7 @@
    "color": "rgb(214,160,255)",
    "family": "degree_days",
    "colour": "w9c_eu_degree_days",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -2234,6 +2278,7 @@
    "description": "EMODnet offshore wind farms: 600 records as published",
    "color": "rgb(96,190,255)",
    "family": "offshore_zones",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_wind_farms",
@@ -2253,6 +2298,7 @@
    "description": "BOEM offshore wind lease outlines: 52 records as published",
    "color": "rgb(96,190,255)",
    "family": "offshore_zones",
+   "updates": "built 2026-10-31 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_boem_wind_leases",
@@ -2272,6 +2318,7 @@
    "description": "USGS usSEABED: 117,031 records as published",
    "color": "rgb(96,190,255)",
    "family": "seabed",
+   "updates": "as of 2006-05-30 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_usseabed",
@@ -2291,6 +2338,7 @@
    "description": "USGS Mineral Resources Data System: 304,632 records as published",
    "color": "rgb(214,160,255)",
    "family": "critical_minerals",
+   "updates": "as of 2022-08-23 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_usgs_mrds",
@@ -2310,6 +2358,7 @@
    "description": "EGDI mineral deposits: 28,223 records as published",
    "color": "rgb(214,160,255)",
    "family": "critical_minerals",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_eu_egdi_minerals",
@@ -2329,6 +2378,7 @@
    "description": "EPA LMOP landfill gas energy projects: 542 records as published",
    "color": "rgb(214,160,255)",
    "family": "biogas",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live service))",
    "parts": [
     {
      "layer": "w9_us_epa_lmop",
@@ -2348,6 +2398,7 @@
    "description": "Salt-cavern hydrogen storage potential (Zenodo): 119 records as published",
    "color": "rgb(214,160,255)",
    "family": "h2_storage_potential",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_eu_salt_caverns",
@@ -2367,6 +2418,7 @@
    "description": "NETL IRA energy community layers: 901 records as published",
    "color": "rgb(150,220,150)",
    "family": "transition_areas",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live service))",
    "parts": [
     {
      "layer": "w9_us_ira_energy_communities",
@@ -2386,6 +2438,7 @@
    "description": "HUD Opportunity Zones (census tracts): 8,765 records as published",
    "color": "rgb(150,220,150)",
    "family": "transition_areas",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live service))",
    "parts": [
     {
      "layer": "w9_us_opportunity_zones",
@@ -2406,6 +2459,7 @@
    "color": "rgb(240,200,220)",
    "family": "income",
    "colour": "w9c_eu_household_income",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -2425,6 +2479,7 @@
    "color": "rgb(120,200,230)",
    "family": "water_stress",
    "colour": "w9c_us_usgs_water_use",
+   "updates": "as of 2026-11-05 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "where": [
@@ -2443,6 +2498,7 @@
    "description": "USGS NWIS stream gauges: 147,741 records as published",
    "color": "rgb(120,200,230)",
    "family": "river_discharge",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_usgs_nwis_sites",
@@ -2462,6 +2518,7 @@
    "description": "IHFC Global Heat Flow Database 2024: 91,182 records as published",
    "color": "rgb(255,170,110)",
    "family": "geothermal_heat_flow",
+   "updates": "as of 2026-03-09 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_world_ihfc_heat_flow",
@@ -2481,6 +2538,7 @@
    "description": "Danish Energy Agency district heating areas: 6,263 records as published",
    "color": "rgb(255,170,110)",
    "family": "district_heating",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_dk_district_heating",
@@ -2500,6 +2558,7 @@
    "description": "TEN-T network (TENtec): 4,767 records as published",
    "color": "rgb(190,190,255)",
    "family": "freight_corridors",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "layer": "w9_eu_tent_network",
@@ -2519,6 +2578,7 @@
    "description": "National Highways Strategic Road Network: 43,040 records as published",
    "color": "rgb(190,190,255)",
    "family": "freight_corridors",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live service))",
    "parts": [
     {
      "layer": "w9_gb_srn",
@@ -2538,6 +2598,7 @@
    "description": "FHWA Alternative Fuel Corridors: 2,275 records as published",
    "color": "rgb(190,190,255)",
    "family": "freight_corridors",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live service))",
    "parts": [
     {
      "layer": "w9_us_fhwa_afc",
@@ -2557,6 +2618,7 @@
    "description": "DEFRA AURN monitoring sites: 2,448 records as published",
    "color": "rgb(200,200,200)",
    "family": "air_quality",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_gb_defra_aurn",
@@ -2576,6 +2638,7 @@
    "description": "EPA AQS annual concentrations per monitor (2025): 65,709 records as published",
    "color": "rgb(200,200,200)",
    "family": "air_quality",
+   "updates": "built 2026-10-31 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_epa_aqs_annual",
@@ -2596,6 +2659,7 @@
    "color": "rgb(214,160,255)",
    "family": "ev_registrations",
    "colour": "w9c_eu_ev_stock_nuts2",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -2615,6 +2679,7 @@
    "color": "rgb(214,160,255)",
    "family": "ev_registrations",
    "colour": "w9c_eu_new_cars_fuel",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -2634,6 +2699,7 @@
    "color": "rgb(190,190,255)",
    "family": "rail_electrification",
    "colour": "w9c_eu_rail_electrified",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -2653,6 +2719,7 @@
    "color": "rgb(120,200,230)",
    "family": "water_stress",
    "colour": "w9c_eu_water_abstraction",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -2672,6 +2739,7 @@
    "color": "rgb(120,200,230)",
    "family": "wastewater",
    "colour": "w9c_eu_wastewater_connected",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -2691,6 +2759,7 @@
    "color": "rgb(190,190,255)",
    "family": "airports",
    "colour": "w9c_eu_air_passengers",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -2710,6 +2779,7 @@
    "color": "rgb(240,200,220)",
    "family": "energy_poverty",
    "colour": "w9c_eu_energy_productivity",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -2728,6 +2798,7 @@
    "description": "OurAirports runways: 48,405 records as published",
    "color": "rgb(190,190,255)",
    "family": "airports",
+   "updates": "as of 2026-11-05 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_world_ourairports_runways",
@@ -2747,6 +2818,7 @@
    "description": "OurAirports navigation aids: 11,008 records as published",
    "color": "rgb(206,184,140)",
    "family": "heritage_aviation",
+   "updates": "as of 2026-11-05 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_world_ourairports_navaids",
@@ -2766,6 +2838,7 @@
    "description": "EPA LMOP landfills: 2,323 records as published",
    "color": "rgb(214,160,255)",
    "family": "biogas",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live service))",
    "parts": [
     {
      "layer": "w9_us_epa_lmop_landfills",
@@ -2785,6 +2858,7 @@
    "description": "BOEM active renewable energy leases: 4,892 records as published",
    "color": "rgb(96,190,255)",
    "family": "offshore_zones",
+   "updates": "built 2026-10-31 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_us_boem_active_leases",
@@ -2805,6 +2879,7 @@
    "color": "rgb(214,160,255)",
    "family": "ev_registrations",
    "colour": "w9c_gb_ulev_la",
+   "updates": "built 2026-11-03 (the source states no date); refreshed yearly (UK official statistics are released yearly (gov.uk release calendar))",
    "parts": [
     {
      "where": [
@@ -2823,6 +2898,7 @@
    "description": "EMODnet offshore installations: 1,617 records as published",
    "color": "rgb(96,190,255)",
    "family": "offshore_zones",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_platforms",
@@ -2842,6 +2918,7 @@
    "description": "EMODnet offshore pipelines: 3,951 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_pipelines",
@@ -2861,6 +2938,7 @@
    "description": "EMODnet wave and tidal energy projects: 361 records as published",
    "color": "rgb(96,190,255)",
    "family": "offshore_zones",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_ocean_energy",
@@ -2880,6 +2958,7 @@
    "description": "EMODnet maritime spatial plan zones: 4,257 records as published",
    "color": "rgb(96,190,255)",
    "family": "offshore_zones",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_msp_zoning",
@@ -2899,6 +2978,7 @@
    "description": "EMODnet ports: 946 records as published",
    "color": "rgb(96,190,255)",
    "family": "ports",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_ports",
@@ -2918,6 +2998,7 @@
    "description": "EMODnet goods handled per port: 429,668 records as published",
    "color": "rgb(96,190,255)",
    "family": "ports",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_port_goods",
@@ -2937,6 +3018,7 @@
    "description": "EMODnet urban wastewater treatment plants (UWWTD): 57,243 records as published",
    "color": "rgb(120,200,230)",
    "family": "wastewater",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_wwtp",
@@ -2956,6 +3038,7 @@
    "description": "EMODnet nuclear power plants: 121 records as published",
    "color": "rgb(255,214,72)",
    "family": "reactors",
+   "updates": "built 2026-10-31 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_nuclear",
@@ -2975,6 +3058,7 @@
    "description": "EMODnet desalination plants: 3,911 records as published",
    "color": "rgb(120,200,230)",
    "family": "water_stress",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_desalination",
@@ -2994,6 +3078,7 @@
    "description": "EMODnet hydrocarbon licences: 28,506 records as published",
    "color": "rgb(230,140,90)",
    "family": "oil_gas_facilities",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_hydrocarbon_licences",
@@ -3013,6 +3098,7 @@
    "description": "EMODnet marine protected areas: 826 records as published",
    "color": "rgb(96,190,255)",
    "family": "marine_protected",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_mpa",
@@ -3032,6 +3118,7 @@
    "description": "EMODnet military areas at sea: 746 records as published",
    "color": "rgb(96,190,255)",
    "family": "offshore_zones",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_military",
@@ -3051,6 +3138,7 @@
    "description": "EMODnet marine aggregate areas: 1,202 records as published",
    "color": "rgb(96,190,255)",
    "family": "offshore_zones",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_aggregates",
@@ -3070,6 +3158,7 @@
    "description": "EMODnet seabed substrate 1:1M: 67,254 records as published",
    "color": "rgb(96,190,255)",
    "family": "seabed",
+   "updates": "built 2026-11-05 (the source states no date); refreshed quarterly (the publisher states no rhythm: checked quarterly (EMODnet adds national data as it arrives))",
    "parts": [
     {
      "layer": "w9_eu_emodnet_substrate",
@@ -3089,6 +3178,7 @@
    "description": "Northern Powergrid heat map: substation headroom: 670 records as published",
    "color": "rgb(236,178,120)",
    "family": "distribution_data",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (the publisher states no rhythm: checked monthly (a live portal))",
    "parts": [
     {
      "layer": "w9_gb_npg_heatmap_substations",
@@ -3108,6 +3198,7 @@
    "description": "DESNZ Heat Networks Planning Database (Q2 2026): 1,505 records as published",
    "color": "rgb(255,170,110)",
    "family": "district_heating",
+   "updates": "as of 2026-07-31 (Last-Modified of the published file); refreshed quarterly (the publisher states no rhythm: checked quarterly)",
    "parts": [
     {
      "layer": "w9_gb_hnpd",
@@ -3128,6 +3219,7 @@
    "color": "rgb(255,170,110)",
    "family": "district_heating",
    "colour": "w9c_eu_heat_production",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -3147,6 +3239,7 @@
    "color": "rgb(236,178,120)",
    "family": "network_charges",
    "colour": "w9c_eu_network_costs",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -3166,6 +3259,7 @@
    "color": "rgb(255,196,90)",
    "family": "network_charges",
    "colour": "w9c_eu_nonhousehold_prices",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -3185,6 +3279,7 @@
    "color": "rgb(214,160,255)",
    "family": "rooftop_solar",
    "colour": "w9c_eu_renewable_capacity",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [
@@ -3204,6 +3299,7 @@
    "color": "rgb(120,200,230)",
    "family": "broadband",
    "colour": "w9c_eu_internet_households",
+   "updates": "built 2026-11-05 (the source states no date); refreshed monthly (Eurostat updates a dataset when new data arrive (release calendar))",
    "parts": [
     {
      "where": [

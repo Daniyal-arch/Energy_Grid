@@ -11463,70 +11463,109 @@ families:
     category: 5
     cells:
       AT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       BE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       BG:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       HR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       CY:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       CZ:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       DK:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       EE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       FI:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       FR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       DE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       GR:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       HU:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       IE:
         status: built
         source: CSO metered electricity consumption (MEC03)
@@ -11535,70 +11574,109 @@ families:
         dataset: lake wave9.ie_cso_dc_consumption
         checked: '2026-11-05'
       IT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       LV:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       LT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       LU:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       MT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       NL:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       PL:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       PT:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       RO:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       SK:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       SI:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       ES:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       SE:
-        status: not_published
-        url: https://data.europa.eu/data/datasets
+        status: blocked
+        source: European database of data centres - aggregated results (EED Art. 12)
+        url: https://dashboard.tech.ec.europa.eu/qs_digit_dashboard_mt/public/sense/app/940a61c3-bcfe-47d6-a786-25d93aa63b85/sheet/ZLWpJa/state/analysis
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''data centres energy consumption'' (2026-10-31): 0 results'
+        note: 'the Commission publishes the database only "in aggregated manner" as a Qlik Sense dashboard (link.europa.eu/q7x39t -> dashboard.tech.ec.europa.eu, updated monthly) and in PDF reports (July
+          2025 study; COM(2026) 500); the data-centre page links no CSV or XLSX (2026-11-05). Data request: European Commission (DG ENER), the dashboard''s aggregates per Member State and year (energy consumption,
+          PUE, renewable share) as an open CSV under CC BY 4.0'
       GB:
         status: not_published
         url: https://www.data.gov.uk/
@@ -13074,144 +13152,312 @@ families:
     cells:
       AT:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       BE:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       BG:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       HR:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       CY:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       CZ:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       DK:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       EE:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       FI:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       FR:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       DE:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       GR:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       HU:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       IE:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       IT:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       LV:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       LT:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       LU:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       MT:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       NL:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       PL:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       PT:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       RO:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       SK:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       SI:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       ES:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       SE:
         status: not_published
-        url: https://data.europa.eu/data/datasets
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.europa.eu search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.europa.eu search ''battery gigafactory''
+          (2026-10-31): 0 results'
       GB:
         status: not_published
-        url: https://www.data.gov.uk/
+        url: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
         checked: '2026-11-06'
-        note: 'no source built in wave 9. data.gov.uk search ''battery gigafactory'' (2026-10-31): 0 results'
+        note: 'no source built in wave 9. Clean Hydrogen Observatory electrolyser manufacturing capacity probed (https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20ma,
+          HTTP None): no machine-readable download located | Bruegel European Clean Tech Tracker left out: charts only (battery capacity by company and HQ country, investments), no download and no plant
+          list; the dataset page says "© BRUEGEL. All rights reserved." (2026-11-05) | SolarPower Europe EU Solar Manufacturing Map left out: interactive map without a file; SolarPower Europe states it
+          owns the copyright of its market-intelligence data (no open licence) | Transport & Environment battery gigafactory analysis: T&E publishes gigafactory analyses as reports (2021, 2023, 2025), with
+          no dataset or licence for the plant list | New AutoMotive European Battery Tracker left out: interactive tool (about 180 projects); no download and no licence stated | IEA clean technology manufacturing
+          data left out: no factory-level IEA dataset; IEA free datasets carry CC BY-NC-SA 4.0 IGO (non-commercial) and commercial use needs a paid licence | data.gov.uk search ''battery gigafactory'' (2026-10-31):
+          0 results'
       US:
         status: blocked
         source: Clean Investment Monitor
@@ -30924,3 +31170,605 @@ families:
         url: https://catalog.data.gov/
         checked: '2026-11-06'
         note: no source found in wave 10
+  telecom_routes:
+    name: Telecom routes
+    shows: fibre and submarine telecom cable routes
+    category: 10
+    cells:
+      AT:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      BE:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      BG:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      HR:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      CY:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      CZ:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      DK:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      EE:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      FI:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      FR:
+        status: not_published
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:shomcables&outputFormat=application/json
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. EMODnet telecommunication cables - FR SHOM probed (https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&ty, HTTP None): no machine-readable
+          download located | EMODnet telecommunication cables - FR SIGCables probed (https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&ty, HTTP None): no machine-readable
+          download located | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP None): no machine-readable
+          download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map, URL, or any related screen
+          capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      DE:
+        status: not_published
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:bshcontiscables&outputFormat=application/json
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. EMODnet telecommunication cables - DE BSH-CONTIS probed (https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&ty, HTTP None):
+          no machine-readable download located | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*,
+          HTTP None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography
+          map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)
+          | BNetzA Infrastrukturatlas left out: "Der Infrastrukturatlas ist nicht öffentlich zugänglich": viewing needs a registered account and a reviewed application, limited in time and area (BNetzA
+          fact sheet)'
+      GR:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      HU:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      IE:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      IT:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      LV:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      LT:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      LU:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      MT:
+        status: not_published
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:maltacables&outputFormat=application/json
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. EMODnet telecommunication cables - MT IOI-MOC probed (https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&ty, HTTP None): no
+          machine-readable download located | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*,
+          HTTP None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography
+          map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      NL:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      PL:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      PT:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      RO:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      SK:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      SI:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      ES:
+        status: not_published
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:cicacables&outputFormat=application/json
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. EMODnet telecommunication cables - ES CICA probed (https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&ty, HTTP None): no machine-readable
+          download located | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP None): no machine-readable
+          download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map, URL, or any related screen
+          capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      SE:
+        status: not_published
+        url: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*, HTTP
+          None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map,
+          URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      GB:
+        status: not_published
+        url: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:ukfibrecables&outputFormat=application/json
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. EMODnet telecommunication cables - UK OGA left out: the layer answers (30 cables; NSTA pipeline-style columns pipe_name, operator, ins_date, ...) but its primary
+          source is NSTA (ex-OGA) data, licensed for non-commercial use only (as gb_nsta_pipelines) | OpenStreetMap communication lines (Overture base/infrastructure) probed (s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*,
+          HTTP None): no machine-readable download located | TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography
+          map, URL, or any related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+      US:
+        status: not_published
+        url: https://www.submarinecablemap.com/api/v3/cable/cable-geo.json
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. TeleGeography Submarine Cable Map left out: the JSON answers (754,659 bytes), but TeleGeography licenses only "any reference to a TeleGeography map, URL, or any
+          related screen capture" under CC BY-SA 4.0; "Access to the underlying databases remains restricted to paying subscribers" (the older GitHub copy was CC BY-NC-SA 3.0, non-commercial)'
+  industrial_heat:
+    name: Industrial heat per site
+    shows: reported heat use or excess heat per industrial site
+    category: 7
+    cells:
+      AT:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      BE:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      BG:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      HR:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      CY:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      CZ:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      DK:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      EE:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      FI:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      FR:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      DE:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      GR:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      HU:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      IE:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      IT:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      LV:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      LT:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      LU:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      MT:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      NL:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      PL:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      PT:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      RO:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      SK:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      SI:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      ES:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      SE:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      GB:
+        status: have
+        source: Hotmaps industrial database (earlier wave); EEA large combustion plants fuel input (earlier wave)
+        url: https://gitlab.com/hotmaps/industrial_sites/industrial_sites_Industrial_Database
+        licence: CC BY 4.0
+        dataset: lake hotmaps.industrial_sites, lake industrial.lcp
+        checked: '2026-11-05'
+      US:
+        status: not_published
+        url: https://catalog.data.gov/
+        checked: '2026-11-06'
+        note: no source found in wave 9
+  corporate_ppas:
+    name: Corporate PPAs
+    shows: corporate power purchase agreements per project or buyer
+    category: 7
+    cells:
+      AT:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      BE:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      BG:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      HR:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      CY:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      CZ:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      DK:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      EE:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      FI:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      FR:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      DE:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      GR:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      HU:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      IE:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      IT:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence | GME Bacheca PPA left out: GME publishes only daily summaries of buy/sell ads and, monthly, "in forma aggregata e anonima" the number and
+          quantities of contracts registered (Disposizione tecnica 06 rev. 1); use is subject to the site conditions, no open licence'
+      LV:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      LT:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      LU:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      MT:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      NL:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      PL:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      PT:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      RO:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      SK:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      SI:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      ES:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      SE:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      GB:
+        status: not_published
+        url: https://resource-platform.eu/
+        checked: '2026-11-06'
+        note: 'no source built in wave 9. RE-Source corporate PPA figures left out: the site answered HTTP 503 (2026-11-05); its PPA figures come from paid data partners (BNEF, Pexapark) and are published
+          as charts in reports, with no deal list or open licence'
+      US:
+        status: blocked
+        source: FERC Electric Quarterly Reports (contracts)
+        url: https://www.ferc.gov/power-sales-and-markets/electric-quarterly-reports-eqr/eqr-data
+        checked: '2026-11-06'
+        note: 'www.ferc.gov answers a Cloudflare challenge (HTTP 403 "Just a moment...") to the sandbox (2026-11-05); EQR lists contracts of FERC-jurisdictional sellers with purchaser, term and product,
+          but does not mark corporate offtakers. Data request: FERC, the EQR bulk contract files on a host without a browser challenge (or run the fetch in GitHub Actions)'
