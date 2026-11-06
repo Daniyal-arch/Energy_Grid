@@ -526,6 +526,27 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         con.execute(
             f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000, sample_size = -1)"
         )
+    elif (
+        kind == "pxweb"
+    ):  # brief 30: a PxWeb table, every variable asked for (left out, it is summed away)
+        meta = w.get_json(url, timeout=300)
+        query = [
+            {"code": v["code"], "selection": {"filter": "all", "values": ["*"]}}
+            for v in (meta.get("variables") or [])  # type: ignore[union-attr]
+        ]
+        r = httpx.post(
+            url,
+            json={"query": query, "response": {"format": "json-stat2"}},
+            headers=UA,
+            timeout=600,
+        )
+        r.raise_for_status()
+        rows = jsonstat_rows(r.json())
+        f = d / "src.json"
+        f.write_text(json.dumps(rows))
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1)"
+        )
     elif kind == "jsonstat":
         con.execute("CREATE OR REPLACE TABLE t AS SELECT * FROM (VALUES (1)) LIMIT 0")
         rows = jsonstat_rows(w.get_json(url, timeout=300))  # type: ignore[arg-type]

@@ -7,7 +7,7 @@ session. Each request should also ask the licence question:
 
 > May we redistribute the data, and show it in a commercial product, under an open licence (CC BY 4.0 or equivalent) with attribution?
 
-38 requests to 37 publishers.
+49 requests to 44 publishers.
 
 ## BMWE / BfEE
 
@@ -96,6 +96,18 @@ session. Each request should also ask the licence question:
   - Why: mapas.ine.pt redirects every download (HTTP 302) to autenticacao.ine.pt/manutencao.html, "Site em manutenção" (2026-11-04); no other copy of BGRI 2021 on dados.gov.pt; rebuild when INE is back
   - Request: INE Portugal, the BGRI 2021 subsections (GeoPackage) at a working download URL, with its licence stated
 
+## INS Romania
+
+- **INS RPL 2021 conventional dwellings by heating mode, per county and urban/rural (table 8.9)** (scripts/wave9_sources.yaml `ro_ins_rpl2021_heating_county`)
+  - Why: no licence stated on the file or the census site (2026-11-05)
+  - Request: INS Romania, the licence of the RPL2021 tables (commercial reuse with attribution?)
+
+## IPTO (info@admie.gr)
+
+- **IPTO (ADMIE) balancing market settlement files** (scripts/wave9_sources.yaml `gr_admie_balancing`)
+  - Why: the file API answers (JSON list: file_path, file_description, file_datatype ...); weekly IMBABE xlsx (sheet Activated_bal_Energy_and_Prices: STARTDATE, ENDDATE, Total Activated Balancing Energy UP/Down MWh, System deviation, Imbalance Price, mFRR Price UP/Down, Uplift Accounts 1-3; 672 rows a week), BalancingCapacityProduct and BalancingEnergyProduct xls. IPTO's 'Terms and Services' cover liability and accuracy only and grant no reuse right
+  - Request: IPTO (info@admie.gr), a reuse licence (e.g. CC BY 4.0) for the market and operation data files (balancing settlement)
+
 ## IRENA
 
 - **Renewable Power Generation Costs, data file** (docs/owner-questions.md)
@@ -108,11 +120,20 @@ session. Each request should also ask the licence question:
   - Why: The NetCDF's attributes say 'non-commercial purposes'; copyright.txt and the JRC catalogue say CC BY 4.0 (2026-11-05).
   - Request: JRC EDO, which licence applies to the Combined Drought Indicator files, and confirmation that commercial reuse under CC BY 4.0 is allowed.
 
+## KSH
+
+- **KSH Census 2022 dwellings by heating (settlement level)** (scripts/wave9_sources.yaml `hu_ksh_census2022_heating`)
+  - Why: the census database is a JavaScript application (no file or documented API found) and the results page nepszamlalas2022.ksh.hu/eredmenyek/vegleges-adatok/ answers HTTP 403 to the probe (2026-11-06); settlement-level heating tables exist only inside the app
+  - Request: KSH, Census 2022 dwellings by heating mode and energy source per settlement as an open CSV with its licence
+
 ## LBNL
 
 - **LBNL Tracking the Sun** (scripts/wave9_sources.yaml `us_lbnl_tts`)
   - Why: emp.lbl.gov answers HTTP 403 to an honest client (2026-10-31)
   - Request: LBNL, the Tracking the Sun public file URL
+- **Rooftop and small solar (US)** (data/coverage.yaml `rooftop_solar.US`)
+  - Why: emp.lbl.gov answers HTTP 403 to an honest client (2026-10-31).
+  - Request: LBNL, the Tracking the Sun public file URL Second pass (2026-11-05): Searched EIA (English, small-scale solar): new source us_eia861m_small_solar (EIA-861M estimated small-scale PV capacity and generation per state and month, public domain); LBNL Tracking the Sun stays blocked (403).
 
 ## LCCC
 
@@ -125,6 +146,9 @@ session. Each request should also ask the licence question:
 - **MCS heat pump installations** (scripts/wave9_sources.yaml `gb_mcs_heat_pumps`)
   - Why: the MCS Data Dashboard is a Blazor app: exports only from the browser per visualisation (with a unique ID and timestamp stamped on each download), no file or API, and no licence stated on the dashboard or mcscertified.com/about-the-mcs-data-dashboard (2026-11-04)
   - Request: MCS Service Company, MCS-certified heat pump installations per local authority and month as an open file under the Open Government Licence or CC BY 4.0
+- **Heat pumps (GB)** (data/coverage.yaml `heat_pumps.GB`)
+  - Why: the MCS Data Dashboard is a Blazor app: exports only from the browser per visualisation (with a unique ID and timestamp stamped on each download), no file or API, and no licence stated on the dashboard or mcscertified.com/about-the-mcs-data-dashboard (2026-11-04).
+  - Request: MCS Service Company, MCS-certified heat pump installations per local authority and month as an open file under the Open Government Licence or CC BY 4.0 Second pass (2026-11-05): Searched gov.uk (DESNZ/Ofgem Boiler Upgrade Scheme statistics): monthly workbook, table Q1.2 heat pump redemptions per local authority district and Q1.3 per constituency, England and Wales, OGL v3. New source gb_bus_heat_pumps_la (grant-funded installs only; MCS stays blocked)
 
 ## MISO
 
@@ -156,6 +180,12 @@ session. Each request should also ask the licence question:
   - Why: the public workbook answers (26,293 bytes, sheet RCP: resource clearing prices of every RPM auction per LDA, 2026-11-05) but no reuse terms could be read: the legal page renders no text without JavaScript and the old terms URLs go to /not-found; Data Miner 2 (api.pjm.com) answers 401 without a key
   - Request: PJM, the terms of use for the RPM auction result workbooks (commercial reuse with attribution)
 
+## PSE S.A.
+
+- **PSE balancing prices and reserve capacity prices (raporty.pse.pl API)** (scripts/wave9_sources.yaml `pl_pse_balancing`)
+  - Why: the open API answers (no key, OData-style $filter/$first, nextLink): cmbp-tp balancing capacity prices per hour (fcr_g/d, afrr_g/d, mfrrd_g/d, rr_g/d, business_date) and crb-rozl settlement prices per quarter-hour (cen_cost, ckoeb_cost, ceb_pp_cost, ceb_sr_cost, ceb_sr_afrrg/d_cost); neither raporty.pse.pl (app bundle searched for licencja/regulamin/warunki) nor the API states reuse terms; a web search (Polish) found none
+  - Request: PSE S.A., a reuse licence statement (e.g. CC BY 4.0) for raporty.pse.pl / api.raporty.pse.pl
+
 ## re-probe renewablesandchp.ofgem.gov.uk public reports from GitHub Actions
 
 - **Ofgem REGO register** (scripts/wave9_sources.yaml `gb_ofgem_rego`)
@@ -180,6 +210,12 @@ session. Each request should also ask the licence question:
   - Why: the CDS retrieve API answers HTTP 401 "authentication required" without a key (POST .../processes/sis-heat-and-cold-spells/execution, 2026-11-04); downloads need a (free) ECMWF account, the accepted dataset licence and CDSAPI_KEY
   - Request: Register at https://cds.climate.copernicus.eu, accept the CC BY 4.0 licence of sis-heat-and-cold-spells and set CDSAPI_KEY as a repo secret (and in .env.example); a workflow then fetches the heat and cold spell day counts
 
+## request an e·sios API token (email consultasios@ree.es) and set ESIOS_TOKEN as a
+
+- **REE e·sios balancing indicators** (scripts/wave9_sources.yaml `es_ree_esios`)
+  - Why: e·sios answers HTTP 403 without a personal token; REData (apidatos.ree.es) answers balance/* but its mercados/* widgets answer an Incapsula challenge (403/503) to a script: not bypassed
+  - Request: request an e·sios API token (email consultasios@ree.es) and set ESIOS_TOKEN as a repo secret
+
 ## Rhodium Group / MIT CEEPR
 
 - **Clean Investment Monitor** (scripts/wave9_sources.yaml `us_clean_investment_monitor`)
@@ -191,6 +227,15 @@ session. Each request should also ask the licence question:
 - **Terna electricity consumption per province** (scripts/wave9_sources.yaml `it_terna_province`)
   - Why: dati.terna.it download centre answers a JSON POST per year (filterDataset ElectricalEnergy, db dati: 428 rows a year, Anno/Regione/Provincia/Settore/Consumo (GWh), 2000-2024; 2026-11-04), but Terna states no reuse licence: the portal's "Note legali" link goes to the API portal terms, which allow use "esclusivamente per la fruizione dei servizi ... Ogni altro uso non sarà ritenuto lecito"
   - Request: Terna, a reuse licence (e.g. CC BY 4.0) for the dati.terna.it download-centre statistics (consumption per province and sector)
+
+## the Baltic TSOs
+
+- **Baltic transparency dashboard and Elering balance API** (scripts/wave9_sources.yaml `ee_lv_lt_baltic_balancing`)
+  - Why: baltic.transparency-dashboard.eu answers a Cloudflare 'Attention Required' page (403), not bypassed; Elering's dashboard API /api/balance (imbalance, regulate_up/down, imbalance_buy/sell_price) answers HTTP 200 but every value is null for 2024-10, 2025-01, 2025-03 and 2026-10 (series stopped)
+  - Request: the Baltic TSOs, an open download of the Baltic balancing market data (or keep ENTSO-E A81/A84/A89)
+- **Balancing and reserves (LT)** (data/coverage.yaml `balancing.LT`)
+  - Why: baltic.transparency-dashboard.eu answers a Cloudflare 'Attention Required' page (403), not bypassed; Elering's dashboard API /api/balance (imbalance, regulate_up/down, imbalance_buy/sell_price) answers HTTP 200 but every value is null for 2024-10, 2025-01, 2025-03 and 2026-10 (series stopped).
+  - Request: the Baltic TSOs, an open download of the Baltic balancing market data (or keep ENTSO-E A81/A84/A89) Second pass (2026-11-05): Searched Baltic sources (Estonian 'tasakaalustamine', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API all null). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json 'none', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLT-1001A0008Q: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas
 
 ## The Crown Estate
 
@@ -209,6 +254,9 @@ session. Each request should also ask the licence question:
 - **regelleistung.net balancing tenders** (scripts/wave9_sources.yaml `de_regelleistung`)
   - Why: the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31)
   - Request: the German TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0)
+- **Balancing and reserves (DE)** (data/coverage.yaml `balancing.DE`)
+  - Why: the tender results download (cpp-publisher API, xlsx per day and product) answers, but regelleistung.net states no licence for reuse (imprint checked 2026-10-31).
+  - Request: the German TSOs (regelleistung.net), a licence statement for the tender results (e.g. CC BY 4.0) Second pass (2026-11-05): Alternatives to regelleistung.net (licence missing): netztransparenz.de API needs an OAuth client (free registration, credential: NETZTRANSPARENZ_CLIENT_ID/SECRET), terms to read after registration. ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json 'none', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10Y1001A1001A83F (or the four TSO LFC areas): A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas
 
 ## UNESCO
 
@@ -221,6 +269,12 @@ session. Each request should also ask the licence question:
 - **Wetlands (US)** (data/coverage.yaml `wetlands.US`)
   - Why: the CONUS and state downloads answer HTTP 403 to automated clients, from this sandbox and from GitHub Actions (2026-10-29).
   - Request: USFWS, a download URL open to scripts or a bulk copy of the NWI (public domain)
+
+## ČEPS
+
+- **ČEPS data (web service CepsData.asmx)** (scripts/wave9_sources.yaml `cz_ceps_balancing`)
+  - Why: the SOAP web service and the data pages answer (HTTP 200), but no reuse terms were found (Czech search 'podmínky užití', 'uvedení zdroje'); only a 2008 mailing-list note. ENTSO-E A85 already answers for CZ
+  - Request: ČEPS, a licence statement for the data on ceps.cz/cs/data and CepsData.asmx
 
 ## Keys to set (not requests: the owner adds them as repo secrets)
 
