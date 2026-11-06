@@ -18,10 +18,11 @@ on:
 permissions:
   contents: read
 
-# the pull request's path filter matches every push (it compares the whole PR): keep only the newest
+# the pull request's path filter matches every push (it compares the whole PR): one run at a
+# time, a newer one waits (a running probe is never cancelled; GitHub keeps one pending run)
 concurrency:
   group: backend-probe-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   probe:
