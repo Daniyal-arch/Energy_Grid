@@ -13479,15 +13479,12 @@ families:
         dataset: lake wave9.eu_emodnet_mpa
         checked: '2026-11-05'
       US:
-        status: not_published
+        status: built
+        source: NOAA marine protected areas inventory
         url: https://services2.arcgis.com/C8EMgrsFcRFL6LrL/arcgis/rest/services/NOAA_MPA_Inventory_2023/FeatureServer/0
+        licence: public domain (US government work)
+        dataset: lake wave9.us_noaa_mpa
         checked: '2026-11-06'
-        note: 'no source built in wave 9. NOAA marine protected areas inventory probed (https://services2.arcgis.com/C8EMgrsFcRFL6LrL/arcgis/rest/services/NOAA_MPA_Inventory_2023, HTTP 200): build failed
-          (IOException: IO Error: Failed to read GeoJSON data
-
-
-          LINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read(''/tmp/wav) | catalog.data.gov search ''marine protected areas'' (2026-10-31): 20 results, top: California Marine Protected Areas [ds582];
-          Marine Protected Areas Coordinates - R7 - CDFW [ds3207]; channel-islands-marine-protected-areas-first-5-years-of-monitoring-2003-2008_all-habitats'
   cleantech_factories:
     name: Clean-tech factories
     shows: battery

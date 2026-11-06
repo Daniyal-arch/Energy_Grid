@@ -801,6 +801,18 @@ tables:
     - q: how many records in USGS usSEABED
       sql: SELECT count(*) FROM wave9.us_usseabed
       answer: 117031
+  us_noaa_mpa:
+    grain: 'NOAA marine protected areas inventory: one row per record as published (US; level polygon)'
+    source: https://services2.arcgis.com/C8EMgrsFcRFL6LrL/arcgis/rest/services/NOAA_MPA_Inventory_2023/FeatureServer/0
+    licence: public domain (US government work)
+    category: 6. Offshore and maritime
+    columns: ogc_fid, fid, site_id, site_name, gov_level, state, prot_lvl, mgmt_agen, mgmt_plan, pri_con_fo, cons_focus, fish_rstr, prot_focus, permanence, constancy,
+      estab_yr, anchor, vessel, iucn_mpa, iucncat, category, marine, url, wdpa_cd, proseasid, design, areakm, areamar, marpercent, areant, longitude, latitude, vxcount,
+      shape_leng, shape_area, shape_length, geometry
+    examples:
+    - q: how many records in NOAA marine protected areas inventory
+      sql: SELECT count(*) FROM wave9.us_noaa_mpa
+      answer: 981
   us_usgs_mrds:
     grain: 'USGS Mineral Resources Data System: one row per record as published (WORLD; level point)'
     source: https://mrdata.usgs.gov/mrds/mrds-csv.zip
