@@ -1,0 +1,45 @@
+{
+ "fr_emodnet_telecom_sigcables": {
+  "bbox": [
+   -64.47,
+   -20.999,
+   57.45,
+   53.945
+  ],
+  "built": "2026-11-06",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "name",
+   "sgc_id",
+   "status",
+   "inst_year",
+   "dism_year",
+   "length",
+   "location",
+   "geometry"
+  ],
+  "example": {
+   "answer": 60,
+   "sql": "SELECT count(*) FROM wave9.fr_emodnet_telecom_sigcables"
+  },
+  "geometry": true,
+  "rows": 60,
+  "seconds": 1,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "sgc_id",
+    "status",
+    "inst_year",
+    "dism_year",
+    "length"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/fr_emodnet_telecom_sigcables.pmtiles"
+  },
+  "with_position": 60
+ }
+}
