@@ -23,7 +23,6 @@ type CoverageFile = {
 
 const STATUS: Record<string, { label: string; color: string }> = {
   built: { label: "Built", color: "#2f9e6e" },
-  have: { label: "Built (earlier wave)", color: "#2f9e6e" },
   partial: { label: "Partial", color: "#c9a227" },
   not_published: { label: "Not published", color: "#3a4150" },
   blocked: { label: "Blocked", color: "#b5543c" },
@@ -32,7 +31,11 @@ const STATUS: Record<string, { label: string; color: string }> = {
 };
 // EU-27 first, then GB and the US
 const rank = (cc: string): number => (cc === "US" ? 2 : cc === "GB" ? 1 : 0);
-const statusOf = (c?: Cell): string => (!c ? "unassessed" : c.status && STATUS[c.status] ? c.status : "not_published");
+// "have" (built in an earlier wave) is built: one status, one colour
+const statusOf = (c?: Cell): string => {
+  const st = c?.status === "have" ? "built" : c?.status;
+  return !c ? "unassessed" : st && STATUS[st] ? st : "not_published";
+};
 
 export default function CoverageExplorer() {
   const [file, setFile] = useState<CoverageFile | null>(null);
@@ -66,15 +69,17 @@ export default function CoverageExplorer() {
 
   if (err) return <div className="p-6 text-sm text-slate-300">The coverage registry did not load ({err}).</div>;
   if (!file) return <div className="p-6 text-sm text-slate-400">Loading the coverage registry…</div>;
-  const cell = pick ? file.countries[pick.cc]?.[pick.fam] : undefined;
-  const famName = pick ? file.families.find((f) => f.id === pick.fam)?.name : "";
+  // the evidence panel always shows a cell: the first one until another is clicked
+  const shown = pick ?? (fams[0] && places[0] ? { fam: fams[0].id, cc: places[0] } : null);
+  const cell = shown ? file.countries[shown.cc]?.[shown.fam] : undefined;
+  const famName = shown ? file.families.find((f) => f.id === shown.fam)?.name : "";
 
   return (
     <div className="min-h-screen bg-[#0b0f16] text-slate-200">
       <header className="flex flex-wrap items-center gap-3 border-b border-white/10 px-4 py-3">
         <a href="/" className="text-[12px] font-semibold tracking-[0.2em] text-slate-100">INFRAATLAS</a>
-        <h1 className="text-[14px] text-slate-200">Coverage: what is published, family by family and place by place</h1>
-        <span className="text-[11px] text-slate-400">registry checked {file.checked}</span>
+        <h1 className="text-[14px] text-slate-200">Coverage</h1>
+        <span className="text-[11px] text-slate-400">checked {file.checked}</span>
       </header>
       <div className="flex flex-wrap items-center gap-2 px-4 py-2">
         <input
@@ -120,7 +125,7 @@ export default function CoverageExplorer() {
                   {places.map((cc) => {
                     const c = file.countries[cc]?.[f.id];
                     const st = statusOf(c);
-                    const on = pick?.fam === f.id && pick?.cc === cc;
+                    const on = shown?.fam === f.id && shown?.cc === cc;
                     return (
                       <td key={cc} className="p-[1px]">
                         <button
@@ -138,11 +143,10 @@ export default function CoverageExplorer() {
           </table>
         </div>
         <aside className="w-full shrink-0 rounded border border-white/10 p-3 text-[12px] lg:w-[340px]" aria-live="polite">
-          {!pick && <p className="text-slate-400">Click a cell for its evidence: the source, the dataset, the licence, or why nothing is published there.</p>}
-          {pick && (
+          {shown && (
             <div className="space-y-1.5">
               <div className="text-[13px] text-slate-100">
-                {famName} · {pick.cc}
+                {famName} · {shown.cc}
               </div>
               <div>
                 <span className="mr-1 inline-block h-2.5 w-2.5 rounded-sm align-middle" style={{ background: STATUS[statusOf(cell)].color }} />
