@@ -2,13 +2,13 @@
 // layer's card) and FERC 714 planning-area demand (the US region card). Counts and daily means
 // are computed and say so.
 
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 
 import { useFile } from "../app/data";
 import { Card } from "./CountryCards";
+import { Note } from "./Note";
 
 const muted = "text-[#8d94a1]";
-const Note = ({ children }: { children: ReactNode }) => <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{children}</div>;
 
 export interface Oe417File {
   fetched: string;

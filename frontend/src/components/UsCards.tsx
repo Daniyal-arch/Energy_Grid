@@ -9,11 +9,11 @@ import { useFile } from "../app/data";
 import { usdMwh, type UsNodesFile } from "../lib/usNodes";
 import { Card } from "./CountryCards";
 import { PlantsCard } from "./WorldCards";
+import { Note } from "./Note";
 
 const muted = "text-[#8d94a1]";
 const sum = (v: Record<string, number> | number[] | undefined) => Object.values(v ?? {}).reduce((a: number, x: number) => a + x, 0);
 const Head = ({ children }: { children: ReactNode }) => <div className={`mt-3 mb-1 text-[9px] uppercase tracking-[0.14em] ${muted}`}>{children}</div>;
-const Note = ({ children }: { children: ReactNode }) => <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{children}</div>;
 
 /** State names from the Census outlines (codes until they arrive). */
 export function useStateNames() {

@@ -3,7 +3,7 @@
 // electricity for countries), then the figures of the datasets switched on. The area is the country
 // clicked on the map, else the dashboard's countries, drawn polygon or circle around a city.
 
-import { DATASETS, covers, datasetOn, partsFor, partsIn, placesText, toggleDataset } from "../app/datasets";
+import { DATASETS, datasetOn, partsFor, partsIn, placesText } from "../app/datasets";
 import { useAreaShape } from "../app/areaShape";
 import { actions, useApp } from "../app/store";
 import { AreaCards } from "../components/AreaCards";

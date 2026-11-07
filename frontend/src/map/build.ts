@@ -13,7 +13,7 @@ import { FlowArrowLayer } from "../lib/flowArrowLayer";
 import { curvedPath, flowDistances } from "../lib/flowLayers";
 import { GAS_FLOW, GAS_IDLE_GWH, GAS_NODE_LABEL, GAS_TRANSIT, GAS_TRANSIT_LABEL_GWH, endAt, gasWidth, gwhd, latestOf, type GasFlowsFile, type GasPair } from "../lib/gasFlows";
 import { ZONE_POINT, priceMetricById, type PricesFile } from "../lib/prices";
-import { MONEY, usd, type FinanceFile, type FinanceFlow, type FinanceProject } from "../lib/finance";
+import { MONEY, usd, type FinanceFile, type FinanceProject } from "../lib/finance";
 import { GEM_PIPES, GEM_POINTS, IDLE, type GemPipesFile, type GemPointsFile, type GemPoint } from "../lib/gem";
 import { ETS_COLOR, etsRadius, newestT, type EtsFile, type EtsRow } from "../lib/ets";
 import { RETAIL_STOPS, euroCents, newestOf, type RetailFile } from "../lib/retail";
@@ -55,7 +55,6 @@ import {
   COAST,
   FLOW,
   GAS,
-  GAS_PIPE,
   HVDC,
   MULTI_ZONE,
   NO_DATA,
@@ -72,14 +71,13 @@ import {
   stopColor,
 } from "../app/colors";
 import { TOWER_LABEL_MW, TOWER_M_PER_MW, TOWER_RADIUS_M, NIGHT_BOUNDS, unitOutKey } from "../app/day";
-import { ANCHOR, BEAM_MIN_MW, HEX_KM, SMALL, angularDistance, bbox, hexBins, pairs, unitVector } from "../app/geo";
+import { ANCHOR, BEAM_MIN_MW, HEX_KM, SMALL, angularDistance, hexBins, pairs, unitVector } from "../app/geo";
 import type { ColourId, LayerId, PlantStatus, Selection, TimeMode } from "../app/store";
 import type {
   Arc,
   Cable,
   CapacityFile,
   CountriesFile,
-  Country,
   DayFile,
   FlowsFile,
   GasFile,
@@ -96,7 +94,7 @@ import type {
   Unit,
   UnitOutputFile,
 } from "../app/types";
-import { memo, NONE } from "./memo";
+import { memo } from "./memo";
 import { priceTerrain, rampColour, type Terrain } from "./priceTerrain";
 import { usLayers } from "./usLayers";
 import { riskLayers } from "./riskLayers";
@@ -106,7 +104,6 @@ import { siteLayers } from "./siteLayers";
 import { inside, makeShape } from "../lib/area";
 import { offshoreLayers } from "./offshoreLayers";
 import { areaLayers, clipToArea, coverageLayers } from "./areaLayers";
-import { inAreaCountry } from "../app/datasets";
 import { summaryFill, summaryLabels } from "./summaryLayers";
 import { hexLayers } from "./hexLayers";
 import { styleLayers } from "./styleLayers";

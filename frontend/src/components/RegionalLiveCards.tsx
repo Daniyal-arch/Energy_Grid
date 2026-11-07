@@ -6,9 +6,9 @@ import type { ReactNode } from "react";
 import { useFile } from "../app/data";
 import { FR_LABEL, type EsRegionsFile, type FrRegionsFile, type KrFile, type NzFile, type ZaFile } from "../lib/regionalLive";
 import { Card } from "./CountryCards";
+import { Note } from "./Note";
 
 const muted = "text-[#8d94a1]";
-const Note = ({ children }: { children: ReactNode }) => <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{children}</div>;
 const gw = (mw: number | null | undefined) => (mw == null ? "–" : mw >= 1000 ? `${(mw / 1000).toFixed(1)} GW` : `${Math.round(mw).toLocaleString("en-US")} MW`);
 const Line = ({ k, v, sub }: { k: ReactNode; v: ReactNode; sub?: ReactNode }) => (
   <div className="flex justify-between gap-2 text-[11px] tabular-nums">

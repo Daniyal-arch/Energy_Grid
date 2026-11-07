@@ -8,10 +8,10 @@ import { useFile } from "../app/data";
 import { GAS_CAT_COLOR, H2_STAGE_COLOR, gasByCountry, type AuctionsFile, type CostsFile, type GasProjectsFile, type HydrogenFile } from "../lib/coming";
 import { rgbCss } from "../lib/theme";
 import { Card } from "./CountryCards";
+import { Note } from "./Note";
 
 const muted = "text-[#8d94a1]";
 const Head = ({ children }: { children: ReactNode }) => <div className={`mt-3 mb-1 text-[9px] uppercase tracking-[0.14em] ${muted}`}>{children}</div>;
-const Note = ({ children }: { children: ReactNode }) => <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{children}</div>;
 const mw = (v: number) => (v >= 1000 ? `${(v / 1000).toFixed(1)} GW` : `${Math.round(v).toLocaleString("en-US")} MW`);
 
 export function HydrogenCard({ iso3 }: { iso3?: string }) {

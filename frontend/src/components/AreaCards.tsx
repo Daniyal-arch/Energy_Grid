@@ -36,6 +36,7 @@ import { PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, type WorldPlantsFile } from "../lib
 import { Card } from "./CountryCards";
 import { DATASETS, datasetOn } from "../app/datasets";
 import { useApp } from "../app/store";
+import { Note } from "./Note";
 
 const muted = "text-[#8d94a1]";
 const GREY: RGB = [150, 154, 166];
@@ -153,7 +154,6 @@ export function Donut({ rows, fmt }: { rows: Bar[]; fmt: (v: number) => string }
 }
 
 const Head = ({ children }: { children: ReactNode }) => <div className={`mb-1 mt-2.5 text-[9.5px] uppercase tracking-[0.16em] ${muted}`}>{children}</div>;
-const Note = ({ children }: { children: ReactNode }) => <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{children}</div>;
 const Loading = ({ what }: { what: string }) => <div className={`text-[11px] ${muted}`}>Counting {what}…</div>;
 const Line = ({ k, v, sub }: { k: ReactNode; v: ReactNode; sub?: ReactNode }) => (
   <div className="flex items-baseline justify-between gap-3 py-[3px] text-[11.5px]">
