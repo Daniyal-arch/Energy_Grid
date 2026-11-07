@@ -8,6 +8,22 @@ scripts/wave9_sources.yaml.
 Probe results go to `data/wave9_probes.json` (committed: the evidence behind every registry
 cell and docs/research/wave9-sources.md). Builds go to the lake (`lake/w9_<id>/...`) and write
 `data/wave9_built.json` (rows, columns and the answer of each table's example query).
+
+A registry row's `kind` picks the reader (`load_one`); `urls` stacks several files of one
+kind (`tag_urls` adds each row's `source_url`).
+
+    files     csv csv_zip csv_gz (sep, skip, encoding, varchar, lenient, member, inner),
+              xlsx xls ods (sheet, range, pandas), geojson gpkg shp_zip gpkg_zip geojson_zip,
+              parquet, json (records, coords, lon/lat, crs), fwf, raster (member, var, band)
+    APIs      arcgis (page, where), ckan, socrata, ods_api, odata, pxweb (max_cells),
+              jsonstat, eurostat_tsv, wdi, govuk, sciencebase, dirlist, datafair_agg,
+              census ({env:CENSUS_API_KEY}), entsoe, aqviewer
+    custom    one function per source in CUSTOM: eirgrid_dispatch_down, xlsx_multihead
+              (head, data, ids, id_names, group), ine_pt_indicator, semo_reports,
+              bfee_abwaerme, ins_ro_census_blocks, odata_paged (endpoints), pjm_rpm_rcp,
+              transelectrica_zones, pdf_tables (head, names, numbers), admie_files
+              (start, match, sheet), regelleistung_results (start, markets), ceps_soap
+              (start, operations), overture_comm_lines
 """
 
 from __future__ import annotations
