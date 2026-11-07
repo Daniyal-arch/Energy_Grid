@@ -1,12 +1,17 @@
 ---
 title: Log
 tags: [log]
-updated: 2026-11-06
+updated: 2026-11-07
 ---
 
 # Log
 
 Newest first. One entry per session or merged pull request.
+
+- **2026-11-07** (PR #19, brief 31 simple): new brief `docs/tasks/31-simple.md`; helper text, taglines
+  and secondary labels cut from the top bar, Layers panel, dashboard card, Ask, coverage explorer;
+  map credits one line (phones too); one shared card `Note` ("Method ›"); dead imports removed.
+  Notes: panels-and-cards.
 
 - **2026-11-06** (PR #19, owner: build unclear licences): PSE (`odata_paged`), IPTO (`admie_files`),
   ČEPS (`ceps_soap`), regelleistung.net, Elia (`tag_urls`), PJM RPM, Transelectrica (HTML),

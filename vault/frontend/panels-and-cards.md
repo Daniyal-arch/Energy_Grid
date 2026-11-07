@@ -1,7 +1,7 @@
 ---
 title: Panels and cards
 tags: [frontend, ui]
-updated: 2026-11-06
+updated: 2026-11-07
 paths: [frontend/src/ui/App.tsx, frontend/src/ui/LayersPanel.tsx, frontend/src/ui/Panel.tsx, frontend/src/ui/DashboardTab.tsx, frontend/src/ui/Dashboards.tsx, frontend/src/ui/Catalogue.tsx, frontend/src/components/AreaCards.tsx, frontend/src/components/RoomCards.tsx]
 ---
 
@@ -41,3 +41,7 @@ One Layers panel on the left, one context panel on the right, a time bar at the 
   layer cards show `updates` (as-of and refresh) from `scripts/wave9.py render`. Agent
   palettes checked for colour vision (`docs/research/colour-vision-check.md`).
 
+- **Brief 31 (simple)**: no helper text, taglines or secondary labels; a layer row is a name and a
+  switch (its region tag is in the details); card method notes are `components/Note.tsx`
+  ("Method ›", opens in place); map credits are `Credits` in `ui/App.tsx` (both © notices, the
+  full list behind "sources"). Sources move, never go.
