@@ -64,7 +64,7 @@ function AskInput({ autoFocus = false }: { autoFocus?: boolean }) {
           if (e.key === "Escape") useAgent.setState({ open: false });
         }}
         rows={1}
-        placeholder={busy ? "Answering…" : "Ask the atlas, or ask to change the map"}
+        placeholder={busy ? "Answering…" : "Ask, or change the map"}
         className="min-w-0 flex-1 resize-none bg-transparent py-0.5 text-[12.5px] text-slate-100 placeholder:text-slate-500 focus:outline-none"
       />
       <button
@@ -97,10 +97,7 @@ export function AskPanel() {
     >
       <div className="flex items-center gap-2 border-b border-white/[0.07] px-3.5 py-2.5">
         <span className="text-[13px] text-sky-200">✦</span>
-        <div className="min-w-0 flex-1">
-          <div className="text-[14px] font-light tracking-wide text-slate-100">Ask the atlas</div>
-          <div className={`truncate text-[10px] ${muted}`}>answers from the atlas&apos;s own data, with its steps and maps</div>
-        </div>
+        <div className="min-w-0 flex-1 text-[14px] font-light tracking-wide text-slate-100">Ask the atlas</div>
         {messages.length > 0 && <ShareButton />}
         {messages.length > 0 && (
           <button onClick={clearConversation} className="rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] text-slate-300 hover:bg-white/[0.07]" title="Clears the conversation and the agent's maps">
@@ -114,13 +111,7 @@ export function AskPanel() {
       <div ref={scroller} className="min-h-0 flex-1 space-y-2.5 overflow-y-auto px-3 py-3">
         {messages.length === 0 && (
           <div className="rounded-xl border border-white/[0.07] bg-[#0b0f16]/90 px-3 py-3">
-            <div className="text-[12px] text-slate-200">Ask about the power system: grids, plants, prices, flows, emissions, room to connect.</div>
-            <div className={`mt-1 text-[10.5px] leading-snug ${muted}`}>
-              Each answer shows how the agent worked (what it searched, the queries it ran, the map design it chose) and every number&apos;s source. It picks the map design for
-              the question (flat or 3D, one map or several side by side) and changes a map on request: &ldquo;make it 3D&rdquo;, &ldquo;use hexagons&rdquo;, &ldquo;split into
-              two maps&rdquo;.
-            </div>
-            <div className="mt-2 flex flex-col gap-1">
+            <div className="flex flex-col gap-1">
               {EXAMPLES.map((e) => (
                 <button key={e} onClick={() => void ask(e)} className="rounded-md border border-white/10 px-2 py-1 text-left text-[11px] text-slate-300 hover:bg-white/[0.06]">
                   {e}
