@@ -131,8 +131,21 @@ function Desktop() {
         <AskPanel />
       </Suspense>
       <MapOptions />
-      <div className="pointer-events-none absolute bottom-1 left-3 z-10 max-w-[260px] text-[8.5px] leading-tight text-slate-500">{CREDITS}</div>
+      <Credits />
     </>
+  );
+}
+
+/** The map's attribution: the two © credits always, every source one click away (expands in place). */
+function Credits() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="absolute bottom-1 left-3 z-10 max-w-[340px] text-[8.5px] leading-tight text-slate-500">
+      {open ? CREDITS : "© OpenStreetMap contributors (ODbL) · © EuroGeographics"}{" "}
+      <button onClick={() => setOpen(!open)} className="text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline" aria-expanded={open}>
+        {open ? "less" : "sources"}
+      </button>
+    </div>
   );
 }
 
