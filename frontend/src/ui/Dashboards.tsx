@@ -186,8 +186,8 @@ export function DashboardsMenu() {
         className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#0b0f16]/90 px-3 py-1.5 text-[12px] text-slate-200 backdrop-blur hover:bg-white/[0.08]"
         aria-expanded={open}
         title="Dashboards: ready-made views and your own"
+        aria-label={`Dashboard: ${name}`}
       >
-        <span className={`text-[9.5px] uppercase tracking-[0.16em] ${muted}`}>Dashboard</span>
         <span className="max-w-[220px] truncate">{name}</span>
         {edited && <span className="text-[10px] text-amber-200/80">edited</span>}
         <span className="text-[9px] text-slate-400">▼</span>

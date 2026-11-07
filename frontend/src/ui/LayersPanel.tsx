@@ -1083,10 +1083,9 @@ function DatasetRow({ d }: { d: Dataset }) {
   return (
     <div className={`rounded-lg transition-colors ${on ? "bg-white/[0.05]" : "hover:bg-white/[0.03]"}`}>
       <div className="flex w-full items-center gap-2 px-2 py-1.5">
-        <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-center gap-2 text-left" aria-expanded={open} title={d.description}>
+        <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-center gap-2 text-left" aria-expanded={open} title={where ? `${d.description} (${where})` : d.description}>
           <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: d.color, opacity: on ? 1 : 0.4 }} />
           <span className={`truncate text-[12.5px] ${on ? "text-slate-50" : "text-slate-300"}`}>{d.name}</span>
-          {where && <span className="shrink-0 text-[9px] uppercase tracking-wider text-slate-500">{where}</span>}
           <span className={`ml-auto shrink-0 text-[10px] text-slate-500 transition-transform ${open ? "rotate-90" : ""}`}>›</span>
         </button>
         <button
@@ -1111,6 +1110,7 @@ function DatasetRow({ d }: { d: Dataset }) {
       {ask && on && <AddChoice d={d} onDone={() => setAsk(false)} />}
       {open && (
         <div className="space-y-2 px-2 pb-2 pl-[26px]">
+          {where && <div className={`text-[10px] uppercase tracking-wider ${muted}`}>{where}</div>}
           {on && stylesOf(d.id).length > 0 && (
             <div>
               <div className={`mb-0.5 text-[9.5px] uppercase tracking-[0.12em] ${muted}`}>Draw as</div>
@@ -1239,26 +1239,18 @@ export default function LayersPanel() {
 
 
       <div className="flex items-center justify-between border-t border-white/[0.06] px-3 pb-1 pt-2.5">
-        <span className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">Browse by category</span>
+        <span className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">All datasets</span>
         <button onClick={() => useApp.setState({ catalogue: true })} className="text-[10.5px] text-sky-300/90 hover:text-sky-200" title="Every dataset with its sources and coverage">
-          Data catalogue ↗
+          Catalogue ↗
         </button>
       </div>
-      <div className={`px-3 pb-1.5 text-[10px] ${muted}`}>
-        {area ? (
-          <>
-            {onlyHere ? `With data in ${areaName}` : "Every dataset"}
-            {elsewhere > 0 && (
-              <button onClick={() => setOnlyHere(!onlyHere)} className="ml-1 text-sky-300/90 hover:text-sky-200">
-                {onlyHere ? `· show all (${elsewhere} more)` : `· only those with data in ${areaName}`}
-              </button>
-            )}
-            . Click a name for its key, style and sources; the switch shows it.
-          </>
-        ) : (
-          "Click a name for its key, style and sources; the switch shows it on the map."
-        )}
-      </div>
+      {area && elsewhere > 0 && (
+        <div className="px-3 pb-1.5 text-[10px]">
+          <button onClick={() => setOnlyHere(!onlyHere)} className="text-sky-300/90 hover:text-sky-200">
+            {onlyHere ? `With data in ${areaName} · show all (${elsewhere} more)` : `All · only those with data in ${areaName}`}
+          </button>
+        </div>
+      )}
       {CATEGORIES.map((g) => (
         <Category key={g} group={g} q={t} show={show} open={open[g] ?? false} onToggle={() => setOpen((o) => ({ ...o, [g]: !(o[g] ?? false) }))} />
       ))}

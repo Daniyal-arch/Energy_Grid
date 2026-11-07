@@ -911,9 +911,6 @@ export function LayerStatsTab({ iso3 }: { iso3?: string }) {
   const seen = new Set<string>();
   return (
     <>
-      <div className={`px-1 text-[10.5px] ${muted}`}>
-        Figures for the datasets on the map{iso3 ? ", in this country" : ", worldwide"}. Switch datasets in the Datasets panel.
-      </div>
       {ids.map((id) => {
         if (id in GEM_POINTS) return <GemPointsCard key={id} id={id} iso3={iso3} />;
         if (id in GEM_PIPES) return <GemPipesCard key={id} id={id} iso3={iso3} />;
