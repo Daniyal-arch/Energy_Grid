@@ -137,10 +137,10 @@ function Desktop() {
 }
 
 /** The map's attribution: the two © credits always, every source one click away (expands in place). */
-function Credits() {
+function Credits({ at = "bottom-1 left-3" }: { at?: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="absolute bottom-1 left-3 z-10 max-w-[340px] text-[8.5px] leading-tight text-slate-500">
+    <div className={`absolute ${at} z-10 max-w-[340px] text-[8.5px] leading-tight text-slate-500`}>
       {open ? CREDITS : "© OpenStreetMap contributors (ODbL) · © EuroGeographics"}{" "}
       <button onClick={() => setOpen(!open)} className="text-slate-400 underline-offset-2 hover:text-slate-200 hover:underline" aria-expanded={open}>
         {open ? "less" : "sources"}
@@ -192,9 +192,10 @@ function Phone() {
         </div>
       )}
       <MapOptions />
-      <div className="absolute inset-x-2 bottom-14 z-20">
+      <div className="absolute inset-x-2 bottom-[64px] z-20">
         <TimeBar />
       </div>
+      <Credits at="bottom-[49px] left-2" />
       {(sheet === "layers" || sheet === "panel") && (
         <div className="absolute inset-x-0 bottom-12 z-30 flex max-h-[68vh] flex-col overflow-hidden rounded-t-2xl border-t border-white/10 bg-[#080b11]/97 backdrop-blur">
           <div className="mx-auto mt-1.5 h-1 w-10 shrink-0 rounded-full bg-white/20" />
