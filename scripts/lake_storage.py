@@ -103,20 +103,24 @@ def view_sql(tmp: Path) -> list[str]:
 
 
 def snapshot_readers(snapshot: str, cats: dict[str, dict[str, Any]], views: list[str]) -> list[str]:
-    """Places outside the MaStR tables that name this snapshot's files (`snapshot=<date>`;
-    the bare date also appears as other datasets' retrieval dates and does not count)."""
-    tag = f"snapshot={snapshot}"
+    """Places outside the MaStR tables that read this MaStR snapshot: a table of another
+    dataset whose catalogue entry names MaStR and the date (a history or derived table), a view
+    or a file naming a `mastr/...snapshot=<date>` path. Other datasets' own partitions of the
+    same day (`snapshot=<date>` under their own folder) are not readers."""
+    path = re.compile(r"mastr/[^\s\"']*snapshot=" + re.escape(snapshot))
     hits = []
     for ds, c in cats.items():
         if ds == "mastr":
             continue
-        if tag in json.dumps(c):
-            hits.append(f"catalogue lake/{ds}")
-    hits += [f"view: {v[:120]}" for v in views if tag in v]
+        for t, entry in (c.get("tables") or {}).items():
+            text = json.dumps(entry)
+            if path.search(text) or (re.search("mastr", text, re.I) and snapshot in text):
+                hits.append(f"lake/{ds}.{t}")
+    hits += [f"view: {v[:120]}" for v in views if path.search(v)]
     for p in list((ROOT / "scripts").glob("*.py")) + list((ROOT / "agent").rglob("*.yaml")):
-        if p.name == "lake_storage.py":
-            continue
-        if tag in p.read_text(encoding="utf-8", errors="ignore"):
+        if p.name != "lake_storage.py" and path.search(
+            p.read_text(encoding="utf-8", errors="ignore")
+        ):
             hits.append(f"file {p.relative_to(ROOT)}")
     return hits
 
