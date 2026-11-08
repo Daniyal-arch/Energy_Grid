@@ -7,11 +7,11 @@ import { useFile } from "../app/data";
 import { gwText } from "../lib/connect";
 import { PT_LABEL, frNumber, itTotals, type BeFile, type FrFile, type IeFile, type ItFile, type PlFile, type PtFile } from "../lib/connectMore";
 import { Card } from "./CountryCards";
+import { Note } from "./Note";
 
 const muted = "text-[#8d94a1]";
 const ACCENT: [number, number, number] = [206, 138, 72];
 const Head = ({ children }: { children: ReactNode }) => <div className={`mt-3 mb-1 text-[9px] uppercase tracking-[0.14em] ${muted}`}>{children}</div>;
-const Note = ({ children }: { children: ReactNode }) => <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{children}</div>;
 const mw = (v: number, unit = "MW") => `${v.toLocaleString("en-US", { maximumFractionDigits: 1 })} ${unit}`;
 
 /** A ranked list with bars (largest first). */

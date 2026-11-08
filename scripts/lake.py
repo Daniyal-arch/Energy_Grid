@@ -57,6 +57,9 @@ class TableInfo:
     bytes: int = 0
     # rows and bytes per file, so partial runs (one partition each) add up in the catalogue
     file_stats: dict[str, list[int]] = field(default_factory=dict)
+    # per-table facts for the catalogue (brief 30): as_of (the source's own date) and its
+    # basis, refresh (the publisher's rhythm), snapshot (history tables)
+    meta: dict[str, str] = field(default_factory=dict)
 
 
 def _quote(s: str) -> str:
@@ -99,6 +102,7 @@ class Lake:
         partition: dict[str, str] | None = None,
         geometry: str | None = None,
         stem: str = "part",
+        meta: dict[str, str] | None = None,
     ) -> list[Path]:
         """Write the query's rows, sorted, as one partition of `table` (or the whole table).
 
@@ -115,6 +119,8 @@ class Lake:
                 f"xmax := ST_XMax({geometry}), ymax := ST_YMax({geometry})) AS bbox FROM ({query})"
             )
         info = self.tables.setdefault(table, TableInfo(list(partition), sort, bloom or []))
+        if meta:
+            info.meta.update({k: v for k, v in meta.items() if v})
         folder = self.dir / table
         for k, v in partition.items():
             folder = folder / f"{k}={v}"
@@ -123,7 +129,7 @@ class Lake:
         n = con.execute("SELECT count(*) FROM _lake_rows").fetchone()[0]  # type: ignore[index]
         if not info.columns:
             info.columns = {r[0]: r[1] for r in con.execute("DESCRIBE _lake_rows").fetchall()}
-        meta = {**self.meta, "table": table}
+        meta = {**self.meta, **info.meta, "table": table}
         geo_option = ""
         if geometry:
             names = {"POINT": "Point", "LINESTRING": "LineString", "POLYGON": "Polygon"}
@@ -204,6 +210,7 @@ class Lake:
                     # copies: merging older catalogues must not add to this run's uploads
                     "files": list(t.files),
                     "file_stats": dict(t.file_stats),
+                    **({"meta": dict(t.meta)} if t.meta else {}),
                 }
                 for name, t in self.tables.items()
             },
@@ -225,6 +232,8 @@ class Lake:
                 new = cat["tables"].setdefault(name, {**t, "files": [], "file_stats": {}})
                 if not new["columns"]:
                     new["columns"] = t.get("columns", {})
+                if t.get("meta"):  # this run's facts win; older ones are kept otherwise
+                    new["meta"] = {**t["meta"], **(new.get("meta") or {})}
                 stats = t.get("file_stats") or {}
                 for f in t.get("files", []):
                     if f not in new["file_stats"] and f not in new["files"]:

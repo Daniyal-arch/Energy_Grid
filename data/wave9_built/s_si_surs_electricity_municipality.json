@@ -1,0 +1,21 @@
+{
+ "si_surs_electricity_municipality": {
+  "built": "2026-11-06",
+  "columns": [
+   "leto",
+   "leto_code",
+   "vrsta_odjemalca",
+   "vrsta_odjemalca_code",
+   "ob_ine",
+   "ob_ine_code",
+   "value"
+  ],
+  "example": {
+   "answer": 3852,
+   "sql": "SELECT count(*) FROM wave9.si_surs_electricity_municipality"
+  },
+  "geometry": false,
+  "rows": 3852,
+  "seconds": 2
+ }
+}

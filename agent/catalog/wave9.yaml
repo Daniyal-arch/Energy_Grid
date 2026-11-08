@@ -70,6 +70,27 @@ tables:
     - q: how many records in Statistics Finland Paavo postal areas 2024
       sql: SELECT count(*) FROM wave9.fi_paavo
       answer: 3026
+  cz_zsj:
+    grain: 'ČSÚ basic settlement units (ZSJ): one row per record as published (CZ; level small_area)'
+    source: https://geodata.csu.gov.cz/as/data/distribuce/Hosted/Open_data_RSO/FeatureServer/20/gpkg.zip
+    licence: ČSÚ open data terms (data.gov.cz)
+    category: 'Part A: finishing wave 8'
+    columns: ogc_fid, kod_zsj, naz_zsj, c_uo, kod_utj, naz_utj, kod_ku, naz_ku, kod_obec, naz_obec, lau1, kod_okres, naz_okres, nuts3_kraj, kod_kraj, naz_kraj, platiod,
+      neplatipo, shape_leng, shape_area, geometry
+    examples:
+    - q: how many records in ČSÚ basic settlement units (ZSJ)
+      sql: SELECT count(*) FROM wave9.cz_zsj
+      answer: 23605
+  ee_grid:
+    grain: 'Statistics Estonia statistical grid: one row per record as published (EE; level small_area)'
+    source: https://inspire.geoportaal.ee/geoserver/SU_ruutkaart/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SU_ruutkaart:SU.StatisticalGridCell&outputFormat=application/json&srsName=EPSG:4326&propertyName=code,geom
+    licence: 'no conditions apply (INSPIRE metadata: "tingimusi ei rakendata"; no access restrictions)'
+    category: 'Part A: finishing wave 8'
+    columns: ogc_fid, id, gml_id, code, geometry
+    examples:
+    - q: how many records in Statistics Estonia statistical grid
+      sql: SELECT count(*) FROM wave9.ee_grid
+      answer: 45636
   gb_ea_flood_zones:
     grain: 'Environment Agency Flood Map for Planning, flood zones 2 and 3: one row per record as published (GB; level polygon)'
     source: https://environment.data.gov.uk/api/file/download?fileDataSetId=455d2eb3-3065-4d20-871b-c4d5dee23f67&fileName=Flood_Map_for_Planning_Flood_Zones.gpkg.zip
@@ -203,6 +224,27 @@ tables:
     - q: how many records in EIA ethanol plants
       sql: SELECT count(*) FROM wave9.us_eia_ethanol
       answer: 197
+  us_natcarb:
+    grain: 'NETL NATCARB CO2 storage resources: one row per record as published (US; level polygon)'
+    source: https://edx.netl.doe.gov/storage/f/edx/2020/06/2020-06-29T16:09:54.953Z/881f1fe1-fdb5-4e9e-8bc4-db151a3baa60/saline10k_1502.zip
+    licence: public domain (US federal government work
+    category: 'Part A: finishing wave 8'
+    columns: ogc_fid, col_row, partnershi, arra_proje, resource_n, basin_name, rsc_area_c, vol_low, vol_med, vol_high, depth_ft, thickness, salinity_t, pressure_p,
+      temperatur, porosity_p, permeabili, assessed, cycle_of_l, overlap, duplicate, med_calced, shape_leng, shape_area, geometry
+    examples:
+    - q: how many records in NETL NATCARB CO2 storage resources
+      sql: SELECT count(*) FROM wave9.us_natcarb
+      answer: 186675
+  us_blm_solar_dla:
+    grain: 'BLM solar energy zones: one row per record as published (US; level polygon)'
+    source: https://services1.arcgis.com/KbxwQRRfWyEYLgp4/arcgis/rest/services/Energy_Designations/FeatureServer/10
+    licence: public domain (BLM
+    category: 1. Land, permitting and planning
+    columns: ogc_fid, zone_name, stateoffice, status, comments, shape_area, shape_length, geometry
+    examples:
+    - q: how many records in BLM solar energy zones
+      sql: SELECT count(*) FROM wave9.us_blm_solar_dla
+      answer: 153
   gb_ne_alc:
     grain: 'Natural England provisional Agricultural Land Classification: one row per record as published (GB; level polygon)'
     source: https://environment.data.gov.uk/api/file/download?fileDataSetId=f33896b6-9847-4f03-b5d9-3c55497a003c&fileName=Provisional_Agricultural_Land_Classification_ALC.gpkg.zip
@@ -213,6 +255,17 @@ tables:
     - q: how many records in Natural England provisional Agricultural Land Classification
       sql: SELECT count(*) FROM wave9.gb_ne_alc
       answer: 1826
+  fr_georisques_ssp:
+    grain: 'Géorisques polluted sites and soils: one row per record as published (FR; level polygon)'
+    source: https://www.georisques.gouv.fr/webappReport/ws/infosols/export/shapefile?national=true
+    licence: Licence Ouverte 2.0
+    category: 1. Land, permitting and planning
+    columns: ogc_fid, cd_metier, autre_id, nom_ets, nom_site, stat_instr, date_debut, date_fin, descript, code_insee, nom_com, x_wgs84, y_wgs84, code_dpt, nom_dpt,
+      code_reg, nom_reg, act_nafv2, act_naf, act_icpe, act_nafv1, lien_fiche, geometry, src_file, nom_etab, nom_instr
+    examples:
+    - q: how many records in Géorisques polluted sites and soils
+      sql: SELECT count(*) FROM wave9.fr_georisques_ssp
+      answer: 12431
   gb_brownfield_register:
     grain: 'Brownfield land registers (planning.data.gov.uk): one row per record as published (GB; level point)'
     source: https://files.planning.data.gov.uk/dataset/brownfield-land.csv
@@ -225,6 +278,32 @@ tables:
     - q: how many records in Brownfield land registers (planning.data.gov.uk)
       sql: SELECT count(*) FROM wave9.gb_brownfield_register
       answer: 40229
+  us_epa_repowering:
+    grain: 'EPA RE-Powering screened sites: one row per record as published (US; level point)'
+    source: https://www.epa.gov/system/files/documents/2023-05/re-powering-screening-dataset-2022%20Updated.xlsx
+    licence: public domain (EPA geospatial data
+    category: 1. Land, permitting and planning
+    columns: cross_reference_number, epa_region, state, program, site_id, site_information, site_name, address, city, county, zip_code, acreage_acres, known_landfill,
+      known_abandoned_mine_land, re_powering_profile, estimated_pv_capacity_mw, utility_scale_pv, distributed_scale_pv, off_grid_pv, no_acreage_pv, maximum_annual_ghi_kwh_m2_day,
+      estimated_wind_energy_capacity_mw, utility_scale_wind, community_scale_wind, facility_scale_wind, no_acreage_wind, wind_speed_at_40_m_m_s, wind_speed_at_80_m_m_s,
+      wind_speed_at_100_m_m_s, biopower_facility_potential, biorefinery_facility_potential, cumulative_biopower_residues_metric_tons_year_within_50_miles, cumulative_biorefinery_residues_metric_tons_year_within_50_miles,
+      crop_residues_metric_tons_year_within_50_miles, forest_residues_metric_tons_year_within_50_miles, primary_mill_residues_metric_tons_year_within_50_miles, secondary_mill_residues_metric_tons_year_within_50_miles,
+      urban_waste_wood_residues_metric_tons_year_within_50_miles, geothermal_heat_pump_potential, surface_temperature_c
+    examples:
+    - q: how many records in EPA RE-Powering screened sites
+      sql: SELECT count(*) FROM wave9.us_epa_repowering
+      answer: 190976
+  us_epa_frs_cleanups:
+    grain: 'EPA Facility Registry Service cleanups: one row per record as published (US; level point)'
+    source: https://geopub.epa.gov/arcgis/rest/services/EMEF/efpoints/MapServer/5
+    licence: public domain (EPA geospatial data
+    category: 1. Land, permitting and planning
+    columns: ogc_fid, objectid, registry_id, site_id, primary_name, location_address, city_name, county_name, state_code, epa_region, postal_code, latitude, longitude,
+      pgm_sys_acrnm, pgm_sys_id, fips_code, huc_code, facility_url, profile_url, geometry
+    examples:
+    - q: how many records in EPA Facility Registry Service cleanups
+      sql: SELECT count(*) FROM wave9.us_epa_frs_cleanups
+      answer: 45924
   eu_land_prices:
     grain: 'Eurostat agricultural land prices and rents (apri_lprc): one row per record as published (EU27; level region)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/apri_lprc/?format=SDMX-CSV&compressed=false&startPeriod=2015
@@ -245,7 +324,7 @@ tables:
     examples:
     - q: how many records in OurAirports airports
       sql: SELECT count(*) FROM wave9.world_ourairports
-      answer: 86322
+      answer: 86337
   gb_he_listed:
     grain: 'Historic England National Heritage List: one row per record as published (GB; level point)'
     source: https://services-eu1.arcgis.com/ZOdPfBS3aqqDYPUQ/arcgis/rest/services/National_Heritage_List_for_England_NHLE_v02_VIEW/FeatureServer/0
@@ -255,7 +334,7 @@ tables:
     examples:
     - q: how many records in Historic England National Heritage List
       sql: SELECT count(*) FROM wave9.gb_he_listed
-      answer: 379683
+      answer: 379686
   us_nrhp:
     grain: 'National Register of Historic Places: one row per record as published (US; level point)'
     source: https://mapservices.nps.gov/arcgis/rest/services/cultural_resources/nrhp_locations/MapServer/0
@@ -278,6 +357,28 @@ tables:
     - q: how many records in NEXRAD weather radar sites
       sql: SELECT count(*) FROM wave9.us_nexrad
       answer: 210
+  gb_pins_dco:
+    grain: 'Planning Inspectorate national infrastructure projects: one row per record as published (GB; level point)'
+    source: https://national-infrastructure-consenting.planninginspectorate.gov.uk/api/applications-download
+    licence: OGL v3
+    category: 1. Land, permitting and planning
+    columns: project_reference, project_name, applicant_name, application_type, region, location, grid_reference_easting, grid_reference_northing, gps_co_ordinates,
+      stage, description, anticipated_submission_period, date_of_application, date_application_accepted, date_examination_started, examining_authority_s_anticipated_close_of_examination,
+      date_examination_closed, date_of_recommendation, date_of_decision, date_withdrawn
+    examples:
+    - q: how many records in Planning Inspectorate national infrastructure projects
+      sql: SELECT count(*) FROM wave9.gb_pins_dco
+      answer: 295
+  gb_neso_etys:
+    grain: 'NESO Electricity Ten Year Statement: one row per record as published (GB; level line)'
+    source: https://api.neso.energy/dataset/997f4820-1ad4-499b-b1fe-4b8d3d7fbc72/resource/e914fcec-1dc9-4f1f-97e7-59c0d9521bea/download/etys-boundary-gis-data-mar25.zip
+    licence: NESO Open Data Licence
+    category: 2. Grid planning, connection and network charges
+    columns: ogc_fid, boundary_n, id, geometry
+    examples:
+    - q: how many records in NESO Electricity Ten Year Statement
+      sql: SELECT count(*) FROM wave9.gb_neso_etys
+      answer: 34
   gb_neso_tnuos:
     grain: 'NESO TNUoS tariffs: one row per record as published (GB; level region)'
     source: https://api.neso.energy/api/3/action/package_search?q=tnuos%20tariffs
@@ -338,6 +439,21 @@ tables:
     - q: how many records in NGED embedded capacity register
       sql: SELECT count(*) FROM wave9.gb_nged_opendata
       answer: 7211
+  gb_ssen_opendata:
+    grain: 'SSEN embedded capacity register: one row per record as published (GB; level point)'
+    source: https://ckan-prod.sse.datopian.com/api/3/action/package_show?id=embedded_capacity_register
+    licence: CC BY 4.0
+    category: 2. Grid planning, connection and network charges
+    columns: export_mpan_msid, import_mpan_msid, customer_name, customer_site, address_line_1, address_line_2, town_city, county, postcode, country, location_x_coordinate_eastings_where_data_is_held,
+      location_y_coordinate_northings_where_data_is_held, grid_supply_point, bulk_supply_point, primary, point_of_connection_poc_voltage_kv, licence_area, energy_source_1,
+      energy_conversion_technology_1, chp_cogeneration_yes_no, storage_capacity_1_mwh, storage_duration_1_hours, energy_source_energy_conversion_technology_1_registered_capacity_mw,
+      energy_source_2, energy_conversion_technology_2, chp_cogeneration_2_yes_no, storage_capacity_2_mwh, storage_duration_2_hours, energy_source_energy_conversion_technology_2_registered_capacity_mw,
+      energy_source_3, energy_conversion_technology_3, chp_cogeneration_3_yes_no, storage_capacity_3_mwh, storage_duration_3_hours, energy_source_energy_conversion_technology_3_registered_capacity_mw,
+      flexible_connection_yes_no, connection_status, already_connected_registered_capacity_mw, maximum_export_capacity_mw, maximum_export_capacity_mva
+    examples:
+    - q: how many records in SSEN embedded capacity register
+      sql: SELECT count(*) FROM wave9.gb_ssen_opendata
+      answer: 1317
   gb_npg_opendata:
     grain: 'Northern Powergrid connection queue: one row per record as published (GB; level point)'
     source: https://northernpowergrid.opendatasoft.com/api/explore/v2.1/catalog/datasets/connection-queue-information/exports/csv?delimiter=%2C
@@ -348,6 +464,16 @@ tables:
     - q: how many records in Northern Powergrid connection queue
       sql: SELECT count(*) FROM wave9.gb_npg_opendata
       answer: 445
+  se_svk_reserves:
+    grain: 'Svenska kraftnät reserve markets (Mimer): one row per record as published (SE; level country)'
+    source: https://data.svk.se/datastore/dump/6093d167-dece-45c8-8ac7-d307e6ac45e9?format=csv
+    licence: CC BY 4.0
+    category: 3. Markets and revenues
+    columns: id, start_time_sweden, start_time_utc, reserve_product, reserve_direction, auction_round, price, price_unit, volume, volume_unit, soda_hashbyte, soda_identity
+    examples:
+    - q: how many records in Svenska kraftnät reserve markets (Mimer)
+      sql: SELECT count(*) FROM wave9.se_svk_reserves
+      answer: 439314
   dk_energinet_reserves:
     grain: 'Energinet FCR-D down reserve auctions (DK2): one row per record as published (DK; level country)'
     source: https://api.energidataservice.dk/dataset/FcrNdDK2?limit=0&start=2025-01-01
@@ -357,7 +483,34 @@ tables:
     examples:
     - q: how many records in Energinet FCR-D down reserve auctions (DK2)
       sql: SELECT count(*) FROM wave9.dk_energinet_reserves
-      answer: 723195
+      answer: 728595
+  de_regelleistung:
+    grain: 'regelleistung.net balancing tenders: one row per record as published (DE, AT, BE, NL, FR; level country)'
+    source: https://www.regelleistung.net/apps/datacenter/tenders/
+    licence: not stated (no reuse licence on regelleistung.net; imprint checked 2026-10-31); built on the owner's instruction (2026-11-06) to build sources whose
+      licence is not clear
+    category: 3. Markets and revenues
+    columns: market, product_type, date_from, date_to, product_type_1, tender_number, productname, crossborder_settlementcapacity_price_eur_mw, austria_demand_mw,
+      austria_settlementcapacity_price_eur_mw, austria_deficit_surplus_mw, belgium_demand_mw, belgium_settlementcapacity_price_eur_mw, belgium_deficit_surplus_mw,
+      denmark_demand_mw, denmark_settlementcapacity_price_eur_mw, denmark_deficit_surplus_mw, france_demand_mw, france_settlementcapacity_price_eur_mw, france_deficit_surplus_mw,
+      germany_demand_mw, germany_settlementcapacity_price_eur_mw, germany_deficit_surplus_mw, netherlands_demand_mw, netherlands_settlementcapacity_price_eur_mw,
+      netherlands_deficit_surplus_mw, slovenia_demand_mw, slovenia_settlementcapacity_price_eur_mw, slovenia_deficit_surplus_mw, switzerland_demand_mw, switzerland_settlementcapacity_price_eur_mw,
+      switzerland_deficit_surplus_mw, czech_republic_demand_mw, czech_republic_settlementcapacity_price_eur_mw, czech_republic_deficit_surplus_mw, type_of_reserves,
+      product, total_min_capacity_price_eur_mw_h, total_average_capacity_price_eur_mw_h, total_marginal_capacity_price_eur_mw_h
+    examples:
+    - q: how many records in regelleistung.net balancing tenders
+      sql: SELECT count(*) FROM wave9.de_regelleistung
+      answer: 279266
+  eu_entsoe_balancing:
+    grain: 'ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days: one row per record as published (EU27; level zone)'
+    source: https://web-api.tp.entsoe.eu/api
+    licence: ENTSO-E terms (reuse with attribution)
+    category: 3. Markets and revenues
+    columns: area, start_utc, minutes, value, businesstype, type_marketagreement_type, flowdirection_direction, currency_unit_name, quantity_measure_unit_name
+    examples:
+    - q: how many records in ENTSO-E contracted balancing reserves, aFRR (A81, B95), last 30 days
+      sql: SELECT count(*) FROM wave9.eu_entsoe_balancing
+      answer: 77480
   gb_elexon_balancing:
     grain: 'Elexon system buy and sell prices (one day per call): one row per record as published (GB; level country)'
     source: https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices/2026-10-01?format=json
@@ -371,6 +524,59 @@ tables:
     - q: how many records in Elexon system buy and sell prices (one day per call)
       sql: SELECT count(*) FROM wave9.gb_elexon_balancing
       answer: 48
+  us_iso_as_prices:
+    grain: 'ISO ancillary-service prices: one row per record as published (US; level zone)'
+    source: https://oasis.caiso.com/oasisapi/SingleZip?queryname=PRC_AS&market_run_id=DAM&startdatetime=20261001T07:00-0000&enddatetime=20261101T07:00-0000&version=1&resultformat=6
+    licence: CAISO public materials, use with credit to the California ISO
+    category: 3. Markets and revenues
+    columns: intervalstarttime_gmt, intervalendtime_gmt, opr_dt, opr_hr, opr_interval, opr_type, anc_type, anc_region, market_run_id, xml_data_item, mw, group
+    examples:
+    - q: how many records in ISO ancillary-service prices
+      sql: SELECT count(*) FROM wave9.us_iso_as_prices
+      answer: 19344
+  gb_emr_cm_register:
+    grain: 'EMR Capacity Market register: one row per record as published (GB; level point)'
+    source: https://api.neso.energy/api/3/action/package_show?id=capacity-market-register
+    licence: NESO Open Data Licence
+    category: 3. Markets and revenues
+    columns: auction_name, application_id, cmu_id, delivery_year, component_id, type, generating_technology_class, permitted_on_site_generating_unit, primary_fuel_of_component,
+      connection_or_dsr_capacity, de_rated_capacity, pre_refurbishing_de_rated_capacity, post_refurbishing_de_rated_capacity, generating_capacity_of_on_site_generating_unit,
+      description_of_cmu_components, location_and_post_code, os_grid_reference, number_of_components
+    examples:
+    - q: how many records in EMR Capacity Market register
+      sql: SELECT count(*) FROM wave9.gb_emr_cm_register
+      answer: 29864
+  us_pjm_rpm:
+    grain: 'PJM RPM capacity auction results: one row per record as published (US; level zone)'
+    source: https://www.pjm.com/-/media/DotCom/markets-ops/rpm/rpm-auction-info/rpm-auctions-resource-clearing-price-summary.xlsx
+    licence: not stated (the legal page renders no text without JavaScript; the old terms URLs are gone); built on the owner's instruction (2026-11-06) to build sources
+      whose licence is not clear
+    category: 3. Markets and revenues
+    columns: delivery_year, auction, product, lda, value, flag
+    examples:
+    - q: how many records in PJM RPM capacity auction results
+      sql: SELECT count(*) FROM wave9.us_pjm_rpm
+      answer: 2083
+  eu_eshm20:
+    grain: 'ESHM20 European seismic hazard model: one row per record as published (EUR; level point)'
+    source: https://efehrappsrvr.ethz.ch/share/map?id=81&lon1=-32&lat1=27&lon2=45&lat2=72&imt=PGA&hmapexceedprob=0.002103&hmapexceedyears=1&soiltype=rock_vs30_800ms-1&aggregationtype=arithmetic&aggregationlevel=0.5
+    licence: CC BY 4.0
+    category: 4. Physical climate and hazard risk
+    columns: longitude, latitude, pga
+    examples:
+    - q: how many records in ESHM20 European seismic hazard model
+      sql: SELECT count(*) FROM wave9.eu_eshm20
+      answer: 100636
+  us_usgs_nshm:
+    grain: 'USGS National Seismic Hazard Model 2023: one row per record as published (US; level polygon)'
+    source: https://www.sciencebase.gov/catalog/item/64ff886dd34ed30c2057b4d9
+    licence: public domain (USGS)
+    category: 4. Physical climate and hazard risk
+    columns: ogc_fid, low_cont, high_cont, range_cont, valley, shape_leng, shape_area, geometry
+    examples:
+    - q: how many records in USGS National Seismic Hazard Model 2023
+      sql: SELECT count(*) FROM wave9.us_usgs_nshm
+      answer: 9794
   us_drought_monitor:
     grain: 'US Drought Monitor (current): one row per record as published (US; level polygon)'
     source: https://droughtmonitor.unl.edu/data/shapefiles_m/USDM_current_M.zip
@@ -381,6 +587,26 @@ tables:
     - q: how many records in US Drought Monitor (current)
       sql: SELECT count(*) FROM wave9.us_drought_monitor
       answer: 5
+  eu_jrc_coastal_flood:
+    grain: 'JRC LISCoAsT coastal flood hazard: one row per record as published (EUR; level point)'
+    source: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/LISCOAST/10012/LATEST/globalESLprojections.zip
+    licence: CC BY 4.0
+    category: 4. Physical climate and hazard risk
+    columns: latitude, longitude, valuemedian, value5th, value95th
+    examples:
+    - q: how many records in JRC LISCoAsT coastal flood hazard
+      sql: SELECT count(*) FROM wave9.eu_jrc_coastal_flood
+      answer: 20865
+  us_usgs_landslides:
+    grain: 'USGS landslide inventory: one row per record as published (US; level point)'
+    source: https://www.sciencebase.gov/catalog/item/671eef1fd34ed0f827ea9f12
+    licence: CC0
+    category: 4. Physical climate and hazard risk
+    columns: fid, usgs_id, date_min, date_max, fatalities, confidence, ls_type, inventory, inv_url, info_source, notes, lat_n, lon_w
+    examples:
+    - q: how many records in USGS landslide inventory
+      sql: SELECT count(*) FROM wave9.us_usgs_landslides
+      answer: 680497
   us_noaa_storm_events:
     grain: 'NOAA Storm Events (newest year): one row per record as published (US; level point)'
     source: https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/
@@ -394,6 +620,16 @@ tables:
     - q: how many records in NOAA Storm Events (newest year)
       sql: SELECT count(*) FROM wave9.us_noaa_storm_events
       answer: 72360
+  us_usgs_geoelectric:
+    grain: 'USGS geoelectric hazard: one row per record as published (US; level point)'
+    source: https://www.sciencebase.gov/catalog/item/68781e6dd4be025a4973e62c
+    licence: CC0
+    category: 4. Physical climate and hazard risk
+    columns: name1, rlong1, rlat1, p_value, a, b, sig, eh, Eh-, Eh+
+    examples:
+    - q: how many records in USGS geoelectric hazard
+      sql: SELECT count(*) FROM wave9.us_usgs_geoelectric
+      answer: 1616
   fr_ore_ev_commune:
     grain: 'Agence ORE vehicles per commune and energy: one row per record as published (FR; level municipality)'
     source: https://opendata.agenceore.fr/data-fair/api/v1/datasets/voitures-par-commune-par-energie/raw
@@ -404,6 +640,28 @@ tables:
     - q: how many records in Agence ORE vehicles per commune and energy
       sql: SELECT count(*) FROM wave9.fr_ore_ev_commune
       answer: 773782
+  nl_rdw_vehicles:
+    grain: 'RDW registered vehicles: one row per record as published (NL; level country)'
+    source: https://opendata.rdw.nl/resource/8ys7-d773.json?$select=brandstof_omschrijving,count(*)&$group=brandstof_omschrijving&$limit=100
+    licence: CC0
+    category: 5. Demand and electrification
+    columns: brandstof_omschrijving, count
+    examples:
+    - q: how many records in RDW registered vehicles
+      sql: SELECT count(*) FROM wave9.nl_rdw_vehicles
+      answer: 9
+  de_kba_districts:
+    grain: 'KBA vehicles per registration district: one row per record as published (DE; level county)'
+    source: https://www.kba.de/SharedDocs/Downloads/DE/Statistik/Fahrzeuge/FZ1/fz1_2026.xlsx?__blob=publicationFile&v=2
+    licence: dl-de/by-2-0
+    category: 5. Demand and electrification
+    columns: col_0, col_1, col_2, col_3, col_4, benzin, diesel, gas_einschl_bivalent, hybrid_insgesamt, darunter_plug_in_hybrid, elektro_bev, sonstige, euro_1, euro_2,
+      euro_3, euro_4, euro_5, euro_6, darunter_euro_6d_temp, darunter_euro_6d, darunter_euro_6e, sonstige_21, schadstoff_reduzierte_insgesamt, euro_1_23, euro_2_24,
+      euro_3_25, euro_4_26, euro_5_27, euro_6_28, darunter_euro_6d_temp_29, darunter_euro_6d_30, darunter_euro_6e_31, sonstige_32, schadstoffred_mit_dieselantrieb_insgesamt
+    examples:
+    - q: how many records in KBA vehicles per registration district
+      sql: SELECT count(*) FROM wave9.de_kba_districts
+      answer: 448
   gb_dft_veh0142:
     grain: 'DfT VEH0142 plug-in vehicles: one row per record as published (GB; level small_area)'
     source: statistical-data-sets/vehicle-licensing-statistics-data-tables
@@ -414,6 +672,72 @@ tables:
     - q: how many records in DfT VEH0142 plug-in vehicles
       sql: SELECT count(*) FROM wave9.gb_dft_veh0142
       answer: 2520
+  us_afdc_registrations:
+    grain: 'AFDC EV registrations per state: one row per record as published (US; level region)'
+    source: https://afdc.energy.gov/files/u/data/data_source/10962/10962-ev-registration-counts-by-state_9-06-24.xlsx
+    licence: U.S. DOE publication, no licence stated (counts derived by NREL from Experian data)
+    category: 5. Demand and electrification
+    columns: state, registration_count
+    examples:
+    - q: how many records in AFDC EV registrations per state
+      sql: SELECT count(*) FROM wave9.us_afdc_registrations
+      answer: 51
+  fr_ore_solar_commune:
+    grain: 'ODRÉ national register of production installations: one row per record as published (FR; level municipality)'
+    source: https://opendata.agenceore.fr/data-fair/api/v1/datasets/3f6et1q09oarxn7afaj0reop/raw
+    licence: Licence Ouverte 2.0
+    category: 5. Demand and electrification
+    columns: nominstallation, codeeicresourceobject, codeiris, codeinseecommune, commune, codeepci, epci, codedepartement, departement, coderegion, region, codeiriscommuneimplantation,
+      codeinseecommuneimplantation, codes3renr, dateraccordement, datederaccordement, datemiseenservice, datedebutversion, postesource, tensionraccordement, moderaccordement,
+      codefiliere, filiere, codecombustible, combustible, codescombustiblessecondaires, combustiblessecondaires, codetechnologie, technologie, typestockage, puismaxinstallee,
+      puismaxraccharge, puismaxcharge, puismaxrac, puismaxinstalleedischarge, nbgroupes, nbinstallations, regime, energiestockable, capacitereservoir
+    examples:
+    - q: how many records in ODRÉ national register of production installations
+      sql: SELECT count(*) FROM wave9.fr_ore_solar_commune
+      answer: 141589
+  nl_cbs_solar:
+    grain: 'CBS solar power per region (85005NED): one row per record as published (NL; level municipality)'
+    source: https://datasets.cbs.nl/odata/v1/CBS/85005NED/Observations
+    licence: CC BY 4.0
+    category: 5. Demand and electrification
+    columns: id, measure, valueattribute, value, stringvalue, sectorenvermogensklasse, regios, perioden
+    examples:
+    - q: how many records in CBS solar power per region (85005NED)
+      sql: SELECT count(*) FROM wave9.nl_cbs_solar
+      answer: 78944
+  gb_desnz_subregional_fit:
+    grain: 'DESNZ solar deployment per local authority: one row per record as published (GB; level county)'
+    source: statistics/regional-renewable-statistics
+    licence: OGL v3
+    category: 5. Demand and electrification
+    columns: sheet, local_authority_code_note_1, local_authority_name_note_5_note_6_note_7_note_8_note_9, region, country, estimated_number_of_households_note_2_note_3_note_4,
+      onshore_wind, offshore_wind, wave_tidal, solar_pv, hydro, landfill_gas, sewage_gas, municipal_solid_waste, cofiring, animal_biomass, anaerobic_digestion, plant_biomass,
+      total, local_authority_name_note_5_note_6_note_7, local_authority_name_note_5, local_authority_name
+    examples:
+    - q: how many records in DESNZ solar deployment per local authority
+      sql: SELECT count(*) FROM wave9.gb_desnz_subregional_fit
+      answer: 4606
+  fr_ademe_dpe:
+    grain: 'ADEME energy performance diagnostics (DPE): one row per record as published (FR; level county)'
+    source: https://data.ademe.fr/data-fair/api/v1/datasets/dpe03existant/values_agg?field=code_departement_ban;etiquette_dpe&agg_size=120;8&size=0
+    licence: Licence Ouverte 2.0
+    category: 5. Demand and electrification
+    columns: code_departement_ban, etiquette_dpe, count
+    examples:
+    - q: how many records in ADEME energy performance diagnostics (DPE)
+      sql: SELECT count(*) FROM wave9.fr_ademe_dpe
+      answer: 715
+  ie_seai_ber:
+    grain: 'SEAI Building Energy Ratings: one row per record as published (IE; level county)'
+    source: https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/EBQ03/JSON-stat/2.0/en
+    licence: CC BY 4.0
+    category: 5. Demand and electrification
+    columns: c04586v05371, c04586v05371_code, c03444v04153, c03444v04153_code, c03442v04151, c03442v04151_code, c03151v03803, c03151v03803_code, c03440v04149, c03440v04149_code,
+      tlist_q1, tlist_q1_code, statistic, statistic_code, value
+    examples:
+    - q: how many records in SEAI Building Energy Ratings
+      sql: SELECT count(*) FROM wave9.ie_seai_ber
+      answer: 5698560
   gb_epc_stats:
     grain: 'MHCLG EPC live table D1 (domestic certificates per local authority): one row per record as published (GB; level county)'
     source: statistical-data-sets/live-tables-on-energy-performance-of-buildings-certificates
@@ -424,6 +748,21 @@ tables:
     - q: how many records in MHCLG EPC live table D1 (domestic certificates per local authority)
       sql: SELECT count(*) FROM wave9.gb_epc_stats
       answer: 90
+  us_nyc_ll84:
+    grain: 'NYC Local Law 84 building energy benchmarking: one row per record as published (US; level point)'
+    source: https://data.cityofnewyork.us/resource/5zyy-y8am.json
+    licence: public
+    category: 5. Demand and electrification
+    columns: report_year, property_id, property_name, parent_property_id, parent_property_name, year_ending, nyc_borough_block_and_lot, nyc_building_identification,
+      address_1, city, postal_code, primary_property_type_self, primary_property_type, national_median_reference, list_of_all_property_use, largest_property_use_type,
+      largest_property_use_type_1, c_2nd_largest_property_use, c_2nd_largest_property_use_1, c_3rd_largest_property_use, c_3rd_largest_property_use_1, year_built,
+      construction_status, number_of_buildings, occupancy, metered_areas_energy, metered_areas_water, energy_star_score, national_median_energy_star, target_energy_star_score,
+      reason_s_for_no_score, energy_star_certification, energy_star_certification_1, site_eui_kbtu_ft, weather_normalized_site_eui, national_median_site_eui, site_energy_use_kbtu,
+      weather_normalized_site_energy, electricity_weather_normalized, electricity_weather_normalized_1
+    examples:
+    - q: how many records in NYC Local Law 84 building energy benchmarking
+      sql: SELECT count(*) FROM wave9.us_nyc_ll84
+      answer: 103259
   eu_degree_days:
     grain: 'Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a): one row per record as published (EU27; level county)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_chddr2_a/?format=SDMX-CSV&compressed=false&startPeriod=2015
@@ -434,6 +773,19 @@ tables:
     - q: how many records in Eurostat heating and cooling degree days per NUTS 3 (nrg_chddr2_a)
       sql: SELECT count(*) FROM wave9.eu_degree_days
       answer: 39600
+  us_cpc_degree_days:
+    grain: 'NOAA CPC degree days per state: one row per record as published (US; level region)'
+    source: https://ftp.cpc.ncep.noaa.gov/htdocs/degree_days/weighted/daily_data/2025/StatesCONUS.Heating.txt
+    licence: public domain
+    category: 5. Demand and electrification
+    columns: region, c_20250101, c_20250102, c_20250103, c_20250104, c_20250105, c_20250106, c_20250107, c_20250108, c_20250109, c_20250110, c_20250111, c_20250112,
+      c_20250113, c_20250114, c_20250115, c_20250116, c_20250117, c_20250118, c_20250119, c_20250120, c_20250121, c_20250122, c_20250123, c_20250124, c_20250125,
+      c_20250126, c_20250127, c_20250128, c_20250129, c_20250130, c_20250131, c_20250201, c_20250202, c_20250203, c_20250204, c_20250205, c_20250206, c_20250207,
+      c_20250208
+    examples:
+    - q: how many records in NOAA CPC degree days per state
+      sql: SELECT count(*) FROM wave9.us_cpc_degree_days
+      answer: 48
   ie_cso_dc_consumption:
     grain: 'CSO metered electricity consumption (MEC03): one row per record as published (IE; level country)'
     source: https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/MEC03/JSON-stat/2.0/en
@@ -465,6 +817,30 @@ tables:
     - q: how many records in BOEM offshore wind lease outlines
       sql: SELECT count(*) FROM wave9.us_boem_wind_leases
       answer: 52
+  us_usseabed:
+    grain: 'USGS usSEABED: one row per record as published (US; level point)'
+    source: https://pubs.usgs.gov/ds/2005/118/data/atl_ext.zip
+    licence: public domain (USGS)
+    category: 6. Offshore and maritime
+    columns: ogc_fid, latitude, longitude, waterdepth, sampletop, samplebase, sitename, datasetkey, sitekey, samplekey, sampler, datatypes, gravel, sand, mud, clay,
+      grainsize, sorting, seabedcls, clsmshp, folkcode, shepardcod, rockmshp, weedmshp, carbonate, munslcode, orgcarbon, lgshearstr, porosity, pwavevel, roughness,
+      lgcrshst, samplephas, geometry
+    examples:
+    - q: how many records in USGS usSEABED
+      sql: SELECT count(*) FROM wave9.us_usseabed
+      answer: 117031
+  us_noaa_mpa:
+    grain: 'NOAA marine protected areas inventory: one row per record as published (US; level polygon)'
+    source: https://services2.arcgis.com/C8EMgrsFcRFL6LrL/arcgis/rest/services/NOAA_MPA_Inventory_2023/FeatureServer/0
+    licence: public domain (US government work)
+    category: 6. Offshore and maritime
+    columns: ogc_fid, fid, site_id, site_name, gov_level, state, prot_lvl, mgmt_agen, mgmt_plan, pri_con_fo, cons_focus, fish_rstr, prot_focus, permanence, constancy,
+      estab_yr, anchor, vessel, iucn_mpa, iucncat, category, marine, url, wdpa_cd, proseasid, design, areakm, areamar, marpercent, areant, longitude, latitude, vxcount,
+      shape_leng, shape_area, shape_length, geometry
+    examples:
+    - q: how many records in NOAA marine protected areas inventory
+      sql: SELECT count(*) FROM wave9.us_noaa_mpa
+      answer: 981
   us_usgs_mrds:
     grain: 'USGS Mineral Resources Data System: one row per record as published (WORLD; level point)'
     source: https://mrdata.usgs.gov/mrds/mrds-csv.zip
@@ -477,6 +853,18 @@ tables:
     - q: how many records in USGS Mineral Resources Data System
       sql: SELECT count(*) FROM wave9.us_usgs_mrds
       answer: 304632
+  eu_egdi_minerals:
+    grain: 'EGDI mineral deposits: one row per record as published (EUR; level point)'
+    source: https://maps.europe-geology.eu/wfs/?service=WFS&version=2.0.0&request=GetFeature&typeNames=ms:egdi_mineraloccurr_critical_raw_materials_2023&outputFormat=geojson&FILTER=%3CFilter%20xmlns%3D%22http%3A//www.opengis.net/fes/2.0%22%3E%3CPropertyIsNotEqualTo%3E%3CValueReference%3Ecountry%3C/ValueReference%3E%3CLiteral%3EPoland%3C/Literal%3E%3C/PropertyIsNotEqualTo%3E%3C/Filter%3E
+    licence: CC BY 4.0 (Polish records CC BY-NC-ND 4.0, filtered out)
+    category: 7. Supply chain, materials and industry
+    columns: ogc_fid, id_hidden, importance_rank_hidden, mineraloccurrencedbk_hidden, inspireid, name, country, occurrence_type, deposit_group, deposit_type, inspire_commodity,
+      crm_2023, element, commodity_importance, commodity_group, mine_status, mining_activity_types, has_oremeasures, endownment, reserves, resources, unfc, totalproduction,
+      original_geometry_type, longitude, latitude, srid, valid_geometry, crm_2023_importance, geometry
+    examples:
+    - q: how many records in EGDI mineral deposits
+      sql: SELECT count(*) FROM wave9.eu_egdi_minerals
+      answer: 28223
   us_epa_lmop:
     grain: 'EPA LMOP landfill gas energy projects: one row per record as published (US; level point)'
     source: https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/LMOP_Projects/FeatureServer/0
@@ -488,6 +876,56 @@ tables:
     - q: how many records in EPA LMOP landfill gas energy projects
       sql: SELECT count(*) FROM wave9.us_epa_lmop
       answer: 542
+  us_epa_agstar:
+    grain: 'EPA AgSTAR livestock digesters: one row per record as published (US; level county)'
+    source: https://www.epa.gov/sites/default/files/2020-10/agstar-livestock-ad-database.xlsx
+    licence: public domain
+    category: 7. Supply chain, materials and industry
+    columns: project_name, cluster_name, project_type, city, county, state, digester_type, status, year_operational, animal_farm_type_s, cattle, dairy, poultry, swine,
+      co_digestion, biogas_generation_estimate_cu_ft_day, electricity_generated_kwh_yr, biogas_end_use_s, lcfs_pathway, system_designer_s_developer_s_and_affiliates,
+      receiving_utility, total_emission_reductions_mtco2e_yr, awarded_usda_funding
+    examples:
+    - q: how many records in EPA AgSTAR livestock digesters
+      sql: SELECT count(*) FROM wave9.us_epa_agstar
+      answer: 473
+  eu_salt_caverns:
+    grain: 'Salt-cavern hydrogen storage potential (Zenodo): one row per record as published (EUR; level polygon)'
+    source: https://zenodo.org/api/records/18153129/files/h2_salt_cavern_storage.parquet/content
+    licence: CC BY 4.0
+    category: 7. Supply chain, materials and industry
+    columns: kwh_per_m3, gwh_per_km2, storage_type, geometry
+    examples:
+    - q: how many records in Salt-cavern hydrogen storage potential (Zenodo)
+      sql: SELECT count(*) FROM wave9.eu_salt_caverns
+      answer: 119
+  us_usaspending_doe:
+    grain: 'USAspending DOE awards: one row per record as published (US; level point)'
+    source: https://files.usaspending.gov/award_data_archive/FY2025_089_Assistance_Full_20261006.zip
+    licence: public domain (U.S. federal spending data)
+    category: 8. Finance, public money and incentives
+    columns: assistance_transaction_unique_key, assistance_award_unique_key, award_id_fain, modification_number, award_id_uri, sai_number, federal_action_obligation,
+      total_obligated_amount, total_outlayed_amount_for_overall_award, indirect_cost_federal_share_amount, non_federal_funding_amount, total_non_federal_funding_amount,
+      face_value_of_loan, original_loan_subsidy_cost, total_face_value_of_loan, total_loan_subsidy_cost, generated_pragmatic_obligations, disaster_emergency_fund_codes_for_overall_award,
+      outlayed_amount_from_covid_19_supplementals_for_overall_award, obligated_amount_from_covid_19_supplementals_for_overall_award, outlayed_amount_from_iija_supplemental_for_overall_award,
+      obligated_amount_from_iija_supplemental_for_overall_award, action_date, action_date_fiscal_year, period_of_performance_start_date, period_of_performance_current_end_date,
+      awarding_agency_code, awarding_agency_name, awarding_sub_agency_code, awarding_sub_agency_name, awarding_office_code, awarding_office_name, funding_agency_code,
+      funding_agency_name, funding_sub_agency_code, funding_sub_agency_name, funding_office_code, funding_office_name, treasury_accounts_funding_this_award, federal_accounts_funding_this_award
+    examples:
+    - q: how many records in USAspending DOE awards
+      sql: SELECT count(*) FROM wave9.us_usaspending_doe
+      answer: 11923
+  us_ira_energy_communities:
+    grain: 'NETL IRA energy community layers: one row per record as published (US; level county)'
+    source: https://arcgis.netl.doe.gov/server/rest/services/Hosted/2024_MSAs_NonMSAs_that_are_Energy_Communities/FeatureServer/0
+    licence: CC BY (NETL)
+    category: 8. Finance, public money and incentives
+    columns: ogc_fid, county_name_2020, date_last_update, msa_area_name, fipstate_2020, ec_qual_status, globalid, ffe_ind_qual, objectid_1, geoid_cty_2020, msa_nmsa_label,
+      date_record_added, fee_qual_status, label_fee, fipscty_2020, msa_qual, label_ec, ec_ind_qual, msa_area_id, affgeoid_cty_2020, state_name, dataset_version, shape_length,
+      objectid, shape_area, geometry
+    examples:
+    - q: how many records in NETL IRA energy community layers
+      sql: SELECT count(*) FROM wave9.us_ira_energy_communities
+      answer: 901
   us_opportunity_zones:
     grain: 'HUD Opportunity Zones (census tracts): one row per record as published (US; level small_area)'
     source: https://services.arcgis.com/VTyQ9soqVukalItT/arcgis/rest/services/Opportunity_Zones/FeatureServer/13
@@ -508,6 +946,51 @@ tables:
     - q: how many records in Eurostat household income per NUTS 2 (nama_10r_2hhinc)
       sql: SELECT count(*) FROM wave9.eu_household_income
       answer: 111460
+  gb_ons_income_msoa:
+    grain: 'ONS income estimates per MSOA: one row per record as published (GB; level small_area)'
+    source: https://www.ons.gov.uk/file?uri=/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/smallareaincomeestimatesformiddlelayersuperoutputareasenglandandwales/financialyearending2023/datasetfinal.xlsx
+    licence: OGL v3
+    category: 9. Social and community
+    columns: msoa_code, msoa_name, local_authority_code, local_authority_name, region_code, region_name, total_annual_income, upper_confidence_limit, lower_confidence_limit,
+      confidence_interval
+    examples:
+    - q: how many records in ONS income estimates per MSOA
+      sql: SELECT count(*) FROM wave9.gb_ons_income_msoa
+      answer: 7264
+  us_nrel_sharing_sun:
+    grain: 'NREL Sharing the Sun community solar projects: one row per record as published (US; level point)'
+    source: https://data.nlr.gov/system/files/244/1793053331-Sharing%20the%20Sun%20Community%20Solar%20Project%20Data%20%28Sep%202026%29.xlsx
+    licence: NLR data licence (free use and copying with the notice and credit to DOE/NLR/Alliance)
+    category: 9. Social and community
+    columns: utility_id, project_name, city, state, utility, utility_type, subscription_marketer, program_name, developer_subscription_management_or_contractor_name,
+      system_size_mw_ac, system_size_kw_ac, system_size_mw_dc, system_size_kw_dc, year_of_interconnection, does_this_project_have_lmi_portion_requirement, li_lmi_subscribers_count,
+      total_subscribers_count, li_lmi_subscriber_kwh, total_subscribed_kwh, li_lmi_portion, is_the_li_lmi_portion_calculated_or_regulated, li_lmi_system_size_mw_ac,
+      aggregated_data_entry_does_this_row_refer_to_aggregated_capacity_rather_than_an_individual_project
+    examples:
+    - q: how many records in NREL Sharing the Sun community solar projects
+      sql: SELECT count(*) FROM wave9.us_nrel_sharing_sun
+      answer: 4810
+  eu_broadband_coverage:
+    grain: 'Commission broadband coverage study: one row per record as published (EU27; level country)'
+    source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/isoc_cbs/?format=SDMX-CSV&compressed=false
+    licence: CC BY 4.0
+    category: 10. Telecom and digital
+    columns: dataflow, last_update, freq, unit, inet_spd, terrtypo, geo, time_period, obs_value, obs_flag, conf_status
+    examples:
+    - q: how many records in Commission broadband coverage study
+      sql: SELECT count(*) FROM wave9.eu_broadband_coverage
+      answer: 1404
+  eu_eea_wei:
+    grain: 'EEA water exploitation index: one row per record as published (EUR; level region)'
+    source: https://sdi.eea.europa.eu/datashare/s/sptXqwkQr5g7Bp5/download?path=/eea_v_3035_250_k_wei-subunit-level_p_2023_v01_r00&files=WEI_2000_2023_SDI_SubunitScale.xlsx
+    licence: CC BY 4.0
+    category: 11. Water and cooling
+    columns: countrycode, countryname_international, spatialunitidentifierscheme, spatialunitidentifier, nametextinternational, phenomenontimeperiod_year, phenomenontimeperiod_quarter,
+      totalwaterabstraction, totalwaterreturn, netwaterconsumption, changereservoirstorage, totaloutflow, renewablewaterresources, wei, remark, computedyear
+    examples:
+    - q: how many records in EEA water exploitation index
+      sql: SELECT count(*) FROM wave9.eu_eea_wei
+      answer: 21006
   us_usgs_water_use:
     grain: 'USGS estimated water use per county (2015): one row per record as published (US; level county)'
     source: https://www.sciencebase.gov/catalog/item/5af3311be4b0da30c1b245d8
@@ -520,6 +1003,100 @@ tables:
     - q: how many records in USGS estimated water use per county (2015)
       sql: SELECT count(*) FROM wave9.us_usgs_water_use
       answer: 3223
+  us_usgs_nwis_sites:
+    grain: 'USGS NWIS stream gauges: one row per record as published (US; level point)'
+    source: https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations/items?f=csv&limit=50000&site_type_code=ST&agency_code=USGS&state_code=01
+    licence: public domain
+    category: 11. Water and cooling
+    columns: x, y, id, agency_code, agency_name, monitoring_location_number, monitoring_location_name, district_code, country_code, country_name, state_code, state_name,
+      county_code, county_name, minor_civil_division_code, site_type_code, site_type, hydrologic_unit_code, basin_code, altitude, altitude_accuracy, altitude_method_code,
+      altitude_method_name, vertical_datum, vertical_datum_name, horizontal_positional_accuracy_code, horizontal_positional_accuracy, horizontal_position_method_code,
+      horizontal_position_method_name, original_horizontal_datum, original_horizontal_datum_name, drainage_area, contributing_drainage_area, time_zone_abbreviation,
+      uses_daylight_savings, construction_date, aquifer_code, national_aquifer_code, aquifer_type_code, well_constructed_depth
+    examples:
+    - q: how many records in USGS NWIS stream gauges
+      sql: SELECT count(*) FROM wave9.us_usgs_nwis_sites
+      answer: 147741
+  world_ihfc_heat_flow:
+    grain: 'IHFC Global Heat Flow Database 2024: one row per record as published (WORLD; level point)'
+    source: https://datapub.gfz.de/download/10.5880.FIDGEO.2024.014-VEueRf/GHFBD-R2024_v.2026-03.zip
+    licence: CC BY 4.0
+    category: 12. Heat networks and geothermal
+    columns: q, q_uncertainty, name, lat_ns, long_ew, elevation, environment, p_comment, corr_hp_flag, total_depth_md, total_depth_tvd, explo_method, explo_purpose,
+      qc, qc_uncertainty, q_method, q_top, q_bottom, probe_penetration, publication_reference, data_reference, relevant_child, c_comment, corr_is_flag, corr_t_flag,
+      corr_s_flag, corr_e_flag, corr_topo_flag, corr_pal_flag, corr_sur_flag, corr_conv_flag, corr_hr_flag, expedition, probe_type, probe_length, probe_tilt, water_temperature,
+      geo_lithology, geo_stratigraphy, t_grad_mean
+    examples:
+    - q: how many records in IHFC Global Heat Flow Database 2024
+      sql: SELECT count(*) FROM wave9.world_ihfc_heat_flow
+      answer: 91182
+  dk_district_heating:
+    grain: 'Danish Energy Agency district heating areas: one row per record as published (DK; level polygon)'
+    source: https://geoserver.plandata.dk/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=pdk:theme_pdk_forsyningomraade_vedtaget_v&outputFormat=application/json&srsName=EPSG:4326
+    licence: CC BY 4.0
+    category: 12. Heat networks and geothermal
+    columns: ogc_fid, id, uuid, temakode, temanavn, objekt_id, systid_fra, systid_til, oprettet, oprindkode, oprindelse, statuskode, status, komnr, cvr_kode, cvrname,
+      bruger_id, link, navn1203, type1203, vaerdi1203, forsyid, forsytekst, geometry
+    examples:
+    - q: how many records in Danish Energy Agency district heating areas
+      sql: SELECT count(*) FROM wave9.dk_district_heating
+      answer: 6263
+  eu_tent_network:
+    grain: 'TEN-T network (TENtec): one row per record as published (EUR; level line)'
+    source: https://webgate.ec.europa.eu/getis/rest/services/TENTec/tentec_public_services_ext/MapServer/8
+    licence: CC BY 4.0 (European Commission)
+    category: 13. Mobility
+    columns: ogc_fid, objectid, country_code, core_network, corridors, type, railways_activity, geometry
+    examples:
+    - q: how many records in TEN-T network (TENtec)
+      sql: SELECT count(*) FROM wave9.eu_tent_network
+      answer: 4767
+  gb_srn:
+    grain: 'National Highways Strategic Road Network: one row per record as published (GB; level line)'
+    source: https://services-eu1.arcgis.com/mZXeBXkkZpekxjXT/arcgis/rest/services/Network_Model_Public_view2/FeatureServer/1
+    licence: OGL v3
+    category: 13. Mobility
+    columns: ogc_fid, objectid, linkid, linkref, linkcategory, linkdesc, linkform, directionality, direction, numberoflanes, smartmotorway, carriageway, ownership,
+      startgradeseparation, endgradeseparation, parentlinkref, srn, startnode, endnode, operationalstate, roadname, startdate, enddate, toid, globalid, created_user,
+      created_date, last_edited_user, last_edited_date, shape_length, geometry
+    examples:
+    - q: how many records in National Highways Strategic Road Network
+      sql: SELECT count(*) FROM wave9.gb_srn
+      answer: 43040
+  us_fhwa_afc:
+    grain: 'FHWA Alternative Fuel Corridors: one row per record as published (US; level line)'
+    source: https://services.arcgis.com/xOi1kZaI0eWDREZv/arcgis/rest/services/AltFuels_rounds1_8/FeatureServer/0
+    licence: public domain (U.S. DOT)
+    category: 13. Mobility
+    columns: ogc_fid, fid, length, afc_number, roadtype, number, primary_na, alt_name_1, alt_name_2, local_name, state, altfuel_ro, ev_round, ev, electricve, cng_round,
+      cng, comnatural, lng_round, lng, liqnatural, lpg_round, lpg, propane, hy_round, hy, hydrogen, len_miles, not_nhs, shape_length, geometry
+    examples:
+    - q: how many records in FHWA Alternative Fuel Corridors
+      sql: SELECT count(*) FROM wave9.us_fhwa_afc
+      answer: 2275
+  eu_eea_aq_stats:
+    grain: 'EEA air quality statistics per station: one row per record as published (EUR; level point)'
+    source: https://discomap.eea.europa.eu/App/AQViewer/download?fqn=Airquality_Dissem.b2g.AirQualityStatistics&f=csv
+    licence: EEA reuse (commercial use allowed, with acknowledgement)
+    category: 15. Air quality near plants
+    columns: country, air_quality_network, air_quality_network_name, air_quality_station_eoi_code, air_quality_station_name, sampling_point_id, air_pollutant, air_pollutant_description,
+      data_aggregation_process_id, data_aggregation_process, year, air_pollution_level, unit_of_air_pollution_level, data_coverage, verification, air_quality_station_type,
+      air_quality_station_area, longitude, latitude, altitude, city, city_code, city_population, source_of_data_flow, calculation_time, link_to_raw_data_only_e1a_validated_data_from_aq_e_reporting,
+      observation_frequency
+    examples:
+    - q: how many records in EEA air quality statistics per station
+      sql: SELECT count(*) FROM wave9.eu_eea_aq_stats
+      answer: 16343
+  gb_defra_aurn:
+    grain: 'DEFRA AURN monitoring sites: one row per record as published (GB; level point)'
+    source: https://uk-air.defra.gov.uk/sos-ukair/api/v1/stations?expanded=false
+    licence: OGL v3
+    category: 15. Air quality near plants
+    columns: properties, type, lon, lat
+    examples:
+    - q: how many records in DEFRA AURN monitoring sites
+      sql: SELECT count(*) FROM wave9.gb_defra_aurn
+      answer: 2448
   us_epa_aqs_annual:
     grain: 'EPA AQS annual concentrations per monitor (2025): one row per record as published (US; level point)'
     source: https://aqs.epa.gov/aqsweb/airdata/annual_conc_by_monitor_2025.zip
@@ -534,6 +1111,30 @@ tables:
     - q: how many records in EPA AQS annual concentrations per monitor (2025)
       sql: SELECT count(*) FROM wave9.us_epa_aqs_annual
       answer: 65709
+  fr_enedis_interruptions:
+    grain: 'Enedis interruption time per department: one row per record as published (FR; level county)'
+    source: https://opendata.enedis.fr/data-fair/api/v1/datasets/w06kbpkd-qkqnu6zq5lpxer3/lines?size=1000&format=csv
+    licence: Licence Ouverte 2.0
+    category: 16. Reliability below the country
+    columns: intitul_d_partement, n_d_partement, aaa2009, aaa2010, aaa2011, aaa2012, aaa2013, aaa2014, aaa2015, aaa2016, aaa2017, aaa2018, aaa2019, aaa2020, aaa2021,
+      aaa2022, aaa2023, aaa2024
+    examples:
+    - q: how many records in Enedis interruption time per department
+      sql: SELECT count(*) FROM wave9.fr_enedis_interruptions
+      answer: 94
+  us_eia861_reliability:
+    grain: 'EIA-861 reliability per utility: one row per record as published (US; level point)'
+    source: https://www.eia.gov/electricity/data/eia861/zip/f8612025.zip
+    licence: public domain
+    category: 16. Reliability below the country
+    columns: data_year, utility_number, utility_name, state, ownership, saidi_minutes_per_year, saifi_times_per_year, caidi_minutes_per_interruption, saidi_minutes_per_year_8,
+      saifi_times_per_year_9, caidi_minutes_per_interruption_10, saidi_minutes_per_year_11, saifi_times_per_year_12, caidi_minutes_per_interruption_13, number_of_customers,
+      highest_dist_voltage, outages_recorded_automatically, saidi_minutes_per_year_17, saifi_times_per_year_18, caidi_with_med, saidi_minutes_per_year_20, saifi_times_per_year_21,
+      caidi_without_med, number_of_customers_23, inactive_accounts_included, momentary_interruptions, highest_dist_voltage_26, outages_recorded_automatically_27
+    examples:
+    - q: how many records in EIA-861 reliability per utility
+      sql: SELECT count(*) FROM wave9.us_eia861_reliability
+      answer: 977
   eu_ev_stock_nuts2:
     grain: 'Eurostat vehicles by fuel per NUTS 2 (tran_r_elvehst): one row per record as published (EU27; level region)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/tran_r_elvehst/?format=SDMX-CSV&compressed=false&startPeriod=2015
@@ -654,7 +1255,7 @@ tables:
     examples:
     - q: how many records in OurAirports runways
       sql: SELECT count(*) FROM wave9.world_ourairports_runways
-      answer: 48388
+      answer: 48405
   world_ourairports_navaids:
     grain: 'OurAirports navigation aids: one row per record as published (WORLD; level point)'
     source: https://davidmegginson.github.io/ourairports-data/navaids.csv
@@ -694,7 +1295,7 @@ tables:
     source: statistical-data-sets/live-tables-on-energy-performance-of-buildings-certificates
     licence: OGL v3
     category: 5. Demand and electrification
-    columns: year, quarter, number_lodgements, total_floor_area_m2, A+, a, b, c, d, e, f, g, not_recorded
+    columns: year, quarter, number_lodgements, total_floor_area_m2, a, a_5, b, c, d, e, f, g, not_recorded
     examples:
     - q: how many records in MHCLG table DEC1 (display energy certificates per local authority)
       sql: SELECT count(*) FROM wave9.gb_dec_certificates
@@ -711,6 +1312,19 @@ tables:
     - q: how many records in DfT plug-in cars per local authority (VEH0131)
       sql: SELECT count(*) FROM wave9.gb_ulev_la
       answer: 484
+  us_smu_heat_flow:
+    grain: 'SMU node heat flow data (Geothermal Data Repository): one row per record as published (US; level point)'
+    source: https://gdr.openei.org/files/1704/Download%20Data%20Files.zip
+    licence: CC BY 4.0
+    category: 12. Heat networks and geothermal
+    columns: observationuri, observationname, label, heatflowtype, headeruri, apino, wellname, otherid, owner, leasename, field, county, state, latdegreewgs84, longdegreewgs84,
+      locationuncertaintystatement, plss_meridians, township, range, section, sectionpart, tectonicprovince, otherlocationname, publicationsource, additionalsources,
+      welltype, welldrilldate, welldrilldatetype, elevation, elevationtype, depthunits, drillertotaldepth, timesincecirculation, temperatureunits, temperaturemeasuretype,
+      surfacetemperature, bht, bhtcorrectedvalue, bhtcorrectiontype, eqlog_measurementdate
+    examples:
+    - q: how many records in SMU node heat flow data (Geothermal Data Repository)
+      sql: SELECT count(*) FROM wave9.us_smu_heat_flow
+      answer: 106468
   eu_emodnet_platforms:
     grain: 'EMODnet offshore installations: one row per record as published (EUSEA; level point)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:platforms&outputFormat=application/json
@@ -744,6 +1358,18 @@ tables:
     - q: how many records in EMODnet wave and tidal energy projects
       sql: SELECT count(*) FROM wave9.eu_emodnet_ocean_energy
       answer: 361
+  eu_emodnet_msp_zoning:
+    grain: 'EMODnet maritime spatial plan zones: one row per record as published (EUSEA; level polygon)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=1.0.0&request=GetFeature&typeName=emodnet:mspzoningpoly&outputFormat=SHAPE-ZIP&format_options=CHARSET:UTF-8
+    licence: CC BY 4.0 (EMODnet Human Activities)
+    category: 6. Offshore and maritime
+    columns: ogc_fid, localid, versionid, offsource, ms, hiluclu, hilucsmsp, seausename, seausefct, seausedsc, originun, originunen, regnature, vertdistr, procstepg,
+      hilucspres, speclanus, specpres, backgmap, validfrom, validto, prevmsppla, beginlsver, endlsver, dimind, spid, offdoc, coast_dist, areakm2, shape_leng, shape_area,
+      drawpriori, geometry
+    examples:
+    - q: how many records in EMODnet maritime spatial plan zones
+      sql: SELECT count(*) FROM wave9.eu_emodnet_msp_zoning
+      answer: 4257
   eu_emodnet_ports:
     grain: 'EMODnet ports: one row per record as published (EUSEA; level point)'
     source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:portlocations&outputFormat=application/json
@@ -841,6 +1467,18 @@ tables:
     - q: how many records in EMODnet marine aggregate areas
       sql: SELECT count(*) FROM wave9.eu_emodnet_aggregates
       answer: 1202
+  eu_emodnet_substrate:
+    grain: 'EMODnet seabed substrate 1:1M: one row per record as published (EUSEA; level polygon)'
+    source: https://drive.emodnet-geology.eu/geoserver/wfs?service=WFS&version=1.0.0&request=GetFeature&typeName=gtk:seabed_substrate_1m&outputFormat=SHAPE-ZIP&srsName=EPSG:4326&format_options=CHARSET:UTF-8
+    licence: Commission reuse (EMODnet Geology, CC BY 4.0)
+    category: 6. Offshore and maritime
+    columns: ogc_fid, objectid, shape_leng, shape_area, code, country, name, data_holde, contact, scale, original_s, original_g, mapping_me, references, comments,
+      reclassifi, method, sample_num, original_0, relation, folk_16cl, folk_16cl_, folk_7cl, folk_7cl_t, folk_5cl, folk_5cl_t, surface_fe, surface_f0, conf_rs, conf_s,
+      conf_d, conf_tot, geometry
+    examples:
+    - q: how many records in EMODnet seabed substrate 1:1M
+      sql: SELECT count(*) FROM wave9.eu_emodnet_substrate
+      answer: 67254
   eu_kohesio_2014_2020:
     grain: 'Cohesion policy projects 2014-2020 (Kohesio export): one row per record as published (EU27; level point)'
     source: https://cohesiondata.ec.europa.eu/api/views/557j-pmg8/rows.csv?accessType=DOWNLOAD
@@ -867,6 +1505,21 @@ tables:
     - q: 'how many records in Northern Powergrid heat map: substation headroom'
       sql: SELECT count(*) FROM wave9.gb_npg_heatmap_substations
       answer: 670
+  gb_hnpd:
+    grain: 'DESNZ Heat Networks Planning Database (Q2 2026): one row per record as published (GB; level point)'
+    source: https://assets.publishing.service.gov.uk/media/6a6cbd2e0c36759b5ccaa304/HNPD_2026_Q2.xlsx
+    licence: OGL v3
+    category: 12. Heat networks and geothermal
+    columns: ref_id, record_last_updated_dd_mm_yyyy, operator_or_applicant, site_name, connection_to_communal_district_or_campus_heat_network, new_renovation_or_expansion_of_existing_heat_network,
+      number_of_customer_connections, types_of_building_domestic_non_domestic_or_mixed, types_of_buildings, technology_type, secondary_plant_technology, third_plant_technology,
+      backup_plant_technology, installed_capacity_mwelec, primary_fuel_type, heat_source, temperature_of_heat_supply_celsius, heat_storage, heat_storage_volume_m3,
+      heat_enabled, cooling_enabled, chp_enabled, length_of_distribution_network_in_m, average_diameter_of_pipes_in_mm, development_status, development_status_short,
+      are_they_re_applying_new_repd_ref, are_they_re_applying_old_repd_ref, address, county, region, country, post_code, x_coordinate, y_coordinate, planning_authority,
+      planning_application_reference, appeal_reference, secretary_of_state_reference, type_of_secretary_of_state_intervention
+    examples:
+    - q: how many records in DESNZ Heat Networks Planning Database (Q2 2026)
+      sql: SELECT count(*) FROM wave9.gb_hnpd
+      answer: 1505
   eu_heat_production:
     grain: 'Eurostat electricity and derived heat production by fuel (nrg_bal_peh): one row per record as published (EU27; level country)'
     source: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nrg_bal_peh/?format=SDMX-CSV&compressed=false&startPeriod=2015
@@ -922,10 +1575,10 @@ tables:
     source: https://www.eia.gov/electricity/data/eia861/zip/f8612024.zip
     licence: public domain
     category: 16. Reliability below the country
-    columns: data_year, utility_number, utility_name, state, ownership, saidi_minutes_per_year, saifi_times_per_year, caidi_minutes_per_interruption, saidi_minutes_per_year_1,
-      saifi_times_per_year_1, caidi_minutes_per_interruption_1, saidi_minutes_per_year_2, saifi_times_per_year_2, caidi_minutes_per_interruption_2, number_of_customers,
-      highest_dist_voltage, outages_recorded_automatically, saidi_minutes_per_year_3, saifi_times_per_year_3, caidi_with_med, saidi_minutes_per_year_4, saifi_times_per_year_4,
-      caidi_without_med, number_of_customers_1, inactive_accounts_included, momentary_interruptions, highest_dist_voltage_1, outages_recorded_automatically_1
+    columns: data_year, utility_number, utility_name, state, ownership, saidi_minutes_per_year, saifi_times_per_year, caidi_minutes_per_interruption, saidi_minutes_per_year_8,
+      saifi_times_per_year_9, caidi_minutes_per_interruption_10, saidi_minutes_per_year_11, saifi_times_per_year_12, caidi_minutes_per_interruption_13, number_of_customers,
+      highest_dist_voltage, outages_recorded_automatically, saidi_minutes_per_year_17, saifi_times_per_year_18, caidi_with_med, saidi_minutes_per_year_20, saifi_times_per_year_21,
+      caidi_without_med, number_of_customers_23, inactive_accounts_included, momentary_interruptions, highest_dist_voltage_26, outages_recorded_automatically_27
     examples:
     - q: how many records in EIA-861 2024 reliability per utility (SAIDI, SAIFI)
       sql: SELECT count(*) FROM wave9.us_eia861_reliability_xlsx
@@ -946,3 +1599,355 @@ tables:
     - q: how many records in NRC operating reactors list
       sql: SELECT count(*) FROM wave9.us_nrc_operating_reactors
       answer: 93
+  nl_cbs_datacentres:
+    grain: 'CBS electricity delivered to data centres 2017-2024 (Netherlands): one row per record as published (NL; level country)'
+    source: https://www.cbs.nl/-/media/_excel/2025/51/datacenters_elektriciteitsleveringen_2017_2024.xlsx
+    licence: CC BY 4.0
+    category: 5. Demand and electrification
+    columns: a, b, c, d, e, f, g, h, i, j, k
+    examples:
+    - q: how many records in CBS electricity delivered to data centres 2017-2024 (Netherlands)
+      sql: SELECT count(*) FROM wave9.nl_cbs_datacentres
+      answer: 16
+  eu_cleanh2_electrolyser_mfg:
+    grain: 'Clean Hydrogen Observatory electrolyser manufacturing capacity: one row per record as published (EUR; level total)'
+    source: https://observatory.clean-hydrogen.europa.eu/sites/default/files/2026-07/Electrolyser%20manufacturing%20capacity%20May2026.xlsx
+    licence: ©Clean Hydrogen JU, reproduction is authorised, provided the source is acknowledged
+    category: 7. Supply chain, materials and industry
+    columns: b, c, d, e
+    examples:
+    - q: how many records in Clean Hydrogen Observatory electrolyser manufacturing capacity
+      sql: SELECT count(*) FROM wave9.eu_cleanh2_electrolyser_mfg
+      answer: 11
+  de_emodnet_telecom_bsh:
+    grain: 'EMODnet telecommunication cables - DE BSH-CONTIS: one row per record as published (DE; level line)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:bshcontiscables&outputFormat=application/json
+    licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+    category: 10. Telecom and digital
+    columns: ogc_fid, id, featureid, featurespe, status, featuretyp, name, uuid, shape_leng, geometry
+    examples:
+    - q: how many records in EMODnet telecommunication cables - DE BSH-CONTIS
+      sql: SELECT count(*) FROM wave9.de_emodnet_telecom_bsh
+      answer: 28
+  es_emodnet_telecom_cica:
+    grain: 'EMODnet telecommunication cables - ES CICA: one row per record as published (ES; level line)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:cicacables&outputFormat=application/json
+    licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+    category: 10. Telecom and digital
+    columns: ogc_fid, id, length, name, location, geometry
+    examples:
+    - q: how many records in EMODnet telecommunication cables - ES CICA
+      sql: SELECT count(*) FROM wave9.es_emodnet_telecom_cica
+      answer: 29
+  fr_emodnet_telecom_shom:
+    grain: 'EMODnet telecommunication cables - FR SHOM: one row per record as published (FR; level line)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:shomcables&outputFormat=application/json
+    licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+    category: 10. Telecom and digital
+    columns: ogc_fid, id, catcbl, status, inspireid, geometry
+    examples:
+    - q: how many records in EMODnet telecommunication cables - FR SHOM
+      sql: SELECT count(*) FROM wave9.fr_emodnet_telecom_shom
+      answer: 603
+  fr_emodnet_telecom_sigcables:
+    grain: 'EMODnet telecommunication cables - FR SIGCables: one row per record as published (FR; level line)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:sigcables&outputFormat=application/json
+    licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+    category: 10. Telecom and digital
+    columns: ogc_fid, id, name, sgc_id, status, inst_year, dism_year, length, location, geometry
+    examples:
+    - q: how many records in EMODnet telecommunication cables - FR SIGCables
+      sql: SELECT count(*) FROM wave9.fr_emodnet_telecom_sigcables
+      answer: 60
+  mt_emodnet_telecom:
+    grain: 'EMODnet telecommunication cables - MT IOI-MOC: one row per record as published (MT; level line)'
+    source: https://ows.emodnet-humanactivities.eu/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=emodnet:maltacables&outputFormat=application/json
+    licence: 'EMODnet Human Activities: re-use for any purpose including commercial, free of charge, sources acknowledged'
+    category: 10. Telecom and digital
+    columns: ogc_fid, id, name, geometry
+    examples:
+    - q: how many records in EMODnet telecommunication cables - MT IOI-MOC
+      sql: SELECT count(*) FROM wave9.mt_emodnet_telecom
+      answer: 6
+  eur_overture_comm_lines:
+    grain: 'OpenStreetMap communication lines (Overture base/infrastructure): one row per record as published (EUR; level line)'
+    source: s3://overturemaps-us-west-2/release/2026-09-23.1/theme=base/type=infrastructure/*
+    licence: ODbL (OpenStreetMap contributors, via Overture)
+    category: 10. Telecom and digital
+    columns: id, class, subtype, name, source_tags, geometry
+    examples:
+    - q: how many records in OpenStreetMap communication lines (Overture base/infrastructure)
+      sql: SELECT count(*) FROM wave9.eur_overture_comm_lines
+      answer: 6991
+  de_bfee_abwaerme:
+    grain: 'BfEE Plattform für Abwärme (reported excess heat per site: one row per record as published (DE; level point)'
+    source: https://elan1.bafa.bund.de/zvi-ui/pfa/abwaermepotentiale
+    licence: CC BY 4.0
+    category: 7. Supply chain, materials and industry
+    columns: uuid, nameunternehmen, nameabwaermepotenzial, ortstandort, plzstandort, strassestandort, waermemengeprojahr, maxthermleistung, tempniveauavg, stundenverfuegbarprotag,
+      verfuegbarwe, verfuegbarvorhersagbar, namefirma, namestandort, strasseunternehmen, ortunternehmen, plzunternehmen, strassefirma, ortfirma, plzfirma, waermemengeprojahrgeschaetzt,
+      maxthermleistunggeschaetzt, abwaermepotenzial_art, regelungvon, profiljan, profilfeb, profilmar, profilapr, profilmai, profiljun, profiljul, profilaug, profilsep,
+      profilokt, profilnov, profildez, infoabwaermepotenzial, infounternehmen, kontaktmail, kontakttel
+    examples:
+    - q: how many records in BfEE Plattform für Abwärme (reported excess heat per site
+      sql: SELECT count(*) FROM wave9.de_bfee_abwaerme
+      answer: 24355
+  dk_energinet_countertrade:
+    grain: 'Energinet countertrade procured in intraday (DK1): one row per record as published (DK; level country)'
+    source: https://api.energidataservice.dk/dataset/CountertradeIntraday_v2?limit=0&start=2025-10-15
+    licence: CC BY 4.0
+    category: 2. Grid planning, connection and network charges
+    columns: timeutc, timedk, version, volumeupmw, volumedownmw, publicationdate
+    examples:
+    - q: how many records in Energinet countertrade procured in intraday (DK1)
+      sql: SELECT count(*) FROM wave9.dk_energinet_countertrade
+      answer: 26976
+  ie_eirgrid_dispatch_down:
+    grain: 'EirGrid renewable dispatch-down (constraints and curtailment) summary: one row per record as published (IE; level country)'
+    source: https://www.eirgrid.ie/sites/default/files/publications/DD-Summary-Report-V23.xlsx
+    licence: EirGrid Group Open Data Licence (commercial use allowed, credit 'Supported by EirGrid Group Data')
+    category: 2. Grid planning, connection and network charges
+    columns: area, year, period, measure, unit, value
+    examples:
+    - q: how many records in EirGrid renewable dispatch-down (constraints and curtailment) summary
+      sql: SELECT count(*) FROM wave9.ie_eirgrid_dispatch_down
+      answer: 16905
+  ie_semo_imbalance:
+    grain: 'SEMO balancing and imbalance market cost view (half-hourly): one row per record as published (IE; level zone)'
+    source: https://reports.sem-o.com/api/v1/documents/static-reports?DPuG_ID=BM-095&page_size=100&sort_by=Date&order_by=DESC
+    licence: EirGrid Group Open Data Licence (covers SEMO; commercial use allowed with credit)
+    category: 3. Markets and revenues
+    columns: file, published, row, starttime, endtime, imbalancevolume, imbalanceprice, imbalancecost
+    examples:
+    - q: how many records in SEMO balancing and imbalance market cost view (half-hourly)
+      sql: SELECT count(*) FROM wave9.ie_semo_imbalance
+      answer: 651
+  be_elia_balancing:
+    grain: 'Elia balancing energy prices and reserve capacity bids: one row per record as published (BE; level country)'
+    source: https://opendata.elia.be/api/explore/v2.1/catalog/datasets/ods166/exports/csv
+    licence: Elia Open Data Licence (named in every dataset's metas; the licence page did not answer, 2026-11-05 and 2026-11-06, so its terms are not quoted); built
+      on the owner's instruction (2026-11-06)
+    category: 3. Markets and revenues
+    columns: datetime, resolutioncode, qualitystatus, systemimbalance, ace, marginalincrementalprice, floorprice, afrrpriceup, upwardavailablemfrrprice, mfrrdaup,
+      mfrrsaup, marginaldecrementalprice, cap, afrrpricedown, downwardavailablemfrrprice, mfrrdadown, mfrrsadown, intertsopriceimport, intertsopriceexport, source_url,
+      deliverydate, capacitybiddeliveryperiod, tenderdate, selectedbyoptimizer, regulationdirection, bidid, afrrofferedvolume, selectedvolumeafterstep2, selectedvolumeafterstep3,
+      selectedvolumeafterstep4, selectedvolumeafterstep5, afrrawardedvolumemw, price, delivery_date_cet_1_cest_2, mfrrofferedvolume, mfrrstdawardedvolume, mfrrstdcapbidprice,
+      mfrrflexawardedvolume, mfrrflexcapbidprice
+    examples:
+    - q: how many records in Elia balancing energy prices and reserve capacity bids
+      sql: SELECT count(*) FROM wave9.be_elia_balancing
+      answer: 1004448
+  fr_odre_balancing_volumes:
+    grain: 'RTE balancing mechanism activated volumes per year (ODRÉ): one row per record as published (FR; level country)'
+    source: https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/volumes-actives-ma/exports/csv
+    licence: Licence Ouverte 2.0
+    category: 3. Markets and revenues
+    columns: annee, vab_hydraulique, vab_nucleaire, vab_thermique, vab_consommation, vab_ech_grt_acteur, vab_ech_grt_grt, vah_hydraulique, vah_nucleaire, vah_thermique,
+      vah_effacement, vah_ech_grt_acteur, vah_ech_grt_grt, cout_moy_baisse_en_eur_mwh, cout_moy_hausse_en_eur_mwh, nb_situations_tendues_b_en_1_2j, nb_situations_tendues_h_en_1_2j,
+      vab_terre, vah_terre
+    examples:
+    - q: how many records in RTE balancing mechanism activated volumes per year (ODRÉ)
+      sql: SELECT count(*) FROM wave9.fr_odre_balancing_volumes
+      answer: 12
+  gr_admie_balancing:
+    grain: 'IPTO (ADMIE) balancing market settlement files: one row per record as published (GR; level country)'
+    source: https://www.admie.gr/getOperationMarketFilewRange?dateStart=2026-10-01&dateEnd=2026-10-01
+    licence: not stated (IPTO's Terms and Services cover liability and accuracy only); built on the owner's instruction (2026-11-06) to build sources whose licence
+      is not clear
+    category: 3. Markets and revenues
+    columns: period, version, file, startdate, enddate, total_activated_balancing_energy_up_mwh, total_activated_balancing_energy_down_mwh, balancing_energy_idev_mwh,
+      balancing_energy_udev_mwh, total_activated_balancing_energy_mwh, imbalance_price_mwh, mfrr_price_up_mwh, mfrr_price_down_mwh, uplift_account_1_mwh, uplift_account_2_mwh,
+      uplift_account_3_mwh, (ΔP + kΔf) "ISP energy" (MWh), system_deviation_mwh, curt_flag, Imbalance Price  (€/MWh), latest
+    examples:
+    - q: how many records in IPTO (ADMIE) balancing market settlement files
+      sql: SELECT count(*) FROM wave9.gr_admie_balancing
+      answer: 202936
+  pl_pse_balancing:
+    grain: 'PSE balancing prices and reserve capacity prices (raporty.pse.pl API): one row per record as published (PL; level country)'
+    source: https://api.raporty.pse.pl/api/cmbp-tp?$filter=business_date%20ge%20'2024-06-14'
+    licence: not stated (neither raporty.pse.pl nor the API states reuse terms); built on the owner's instruction (2026-11-06) to build sources whose licence is not
+      stated
+    category: 3. Markets and revenues
+    columns: dataset, onmb, rr_d, rr_g, dtime, fcr_d, fcr_g, afrr_d, afrr_g, mfrrd_d, mfrrd_g, dtime_utc, business_date, publication_ts, publication_ts_utc, period,
+      cen_cost, ckoeb_cost, period_utc, ceb_pp_cost, ceb_sr_cost, ceb_sr_afrrd_cost, ceb_sr_afrrg_cost
+    examples:
+    - q: how many records in PSE balancing prices and reserve capacity prices (raporty.pse.pl API)
+      sql: SELECT count(*) FROM wave9.pl_pse_balancing
+      answer: 105053
+  cz_ceps_balancing:
+    grain: 'ČEPS data (web service CepsData.asmx): one row per record as published (CZ; level country)'
+    source: https://www.ceps.cz/_layouts/CepsData.asmx
+    licence: not stated (no reuse terms found on ceps.cz); built on the owner's instruction (2026-11-06) to build sources whose licence is not clear
+    category: 3. Markets and revenues
+    columns: operation, dataset, date, afrr_mw, aFRR- [MW], mfrr_mw, mFRR- [MW], mfrr5_mw, aktu_ln_odchylka_mw, estimated_price_k_mwh, date_1, interval
+    examples:
+    - q: how many records in ČEPS data (web service CepsData.asmx)
+      sql: SELECT count(*) FROM wave9.cz_ceps_balancing
+      answer: 194355
+  us_eia861m_small_solar:
+    grain: 'EIA-861M estimated small-scale solar PV capacity and generation per state: one row per record as published (US; level region)'
+    source: https://www.eia.gov/electricity/data/eia861m/xls/small_scale_solar_2026.xlsx
+    licence: public domain
+    category: 5. Demand and electrification
+    columns: estimated_small_scale_solar_pv_capacity_and_generation_monthly_totals_for_states
+    examples:
+    - q: how many records in EIA-861M estimated small-scale solar PV capacity and generation per state
+      sql: SELECT count(*) FROM wave9.us_eia861m_small_solar
+      answer: 411
+  si_surs_electricity_municipality:
+    grain: 'SURS electricity consumption (kWh) per municipality and consumer type, yearly (1817609S): one row per record as published (SI; level municipality)'
+    source: https://pxweb.stat.si/SiStatData/api/v1/sl/Data/1817609S.px
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: leto, leto_code, vrsta_odjemalca, vrsta_odjemalca_code, ob_ine, ob_ine_code, value
+    examples:
+    - q: how many records in SURS electricity consumption (kWh) per municipality and consumer type, yearly (1817609S)
+      sql: SELECT count(*) FROM wave9.si_surs_electricity_municipality
+      answer: 3852
+  si_surs_heating_settlement:
+    grain: 'SURS dwellings by heating method per settlement (0871205S) and per municipality (0861120S): one row per record as published (SI; level small_area)'
+    source: https://pxweb.stat.si/SiStatData/api/v1/sl/Data/0871205S.px
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: meritve, meritve_code, leto, leto_code, na_in_ogrevanja, na_in_ogrevanja_code, naselja, naselja_code, value, vrsta_ogrevanja, vrsta_ogrevanja_code, naseljenost,
+      naseljenost_code, ob_ine, ob_ine_code
+    examples:
+    - q: how many records in SURS dwellings by heating method per settlement (0871205S) and per municipality (0861120S)
+      sql: SELECT count(*) FROM wave9.si_surs_heating_settlement
+      answer: 192648
+  fi_statfin_heating_fuel_municipality:
+    grain: 'Statistics Finland buildings by heating fuel per municipality (StatFin raku 15er): one row per record as published (FI; level municipality)'
+    source: https://pxdata.stat.fi/PxWeb/api/v1/fi/StatFin/raku/15er.px
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: contentscode, contentscode_code, polttoaineet_12_20260101, polttoaineet_12_20260101_code, rak_valm_v_10_20210101, rak_valm_v_10_20210101_code, timeperiod_y,
+      timeperiod_y_code, rakennus_6_20180101, rakennus_6_20180101_code, alue_23_20260101, alue_23_20260101_code, value
+    examples:
+    - q: how many records in Statistics Finland buildings by heating fuel per municipality (StatFin raku 15er)
+      sql: SELECT count(*) FROM wave9.fi_statfin_heating_fuel_municipality
+      answer: 1067904
+  cz_csu_sldb_heating_energy:
+    grain: 'ČSÚ Census 2021 occupied dwellings by main energy source for heating: one row per record as published (CZ; level municipality)'
+    source: https://csu.gov.cz/docs/107508/cf59a324-f403-7444-58c3-7b26bdbf01ec/sldb2021_byty_energie.csv?version=1.0
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: idhod, hodnota, ukaz_kod, energie_cis, energie_kod, uzemi_cis, uzemi_kod, sldb_rok, sldb_datum, ukaz_txt, energie_txt, uzemi_txt, uzemi_typ
+    examples:
+    - q: how many records in ČSÚ Census 2021 occupied dwellings by main energy source for heating
+      sql: SELECT count(*) FROM wave9.cz_csu_sldb_heating_energy
+      answer: 87413
+  cz_csu_sldb_heating_mode:
+    grain: 'ČSÚ Census 2021 occupied dwellings by heating method: one row per record as published (CZ; level municipality)'
+    source: https://csu.gov.cz/docs/107508/d0e84fb3-8e98-0d05-0254-db4465ff8f65/sldb2021_byty_vytapeni.csv?version=1.0
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: idhod, hodnota, ukaz_kod, vytapeni_cis, vytapeni_kod, uzemi_cis, uzemi_kod, sldb_rok, sldb_datum, ukaz_txt, vytapeni_txt, uzemi_txt, uzemi_typ
+    examples:
+    - q: how many records in ČSÚ Census 2021 occupied dwellings by heating method
+      sql: SELECT count(*) FROM wave9.cz_csu_sldb_heating_mode
+      answer: 47069
+  pt_ine_heating_freguesia:
+    grain: 'INE Portugal Census 2021 dwellings by heating type used most often: one row per record as published (PT; level small_area)'
+    source: https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0011526&lang=PT
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: period, geocod, geodsg, dim_3, dim_3_t, ind_string, value
+    examples:
+    - q: how many records in INE Portugal Census 2021 dwellings by heating type used most often
+      sql: SELECT count(*) FROM wave9.pt_ine_heating_freguesia
+      answer: 24052
+  ee_stat_heating_2011:
+    grain: 'Statistics Estonia census 2011 dwellings by main heating method per municipality (RL0223): one row per record as published (EE; level municipality)'
+    source: https://andmed.stat.ee/api/v1/et/stat/rahvaloendus/rel2011/eluruumid/RL0223.PX
+    licence: CC BY-SA 4.0
+    category: 'Part A: finishing wave 8'
+    columns: peamine_k_tmisviis, peamine_k_tmisviis_code, asustatus, asustatus_code, hoone_liik, hoone_liik_code, asukoht, asukoht_code, value
+    examples:
+    - q: how many records in Statistics Estonia census 2011 dwellings by main heating method per municipality (RL0223)
+      sql: SELECT count(*) FROM wave9.ee_stat_heating_2011
+      answer: 18256
+  lv_csp_central_heating:
+    grain: 'CSP census dwellings with and without central heating per municipality and Riga neighbourhood (MAS080): one row per record as published (LV; level small_area)'
+    source: https://data.stat.gov.lv/api/v1/lv/OSP_PUB/POP/MA/MAS/MAS080
+    licence: CC0 1.0
+    category: 'Part A: finishing wave 8'
+    columns: time, time_code, contentscode, contentscode_code, amenities, amenities_code, poc, poc_code, ocs, ocs_code, area, area_code, value
+    examples:
+    - q: how many records in CSP census dwellings with and without central heating per municipality and Riga neighbourhood (MAS080)
+      sql: SELECT count(*) FROM wave9.lv_csp_central_heating
+      answer: 329160
+  gb_bus_heat_pumps_la:
+    grain: 'DESNZ Boiler Upgrade Scheme redemptions per local authority (heat pumps): one row per record as published (GB; level county)'
+    source: statistics/boiler-upgrade-scheme-statistics-september-2026
+    licence: OGL v3
+    category: 5. Demand and electrification
+    columns: table_q1_2_number_of_redemptions_paid_by_local_authority_england_and_wales_may_2022_to_september_2026
+    examples:
+    - q: how many records in DESNZ Boiler Upgrade Scheme redemptions per local authority (heat pumps)
+      sql: SELECT count(*) FROM wave9.gb_bus_heat_pumps_la
+      answer: 371
+  us_eia_recs_heat_pumps_state:
+    grain: 'EIA RECS 2020 main space-heating equipment per state (central heat pump share): one row per record as published (US; level region)'
+    source: https://www.eia.gov/consumption/residential/data/2020/state/xls/State%20Space%20Heating.xlsx
+    licence: public domain
+    category: 5. Demand and electrification
+    columns: preliminary_data_release_date_june_2022_final_data_release_date_march_2023
+    examples:
+    - q: how many records in EIA RECS 2020 main space-heating equipment per state (central heat pump share)
+      sql: SELECT count(*) FROM wave9.us_eia_recs_heat_pumps_state
+      answer: 1
+  ro_transelectrica_zone_capacity:
+    grain: 'Transelectrica available capacity per grid zone and allocation year (capacity auctions): one row per record as published (RO; level zone)'
+    source: https://www.transelectrica.ro/web/tel/procesul-de-alocare-a-capacitatii-retelei-electrice
+    licence: not stated (site footer "Copyright © Transelectrica 2013 - 2026"); a public notice required by ANRE Order 53/2024 art. 6 (1)-(2); built on the owner's
+      instruction (2026-11-06) to build sources whose licence is not clear
+    category: 2. Grid planning, connection and network charges
+    columns: zone, year, capacity_mw, start_price_lei_per_mw, cell
+    examples:
+    - q: how many records in Transelectrica available capacity per grid zone and allocation year (capacity auctions)
+      sql: SELECT count(*) FROM wave9.ro_transelectrica_zone_capacity
+      answer: 100
+  rs_ems_connection_queue:
+    grain: 'EMS list of all connection requests (generation and storage) on the transmission system: one row per record as published (RS; level plant)'
+    source: https://ems.rs/wp-content/uploads/2026/11/20261104-proizvodjaci-Spisak-prikljucenja2.pdf
+    licence: not stated (ems.rs has no terms or copyright page); a list published under the Law on the Use of Renewable Energy Sources (Službeni glasnik RS 40/2021,
+      35/2023, 94/2024); built on the owner's instruction (2026-11-06)
+    category: 2. Grid planning, connection and network charges
+    columns: table, row_no, type, project, applicant, voltage_kv, requested_mw, approved_mw, location, year_in_service, phase, trial_operation_date, permanent_connection_date,
+      requested_mw_number, approved_mw_number
+    examples:
+    - q: how many records in EMS list of all connection requests (generation and storage) on the transmission system
+      sql: SELECT count(*) FROM wave9.rs_ems_connection_queue
+      answer: 88
+  sk_susr_energy_consumption_okres:
+    grain: 'ŠÚ SR consumption of fuels, electricity and heat per district (okres), yearly (DATAcube en3001rr): one row per record as published (SK; level district)'
+    source: https://statdata.statistics.sk/public/api/dc/opendata/cube/dataset/en3001rr/download?lang=SK&type=CSV
+    licence: CC BY 4.0
+    category: 'Part A: finishing wave 8'
+    columns: e_nuts14, e_indic, e_unit, e_year, hodnota
+    examples:
+    - q: how many records in ŠÚ SR consumption of fuels, electricity and heat per district (okres), yearly (DATAcube en3001rr)
+      sql: SELECT count(*) FROM wave9.sk_susr_energy_consumption_okres
+      answer: 13800
+  gr_elstat_heating_energy_regional_unit:
+    grain: 'ELSTAT Census 2021 households by main energy source for heating, cooking and hot water, per regional unit (SAM05 table Α13): one row per record as published
+      (GR; level county)'
+    source: https://www.statistics.gr/el/statistics?p_p_id=documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_cacheability=cacheLevelPage&p_p_col_id=column-2&p_p_col_count=4&p_p_col_pos=2&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_javax.faces.resource=document&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_ln=downloadResources&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_documentID=532490&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_locale=el
+    licence: ELSTAT reuse policy (free reuse, commercial included, with source)
+    category: 'Part A: finishing wave 8'
+    columns: level, code, area, category, measure, value
+    examples:
+    - q: how many records in ELSTAT Census 2021 households by main energy source for heating, cooking and hot water, per regional unit (SAM05 table Α13)
+      sql: SELECT count(*) FROM wave9.gr_elstat_heating_energy_regional_unit
+      answer: 3906
+  gr_elstat_heating_settlement:
+    grain: 'ELSTAT Census 2021 conventional dwellings by occupancy and heating availability and type, per settlement (SAM05 table Γ09): one row per record as published
+      (GR; level small_area)'
+    source: https://www.statistics.gr/el/statistics?p_p_id=documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_cacheability=cacheLevelPage&p_p_col_id=column-2&p_p_col_count=4&p_p_col_pos=2&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_javax.faces.resource=document&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_ln=downloadResources&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_documentID=532485&_documents_WAR_publicationsportlet_INSTANCE_VBZOni0vs5VJ_locale=el
+    licence: ELSTAT reuse policy (free reuse, commercial included, with source)
+    category: 'Part A: finishing wave 8'
+    columns: level, code, name, measure, value
+    examples:
+    - q: how many records in ELSTAT Census 2021 conventional dwellings by occupancy and heating availability and type, per settlement (SAM05 table Γ09)
+      sql: SELECT count(*) FROM wave9.gr_elstat_heating_settlement
+      answer: 444864

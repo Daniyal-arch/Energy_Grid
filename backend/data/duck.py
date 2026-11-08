@@ -108,6 +108,13 @@ class Lake:
         con.execute(f"SET memory_limit = '{s.duckdb_memory_limit}'")
         con.execute("SET temp_directory = '/tmp/duckdb'")
         con.execute("SET allow_persistent_secrets = false")
+        # brief 30: keep Parquet footers and HTTP metadata of R2 objects between queries (the
+        # same files are read again and again); each setting is skipped where unsupported
+        for opt in ("enable_http_metadata_cache = true", "enable_external_file_cache = true"):
+            try:
+                con.execute(f"SET GLOBAL {opt}")
+            except duckdb.Error:
+                log.warning("duckdb setting not available", extra={"setting": opt})
         try:  # lon/lat axis order for geodesic areas and lengths (areas, in_area)
             con.execute("SET GLOBAL geometry_always_xy = true")
         except duckdb.Error:
@@ -434,6 +441,13 @@ class Lake:
         return cur
 
     def tables(self) -> list[str]:
+        """The lake's and the app's tables (cached: the catalogue does not change while the
+        service runs, and a search asked for it several times; brief 30)."""
+        if getattr(self, "_tables", None) is None:
+            self._tables = self._list_tables()
+        return list(self._tables)
+
+    def _list_tables(self) -> list[str]:
         rows = (
             self.con.cursor()
             .execute(

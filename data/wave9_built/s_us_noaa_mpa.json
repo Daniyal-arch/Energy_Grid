@@ -1,0 +1,72 @@
+{
+ "us_noaa_mpa": {
+  "bbox": [
+   -180.0,
+   -15.386,
+   180.0,
+   70.17
+  ],
+  "built": "2026-11-06",
+  "columns": [
+   "ogc_fid",
+   "fid",
+   "site_id",
+   "site_name",
+   "gov_level",
+   "state",
+   "prot_lvl",
+   "mgmt_agen",
+   "mgmt_plan",
+   "pri_con_fo",
+   "cons_focus",
+   "fish_rstr",
+   "prot_focus",
+   "permanence",
+   "constancy",
+   "estab_yr",
+   "anchor",
+   "vessel",
+   "iucn_mpa",
+   "iucncat",
+   "category",
+   "marine",
+   "url",
+   "wdpa_cd",
+   "proseasid",
+   "design",
+   "areakm",
+   "areamar",
+   "marpercent",
+   "areant",
+   "longitude",
+   "latitude",
+   "vxcount",
+   "shape_leng",
+   "shape_area",
+   "shape_length",
+   "geometry"
+  ],
+  "example": {
+   "answer": 981,
+   "sql": "SELECT count(*) FROM wave9.us_noaa_mpa"
+  },
+  "geometry": true,
+  "rows": 981,
+  "seconds": 168,
+  "tiles": {
+   "fields": [
+    "name",
+    "site_id",
+    "gov_level",
+    "state",
+    "prot_lvl",
+    "mgmt_agen",
+    "mgmt_plan"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_noaa_mpa.pmtiles"
+  },
+  "with_position": 981
+ }
+}

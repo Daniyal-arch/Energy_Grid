@@ -1,12 +1,63 @@
 {
+ "eu_egdi_minerals": {
+  "bbox": [
+   -72.647,
+   4.113,
+   39.131,
+   82.59
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "id_hidden",
+   "importance_rank_hidden",
+   "mineraloccurrencedbk_hidden",
+   "inspireid",
+   "name",
+   "country",
+   "occurrence_type",
+   "deposit_group",
+   "deposit_type",
+   "inspire_commodity",
+   "crm_2023",
+   "element",
+   "commodity_importance",
+   "commodity_group",
+   "mine_status",
+   "mining_activity_types",
+   "has_oremeasures",
+   "endownment",
+   "reserves",
+   "resources",
+   "unfc",
+   "totalproduction",
+   "original_geometry_type",
+   "longitude",
+   "latitude",
+   "srid",
+   "valid_geometry",
+   "crm_2023_importance",
+   "geometry"
+  ],
+  "example": {
+   "answer": 28223,
+   "sql": "SELECT count(*) FROM wave9.eu_egdi_minerals"
+  },
+  "geometry": true,
+  "rows": 28223,
+  "seconds": 6,
+  "with_position": 28223
+ },
  "us_eia_biodiesel": {
+  "as_of": "2022-02-03",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -155.05,
    19.634,
    -70.328,
    61.164
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "objectid",
@@ -31,13 +82,15 @@
   "with_position": 75
  },
  "us_eia_ethanol": {
+  "as_of": "2022-02-03",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -121.336,
    32.939,
    -76.38,
    47.371
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "objectid",
@@ -61,6 +114,43 @@
   "seconds": 0,
   "with_position": 197
  },
+ "us_epa_agstar": {
+  "as_of": "2025-07-24",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
+  "columns": [
+   "project_name",
+   "cluster_name",
+   "project_type",
+   "city",
+   "county",
+   "state",
+   "digester_type",
+   "status",
+   "year_operational",
+   "animal_farm_type_s",
+   "cattle",
+   "dairy",
+   "poultry",
+   "swine",
+   "co_digestion",
+   "biogas_generation_estimate_cu_ft_day",
+   "electricity_generated_kwh_yr",
+   "biogas_end_use_s",
+   "lcfs_pathway",
+   "system_designer_s_developer_s_and_affiliates",
+   "receiving_utility",
+   "total_emission_reductions_mtco2e_yr",
+   "awarded_usda_funding"
+  ],
+  "example": {
+   "answer": 473,
+   "sql": "SELECT count(*) FROM wave9.us_epa_agstar"
+  },
+  "geometry": false,
+  "rows": 473,
+  "seconds": 1
+ },
  "us_epa_lmop": {
   "bbox": [
    -149.602,
@@ -68,7 +158,7 @@
    -65.679,
    61.293
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "objectid",
@@ -96,7 +186,7 @@
   },
   "geometry": true,
   "rows": 542,
-  "seconds": 0,
+  "seconds": 1,
   "with_position": 542
  },
  "us_epa_lmop_landfills": {
@@ -106,7 +196,7 @@
    144.751,
    64.805
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "objectid",
@@ -139,13 +229,15 @@
   "with_position": 2323
  },
  "us_usgs_mrds": {
+  "as_of": "2022-08-23",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -178.821,
    -72.997,
    179.132,
    80.001
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "dep_id",
    "url",
@@ -200,7 +292,7 @@
   },
   "geometry": true,
   "rows": 304632,
-  "seconds": 5,
+  "seconds": 4,
   "tiles": {
    "fields": [
     "name",

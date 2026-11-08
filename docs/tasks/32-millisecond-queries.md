@@ -24,8 +24,7 @@ dataset and report the ones that miss, with the reason.
 
 ## Start
 
-- Start from `main` after PR #19 is merged. If it is not merged yet, branch from
-  `claude/loving-dijkstra-5q8n1c` and say so in the PR.
+- Start from `main` (PR #19, brief 30 and brief 31, was merged on 2026-11-08).
 - Read `vault/index.md`, then `vault/data/lake.md`, `vault/backend/backend-service.md`,
   `vault/backend/agent-tools.md`, the latency section of PR #19, and `docs/DATA_LAKE.md`
   sections 3-5.

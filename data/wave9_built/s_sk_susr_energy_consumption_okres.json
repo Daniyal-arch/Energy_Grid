@@ -1,0 +1,19 @@
+{
+ "sk_susr_energy_consumption_okres": {
+  "built": "2026-11-06",
+  "columns": [
+   "e_nuts14",
+   "e_indic",
+   "e_unit",
+   "e_year",
+   "hodnota"
+  ],
+  "example": {
+   "answer": 13800,
+   "sql": "SELECT count(*) FROM wave9.sk_susr_energy_consumption_okres"
+  },
+  "geometry": false,
+  "rows": 13800,
+  "seconds": 1
+ }
+}

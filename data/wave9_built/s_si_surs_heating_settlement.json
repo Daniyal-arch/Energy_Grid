@@ -1,0 +1,29 @@
+{
+ "si_surs_heating_settlement": {
+  "built": "2026-11-06",
+  "columns": [
+   "meritve",
+   "meritve_code",
+   "leto",
+   "leto_code",
+   "na_in_ogrevanja",
+   "na_in_ogrevanja_code",
+   "naselja",
+   "naselja_code",
+   "value",
+   "vrsta_ogrevanja",
+   "vrsta_ogrevanja_code",
+   "naseljenost",
+   "naseljenost_code",
+   "ob_ine",
+   "ob_ine_code"
+  ],
+  "example": {
+   "answer": 192648,
+   "sql": "SELECT count(*) FROM wave9.si_surs_heating_settlement"
+  },
+  "geometry": false,
+  "rows": 192648,
+  "seconds": 10
+ }
+}

@@ -1,7 +1,7 @@
 ---
 title: Wave 9
 tags: [data, wave9, coverage]
-updated: 2026-10-31
+updated: 2026-11-05
 paths: [scripts/wave9.py, scripts/wave9_sources.yaml, scripts/wave9_families.yaml, .github/workflows/wave9.yml, data/wave9_built/, data/wave9_probes.json, data/wave9_search.json]
 ---
 
@@ -36,3 +36,28 @@ See [[coverage-and-gaps]], [[lake]], [[agent-tools]], [[state-and-datasets]].
   `W9C_SHAPES`: `usCounties` or `gbLad` = `eu/gb_lad.json`, built by `wave9.py gb-lad`). A
   tippecanoe failure keeps the table and records `tiles.error`. A choro config may carry
   `period_label` when the period is a column name (VEH0131 `c_2021_q4`).
+
+- **Brief 30 kinds**: `raster` (COG to `lake/rasters/wave9/<id>.tif`, measure `w9_<id>` in
+  `agent/rasters_waves.yaml` by `render`), `census` (ACS per tract, needs CENSUS_API_KEY),
+  `parquet`, `datafair_agg`, json `coords`/`latlon`, csv_zip `member`/`inner` (zip-in-zip);
+  `{env:NAME}` in url/headers (missing key = `skipped` record, not a failure). Page-only
+  research: `docs/research/page-only-batch-{a,b,c}.md`; failed-build fixes:
+  `docs/research/wave9-failed-fixes.md`. See [[freshness]].
+- **More kinds (2026-11-06)**: `pxweb` (GET the table's variables, POST every one with "all",
+  json-stat2), `aqviewer` (EEA AQ Viewer: one POST per country and year, a capped answer
+  refused), `entsoe` (any Transparency document per area via `scripts/entsoe.py`, points as
+  published), custom `eur_overture_comm_lines` (Overture infrastructure read anonymously).
+  Builds are started by the `[w9: ...]` tag only when that commit is the head of its push;
+  otherwise dispatch `wave9.yml` with `groups: "s:<id> ..."`. The single-source job gets the
+  same keys as the category jobs. FEMA NFHL is queried in place by the `live` tool
+  (`fema_nfhl`).
+- **Readers for page-only sources (2026-11-06, `CUSTOM` in `scripts/wave9.py`)**: `pxweb`
+  batches the largest variable under `max_cells` (100,000; the API answers 403 above its cell
+  limit); `eirgrid_dispatch_down` (workbook bands per year, sections per area and technology,
+  MWh and %); `xlsx_multihead` (census sheets with multi-row headers: `head`, `data`, `ids`,
+  `id_names`, `group`; ELSTAT); `ine_pt_indicator` (INE JSON `Dados`); `semo_reports` (the
+  report API's listed XML files, about two weeks kept); `bfee_abwaerme` (public list, 100 a
+  page: 500 was refused). csv `lenient` (DuckDB `strict_mode = false`, SVK); ArcGIS `page` and
+  a stop on a server error or an empty layer (GDAL's 200 MB GeoJSON cap lifted); raster
+  `member` is a name or a regex. Unclear licences are built on the owner's decision (2026-11-06) and labelled so; clear restrictions, logins and refusals stay out. More readers: `odata_paged` (`endpoints`), `admie_files`, `regelleistung_results`, `ceps_soap`, `pjm_rpm_rcp`, `transelectrica_zones`, `pdf_tables` (`names`, `numbers`), `ins_ro_census_blocks`; `tag_urls` adds `source_url` to stacked datasets.
+

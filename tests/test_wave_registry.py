@@ -21,6 +21,10 @@ def test_registry(wave: int) -> None:
     fams = yaml.safe_load((ROOT / "scripts" / f"wave{wave}_families.yaml").read_text("utf-8"))[
         "families"
     ]
+    # YAML 1.1 reads a bare NO (Norway) as false: places must stay text (brief 30)
+    for s in srcs:
+        places = s["places"] if isinstance(s["places"], list) else [s["places"]]
+        assert all(isinstance(p, str) for p in places), s["id"]
     ids = [s["id"] for s in srcs]
     assert len(ids) == len(set(ids)), "duplicate source ids"
     for s in srcs:

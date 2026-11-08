@@ -6,6 +6,9 @@ Sources:
 - `eu_days`: a file of the day archive (branch eu-days): prices, monthly, ...
 - `eia930`: EIA-930 hourly demand, generation and interchange per US balancing authority (EIA
   API v2; `EIA_API_KEY`).
+- `fema_nfhl`: FEMA's National Flood Hazard Layer queried in place (5.8 M polygons, too many to
+  copy): the count of flood-hazard polygons per zone (FLD_ZONE) whose shape meets an area's
+  bounding box (`area_id` from resolve_area, or `bbox`). Brief 30.
 Per-source rate limits (requests per minute) and a 10-minute cache.
 """
 
@@ -21,7 +24,8 @@ from pydantic import BaseModel, Field
 from tools.context import ToolContext, result
 
 CACHE_S = 600
-LIMITS = {"eu_snapshot": 30, "eu_days": 30, "eia930": 20}
+LIMITS = {"eu_snapshot": 30, "eu_days": 30, "eia930": 20, "fema_nfhl": 20}
+NFHL = "https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query"
 SNAPSHOT_FILES = {
     "flows",
     "stats",
@@ -44,12 +48,12 @@ _lock = threading.Lock()
 
 
 class LiveArgs(BaseModel):
-    source: Literal["eu_snapshot", "eu_days", "eia930"]
+    source: Literal["eu_snapshot", "eu_days", "eia930", "fema_nfhl"]
     params: dict[str, str] = Field(
         default_factory=dict,
         description="eu_snapshot/eu_days: {file, key?} (key picks one entry, e.g. a country code); "
         "eia930: {respondent, type (D demand, NG net generation, TI interchange), start, end "
-        "(YYYY-MM-DDTHH)}",
+        "(YYYY-MM-DDTHH)}; fema_nfhl: {area_id} or {bbox: 'xmin,ymin,xmax,ymax'} (US only)",
     )
 
 
@@ -139,6 +143,8 @@ def live(ctx: ToolContext, source: str, params: dict[str, str] | None = None) ->
                     }
                 ],
             )
+        elif source == "fema_nfhl":
+            out = _nfhl(ctx, params)
         else:
             if not s.eia_api_key:
                 return result({"error": "eia930 is not configured (EIA_API_KEY missing)"}, [])
@@ -174,3 +180,60 @@ def live(ctx: ToolContext, source: str, params: dict[str, str] | None = None) ->
         return result({"error": f"{source}: {type(e).__name__}: {str(e)[:200]}"}, [])
     _cache[key] = (time.time(), out)
     return out
+
+
+def _nfhl(ctx: ToolContext, params: dict[str, str]) -> dict[str, Any]:
+    """Polygons per flood zone meeting a box, counted by FEMA's own service (outStatistics)."""
+    import json
+
+    box = params.get("bbox")
+    name = "the box given"
+    if params.get("area_id"):
+        a = ctx.area_store.get(params["area_id"])
+        if a is None:
+            return result({"error": "unknown area_id; resolve_area first"}, [])
+        box, name = ",".join(f"{v:.5f}" for v in a.bbox), a.name
+    if not box:
+        return result({"error": "give area_id or bbox"}, [])
+    q = {
+        "where": "1=1",
+        "geometry": box,
+        "geometryType": "esriGeometryEnvelope",
+        "inSR": "4326",
+        "spatialRel": "esriSpatialRelIntersects",
+        "groupByFieldsForStatistics": "FLD_ZONE",
+        "outStatistics": json.dumps(
+            [
+                {
+                    "statisticType": "count",
+                    "onStatisticField": "OBJECTID",
+                    "outStatisticFieldName": "polygons",
+                }
+            ]
+        ),
+        "f": "json",
+    }
+    r = httpx.get(NFHL, params=q, timeout=60)
+    r.raise_for_status()
+    feats = r.json().get("features") or []
+    rows = sorted(
+        ([f["attributes"].get("FLD_ZONE"), f["attributes"].get("polygons")] for f in feats),
+        key=lambda x: -(x[1] or 0),
+    )
+    return result(
+        {
+            "columns": ["flood_zone", "polygons"],
+            "rows": rows,
+            "how": f"polygons of the National Flood Hazard Layer whose shape meets the bounding "
+            f"box of {name} (a box, not the outline: polygons outside the area but inside its box "
+            "count), counted by FEMA's service",
+        },
+        [
+            {
+                "dataset": "FEMA NFHL",
+                "table": "NFHL MapServer layer 28 (flood hazard zones)",
+                "licence": "public domain (FEMA)",
+                "retrieved": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            }
+        ],
+    )

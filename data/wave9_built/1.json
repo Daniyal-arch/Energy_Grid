@@ -1,9 +1,9 @@
 {
  "eu_land_prices": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "choro": {
-   "areas": 23,
-   "period": "2023",
+   "areas": 22,
+   "period": "2024",
    "scope": "country"
   },
   "columns": [
@@ -27,12 +27,127 @@
   "seconds": 2
  },
  "fr_georisques_ssp": {
-  "built": null,
-  "error": "SystemExit: download failed: https://files.georisques.fr/SSP/ssp_casias_instruction.zip"
+  "bbox": [
+   -133.597,
+   -89.526,
+   118.912,
+   60.105
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "cd_metier",
+   "autre_id",
+   "nom_ets",
+   "nom_site",
+   "stat_instr",
+   "date_debut",
+   "date_fin",
+   "descript",
+   "code_insee",
+   "nom_com",
+   "x_wgs84",
+   "y_wgs84",
+   "code_dpt",
+   "nom_dpt",
+   "code_reg",
+   "nom_reg",
+   "act_nafv2",
+   "act_naf",
+   "act_icpe",
+   "act_nafv1",
+   "lien_fiche",
+   "geometry",
+   "src_file",
+   "nom_etab",
+   "nom_instr"
+  ],
+  "example": {
+   "answer": 12431,
+   "sql": "SELECT count(*) FROM wave9.fr_georisques_ssp"
+  },
+  "geometry": true,
+  "rows": 12431,
+  "seconds": 25,
+  "tiles": {
+   "fields": [
+    "cd_metier",
+    "autre_id",
+    "nom_ets",
+    "nom_site",
+    "stat_instr",
+    "date_debut"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/fr_georisques_ssp.pmtiles"
+  },
+  "with_position": 12431
  },
  "gb_brownfield_register": {
-  "built": null,
-  "error": "CalledProcessError: Command '['tippecanoe', '-o', '/tmp/wave9/gb_brownfield_register/gb_brownfield_register.pmtiles', '-l', 'd', '-Z4', '-z12', '--no-feature-limit', '--no-tile-size-limit', '--simplification=4', '--force', '-P', '/tmp/wave9/gb_brownfield_register/tiles.geojsons']' returned non-zero exit status 110."
+  "as_of": "2026-11-05",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -6.945,
+   49.916,
+   2.527,
+   55.777
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "dataset",
+   "end_date",
+   "entity",
+   "entry_date",
+   "geometry",
+   "name",
+   "organisation_entity",
+   "point",
+   "prefix",
+   "quality",
+   "reference",
+   "start_date",
+   "typology",
+   "brownfield_land",
+   "deliverable",
+   "hazardous_substances",
+   "hectares",
+   "maximum_net_dwellings",
+   "minimum_net_dwellings",
+   "notes",
+   "organisation",
+   "ownership_status",
+   "planning_permission_date",
+   "planning_permission_history",
+   "planning_permission_status",
+   "planning_permission_type",
+   "site",
+   "site_address",
+   "site_categories",
+   "site_plan_url"
+  ],
+  "example": {
+   "answer": 40229,
+   "sql": "SELECT count(*) FROM wave9.gb_brownfield_register"
+  },
+  "geometry": true,
+  "rows": 40229,
+  "seconds": 1,
+  "tiles": {
+   "fields": [
+    "name",
+    "dataset",
+    "end_date",
+    "entity",
+    "entry_date",
+    "organisation_entity",
+    "point"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_brownfield_register.pmtiles"
+  },
+  "with_position": 38175
  },
  "gb_he_listed": {
   "bbox": [
@@ -41,7 +156,7 @@
    1.758,
    55.784
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "objectid",
@@ -58,12 +173,12 @@
    "geometry"
   ],
   "example": {
-   "answer": 379683,
+   "answer": 379686,
    "sql": "SELECT count(*) FROM wave9.gb_he_listed"
   },
   "geometry": true,
-  "rows": 379683,
-  "seconds": 106,
+  "rows": 379686,
+  "seconds": 208,
   "tiles": {
    "fields": [
     "name",
@@ -78,7 +193,7 @@
    "minzoom": 6,
    "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_he_listed.pmtiles"
   },
-  "with_position": 379683
+  "with_position": 379686
  },
  "gb_ne_alc": {
   "bbox": [
@@ -87,7 +202,7 @@
    1.766,
    55.812
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "fid",
    "geogext",
@@ -117,18 +232,231 @@
   },
   "with_position": 1826
  },
+ "gb_pins_dco": {
+  "bbox": [
+   -5.642,
+   50.313,
+   2.945,
+   55.305
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "project_reference",
+   "project_name",
+   "applicant_name",
+   "application_type",
+   "region",
+   "location",
+   "grid_reference_easting",
+   "grid_reference_northing",
+   "gps_co_ordinates",
+   "stage",
+   "description",
+   "anticipated_submission_period",
+   "date_of_application",
+   "date_application_accepted",
+   "date_examination_started",
+   "examining_authority_s_anticipated_close_of_examination",
+   "date_examination_closed",
+   "date_of_recommendation",
+   "date_of_decision",
+   "date_withdrawn"
+  ],
+  "example": {
+   "answer": 295,
+   "sql": "SELECT count(*) FROM wave9.gb_pins_dco"
+  },
+  "geometry": true,
+  "rows": 295,
+  "seconds": 1,
+  "with_position": 292
+ },
  "us_blm_solar_dla": {
-  "built": null,
-  "error": "SystemExit: https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_Solar_Energy_Zones/MapServer/0/query: HTTPStatusError Client error '404 Not Found' for url 'https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_Solar_Energy_Zones/MapServer/0/query?where=1%3D1&outFields=%2A&outSR=4326&f=geojson&resultOffset"
+  "bbox": [
+   -117.571,
+   32.083,
+   -105.607,
+   38.485
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "zone_name",
+   "stateoffice",
+   "status",
+   "comments",
+   "shape_area",
+   "shape_length",
+   "geometry"
+  ],
+  "example": {
+   "answer": 153,
+   "sql": "SELECT count(*) FROM wave9.us_blm_solar_dla"
+  },
+  "geometry": true,
+  "rows": 153,
+  "seconds": 1,
+  "tiles": {
+   "fields": [
+    "name",
+    "stateoffice",
+    "status",
+    "comments"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_blm_solar_dla.pmtiles"
+  },
+  "with_position": 153
+ },
+ "us_epa_frs_cleanups": {
+  "bbox": [
+   -176.652,
+   13.438,
+   145.803,
+   71.275
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "registry_id",
+   "site_id",
+   "primary_name",
+   "location_address",
+   "city_name",
+   "county_name",
+   "state_code",
+   "epa_region",
+   "postal_code",
+   "latitude",
+   "longitude",
+   "pgm_sys_acrnm",
+   "pgm_sys_id",
+   "fips_code",
+   "huc_code",
+   "facility_url",
+   "profile_url",
+   "geometry"
+  ],
+  "example": {
+   "answer": 45924,
+   "sql": "SELECT count(*) FROM wave9.us_epa_frs_cleanups"
+  },
+  "geometry": true,
+  "rows": 45924,
+  "seconds": 19,
+  "tiles": {
+   "fields": [
+    "name",
+    "registry_id",
+    "site_id",
+    "location_address",
+    "city_name",
+    "county_name",
+    "state_code"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_epa_frs_cleanups.pmtiles"
+  },
+  "with_position": 45924
+ },
+ "us_epa_repowering": {
+  "as_of": "2023-05-09",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -178.304,
+   17.706,
+   -64.703,
+   71.275
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "cross_reference_number",
+   "epa_region",
+   "state",
+   "program",
+   "site_id",
+   "site_information",
+   "site_name",
+   "address",
+   "city",
+   "county",
+   "zip_code",
+   "acreage_acres",
+   "known_landfill",
+   "known_abandoned_mine_land",
+   "re_powering_profile",
+   "estimated_pv_capacity_mw",
+   "utility_scale_pv",
+   "distributed_scale_pv",
+   "off_grid_pv",
+   "no_acreage_pv",
+   "maximum_annual_ghi_kwh_m2_day",
+   "estimated_wind_energy_capacity_mw",
+   "utility_scale_wind",
+   "community_scale_wind",
+   "facility_scale_wind",
+   "no_acreage_wind",
+   "wind_speed_at_40_m_m_s",
+   "wind_speed_at_80_m_m_s",
+   "wind_speed_at_100_m_m_s",
+   "biopower_facility_potential",
+   "biorefinery_facility_potential",
+   "cumulative_biopower_residues_metric_tons_year_within_50_miles",
+   "cumulative_biorefinery_residues_metric_tons_year_within_50_miles",
+   "crop_residues_metric_tons_year_within_50_miles",
+   "forest_residues_metric_tons_year_within_50_miles",
+   "primary_mill_residues_metric_tons_year_within_50_miles",
+   "secondary_mill_residues_metric_tons_year_within_50_miles",
+   "urban_waste_wood_residues_metric_tons_year_within_50_miles",
+   "geothermal_heat_pump_potential",
+   "surface_temperature_c",
+   "permafrost_presence",
+   "distance_to_nearest_substation_miles",
+   "nearest_substation_voltage_volts",
+   "distance_to_nearest_transmission_line_miles",
+   "nearest_transmission_line_status",
+   "nearest_transmission_line_kv_kilovolts",
+   "distance_to_nearest_road_miles",
+   "distance_to_nearest_rail_miles",
+   "latitude",
+   "longitude"
+  ],
+  "example": {
+   "answer": 190976,
+   "sql": "SELECT count(*) FROM wave9.us_epa_repowering"
+  },
+  "geometry": true,
+  "rows": 190976,
+  "seconds": 10,
+  "tiles": {
+   "fields": [
+    "name",
+    "cross_reference_number",
+    "epa_region",
+    "state",
+    "program",
+    "site_id",
+    "site_information"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_epa_repowering.pmtiles"
+  },
+  "with_position": 190976
  },
  "us_nexrad": {
+  "as_of": "2026-10-01",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -165.295,
    13.456,
    144.811,
    65.035
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ncdcid",
    "icao",
@@ -159,7 +487,7 @@
    172.906,
    71.297
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "certdate",
@@ -206,7 +534,7 @@
   },
   "geometry": true,
   "rows": 74636,
-  "seconds": 25,
+  "seconds": 31,
   "tiles": {
    "fields": [
     "name",
@@ -224,13 +552,15 @@
   "with_position": 74636
  },
  "world_ourairports": {
+  "as_of": "2026-11-05",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -179.877,
    -90.0,
    179.976,
    83.091
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "id",
    "ident",
@@ -253,11 +583,11 @@
    "keywords"
   ],
   "example": {
-   "answer": 86322,
+   "answer": 86337,
    "sql": "SELECT count(*) FROM wave9.world_ourairports"
   },
   "geometry": true,
-  "rows": 86322,
+  "rows": 86337,
   "seconds": 1,
   "tiles": {
    "fields": [
@@ -273,16 +603,18 @@
    "minzoom": 4,
    "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/world_ourairports.pmtiles"
   },
-  "with_position": 86322
+  "with_position": 86337
  },
  "world_ourairports_navaids": {
+  "as_of": "2026-11-05",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -179.881,
    -89.995,
    179.315,
    82.526
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "id",
    "filename",
@@ -311,7 +643,7 @@
   },
   "geometry": true,
   "rows": 11008,
-  "seconds": 0,
+  "seconds": 1,
   "with_position": 11008
  }
 }

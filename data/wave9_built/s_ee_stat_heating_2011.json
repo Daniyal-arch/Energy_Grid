@@ -1,0 +1,23 @@
+{
+ "ee_stat_heating_2011": {
+  "built": "2026-11-06",
+  "columns": [
+   "peamine_k_tmisviis",
+   "peamine_k_tmisviis_code",
+   "asustatus",
+   "asustatus_code",
+   "hoone_liik",
+   "hoone_liik_code",
+   "asukoht",
+   "asukoht_code",
+   "value"
+  ],
+  "example": {
+   "answer": 18256,
+   "sql": "SELECT count(*) FROM wave9.ee_stat_heating_2011"
+  },
+  "geometry": false,
+  "rows": 18256,
+  "seconds": 2
+ }
+}

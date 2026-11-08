@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ZONE_POINT, type PricesFile } from "../lib/prices";
 import { BR_POINT, NEM_NAME, NEM_POINT, ON_POINT, TW_POINT, US_POINT, type BrazilFile, type UsFile } from "../lib/world";
+import { KR_POINT } from "../lib/regionalLive";
 import { STATUS_LABEL, type WorldPlantsFile } from "../lib/worldPlants";
 import { ensure, useFile } from "../app/data";
 import { ISO3 } from "../lib/transition";
@@ -81,7 +82,7 @@ export default function Search({ onDone, autoFocus = false }: { onDone?: () => v
             if (ZONE_POINT[zone]) fly(ZONE_POINT[zone].at, 4.6);
           }),
         });
-    const region = (grid: "us" | "br" | "au" | "tw" | "on" | "nz" | "za", id: string, name: string, at: [number, number] | undefined, kind: string) => {
+    const region = (grid: "us" | "br" | "au" | "tw" | "on" | "nz" | "za" | "kr", id: string, name: string, at: [number, number] | undefined, kind: string) => {
       if (!at || !(match(name) || match(id))) return;
       out.push({
         key: `r:${grid}:${id}`,
@@ -98,6 +99,7 @@ export default function Search({ onDone, autoFocus = false }: { onDone?: () => v
     for (const id of Object.keys(NEM_POINT)) region("au", id, NEM_NAME[id] ?? id, NEM_POINT[id], "Region · Australia");
     region("tw", "TW", "Taiwan", TW_POINT, "Live grid · Taipower");
     region("on", "ON", "Ontario", ON_POINT.ON, "Live grid · IESO");
+    region("kr", "KR", "South Korea", KR_POINT, "Live grid · KPX");
     if (t.length >= 3 && cities) {
       let c = 0;
       for (const [name, iso2, lon, lat, people] of cities.cities) {

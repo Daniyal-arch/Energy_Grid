@@ -13,13 +13,14 @@ def client():
         yield c
 
 
-def sse(text):
+def sse(text, run=False):
+    """(event, data) pairs; the `run` event (the run id, brief 30) only when asked."""
     out = []
     for block in text.strip().split("\n\n"):
-        lines = block.split("\n")
-        if lines[0].startswith("event: "):
+        lines = [x for x in block.split("\n") if not x.startswith("id: ")]
+        if lines and lines[0].startswith("event: "):
             out.append((lines[0][7:], json.loads(lines[1][6:])))
-    return out
+    return out if run else [e for e in out if e[0] != "run"]
 
 
 def test_health(client):
@@ -153,3 +154,57 @@ def test_proxy_secret(client, monkeypatch):
     assert client.get("/api/places?q=Lyon").status_code == 403
     assert client.get("/api/places?q=Lyon", headers={"x-atlas-proxy": "s3cret"}).status_code == 200
     assert client.get("/api/health").status_code == 200
+
+
+def test_ask_resume_after_a_dropped_connection_and_cancel(client):
+    with client.stream("POST", "/api/ask", json={"question": "How many plants in Germany?"}) as r:
+        rid = r.headers["x-run-id"]
+        full = r.read().decode()
+    events = sse(full, run=True)
+    assert events[0] == ("run", {"run_id": rid}) and events[-1][0] == "done"
+    # a client that saw events 0-2 reconnects: it gets 3 onwards, each once
+    with client.stream("GET", f"/api/ask/{rid}/stream", headers={"Last-Event-ID": "2"}) as r:
+        rest = r.read().decode()
+    assert rest.startswith("id: 3\n") and sse(rest, run=True) == events[3:]
+    assert client.get(f"/api/ask/{rid}/stream", headers={"Last-Event-ID": "x"}).status_code == 422
+    assert client.get("/api/ask/run_nope/stream").status_code == 404
+    assert client.post(f"/api/ask/{rid}/cancel").status_code == 404  # finished already
+
+
+def test_cancel_a_running_run():
+    import asyncio
+
+    from app import live_runs
+
+    async def slow():
+        yield "event: text\ndata: {}\n\n"
+        await asyncio.sleep(30)
+        yield "event: done\ndata: {}\n\n"
+
+    async def go():
+        run = live_runs.start(slow())
+        await asyncio.sleep(0.05)
+        assert live_runs.cancel(run.run_id)
+        got = [e async for e in live_runs.follow(run)]
+        return got
+
+    got = asyncio.run(go())
+    assert '"stop": "cancelled"' in got[-1] and len(got) == 3
+
+
+def test_conversation_permalink(client):
+    r = client.post(
+        "/api/conversations",
+        json={
+            "turns": [
+                {"role": "user", "text": "Tell me about Luxembourg"},
+                {"role": "assistant", "text": "**Luxembourg** ...", "maps": []},
+            ]
+        },
+    )
+    cid = r.json()["id"]
+    assert r.json()["link"] == f"?chat={cid}"
+    got = client.get(f"/api/conversations/{cid}").json()
+    assert [t["role"] for t in got["turns"]] == ["user", "assistant"]
+    assert client.get("/api/conversations/k_000000000000").status_code == 404
+    assert client.get("/api/conversations/../x").status_code == 404

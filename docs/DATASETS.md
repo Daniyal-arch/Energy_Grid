@@ -190,3 +190,23 @@ Suggested cloud wave 3 (one brief each): (1) GB TEC + NL capacity + Spain node c
 - Spain capacity maps (CNMC): https://www.cnmc.es/prensa/mapa-capacidad-transporte-20260213
 - JEPX: https://jepx.jp/en/electricpower/market-data/spot/ave_day.html
 - PUDL: https://catalyst.coop/pudl
+
+## Brief 30 (2026-11-04 to 11-06): what moved
+
+The registries (`scripts/wave9_sources.yaml`, generated research in `docs/research/`) now hold
+every candidate with its decision; this list names the groups that changed status.
+
+- **Physical risk (have now):** ESHM20 seismic hazard, USGS NSHM 2023, USGS landslides and
+  geoelectric hazard, JRC coastal flood (LISCoAsT), USFS wildfire hazard, EFFIS fire danger, NOAA
+  sea level rise, NEX-GDDP heat projection (rasters through `area_stats`).
+- **Marine and geothermal (have now):** EMODnet bathymetry and vessel density, usSEABED, NOAA
+  marine protected areas, IHFC and SMU heat flow, Danish heat supply areas.
+- **Customer gaps:** Dutch data-centre electricity (CBS), EMODnet and Overture telecom routes,
+  BfEE excess heat (DE). No open site-level clean-tech factory or corporate PPA dataset exists
+  (`docs/research/customer-gaps.md`).
+- **Second pass on dark cells:** heating per small area (CZ, FI, SI, EE, LV; PT pending a
+  reader), heat pumps (GB Boiler Upgrade Scheme, US EIA RECS), balancing (DK, FI, IE, FR, and
+  ENTSO-E imbalance prices for 21 places), US small-scale solar per state
+  (`docs/research/dark-cells-part1.md`, `part2.md`).
+- **Live grids beyond Europe:** KPX (Korea) ready, not wired (licence question); AESO left out
+  (non-commercial); CEN and EPİAŞ need accounts (`docs/research/live-grids-beyond-europe.md`).

@@ -9,6 +9,7 @@ import { CATEGORIES, DATASETS, DATASET_BY_ID, EU27, colourOfDatasets, covers, co
 import { DASHBOARDS, DASHBOARD_GROUPS, actions, findDashboard, layersOf, useApp, type DashboardGroup } from "../app/store";
 import type { WorldFile } from "../app/types";
 import { EUROPE_ISO3 } from "../lib/transition";
+import { EmbedCode } from "./Embed";
 
 const muted = "text-[#8d94a1]";
 
@@ -185,8 +186,8 @@ export function DashboardsMenu() {
         className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-[#0b0f16]/90 px-3 py-1.5 text-[12px] text-slate-200 backdrop-blur hover:bg-white/[0.08]"
         aria-expanded={open}
         title="Dashboards: ready-made views and your own"
+        aria-label={`Dashboard: ${name}`}
       >
-        <span className={`text-[9.5px] uppercase tracking-[0.16em] ${muted}`}>Dashboard</span>
         <span className="max-w-[220px] truncate">{name}</span>
         {edited && <span className="text-[10px] text-amber-200/80">edited</span>}
         <span className="text-[9px] text-slate-400">▼</span>
@@ -196,6 +197,7 @@ export function DashboardsMenu() {
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <div className="absolute left-0 top-full z-50 mt-1 max-h-[75vh] w-80 overflow-y-auto rounded-xl border border-white/10 bg-[#0b0f16]/95 p-1.5 shadow-2xl backdrop-blur">
             <DashboardList onDone={() => setOpen(false)} />
+            <EmbedCode />
           </div>
         </>
       )}

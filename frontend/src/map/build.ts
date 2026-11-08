@@ -13,7 +13,7 @@ import { FlowArrowLayer } from "../lib/flowArrowLayer";
 import { curvedPath, flowDistances } from "../lib/flowLayers";
 import { GAS_FLOW, GAS_IDLE_GWH, GAS_NODE_LABEL, GAS_TRANSIT, GAS_TRANSIT_LABEL_GWH, endAt, gasWidth, gwhd, latestOf, type GasFlowsFile, type GasPair } from "../lib/gasFlows";
 import { ZONE_POINT, priceMetricById, type PricesFile } from "../lib/prices";
-import { MONEY, usd, type FinanceFile, type FinanceFlow, type FinanceProject } from "../lib/finance";
+import { MONEY, usd, type FinanceFile, type FinanceProject } from "../lib/finance";
 import { GEM_PIPES, GEM_POINTS, IDLE, type GemPipesFile, type GemPointsFile, type GemPoint } from "../lib/gem";
 import { ETS_COLOR, etsRadius, newestT, type EtsFile, type EtsRow } from "../lib/ets";
 import { RETAIL_STOPS, euroCents, newestOf, type RetailFile } from "../lib/retail";
@@ -55,7 +55,6 @@ import {
   COAST,
   FLOW,
   GAS,
-  GAS_PIPE,
   HVDC,
   MULTI_ZONE,
   NO_DATA,
@@ -72,14 +71,13 @@ import {
   stopColor,
 } from "../app/colors";
 import { TOWER_LABEL_MW, TOWER_M_PER_MW, TOWER_RADIUS_M, NIGHT_BOUNDS, unitOutKey } from "../app/day";
-import { ANCHOR, BEAM_MIN_MW, HEX_KM, SMALL, angularDistance, bbox, hexBins, pairs, unitVector } from "../app/geo";
+import { ANCHOR, BEAM_MIN_MW, HEX_KM, SMALL, angularDistance, hexBins, pairs, unitVector } from "../app/geo";
 import type { ColourId, LayerId, PlantStatus, Selection, TimeMode } from "../app/store";
 import type {
   Arc,
   Cable,
   CapacityFile,
   CountriesFile,
-  Country,
   DayFile,
   FlowsFile,
   GasFile,
@@ -96,7 +94,7 @@ import type {
   Unit,
   UnitOutputFile,
 } from "../app/types";
-import { memo, NONE } from "./memo";
+import { memo } from "./memo";
 import { priceTerrain, rampColour, type Terrain } from "./priceTerrain";
 import { usLayers } from "./usLayers";
 import { riskLayers } from "./riskLayers";
@@ -106,7 +104,6 @@ import { siteLayers } from "./siteLayers";
 import { inside, makeShape } from "../lib/area";
 import { offshoreLayers } from "./offshoreLayers";
 import { areaLayers, clipToArea, coverageLayers } from "./areaLayers";
-import { inAreaCountry } from "../app/datasets";
 import { summaryFill, summaryLabels } from "./summaryLayers";
 import { hexLayers } from "./hexLayers";
 import { styleLayers } from "./styleLayers";
@@ -124,7 +121,7 @@ import { registerLayers } from "./registerLayers";
 import { wave8Layers } from "./wave8Layers";
 import { wave9Layers } from "./wave9Layers";
 import { comingLayers } from "./comingLayers";
-import { NZ_COLOR, NZ_POINT, ZA_COLOR, ZA_POINT, type NzFile, type ZaFile } from "../lib/regionalLive";
+import { KR_COLOR, KR_POINT, NZ_COLOR, NZ_POINT, ZA_COLOR, ZA_POINT, type KrFile, type NzFile, type ZaFile } from "../lib/regionalLive";
 import { SEA_CABLE_COLOR, seaPipeLayer, type SeaCable, type SeaCablesFile, type SeaPipe } from "../lib/seaCables";
 import type { MastrTech } from "../lib/mastr";
 
@@ -1520,11 +1517,12 @@ function worldLayers(fr: Frame, near: (p: [number, number]) => boolean): Layer[]
     for (const [key, grid, at, color, text] of [
       ["nz", "nz", NZ_POINT, NZ_COLOR, (v: NzFile) => [v.total_mw, `NZ ${(v.total_mw / 1000).toFixed(1)} GW`]],
       ["za", "za", ZA_POINT, ZA_COLOR, (v: ZaFile) => [3000, v.loadshedding_stage ? `ZA stage ${v.loadshedding_stage}` : "ZA"]],
+      ["korea", "kr", KR_POINT, KR_COLOR, (v: KrFile) => [v.demand?.mw ?? v.generation?.total_mw ?? 0, `KR ${((v.demand?.mw ?? v.generation?.total_mw ?? 0) / 1000).toFixed(0)} GW`]],
     ] as const) {
-      const v = f[key] as (NzFile & ZaFile) | undefined;
+      const v = f[key] as (NzFile & ZaFile & KrFile) | undefined;
       if (!v || !near(at)) continue;
       const [mw, txt] = text(v) as [number, string];
-      const dots = memo(`${key}Dots`, [v], () => [{ id: key.toUpperCase(), at, mw, label: txt }]);
+      const dots = memo(`${key}Dots`, [v], () => [{ id: grid.toUpperCase(), at, mw, label: txt }]);
       parts.push(memo(`lbl-${key}`, [dots, fr.zoom >= 2.2], () => (fr.zoom >= 2.2 ? dots.map((d) => label("region", d.at, d.label, "", -d.mw)) : [])));
       out.push(...regionDotLayers(`w-${grid}`, dots, color, false));
     }

@@ -1,0 +1,38 @@
+{
+ "us_marinecadastre_ais": {
+  "band": "annual vessel transit count 2024 (uint32, 126,318 × 51,893, nodata 0): one transit each time a track passes through, starts or stops in a 100 m cell",
+  "built": "2026-11-05",
+  "example": {
+   "answer": null,
+   "sql": "area_stats(measure='w9_us_marinecadastre_ais')"
+  },
+  "raster": [
+   {
+    "bounds": [
+     -19311269.7374,
+     1558178.3932,
+     -6679469.7374,
+     6747478.3932
+    ],
+    "bytes": 445788506,
+    "cell": [
+     100.0,
+     100.0
+    ],
+    "crs": "EPSG:3857",
+    "dtype": "uint32",
+    "key": "lake/rasters/wave9/us_marinecadastre_ais.tif",
+    "max": 39901.0,
+    "min": 1.0,
+    "nodata": 0.0,
+    "size": [
+     126318,
+     51893
+    ]
+   }
+  ],
+  "rows": 0,
+  "seconds": 142,
+  "unit": "transits per 100 m cell per year"
+ }
+}

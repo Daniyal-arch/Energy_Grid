@@ -1,6 +1,6 @@
 {
  "eu_air_passengers": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "choro": {
    "areas": 35,
    "period": "2024",
@@ -24,13 +24,13 @@
   },
   "geometry": false,
   "rows": 10203,
-  "seconds": 1
+  "seconds": 2
  },
  "eu_rail_electrified": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "choro": {
-   "areas": 39,
-   "period": "2021",
+   "areas": 37,
+   "period": "2024",
    "scope": "country"
   },
   "columns": [
@@ -51,16 +51,185 @@
   },
   "geometry": false,
   "rows": 2651,
-  "seconds": 1
+  "seconds": 2
+ },
+ "eu_tent_network": {
+  "bbox": [
+   -9.699,
+   36.127,
+   49.791,
+   68.452
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "country_code",
+   "core_network",
+   "corridors",
+   "type",
+   "railways_activity",
+   "geometry"
+  ],
+  "example": {
+   "answer": 4767,
+   "sql": "SELECT count(*) FROM wave9.eu_tent_network"
+  },
+  "geometry": true,
+  "rows": 4767,
+  "seconds": 22,
+  "tiles": {
+   "fields": [
+    "country_code",
+    "core_network",
+    "corridors",
+    "type",
+    "railways_activity"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_tent_network.pmtiles"
+  },
+  "with_position": 4767
+ },
+ "gb_srn": {
+  "bbox": [
+   -5.513,
+   50.129,
+   1.756,
+   55.807
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "linkid",
+   "linkref",
+   "linkcategory",
+   "linkdesc",
+   "linkform",
+   "directionality",
+   "direction",
+   "numberoflanes",
+   "smartmotorway",
+   "carriageway",
+   "ownership",
+   "startgradeseparation",
+   "endgradeseparation",
+   "parentlinkref",
+   "srn",
+   "startnode",
+   "endnode",
+   "operationalstate",
+   "roadname",
+   "startdate",
+   "enddate",
+   "toid",
+   "globalid",
+   "created_user",
+   "created_date",
+   "last_edited_user",
+   "last_edited_date",
+   "shape_length",
+   "geometry"
+  ],
+  "example": {
+   "answer": 43040,
+   "sql": "SELECT count(*) FROM wave9.gb_srn"
+  },
+  "geometry": true,
+  "rows": 43040,
+  "seconds": 41,
+  "tiles": {
+   "fields": [
+    "name",
+    "linkid",
+    "linkref",
+    "linkcategory",
+    "linkdesc",
+    "linkform",
+    "directionality"
+   ],
+   "kind": "linestring",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_srn.pmtiles"
+  },
+  "with_position": 43040
+ },
+ "us_fhwa_afc": {
+  "bbox": [
+   -170.834,
+   -14.349,
+   145.813,
+   64.86
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "fid",
+   "length",
+   "afc_number",
+   "roadtype",
+   "number",
+   "primary_na",
+   "alt_name_1",
+   "alt_name_2",
+   "local_name",
+   "state",
+   "altfuel_ro",
+   "ev_round",
+   "ev",
+   "electricve",
+   "cng_round",
+   "cng",
+   "comnatural",
+   "lng_round",
+   "lng",
+   "liqnatural",
+   "lpg_round",
+   "lpg",
+   "propane",
+   "hy_round",
+   "hy",
+   "hydrogen",
+   "len_miles",
+   "not_nhs",
+   "shape_length",
+   "geometry"
+  ],
+  "example": {
+   "answer": 2275,
+   "sql": "SELECT count(*) FROM wave9.us_fhwa_afc"
+  },
+  "geometry": true,
+  "rows": 2275,
+  "seconds": 46,
+  "tiles": {
+   "fields": [
+    "name",
+    "length",
+    "afc_number",
+    "roadtype",
+    "number",
+    "primary_na",
+    "alt_name_2"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_fhwa_afc.pmtiles"
+  },
+  "with_position": 2275
  },
  "world_ourairports_runways": {
+  "as_of": "2026-11-05",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -179.881,
    -89.966,
    179.339,
    82.513
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "id",
    "airport_ref",
@@ -84,12 +253,12 @@
    "he_displaced_threshold_ft"
   ],
   "example": {
-   "answer": 48388,
+   "answer": 48405,
    "sql": "SELECT count(*) FROM wave9.world_ourairports_runways"
   },
   "geometry": true,
-  "rows": 48388,
+  "rows": 48405,
   "seconds": 0,
-  "with_position": 15699
+  "with_position": 15700
  }
 }

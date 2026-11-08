@@ -3,6 +3,7 @@ the object store and an event writer (the graph's custom stream; a no-op elsewhe
 
 from __future__ import annotations
 
+import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import cached_property
@@ -77,10 +78,19 @@ def get_gazetteer(s: Settings) -> Gazetteer:
     return _gazetteers[key]
 
 
+_DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
+
+
 def result(
     data: Any, sources: list[dict[str, str]], result_id: str | None = None
 ) -> dict[str, Any]:
-    """The shape of every tool result."""
+    """The shape of every tool result. Each source carries `as_of` (brief 30): the date in its
+    `retrieved` text (the file's fetch or release date), when there is one."""
+    for src in sources:
+        if "as_of" not in src:
+            m = _DATE.search(str(src.get("retrieved", "")))
+            if m:
+                src["as_of"] = m.group(0)
     out: dict[str, Any] = {"data": data, "sources": sources}
     if result_id:
         out["result_id"] = result_id

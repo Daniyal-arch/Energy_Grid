@@ -1,0 +1,19 @@
+dataset: rollups
+title: H3 rollups of the lake's large point tables (counts and capacity sums per cell, resolutions 5, 6 and 7)
+licence: as each source table (see its catalogue entry; the rollup only counts and sums its rows)
+notes: >-
+  Built by scripts/build_rollups.py for every lake table of 1 million rows or more with a
+  position (MaStR units, Overture power, GRW and the large wave tables). Table names are
+  <dataset>__<table>_r<res>, e.g. rollups.mastr__units_solar_r6. Each row is one H3 cell (h3,
+  its centre lon and lat) and one combination of up to three low-cardinality text columns of
+  the source (status, fuel, technology...), with n (rows) and <column>_sum for capacity-like
+  columns. Use a rollup for a large area (a country, a big region, a group): sum over the cells
+  whose centre lies inside the area, WHERE in_area(lon, lat, 'a_...'), and say so in the
+  answer ("cells of about 36 km² whose centre lies inside the area; rows near the border
+  count with their cell"). For a city or a drawn shape, query the source rows (exact). The
+  table's metadata names the source table, resolution, dimensions and rule.
+tables:
+  "<dataset>__<table>_r<res>":
+    grain: one row per H3 cell and dimension values; resolution 5 (about 253 km² a cell), 6 (about 36 km²), 7 (about 5 km²)
+    keys: {h3: H3 cell id (UBIGINT), lon: cell centre, lat: cell centre}
+    measures: {n: {unit: rows, how: count of the source rows in the cell}, "<column>_sum": {how: sum of the source column in the cell, unit as the source}}

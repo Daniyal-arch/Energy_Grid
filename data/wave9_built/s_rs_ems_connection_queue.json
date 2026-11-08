@@ -1,0 +1,31 @@
+{
+ "rs_ems_connection_queue": {
+  "as_of": "2026-11-04",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-06",
+  "columns": [
+   "table",
+   "row_no",
+   "type",
+   "project",
+   "applicant",
+   "voltage_kv",
+   "requested_mw",
+   "approved_mw",
+   "location",
+   "year_in_service",
+   "phase",
+   "trial_operation_date",
+   "permanent_connection_date",
+   "requested_mw_number",
+   "approved_mw_number"
+  ],
+  "example": {
+   "answer": 88,
+   "sql": "SELECT count(*) FROM wave9.rs_ems_connection_queue"
+  },
+  "geometry": false,
+  "rows": 88,
+  "seconds": 2
+ }
+}

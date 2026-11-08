@@ -1,6 +1,6 @@
 {
  "eu_network_costs": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "choro": {
    "areas": 39,
    "period": "2025",
@@ -25,10 +25,12 @@
   },
   "geometry": false,
   "rows": 81164,
-  "seconds": 6
+  "seconds": 9
  },
  "gb_neso_constraint_costs": {
-  "built": "2026-10-31",
+  "as_of": "2026-10-31",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
   "columns": [
    "date",
    "reducing_largest_loss_cost",
@@ -48,8 +50,44 @@
   "rows": 210,
   "seconds": 4
  },
+ "gb_neso_etys": {
+  "as_of": "2025-06-02",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -7.322,
+   50.209,
+   2.997,
+   59.308
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "boundary_n",
+   "id",
+   "geometry"
+  ],
+  "example": {
+   "answer": 34,
+   "sql": "SELECT count(*) FROM wave9.gb_neso_etys"
+  },
+  "geometry": true,
+  "rows": 34,
+  "seconds": 4,
+  "tiles": {
+   "fields": [
+    "boundary_n",
+    "id"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/gb_neso_etys.pmtiles"
+  },
+  "with_position": 34
+ },
  "gb_neso_tnuos": {
-  "built": "2026-10-31",
+  "as_of": "2026-10-19",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
   "columns": [
    "publication",
    "year_fy",
@@ -64,20 +102,22 @@
   },
   "geometry": false,
   "rows": 572,
-  "seconds": 3
+  "seconds": 4
  },
  "gb_nged_generation_capacity": {
   "built": null,
   "error": "SystemExit: download failed: redacted"
  },
  "gb_nged_opendata": {
+  "as_of": "2026-08-14",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -5.923,
    -64.314,
    Infinity,
    Infinity
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "export_mpan_msid",
    "import_mpan_msid",
@@ -150,7 +190,7 @@
   "with_position": 6053
  },
  "gb_npg_curtailment_events": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "licence_area",
    "customer_unique_identifier",
@@ -183,7 +223,7 @@
    0.116,
    55.441
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "psp_name",
    "grid_easting",
@@ -229,7 +269,7 @@
   "with_position": 670
  },
  "gb_npg_opendata": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "row_number",
    "gsp",
@@ -248,14 +288,91 @@
   },
   "geometry": false,
   "rows": 445,
-  "seconds": 1
+  "seconds": 2
  },
  "gb_ssen_opendata": {
-  "built": null,
-  "error": "AttributeError: 'list' object has no attribute 'get'"
+  "as_of": "2026-10-12",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -7.4,
+   50.552,
+   7.209,
+   60.525
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "export_mpan_msid",
+   "import_mpan_msid",
+   "customer_name",
+   "customer_site",
+   "address_line_1",
+   "address_line_2",
+   "town_city",
+   "county",
+   "postcode",
+   "country",
+   "location_x_coordinate_eastings_where_data_is_held",
+   "location_y_coordinate_northings_where_data_is_held",
+   "grid_supply_point",
+   "bulk_supply_point",
+   "primary",
+   "point_of_connection_poc_voltage_kv",
+   "licence_area",
+   "energy_source_1",
+   "energy_conversion_technology_1",
+   "chp_cogeneration_yes_no",
+   "storage_capacity_1_mwh",
+   "storage_duration_1_hours",
+   "energy_source_energy_conversion_technology_1_registered_capacity_mw",
+   "energy_source_2",
+   "energy_conversion_technology_2",
+   "chp_cogeneration_2_yes_no",
+   "storage_capacity_2_mwh",
+   "storage_duration_2_hours",
+   "energy_source_energy_conversion_technology_2_registered_capacity_mw",
+   "energy_source_3",
+   "energy_conversion_technology_3",
+   "chp_cogeneration_3_yes_no",
+   "storage_capacity_3_mwh",
+   "storage_duration_3_hours",
+   "energy_source_energy_conversion_technology_3_registered_capacity_mw",
+   "flexible_connection_yes_no",
+   "connection_status",
+   "already_connected_registered_capacity_mw",
+   "maximum_export_capacity_mw",
+   "maximum_export_capacity_mva",
+   "maximum_import_capacity_mw",
+   "maximum_import_capacity_mva",
+   "date_connected",
+   "accepted_to_connect_registered_capacity_mw",
+   "change_to_maximum_export_capacity_mw",
+   "change_to_maximum_export_capacity_mva",
+   "change_to_maximum_import_capacity_mw",
+   "change_to_maximum_import_capacity_mva",
+   "date_accepted",
+   "target_energisation_date",
+   "distribution_service_provider_y_n",
+   "transmission_service_provider_y_n",
+   "reference",
+   "in_a_connection_queue_y_n",
+   "distribution_reinforcement_reference",
+   "transmission_reinforcement_reference",
+   "last_updated",
+   "transmission_and_distribution_contracted_t_d",
+   "latitude",
+   "longitude"
+  ],
+  "example": {
+   "answer": 1317,
+   "sql": "SELECT count(*) FROM wave9.gb_ssen_opendata"
+  },
+  "geometry": true,
+  "rows": 1317,
+  "seconds": 2,
+  "with_position": 1245
  },
  "ie_cso_datacentres": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "c03907v04659",
    "c03907v04659_code",
@@ -274,7 +391,9 @@
   "seconds": 1
  },
  "us_openei_urdb": {
-  "built": "2026-10-31",
+  "as_of": "2026-11-04",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
   "columns": [
    "label",
    "eiaid",
@@ -343,6 +462,6 @@
   },
   "geometry": false,
   "rows": 58920,
-  "seconds": 8
+  "seconds": 6
  }
 }
