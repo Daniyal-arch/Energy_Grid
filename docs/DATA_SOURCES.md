@@ -1756,6 +1756,17 @@ Geometry as the publisher's service returns it in EPSG:4326; invalid rings repai
 | `fi_helsinki` | City of Helsinki, Kaavahakemisto plans in force | 4,393 | none (plan outlines) | CC BY 4.0 |
 | `us_ca` | California Statewide Zoning (OLUCI), ArcGIS North and South | 568,741 (service counts) | publisher's `ucd_description` | none stated (owner question 9) |
 | `gb_england` | planning.data.gov.uk bulk CSV: green belt, conservation area, article 4 direction area, brownfield land | 58,856 (brownfield sites as points; 3,022 rows have no geometry) | `designation` | OGL 3.0 |
+| `us_hub` (and `eu_hub`, `gb_hub`) | the ArcGIS services the Hub sweep found (`data/zoning_discovery/hub_services.csv`), each read from its publisher's server (`scripts/build_zoning_hub.py`) | building (2026-11-08) | the label's words (`WORDS` in the script: "residential", "commercial", ...); a label without one, or a layer with only a code field, stays `other` | per service, in `hub_layers.licence`; mostly none stated (owner question 9) |
+
+Hub services: titles that are not maps (feedback forms, surveys, hearings) are dropped; in each
+service only polygon layers named for zoning, land use, overlays or plans are read (parcels,
+boundaries and roads are not), in full by object id. `zone_code` and `zone_label` are the values
+of the fields whose names say so; `class_code` names those fields and the matched word.
+`country` is the GISCO outline (the app's `countries.json`, `world.json`) holding the layer's
+first zone, NULL when none does (the Hub's "us" tiles also hold Canadian services). A publisher
+may serve one layer under several names; every copy is kept, each with its own `plan_id`
+(service URL and layer). `hub_layers` lists every layer looked at: read (rows, the fields
+used, seconds), skipped (geometry, no zoning field, layer name) or failed (the error).
 
 Plan documents (`scripts/zoning_documents.py`): `documents` (one row per PDF: url, plan, bytes,
 SHA-256, pages, private R2 key under `infraatlas-raw/zoning-docs/`) and `document_pages` (page

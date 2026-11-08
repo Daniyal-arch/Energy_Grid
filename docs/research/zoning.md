@@ -116,3 +116,18 @@ Connecticut, Wisconsin), and the largest cities' zoning portals.
 - Not covered by either: countries whose plans are not in the EU portal (Bulgaria, Cyprus,
   Denmark's register is national and built directly, Estonia, Hungary, Luxembourg, Malta,
   Romania); these need their national planning portals (leads above).
+
+## Hub services probe (2026-11-08, `scripts/probe_zoning_hub.py --n 40`)
+
+6,894 US items listed; 6,521 services after the noise filter (forms, surveys, hearings). A
+random 40 (seed 32): all 40 answered; 99 polygon, 11 line and 6 point layers; 35 polygon
+layers carry a field named for zoning, holding 804,272 features. Services also carry parcels,
+boundaries, roads and building footprints (left out by layer name), and some serve one layer
+under several names (City, County and Corydon Zoning: 24,914 features each). Field names vary
+(`ZONE`, `ZONECLASS`, `Zone_Desc`, `ZONING`, `ZONE_`, `ZoningCode`, `LandUses`); a label field
+exists in about half the layers. The Hub's "us" tiles also return Canadian services (Prince
+Edward County, Ontario), so the country is read from the geometry, not the tile.
+
+Scale: about 20,000 features a service in the sample, so the US set may hold on the order of
+100 M features; built in 48 shards in GitHub Actions (`lake-catalog.yml` zoning = `hub:us`),
+each with a 290-minute budget, every layer logged in `zoning.hub_layers`.
