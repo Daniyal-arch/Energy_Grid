@@ -164,7 +164,7 @@ class Lake:
         group_rows = GROUP_ROWS[kind]
         files: list[Path] = []
         per_file = MAX_ROWS_PER_FILE
-        for _attempt in range(4):
+        for attempt in range(8):
             files = []
             parts = max(1, -(-n // per_file))
             for i in range(parts):
@@ -195,13 +195,15 @@ class Lake:
                     )
                 files.append(path)
             sizes = [p.stat().st_size for p in files]
-            if max(sizes) <= MAX_BYTES_PER_FILE or per_file <= 1:
+            if max(sizes) <= MAX_BYTES_PER_FILE or per_file <= 1 or attempt == 7:
                 break
-            # too big for one upload: split again by size (wide rows, e.g. geometries)
+            # too big for one upload: split again by the largest file (wide rows, e.g. dense
+            # polygons, sit together in Hilbert order); the last attempt's files are kept
             for p in files:
                 p.unlink()
-            want = -(-sum(sizes) // int(MAX_BYTES_PER_FILE * 0.8))
-            per_file = max(1, -(-n // want))
+            per_file = max(
+                1, min(per_file - 1, int(per_file * MAX_BYTES_PER_FILE * 0.8 / max(sizes)))
+            )
         for path in files:
             rel = path.relative_to(self.dir).as_posix()
             rows = con.execute(f"SELECT count(*) FROM {_quote(str(path))}").fetchone()[0]  # type: ignore[index]
