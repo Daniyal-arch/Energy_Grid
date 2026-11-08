@@ -828,6 +828,11 @@ def check(probe: Path, baseline: Path, tolerance: float, floor_ms: float) -> int
             bad.append(t["table"])
     if bad:
         print(f"\nSlower than the baseline by more than {tolerance:.0%}: {', '.join(bad)}")
+        for t in now:
+            if t["table"] in bad:
+                for x in t.get("queries") or []:
+                    print(f"- `{t['table']}` {x.get('query')}: cold {x.get('cold_ms')} ms, warm "
+                          f"{x.get('warm_ms')} ms, rows {x.get('rows')}: `{(x.get('sql') or '')[:160]}`")  # fmt: skip
         return 1
     print(
         f"\nNo table slower than the baseline by more than {tolerance:.0%} (and {floor_ms:.0f} ms)."
