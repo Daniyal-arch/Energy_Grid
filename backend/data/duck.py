@@ -22,6 +22,7 @@ import re
 import threading
 import time
 from collections import OrderedDict
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from decimal import Decimal
 from pathlib import Path
@@ -99,6 +100,8 @@ class Lake:
         self.hot_tables: set[str] = set()
         self._areas_seen: OrderedDict[str, bool] = OrderedDict()  # ids in areamem.areas
         self._areas_lock = threading.Lock()
+        self._area_res: dict[str, int] = {}  # areas with H3 cells built: their resolution
+        self._cells_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="area-cells")
         self.hot_state: dict[str, Any] = {"ready": False}
         self._hot_done = threading.Event()
         self.con = self._open()
@@ -143,6 +146,12 @@ class Lake:
         con.execute(
             "CREATE TABLE areamem.areas (area_id VARCHAR PRIMARY KEY, name VARCHAR, "
             "level VARCHAR, geometry GEOMETRY, xmin DOUBLE, ymin DOUBLE, xmax DOUBLE, ymax DOUBLE)"
+        )
+        # per area: the H3 cells wholly inside, and the outline clipped to each edge cell
+        con.execute("CREATE TABLE areamem.cells (area_id VARCHAR, cell UBIGINT)")
+        con.execute(
+            "CREATE TABLE areamem.clips "
+            "(area_id VARCHAR, cell UBIGINT, clip GEOMETRY, edge GEOMETRY)"
         )
         self._attach_lake(con)
         self._load_app_tables(con)
@@ -470,6 +479,8 @@ class Lake:
                     [[a["area_id"], a["name"], a["level"], json.dumps(a["geometry"]), *a["bbox"]]
                      for a in new],
                 )  # fmt: skip
+                for a in new:  # in the background: the plain test answers until they are ready
+                    self._cells_pool.submit(self._area_cells, a)
             for a in areas:
                 self._areas_seen[a["area_id"]] = True
                 self._areas_seen.move_to_end(a["area_id"])
@@ -477,13 +488,69 @@ class Lake:
             while len(self._areas_seen) > max(self.AREAS_KEPT, len(areas)):
                 old.append(self._areas_seen.popitem(last=False)[0])
             if old:
-                cur.execute("DELETE FROM areamem.areas WHERE area_id IN (SELECT unnest(?))", [old])
+                for t in ("areas", "cells", "clips"):
+                    cur.execute(
+                        f"DELETE FROM areamem.{t} WHERE area_id IN (SELECT unnest(?))", [old]
+                    )
+                for i in old:
+                    self._area_res.pop(i, None)
         ids = ", ".join("'" + a["area_id"].replace("'", "''") + "'" for a in areas)
         cur.execute(
             f"CREATE TEMP VIEW areas AS SELECT * FROM areamem.areas WHERE area_id IN ({ids})"
         )
         for m in AREA_MACROS:
             cur.execute(m)
+
+    CELLS_MAX_KM2 = 2_000_000.0  # larger areas (continents) keep the plain test
+
+    def _area_cells(self, a: dict[str, Any]) -> None:
+        """(In a background thread.) H3 cells wholly inside the outline (a point there is
+        inside) and, for every other cell touching it, the outline clipped to the cell buffered
+        by ~1 m (a point there is inside the outline exactly when it is inside the clip, away
+        from the clip's own outline where rounding could matter): `in_area` then tests a point
+        against a few vertices instead of the whole outline (~0.45 ms a point for a detailed
+        region; 20,000 points in a 60,000-vertex outline: 10 s plain, 60 ms with cells)."""
+        if a["level"] in ("world", "bbox"):
+            return
+        from tools.area_sum import MARGIN_DEG, cells, resolution_for
+
+        km2 = float(a.get("area_km2") or 0)
+        if not km2:
+            x0, y0, x1, y1 = a["bbox"]
+            km2 = abs(x1 - x0) * abs(y1 - y0) * 111.0 * 111.0
+        if km2 > self.CELLS_MAX_KM2:
+            return
+        res = resolution_for(km2) + 1  # one finer than the sums: fewer points near the edge
+        cur = self.con.cursor()
+        try:
+            inner, edge = cells(cur, a["geometry"], res)
+            aid = a["area_id"]
+            if inner:
+                cur.execute(
+                    "INSERT INTO areamem.cells SELECT ?, unnest(?::UBIGINT[])", [aid, inner]
+                )
+            if edge:
+                cur.execute(
+                    "INSERT INTO areamem.clips SELECT area_id, c, clip, ST_Boundary(clip) FROM ("
+                    "SELECT ? AS area_id, c, ST_Intersection(g, "
+                    "ST_Buffer(ST_GeomFromText(h3_cell_to_boundary_wkt(c)), ?)) AS clip "
+                    "FROM (SELECT unnest(?::UBIGINT[]) AS c), "
+                    "(SELECT geometry AS g FROM areamem.areas WHERE area_id = ?)) "
+                    "WHERE NOT ST_IsEmpty(clip)",
+                    [aid, MARGIN_DEG, edge, aid],
+                )
+            with self._areas_lock:
+                if aid in self._areas_seen:
+                    self._area_res[aid] = res
+                else:  # dropped meanwhile
+                    for t in ("cells", "clips"):
+                        cur.execute(f"DELETE FROM areamem.{t} WHERE area_id = ?", [aid])
+        except duckdb.Error as e:  # no h3 here: the plain test answers
+            log.warning("area cells not built", extra={"error": str(e)[:200]})
+
+    def wait_cells(self) -> None:
+        """Until the cells of every area registered so far are built (tests, probes)."""
+        self._cells_pool.submit(lambda: None).result()
 
     def cursor(self) -> duckdb.DuckDBPyConnection:
         """A cursor (own connection to the same database) with the lake as default catalog."""
@@ -601,16 +668,17 @@ class Lake:
         if guard:
             checked = check(sql, allowed_paths=self.allowed, max_rows=s.sql_rows_kept + 1)
             sql, tables = checked.sql, checked.tables
+        cur = self.cursor()
+        if areas:
+            self.register_areas(cur, areas)
+        if guard:
             if areas:
-                rewritten = expand_in_area(sql, areas)
+                rewritten = expand_in_area(sql, areas, dict(self._area_res))
                 if rewritten != sql:
                     sql = check(
                         rewritten, allowed_paths=self.allowed, max_rows=s.sql_rows_kept + 1
                     ).sql
             tables = [t for t in tables if t != "areas"]
-        cur = self.cursor()
-        if areas:
-            self.register_areas(cur, areas)
         timer = threading.Timer(timeout_s or s.sql_timeout_s, cur.interrupt)
         t0 = time.perf_counter()
         with span("sql.query", {"db.system": "duckdb", "db.statement.hash": _hash(sql)}) as sp:
@@ -672,7 +740,9 @@ AREA_MACROS = [
 ]
 
 
-def expand_in_area(sql: str, areas: list[dict[str, Any]]) -> str:
+def expand_in_area(
+    sql: str, areas: list[dict[str, Any]], cells: dict[str, int] | None = None
+) -> str:
     """`in_area(x, y, 'a_...')` -> `(x BETWEEN x0 AND x1 AND y BETWEEN y0 AND y1 AND
     ST_Contains(area_geom('a_...'), ST_Point(x, y)))`: literal bounds the Parquet reader can
     prune row groups with. Unknown ids and non-literal ids keep the macro."""
@@ -706,11 +776,27 @@ def expand_in_area(sql: str, areas: list[dict[str, Any]]) -> str:
         else:
             x0, y0, x1, y1 = a["bbox"]
             box = f"{x} BETWEEN {x0!r} AND {x1!r} AND {y} BETWEEN {y0!r} AND {y1!r}"
-            text = (
-                f"({box})"
-                if a["level"] == "bbox"
-                else f"({box} AND ST_Contains(area_geom('{a['area_id']}'), ST_Point({x}, {y})))"
-            )
+            aid = a["area_id"]
+            res = (cells or {}).get(aid)
+            if a["level"] == "bbox":
+                text = f"({box})"
+            elif res is not None:
+                # inside a cell wholly inside, or inside the outline clipped to its edge cell
+                h = (
+                    f"h3_latlng_to_cell(greatest(-90.0, least(90.0, ({y})::DOUBLE)), "
+                    f"({x})::DOUBLE, {res})"
+                )
+                # the clip decides unless the point lies within 1e-9 degrees of the clip's own
+                # outline (where clipping's rounding could matter): then the whole outline does
+                pt = f"ST_Point({x}, {y})"
+                text = (
+                    f"({box} AND ({h} IN (SELECT cell FROM areamem.cells WHERE area_id = '{aid}') "
+                    f"OR coalesce((SELECT CASE WHEN ST_DWithin(edge, {pt}, 1e-9) "
+                    f"THEN ST_Contains(area_geom('{aid}'), {pt}) ELSE ST_Contains(clip, {pt}) END "
+                    f"FROM areamem.clips WHERE area_id = '{aid}' AND cell = {h}), false)))"
+                )
+            else:
+                text = f"({box} AND ST_Contains(area_geom('{aid}'), ST_Point({x}, {y})))"
         changed = True
         return sqlglot.parse_one(text, read="duckdb")
 
