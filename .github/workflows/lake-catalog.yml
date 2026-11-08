@@ -37,6 +37,9 @@ on:
       raster_keys:
         description: "Raster keys (space-separated; empty = the default list in scripts/raster_recompress.py)"
         default: ""
+      zoning:
+        description: "Zoning instead of the catalogue (scripts/build_zoning.py): all, a list such as fr_gpu,ie_myplan, or discover (the source sweeps)"
+        default: ""
   push:
     branches: [main]
     paths: [.github/workflows/lake-catalog.yml, scripts/lake_catalog.py, scripts/probe_pudl.py]
@@ -46,7 +49,7 @@ permissions:
 
 jobs:
   catalog:
-    if: github.event_name != 'workflow_dispatch' || (inputs.storage == 'none' && inputs.rewrite == '' && inputs.rasters == 'none')
+    if: github.event_name != 'workflow_dispatch' || (inputs.storage == 'none' && inputs.rewrite == '' && inputs.rasters == 'none' && inputs.zoning == '')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -232,3 +235,61 @@ jobs:
         if: always()
         with: {name: lake-storage, path: "data/lake_audit.json\nstorage.md", if-no-files-found: ignore}
 
+  zoning-plan:
+    if: github.event_name == 'workflow_dispatch' && inputs.zoning != '' && inputs.zoning != 'discover'
+    runs-on: ubuntu-latest
+    outputs:
+      sources: ${{ steps.p.outputs.sources }}
+    steps:
+      - id: p
+        env:
+          SOURCES: ${{ inputs.zoning }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          allsrc = ["ie_myplan", "dk_plandata", "fi_helsinki", "gb_england", "us_ca", "fr_gpu"]
+          raw = os.environ["SOURCES"].strip()
+          pick = allsrc if raw in ("", "all") else [s.strip() for s in raw.split(",") if s.strip()]
+          print("sources=" + json.dumps(pick))
+          PY
+
+  zoning:
+    needs: zoning-plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        source: ${{ fromJson(needs.zoning-plan.outputs.sources) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: ${{ matrix.source }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb httpx
+          set -o pipefail
+          cd scripts && python build_zoning.py ${{ matrix.source }} --lake ../lake-out --tmp /tmp/zoning --upload 2>&1 | tail -n 60
+
+  zoning-discover:
+    if: github.event_name == 'workflow_dispatch' && inputs.zoning == 'discover'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: |
+          pip install httpx
+          python scripts/zoning_discover.py --pages 50 --out discovery
+          python scripts/zoning_discover.py --hub --step 2 --pages 10 --out discovery
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zoning-discovery
+          path: discovery/

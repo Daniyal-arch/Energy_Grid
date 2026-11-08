@@ -19,6 +19,9 @@ Sources (all open, no key):
 
     uv run python scripts/build_zoning.py fr_gpu ie_myplan --lake lake-out [--upload]
     uv run python scripts/build_zoning.py ie_myplan --limit 5000   # a quick local test
+
+In GitHub Actions: Lake catalogue > Run workflow with `zoning` = all (or a list of sources);
+`zoning` = discover runs scripts/zoning_discover.py (both sweeps) and keeps the CSVs.
 """
 
 from __future__ import annotations
