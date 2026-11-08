@@ -117,6 +117,10 @@ def build(shard: int, shards: int, out: Path, max_minutes: float) -> None:
             if a["area_id"] in done:
                 continue
             done.add(a["area_id"])
+            if hasattr(ctx.lake, "wait_area_cells"):  # its cells once, not 3 s in every query
+                tw = time.time()
+                ctx.lake.wait_area_cells([a["area_id"]], 300)
+                stats["cell_wait_s"] = round(stats.get("cell_wait_s", 0) + time.time() - tw, 1)
             stats["areas"] += 1
             summary = {k: a[k] for k in ("area_id", "name", "level", "iso3")}
             for template, n, kind in prepared.PREPARED:
@@ -146,7 +150,8 @@ def build(shard: int, shards: int, out: Path, max_minutes: float) -> None:
                 stats["answers"] += 1
             if (i + 1) % 100 == 0:
                 print(
-                    f"  {i + 1}/{len(todo)} names, {stats['areas']} areas, {time.time() - t0:.0f} s",
+                    f"  {i + 1}/{len(todo)} names, {stats['areas']} areas, {time.time() - t0:.0f} s "
+                    f"({stats.get('cell_wait_s', 0):.0f} s waiting for cells)",
                     flush=True,
                 )
     stats["seconds"] = round(time.time() - t0)

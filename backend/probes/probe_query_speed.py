@@ -778,24 +778,33 @@ def check(probe: Path, baseline: Path, tolerance: float, floor_ms: float) -> int
     """The CI speed check (brief 32 Step 6): each probed table's warm p95 against the baseline;
     fails (1) when one grew by more than `tolerance` and by more than `floor_ms`."""
     base = json.loads(baseline.read_text(encoding="utf-8"))["tables"]
-    now = json.loads(probe.read_text(encoding="utf-8"))["tables"]
-    print("| table | baseline warm p95 | now | change |\n|---|---:|---:|---:|")
+    run = json.loads(probe.read_text(encoding="utf-8"))
+    now = run["tables"]
+    hot = run.get("hot") or {}
+    print(f"hot.duckdb in this run: {'attached' if hot.get('ready') else 'not attached'} "
+          f"({', '.join(f'{k} {v}' for k, v in hot.items() if k != 'ready') or 'no details'})\n")  # fmt: skip
+    print(
+        "| table | baseline warm p95 | now | change | bytes read cold |\n|---|---:|---:|---:|---:|"
+    )
     bad = []
     for t in now:
         b = (base.get(t["table"]) or {}).get("warm_p95_ms")
         n = t.get("warm_p95_ms")
         if b is None or n is None:
-            print(f"| `{t['table']}` | {fmt(b)} | {fmt(n)} | not compared |")
+            print(
+                f"| `{t['table']}` | {fmt(b)} | {fmt(n)} | not compared | {mb(t.get('bytes_cold'))} |"
+            )
             continue
         # a query that failed in one run is missing from its times: the two sets differ
         errs = (base.get(t["table"]) or {}).get("errors") or 0, len(t.get("errors") or [])
         if any(errs):
             print(f"| `{t['table']}` | {fmt(b)} | {fmt(n)} | not compared (failed queries: "
-                  f"baseline {errs[0]}, now {errs[1]}) |")  # fmt: skip
+                  f"baseline {errs[0]}, now {errs[1]}) | {mb(t.get('bytes_cold'))} |")  # fmt: skip
             continue
         grew = n > b * (1 + tolerance) and n - b > floor_ms
         print(
-            f"| `{t['table']}` | {fmt(b)} | {fmt(n)} | {(n - b) / b:+.0%}{' **slower**' if grew else ''} |"
+            f"| `{t['table']}` | {fmt(b)} | {fmt(n)} | {(n - b) / b:+.0%}{' **slower**' if grew else ''} "
+            f"| {mb(t.get('bytes_cold'))} |"
         )
         if grew:
             bad.append(t["table"])

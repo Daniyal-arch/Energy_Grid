@@ -509,8 +509,14 @@ class Lake:
     # detailed region costs ~0.45 ms a point, 5-14 s for a region's 10,000-30,000 rows)
     CELLS_WAIT_S = 3.0
 
-    def _wait_area_cells(self, areas: list[dict[str, Any]]) -> None:
-        deadline = time.monotonic() + self.CELLS_WAIT_S
+    def wait_area_cells(self, area_ids: list[str], timeout: float) -> None:
+        """Block until these areas' cells are built (or `timeout` s): batch builds
+        (probes/build_prepared.py) wait here once instead of every query waiting
+        CELLS_WAIT_S behind a queue of other areas' builds."""
+        self._wait_area_cells([{"area_id": i} for i in area_ids], timeout)
+
+    def _wait_area_cells(self, areas: list[dict[str, Any]], wait_s: float | None = None) -> None:
+        deadline = time.monotonic() + (self.CELLS_WAIT_S if wait_s is None else wait_s)
         for a in areas:
             job = self._cells_jobs.get(a["area_id"])
             if job is None or a["area_id"] in self._area_res:
