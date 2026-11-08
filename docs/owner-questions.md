@@ -161,22 +161,24 @@ sourced values, which CLAUDE.md does not allow without the owner.
 **Decision.** The zoning lake (`scripts/build_zoning.py`, `lake/zoning/zones`) keeps every
 zone with its document link. `scripts/zoning_documents.py` measures the linked files and keeps
 a sample of 25 PDFs per source privately on R2 (`infraatlas-raw/zoning-docs/`), with their page
-text in `zoning.document_pages` for the agent. Sample measured on 2026-11-08 (20 links a source):
+text in `zoning.document_pages` for the agent. Measured:
 
-| source | linked files | mean size | projected total |
-|---|---:|---:|---:|
-| Denmark Plandata (one PDF per local plan or frame) | 6,718 in the test slice; about 45,000 plans in all | 25.8 MB | about 1.2 TB for all plans |
-| England (conservation area appraisals) | 5,945 | 2.7 MB | 16 GB |
-| France GPU (plan files: report, regulation, annexes) | 12,903 documents, several files each | 0.2 to 1.5 MB | to measure on the full run |
+| source | linked (plan, file) pairs | sampled, answered as PDF | mean size | projected total |
+|---|---:|---:|---:|---:|
+| Denmark Plandata (lokalplaner and kommuneplanrammer) | 88,688 | 200, 200 | 79.1 MB | at most 7.0 TB (a municipal plan PDF linked from many frames counts once per frame, so the distinct files are fewer) |
+| England (conservation area appraisals) | 5,945 | 200, 126 | 3.4 MB | 20.3 GB |
+| France GPU (report, regulation, annexes per plan) | 12,903 documents, several files each | measured with the France build | | |
+
+Measured by `scripts/zoning_documents.py --measure 200` in run 42492842706 (2026-11-08).
 
 **Why it is a question.** All of it is a large download (rule 4) and a storage cost: about
-1.2 TB at $0.015 per GB-month is about $18 a month for Denmark alone. The text, which the agent
+7 TB at $0.015 per GB-month would be about $105 a month for Denmark alone (an upper bound). The text, which the agent
 needs, is far smaller than the PDFs (one 22 MB Danish plan gave 1,011 pages of text).
 
 **Options.**
 1. Keep the text of every document, and the PDF only for a sample; the agent cites the
    publisher's link for the PDF itself. Recommended: full-text search everywhere, small storage.
-2. Keep every PDF and its text (about 1.3 TB to start).
+2. Keep every PDF and its text (several TB for Denmark alone).
 3. Text only for the regulation documents (France `reglement`, Denmark local plans), none for
    reports and annexes.
 
