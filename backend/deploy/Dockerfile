@@ -25,6 +25,10 @@ RUN --mount=type=secret,id=ca,required=false \
     .venv/bin/python -c "import duckdb; c = duckdb.connect(config={'extension_directory': '/opt/duckdb_ext'}); [c.install_extension(e) for e in ('httpfs', 'spatial')]; c.install_extension('h3', repository='community')"
 
 FROM ${PYTHON_IMAGE}
+# rasterio's GDAL (area_stats over the raster measures) loads libexpat, which the slim image
+# lacks: every area_stats call failed with "libexpat.so.1: cannot open shared object file"
+RUN apt-get update && apt-get install -y --no-install-recommends libexpat1 \
+    && rm -rf /var/lib/apt/lists/*
 COPY --from=lwa /lambda-adapter /opt/extensions/lambda-adapter
 COPY --from=build /var/task/backend/.venv /var/task/backend/.venv
 COPY --from=build /opt/duckdb_ext /opt/duckdb_ext

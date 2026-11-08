@@ -98,6 +98,7 @@ class Lake:
         # brief 32 Tier 1: queries go to the catalog `fast` (hot.duckdb first, the lake for the
         # rest) once hot.duckdb is attached; until then to the lake
         self.default = "lake"
+        self.search_path = ""  # set with hot.duckdb: fast (hot views) first, then the lake
         self.hot_tables: set[str] = set()
         self._areas_seen: OrderedDict[str, bool] = OrderedDict()  # ids in areamem.areas
         self._areas_lock = threading.Lock()
@@ -606,6 +607,8 @@ class Lake:
         """A cursor (own connection to the same database) with the lake as default catalog."""
         cur = self.con.cursor()
         cur.execute(f"USE {self.default}")
+        if self.search_path:
+            cur.execute(f"SET search_path = '{self.search_path}'")
         return cur
 
     # ------------------------------------------------------------------ hot.duckdb (brief 32)
@@ -656,14 +659,19 @@ class Lake:
                 "WHERE database_name = 'lake' UNION SELECT schema_name, table_name "
                 "FROM duckdb_tables() WHERE database_name = 'lake'"
             ).fetchall()
+            # views only over the hot copies; every other name falls through to the lake by the
+            # search path. A view per lake table bound each table's Parquet files on R2 when it
+            # was created (about 1 s each): hot.duckdb was ready only after 500-570 s
             cur.execute("ATTACH ':memory:' AS fast")
-            schemas: set[str] = set()
-            for sch, t in sorted(set(lake) | hot):
-                if sch not in schemas:
-                    cur.execute(f'CREATE SCHEMA IF NOT EXISTS fast."{sch}"')
-                    schemas.add(sch)
-                src = "hot" if (sch, t) in hot else "lake"
-                cur.execute(f'CREATE VIEW fast."{sch}"."{t}" AS SELECT * FROM {src}."{sch}"."{t}"')
+            for sch in sorted({sch for sch, _ in hot}):
+                cur.execute(f'CREATE SCHEMA IF NOT EXISTS fast."{sch}"')
+            for sch, t in sorted(hot):
+                cur.execute(f'CREATE VIEW fast."{sch}"."{t}" AS SELECT * FROM hot."{sch}"."{t}"')
+            lake_schemas = sorted({sch for sch, _ in lake} | {"main"})
+            self.search_path = ",".join(
+                ["fast.main", *(f"fast.{sch}" for sch in sorted({sch for sch, _ in hot}))]
+                + [f"lake.{sch}" for sch in lake_schemas]
+            )
             self.hot_tables = {f"{sch}.{t}" for sch, t in hot}
             self.default = "fast"
             self.hot_state = {
