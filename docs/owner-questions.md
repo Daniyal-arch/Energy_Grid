@@ -106,3 +106,24 @@ not be read. Both are built (Transelectrica: 100 zone-year cells; EMS: 88 reques
 "licence not stated" with the legal basis it is published under. The same instruction covers
 the other unclear cases (EDO drought, PSE, PJM, INS Romania, Elia balancing); sources whose terms
 clearly forbid reuse, need a login or refuse the client stay out.
+
+## 6. Tables that store coordinates as text: retype them? (2026-11-08, brief 32)
+
+**Decision.** Thirteen lake tables hold `lon`/`lat` as text (VARCHAR), as their sources publish
+them: `main.plants`, `eia860m.generators`, `co2stop.hydrocarbon_formations`,
+`co2stop.hydrocarbon_storage_units`, `co2stop.hydrocarbon_traps`, `co2stop.hydrocarbon_traps1`,
+`co2stop.hydrocarbon_traps_temp`, `wave9.eu_eea_aq_stats`, `wave9.eu_egdi_minerals`,
+`wave9.eu_emodnet_desalination`, `wave9.gb_ssen_opendata`, `wave9.us_epa_repowering`,
+`wave9.us_nyc_ll84`. A place filter on them must cast every row (`TRY_CAST`), so Parquet
+statistics cannot skip row groups and each place query reads the whole table (`main.plants`:
+390 MB, 3.5 s warm; `docs/research/query-speed.md`).
+
+**Why it is a question.** Brief 32 rewrites files only when every column keeps the same
+checksum. Retyping `lon`/`lat` to DOUBLE changes those two columns' values (text "8.50" becomes
+8.5; blanks and unparsable text become NULL), so it is not a lossless rewrite.
+
+**Options.**
+1. Retype in each table's build script (keep the original text in `lon_text`/`lat_text`, so
+   nothing is lost) and rebuild. Recommended: place queries on these tables drop from whole-table
+   reads to row-group reads.
+2. Keep the text; the agent keeps casting (correct, slow on the large ones).
