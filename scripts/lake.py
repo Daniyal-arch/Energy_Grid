@@ -29,6 +29,7 @@ import json
 import os
 import shutil
 import subprocess
+import time
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -327,7 +328,15 @@ def wrangler(*args: str) -> bool:
         src, dst = (f"s3://{key}", path) if op == "get" else (path, f"s3://{key}")
         cmd = [aws, "s3", "cp", "--only-show-errors", "--endpoint-url",
                f"https://{account}.r2.cloudflarestorage.com", src, dst]  # fmt: skip
-        return subprocess.run(cmd, check=False, stdin=subprocess.DEVNULL).returncode == 0
+        # R2 refuses the CRC checksums newer AWS CLIs add to multipart uploads ("InvalidPart"
+        # on 2026-11-08): checksums only where the API requires them; parts retried
+        env = {**os.environ, "AWS_REQUEST_CHECKSUM_CALCULATION": "when_required",
+               "AWS_RESPONSE_CHECKSUM_VALIDATION": "when_required"}  # fmt: skip
+        for attempt in range(4):
+            if subprocess.run(cmd, env=env, check=False, stdin=subprocess.DEVNULL).returncode == 0:
+                return True
+            time.sleep(5 * (attempt + 1))
+        return False
     npx = shutil.which("npx")
     if not npx:
         raise SystemExit("npx (Node.js) is needed for R2")
