@@ -29,6 +29,7 @@ import argparse
 import csv
 import json
 import re
+import shutil
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -194,7 +195,10 @@ class Shard:
             oid_field = ids.get("objectIdFieldName") or "OBJECTID"
             page = min(int(meta.get("maxRecordCount") or 1000), 2000)
             n = 0
-            lines: list[str] = []
+            # each page goes to this layer's own file (a layer of millions of polygons held in
+            # memory stopped the runner); the file joins the shard only when the layer is whole
+            part = self.out.with_name(f"{self.out.stem}-{abs(hash(url))}.part")
+            pf = part.open("w", encoding="utf-8")
             for i in range(0, len(oids), page):
                 chunk = oids[i : i + page]
                 d = get(c, f"{url}/query", {"objectIds": ",".join(map(str, chunk)),
@@ -202,6 +206,7 @@ class Shard:
                 feats = d.get("features") or []
                 if len(feats) != len(chunk):
                     raise RuntimeError(f"asked {len(chunk)} ids, got {len(feats)}")
+                lines: list[str] = []
                 for ft in feats:
                     p = ft.get("properties") or {}
                     lab = p.get(label) if label else None
@@ -214,13 +219,23 @@ class Shard:
                         "label": lab, "fields": f"{code or ''}|{label or ''}",
                         "cls": cls, "word": word, "oid": p.get(oid_field),
                     }, ensure_ascii=False, default=str))  # fmt: skip
+                if lines:
+                    pf.write("\n".join(lines) + "\n")
                 n += len(feats)
-            with self.lock, self.out.open("a", encoding="utf-8") as f:
-                f.write("\n".join(lines) + ("\n" if lines else ""))
+            pf.close()
+            with (
+                self.lock,
+                self.out.open("a", encoding="utf-8") as f,
+                part.open(encoding="utf-8") as src,
+            ):
+                shutil.copyfileobj(src, f, 1 << 20)
                 self.rows += n
+            part.unlink()
             self.record(**base, status="read", reason=None, rows=n, code_field=code,
                         label_field=label, seconds=round(time.time() - t0, 1))  # fmt: skip
         except Exception as e:  # noqa: BLE001 - every failure is listed in hub_layers
+            for f in self.out.parent.glob(f"{self.out.stem}-{abs(hash(url))}.part"):
+                f.unlink()
             self.record(**base, status="failed", reason=str(e)[:160], rows=0)
 
     def read_service(self, c: httpx.Client, svc: dict[str, str]) -> None:
