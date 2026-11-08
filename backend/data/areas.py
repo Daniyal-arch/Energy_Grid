@@ -413,6 +413,7 @@ class Areas:
         # data this container holds (brief 32); the data, not the question, is kept
         self._made: OrderedDict[str, Area] = OrderedDict()
         self._made_lock = threading.Lock()
+        self._bbox: dict[str, bool] = {}  # outline tables with a bbox column
 
     # ---------------------------------------------------------------- local outlines
     @cached_property
@@ -761,15 +762,24 @@ class Areas:
                 f"trim(regexp_replace(replace(lower(strip_accents({s.name})), chr(39), ''), "
                 "'[^a-z0-9]+', ' ', 'g'))"
             )
+            # the box: the table's bbox column where it has one (brief 32 rewrite), otherwise
+            # from the geometry of the matching rows only (computing it for the whole table to
+            # filter by name cost 80-160 ms on shapes.admin1)
+            if self._has_bbox(s.table):
+                box = "bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax"
+            else:
+                g = s.geometry
+                box = f"ST_XMin({g}), ST_YMin({g}), ST_XMax({g}), ST_YMax({g})"
             sql = f"""
+                WITH hit AS (
+                    SELECT {s.id} AS k FROM {s.table}
+                    WHERE {nn} = $q OR lower(CAST({s.id} AS VARCHAR)) = $q LIMIT 200)
                 SELECT CAST({s.id} AS VARCHAR), {s.name}, {s.level}, {s.iso}, {s.parent},
-                       {s.population}, ST_XMin({s.geometry}), ST_YMin({s.geometry}),
-                       ST_XMax({s.geometry}), ST_YMax({s.geometry}),
+                       {s.population}, {box},
                        CASE WHEN {nn} = $q THEN 0
                             WHEN lower(CAST({s.id} AS VARCHAR)) = $q THEN 1 ELSE 2 END AS r
                 FROM {s.table}
-                WHERE {nn} = $q OR lower(CAST({s.id} AS VARCHAR)) = $q
-                LIMIT 200"""
+                WHERE {s.id} IN (SELECT k FROM hit)"""
             try:
                 return self.lake.cursor().execute(sql, {"q": q}).fetchall()
             except Exception as e:
@@ -798,6 +808,15 @@ class Areas:
                     )
                 )
         return out
+
+    def _has_bbox(self, table: str) -> bool:
+        if table not in self._bbox:
+            try:
+                cols = {r[0] for r in self.lake.cursor().execute(f"DESCRIBE {table}").fetchall()}
+            except Exception:  # noqa: BLE001 - the geometry path answers
+                cols = set()
+            self._bbox[table] = "bbox" in cols
+        return self._bbox[table]
 
     def _names_norm(self, cur: Any) -> bool:
         """Whether the name index carries `name_norm` (built since 2026-11-05)."""
