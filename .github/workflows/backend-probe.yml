@@ -16,6 +16,7 @@ on:
       load: {description: "Concurrent asks for the load test (0 = none)", default: "50"}
       job: {description: "latency, speed (brief 32: every dataset) or both", default: "both"}
       only: {description: "speed: regex of the tables to probe (empty = all)", default: ""}
+      hot: {description: "speed: attach hot.duckdb (on) or read the lake only (off, the before)", default: "on"}
 
 permissions:
   contents: read
@@ -81,6 +82,7 @@ jobs:
           extras=""; [ "${{ matrix.shard }}" = "0" ] && extras="--extras"
           docker run --rm --cpus 2 --memory 3008m \
             -e R2_ACCOUNT_ID -e R2_ACCESS_KEY_ID -e R2_SECRET_ACCESS_KEY \
+            ${{ inputs.hot == 'off' && '-e HOT_DB=' || '' }} \
             -v "$PWD/backend/probes:/var/task/backend/probes:ro" -v "$PWD/out:/out" \
             infraatlas-backend:probe \
             python -m probes.probe_query_speed --shard ${{ matrix.shard }} --shards 8 $extras \

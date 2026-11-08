@@ -682,6 +682,8 @@ def main() -> None:
         return
     t0 = time.perf_counter()
     ctx, lake = open_backend()
+    if hasattr(lake, "wait_hot"):  # Tier 1: measure with hot.duckdb attached (when it is on)
+        lake.wait_hot(600)
     http = Http(lake)
     cols = columns(lake)
     names = sorted(t for t in cols if not a.only or re.search(a.only, t))
@@ -691,6 +693,7 @@ def main() -> None:
         "probed": datetime.now(UTC).isoformat(timespec="seconds"),
         "lake_mode": getattr(lake, "lake_mode", ""),
         "http_log": http.on,
+        "hot": getattr(lake, "hot_state", {}),
         "shard": a.shard,
         "shards": a.shards,
         "tables_total": len(names),
