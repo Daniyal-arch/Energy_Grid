@@ -227,13 +227,18 @@ def rewrite_file(
             "max_group_rows": groups[1], "checksums": "equal", "bbox_added": bool(extra)}  # fmt: skip
 
 
-def upload(local: str, key: str) -> None:
+def upload(local: str, key: str, tries: int = 4) -> None:
+    """Copy to R2, retried: R2 sometimes refuses a multipart upload's completion (InvalidPart);
+    a failed upload leaves the old object in place."""
     acct = os.environ.get("CLOUDFLARE_ACCOUNT_ID") or lake.ACCOUNT_ID
-    subprocess.run(
-        ["aws", "s3", "cp", "--only-show-errors", "--endpoint-url", f"https://{acct}.r2.cloudflarestorage.com",
-         local, f"s3://{lake.BUCKET}/{key}"],
-        check=True,
-    )  # fmt: skip
+    cmd = ["aws", "s3", "cp", "--only-show-errors", "--endpoint-url",
+           f"https://{acct}.r2.cloudflarestorage.com", local, f"s3://{lake.BUCKET}/{key}"]  # fmt: skip
+    for i in range(tries):
+        if subprocess.run(cmd).returncode == 0:
+            return
+        print(f"  upload of {key} failed (try {i + 1} of {tries})", flush=True)
+        time.sleep(2 ** (i + 1))
+    raise SystemExit(f"{key}: upload failed {tries} times; the old file stays")
 
 
 def rewrite(con: duckdb.DuckDBPyConnection, tables: list[str], do_upload: bool, work: Path) -> None:
@@ -245,33 +250,35 @@ def rewrite(con: duckdb.DuckDBPyConnection, tables: list[str], do_upload: bool, 
     for ds, names in by_ds.items():
         dcat = dataset_catalogue(con, ds)
         changed = False
-        for name in names:
-            info = (dcat.get("tables") or {}).get(name)
-            if not info:
-                print(f"{ds}.{name}: not in the catalogue")
-                continue
-            for f in info.get("files", []):
-                key = f"{lake.PREFIX}/{ds}/{f}"
-                t0 = time.time()
-                r = rewrite_file(con, f"{R2}/{key}", info.get("sort") or [], work)
-                old = (info.get("file_stats") or {}).get(f, [None, None])[1]
-                print(f"  {key}: {r['rows']:,} rows, checksums equal, {r['groups']} groups (largest "
-                      f"{r['max_group_rows']:,} rows), {old or 0:,} -> {r['bytes']:,} bytes"
-                      f"{', bbox added' if r['bbox_added'] else ''} ({time.time() - t0:.0f} s)", flush=True)  # fmt: skip
-                if do_upload:
-                    upload(r["file"], key)
-                    info.setdefault("file_stats", {})[f] = [r["rows"], r["bytes"]]
-                    changed = True
-            if changed:
-                info["bytes"] = sum(v[1] for v in info["file_stats"].values())
-                info["layout"] = (
-                    "brief 32: Hilbert order, row groups capped by rows and bytes, bbox"
-                )
-        if changed and do_upload:
-            p = work / f"{ds}_catalog.json"
-            p.write_text(json.dumps(dcat, indent=1, ensure_ascii=False), encoding="utf-8")
-            upload(str(p), f"{lake.PREFIX}/{ds}/_catalog.json")
-            print(f"catalogue lake/{ds} updated")
+        try:
+            for name in names:
+                info = (dcat.get("tables") or {}).get(name)
+                if not info:
+                    print(f"{ds}.{name}: not in the catalogue")
+                    continue
+                for f in info.get("files", []):
+                    key = f"{lake.PREFIX}/{ds}/{f}"
+                    t0 = time.time()
+                    r = rewrite_file(con, f"{R2}/{key}", info.get("sort") or [], work)
+                    old = (info.get("file_stats") or {}).get(f, [None, None])[1]
+                    print(f"  {key}: {r['rows']:,} rows, checksums equal, {r['groups']} groups (largest "
+                          f"{r['max_group_rows']:,} rows), {old or 0:,} -> {r['bytes']:,} bytes"
+                          f"{', bbox added' if r['bbox_added'] else ''} ({time.time() - t0:.0f} s)", flush=True)  # fmt: skip
+                    if do_upload:
+                        upload(r["file"], key)
+                        info.setdefault("file_stats", {})[f] = [r["rows"], r["bytes"]]
+                        info["bytes"] = sum(v[1] for v in info["file_stats"].values())
+                        info["layout"] = (
+                            "brief 32: Hilbert order, row groups capped by rows and bytes, bbox"
+                        )
+                        changed = True
+        finally:
+            # written even when a later file fails, so the catalogue matches the files on R2
+            if changed and do_upload:
+                p = work / f"{ds}_catalog.json"
+                p.write_text(json.dumps(dcat, indent=1, ensure_ascii=False), encoding="utf-8")
+                upload(str(p), f"{lake.PREFIX}/{ds}/_catalog.json")
+                print(f"catalogue lake/{ds} updated", flush=True)
 
 
 def main() -> None:
