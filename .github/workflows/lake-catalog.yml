@@ -38,7 +38,7 @@ on:
         description: "Raster keys (space-separated; empty = the default list in scripts/raster_recompress.py)"
         default: ""
       zoning:
-        description: "Zoning instead of the catalogue (scripts/build_zoning.py): all, a list such as fr_gpu,ie_myplan, or discover (the source sweeps)"
+        description: "Zoning instead of the catalogue (scripts/build_zoning.py): all, a list such as fr_gpu,ie_myplan, discover (the source sweeps), or hub:us / hub:eu / hub:gb / hub:us_ak_hi (the ArcGIS services found, scripts/build_zoning_hub.py)"
         default: ""
   push:
     branches: [main]
@@ -240,6 +240,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sources: ${{ steps.p.outputs.sources }}
+      hub: ${{ steps.p.outputs.hub }}
     steps:
       - id: p
         env:
@@ -249,12 +250,15 @@ jobs:
           import json, os
           allsrc = ["ie_myplan", "dk_plandata", "fi_helsinki", "gb_england", "us_ca", "fr_gpu"]
           raw = os.environ["SOURCES"].strip()
-          pick = allsrc if raw in ("", "all") else [s.strip() for s in raw.split(",") if s.strip()]
+          hub = raw[4:] if raw.startswith("hub:") else ""
+          pick = [] if hub else allsrc if raw in ("", "all") else [s.strip() for s in raw.split(",") if s.strip()]
           print("sources=" + json.dumps(pick))
+          print("hub=" + hub)
           PY
 
   zoning:
     needs: zoning-plan
+    if: needs.zoning-plan.outputs.hub == ''
     runs-on: ubuntu-latest
     timeout-minutes: 300
     strategy:
@@ -287,6 +291,65 @@ jobs:
           pip install pypdf
           set -o pipefail
           cd scripts && python zoning_documents.py --zones ../lake-out/zoning --measure 200 --fetch 25 --lake ../lake-out --upload 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" | tail -n 40
+
+  # the zoning layers of the ArcGIS services the Hub sweep found, 48 shards; each uploads its
+  # files and hands its partial catalogue to zoning-hub-merge
+  zoning-hub:
+    needs: zoning-plan
+    if: needs.zoning-plan.outputs.hub != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: shard ${{ matrix.shard }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb httpx pycountry
+          set -o pipefail
+          cd scripts && python build_zoning_hub.py --region ${{ needs.zoning-plan.outputs.hub }} --shard ${{ matrix.shard }} --shards 48 \
+            --max-minutes 290 --lake ../lake-out --tmp /tmp/zoning-hub --upload 2>&1 | tail -n 40
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zoning-hub-${{ matrix.shard }}
+          path: lake-out/zoning/_catalog.json
+
+  zoning-hub-merge:
+    needs: [zoning-plan, zoning-hub]
+    if: always() && needs.zoning-plan.outputs.hub != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: zoning-hub-*
+          path: partials
+      - env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb httpx pycountry
+          cd scripts && python build_zoning_hub.py --merge ../partials/*/_catalog.json --lake ../lake-out --upload 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
 
   zoning-discover:
     if: github.event_name == 'workflow_dispatch' && inputs.zoning == 'discover'
