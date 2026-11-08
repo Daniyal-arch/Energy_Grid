@@ -18,9 +18,9 @@ on:
         type: boolean
         default: false
       storage:
-        description: "Brief 32 Step 5 instead of the catalogue: audit (read only) or apply (the approved deletions in data/lake_deletions.yaml)"
+        description: "Brief 32 Step 5 instead of the catalogue: audit (read only), dry-run (what apply would do) or apply (the approved deletions in data/lake_deletions.yaml)"
         type: choice
-        options: [none, audit, apply]
+        options: [none, audit, dry-run, apply]
         default: none
   push:
     branches: [main]
@@ -123,7 +123,8 @@ jobs:
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          python scripts/lake_storage.py ${{ inputs.storage }} | tee storage.md
+          if [ "${{ inputs.storage }}" = "dry-run" ]; then args="apply --dry-run"; else args="${{ inputs.storage }}"; fi
+          python scripts/lake_storage.py $args | tee storage.md
           cat storage.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()

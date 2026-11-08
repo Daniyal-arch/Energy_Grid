@@ -103,18 +103,20 @@ def view_sql(tmp: Path) -> list[str]:
 
 
 def snapshot_readers(snapshot: str, cats: dict[str, dict[str, Any]], views: list[str]) -> list[str]:
-    """Places outside the MaStR tables that name this snapshot."""
+    """Places outside the MaStR tables that name this snapshot's files (`snapshot=<date>`;
+    the bare date also appears as other datasets' retrieval dates and does not count)."""
+    tag = f"snapshot={snapshot}"
     hits = []
     for ds, c in cats.items():
         if ds == "mastr":
             continue
-        if snapshot in json.dumps(c):
+        if tag in json.dumps(c):
             hits.append(f"catalogue lake/{ds}")
-    hits += [f"view: {v[:120]}" for v in views if snapshot in v]
+    hits += [f"view: {v[:120]}" for v in views if tag in v]
     for p in list((ROOT / "scripts").glob("*.py")) + list((ROOT / "agent").rglob("*.yaml")):
         if p.name == "lake_storage.py":
             continue
-        if snapshot in p.read_text(encoding="utf-8", errors="ignore"):
+        if tag in p.read_text(encoding="utf-8", errors="ignore"):
             hits.append(f"file {p.relative_to(ROOT)}")
     return hits
 
@@ -249,7 +251,89 @@ def report(rec: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def apply() -> None:
+def registry() -> dict[str, tuple[str, str]]:
+    """Source id -> (dataset, status) from the wave registries."""
+    out: dict[str, tuple[str, str]] = {}
+    for f, ds in [
+        ("wave9_sources.yaml", "wave9"),
+        ("wave10_sources.yaml", "wave10"),
+        ("wave10_manual.yaml", "wave10"),
+    ]:
+        p = ROOT / "scripts" / f
+        if p.exists():
+            for s in (yaml.safe_load(p.read_text(encoding="utf-8")) or {}).get("sources") or []:
+                out[s["id"]] = (ds, str(s.get("status")))
+    return out
+
+
+def register(
+    raw: dict[str, dict[str, Any]], cats: dict[str, dict[str, Any]], tmp: Path, dry: bool = False
+) -> None:
+    """Orphan tables the registries list as built go into their dataset's catalogue (rows,
+    columns and bytes read from the files themselves); tables no registry lists are reported."""
+    import duckdb
+
+    listed = {
+        f"lake/{ds}/{f}"
+        for ds, c in cats.items()
+        for t in (c.get("tables") or {}).values()
+        for f in t.get("files", [])
+    }
+    reg = registry()
+    con = duckdb.connect()
+    con.execute("INSTALL httpfs; LOAD httpfs")
+    con.execute(
+        "CREATE SECRET (TYPE r2, KEY_ID ?, SECRET ?, ACCOUNT_ID ?)",
+        [
+            os.environ["AWS_ACCESS_KEY_ID"],
+            os.environ["AWS_SECRET_ACCESS_KEY"],
+            endpoint().split("//")[1].split(".")[0],
+        ],
+    )
+    changed: set[str] = set()
+    for k, o in sorted(raw.items()):
+        if not (k.startswith("lake/") and k.endswith(".parquet")) or k in listed:
+            continue
+        parts = k.split("/")
+        if len(parts) != 4 or parts[1] not in ("wave9", "wave10"):
+            print(f"orphan left for the owner: {k}")
+            continue
+        ds, table, fname = parts[1], parts[2], parts[3]
+        if reg.get(table, ("", ""))[1] != "build" or ds not in cats:
+            print(f"orphan not in a registry as built, left for the owner: {k}")
+            continue
+        url = f"r2://infraatlas-raw/{k}"
+        rows = con.execute(f"SELECT count(*) FROM read_parquet('{url}')").fetchone()[0]
+        cols = {
+            r[0]: r[1]
+            for r in con.execute(f"DESCRIBE SELECT * FROM read_parquet('{url}')").fetchall()
+        }
+        t = cats[ds].setdefault("tables", {}).setdefault(
+            table,
+            {"path": f"lake/{ds}/{table}/*.parquet", "partitions": [], "sort": [], "bloom": [], "rows": 0,
+             "bytes": 0, "columns": cols, "files": [], "file_stats": {}},
+        )  # fmt: skip
+        rel = f"{table}/{fname}"
+        if rel not in t["files"]:
+            t["files"].append(rel)
+        t.setdefault("file_stats", {})[rel] = [int(rows), int(o["bytes"])]
+        t["rows"] = sum(v[0] for v in t["file_stats"].values())
+        t["bytes"] = sum(v[1] for v in t["file_stats"].values())
+        changed.add(ds)
+        print(f"registered {k}: {rows:,} rows, {len(cols)} columns")
+    for ds in sorted(changed):
+        if dry:
+            print(f"dry run: catalogue lake/{ds} would be updated")
+            continue
+        f = tmp / f"{ds}_catalog.json"
+        f.write_text(json.dumps(cats[ds], indent=1, ensure_ascii=False), encoding="utf-8")
+        aws(
+            "s3", "cp", "--only-show-errors", str(f), f"s3://infraatlas-raw/lake/{ds}/_catalog.json"
+        )
+        print(f"catalogue lake/{ds} updated")
+
+
+def apply(dry: bool = False) -> None:
     plan = yaml.safe_load(DELETIONS.read_text(encoding="utf-8")) or {}
     items = [d for d in plan.get("delete", []) if d.get("approved")]
     raw = {o["key"]: o for o in list_objects("infraatlas-raw")}
@@ -270,9 +354,19 @@ def apply() -> None:
             if k not in raw:
                 print(f"gone already: {k}")
                 continue
-            aws("s3", "rm", "--only-show-errors", f"s3://infraatlas-raw/{k}")
+            if not dry:
+                aws("s3", "rm", "--only-show-errors", f"s3://infraatlas-raw/{k}")
             done[k.split("/")[1]].append(k)
-            print(f"deleted {k} ({raw[k]['bytes'] / 1e6:,.1f} MB): {d['reason']}")
+            print(
+                f"{'would delete' if dry else 'deleted'} {k} ({raw[k]['bytes'] / 1e6:,.1f} MB): {d['reason']}"
+            )
+    if dry:
+        total = sum(raw[k]["bytes"] for ks in done.values() for k in ks)
+        print(
+            f"dry run: {sum(len(v) for v in done.values())} objects, {total / 1e9:.3f} GB would go"
+        )
+        register({k: v for k, v in raw.items()}, cats, tmp, dry=True)
+        return
     # the catalogues forget the deleted files
     for ds, keys in done.items():
         c = cats.get(ds)
@@ -293,6 +387,7 @@ def apply() -> None:
             "s3", "cp", "--only-show-errors", str(f), f"s3://infraatlas-raw/lake/{ds}/_catalog.json"
         )
         print(f"catalogue lake/{ds} updated ({len(keys)} files dropped)")
+    register({k: v for k, v in raw.items() if not any(k in ks for ks in done.values())}, cats, tmp)
     rule = {
         "Rules": [
             {
@@ -324,12 +419,13 @@ def apply() -> None:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("action", choices=["audit", "apply"])
+    ap.add_argument("--dry-run", action="store_true", help="apply: print, change nothing")
     ap.add_argument("--out", type=Path, default=ROOT / "data" / "lake_audit.json")
     a = ap.parse_args()
     if a.action == "audit":
         audit(a.out)
     else:
-        apply()
+        apply(dry=a.dry_run)
 
 
 if __name__ == "__main__":
