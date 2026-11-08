@@ -676,10 +676,16 @@ def main() -> None:
     ap.add_argument("--json", default="/tmp/query-speed.json")
     ap.add_argument("--merge", default="", help="a directory of shard files: write the report")
     ap.add_argument("--unseen", type=int, default=200, help="generated queries in all (0 = none)")
+    ap.add_argument("--check", default="", help="a probe file to compare with the baseline (CI)")
+    ap.add_argument("--baseline", default=str(ROOT / "data" / "query_speed.json"))
+    ap.add_argument("--tolerance", type=float, default=0.2, help="allowed growth of warm p95")
+    ap.add_argument("--floor-ms", type=float, default=50.0, help="growth below this is noise")
     a = ap.parse_args()
     if a.merge:
         merge(Path(a.merge))
         return
+    if a.check:
+        sys.exit(check(Path(a.check), Path(a.baseline), a.tolerance, a.floor_ms))
     t0 = time.perf_counter()
     ctx, lake = open_backend()
     if hasattr(lake, "wait_hot"):  # Tier 1: measure with hot.duckdb attached (when it is on)
@@ -721,6 +727,34 @@ def main() -> None:
         rec["extras"] = run_extras(ctx)
     rec["seconds"] = round(time.perf_counter() - t0)
     out.write_text(json.dumps(rec), encoding="utf-8")
+
+
+def check(probe: Path, baseline: Path, tolerance: float, floor_ms: float) -> int:
+    """The CI speed check (brief 32 Step 6): each probed table's warm p95 against the baseline;
+    fails (1) when one grew by more than `tolerance` and by more than `floor_ms`."""
+    base = json.loads(baseline.read_text(encoding="utf-8"))["tables"]
+    now = json.loads(probe.read_text(encoding="utf-8"))["tables"]
+    print("| table | baseline warm p95 | now | change |\n|---|---:|---:|---:|")
+    bad = []
+    for t in now:
+        b = (base.get(t["table"]) or {}).get("warm_p95_ms")
+        n = t.get("warm_p95_ms")
+        if b is None or n is None:
+            print(f"| `{t['table']}` | {fmt(b)} | {fmt(n)} | not compared |")
+            continue
+        grew = n > b * (1 + tolerance) and n - b > floor_ms
+        print(
+            f"| `{t['table']}` | {fmt(b)} | {fmt(n)} | {(n - b) / b:+.0%}{' **slower**' if grew else ''} |"
+        )
+        if grew:
+            bad.append(t["table"])
+    if bad:
+        print(f"\nSlower than the baseline by more than {tolerance:.0%}: {', '.join(bad)}")
+        return 1
+    print(
+        f"\nNo table slower than the baseline by more than {tolerance:.0%} (and {floor_ms:.0f} ms)."
+    )
+    return 0
 
 
 def fmt(v: float | None) -> str:
