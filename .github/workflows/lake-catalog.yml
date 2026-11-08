@@ -22,6 +22,13 @@ on:
         type: choice
         options: [none, audit, dry-run, apply]
         default: none
+      rewrite:
+        description: "Brief 32 Tier 2 instead of the catalogue: inspect, breaches, or a space-separated list of dataset.table"
+        default: ""
+      rewrite_upload:
+        description: "Rewrite: replace the files on R2 (only after equal checksums)"
+        type: boolean
+        default: false
   push:
     branches: [main]
     paths: [.github/workflows/lake-catalog.yml, scripts/lake_catalog.py, scripts/probe_pudl.py]
@@ -31,7 +38,7 @@ permissions:
 
 jobs:
   catalog:
-    if: github.event_name != 'workflow_dispatch' || inputs.storage == 'none'
+    if: github.event_name != 'workflow_dispatch' || (inputs.storage == 'none' && inputs.rewrite == '')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -87,6 +94,39 @@ jobs:
               except duckdb.Error as e:
                   print(f"`{sql}` failed: {str(e)[:200]}\n")
           PY
+
+  # brief 32 Tier 2 (scripts/lake_rewrite.py): row groups, Hilbert order, bbox; by hand only
+  rewrite:
+    if: github.event_name == 'workflow_dispatch' && inputs.rewrite != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: ${{ inputs.rewrite }}
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WHAT: ${{ inputs.rewrite }}
+        run: |
+          pip install duckdb
+          export R2_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" R2_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+          up=""; [ "${{ inputs.rewrite_upload }}" = "true" ] && up="--upload"
+          set -o pipefail
+          case "$WHAT" in
+            inspect) python scripts/lake_rewrite.py inspect | tee rewrite.md ;;
+            breaches) python scripts/lake_rewrite.py rewrite --breaches $up | tee rewrite.md ;;
+            *) python scripts/lake_rewrite.py rewrite --tables $WHAT $up | tee rewrite.md ;;
+          esac
+          cat rewrite.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: lake-rewrite, path: "data/lake_rowgroups.json\nrewrite.md", if-no-files-found: ignore}
 
   # brief 32 Tier 1 (scripts/build_hot.py): hot.duckdb after each catalogue
   hot:
