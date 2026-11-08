@@ -30,6 +30,7 @@ measures the app tables only.
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import json
 import re
@@ -155,18 +156,23 @@ class Http:
     def since(self, t: Any) -> dict[str, int | None]:
         if not self.on or t is None:
             return {"bytes": None, "gets": None, "heads": None}
-        r = (
-            self.lake.cursor()
-            .execute(
+        cur = self.lake.cursor()
+        try:
+            r = cur.execute(
                 "SELECT coalesce(sum(CASE WHEN request.type = 'GET' THEN "
                 "TRY_CAST(response.headers['Content-Length'] AS BIGINT) END), 0), "
                 "count(*) FILTER (request.type = 'GET'), count(*) FILTER (request.type = 'HEAD') "
                 "FROM duckdb_logs_parsed('HTTP') WHERE timestamp >= ?::TIMESTAMPTZ",
                 [t],
-            )
-            .fetchone()
-        )
-        return {"bytes": int(r[0]), "gets": int(r[1]), "heads": int(r[2])}
+            ).fetchone()
+            out = {"bytes": int(r[0]), "gets": int(r[1]), "heads": int(r[2])}
+        except Exception:  # noqa: BLE001 - a failed log read loses this query's bytes only
+            out = {"bytes": None, "gets": None, "heads": None}
+        # The log grows with every request; left alone it filled the 1.8 GB memory limit
+        # over a shard (run 42494318569). Each query is measured on its own, so clear it.
+        with contextlib.suppress(Exception):  # an older DuckDB without the call
+            cur.execute("CALL truncate_duckdb_logs()")
+        return out
 
 
 def open_backend() -> tuple[Any, Any]:
