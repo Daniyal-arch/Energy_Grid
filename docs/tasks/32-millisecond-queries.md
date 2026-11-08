@@ -22,6 +22,41 @@ of gigabytes cannot finish in milliseconds. So the design is tiered: answer from
 the answer can be prepared; read the fewest bytes possible when it cannot; measure every
 dataset and report the ones that miss, with the reason.
 
+## How any question gets fast (this is not a question cache)
+
+Users can ask anything, so questions are never cached as questions. Every question reduces to
+a few data operations:
+
+- filter by place (any area, including a drawn polygon);
+- filter by attribute (kind, status, year);
+- aggregate (sum, count, top N);
+- join.
+
+The work is to make those operations fast on every dataset. The model still plans and writes
+the SQL; prepared answers (Tier 0) cover only the fixed questions (the area card, the `quick`
+templates).
+
+**Exact sums for any area: interior cells plus boundary rows.** For an arbitrary area:
+
+- cover it with H3 cells;
+- take the stored rollups of the cells that lie wholly inside;
+- read detail rows only for the cells that cross the boundary, filtered exactly with
+  `in_area`.
+
+The sum equals a full row-level sum (a test checks this on many areas and datasets) at a
+fraction of the bytes. A rollup alone (cells whose centre lies inside) is not exact; use it
+only when the answer is labelled with that method.
+
+**Unseen questions.** The data layer must be fast for queries nobody prepared. Step 1 and the
+done-check include a benchmark of 200 generated queries that match no template:
+
+- random datasets;
+- random areas, drawn polygons among them;
+- random filters and aggregations;
+- the result cache switched off.
+
+Its p50 and p95 are reported apart from the prepared and cached paths.
+
 ## Start
 
 - Start from `main` (PR #19, brief 30 and brief 31, was merged on 2026-11-08).
@@ -160,6 +195,9 @@ Lambda-sized container (2 vCPU, 3,008 MB) against the real lake.
   - Tier 2 city or region p50 under 300 ms and p95 under 1 s warm;
   - `quick` and `resolve_area` p95 under 100 ms warm;
   - each miss explained.
+- The unseen-query benchmark (200 generated queries, cache off): p50 and p95 before and after,
+  reported apart from the prepared and cached paths.
+- The interior-plus-boundary sums equal full row-level sums in the tests.
 - Every rewritten file has the same rows and checksums as before.
 - The MaStR 2026-10-13 snapshot deleted, and the orphans resolved.
 - Lossless recompression applied where it saves space; lossy options written as an owner
