@@ -75,6 +75,10 @@ def sort_of(cols: dict[str, str]) -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--max-mb", type=float, default=50.0)
+    # rows matter more than Parquet bytes: a 20 MB file of 50 M repetitive rows is GBs in DuckDB
+    ap.add_argument("--max-rows", type=int, default=1_000_000)
+    # the Lambda's /tmp is 2,048 MB (deploy/template.yaml); the file must leave room for the rest
+    ap.add_argument("--budget-mb", type=float, default=1_200.0)
     ap.add_argument("--out", type=Path, default=Path("hot.duckdb"))
     ap.add_argument("--upload", action="store_true")
     a = ap.parse_args()
@@ -91,7 +95,9 @@ def main() -> None:
     for ds, d in sorted((cat.get("datasets") or {}).items()):
         for t, info in sorted((d.get("tables") or {}).items()):
             full = f"{ds}.{t}"
-            small = (info.get("bytes") or 0) <= a.max_mb * 1e6
+            small = (info.get("bytes") or 0) <= a.max_mb * 1e6 and (
+                info.get("rows") or 0
+            ) <= a.max_rows
             if ds in ALWAYS or full in NAME_INDEX or (small and ds != "outlines"):
                 chosen.append((ds, t, info))
     a.out.unlink(missing_ok=True)
@@ -176,6 +182,10 @@ def main() -> None:
     print(
         f"hot.duckdb: {n_ok} tables, {n_rows:,} rows, {size / 1e6:,.0f} MB in {time.time() - t0:.0f} s"
     )
+    if size > a.budget_mb * 1e6:
+        raise SystemExit(
+            f"hot.duckdb is {size / 1e6:,.0f} MB, above the {a.budget_mb:,.0f} MB budget: not uploaded"
+        )
     if a.upload:
         acct = os.environ.get("CLOUDFLARE_ACCOUNT_ID") or lake.ACCOUNT_ID
         subprocess.run(
