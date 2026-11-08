@@ -27,6 +27,7 @@ Read this first, then only the notes your task needs (`.claude/skills/atlas-vaul
 - [[wave9]]: the wave 9 registry, build, render and customer tasks (brief 28).
 - [[wave10]]: wave 10 (brief 29), hundreds of Eurostat, WDI and GB district series on the generic wave machinery.
 - [[freshness]]: refresh cadences, as-of dates, the weekly due list.
+- [[zoning]]: zoning and land-use plans (EU, UK, US): sources, harmonised classes, plan documents, discovery.
 - [[coverage-and-gaps]]: what each dataset covers, known gaps, keys still missing.
 
 ## Backend

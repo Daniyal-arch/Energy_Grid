@@ -1737,6 +1737,32 @@ Pollution Inventory 2024 (England, 31,384 releases from 2,870 permits; EA condit
 which allows commercial use with the attribution "Contains Environment Agency information ©
 Environment Agency and/or database right"); points moved from British National Grid.
 
+## Zoning and land-use plans (`scripts/build_zoning.py`, lake `zoning/*`)
+
+Zones of statutory land-use plans and planning designations, for the agent (no map layer yet).
+Table `zones`, one partition per source; every row keeps the source's own zone code and label
+(`zone_code`, `zone_label`), its plan (`plan_id`, `plan_name`, `plan_status`, `adopted` as the
+source writes it), the document link (`doc_url`) and all source attributes verbatim
+(`attributes`, JSON). `class` is a harmonised use class from a lookup of each source's own code
+list (`CLASSES` in the script, listed below); codes the lookup does not name stay `other`.
+Geometry as the publisher's service returns it in EPSG:4326; invalid rings repaired with
+`ST_MakeValid`; rows without geometry kept.
+
+| source | publisher, service | rows (2026-11-08) | class from | licence |
+|---|---|---:|---|---|
+| `fr_gpu` | Géoportail de l'Urbanisme (IGN), WFS `wfs_du:zone_urba` | 1,345,010 (service count) | CNIG `typezone`: U urban, AU to be urbanised, A agricultural, N natural | Licence Ouverte 2.0 |
+| `ie_myplan` | MyPlan, Department of Housing, ArcGIS `GZT_Current_Plan`, `GZT_Expired_Plan` | 124,473 | Generalised Zoning Types (R, C, M, G, N, P, S, O codes) | CC BY 4.0 |
+| `dk_plandata` | Plandata.dk, WFS: adopted kommuneplanrammer, lokalplaner, solar and wind lokalplaner | 50,608 frames + 38,080 + 285 + 608 local plans (service counts) | `anvgen` (11 housing ... 91 rural) | Plandata terms |
+| `fi_helsinki` | City of Helsinki, Kaavahakemisto plans in force | 4,393 | none (plan outlines) | CC BY 4.0 |
+| `us_ca` | California Statewide Zoning (OLUCI), ArcGIS North and South | 568,741 (service counts) | publisher's `ucd_description` | none stated (owner question 9) |
+| `gb_england` | planning.data.gov.uk bulk CSV: green belt, conservation area, article 4 direction area, brownfield land | 58,856 (brownfield sites as points; 3,022 rows have no geometry) | `designation` | OGL 3.0 |
+
+Plan documents (`scripts/zoning_documents.py`): `documents` (one row per PDF: url, plan, bytes,
+SHA-256, pages, private R2 key under `infraatlas-raw/zoning-docs/`) and `document_pages` (page
+text as the PDF holds it; pages without a text layer stay empty). Only a sample of 25 PDFs per
+source until owner question 8 is answered. Sources found and still to build, the discovery
+method and the blocked ones: `docs/research/zoning.md`.
+
 ## Notes
 
 - ENTSO-E allows 400 requests a minute; the scripts ask four at a time. A full snapshot

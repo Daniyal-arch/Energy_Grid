@@ -155,3 +155,40 @@ sourced values, which CLAUDE.md does not allow without the owner.
 2. Convert, and keep the original float32 in a cold archive outside the lake.
 3. Keep everything as it is. The population float32 options save too little to be worth a
    change either way; recommended: keep them.
+
+## 8. Zoning: plan documents (PDFs) to keep (2026-11-08, zoning request)
+
+**Decision.** The zoning lake (`scripts/build_zoning.py`, `lake/zoning/zones`) keeps every
+zone with its document link. `scripts/zoning_documents.py` measures the linked files and keeps
+a sample of 25 PDFs per source privately on R2 (`infraatlas-raw/zoning-docs/`), with their page
+text in `zoning.document_pages` for the agent. Sample measured on 2026-11-08 (20 links a source):
+
+| source | linked files | mean size | projected total |
+|---|---:|---:|---:|
+| Denmark Plandata (one PDF per local plan or frame) | 6,718 in the test slice; about 45,000 plans in all | 25.8 MB | about 1.2 TB for all plans |
+| England (conservation area appraisals) | 5,945 | 2.7 MB | 16 GB |
+| France GPU (plan files: report, regulation, annexes) | 12,903 documents, several files each | 0.2 to 1.5 MB | to measure on the full run |
+
+**Why it is a question.** All of it is a large download (rule 4) and a storage cost: about
+1.2 TB at $0.015 per GB-month is about $18 a month for Denmark alone. The text, which the agent
+needs, is far smaller than the PDFs (one 22 MB Danish plan gave 1,011 pages of text).
+
+**Options.**
+1. Keep the text of every document, and the PDF only for a sample; the agent cites the
+   publisher's link for the PDF itself. Recommended: full-text search everywhere, small storage.
+2. Keep every PDF and its text (about 1.3 TB to start).
+3. Text only for the regulation documents (France `reglement`, Denmark local plans), none for
+   reports and annexes.
+
+## 9. Zoning: sources with no licence or no scripted download (2026-11-08)
+
+- **California Statewide Zoning** (Office of Land Use and Climate Innovation): public
+  access, no licence stated. In the lake, private; may it be shown on the public map?
+- **National Zoning Atlas** (US, about 10 states): the S3 bucket is gone and mercatus.org
+  refuses scripted downloads (HTTP 403). Options: the owner downloads the state ZIPs by hand
+  into R2 (`infraatlas-raw/zoning-raw/zoning-atlas/`), or the state teams are asked for files.
+- **PDF-only plan maps** (Wales, Northern Ireland, many Italian, Portuguese and Greek
+  municipalities): turning a scanned map into polygons needs control points and hand tracing,
+  which is an estimate of position. Options: leave these as documents with text only
+  (recommended), or georeference a named list of plans and label them "digitised from the PDF
+  map".
