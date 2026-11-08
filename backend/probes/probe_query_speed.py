@@ -235,12 +235,17 @@ def plan(table: str, cols: list[tuple[str, str]], area_ids: dict[str, str]) -> l
         geom_expr = f"ST_GeomFromWKB({q(geom)})" if "BLOB" in types[geom] else None
     else:
         geom_expr = q(geom) if geom else None
+
+    # coordinates stored as text are cast (the Tier 2 rewrite types them; see the report)
+    def num(c: str) -> str:
+        return q(c) if types[c].startswith(NUMERIC) else f"TRY_CAST({q(c)} AS DOUBLE)"
+
     for level in ("city", "region", "country"):
         aid = area_ids.get(level)
         if not aid:
             continue
         if lon and lat:
-            where = f"in_area({q(lon)}, {q(lat)}, '{aid}')"
+            where = f"in_area({num(lon)}, {num(lat)}, '{aid}')"
         elif geom_expr:
             where = f"intersects_area({geom_expr}, '{aid}')"
         else:
@@ -324,6 +329,12 @@ def probe_table(
         ids.update(areas["countries"][own])
     t_start = time.perf_counter()
     rec: dict[str, Any] = {"table": table, "columns": len(cols), "queries": []}
+    pos = {
+        c.lower(): t.upper()
+        for c, t in cols
+        if c.lower() in ("lon", "lat", "longitude", "latitude")
+    }
+    rec["text_coordinates"] = any(t.startswith("VARCHAR") for t in pos.values())
     for item in plan(table, cols, ids):
         if time.perf_counter() - t_start > TABLE_BUDGET_S:
             rec["queries"].append({"query": item["query"], "skipped": "table time budget"})
@@ -376,6 +387,10 @@ def probe_table(
 
 
 def summarise(rec: dict[str, Any]) -> dict[str, Any]:
+    for x in rec["queries"]:  # the licence guard refusing row-level reads is expected
+        if "is licensed" in (x.get("error") or ""):
+            x["refused"], x["error"] = x["error"][:160], ""
+            x["cold_ms"] = None
     qs = [x for x in rec["queries"] if x.get("cold_ms") is not None and not x.get("error")]
     cold = [x["cold_ms"] for x in qs]
     warm = [statistics.median(x["warm_ms"]) for x in qs if x.get("warm_ms")]
@@ -388,6 +403,7 @@ def summarise(rec: dict[str, Any]) -> dict[str, Any]:
             "bytes_cold": sum(x.get("bytes_cold") or 0 for x in qs),
             "gets_cold": sum(x.get("gets_cold") or 0 for x in qs),
             "errors": [x["query"] + ": " + x["error"] for x in rec["queries"] if x.get("error")],
+            "refused": [x["query"] for x in rec["queries"] if x.get("refused")],
         }
     )
     return rec
