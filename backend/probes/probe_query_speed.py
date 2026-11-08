@@ -598,6 +598,7 @@ def run_extras(ctx: Any) -> dict[str, Any]:
             r = quick(ctx, tpl, area, **kw)
             times.append(time.perf_counter() - t0)
             err = (r.get("data") or {}).get("error", "") if isinstance(r.get("data"), dict) else ""
+        data = r.get("data") if isinstance(r.get("data"), dict) else {}
         out["quick"].append(
             {
                 "template": tpl,
@@ -605,8 +606,27 @@ def run_extras(ctx: Any) -> dict[str, Any]:
                 "cold_ms": ms(times[0]),
                 "warm_ms": [ms(x) for x in times[1:]],
                 "error": err,
+                "prepared": bool(data.get("prepared")),  # served by Tier 0
             }
         )
+    # why Tier 0 does or does not answer (brief 32): the service's state, not a guess
+    from tools import prepared as prep
+
+    diag: dict[str, Any] = {
+        "hot_ready": bool(ctx.lake.hot_state.get("ready")),
+        "in_hot": "prepared.answers" in ctx.lake.hot_tables,
+        "fingerprint_now": prep.fingerprint(ctx),
+    }
+    try:
+        diag["fingerprints_stored"] = [
+            list(r) for r in ctx.lake.cursor().execute(
+                "SELECT fingerprint, count(*) FROM prepared.answers GROUP BY 1"
+            ).fetchall()
+        ]  # fmt: skip
+    except Exception as e:  # noqa: BLE001
+        diag["fingerprints_stored"] = f"{type(e).__name__}: {str(e)[:160]}"
+    out["prepared_diag"] = diag
+    print("prepared:", json.dumps(diag), flush=True)
     from tools import areas as areas_mod
 
     for name, level in RESOLVE_NAMES:
@@ -885,11 +905,14 @@ def merge(d: Path) -> None:
                 r.get("error")
                 or (f"status {r['status']}" if key == "routes" else "")
                 or ("" if r.get("ok", True) else "not resolved")
+                or ("prepared (Tier 0)" if r.get("prepared") else "")
             )
             lines.append(
                 f"| {label} | {fmt(r.get('cold_ms'))} | {fmt(pct(r.get('warm_ms', []), 50))} | {note} |"
             )
         lines.append("")
+        if key == "quick" and extras.get("prepared_diag"):
+            lines += [f"Tier 0 state: `{json.dumps(extras['prepared_diag'])}`", ""]
     slow = sorted(tables, key=lambda t: -(t.get("cold_p95_ms") or 0))
     lines += [
         "### Every table (slowest cold p95 first)",
