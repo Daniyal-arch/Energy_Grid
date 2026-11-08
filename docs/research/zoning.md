@@ -56,9 +56,12 @@ stay `other` with the source label kept.
 | Italy, Lombardy | PGT "Tavola delle previsioni" (all comuni, SIT integrato), Geoportale della Lombardia | WMS / WFS; GeoPackage download to check | Municipalities upload to one regional schema. |
 | Estonia | Maa-amet "Digital layers of plans" (planeeringud), public detailed plans | WMS (WFS to check) | National register; Latvia (TAPIS) and Lithuania (TPDRIS) to probe. |
 | Latvia | TAPIS (`tapis.gov.lv`): functional zoning (`funkcionālais zonējums`) structured nationally by regulation 392 | WMS/WFS planned per the ministry; to probe | National schema for every municipal plan. |
-| US (bulk) | Zoning Atlas data bucket `statezoningatlasdata.s3.amazonaws.com/index.html`; Mercatus mirror; data dictionary (Mercatus 2024) | GeoJSON, XLS/CSV per state | Codes explained per state index on GitHub `zoningatlas`. |
-| US, California | California Statewide Zoning (north, south; data.ca.gov) | GeoJSON / shapefile | Statewide compilation of local zoning. |
+| US (bulk) | National Zoning Atlas: Mercatus downloads (Colorado Denver 2025, Hawaii, Massachusetts, Montana, New Hampshire 2023, Long Island CSV, Middle Tennessee, Texas DFW 2024, Hampton Roads, Northern Virginia); data dictionary (Mercatus 2024) | ZIP (GeoJSON), CSV | **Blocked**: the S3 bucket `statezoningatlasdata` no longer exists (NoSuchBucket, 2026-11-08); mercatus.org answers HTTP 403 to scripted downloads. Needs a manual download by the owner into R2, or the teams' own files. |
+| US, California | California Statewide Zoning, Office of Land Use and Climate Innovation: ArcGIS `services8.arcgis.com/Xr1lDrwMv89PhjD9/.../California_Statewide_Zoning_South/FeatureServer/0` (304,324 zones) and `..._North/FeatureServer/1` (264,417); GeoPackage and shapefile via `gis.data.ca.gov/api/download/v1/items/<id>/geoPackage` | FeatureServer, GPKG | 535 of 539 jurisdictions; local code and description plus a harmonised class (`ucd_number`, `ucd_description`, `New_Class`); PDF maps were georeferenced by the publisher. No licence stated (public access, informational): owner question. |
 | Germany, NRW | Windenergiebereiche der Regionalplanung NRW (LANUK, `ckan.open.nrw.de` dataset de7e9cff-...) | shapefile / WFS | Regional plans in force (Arnsberg, Detmold, Düsseldorf, Köln, Münster); 1:50,000, generalised. |
+| Austria, Upper Austria | Flächenwidmung (DORIS), shapefile ZIP at `e-gov.ooe.gv.at`, WFS and WMS | shapefile, WFS | Open government data. |
+| Austria, Styria | Flächenwidmungspläne, `data.steiermark.at` (Geographie und Planung) | shapefile | CC BY 4.0 AT; legal plan only at the municipality. Lower Austria: NÖ Atlas view only (to probe); Salzburg INSPIRE download (to probe). |
+| Poland (national view) | KIMPZP, the national integration of MPZP (WMS via geoportal.gov.pl, EPSG:2180); APP datasets per gmina | WMS GetFeatureInfo; GML per gmina | Vector only per gmina (APP); city open data such as Kielce. |
 | EU | Renewables acceleration areas (RED III) | per member state | No consolidated download; Oeko-Institut 2025 follow-up covers 10 member states' progress. |
 
 ## Still to research
@@ -67,3 +70,15 @@ Spanish regional planning portals, Italy (regional PRG / PUC geoportals), Belgiu
 Portugal (SNIT, PDM), Northern Ireland (Department for Infrastructure area plans),
 Sweden, Finland, the Baltics, the rest; US states with statewide zoning layers (Massachusetts,
 Connecticut, Wisconsin), and the largest cities' zoning portals.
+
+## Probe results (2026-11-08, `scripts/probe_zoning.py`)
+
+| Source | Answer | Size | What a zone carries |
+|---|---|---|---|
+| France GPU `zone-urba` | 200 | Paris PLU 1,153 zones | `libelle` (code), `libelong` (label), `typezone` (U, AU, A, N), `idurba`, `datappro`, `urlfic` (regulation file), `destdomi` |
+| Denmark plandata `theme_pdk_kommuneplanramme_vedtaget_v` | 200 | 50,608 frames (adopted) | general and specific use (`anvgen`, `anvspec1..10`), building percentage, heights; 211 feature types incl. lokalplaner |
+| Helsinki `avoindata` WFS | 200 | 303 feature types | `Kaavahakemisto_alue_kaava_voimassa` (plans in force), underground plans, pending |
+| England planning.data.gov.uk bulk CSV | 206 | green belt 33 MB, conservation area 50 MB, article 4 24 MB, brownfield 22 MB | WKT `geometry`, `reference`, `organisation`, `document-url`, dates |
+| California statewide zoning | 200 | 304,324 + 264,417 zones | local code, description, harmonised class |
+| National Zoning Atlas | 404 / 403 | | blocked (above) |
+| Ireland MyPlan ArcGIS (`maps.housing.gov.ie`) | no answer from this container | | hub `data-housinggovie.opendata.arcgis.com` answers; download through the hub |
