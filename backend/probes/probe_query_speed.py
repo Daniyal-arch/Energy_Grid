@@ -415,6 +415,23 @@ def summarise(rec: dict[str, Any]) -> dict[str, Any]:
     return rec
 
 
+def warm_area_cells(ctx: Any, areas: dict[str, Any]) -> None:
+    """Build the probe areas' H3 cells before timing anything: a cell build runs in the
+    background and, in a 2-CPU container, slowed whichever queries ran beside it (~220 ms on a
+    different table each run). The service reaches the same state after an area's first query."""
+    from tools.sql import query_areas
+
+    ids = sorted({v for d in [areas["default"], *areas["countries"].values()]
+                  for k, v in d.items() if v and v.startswith("a_")})  # fmt: skip
+    recs = query_areas(ctx, " ".join(f"'{i}'" for i in ids))
+    if not recs or not hasattr(ctx.lake, "wait_area_cells"):
+        return
+    t0 = time.perf_counter()
+    ctx.lake.run("SELECT 1", guard=False, areas=recs)
+    ctx.lake.wait_area_cells([r["area_id"] for r in recs], 600)
+    print(f"cells of {len(recs)} probe areas built in {time.perf_counter() - t0:.1f} s", flush=True)
+
+
 def areas_for_probe(ctx: Any) -> dict[str, Any]:
     from tools.areas import resolve_area
 
@@ -740,6 +757,7 @@ def main() -> None:
     names = sorted(t for t in cols if not a.only or re.search(a.only, t))
     mine = names[a.shard :: a.shards]
     areas = areas_for_probe(ctx)
+    warm_area_cells(ctx, areas)
     rec: dict[str, Any] = {
         "probed": datetime.now(UTC).isoformat(timespec="seconds"),
         "lake_mode": getattr(lake, "lake_mode", ""),
