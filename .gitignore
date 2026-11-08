@@ -23,6 +23,7 @@ data/*
 !data/lake_audit.json
 !data/query_speed.json
 !data/lake_rowgroups.json
+!data/raster_recompress.json
 !data/coverage.yaml
 !data/dark_evidence.yaml
 !data/wave9_probes.json

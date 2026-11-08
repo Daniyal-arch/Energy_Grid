@@ -29,6 +29,14 @@ on:
         description: "Rewrite: replace the files on R2 (only after equal checksums)"
         type: boolean
         default: false
+      rasters:
+        description: "Brief 32 Step 5 instead of the catalogue: test (sizes, identity, lossy options) or apply (bit-identical only)"
+        type: choice
+        options: [none, test, apply]
+        default: none
+      raster_keys:
+        description: "Raster keys (space-separated; empty = the default list in scripts/raster_recompress.py)"
+        default: ""
   push:
     branches: [main]
     paths: [.github/workflows/lake-catalog.yml, scripts/lake_catalog.py, scripts/probe_pudl.py]
@@ -38,7 +46,7 @@ permissions:
 
 jobs:
   catalog:
-    if: github.event_name != 'workflow_dispatch' || (inputs.storage == 'none' && inputs.rewrite == '')
+    if: github.event_name != 'workflow_dispatch' || (inputs.storage == 'none' && inputs.rewrite == '' && inputs.rasters == 'none')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -127,6 +135,36 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: {name: lake-rewrite, path: "data/lake_rowgroups.json\nrewrite.md", if-no-files-found: ignore}
+
+  # brief 32 Step 5 (scripts/raster_recompress.py): lossless recompression, lossy options measured
+  rasters:
+    if: github.event_name == 'workflow_dispatch' && inputs.rasters != 'none'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - name: Free disk (the wind raster is 14 GB)
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL && df -h /
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q gdal-bin && pip install rasterio numpy
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: ${{ inputs.rasters }}
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          KEYS: ${{ inputs.raster_keys }}
+        run: |
+          set -o pipefail
+          args="${{ inputs.rasters }}"; [ -n "$KEYS" ] && args="$args --keys $KEYS"
+          python scripts/raster_recompress.py $args | tee rasters.md
+          grep -v '^{' rasters.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: rasters, path: "data/raster_recompress.json\nrasters.md", if-no-files-found: ignore}
 
   # brief 32 Tier 1 (scripts/build_hot.py): hot.duckdb after each catalogue
   hot:
