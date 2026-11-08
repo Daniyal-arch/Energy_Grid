@@ -355,6 +355,28 @@ def select_sql(source: str, path: Path) -> str:
     )
 
 
+def make_valid(con: duckdb.DuckDBPyConnection, s: str) -> None:
+    """Repair invalid geometries; a geometry GEOS cannot repair is kept as published."""
+    fix = "ST_MakeValid(ST_Force2D(geometry))"
+    try:
+        con.execute(f"UPDATE z SET geometry = {fix} WHERE NOT ST_IsValid(geometry)")
+        return
+    except duckdb.Error:
+        pass
+    ids = [
+        r[0] for r in con.execute("SELECT rowid FROM z WHERE NOT ST_IsValid(geometry)").fetchall()
+    ]
+    kept = 0
+    for i in ids:
+        try:
+            con.execute(f"UPDATE z SET geometry = {fix} WHERE rowid = ?", [i])
+        except duckdb.Error:
+            kept += 1
+    print(
+        f"  {s}: {len(ids):,} invalid geometries, {kept:,} kept as published (GEOS cannot repair)"
+    )
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("sources", nargs="+", choices=list(SOURCES))
@@ -376,9 +398,7 @@ def main() -> None:
             if args.upload:
                 lake.pull_catalog()
             con.execute(f"CREATE OR REPLACE TABLE z AS {select_sql(s, raw)}")
-            con.execute(
-                "UPDATE z SET geometry = ST_MakeValid(geometry) WHERE NOT ST_IsValid(geometry)"
-            )
+            make_valid(con, s)
             n, nogeo = con.execute(
                 "SELECT count(*), count(*) FILTER (WHERE geometry IS NULL) FROM z"
             ).fetchone()  # type: ignore[misc]
