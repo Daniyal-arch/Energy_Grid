@@ -37,13 +37,15 @@ import rasterio
 from rasterio.windows import Window
 
 BUCKET = "infraatlas-raw"
+# smallest first, so results arrive before the 14 GB wind raster (run it on its own: --keys)
 DEFAULT_KEYS = [
-    "lake/atlas/atlas-wind100.tif",
-    "lake/rasters/worldcover_1km_shares.tif",
-    "lake/rasters/slope_1km_shares.tif",
-    "lake/rasters/ghsl_pop_e2025_30ss.tif",
     "lake/rasters/ghsl_pop_e2025_3ss/R6_C10.tif",
+    "lake/rasters/ghsl_pop_e2025_30ss.tif",
+    "lake/rasters/slope_1km_shares.tif",
+    "lake/rasters/worldcover_1km_shares.tif",
 ]
+# ZSTD 22 on one thread did not finish the 14 GB wind raster in 5 hours; 15 on every core
+ZSTD_LEVEL = 15
 WORK = Path("/tmp/rasters")
 
 
@@ -84,11 +86,11 @@ def lossy(src: Path, kind: str) -> dict[str, Any]:
     out = WORK / f"lossy_{kind}.tif"
     if kind == "wind_int16":
         subprocess.run(["gdal_translate", "-q", "-of", "COG", "-ot", "Int16", "-scale", "0", "327.67", "0", "32767",
-                        "-a_scale", "0.01", "-co", "COMPRESS=ZSTD", "-co", "PREDICTOR=2", "-co", "LEVEL=22",
+                        "-a_scale", "0.01", "-co", "COMPRESS=ZSTD", "-co", "PREDICTOR=2", "-co", f"LEVEL={ZSTD_LEVEL}", "-co", "NUM_THREADS=ALL_CPUS",
                         str(src), str(out)], check=True)  # fmt: skip
     else:
         subprocess.run(["gdal_translate", "-q", "-of", "COG", "-ot", "Float32", "-co", "COMPRESS=ZSTD",
-                        "-co", "PREDICTOR=3", "-co", "LEVEL=22", str(src), str(out)], check=True)  # fmt: skip
+                        "-co", "PREDICTOR=3", "-co", f"LEVEL={ZSTD_LEVEL}", "-co", "NUM_THREADS=ALL_CPUS", str(src), str(out)], check=True)  # fmt: skip
     worst = 0.0
     with rasterio.open(src) as a, rasterio.open(out) as b:
         scale = b.scales[0] if kind == "wind_int16" else 1.0
@@ -141,11 +143,17 @@ def test(keys: list[str], out: Path) -> None:
         cands = {
             "zstd22": [
                 "COMPRESS=ZSTD",
-                "LEVEL=22",
+                f"LEVEL={ZSTD_LEVEL}",
                 f"PREDICTOR={3 if is_float else 2}",
+                "NUM_THREADS=ALL_CPUS",
                 "BIGTIFF=IF_SAFER",
             ],
-            "lerc0_zstd": ["COMPRESS=LERC_ZSTD", "MAX_Z_ERROR=0", "BIGTIFF=IF_SAFER"],
+            "lerc0_zstd": [
+                "COMPRESS=LERC_ZSTD",
+                "MAX_Z_ERROR=0",
+                "NUM_THREADS=ALL_CPUS",
+                "BIGTIFF=IF_SAFER",
+            ],
         }
         rec["candidates"] = {}
         for name, opts in cands.items():
@@ -165,6 +173,9 @@ def test(keys: list[str], out: Path) -> None:
         src.unlink()
         res.append(rec)
         print(json.dumps(rec), flush=True)
+        out.write_text(
+            json.dumps(res, indent=1) + "\n", encoding="utf-8"
+        )  # kept if a later key times out
     out.write_text(json.dumps(res, indent=1) + "\n", encoding="utf-8")
     print(
         "| raster | GB | type | now | zstd22 (identical) | lerc0 (identical) |\n|---|---:|---|---|---|---|"
@@ -200,11 +211,17 @@ def apply(keys: list[str]) -> None:
         for name, opts in {
             "zstd22": [
                 "COMPRESS=ZSTD",
-                "LEVEL=22",
+                f"LEVEL={ZSTD_LEVEL}",
                 f"PREDICTOR={3 if is_float else 2}",
+                "NUM_THREADS=ALL_CPUS",
                 "BIGTIFF=IF_SAFER",
             ],
-            "lerc0_zstd": ["COMPRESS=LERC_ZSTD", "MAX_Z_ERROR=0", "BIGTIFF=IF_SAFER"],
+            "lerc0_zstd": [
+                "COMPRESS=LERC_ZSTD",
+                "MAX_Z_ERROR=0",
+                "NUM_THREADS=ALL_CPUS",
+                "BIGTIFF=IF_SAFER",
+            ],
         }.items():
             dst = WORK / f"{name}.tif"
             translate(src, dst, opts)
