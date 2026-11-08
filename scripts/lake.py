@@ -315,6 +315,17 @@ def merge_catalogs(parts: list[dict]) -> dict:
 
 
 def wrangler(*args: str) -> bool:
+    """`wrangler r2 object get|put <bucket/key> --file <path>`; over R2's S3 API with `aws s3 cp`
+    when scripts/r2_creds.sh has set the S3 keys (wrangler answered "bucket does not exist"
+    for uploads on 2026-11-08, and S3 takes files of any size)."""
+    aws = shutil.which("aws")
+    if aws and os.environ.get("AWS_ACCESS_KEY_ID") and args[:2] == ("r2", "object"):
+        op, key, path = args[2], args[3], args[args.index("--file") + 1]
+        account = os.environ.get("CLOUDFLARE_ACCOUNT_ID") or ACCOUNT_ID
+        src, dst = (f"s3://{key}", path) if op == "get" else (path, f"s3://{key}")
+        cmd = [aws, "s3", "cp", "--only-show-errors", "--endpoint-url",
+               f"https://{account}.r2.cloudflarestorage.com", src, dst]  # fmt: skip
+        return subprocess.run(cmd, check=False, stdin=subprocess.DEVNULL).returncode == 0
     npx = shutil.which("npx")
     if not npx:
         raise SystemExit("npx (Node.js) is needed for R2")
