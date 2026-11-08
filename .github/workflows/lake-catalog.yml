@@ -88,6 +88,30 @@ jobs:
                   print(f"`{sql}` failed: {str(e)[:200]}\n")
           PY
 
+  # brief 32 Tier 1 (scripts/build_hot.py): hot.duckdb after each catalogue
+  hot:
+    needs: catalog
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Build and upload hot.duckdb
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb
+          export R2_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" R2_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+          set -o pipefail
+          python scripts/build_hot.py --upload | tee hot.txt
+          tail -n 1 hot.txt >> "$GITHUB_STEP_SUMMARY"
+
   pudl:
     if: ${{ inputs.pudl || github.event_name == 'push' }}
     runs-on: ubuntu-latest
