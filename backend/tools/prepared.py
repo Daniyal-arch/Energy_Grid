@@ -4,7 +4,7 @@ read before any query runs.
 
 An answer is stored per area id (the hash of the area's outline, the same for every way the
 area is resolved) and template key, with its build time and a fingerprint of the data it was
-computed from (the app tables' retrieval dates and the lake catalogue's date). It is served only
+computed from (the app tables' sources and retrieval dates). It is served only
 while the fingerprint matches the data this service holds, so a new deploy or a new lake never
 serves an old figure; otherwise the template runs as before.
 
@@ -42,10 +42,10 @@ def key_of(template: str, n: int, kind: str) -> str:
 
 
 def fingerprint(ctx: ToolContext) -> str:
-    """The data an answer depends on: the app tables' sources and the lake catalogue date."""
-    lake = ctx.lake
-    parts = sorted(f"{k}={v.retrieved}" for k, v in lake.sources.items())
-    parts.append(f"lake={lake.catalog_date}")
+    """The data an answer depends on: the app tables' sources and their retrieval dates (the
+    prepared templates read only the app tables; the lake catalogue's daily date would expire
+    every answer for nothing)."""
+    parts = sorted(f"{k}={v.retrieved}" for k, v in ctx.lake.sources.items())
     return hashlib.sha1("|".join(parts).encode()).hexdigest()[:16]  # noqa: S324 - a fingerprint
 
 
