@@ -1491,1432 +1491,1440 @@ Probed 2026-11-08T06:31:06+00:00 in the Lambda-sized container (2 vCPU, 3,008 MB
 ## Latest run
 
 <!-- measured:start -->
-Probed 2026-11-08T11:53:02+00:00 in the Lambda-sized container (2 vCPU, 3,008 MB) against `r2:r2://infraatlas-raw/lake/lake.duckdb`; 1077 tables in 8 shards. Times in ms (cold = the first run of each query in the process; warm = the median of 3 repeats); MB and GET requests read from R2 by the cold runs of the table's query set.
+Probed 2026-11-08T15:58:16+00:00 in the Lambda-sized container (2 vCPU, 3,008 MB) against `r2:r2://infraatlas-raw/lake/lake.duckdb`; 1077 tables in 8 shards. Times in ms (cold = the first run of each query in the process; warm = the median of 3 repeats); MB and GET requests read from R2 by the cold runs of the table's query set.
 
-### Unseen queries (generated, no template, result cache off): 193 of 200 answered, p50 365 ms, p95 1,151 ms, max 2,458 ms
+### Unseen queries (generated, no template, result cache off): 192 of 200 answered, p50 201 ms, p95 1,424 ms, max 6,772 ms
 
 | # | table | kind | ms | rows | MB | error |
 |---:|---|---|---:|---:|---:|---|
-| 0 | `gem.gas_infrastructure_lng_terminals` | sum | 390 | 1 | 0.00 |  |
-| 1 | `wave9.fr_emodnet_telecom_shom` | count | 278 | 0 | 0.00 |  |
-| 2 | `wave10.eu_nrg_te_oilm` | sum | 1,375 | 1 | 2.90 |  |
-| 3 | `wave10.wb_eg_gdp_puse_ko_pp` | top | 539 | 10 | 0.00 |  |
-| 4 | `dams.barriers` | avg | 1,026 | 1 | 1.05 |  |
-| 5 | `wave10.eu_road_eqs_lormot` | count | 377 | 8271 | 0.00 |  |
-| 6 | `wave10.wb_is_rrs_pasg_km` | avg | 465 | 1 | 0.02 |  |
-| 7 | `wave10.wb_eg_gdp_puse_ko_pp_kd` | top | 309 | 10 | 0.00 |  |
-| 8 | `wave10.eu_cei_gsr020` | top | 379 | 10 | 0.00 |  |
-| 9 | `wave10.eu_cei_srm020` | sum | 419 | 1 | 0.00 |  |
-| 10 | `wave10.eu_env_ac_io10` | sum | 644 | 2383261020 | 0.01 |  |
-| 11 | `mastr.catalog_values` | sum | 370 | 121813266 | 0.00 |  |
-| 12 | `wave10.wb_eg_elc_petr_zs` | top | 536 | 10 | 0.06 |  |
-| 13 | `wave10.wb_ny_adj_dngy_cd` | count | 348 | 4139 | 0.00 |  |
-| 14 | `mastr.units_nuclear` | sum | 277 | 1 | 0.00 |  |
-| 15 | `entsoe.load` | sum | 452 | 13336909049 | 0.00 |  |
-| 16 | `gem.iron_steel_plant_capacities_and_status` | top | 0.7 | None | 0.00 | GuardError: gem.iron_steel_plant_capacities_and_status is licensed (Global Energ |
-| 17 | `wave10.wb_ny_adj_dfor_gn_zs` | count | 270 | 9576 | 0.00 |  |
-| 18 | `gem.coal_mines_historic_production_2018_2025` | top | 0.7 | None | 0.00 | GuardError: gem.coal_mines_historic_production_2018_2025 is licensed (Global Ene |
-| 19 | `wave9.eu_broadband_nuts2` | top | 357 | 10 | 0.00 |  |
-| 20 | `wave10.eu_ten00135` | sum | 197 | 6507822 | 0.00 |  |
-| 21 | `wave9.gb_ssen_opendata` | avg | 363 | None | 0.00 | BinderException: Binder Error: Cannot mix values of type VARCHAR and DECIMAL(6,5 |
-| 22 | `entsoe.load` | avg | 1,406 | 1 | 0.22 |  |
-| 23 | `rollups.overture_power__lines_r7` | top | 306 | 0 | 0.00 |  |
-| 24 | `ev_eu.be` | avg | 381 | 1 | 0.00 |  |
-| 25 | `wave10.eu_env_ac_pepssp1` | sum | 287 | 65122164 | 0.00 |  |
-| 26 | `wave10.wb_er_h2o_intr_pc` | sum | 364 | 1 | 0.00 |  |
-| 27 | `wave10.wb_en_ghg_co2_rt_gdp_pp_kd` | sum | 351 | 1 | 0.00 |  |
-| 28 | `wave10.eu_ten00108` | count | 200 | 596 | 0.00 |  |
-| 29 | `wave9.be_fluvius_consumption` | top | 390 | 10 | 0.00 |  |
-| 30 | `wave10.eu_ten00122` | group | 272 | 1 | 0.00 |  |
-| 31 | `wave10.eu_nrg_cb_pem` | group | 302 | 1 | 0.00 |  |
-| 32 | `wave10.eu_nrg_ind_eff` | sum | 387 | 1 | 0.00 |  |
-| 33 | `co2stop.dic_assess_traptype` | avg | 286 | 2 | 0.00 |  |
-| 34 | `rollups.overture_power__lines_r7` | sum | 359 | 3 | 0.00 |  |
-| 35 | `wave10.eu_road_eqs_zev` | group | 365 | 43 | 0.00 |  |
-| 36 | `connect_eu.gb_dso` | count | 639 | 0 | 0.58 |  |
-| 37 | `wave10.eu_nrg_cb_sff` | count | 366 | 82711 | 0.00 |  |
-| 38 | `wave10.wb_ag_lnd_agri_k2` | avg | 487 | 1 | 0.03 |  |
-| 39 | `wave9.gb_he_listed` | group | 1,821 | 0 | 9.54 |  |
-| 40 | `main.emissions` | group | 706 | 50 | 0.35 |  |
-| 41 | `euets.verified_emissions` | sum | 488 | 1248009360 | 0.07 |  |
-| 42 | `wave10.eu_sdg_12_31` | avg | 366 | 1 | 0.00 |  |
-| 43 | `wave10.eu_env_epea_cint` | top | 363 | 10 | 0.00 |  |
-| 44 | `ev_eu.pl` | group | 200 | 0 | 0.00 |  |
-| 45 | `wave10.eu_sdg_09_10` | avg | 357 | 1 | 0.00 |  |
-| 46 | `co2stop.dic_geocgraph_area` | sum | 267 | 123 | 0.00 |  |
-| 47 | `mastr.units_solar` | group | 1,005 | 0 | 3.25 |  |
-| 48 | `wave10.gb_desnz_ghg_dataset` | top | 1,151 | 10 | 5.49 |  |
-| 49 | `wave10.eu_nrg_te_oil` | avg | 297 | 1 | 0.00 |  |
-| 50 | `wave10.wb_ie_ppn_tran_cd` | sum | 356 | 19223820 | 0.00 |  |
-| 51 | `wave9.us_opportunity_zones` | sum | 1,265 | 1 | 56.64 |  |
-| 52 | `mastr.units_hydro` | group | 727 | 2 | 0.98 |  |
-| 53 | `wave10.gb_desnz_tfec_la` | sum | 372 | 7315 | 0.00 |  |
-| 54 | `eia930.generation_by_fuel` | avg | 488 | 1 | 0.02 |  |
-| 55 | `wave10.eu_nrg_ind_di` | count | 300 | 405 | 0.00 |  |
-| 56 | `wave10.eu_env_ac_epite1` | avg | 394 | 1 | 0.00 |  |
-| 57 | `wave10.wb_tm_val_mmtl_zs_un` | count | 267 | 9576 | 0.00 |  |
-| 58 | `wave10.eu_road_eqs_lorroa` | group | 352 | 3 | 0.00 |  |
-| 59 | `euets.eea_link` | group | 380 | 0 | 0.00 |  |
-| 60 | `wave9.us_usgs_nwis_sites` | avg | 1,407 | 1 | 3.49 |  |
-| 61 | `wave10.eu_ten00139` | group | 358 | 1 | 0.00 |  |
-| 62 | `gem.iron_steel_blast_furnace_relinings` | sum | 281 | 1 | 0.00 |  |
-| 63 | `ev_eu.ee` | sum | 308 | 1 | 0.00 |  |
-| 64 | `entsoe.imbalance_price` | group | 491 | 2 | 0.00 |  |
-| 65 | `wave9.us_natcarb` | avg | 694 | 1 | 2.27 |  |
-| 66 | `wave10.eu_env_esst_ggcp` | count | 379 | 209400 | 0.00 |  |
-| 67 | `wave10.wb_en_ghg_co2_pc_ce_ar5` | group | 354 | 1 | 0.00 |  |
-| 68 | `wave10.wb_bx_klt_dinv_wd_gd_zs` | sum | 478 | 1 | 0.07 |  |
-| 69 | `wave10.wb_it_net_user_fe_zs` | sum | 360 | 1 | 0.00 |  |
-| 70 | `wave10.eu_ten00110` | group | 277 | 1 | 0.00 |  |
-| 71 | `ev_eu.lu` | group | 294 | 0 | 0.00 |  |
-| 72 | `wave10.wb_en_ghg_n2o_pi_mt_ce_ar5` | avg | 393 | 1 | 0.00 |  |
-| 73 | `wave10.gb_census_cars` | count | 280 | 3180 | 0.00 |  |
-| 74 | `wave9.us_eia_product_terminals` | group | 379 | 0 | 0.00 |  |
-| 75 | `wave10.eu_nrg_ind_pehcf` | sum | 384 | 326180670 | 0.00 |  |
-| 76 | `wave10.wb_ag_yld_crel_kg` | count | 506 | 9576 | 0.04 |  |
-| 77 | `wave10.gb_desnz_elec_distribution` | sum | 352 | 25 | 0.00 |  |
-| 78 | `wave9.us_nrc_operating_reactors` | sum | 265 | 93 | 0.00 |  |
-| 79 | `gem.energy_ownership_cement_and_concrete_ownership` | group | 0.7 | None | 0.00 | GuardError: gem.energy_ownership_cement_and_concrete_ownership is licensed (Glob |
-| 80 | `wave10.eu_rail_if_line_tr` | sum | 452 | 10130028 | 0.00 |  |
-| 81 | `wave10.eu_env_ac_eptrf1` | count | 271 | 19520 | 0.00 |  |
-| 82 | `wave10.eu_rail_eq_pa_nty` | top | 355 | 10 | 0.00 |  |
-| 83 | `wave10.eu_road_eqs_trams` | avg | 360 | 1 | 0.00 |  |
-| 84 | `wave10.eu_nrg_ind_pehcf` | sum | 503 | 1 | 0.71 |  |
-| 85 | `wave10.gb_census_travel_distance` | sum | 366 | 14138916 | 0.00 |  |
-| 86 | `wave10.wb_ny_gdp_ngas_rt_zs` | count | 438 | 9576 | 0.04 |  |
-| 87 | `tyndp.projects` | count | 301 | 0 | 0.00 |  |
-| 88 | `mastr.operators` | group | 1,046 | 2 | 0.05 |  |
-| 89 | `wave10.eu_nrg_ind_psth2` | sum | 265 | 1 | 0.00 |  |
-| 90 | `app.eu_lines` | top | 356 | 0 | 0.00 |  |
-| 91 | `wave10.eu_nrg_cb_rw` | sum | 361 | 13934827 | 0.00 |  |
-| 92 | `wave10.eu_env_watres_rb` | top | 485 | 10 | 0.07 |  |
-| 93 | `wave10.wb_er_h2o_intr_pc` | group | 352 | 1 | 0.00 |  |
-| 94 | `wave10.wb_eg_cft_accs_ur_zs` | sum | 480 | 11985455 | 0.02 |  |
-| 95 | `co2stop.daughter_units_summary` | count | 307 | 21 | 0.00 |  |
-| 96 | `wave10.wb_tx_val_fuel_zs_un` | sum | 399 | 1 | 0.00 |  |
-| 97 | `wave10.wb_eg_elc_accs_ru_zs` | sum | 286 | 1 | 0.00 |  |
-| 98 | `wave10.wb_ag_lnd_prcp_mm` | top | 372 | 10 | 0.00 |  |
-| 99 | `wave10.eu_env_watuse_rb` | sum | 362 | 1 | 0.00 |  |
-| 100 | `wave10.eu_env_epea_pap` | count | 475 | 12412 | 0.17 |  |
-| 101 | `wave10.wb_sh_sta_smss_zs` | count | 348 | 9576 | 0.00 |  |
-| 102 | `wave10.eu_nrg_cb_eim` | avg | 537 | 1 | 0.09 |  |
-| 103 | `shapes.nuts` | top | 336 | 10 | 0.00 |  |
-| 104 | `wave10.eu_road_eqs_lorton` | top | 384 | 10 | 0.00 |  |
-| 105 | `history.connect_eu__se` | top | 275 | 10 | 0.00 |  |
-| 106 | `wave9.us_eia_gas_processing` | sum | 355 | 1 | 0.00 |  |
+| 0 | `gem.gas_infrastructure_lng_terminals` | sum | 179 | 1 | 0.00 |  |
+| 1 | `wave9.fr_emodnet_telecom_shom` | count | 148 | 0 | 0.00 |  |
+| 2 | `wave10.eu_nrg_te_oilm` | sum | 1,160 | 1 | 2.92 |  |
+| 3 | `wave10.wb_eg_gdp_puse_ko_pp` | top | 490 | 10 | 0.05 |  |
+| 4 | `dams.barriers` | avg | 1,268 | 1 | 1.05 |  |
+| 5 | `wave10.eu_road_eqs_lormot` | count | 255 | 8271 | 0.00 |  |
+| 6 | `wave10.wb_is_rrs_pasg_km` | avg | 553 | 1 | 0.02 |  |
+| 7 | `wave10.wb_eg_gdp_puse_ko_pp_kd` | top | 542 | 10 | 0.05 |  |
+| 8 | `wave10.eu_cei_gsr020` | top | 7.0 | 10 | 0.00 |  |
+| 9 | `wave10.eu_cei_srm020` | sum | 405 | 1 | 0.11 |  |
+| 10 | `wave10.eu_env_ac_io10` | sum | 401 | 2383261020 | 0.03 |  |
+| 11 | `mastr.catalog_values` | sum | 6.5 | 121813266 | 0.00 |  |
+| 12 | `wave10.wb_eg_elc_petr_zs` | top | 311 | 10 | 0.06 |  |
+| 13 | `wave10.wb_ny_adj_dngy_cd` | count | 321 | 4139 | 0.04 |  |
+| 14 | `mastr.units_nuclear` | sum | 15.6 | 1 | 0.00 |  |
+| 15 | `entsoe.load` | sum | 1,257 | 13336909049 | 0.22 |  |
+| 16 | `gem.iron_steel_plant_capacities_and_status` | top | 0.6 | None | 0.00 | GuardError: gem.iron_steel_plant_capacities_and_status is licensed (Global Energ |
+| 17 | `wave10.wb_ny_adj_dfor_gn_zs` | count | 4.7 | 9576 | 0.00 |  |
+| 18 | `gem.coal_mines_historic_production_2018_2025` | top | 0.6 | None | 0.00 | GuardError: gem.coal_mines_historic_production_2018_2025 is licensed (Global Ene |
+| 19 | `wave9.eu_broadband_nuts2` | top | 8.5 | 10 | 0.00 |  |
+| 20 | `wave10.eu_ten00135` | sum | 6.6 | 6507822 | 0.00 |  |
+| 21 | `wave9.gb_ssen_opendata` | avg | 12.7 | None | 0.00 | BinderException: Binder Error: Cannot mix values of type VARCHAR and DECIMAL(6,5 |
+| 22 | `entsoe.load` | avg | 2,074 | 1 | 0.22 |  |
+| 23 | `rollups.overture_power__lines_r7` | top | 227 | 0 | 0.00 |  |
+| 24 | `ev_eu.be` | avg | 12.6 | 1 | 0.00 |  |
+| 25 | `wave10.eu_env_ac_pepssp1` | sum | 451 | 65122164 | 0.06 |  |
+| 26 | `wave10.wb_er_h2o_intr_pc` | sum | 201 | 1 | 0.06 |  |
+| 27 | `wave10.wb_en_ghg_co2_rt_gdp_pp_kd` | sum | 287 | 1 | 0.06 |  |
+| 28 | `wave10.eu_ten00108` | count | 6.0 | 596 | 0.00 |  |
+| 29 | `wave9.be_fluvius_consumption` | top | 27.2 | 10 | 0.00 |  |
+| 30 | `wave10.eu_ten00122` | group | 7.2 | 1 | 0.00 |  |
+| 31 | `wave10.eu_nrg_cb_pem` | group | 228 | 1 | 0.66 |  |
+| 32 | `wave10.eu_nrg_ind_eff` | sum | 301 | 1 | 0.02 |  |
+| 33 | `co2stop.dic_assess_traptype` | avg | 4.1 | 2 | 0.00 |  |
+| 34 | `rollups.overture_power__lines_r7` | sum | 13.2 | 3 | 0.00 |  |
+| 35 | `wave10.eu_road_eqs_zev` | group | 326 | 43 | 0.03 |  |
+| 36 | `connect_eu.gb_dso` | count | 348 | 0 | 0.58 |  |
+| 37 | `wave10.eu_nrg_cb_sff` | count | 9.3 | 82711 | 0.00 |  |
+| 38 | `wave10.wb_ag_lnd_agri_k2` | avg | 303 | 1 | 0.03 |  |
+| 39 | `wave9.gb_he_listed` | group | 1,701 | 0 | 9.58 |  |
+| 40 | `main.emissions` | group | 613 | 50 | 0.37 |  |
+| 41 | `euets.verified_emissions` | sum | 618 | 1248009360 | 0.08 |  |
+| 42 | `wave10.eu_sdg_12_31` | avg | 5.2 | 1 | 0.00 |  |
+| 43 | `wave10.eu_env_epea_cint` | top | 426 | 10 | 0.08 |  |
+| 44 | `ev_eu.pl` | group | 15.9 | 0 | 0.00 |  |
+| 45 | `wave10.eu_sdg_09_10` | avg | 6.2 | 1 | 0.00 |  |
+| 46 | `co2stop.dic_geocgraph_area` | sum | 5.7 | 123 | 0.00 |  |
+| 47 | `mastr.units_solar` | group | 651 | 0 | 3.25 |  |
+| 48 | `wave10.gb_desnz_ghg_dataset` | top | 1,096 | 10 | 5.51 |  |
+| 49 | `wave10.eu_nrg_te_oil` | avg | 333 | 1 | 1.06 |  |
+| 50 | `wave10.wb_ie_ppn_tran_cd` | sum | 197 | 19223820 | 0.01 |  |
+| 51 | `wave9.us_opportunity_zones` | sum | 1,783 | 1 | 56.70 |  |
+| 52 | `mastr.units_hydro` | group | 452 | 2 | 1.97 |  |
+| 53 | `wave10.gb_desnz_tfec_la` | sum | 258 | 7315 | 1.79 |  |
+| 54 | `eia930.generation_by_fuel` | avg | 332 | 1 | 0.02 |  |
+| 55 | `wave10.eu_nrg_ind_di` | count | 7.6 | 405 | 0.00 |  |
+| 56 | `wave10.eu_env_ac_epite1` | avg | 5.3 | 1 | 0.00 |  |
+| 57 | `wave10.wb_tm_val_mmtl_zs_un` | count | 4.7 | 9576 | 0.00 |  |
+| 58 | `wave10.eu_road_eqs_lorroa` | group | 196 | 3 | 0.02 |  |
+| 59 | `euets.eea_link` | group | 345 | 0 | 0.40 |  |
+| 60 | `wave9.us_usgs_nwis_sites` | avg | 1,424 | 1 | 3.49 |  |
+| 61 | `wave10.eu_ten00139` | group | 6.8 | 1 | 0.00 |  |
+| 62 | `gem.iron_steel_blast_furnace_relinings` | sum | 6.3 | 1 | 0.00 |  |
+| 63 | `ev_eu.ee` | sum | 17.8 | 1 | 0.00 |  |
+| 64 | `entsoe.imbalance_price` | group | 13,272 | None | 7.27 | OutOfMemoryException: Out of Memory Error: failed to allocate data of size 8 byt |
+| 65 | `wave9.us_natcarb` | avg | 687 | 1 | 2.27 |  |
+| 66 | `wave10.eu_env_esst_ggcp` | count | 201 | 209400 | 0.14 |  |
+| 67 | `wave10.wb_en_ghg_co2_pc_ce_ar5` | group | 352 | 1 | 0.07 |  |
+| 68 | `wave10.wb_bx_klt_dinv_wd_gd_zs` | sum | 356 | 1 | 0.07 |  |
+| 69 | `wave10.wb_it_net_user_fe_zs` | sum | 217 | 1 | 0.02 |  |
+| 70 | `wave10.eu_ten00110` | group | 6.5 | 1 | 0.00 |  |
+| 71 | `ev_eu.lu` | group | 19.4 | 0 | 0.00 |  |
+| 72 | `wave10.wb_en_ghg_n2o_pi_mt_ce_ar5` | avg | 313 | 1 | 0.06 |  |
+| 73 | `wave10.gb_census_cars` | count | 4.3 | 3180 | 0.00 |  |
+| 74 | `wave9.us_eia_product_terminals` | group | 16.0 | 0 | 0.00 |  |
+| 75 | `wave10.eu_nrg_ind_pehcf` | sum | 330 | 326180670 | 0.71 |  |
+| 76 | `wave10.wb_ag_yld_crel_kg` | count | 297 | 9576 | 0.04 |  |
+| 77 | `wave10.gb_desnz_elec_distribution` | sum | 5.7 | 25 | 0.00 |  |
+| 78 | `wave9.us_nrc_operating_reactors` | sum | 6.2 | 93 | 0.00 |  |
+| 79 | `gem.energy_ownership_cement_and_concrete_ownership` | group | 0.8 | None | 0.00 | GuardError: gem.energy_ownership_cement_and_concrete_ownership is licensed (Glob |
+| 80 | `wave10.eu_rail_if_line_tr` | sum | 4.6 | 10130028 | 0.00 |  |
+| 81 | `wave10.eu_env_ac_eptrf1` | count | 316 | 19520 | 0.05 |  |
+| 82 | `wave10.eu_rail_eq_pa_nty` | top | 6.7 | 10 | 0.00 |  |
+| 83 | `wave10.eu_road_eqs_trams` | avg | 7.7 | 1 | 0.00 |  |
+| 84 | `wave10.eu_nrg_ind_pehcf` | sum | 486 | 1 | 0.71 |  |
+| 85 | `wave10.gb_census_travel_distance` | sum | 226 | 14138916 | 0.03 |  |
+| 86 | `wave10.wb_ny_gdp_ngas_rt_zs` | count | 332 | 9576 | 0.04 |  |
+| 87 | `tyndp.projects` | count | 13.7 | 0 | 0.00 |  |
+| 88 | `mastr.operators` | group | 1,094 | 2 | 0.32 |  |
+| 89 | `wave10.eu_nrg_ind_psth2` | sum | 4.5 | 1 | 0.00 |  |
+| 90 | `app.eu_lines` | top | 16.6 | 0 | 0.00 |  |
+| 91 | `wave10.eu_nrg_cb_rw` | sum | 346 | 13934827 | 0.34 |  |
+| 92 | `wave10.eu_env_watres_rb` | top | 322 | 10 | 0.07 |  |
+| 93 | `wave10.wb_er_h2o_intr_pc` | group | 217 | 1 | 0.06 |  |
+| 94 | `wave10.wb_eg_cft_accs_ur_zs` | sum | 299 | 11985455 | 0.02 |  |
+| 95 | `co2stop.daughter_units_summary` | count | 8.4 | 21 | 0.00 |  |
+| 96 | `wave10.wb_tx_val_fuel_zs_un` | sum | 307 | 1 | 0.05 |  |
+| 97 | `wave10.wb_eg_elc_accs_ru_zs` | sum | 341 | 1 | 0.03 |  |
+| 98 | `wave10.wb_ag_lnd_prcp_mm` | top | 216 | 10 | 0.01 |  |
+| 99 | `wave10.eu_env_watuse_rb` | sum | 293 | 1 | 0.04 |  |
+| 100 | `wave10.eu_env_epea_pap` | count | 290 | 12412 | 0.17 |  |
+| 101 | `wave10.wb_sh_sta_smss_zs` | count | 6.5 | 9576 | 0.00 |  |
+| 102 | `wave10.eu_nrg_cb_eim` | avg | 416 | 1 | 0.09 |  |
+| 103 | `shapes.nuts` | top | 15.2 | 10 | 0.00 |  |
+| 104 | `wave10.eu_road_eqs_lorton` | top | 5.9 | 10 | 0.00 |  |
+| 105 | `history.connect_eu__se` | top | 7.5 | 10 | 0.00 |  |
+| 106 | `wave9.us_eia_gas_processing` | sum | 9.1 | 1 | 0.00 |  |
 | 107 | `gem.iron_steel_plant_production` | top | 0.8 | None | 0.00 | GuardError: gem.iron_steel_plant_production is licensed (Global Energy Monitor): |
-| 108 | `wave10.eu_env_epea_pgg` | group | 482 | 1 | 0.05 |  |
-| 109 | `wave10.eu_env_ac_mfain` | sum | 372 | 1 | 0.00 |  |
-| 110 | `wave9.pt_ine_heating_freguesia` | sum | 464 | 1 | 0.17 |  |
-| 111 | `wave9.rs_ems_connection_queue` | sum | 300 | 1 | 0.00 |  |
-| 112 | `connect_eu.lu` | sum | 396 | 1 | 0.00 |  |
-| 113 | `gem.gas_infrastructure_lng_terminals` | top | 0.7 | None | 0.00 | GuardError: gem.gas_infrastructure_lng_terminals is licensed (Global Energy Moni |
-| 114 | `wave10.eu_env_ac_pefa05` | sum | 364 | 7126709 | 0.00 |  |
-| 115 | `app.eu_plants` | sum | 363 | 1 | 0.00 |  |
-| 116 | `wave9.eu_broadband_nuts2` | group | 192 | 2 | 0.00 |  |
-| 117 | `wave10.eu_rail_eq_trset` | sum | 343 | 3020784 | 0.00 |  |
-| 118 | `wave10.wb_eg_imp_cons_zs` | count | 459 | 9576 | 0.05 |  |
-| 119 | `mastr.units_storage` | group | 2,458 | 2 | 0.05 |  |
-| 120 | `wave10.eu_sdg_06_60` | avg | 383 | 1 | 0.00 |  |
-| 121 | `gem.methane_emitters_lng_terminals` | avg | 272 | 1 | 0.00 |  |
-| 122 | `wave10.eu_env_ac_pefa04` | avg | 365 | 1 | 0.00 |  |
-| 123 | `history.pse_capacity__requests` | count | 354 | 886 | 0.00 |  |
-| 124 | `wave10.wb_er_h2o_fwin_zs` | top | 480 | 10 | 0.04 |  |
-| 125 | `wave9.eu_land_prices` | avg | 348 | 1 | 0.00 |  |
-| 126 | `wave9.de_emodnet_telecom_bsh` | group | 282 | 0 | 0.00 |  |
-| 127 | `wave10.eu_nrg_inf_epct` | avg | 297 | 1 | 0.00 |  |
-| 128 | `wave9.world_ihfc_heat_flow` | avg | 1,042 | 1 | 1.18 |  |
-| 129 | `wave9.eu_broadband_coverage` | group | 264 | 1 | 0.00 |  |
-| 130 | `mastr.catalog_values` | top | 362 | 10 | 0.00 |  |
-| 131 | `wave9.us_epa_aqs_annual` | group | 612 | 0 | 0.09 |  |
-| 132 | `wave10.eu_env_ac_ghgfp` | top | 1,159 | 10 | 9.02 |  |
-| 133 | `connect_eu.bg` | top | 352 | 0 | 0.00 |  |
-| 134 | `wave10.eu_nrg_ind_esr` | sum | 265 | 816885 | 0.00 |  |
-| 135 | `pse_capacity.requests` | sum | 292 | 886 | 0.00 |  |
-| 136 | `ev_eu.de` | count | 420 | 6504 | 0.00 |  |
-| 137 | `euets.verified_emissions` | sum | 268 | 1248009360 | 0.00 |  |
-| 138 | `neso.constraint_breakdown` | top | 372 | 10 | 0.00 |  |
-| 139 | `wave9.dk_district_heating` | count | 375 | 0 | 0.00 |  |
-| 140 | `wave10.eu_rail_eq_locop` | avg | 202 | 1 | 0.00 |  |
-| 141 | `wave10.eu_env_ac_cepsgc1` | group | 361 | 12 | 0.00 |  |
-| 142 | `wave10.wb_en_ghg_all_pc_ce_ar5` | sum | 457 | 1 | 0.07 |  |
-| 143 | `wave9.us_openei_urdb` | top | 320 | 58920 | 0.00 |  |
-| 144 | `gem.methane_emitters_pipelines` | avg | 379 | 1 | 0.00 |  |
-| 145 | `history.pse_capacity__full_substations` | group | 277 | 50 | 0.00 |  |
-| 146 | `history.connect_eu__gb_dso` | sum | 378 | 1 | 0.00 |  |
-| 147 | `gem.methane_emitters_lng_terminals` | count | 369 | 0 | 0.00 |  |
-| 148 | `wave10.eu_env_ac_ghgfp` | sum | 1,272 | 1 | 16.22 |  |
-| 149 | `wave10.wb_en_ghg_co2_lu_mt_ce_ar5` | count | 354 | 9576 | 0.00 |  |
-| 150 | `wave9.eur_overture_comm_lines` | sum | 294 | 58 | 0.00 |  |
-| 151 | `wave10.wb_it_net_user_ma_zs` | sum | 291 | 3146898 | 0.00 |  |
-| 152 | `entsog.points` | group | 388 | 3 | 0.00 |  |
-| 153 | `wave10.eu_env_epea_pgg` | sum | 280 | 35089415 | 0.00 |  |
-| 154 | `wave10.wb_eg_imp_cons_zs` | sum | 375 | 1 | 0.00 |  |
-| 155 | `gem.oil_gas_extraction_field_level_main_data` | top | 0.9 | None | 0.00 | GuardError: gem.oil_gas_extraction_field_level_main_data is licensed (Global Ene |
-| 156 | `connect_eu.ee` | count | 206 | 0 | 0.00 |  |
-| 157 | `wave10.eu_nrg_ind_ioc` | group | 353 | 43 | 0.00 |  |
-| 158 | `wave10.eu_sdg_13_70a` | top | 291 | 10 | 0.00 |  |
-| 159 | `wave10.eu_sdg_09_60` | avg | 301 | 1 | 0.00 |  |
-| 160 | `co2stop.dic_on_offshore` | avg | 378 | 3 | 0.00 |  |
-| 161 | `wave10.eu_nrg_pc_203_c` | sum | 279 | 192495588 | 0.00 |  |
-| 162 | `entsog.operator_point_directions` | sum | 371 | 1 | 0.00 |  |
-| 163 | `wave9.us_nexrad` | avg | 365 | 1 | 0.00 |  |
-| 164 | `history.registers__ie` | sum | 203 | 1 | 0.00 |  |
-| 165 | `registers.pt` | count | 375 | 0 | 0.00 |  |
-| 166 | `wave9.us_usgs_nshm` | count | 910 | 0 | 9.83 |  |
-| 167 | `rollups.wave9__de_zensus_heating_r5` | sum | 316 | 3487 | 0.00 |  |
-| 168 | `ev_eu.pt` | top | 390 | 0 | 0.00 |  |
-| 169 | `wave10.eu_rail_eq_vans` | avg | 283 | 1 | 0.00 |  |
-| 170 | `wave10.wb_ag_lnd_totl_ur_k2` | sum | 360 | 19223820 | 0.00 |  |
-| 171 | `wave9.gb_ne_alc` | avg | 363 | 1 | 0.00 |  |
-| 172 | `wave10.eu_cei_pc030` | sum | 198 | 3272322 | 0.00 |  |
-| 173 | `wave9.us_noaa_mpa` | avg | 586 | 1 | 0.02 |  |
-| 174 | `wave10.eu_road_eqs_roaene` | count | 278 | 4555 | 0.00 |  |
-| 175 | `wave10.wb_en_ghg_co2_rt_gdp_pp_kd` | group | 298 | 50 | 0.00 |  |
-| 176 | `wave9.si_surs_heating_settlement` | avg | 397 | 1 | 0.00 |  |
-| 177 | `outlines.fr_iris` | avg | 1,123 | 1 | 75.04 |  |
-| 178 | `wave10.eu_cei_pc034` | count | 362 | 298 | 0.00 |  |
-| 179 | `wave10.wb_ag_lnd_frst_zs` | sum | 359 | 19223820 | 0.00 |  |
-| 180 | `wave10.wb_ny_adj_dco2_cd` | top | 570 | 10 | 0.06 |  |
-| 181 | `wave10.eu_env_ac_pefafp` | top | 368 | 10 | 0.00 |  |
-| 182 | `wave10.wb_ny_adj_svng_gn_zs` | sum | 461 | 19223820 | 0.04 |  |
-| 183 | `outlines.us_places` | group | 1,295 | 1 | 15.48 |  |
-| 184 | `wave10.eu_env_ac_ghgfp` | sum | 2,081 | 1 | 38.20 |  |
-| 185 | `wave10.eu_cei_pc020` | avg | 286 | 1 | 0.00 |  |
-| 186 | `wave10.eu_ten00108` | avg | 374 | 1 | 0.00 |  |
-| 187 | `wave10.wb_en_ghg_ch4_bu_mt_ce_ar5` | avg | 357 | 1 | 0.00 |  |
-| 188 | `wave10.wb_en_pop_slum_ur_zs` | count | 530 | 9576 | 0.02 |  |
-| 189 | `wave10.eu_sdg_07_30` | top | 368 | 0 | 0.00 |  |
-| 190 | `wave10.wb_en_fsh_thrd_no` | count | 540 | 9576 | 0.01 |  |
-| 191 | `main.grid_capacity` | group | 897 | 50 | 0.06 |  |
-| 192 | `wave10.eu_ten00030` | top | 419 | 10 | 0.00 |  |
-| 193 | `wave10.eu_sdg_06_70` | top | 269 | 10 | 0.00 |  |
-| 194 | `eia930.interchange` | group | 722 | 1 | 3.84 |  |
-| 195 | `ev_eu.pl` | group | 381 | 0 | 0.00 |  |
-| 196 | `wave9.gb_emr_cm_register` | group | 482 | 17 | 0.64 |  |
-| 197 | `ree_nodes.nodes` | avg | 351 | 2814 | 0.00 |  |
-| 198 | `wave10.eu_rail_eq_wagon` | group | 273 | 37 | 0.00 |  |
-| 199 | `mastr.operators` | group | 875 | 50 | 0.05 |  |
+| 108 | `wave10.eu_env_epea_pgg` | group | 392 | 1 | 0.05 |  |
+| 109 | `wave10.eu_env_ac_mfain` | sum | 230 | 1 | 0.10 |  |
+| 110 | `wave9.pt_ine_heating_freguesia` | sum | 309 | 1 | 0.17 |  |
+| 111 | `wave9.rs_ems_connection_queue` | sum | 8.4 | 1 | 0.00 |  |
+| 112 | `connect_eu.lu` | sum | 12.9 | 1 | 0.00 |  |
+| 113 | `gem.gas_infrastructure_lng_terminals` | top | 0.6 | None | 0.00 | GuardError: gem.gas_infrastructure_lng_terminals is licensed (Global Energy Moni |
+| 114 | `wave10.eu_env_ac_pefa05` | sum | 5.4 | 7126709 | 0.00 |  |
+| 115 | `app.eu_plants` | sum | 16.5 | 1 | 0.00 |  |
+| 116 | `wave9.eu_broadband_nuts2` | group | 9.7 | 2 | 0.00 |  |
+| 117 | `wave10.eu_rail_eq_trset` | sum | 6.2 | 3020784 | 0.00 |  |
+| 118 | `wave10.wb_eg_imp_cons_zs` | count | 364 | 9576 | 0.05 |  |
+| 119 | `mastr.units_storage` | group | 6,772 | 2 | 0.05 |  |
+| 120 | `wave10.eu_sdg_06_60` | avg | 4.5 | 1 | 0.00 |  |
+| 121 | `gem.methane_emitters_lng_terminals` | avg | 12.2 | 1 | 0.00 |  |
+| 122 | `wave10.eu_env_ac_pefa04` | avg | 225 | 1 | 0.52 |  |
+| 123 | `history.pse_capacity__requests` | count | 8.4 | 886 | 0.00 |  |
+| 124 | `wave10.wb_er_h2o_fwin_zs` | top | 329 | 10 | 0.04 |  |
+| 125 | `wave9.eu_land_prices` | avg | 226 | 1 | 0.04 |  |
+| 126 | `wave9.de_emodnet_telecom_bsh` | group | 18.5 | 0 | 0.00 |  |
+| 127 | `wave10.eu_nrg_inf_epct` | avg | 10.8 | 1 | 0.00 |  |
+| 128 | `wave9.world_ihfc_heat_flow` | avg | 1,132 | 1 | 1.20 |  |
+| 129 | `wave9.eu_broadband_coverage` | group | 4.9 | 1 | 0.00 |  |
+| 130 | `mastr.catalog_values` | top | 6.3 | 10 | 0.00 |  |
+| 131 | `wave9.us_epa_aqs_annual` | group | 811 | 0 | 0.11 |  |
+| 132 | `wave10.eu_env_ac_ghgfp` | top | 700 | 10 | 13.57 |  |
+| 133 | `connect_eu.bg` | top | 17.2 | 0 | 0.00 |  |
+| 134 | `wave10.eu_nrg_ind_esr` | sum | 6.1 | 816885 | 0.00 |  |
+| 135 | `pse_capacity.requests` | sum | 7.7 | 886 | 0.00 |  |
+| 136 | `ev_eu.de` | count | 886 | 6504 | 4.75 |  |
+| 137 | `euets.verified_emissions` | sum | 6.6 | 1248009360 | 0.00 |  |
+| 138 | `neso.constraint_breakdown` | top | 1,827 | 10 | 0.30 |  |
+| 139 | `wave9.dk_district_heating` | count | 10.8 | 0 | 0.00 |  |
+| 140 | `wave10.eu_rail_eq_locop` | avg | 6.7 | 1 | 0.00 |  |
+| 141 | `wave10.eu_env_ac_cepsgc1` | group | 9.6 | 12 | 0.00 |  |
+| 142 | `wave10.wb_en_ghg_all_pc_ce_ar5` | sum | 296 | 1 | 0.07 |  |
+| 143 | `wave9.us_openei_urdb` | top | 423 | 58920 | 0.13 |  |
+| 144 | `gem.methane_emitters_pipelines` | avg | 4.5 | 1 | 0.00 |  |
+| 145 | `history.pse_capacity__full_substations` | group | 5.4 | 50 | 0.00 |  |
+| 146 | `history.connect_eu__gb_dso` | sum | 343 | 1 | 0.58 |  |
+| 147 | `gem.methane_emitters_lng_terminals` | count | 18.0 | 0 | 0.00 |  |
+| 148 | `wave10.eu_env_ac_ghgfp` | sum | 1,485 | 1 | 16.22 |  |
+| 149 | `wave10.wb_en_ghg_co2_lu_mt_ce_ar5` | count | 216 | 9576 | 0.04 |  |
+| 150 | `wave9.eur_overture_comm_lines` | sum | 668 | 58 | 2.50 |  |
+| 151 | `wave10.wb_it_net_user_ma_zs` | sum | 224 | 3146898 | 0.02 |  |
+| 152 | `entsog.points` | group | 5.9 | 3 | 0.00 |  |
+| 153 | `wave10.eu_env_epea_pgg` | sum | 5.6 | 35089415 | 0.00 |  |
+| 154 | `wave10.wb_eg_imp_cons_zs` | sum | 5.7 | 1 | 0.00 |  |
+| 155 | `gem.oil_gas_extraction_field_level_main_data` | top | 0.8 | None | 0.00 | GuardError: gem.oil_gas_extraction_field_level_main_data is licensed (Global Ene |
+| 156 | `connect_eu.ee` | count | 14.0 | 0 | 0.00 |  |
+| 157 | `wave10.eu_nrg_ind_ioc` | group | 226 | 43 | 0.04 |  |
+| 158 | `wave10.eu_sdg_13_70a` | top | 7.5 | 10 | 0.00 |  |
+| 159 | `wave10.eu_sdg_09_60` | avg | 8.8 | 1 | 0.00 |  |
+| 160 | `co2stop.dic_on_offshore` | avg | 4.6 | 3 | 0.00 |  |
+| 161 | `wave10.eu_nrg_pc_203_c` | sum | 5.0 | 192495588 | 0.00 |  |
+| 162 | `entsog.operator_point_directions` | sum | 5.8 | 1 | 0.00 |  |
+| 163 | `wave9.us_nexrad` | avg | 14.3 | 1 | 0.00 |  |
+| 164 | `history.registers__ie` | sum | 11.9 | 1 | 0.00 |  |
+| 165 | `registers.pt` | count | 16.3 | 0 | 0.00 |  |
+| 166 | `wave9.us_usgs_nshm` | count | 979 | 0 | 9.83 |  |
+| 167 | `rollups.wave9__de_zensus_heating_r5` | sum | 19.3 | 3487 | 0.00 |  |
+| 168 | `ev_eu.pt` | top | 332 | 0 | 0.40 |  |
+| 169 | `wave10.eu_rail_eq_vans` | avg | 4.8 | 1 | 0.00 |  |
+| 170 | `wave10.wb_ag_lnd_totl_ur_k2` | sum | 202 | 19223820 | 0.02 |  |
+| 171 | `wave9.gb_ne_alc` | avg | 13.3 | 1 | 0.00 |  |
+| 172 | `wave10.eu_cei_pc030` | sum | 6.8 | 3272322 | 0.00 |  |
+| 173 | `wave9.us_noaa_mpa` | avg | 550 | 1 | 0.16 |  |
+| 174 | `wave10.eu_road_eqs_roaene` | count | 6.0 | 4555 | 0.00 |  |
+| 175 | `wave10.wb_en_ghg_co2_rt_gdp_pp_kd` | group | 214 | 50 | 0.06 |  |
+| 176 | `wave9.si_surs_heating_settlement` | avg | 332 | 1 | 0.66 |  |
+| 177 | `outlines.fr_iris` | avg | 1,783 | 1 | 75.18 |  |
+| 178 | `wave10.eu_cei_pc034` | count | 4.8 | 298 | 0.00 |  |
+| 179 | `wave10.wb_ag_lnd_frst_zs` | sum | 6.0 | 19223820 | 0.00 |  |
+| 180 | `wave10.wb_ny_adj_dco2_cd` | top | 334 | 10 | 0.06 |  |
+| 181 | `wave10.eu_env_ac_pefafp` | top | 234 | 10 | 0.37 |  |
+| 182 | `wave10.wb_ny_adj_svng_gn_zs` | sum | 303 | 19223820 | 0.04 |  |
+| 183 | `outlines.us_places` | group | 2,460 | 1 | 15.50 |  |
+| 184 | `wave10.eu_env_ac_ghgfp` | sum | 2,072 | 1 | 38.27 |  |
+| 185 | `wave10.eu_cei_pc020` | avg | 4.7 | 1 | 0.00 |  |
+| 186 | `wave10.eu_ten00108` | avg | 5.8 | 1 | 0.00 |  |
+| 187 | `wave10.wb_en_ghg_ch4_bu_mt_ce_ar5` | avg | 288 | 1 | 0.06 |  |
+| 188 | `wave10.wb_en_pop_slum_ur_zs` | count | 333 | 9576 | 0.02 |  |
+| 189 | `wave10.eu_sdg_07_30` | top | 6.8 | 0 | 0.00 |  |
+| 190 | `wave10.wb_en_fsh_thrd_no` | count | 320 | 9576 | 0.01 |  |
+| 191 | `main.grid_capacity` | group | 1,838 | 50 | 1.89 |  |
+| 192 | `wave10.eu_ten00030` | top | 5.7 | 10 | 0.00 |  |
+| 193 | `wave10.eu_sdg_06_70` | top | 6.1 | 10 | 0.00 |  |
+| 194 | `eia930.interchange` | group | 423 | 1 | 3.86 |  |
+| 195 | `ev_eu.pl` | group | 15.7 | 0 | 0.00 |  |
+| 196 | `wave9.gb_emr_cm_register` | group | 343 | 17 | 0.64 |  |
+| 197 | `ree_nodes.nodes` | avg | 7.1 | 2814 | 0.00 |  |
+| 198 | `wave10.eu_rail_eq_wagon` | group | 6.8 | 37 | 0.00 |  |
+| 199 | `mastr.operators` | group | 956 | 50 | 0.32 |  |
 
 ### All dataset queries
 
 | | queries | p50 | p95 | max |
 |---|---:|---:|---:|---:|
-| cold | 4067 | 2.8 | 753 | 58,366 |
-| warm | 4056 | 2.5 | 284 | 19,044 |
+| cold | 4063 | 4.3 | 1,004 | 57,764 |
+| warm | 4046 | 2.5 | 216 | 14,249 |
 
-### Data routes: cold p50/p95 18.7 / 1,746, warm p50/p95 18.6 / 616
-
-| | cold | warm p50 | note |
-|---|---:|---:|---|
-| GET /api/health | 7.4 | 17.1 | status 200 |
-| GET /api/catalog/search?q=solar%20capacity%20Germany | 1,746 | 9.2 | status 200 |
-| GET /api/catalog/atb | 3.4 | 3.2 | status 200 |
-| GET /api/places?q=Bavaria | 13.0 | 12.1 | status 200 |
-| GET /api/places?q=Lyon | 12.5 | 12.4 | status 200 |
-| GET /api/site?lon=11.58&lat=48.14&radius_km=50 | 318 | 38.2 | status 200 |
-| GET /api/areas/resolve?q=Bavaria | 62.7 | 60.5 | status 200 |
-| GET /api/areas/resolve?q=Berlin&level=city | 8.8 | 7.5 | status 200 |
-| GET /api/shapes/admin1/DEU | 314 | 311 | status 200 |
-| GET /api/quick | 8.6 | 3.1 | status 200 |
-| GET /api/quick/profile?area=Germany | 34.8 | 35.2 | status 200 |
-| GET /api/quick/top?area=Bavaria&n=10 | 447 | 440 | status 200 |
-| GET /api/quick/totals?area=Europe | 1,415 | 55.1 | status 200 |
-| GET /api/quick/published?area=France | 11.0 | 10.2 | status 200 |
-| GET /api/quick/prices?area=Germany | 18.7 | 18.8 | status 200 |
-| GET /api/report.json?lon=11.58&lat=48.14&radius_km=25&task=data_centre | 6.7 | 2.6 | status 422 |
-| GET /api/feed/DEU.json | 2,075 | 585 | status 200 |
-| POST /api/maps | 1,514 | 825 | status 200 |
-
-### quick templates: cold p50/p95 924 / 4,791, warm p50/p95 767 / 4,816
+### Data routes: cold p50/p95 9.8 / 2,394, warm p50/p95 7.7 / 873
 
 | | cold | warm p50 | note |
 |---|---:|---:|---|
-| profile Germany | 1,066 | 1,060 |  |
-| profile Bavaria | 4,791 | 4,821 |  |
-| profile Berlin | 3,680 | 2,161 |  |
-| top Germany | 530 | 529 |  |
-| top Bavaria | 924 | 767 |  |
-| top France | 526 | 525 |  |
-| totals Europe | 2,120 | 2,131 |  |
-| totals United States | 4.9 | 1.7 |  |
-| compare France; Germany | 2,181 | 2,170 |  |
-| published Poland | 2.5 | 1.6 |  |
-| prices Germany | 535 | 529 |  |
+| GET /api/health | 4.8 | 5.9 | status 200 |
+| GET /api/catalog/search?q=solar%20capacity%20Germany | 1,009 | 2.6 | status 200 |
+| GET /api/catalog/atb | 1.8 | 1.6 | status 200 |
+| GET /api/places?q=Bavaria | 9.4 | 7.5 | status 200 |
+| GET /api/places?q=Lyon | 7.8 | 7.7 | status 200 |
+| GET /api/site?lon=11.58&lat=48.14&radius_km=50 | 195 | 26.2 | status 200 |
+| GET /api/areas/resolve?q=Bavaria | 39.7 | 37.0 | status 200 |
+| GET /api/areas/resolve?q=Berlin&level=city | 5.9 | 4.3 | status 200 |
+| GET /api/shapes/admin1/DEU | 536 | 402 | status 200 |
+| GET /api/quick | 5.7 | 1.6 | status 200 |
+| GET /api/quick/profile?area=Germany | 11.9 | 6.4 | status 200 |
+| GET /api/quick/top?area=Bavaria&n=10 | 155 | 147 | status 200 |
+| GET /api/quick/totals?area=Europe | 43,382 | 50.4 | status 200 |
+| GET /api/quick/published?area=France | 7.0 | 6.3 | status 200 |
+| GET /api/quick/prices?area=Germany | 9.8 | 9.8 | status 200 |
+| GET /api/report.json?lon=11.58&lat=48.14&radius_km=25&task=data_centre | 4.1 | 1.5 | status 422 |
+| GET /api/feed/DEU.json | 2,394 | 827 | status 200 |
+| POST /api/maps | 970 | 882 | status 200 |
 
-### resolve_area: cold p50/p95 347 / 1,646, warm p50/p95 15.8 / 141
-
-| | cold | warm p50 | note |
-|---|---:|---:|---|
-| Germany | 0.4 | 14.5 |  |
-| France | 13.7 | 12.8 |  |
-| Poland | 19.3 | 13.0 |  |
-| Spain | 14.8 | 12.2 |  |
-| Italy | 21.8 | 13.7 |  |
-| United States | 12.5 | 13.6 |  |
-| Nordics | 43.6 | 13.0 |  |
-| EU-27 | 280 | 116 |  |
-| Bavaria | 147 | 141 |  |
-| Lower Saxony | 1,592 | 60.7 |  |
-| Catalonia | 211 | 209 |  |
-| Lombardy | 1,920 | 52.6 |  |
-| Texas | 1,620 | 64.0 |  |
-| California | 732 | 24.4 |  |
-| Scotland | 1,441 | 15.6 |  |
-| Brittany | 3,643 | 295 |  |
-| Masovian Voivodeship | 1,646 | 40.9 |  |
-| North Rhine-Westphalia | 1,170 | 68.5 |  |
-| Andalusia | 1,646 | 53.5 |  |
-| Upper Bavaria | 10.3 | 10.2 | not resolved |
-| Harris County | 753 | 21.8 |  |
-| Cook County | 681 | 14.3 |  |
-| Kreis Steinfurt | 718 | 23.6 |  |
-| Greater Manchester | 448 | 26.8 |  |
-| Cornwall | 1,124 | 14.9 |  |
-| Berlin | 17.3 | 15.7 |  |
-| Paris | 401 | 15.3 |  |
-| Madrid | 292 | 15.6 |  |
-| Rome | 1,490 | 22.8 |  |
-| Warsaw | 354 | 14.5 |  |
-| Toulouse | 329 | 14.5 |  |
-| Lyon | 14.9 | 15.3 |  |
-| Hamburg | 335 | 15.2 |  |
-| Munich | 316 | 15.3 |  |
-| Vienna | 372 | 14.9 |  |
-| Amsterdam | 360 | 13.4 |  |
-| Copenhagen | 306 | 13.3 |  |
-| Dublin | 326 | 16.1 |  |
-| Lisbon | 301 | 15.0 |  |
-| Houston | 363 | 16.1 |  |
-| Leeds | 347 | 15.4 |  |
-| Manchester | 316 | 15.9 |  |
-| Kreuzberg | 937 | 15.5 |  |
-| Schwabing | 10.4 | 10.8 | not resolved |
-| Montmartre | 1,564 | 13.5 |  |
-| DE-LU | 20.2 | 13.2 |  |
-| NO2 | 1,414 | 130 |  |
-| IT-North | 19.0 | 13.6 |  |
-| Sicily | 1,035 | 108 |  |
-| Saxony-Anhalt | 1,602 | 42.4 |  |
-
-### area_stats: cold p50/p95 2.5 / 57.6, warm p50/p95 2.4 / 57.5
+### quick templates: cold p50/p95 214 / 1,891, warm p50/p95 2.3 / 1,463
 
 | | cold | warm p50 | note |
 |---|---:|---:|---|
-| people (city) | 2.4 | 2.4 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| people (region) | 60.0 | 57.5 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| built_up (city) | 2.0 | 1.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| built_up (region) | 57.6 | 56.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| land_cover (city) | 2.0 | 1.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| land_cover (region) | 57.1 | 68.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| slope (city) | 2.3 | 1.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| slope (region) | 55.1 | 55.0 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| solar (city) | 2.4 | 1.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| solar (region) | 60.1 | 56.3 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| wind (city) | 2.3 | 1.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| wind (region) | 53.5 | 52.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| profile Germany | 2.7 | 1.1 | prepared (Tier 0) |
+| profile Bavaria | 1,891 | 1,668 |  |
+| profile Berlin | 1,822 | 2.3 | prepared (Tier 0) |
+| top Germany | 1.0 | 0.9 | prepared (Tier 0) |
+| top Bavaria | 214 | 224 |  |
+| top France | 2.0 | 1.0 | prepared (Tier 0) |
+| totals Europe | 417 | 401 |  |
+| totals United States | 4.4 | 1.1 | prepared (Tier 0) |
+| compare France; Germany | 387 | 394 |  |
+| published Poland | 2.3 | 1.1 |  |
+| prices Germany | 279 | 86.1 |  |
+
+Tier 0 state: `{"hot_ready": true, "in_hot": true, "fingerprint_now": "0593519c48d5a165", "fingerprints_stored": [["0593519c48d5a165", 48090]], "checks": [{"name": "Germany", "area_id": "a_bbf226ffbb00", "keys": ["top:10:data_centres", "profile:10:plants", "totals:10:plants", "top:10:substations", "top:10:plants"], "ids_by_name": ["a_bbf226ffbb00"], "lookup": true}, {"name": "Bavaria", "area_id": "a_16f57dda3841", "keys": null, "ids_by_name": null, "lookup": false}, {"name": "Berlin", "area_id": "a_2e72c8cc188b", "keys": ["top:10:data_centres", "totals:10:plants", "top:10:substations", "top:10:plants", "profile:10:plants"], "ids_by_name": ["a_2e72c8cc188b"], "lookup": true}], "missing_flag": false}`
+
+### resolve_area: cold p50/p95 352 / 1,954, warm p50/p95 10.9 / 78.4
+
+| | cold | warm p50 | note |
+|---|---:|---:|---|
+| Germany | 0.3 | 9.9 |  |
+| France | 9.9 | 9.8 |  |
+| Poland | 16.1 | 9.3 |  |
+| Spain | 11.0 | 9.7 |  |
+| Italy | 15.9 | 9.6 |  |
+| United States | 9.1 | 8.6 |  |
+| Nordics | 29.1 | 9.1 |  |
+| EU-27 | 206 | 75.5 |  |
+| Bavaria | 74.4 | 75.1 |  |
+| Lower Saxony | 1,535 | 46.3 |  |
+| Catalonia | 118 | 112 |  |
+| Lombardy | 1,876 | 29.7 |  |
+| Texas | 1,954 | 35.1 |  |
+| California | 1,155 | 15.8 |  |
+| Scotland | 1,552 | 11.2 |  |
+| Brittany | 2,588 | 159 |  |
+| Masovian Voivodeship | 1,657 | 27.8 |  |
+| North Rhine-Westphalia | 1,277 | 41.2 |  |
+| Andalusia | 1,466 | 30.4 |  |
+| Upper Bavaria | 7.4 | 6.0 | not resolved |
+| Harris County | 1,257 | 13.2 |  |
+| Cook County | 1,484 | 9.8 |  |
+| Kreis Steinfurt | 2,609 | 11.5 |  |
+| Greater Manchester | 1,346 | 16.7 |  |
+| Cornwall | 1,027 | 9.4 |  |
+| Berlin | 10.3 | 10.3 |  |
+| Paris | 1,378 | 9.6 |  |
+| Madrid | 413 | 12.2 |  |
+| Rome | 1,220 | 12.8 |  |
+| Warsaw | 338 | 9.4 |  |
+| Toulouse | 318 | 8.0 |  |
+| Lyon | 8.5 | 8.5 |  |
+| Hamburg | 335 | 10.9 |  |
+| Munich | 351 | 9.4 |  |
+| Vienna | 417 | 10.1 |  |
+| Amsterdam | 352 | 9.6 |  |
+| Copenhagen | 314 | 8.9 |  |
+| Dublin | 324 | 10.9 |  |
+| Lisbon | 516 | 9.8 |  |
+| Houston | 384 | 10.9 |  |
+| Leeds | 334 | 10.6 |  |
+| Manchester | 326 | 10.9 |  |
+| Kreuzberg | 1,552 | 10.4 |  |
+| Schwabing | 6.7 | 6.2 | not resolved |
+| Montmartre | 1,436 | 8.7 |  |
+| DE-LU | 13.0 | 8.3 |  |
+| NO2 | 1,120 | 76.8 |  |
+| IT-North | 14.0 | 10.3 |  |
+| Sicily | 843 | 56.4 |  |
+| Saxony-Anhalt | 922 | 25.9 |  |
+
+### area_stats: cold p50/p95 4.4 / 35.4, warm p50/p95 2.7 / 32.2
+
+| | cold | warm p50 | note |
+|---|---:|---:|---|
+| people (city) | 1.7 | 1.6 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| people (region) | 35.7 | 32.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| built_up (city) | 1.8 | 1.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| built_up (region) | 41.1 | 32.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| land_cover (city) | 1.8 | 1.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| land_cover (region) | 32.6 | 31.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| slope (city) | 1.8 | 1.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| slope (region) | 33.6 | 32.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| solar (city) | 1.8 | 1.6 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| solar (region) | 31.8 | 31.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| wind (city) | 1.9 | 1.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| wind (region) | 31.7 | 32.0 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
 | flood (city) | 2.0 | 1.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| flood (region) | 52.0 | 51.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| heat_demand (city) | 2.0 | 1.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| heat_demand (region) | 51.7 | 51.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_eu_edo_cdi (city) | 2.0 | 1.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_eu_edo_cdi (region) | 51.0 | 51.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| flood (region) | 35.0 | 35.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| heat_demand (city) | 4.4 | 2.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| heat_demand (region) | 35.4 | 31.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_edo_cdi (city) | 2.1 | 1.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_edo_cdi (region) | 31.2 | 31.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
 | w9_eu_effis_danger (city) | 2.1 | 1.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_eu_effis_danger (region) | 51.6 | 51.0 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_eu_emodnet_bathy (city) | 2.0 | 1.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_eu_emodnet_bathy (region) | 49.6 | 48.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_eu_emodnet_vessel_density (city) | 1.9 | 1.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_eu_emodnet_vessel_density (region) | 49.6 | 48.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_us_marinecadastre_ais (city) | 1.9 | 1.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_us_marinecadastre_ais (region) | 48.9 | 48.1 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_us_noaa_slr (city) | 1.9 | 1.6 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_us_noaa_slr (region) | 49.2 | 328 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_us_usfs_whp (city) | 2.5 | 2.0 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_us_usfs_whp (region) | 49.1 | 49.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_world_gebco (city) | 2.2 | 2.4 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_world_gebco (region) | 48.1 | 48.4 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_world_nex_gddp (city) | 1.9 | 1.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
-| w9_world_nex_gddp (region) | 48.9 | 49.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_effis_danger (region) | 31.8 | 31.1 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_emodnet_bathy (city) | 2.1 | 1.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_emodnet_bathy (region) | 30.9 | 31.4 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_emodnet_vessel_density (city) | 2.2 | 1.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_emodnet_vessel_density (region) | 31.3 | 31.6 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_marinecadastre_ais (city) | 2.0 | 1.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_marinecadastre_ais (region) | 29.9 | 29.1 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_noaa_slr (city) | 2.0 | 1.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_noaa_slr (region) | 28.1 | 27.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_usfs_whp (city) | 2.0 | 1.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_usfs_whp (region) | 27.8 | 29.1 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_world_gebco (city) | 2.0 | 1.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_world_gebco (region) | 27.8 | 28.0 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_world_nex_gddp (city) | 2.0 | 1.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_world_nex_gddp (region) | 28.3 | 27.6 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
 
 ### Every table (slowest cold p95 first)
 
 | table | cold p50 | cold p95 | warm p50 | warm p95 | MB cold | GETs | notes |
 |---|---:|---:|---:|---:|---:|---:|---|
-| `power_plants_eu.ppm_plants` | 165 | 58,366 | 24.5 | 180 | 8.14 | 4 |  |
-| `outlines.divisions` | 20,271 | 54,547 | 48.7 | 146 | 5,874.35 | 3760 |  |
-| `wave9.gb_ea_flood_zones` | 3,779 | 51,661 | 4.0 | 76.0 | 2,603.06 | 1346 | city: TimeoutError: query stopped after 60 s; region: TimeoutError: query stopped after 60 s |
-| `overture_power.sites` | 1,787 | 42,796 | 50.6 | 2,816 | 278.80 | 121 |  |
-| `outlines.geostat_grid` | 3,122 | 40,397 | 425 | 3,230 | 181.86 | 106 |  |
-| `overture_power.lines` | 2,468 | 26,677 | 107 | 3,724 | 881.44 | 185 |  |
-| `main.outages` | 66.6 | 23,595 | 60.6 | 884 | 227.20 | 249 |  |
-| `overture_transport.segments` | 13,053 | 21,461 | 421 | 12,640 | 1,384.22 | 306 | region: TimeoutError: query stopped after 60 s |
-| `ev_eu.de` | 177 | 19,175 | 16.5 | 19,044 | 4.44 | 3 |  |
-| `rollups.wave9__de_zensus_heating_r7` | 164 | 12,616 | 163 | 12,112 | 0.00 | 0 |  |
-| `entsoe.unit_output` | 2,520 | 11,804 | 52.2 | 300 | 18.05 | 124 |  |
-| `wave9.eu_emodnet_mpa` | 906 | 10,839 | 876 | 2,944 | 349.18 | 90 |  |
-| `rollups.overture_power__sites_r7` | 5.2 | 10,073 | 5.1 | 10,020 | 0.00 | 0 |  |
-| `industrial.lcp` | 376 | 9,023 | 170 | 9,058 | 4.18 | 5 |  |
-| `wave9.it_istat_sezioni` | 2,867 | 8,978 | 577 | 6,198 | 1,424.34 | 188 |  |
-| `wave9.eu_kohesio_2014_2020` | 1,352 | 8,324 | 250 | 8,120 | 460.94 | 235 |  |
-| `industrial.installations` | 385 | 7,913 | 92.6 | 7,870 | 14.71 | 24 |  |
-| `main.plants` | 266 | 7,144 | 267 | 864 | 247.07 | 409 | region: TimeoutError: query stopped after 60 s |
-| `mastr.units_storage` | 292 | 7,123 | 98.2 | 1,359 | 320.70 | 167 |  |
-| `wave9.de_zensus_heating` | 3,051 | 7,053 | 3,056 | 3,092 | 66.59 | 80 | region: TimeoutError: query stopped after 60 s |
-| `wave9.cz_zsj` | 316 | 7,052 | 217 | 7,022 | 75.72 | 38 |  |
-| `industrial.air_releases` | 385 | 6,997 | 160 | 6,984 | 6.15 | 5 |  |
-| `wave9.eur_overture_comm_lines` | 164 | 6,942 | 164 | 6,952 | 0.00 | 0 |  |
-| `rollups.mastr__units_solar_r7` | 5.1 | 6,288 | 2.3 | 6,355 | 0.00 | 0 |  |
-| `afdc.stations` | 174 | 6,060 | 173 | 601 | 24.21 | 39 |  |
-| `rollups.overture_transport__segments_r7` | 6.1 | 5,985 | 6.0 | 5,981 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ti_oilm` | 1,958 | 5,840 | 10.9 | 297 | 2.12 | 49 |  |
-| `wave10.eu_nrg_stk_oam` | 4,137 | 5,275 | 37.4 | 487 | 1.81 | 103 |  |
-| `mastr.units_biomass` | 133 | 5,226 | 20.5 | 5,232 | 5.47 | 8 |  |
-| `industrial.water_releases` | 339 | 5,101 | 128 | 5,112 | 3.48 | 4 |  |
-| `mastr.units_solar` | 1,102 | 4,861 | 177 | 1,009 | 256.76 | 209 | region: TimeoutError: query stopped after 60 s |
-| `mastr.units_combustion` | 144 | 4,084 | 36.4 | 4,092 | 6.48 | 5 |  |
-| `wave10.eu_env_ac_pefasu` | 286 | 4,039 | 31.6 | 492 | 4.01 | 17 |  |
-| `entsoe.generation` | 2,228 | 3,478 | 17.2 | 123 | 2.70 | 113 |  |
-| `entsoe.capacity` | 30.8 | 3,282 | 4.8 | 7.0 | 1.31 | 19 |  |
-| `rollups.mastr__units_solar_r6` | 3.2 | 3,271 | 2.8 | 3,271 | 0.00 | 0 |  |
-| `wave9.at_zaehlsprengel` | 280 | 3,247 | 295 | 3,199 | 95.39 | 33 |  |
-| `wave10.eu_nrg_te_oilm` | 1,497 | 3,239 | 15.6 | 445 | 2.05 | 51 |  |
-| `rollups.overture_power__lines_r7` | 4.9 | 3,114 | 3.9 | 3,100 | 0.00 | 0 |  |
-| `protected.natura2000` | 340 | 3,048 | 316 | 3,047 | 32.31 | 17 |  |
-| `mastr.units_hydro` | 19.0 | 3,022 | 16.4 | 3,021 | 0.00 | 0 |  |
-| `aqueduct.baseline_annual` | 1,991 | 2,863 | 603 | 2,028 | 450.87 | 104 |  |
-| `wave10.eu_nrg_cb_oil` | 198 | 2,855 | 13.6 | 349 | 2.62 | 18 |  |
-| `wave10.eu_nrg_stk_oilm` | 408 | 2,747 | 18.3 | 453 | 3.79 | 17 |  |
-| `gem.integrated_power_power_facilities` | 488 | 2,745 | 175 | 2,852 | 4.38 | 8 |  |
-| `grw.solar` | 438 | 2,743 | 508 | 2,695 | 112.13 | 47 |  |
-| `outlines.adm2` | 428 | 2,624 | 412 | 560 | 136.11 | 65 |  |
-| `rollups.overture_transport__segments_r6` | 3.3 | 2,580 | 2.7 | 2,573 | 0.00 | 0 |  |
-| `outlines.uk_ons` | 720 | 2,537 | 707 | 937 | 191.03 | 52 |  |
-| `grw.wind` | 1,078 | 2,534 | 533 | 1,686 | 27.17 | 39 |  |
-| `rollups.overture_power__sites_r6` | 3.8 | 2,492 | 2.5 | 2,505 | 0.00 | 0 |  |
-| `wave9.us_usgs_landslides` | 921 | 2,433 | 215 | 2,482 | 39.77 | 44 |  |
-| `entsoe.flows` | 1,621 | 2,349 | 7.1 | 46.9 | 23.21 | 45 |  |
-| `wave9.eu_emodnet_substrate` | 331 | 2,302 | 332 | 665 | 85.54 | 35 |  |
-| `wave10.eu_env_ac_aeint_r2` | 218 | 2,280 | 26.8 | 402 | 6.54 | 12 |  |
-| `mastr.units_wind` | 194 | 2,208 | 34.1 | 2,177 | 5.43 | 8 |  |
-| `outlines.small_areas` | 468 | 2,173 | 496 | 698 | 93.11 | 35 |  |
-| `wave9.us_usgs_mrds` | 542 | 2,164 | 35.6 | 568 | 24.67 | 22 |  |
-| `eaglei.outages` | 37.9 | 2,147 | 29.7 | 48.4 | 15.73 | 29 |  |
-| `wave10.eu_env_ac_egss2` | 15.1 | 2,128 | 14.9 | 351 | 2.95 | 12 |  |
-| `rollups.wave9__de_zensus_heating_r6` | 167 | 2,115 | 162 | 2,118 | 0.00 | 0 |  |
-| `dams.reservoirs` | 722 | 2,066 | 619 | 821 | 189.68 | 47 |  |
-| `wave10.eu_nrg_cb_oilm` | 19.8 | 2,052 | 17.9 | 310 | 2.32 | 6 |  |
-| `outlines.us_tracts` | 844 | 2,032 | 739 | 1,254 | 138.37 | 22 |  |
-| `wave10.eu_env_ac_ainah_r2` | 525 | 2,018 | 54.1 | 498 | 33.44 | 19 |  |
-| `app.world_plants` | 21.9 | 2,006 | 4.3 | 2,049 | 0.24 | 5 |  |
-| `wave9.gb_he_listed` | 976 | 1,916 | 750 | 1,943 | 39.83 | 34 |  |
-| `main.water_risk` | 1,039 | 1,862 | 583 | 1,579 | 347.28 | 46 |  |
-| `aqueduct.basins` | 427 | 1,860 | 430 | 764 | 120.21 | 53 |  |
-| `wave9.world_ourairports` | 181 | 1,825 | 27.4 | 577 | 6.33 | 7 |  |
-| `rollups.overture_power__lines_r6` | 3.3 | 1,732 | 2.6 | 1,716 | 0.00 | 0 |  |
-| `wave9.es_ine_secciones` | 283 | 1,720 | 248 | 369 | 66.72 | 33 |  |
-| `wave9.us_epa_repowering` | 325 | 1,679 | 145 | 508 | 14.52 | 13 |  |
-| `wave9.us_nyc_ll84` | 361 | 1,661 | 98.1 | 367 | 19.59 | 14 |  |
-| `rollups.overture_power__sites_r5` | 4.5 | 1,622 | 3.8 | 1,666 | 0.00 | 0 |  |
-| `wave9.us_noaa_storm_events` | 182 | 1,616 | 36.6 | 374 | 6.43 | 7 |  |
-| `wave9.fr_georisques_ssp` | 510 | 1,597 | 326 | 549 | 35.05 | 11 |  |
-| `outlines.fr_iris` | 575 | 1,556 | 661 | 742 | 159.41 | 43 |  |
-| `wave9.us_opportunity_zones` | 194 | 1,548 | 176 | 237 | 56.70 | 29 |  |
-| `wave9.eu_emodnet_msp_zoning` | 317 | 1,527 | 320 | 374 | 72.27 | 36 |  |
-| `rollups.mastr__units_storage_r7` | 2.5 | 1,486 | 2.0 | 1,454 | 0.00 | 0 |  |
-| `protected.padus` | 989 | 1,481 | 154 | 1,102 | 229.67 | 47 |  |
-| `ev_eu.at` | 4.1 | 1,461 | 3.9 | 1,466 | 0.00 | 0 |  |
-| `wave9.us_noaa_mpa` | 154 | 1,456 | 147 | 1,827 | 133.16 | 35 |  |
-| `outlines.us_cousub` | 753 | 1,437 | 502 | 943 | 101.10 | 17 |  |
-| `wave10.eu_nrg_bal_s` | 14.6 | 1,412 | 15.5 | 230 | 2.72 | 4 |  |
-| `rollups.overture_power__lines_r5` | 4.0 | 1,388 | 3.6 | 1,421 | 0.00 | 0 |  |
-| `outlines.nl_cbs` | 224 | 1,388 | 228 | 798 | 72.46 | 25 |  |
-| `wave9.ee_grid` | 164 | 1,379 | 12.1 | 168 | 2.24 | 5 |  |
-| `rollups.mastr__units_storage_r6` | 2.8 | 1,166 | 2.2 | 1,166 | 0.00 | 0 |  |
-| `rollups.mastr__units_solar_r5` | 3.4 | 1,164 | 2.7 | 1,148 | 0.00 | 0 |  |
-| `small_area_energy.consumption` | 267 | 1,159 | 6.8 | 69.4 | 42.00 | 28 |  |
-| `eia930.demand` | 649 | 1,130 | 35.0 | 67.5 | 37.19 | 36 |  |
-| `dams.barriers` | 167 | 1,120 | 19.1 | 316 | 4.91 | 10 |  |
-| `outlines.us_places` | 705 | 1,095 | 406 | 793 | 73.34 | 14 |  |
-| `wave10.eu_env_ac_co2fp` | 2.8 | 1,074 | 2.6 | 53.7 | 22.24 | 16 |  |
-| `places.cities` | 180 | 1,047 | 13.3 | 416 | 2.35 | 3 |  |
-| `wave9.ie_seai_ber` | 397 | 1,042 | 21.0 | 607 | 5.31 | 9 |  |
-| `wave9.eu_eshm20` | 136 | 1,036 | 130 | 1,042 | 0.00 | 0 |  |
-| `wave9.us_smu_heat_flow` | 183 | 1,018 | 178 | 182 | 12.67 | 11 |  |
-| `wave10.gb_desnz_ghg_dataset` | 14.9 | 988 | 14.0 | 677 | 5.48 | 3 |  |
-| `wave10.eu_env_ac_ghgfp` | 2.1 | 944 | 1.8 | 36.0 | 21.98 | 14 |  |
-| `wave10.eu_env_ac_ch4fp` | 2.3 | 934 | 1.8 | 27.8 | 7.48 | 12 |  |
-| `wave9.us_usseabed` | 186 | 915 | 180 | 631 | 1.26 | 5 |  |
-| `wave9.be_elia_balancing` | 2.0 | 908 | 1.9 | 44.7 | 20.19 | 12 |  |
-| `entsoe.forecast_wind_solar` | 876 | 904 | 13.9 | 30.8 | 0.05 | 11 |  |
-| `rollups.overture_transport__segments_r5` | 3.2 | 878 | 2.4 | 876 | 0.00 | 0 |  |
-| `wave9.world_ihfc_heat_flow` | 140 | 866 | 25.5 | 406 | 5.27 | 5 |  |
-| `rollups.mastr__units_storage_r5` | 3.4 | 851 | 3.0 | 849 | 0.00 | 0 |  |
-| `wave9.gb_srn` | 270 | 832 | 87.8 | 560 | 15.86 | 10 |  |
-| `wave9.us_usaspending_doe` | 34.0 | 819 | 23.0 | 598 | 2.83 | 2 |  |
-| `main.prices` | 525 | 794 | 102 | 188 | 3.29 | 5 |  |
-| `wave10.eu_env_ac_io10` | 18.6 | 790 | 17.1 | 577 | 2.56 | 2 |  |
-| `wave10.eu_env_ac_hfcfp` | 2.4 | 785 | 2.3 | 40.1 | 12.60 | 17 |  |
-| `entsoe.prices` | 559 | 779 | 9.8 | 27.6 | 2.26 | 4 |  |
-| `wave9.us_epa_frs_cleanups` | 134 | 777 | 13.2 | 294 | 3.44 | 5 |  |
-| `wave9.fi_statfin_heating_fuel_municipality` | 20.0 | 761 | 17.1 | 716 | 0.00 | 0 |  |
-| `euets.verified_emissions` | 34.8 | 748 | 33.4 | 146 | 4.26 | 5 |  |
-| `wave10.eu_env_ac_n2ofp` | 2.4 | 737 | 2.2 | 24.6 | 8.25 | 13 |  |
-| `wave9.us_eia_gas_pipelines` | 164 | 726 | 13.9 | 546 | 4.39 | 5 |  |
-| `wave9.us_natcarb` | 470 | 725 | 176 | 730 | 5.74 | 9 |  |
-| `co2stop.dic_geocgraph_area` | 1.4 | 715 | 1.0 | 1.2 | 0.08 | 2 |  |
-| `wave9.eu_eea_aq_stats` | 169 | 702 | 164 | 706 | 0.00 | 0 |  |
-| `wave9.ie_cso_saps_heating` | 590 | 701 | 9.1 | 53.4 | 10.45 | 8 |  |
-| `egrid.plants` | 177 | 698 | 166 | 173 | 2.92 | 7 |  |
-| `wave10.eu_env_ac_rmefd` | 20.9 | 694 | 19.5 | 683 | 0.00 | 0 |  |
-| `wave9.eu_egdi_minerals` | 165 | 693 | 167 | 704 | 0.00 | 0 |  |
-| `euets.eea_link` | 176 | 692 | 175 | 691 | 0.00 | 0 |  |
-| `ev_eu.be` | 87.7 | 685 | 2.8 | 93.9 | 0.61 | 2 |  |
-| `atb.electricity` | 290 | 677 | 9.2 | 25.2 | 6.43 | 8 |  |
-| `history.wave9__gb_brownfield_register` | 181 | 677 | 175 | 178 | 4.15 | 3 |  |
-| `wave10.eu_env_ac_nf3sf6fp` | 1.9 | 672 | 1.6 | 13.2 | 1.86 | 11 |  |
-| `wave9.gb_brownfield_register` | 188 | 671 | 127 | 280 | 4.17 | 7 |  |
-| `eia930.interchange` | 2.4 | 657 | 2.4 | 22.1 | 4.33 | 6 |  |
-| `wave9.eu_emodnet_port_goods` | 10.7 | 655 | 10.8 | 649 | 0.00 | 0 |  |
-| `wave9.lv_csp_central_heating` | 7.8 | 647 | 6.7 | 619 | 0.00 | 0 |  |
-| `wave9.fr_ore_ev_commune` | 1.8 | 646 | 1.7 | 12.8 | 2.20 | 3 |  |
-| `wave9.gr_admie_balancing` | 1.7 | 641 | 1.5 | 19.8 | 9.36 | 6 |  |
-| `wave9.us_epa_aqs_annual` | 170 | 620 | 34.4 | 460 | 3.62 | 4 |  |
-| `wave9.us_usgs_nshm` | 304 | 620 | 216 | 480 | 9.82 | 5 |  |
-| `app.eu_lines` | 160 | 617 | 161 | 614 | 0.15 | 2 |  |
-| `gem.methane_emitters_pipelines` | 1.5 | 610 | 1.1 | 1.4 | 0.90 | 2 |  |
-| `eia930.generation_by_fuel` | 1.7 | 608 | 1.5 | 16.9 | 4.50 | 6 |  |
-| `wave10.eu_nrg_te_oil` | 25.9 | 604 | 22.6 | 604 | 0.00 | 0 |  |
-| `co2stop.daughter_units_summary` | 2.1 | 603 | 1.6 | 2.1 | 0.53 | 3 |  |
-| `small_area_energy.poverty` | 9.2 | 600 | 9.2 | 35.7 | 3.67 | 4 |  |
-| `history.connect_eu__es_dso` | 87.8 | 596 | 2.8 | 96.4 | 0.14 | 2 |  |
-| `wave10.eu_env_ac_pfcfp` | 1.8 | 591 | 1.6 | 20.1 | 1.58 | 14 |  |
-| `co2stop.dic_availabledata` | 585 | 585 | 1.3 | 1.3 | 0.06 | 2 |  |
-| `history.pse_capacity__requests` | 2.9 | 584 | 1.6 | 2.8 | 0.05 | 2 |  |
-| `esb_heatmap.transformers` | 139 | 583 | 136 | 146 | 2.74 | 5 |  |
-| `osm.eu_lines` | 126 | 578 | 61.2 | 127 | 14.11 | 8 |  |
-| `ev_eu.mt` | 124 | 577 | 2.7 | 139 | 0.12 | 3 |  |
-| `ev_eu.pt` | 170 | 576 | 5.2 | 174 | 0.42 | 2 |  |
-| `entsog.points` | 3.1 | 574 | 2.2 | 3.0 | 0.47 | 2 |  |
-| `gem.iron_steel_open_hearth_furnaces` | 1.2 | 572 | 1.1 | 1.2 | 0.27 | 2 |  |
-| `ev_eu.se` | 91.7 | 571 | 2.8 | 97.2 | 0.50 | 3 |  |
-| `wave10.eu_env_ac_ainah_rd` | 26.7 | 570 | 23.9 | 187 | 3.90 | 2 |  |
-| `gem.coal_mines_non_closed_mines` | 148 | 570 | 132 | 146 | 1.05 | 3 |  |
-| `ev_eu.fi` | 90.9 | 568 | 2.3 | 97.8 | 0.24 | 3 |  |
-| `gem.iron_steel_plant_production` | 1.8 | 565 | 1.5 | 1.7 | 0.02 | 1 |  |
-| `history.esb_heatmap__transformers` | 91.9 | 564 | 90.4 | 92.3 | 2.74 | 5 |  |
-| `eaglei.counties` | 2.1 | 564 | 1.2 | 2.0 | 0.09 | 2 |  |
-| `connect_eu.dk` | 163 | 560 | 161 | 165 | 0.17 | 3 |  |
-| `main.emissions` | 2.0 | 556 | 1.8 | 7.7 | 1.19 | 3 |  |
-| `wave10.eu_nrg_ti_oil` | 18.1 | 556 | 17.2 | 630 | 0.00 | 0 |  |
-| `co2stop.dic_surfissues` | 554 | 554 | 1.4 | 1.4 | 0.12 | 2 |  |
-| `co2stop.sum_output` | 2.1 | 552 | 1.6 | 1.9 | 0.04 | 2 |  |
-| `entsoe.transmission_outages` | 3.9 | 552 | 2.1 | 13.7 | 0.17 | 2 |  |
-| `co2stop.total_storecap_nolargestorage_countries` | 1.6 | 551 | 1.2 | 1.5 | 0.06 | 2 |  |
-| `co2stop.dic_fault_extent` | 551 | 551 | 1.5 | 1.5 | 0.04 | 2 |  |
-| `gem.coal_mines_closed_mines` | 179 | 551 | 168 | 168 | 0.15 | 4 |  |
-| `history.connect_eu__lu` | 134 | 550 | 3.9 | 149 | 0.03 | 2 |  |
-| `capareseau.substations` | 130 | 549 | 4.8 | 136 | 0.42 | 3 |  |
-| `co2stop.hydrocarbon_traps1` | 142 | 548 | 140 | 141 | 0.12 | 2 |  |
-| `ev_eu.cz` | 143 | 548 | 3.4 | 313 | 1.38 | 6 |  |
-| `gem.gas_infrastructure_data` | 2.0 | 547 | 1.7 | 2.0 | 0.57 | 2 |  |
-| `gem.iron_ore_mines_main_data` | 1.5 | 546 | 1.2 | 1.5 | 1.48 | 2 |  |
-| `co2stop.dic_age` | 544 | 544 | 1.1 | 1.1 | 0.04 | 2 |  |
-| `gem.coal_mines_historical_production_china` | 1.3 | 544 | 1.2 | 1.3 | 1.74 | 2 |  |
-| `co2stop.dic_on_offshore` | 544 | 544 | 1.3 | 1.3 | 0.13 | 2 |  |
-| `connect_eu.es_dso` | 88.8 | 541 | 2.9 | 94.6 | 0.18 | 2 |  |
-| `gem.oil_infrastructure_data` | 1.9 | 540 | 1.4 | 1.6 | 0.84 | 2 |  |
-| `history.connect_eu__bg` | 138 | 539 | 3.3 | 146 | 0.06 | 2 |  |
-| `ev_eu.ee` | 167 | 539 | 3.7 | 170 | 0.72 | 3 |  |
-| `connect_eu.lu` | 128 | 539 | 3.6 | 138 | 0.68 | 2 |  |
-| `connect_eu.bg` | 126 | 539 | 3.4 | 138 | 1.74 | 2 |  |
-| `ev_eu.lt` | 88.4 | 537 | 2.3 | 91.3 | 0.05 | 2 |  |
-| `co2stop.hydrocarbon_formations` | 103 | 535 | 94.3 | 100 | 0.13 | 3 |  |
-| `gem.cement_final_data` | 2.2 | 530 | 1.7 | 2.1 | 0.50 | 3 |  |
-| `ev_eu.ie` | 170 | 529 | 3.8 | 170 | 0.24 | 3 |  |
-| `ev_eu.gr` | 136 | 523 | 4.3 | 144 | 2.09 | 5 |  |
-| `gem.iron_steel_blast_furnace_relinings` | 1.8 | 522 | 1.4 | 1.8 | 0.15 | 2 |  |
-| `wave9.se_svk_reserves` | 2.0 | 513 | 1.9 | 69.3 | 12.55 | 6 |  |
-| `wave9.us_nrhp` | 176 | 510 | 38.6 | 517 | 6.94 | 5 |  |
-| `aqueduct.future_annual` | 16.5 | 507 | 15.7 | 16.9 | 7.04 | 5 |  |
-| `entsoe.load` | 416 | 498 | 6.8 | 15.8 | 2.20 | 22 |  |
-| `nl_capacity.areas` | 166 | 486 | 162 | 477 | 0.00 | 0 |  |
-| `wave9.us_usgs_nwis_sites` | 272 | 477 | 37.3 | 492 | 7.72 | 7 |  |
-| `wave10.eu_env_ac_pefafp` | 4.6 | 471 | 4.4 | 480 | 0.00 | 0 |  |
-| `wave9.de_regelleistung` | 3.3 | 465 | 3.2 | 18.4 | 2.46 | 3 |  |
-| `wave10.eu_env_ac_aibrid_r2` | 14.2 | 461 | 17.3 | 92.5 | 2.65 | 2 |  |
-| `aqueduct.baseline_monthly` | 14.1 | 453 | 5.7 | 12.1 | 4.81 | 4 |  |
-| `wave9.be_fluvius_consumption` | 2.1 | 431 | 2.1 | 16.2 | 5.89 | 4 |  |
-| `wave9.dk_energinet_reserves` | 1.7 | 406 | 1.3 | 13.0 | 3.11 | 3 |  |
-| `ev_eu.nl` | 180 | 398 | 19.2 | 182 | 3.35 | 2 |  |
-| `wave9.eu_tent_network` | 18.1 | 391 | 13.7 | 394 | 0.00 | 0 |  |
-| `shapes.nuts` | 3.7 | 383 | 3.0 | 386 | 0.00 | 0 |  |
-| `outlines.urban_centres` | 320 | 383 | 194 | 383 | 10.83 | 6 |  |
-| `wave9.pl_pse_balancing` | 188 | 381 | 1.7 | 11.2 | 2.60 | 4 |  |
-| `rollups.wave9__de_zensus_heating_r5` | 127 | 374 | 126 | 372 | 0.00 | 0 |  |
-| `wave9.si_surs_heating_settlement` | 353 | 358 | 4.9 | 348 | 0.66 | 1 |  |
-| `wave10.gb_desnz_ghg_la` | 2.8 | 349 | 2.6 | 20.6 | 2.95 | 2 |  |
-| `gem.oil_gas_extraction_field_level_main_data` | 136 | 322 | 127 | 129 | 0.10 | 1 |  |
-| `wave10.eu_nrg_ti_coifpm` | 13.8 | 320 | 9.9 | 327 | 0.00 | 0 |  |
-| `wave9.de_bfee_abwaerme` | 21.3 | 313 | 17.3 | 18.3 | 2.34 | 2 |  |
-| `wave10.eu_nrg_stk_oom` | 17.7 | 311 | 17.1 | 310 | 0.00 | 0 |  |
-| `shapes.admin1` | 206 | 310 | 219 | 281 | 0.00 | 0 |  |
-| `wave10.eu_nrg_te_gasm` | 12.5 | 304 | 17.0 | 312 | 0.00 | 0 |  |
-| `app.eu_plants` | 29.6 | 304 | 2.4 | 302 | 0.00 | 0 |  |
-| `osm.eu_buses` | 6.6 | 297 | 6.3 | 284 | 0.00 | 0 |  |
-| `app.eu_substations` | 163 | 292 | 163 | 292 | 0.00 | 0 |  |
-| `wave9.us_iso_as_prices` | 232 | 286 | 3.0 | 257 | 0.07 | 1 |  |
-| `ev_eu.fr` | 160 | 282 | 22.4 | 174 | 3.88 | 3 |  |
-| `main.grid_capacity` | 9.9 | 282 | 9.7 | 10.9 | 0.07 | 6 |  |
-| `wave9.nl_cbs_solar` | 3.2 | 280 | 1.8 | 2.9 | 0.14 | 1 |  |
-| `wave10.eu_nrg_ti_sff` | 12.4 | 279 | 10.4 | 216 | 0.00 | 0 |  |
-| `wave9.gb_ne_alc` | 87.0 | 255 | 84.8 | 266 | 0.00 | 0 |  |
-| `mastr.units_other` | 7.1 | 250 | 6.2 | 243 | 0.00 | 0 |  |
-| `wave9.us_ira_energy_communities` | 67.6 | 239 | 47.3 | 238 | 0.00 | 0 |  |
-| `wave9.us_boem_active_leases` | 171 | 225 | 175 | 223 | 0.00 | 0 |  |
-| `wave9.world_ourairports_navaids` | 8.2 | 221 | 7.9 | 224 | 0.00 | 0 |  |
-| `shapes.admin1_simplified` | 170 | 221 | 167 | 219 | 0.00 | 0 |  |
-| `wave9.us_fhwa_afc` | 44.9 | 220 | 33.5 | 223 | 0.00 | 0 |  |
-| `connect.harmonised` | 16.6 | 215 | 16.2 | 226 | 0.00 | 0 |  |
-| `wave9.gb_nged_opendata` | 134 | 214 | 125 | 159 | 0.83 | 1 |  |
-| `power_plants_eu.jrc_units` | 164 | 209 | 168 | 214 | 0.00 | 0 |  |
-| `wave10.eu_nrg_d_indq_n` | 13.6 | 205 | 13.2 | 150 | 0.00 | 0 |  |
-| `gem.energy_ownership_coal_plant_ownership` | 1.8 | 204 | 1.6 | 2.5 | 0.00 | 1 |  |
-| `wave10.eu_nrg_ti_gasm` | 8.5 | 203 | 8.4 | 137 | 0.00 | 0 |  |
-| `gem.energy_ownership_gas_plant_ownership` | 1.8 | 200 | 1.5 | 2.0 | 0.00 | 1 |  |
-| `connect_eu.gb_dso` | 7.6 | 200 | 7.8 | 198 | 0.00 | 0 |  |
-| `app.us_plants` | 21.2 | 198 | 2.0 | 202 | 0.00 | 0 |  |
-| `tyndp.projects` | 4.2 | 195 | 3.9 | 194 | 0.00 | 0 |  |
-| `wave9.gb_emr_cm_register` | 6.5 | 190 | 5.2 | 6.4 | 0.64 | 1 |  |
-| `wave9.us_epa_lmop_landfills` | 4.6 | 189 | 4.2 | 185 | 0.00 | 0 |  |
-| `history.connect_eu__ee` | 3.7 | 186 | 3.4 | 167 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_hydrocarbon_licences` | 9.4 | 185 | 9.2 | 179 | 0.00 | 0 |  |
-| `connect_eu.cz` | 173 | 185 | 172 | 179 | 0.00 | 0 |  |
-| `hydrogen.projects` | 166 | 184 | 167 | 181 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_wind_farms` | 4.0 | 182 | 3.2 | 168 | 0.00 | 0 |  |
-| `wave9.gb_npg_heatmap_substations` | 174 | 182 | 175 | 182 | 0.00 | 0 |  |
-| `wave9.gb_ssen_opendata` | 7.4 | 182 | 6.5 | 170 | 0.00 | 0 |  |
-| `gem.methane_emitters_coal_mines_non_closed` | 175 | 181 | 174 | 178 | 0.00 | 0 |  |
-| `history.connect_eu__cz` | 175 | 180 | 173 | 186 | 0.00 | 0 |  |
-| `gem.coal_terminals_terminals` | 178 | 180 | 176 | 177 | 0.00 | 0 |  |
-| `registers.pt` | 4.4 | 180 | 4.1 | 179 | 0.00 | 0 |  |
-| `co2stop.hydrocarbon_traps_temp` | 176 | 179 | 175 | 178 | 0.00 | 0 |  |
-| `wave9.us_eia_crude_pipelines` | 170 | 179 | 174 | 176 | 0.00 | 0 |  |
-| `wave9.us_eia_product_pipelines` | 174 | 178 | 174 | 178 | 0.00 | 0 |  |
-| `wave9.fr_emodnet_telecom_sigcables` | 3.7 | 178 | 3.3 | 184 | 0.00 | 0 |  |
-| `gem.gas_infrastructure_lng_terminals` | 173 | 178 | 176 | 179 | 0.00 | 0 |  |
-| `ev_eu.hr` | 3.8 | 177 | 3.2 | 213 | 0.00 | 0 |  |
-| `wave9.de_emodnet_telecom_bsh` | 4.3 | 176 | 3.9 | 168 | 0.00 | 0 |  |
-| `history.connect_eu__mt` | 173 | 175 | 172 | 185 | 0.00 | 0 |  |
-| `wave9.us_usgs_geoelectric` | 171 | 174 | 168 | 173 | 0.00 | 0 |  |
-| `wave9.us_eia_ethanol` | 3.7 | 174 | 2.9 | 171 | 0.00 | 0 |  |
-| `connect_eu.mt` | 173 | 174 | 173 | 174 | 0.00 | 0 |  |
-| `co2stop.hydrocarbon_storage_units` | 163 | 173 | 162 | 169 | 0.00 | 0 |  |
-| `registers.gb` | 6.7 | 173 | 5.6 | 172 | 0.00 | 0 |  |
-| `wave9.us_eia_gas_storage` | 4.4 | 173 | 3.9 | 175 | 0.00 | 0 |  |
-| `osm.cables` | 3.7 | 172 | 3.0 | 164 | 0.00 | 0 |  |
-| `wave9.eu_jrc_coastal_flood` | 165 | 172 | 165 | 170 | 0.00 | 0 |  |
-| `wave9.world_ourairports_runways` | 8.2 | 171 | 6.7 | 166 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_desalination` | 131 | 170 | 127 | 172 | 0.00 | 0 |  |
-| `wave9.us_drought_monitor` | 164 | 170 | 163 | 170 | 0.00 | 0 |  |
-| `wave9.us_eia_refineries` | 4.1 | 170 | 3.7 | 174 | 0.00 | 0 |  |
-| `wave9.mt_emodnet_telecom` | 2.9 | 170 | 2.4 | 169 | 0.00 | 0 |  |
-| `history.connect_eu__dk` | 162 | 169 | 166 | 175 | 0.00 | 0 |  |
-| `gem.methane_emitters_oil_and_gas_extraction_areas` | 163 | 168 | 167 | 170 | 0.00 | 0 |  |
-| `ev_eu.ro` | 3.0 | 168 | 2.5 | 164 | 0.00 | 0 |  |
-| `gem.methane_emitters_oil_and_gas_reserves` | 167 | 168 | 167 | 167 | 0.00 | 0 |  |
-| `history.capareseau__substations` | 5.5 | 168 | 4.4 | 171 | 0.00 | 0 |  |
-| `ev_eu.es` | 3.6 | 168 | 3.0 | 166 | 0.00 | 0 |  |
-| `wave9.gb_pins_dco` | 161 | 168 | 161 | 166 | 0.00 | 0 |  |
-| `connect_eu.ee` | 3.6 | 168 | 3.0 | 164 | 0.00 | 0 |  |
-| `ev_eu.bg` | 3.4 | 167 | 3.0 | 162 | 0.00 | 0 |  |
-| `ev_eu.it` | 6.7 | 167 | 6.0 | 169 | 0.00 | 0 |  |
-| `history.connect_eu__gb_dso` | 7.6 | 167 | 6.4 | 169 | 0.00 | 0 |  |
-| `entsoe.imbalance_price` | 89.4 | 167 | 70.0 | 141 | 0.79 | 3 |  |
-| `history.registers__ie` | 163 | 166 | 165 | 167 | 0.00 | 0 |  |
-| `ev_eu.lu` | 3.2 | 165 | 2.8 | 166 | 0.00 | 0 |  |
-| `history.registers__dk` | 3.7 | 165 | 3.2 | 165 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_ocean_energy` | 5.2 | 165 | 4.7 | 166 | 0.00 | 0 |  |
-| `ev_eu.si` | 3.3 | 164 | 2.8 | 163 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_pehcf` | 13.7 | 164 | 14.9 | 163 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_pipelines` | 46.0 | 163 | 41.3 | 151 | 0.00 | 0 |  |
-| `ev_eu.gb` | 5.6 | 161 | 4.7 | 163 | 0.00 | 0 |  |
-| `app.data_centres` | 128 | 154 | 125 | 153 | 0.00 | 0 |  |
-| `history.registers__se` | 5.8 | 151 | 5.3 | 146 | 0.00 | 0 |  |
-| `wave9.us_eia_lng` | 2.9 | 148 | 2.4 | 140 | 0.00 | 0 |  |
-| `registers.ie` | 136 | 144 | 136 | 144 | 0.00 | 0 |  |
-| `wave9.fr_emodnet_telecom_shom` | 2.9 | 144 | 2.2 | 142 | 0.00 | 0 |  |
-| `wave9.us_blm_solar_dla` | 3.2 | 143 | 2.2 | 143 | 0.00 | 0 |  |
-| `osm.eu_links` | 3.7 | 143 | 3.0 | 140 | 0.00 | 0 |  |
-| `wave9.us_epa_lmop` | 3.3 | 143 | 2.6 | 142 | 0.00 | 0 |  |
-| `wave9.us_boem_wind_leases` | 126 | 142 | 125 | 138 | 0.00 | 0 |  |
-| `wave9.us_eia_biodiesel` | 3.1 | 142 | 2.2 | 144 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_platforms` | 3.6 | 142 | 3.1 | 138 | 0.00 | 0 |  |
-| `wave9.gb_defra_aurn` | 131 | 140 | 128 | 140 | 0.00 | 0 |  |
-| `wave10.eu_env_esst_ggcp` | 7.4 | 139 | 7.1 | 84.4 | 0.00 | 0 |  |
-| `wave9.dk_district_heating` | 7.5 | 138 | 4.6 | 140 | 0.00 | 0 |  |
-| `registers.se` | 5.4 | 137 | 5.0 | 134 | 0.00 | 0 |  |
-| `wave9.us_eia_crude_rail` | 127 | 136 | 124 | 135 | 0.00 | 0 |  |
-| `wave9.eu_salt_caverns` | 124 | 135 | 124 | 134 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_military` | 3.9 | 134 | 2.8 | 130 | 0.00 | 0 |  |
-| `ghgrp.facilities` | 3.4 | 134 | 2.9 | 130 | 0.00 | 0 |  |
-| `wave9.us_eia_product_terminals` | 2.9 | 133 | 2.2 | 133 | 0.00 | 0 |  |
-| `uk_pi.releases` | 130 | 133 | 131 | 133 | 0.00 | 0 |  |
-| `wave9.gb_hnpd` | 124 | 133 | 124 | 135 | 0.00 | 0 |  |
-| `wave9.us_eia_hgl_pipelines` | 126 | 133 | 121 | 128 | 0.00 | 0 |  |
-| `history.registers__pt` | 3.4 | 132 | 3.2 | 130 | 0.00 | 0 |  |
-| `wave9.us_nexrad` | 124 | 132 | 126 | 132 | 0.00 | 0 |  |
-| `ev_eu.hu` | 2.6 | 131 | 2.0 | 128 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_aggregates` | 4.0 | 131 | 3.1 | 129 | 0.00 | 0 |  |
-| `mastr.units_nuclear` | 5.0 | 131 | 4.5 | 129 | 0.00 | 0 |  |
-| `shapes.bidding_zones` | 127 | 131 | 126 | 128 | 0.00 | 0 |  |
-| `ev_eu.pl` | 2.8 | 130 | 2.1 | 124 | 0.00 | 0 |  |
-| `co2stop.hydrocarbon_traps` | 124 | 130 | 124 | 126 | 0.00 | 0 |  |
-| `ev_eu.lv` | 3.1 | 130 | 2.3 | 129 | 0.00 | 0 |  |
-| `connect_eu.lt` | 126 | 129 | 124 | 126 | 0.00 | 0 |  |
-| `history.connect_eu__lt` | 124 | 129 | 126 | 131 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_ports` | 3.1 | 129 | 2.4 | 138 | 0.00 | 0 |  |
-| `ev_eu.dk` | 2.9 | 128 | 2.2 | 133 | 0.00 | 0 |  |
-| `gem.methane_emitters_lng_terminals` | 127 | 128 | 126 | 129 | 0.00 | 0 |  |
-| `entsoe.units` | 2.8 | 128 | 2.2 | 126 | 0.00 | 0 |  |
-| `ev_eu.cy` | 2.5 | 127 | 2.0 | 123 | 0.00 | 0 |  |
-| `ev_eu.sk` | 3.2 | 127 | 2.2 | 129 | 0.00 | 0 |  |
-| `gem.oil_gas_extraction_project_level_main_data` | 124 | 124 | 127 | 131 | 0.00 | 0 |  |
-| `osm.datacentres` | 90.8 | 114 | 94.1 | 108 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_rw` | 6.2 | 114 | 6.0 | 50.8 | 0.00 | 0 |  |
-| `wave9.fi_paavo` | 10.5 | 112 | 7.4 | 110 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_sff` | 10.7 | 107 | 9.7 | 107 | 0.00 | 0 |  |
-| `wave9.eu_heat_production` | 10.9 | 103 | 10.1 | 104 | 0.00 | 0 |  |
-| `entsog.flows` | 34.0 | 101 | 22.7 | 76.9 | 0.00 | 0 |  |
-| `wave9.es_emodnet_telecom_cica` | 2.7 | 97.7 | 2.0 | 95.3 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_mfa` | 21.0 | 97.5 | 19.2 | 99.4 | 0.00 | 0 |  |
-| `eia860m.generators` | 14.9 | 96.8 | 11.5 | 94.0 | 0.00 | 0 |  |
-| `registers.dk` | 2.9 | 96.8 | 2.3 | 94.6 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_wwtp` | 12.8 | 96.5 | 12.1 | 99.7 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_egss1` | 12.9 | 96.3 | 12.6 | 96.8 | 0.00 | 0 |  |
-| `wave10.eu_nrg_te_bio` | 8.7 | 96.2 | 8.2 | 96.1 | 0.00 | 0 |  |
-| `wave9.us_eia_gas_processing` | 3.1 | 95.9 | 2.6 | 102 | 0.00 | 0 |  |
-| `history.registers__gb` | 6.0 | 95.6 | 4.2 | 92.6 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ti_bio` | 7.8 | 95.5 | 8.3 | 95.1 | 0.00 | 0 |  |
-| `wave9.eu_emodnet_nuclear` | 91.1 | 95.3 | 90.1 | 93.2 | 0.00 | 0 |  |
-| `wave9.gb_neso_etys` | 2.4 | 94.2 | 1.8 | 95.7 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_taxind2` | 11.6 | 89.0 | 10.7 | 88.4 | 0.00 | 0 |  |
-| `wave10.eu_nrg_te_sff` | 7.3 | 87.7 | 7.2 | 90.2 | 0.00 | 0 |  |
-| `wave10.eu_env_esst_cepggcp` | 6.9 | 71.0 | 6.5 | 72.1 | 0.00 | 0 |  |
-| `wave10.eu_env_esst_gg` | 4.9 | 64.9 | 4.8 | 64.2 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ti_gas` | 7.5 | 64.8 | 7.4 | 65.2 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_peh` | 6.8 | 56.7 | 6.6 | 54.3 | 0.00 | 0 |  |
-| `us_lmp.day_ahead` | 38.1 | 54.5 | 40.8 | 55.8 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_pefa04` | 8.5 | 53.9 | 8.0 | 50.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_gas` | 6.9 | 48.6 | 7.0 | 49.2 | 0.00 | 0 |  |
-| `wave10.eu_nrg_te_gas` | 5.1 | 47.9 | 5.0 | 46.1 | 0.00 | 0 |  |
-| `wave10.eu_env_air_emis` | 7.8 | 44.1 | 7.8 | 43.5 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_pepsns1` | 5.3 | 43.1 | 5.3 | 40.6 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_epiap1` | 4.6 | 41.5 | 4.5 | 41.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_sffm` | 6.3 | 41.1 | 6.3 | 40.4 | 0.00 | 0 |  |
-| `wave10.eu_env_esst_cepgg` | 5.2 | 40.1 | 3.7 | 42.7 | 0.00 | 0 |  |
-| `euets.installations` | 22.3 | 39.8 | 21.6 | 35.0 | 0.00 | 0 |  |
-| `entsoe.congestion_redispatch_cross_border` | 6.8 | 36.6 | 7.5 | 12.3 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_pem` | 8.0 | 36.3 | 7.1 | 34.0 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_pgg` | 3.1 | 30.3 | 2.9 | 21.2 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_psp` | 6.8 | 30.0 | 4.3 | 29.0 | 0.00 | 0 |  |
-| `wave9.us_cpc_degree_days` | 5.3 | 27.7 | 4.6 | 23.3 | 0.00 | 0 |  |
-| `entsoe.congestion_costs` | 1.7 | 27.1 | 1.7 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_te_eh` | 4.2 | 25.3 | 4.1 | 24.8 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_aibrid_rd` | 6.1 | 25.2 | 6.0 | 26.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_hptctc` | 5.4 | 25.2 | 5.2 | 24.8 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_pehnf` | 4.7 | 25.2 | 4.3 | 23.2 | 0.00 | 0 |  |
-| `entsoe.transfer_capacity` | 5.5 | 25.1 | 5.5 | 24.6 | 0.00 | 0 |  |
-| `iso_queues.requests` | 8.7 | 23.9 | 8.2 | 23.0 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_aigg_q` | 3.3 | 23.7 | 3.2 | 22.5 | 0.00 | 0 |  |
-| `wave10.eu_nrg_chp_cpfe` | 6.1 | 23.0 | 5.8 | 22.2 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ti_eh` | 3.9 | 22.3 | 3.9 | 20.7 | 0.00 | 0 |  |
-| `wave10.eu_nrg_d_serq_n` | 6.8 | 22.2 | 6.7 | 21.9 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_gasm` | 5.6 | 21.5 | 5.3 | 21.1 | 0.00 | 0 |  |
-| `wave9.us_openei_urdb` | 21.2 | 21.2 | 20.3 | 20.3 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_sd` | 4.5 | 19.9 | 4.2 | 19.2 | 0.00 | 0 |  |
-| `entsoe.congestion_countertrading` | 2.9 | 19.5 | 2.8 | 4.6 | 0.00 | 0 |  |
-| `wave10.eu_nrg_pc_203_c` | 4.8 | 18.9 | 4.6 | 17.8 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_pehap` | 4.0 | 18.7 | 4.0 | 17.8 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_cepsgc1` | 5.5 | 18.4 | 5.3 | 18.5 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_invap` | 5.4 | 18.1 | 5.0 | 17.3 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_pap` | 7.9 | 17.2 | 8.1 | 17.2 | 0.00 | 0 |  |
-| `app.eu_prices` | 1.6 | 16.9 | 0.9 | 1.4 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_pepsgg1` | 4.2 | 16.6 | 4.3 | 15.5 | 0.00 | 0 |  |
-| `history.registers__fr` | 5.4 | 16.3 | 5.1 | 14.0 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_pepssp1` | 4.4 | 16.0 | 4.4 | 16.4 | 0.00 | 0 |  |
-| `outlines.names` | 6.0 | 15.9 | 5.6 | 11.8 | 0.00 | 0 |  |
-| `wave10.eu_nrg_d_traq` | 3.7 | 15.3 | 3.7 | 13.9 | 0.00 | 0 |  |
-| `wave9.ee_stat_heating_2011` | 4.3 | 15.1 | 3.9 | 14.5 | 0.00 | 0 |  |
-| `wave10.eu_cei_srm040` | 2.0 | 14.7 | 1.9 | 14.0 | 0.00 | 0 |  |
-| `registers.fr` | 5.4 | 13.2 | 5.3 | 13.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_inf_epc` | 4.9 | 13.1 | 5.0 | 12.4 | 0.00 | 0 |  |
-| `wave10.eu_nrg_pc_202_c` | 4.1 | 12.6 | 4.1 | 11.4 | 0.00 | 0 |  |
-| `wave10.gb_desnz_tfec_la` | 2.1 | 12.6 | 1.9 | 10.7 | 0.00 | 0 |  |
-| `lbnl_queue.requests` | 9.9 | 11.4 | 9.7 | 11.3 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_eptrf1` | 8.0 | 11.2 | 4.0 | 10.4 | 0.00 | 0 |  |
-| `wave9.eu_network_costs` | 5.7 | 10.9 | 5.5 | 10.9 | 0.00 | 0 |  |
-| `wave10.eu_env_esst_rw` | 3.2 | 10.8 | 3.1 | 9.9 | 0.00 | 0 |  |
-| `wave10.gb_desnz_co2_la` | 2.5 | 10.8 | 2.3 | 10.5 | 0.00 | 0 |  |
-| `wave10.eu_nrg_d_hhq` | 4.3 | 10.7 | 4.2 | 10.3 | 0.00 | 0 |  |
-| `outlines.aliases` | 2.1 | 10.2 | 2.0 | 7.9 | 0.00 | 0 |  |
-| `small_area_energy.heating` | 4.5 | 10.1 | 4.4 | 9.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_bal_cv` | 5.4 | 10.0 | 5.8 | 9.3 | 0.00 | 0 |  |
-| `wave10.eu_nrg_stk_oil` | 4.8 | 9.9 | 4.4 | 9.6 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_mfadpo` | 4.5 | 9.5 | 4.6 | 9.4 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_cint` | 4.5 | 9.2 | 4.7 | 8.7 | 0.00 | 0 |  |
-| `wave9.us_usgs_water_use` | 2.3 | 9.2 | 2.1 | 8.4 | 0.00 | 0 |  |
-| `mastr.operators` | 6.6 | 8.9 | 6.9 | 8.6 | 0.00 | 0 |  |
-| `wave10.eu_nrg_chddr2_m` | 5.9 | 8.9 | 5.4 | 8.3 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_urtd` | 5.6 | 8.9 | 4.9 | 9.1 | 0.00 | 0 |  |
-| `wave9.cz_csu_sldb_heating_energy` | 1.5 | 8.9 | 1.4 | 8.8 | 0.00 | 0 |  |
-| `aures.auctions` | 4.1 | 8.8 | 3.9 | 8.4 | 0.00 | 0 |  |
-| `entsoe.congestion_redispatch_internal` | 4.6 | 8.7 | 4.7 | 9.1 | 0.00 | 0 |  |
-| `wave9.gr_elstat_heating_settlement` | 5.9 | 8.6 | 5.2 | 8.1 | 0.00 | 0 |  |
-| `ei_review.series` | 2.6 | 8.5 | 2.6 | 8.4 | 0.00 | 0 |  |
-| `wave10.eu_cei_srm020` | 3.8 | 8.5 | 4.0 | 8.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_e` | 6.3 | 8.4 | 4.6 | 8.0 | 0.00 | 0 |  |
-| `neso_tec.projects` | 7.5 | 8.3 | 7.3 | 8.0 | 0.00 | 0 |  |
-| `caiso.curtailment` | 3.8 | 8.1 | 3.3 | 7.7 | 0.00 | 0 |  |
-| `wave9.cz_csu_sldb_heating_mode` | 2.1 | 8.0 | 2.1 | 7.9 | 0.00 | 0 |  |
-| `edgar.ghg_by_sector` | 1.9 | 7.9 | 1.8 | 5.2 | 0.00 | 0 |  |
-| `small_area_energy.renewables` | 6.1 | 7.4 | 5.0 | 7.3 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_ahbtc` | 3.3 | 7.4 | 3.2 | 7.2 | 0.00 | 0 |  |
-| `wave9.eu_renewable_capacity` | 5.2 | 7.4 | 5.2 | 6.9 | 0.00 | 0 |  |
-| `registers.cz` | 5.8 | 7.3 | 5.9 | 7.4 | 0.00 | 0 |  |
-| `irena.generation` | 4.8 | 7.1 | 4.6 | 6.9 | 0.00 | 0 |  |
-| `mastr.grid_connection_points` | 4.8 | 7.1 | 6.6 | 6.8 | 0.00 | 0 |  |
-| `wave10.eu_cei_gsr010` | 4.2 | 6.8 | 4.0 | 6.8 | 0.00 | 0 |  |
-| `entsog.operator_point_directions` | 4.8 | 6.7 | 4.6 | 6.0 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_trf` | 3.9 | 6.7 | 4.0 | 6.2 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_cosm` | 3.3 | 6.7 | 3.2 | 6.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_ebmg` | 3.9 | 6.7 | 3.8 | 6.6 | 0.00 | 0 |  |
-| `wave10.gb_desnz_elec_la` | 2.0 | 6.6 | 1.7 | 6.5 | 0.00 | 0 |  |
-| `history.registers__cz` | 3.1 | 6.5 | 2.5 | 6.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_esc` | 3.9 | 6.4 | 3.9 | 6.1 | 0.00 | 0 |  |
-| `wave10.gb_desnz_gas_la` | 2.5 | 6.4 | 2.4 | 6.6 | 0.00 | 0 |  |
-| `history.netztransparenz__redispatch` | 2.3 | 6.3 | 2.2 | 6.3 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_rme` | 3.3 | 6.3 | 3.3 | 5.6 | 0.00 | 0 |  |
-| `wave10.eu_nrg_stk_gasm` | 3.7 | 6.3 | 3.3 | 5.9 | 0.00 | 0 |  |
-| `entsoe.outages` | 5.5 | 6.2 | 4.9 | 6.2 | 0.00 | 0 |  |
-| `wave9.eu_household_income` | 6.1 | 6.1 | 5.8 | 6.4 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_h` | 3.6 | 5.9 | 3.3 | 5.5 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_urhcd` | 4.8 | 5.9 | 3.4 | 4.4 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ti_h2` | 4.0 | 5.9 | 4.1 | 5.8 | 0.00 | 0 |  |
-| `wave9.eu_heat_pumps` | 4.2 | 5.8 | 3.9 | 5.8 | 0.00 | 0 |  |
-| `neso.constraint_breakdown` | 4.3 | 5.5 | 4.0 | 5.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_chdd_m` | 4.6 | 5.4 | 4.5 | 10.3 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_cotd` | 3.3 | 5.4 | 3.2 | 3.2 | 0.00 | 0 |  |
-| `jepx.spot` | 2.0 | 5.3 | 2.0 | 5.3 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_ibmg` | 3.3 | 5.3 | 3.2 | 5.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_re` | 4.5 | 5.2 | 4.3 | 4.9 | 0.00 | 0 |  |
-| `wave10.eu_env_wat_pop` | 1.9 | 5.1 | 2.0 | 3.2 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_bm` | 4.7 | 5.1 | 4.7 | 4.8 | 0.00 | 0 |  |
-| `wave10.wb_tm_val_fuel_zs_un` | 2.8 | 5.1 | 3.0 | 4.6 | 0.00 | 0 |  |
-| `irena.capacity` | 3.4 | 5.0 | 3.5 | 4.8 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_mfain` | 3.7 | 5.0 | 3.9 | 4.9 | 0.00 | 0 |  |
-| `wave10.eu_env_watres_rb` | 2.3 | 5.0 | 2.2 | 4.9 | 0.00 | 0 |  |
-| `wave9.eu_ev_stock_nuts2` | 3.4 | 5.0 | 3.6 | 4.9 | 0.00 | 0 |  |
-| `cenace.pml` | 2.2 | 4.9 | 2.2 | 6.1 | 0.00 | 0 |  |
-| `wave10.eu_cei_srm010` | 2.1 | 4.9 | 1.8 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_env_esst_ceprw` | 3.2 | 4.8 | 3.1 | 4.4 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_h2` | 4.6 | 4.8 | 4.7 | 4.8 | 0.00 | 0 |  |
-| `wave9.eu_degree_days` | 3.1 | 4.8 | 3.1 | 5.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_stjpjss` | 3.7 | 4.7 | 3.9 | 4.6 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_n2o_pi_mt_ce_ar5` | 3.0 | 4.7 | 2.9 | 4.6 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_maln_zs` | 2.2 | 4.7 | 2.0 | 3.4 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_em` | 3.3 | 4.6 | 3.6 | 4.4 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_fecf` | 3.1 | 4.6 | 3.0 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_eg_use_comm_cl_zs` | 2.4 | 4.6 | 2.3 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_en_pop_el5m_ur_zs` | 2.8 | 4.6 | 2.8 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_is_air_psgr` | 2.8 | 4.6 | 2.7 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_sp_pop_grow` | 2.9 | 4.6 | 2.8 | 4.3 | 0.00 | 0 |  |
-| `wave10.eu_nrg_te_h2` | 3.1 | 4.5 | 3.0 | 4.2 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_zev` | 4.0 | 4.5 | 3.9 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_eg_use_pcap_kg_oe` | 2.8 | 4.5 | 2.8 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_er_fsh_capt_mt` | 2.6 | 4.5 | 2.9 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_ie_ppn_watr_cd` | 2.6 | 4.5 | 2.7 | 4.5 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dmin_gn_zs` | 2.8 | 4.5 | 2.9 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_pois_p5` | 2.7 | 4.5 | 3.0 | 4.5 | 0.00 | 0 |  |
-| `wave9.eu_water_abstraction` | 3.3 | 4.5 | 3.3 | 4.3 | 0.00 | 0 |  |
-| `wave9.ie_cso_dc_consumption` | 2.5 | 4.5 | 2.5 | 4.1 | 0.00 | 0 |  |
-| `netztransparenz.redispatch` | 1.6 | 4.4 | 1.5 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_eg_gdp_puse_ko_pp` | 2.7 | 4.4 | 2.6 | 4.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_n2o_ic_mt_ce_ar5` | 2.6 | 4.4 | 2.6 | 4.2 | 0.00 | 0 |  |
-| `wave10.wb_er_h2o_fwag_zs` | 2.7 | 4.4 | 2.7 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_it_net_bbnd_p2` | 2.7 | 4.4 | 2.6 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_aedu_gn_zs` | 2.8 | 4.4 | 2.7 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_nnat_gn_zs` | 2.6 | 4.4 | 2.7 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_ny_gdp_coal_rt_zs` | 2.7 | 4.4 | 2.6 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_sh_dyn_mort` | 2.5 | 4.4 | 2.5 | 4.4 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_tax` | 3.5 | 4.3 | 3.4 | 4.3 | 0.00 | 0 |  |
-| `wave10.eu_nrg_cb_eim` | 4.2 | 4.3 | 4.0 | 4.0 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_lormot` | 4.0 | 4.3 | 4.3 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_accs_ru_zs` | 2.5 | 4.3 | 2.3 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_eg_use_comm_gd_pp_kd` | 2.9 | 4.3 | 2.6 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_en_clc_mdat_zs` | 2.7 | 4.3 | 2.7 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_lu_fl_mt_ce_ar5` | 2.6 | 4.3 | 2.8 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_ip_tmk_nrct` | 2.6 | 4.3 | 2.7 | 4.2 | 0.00 | 0 |  |
-| `wave10.wb_is_rrs_totl_km` | 2.7 | 4.3 | 2.8 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_it_net_user_fe_zs` | 2.4 | 4.3 | 2.3 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_it_net_user_zs` | 2.7 | 4.3 | 2.6 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_smss_zs` | 2.6 | 4.3 | 2.6 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_tx_val_fuel_zs_un` | 2.7 | 4.3 | 2.8 | 4.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_ured` | 3.7 | 4.2 | 3.4 | 4.2 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_totl_ur_k2` | 2.7 | 4.2 | 2.7 | 4.2 | 0.00 | 0 |  |
-| `wave10.wb_eg_cft_accs_zs` | 2.9 | 4.2 | 2.6 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_bu_mt_ce_ar5` | 2.8 | 4.2 | 2.8 | 4.2 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_rt_gdp_pp_kd` | 2.7 | 4.2 | 2.7 | 4.2 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_n2o_wa_mt_ce_ar5` | 2.3 | 4.2 | 2.3 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_n2o_zg_ar5` | 2.4 | 4.2 | 2.4 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_ic_frm_outg_zs` | 2.4 | 4.2 | 2.3 | 4.2 | 0.00 | 0 |  |
-| `wave10.wb_it_mlt_main` | 2.8 | 4.2 | 2.6 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_ny_gdp_ngas_rt_zs` | 2.6 | 4.2 | 2.6 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_hygn_zs` | 2.5 | 4.2 | 2.4 | 3.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_lormot` | 2.8 | 4.1 | 2.8 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_el5m_ru_k2` | 2.8 | 4.1 | 2.6 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_bx_klt_dinv_wd_gd_zs` | 2.3 | 4.1 | 2.3 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_accs_ur_zs` | 2.5 | 4.1 | 2.3 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_coal_zs` | 2.5 | 4.1 | 2.6 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_nucl_zs` | 2.3 | 4.1 | 2.4 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_petr_zs` | 2.4 | 4.1 | 2.3 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_ch4_wa_mt_ce_ar5` | 2.4 | 4.1 | 2.5 | 4.2 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_zg_ar5` | 2.8 | 4.1 | 2.6 | 4.4 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_n2o_bu_mt_ce_ar5` | 2.5 | 4.1 | 2.4 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_en_urb_mcty_tl_zs` | 2.6 | 4.1 | 2.5 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_er_h2o_fwtl_zs` | 2.7 | 4.1 | 2.7 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_er_lnd_ptld_zs` | 2.5 | 4.1 | 2.6 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_er_ptd_totl_zs` | 2.4 | 4.1 | 2.3 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dkap_cd` | 2.5 | 4.1 | 2.6 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_svnx_cd` | 2.4 | 4.1 | 2.3 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_se_enr_prsc_fm_zs` | 2.3 | 4.1 | 2.4 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_sh_h2o_basw_zs` | 2.6 | 4.1 | 2.6 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_sh_h2o_smdw_zs` | 2.7 | 4.1 | 2.5 | 3.6 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_airp_p5` | 2.6 | 4.1 | 2.5 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_bass_zs` | 2.7 | 4.1 | 2.7 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_odfc_ru_zs` | 2.7 | 4.1 | 2.4 | 4.2 | 0.00 | 0 |  |
-| `wave10.wb_sp_urb_totl` | 2.5 | 4.1 | 2.4 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_tx_val_mmtl_zs_un` | 2.4 | 4.1 | 2.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_cepsgh1` | 3.3 | 4.0 | 3.1 | 4.0 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_egss3` | 3.0 | 4.0 | 3.0 | 3.7 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_mfabi` | 3.2 | 4.0 | 3.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_eff` | 3.9 | 4.0 | 3.7 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_agri_zs` | 2.4 | 4.0 | 2.3 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_el5m_ur_zs` | 2.7 | 4.0 | 2.7 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_frst_zs` | 2.3 | 4.0 | 2.4 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_bx_gsr_ccis_cd` | 2.5 | 4.0 | 2.4 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_rnwx_kh` | 2.7 | 4.0 | 2.7 | 4.3 | 0.00 | 0 |  |
-| `wave10.wb_eg_imp_cons_zs` | 2.4 | 4.0 | 3.2 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_all_lu_mt_ce_ar5` | 2.4 | 4.0 | 2.2 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_ch4_ic_mt_ce_ar5` | 2.7 | 4.0 | 2.7 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_ch4_pi_mt_ce_ar5` | 2.4 | 4.0 | 2.4 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_lu_os_mt_ce_ar5` | 2.7 | 4.0 | 2.6 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_en_hpt_thrd_no` | 2.6 | 4.0 | 2.5 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_is_air_dprt` | 2.3 | 4.0 | 2.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_is_shp_good_tu` | 2.5 | 4.0 | 2.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dco2_gn_zs` | 2.3 | 4.0 | 2.5 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dres_gn_zs` | 2.4 | 4.0 | 2.5 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_smss_ru_zs` | 2.8 | 4.0 | 2.4 | 3.9 | 0.00 | 0 |  |
-| `wave9.ie_eirgrid_dispatch_down` | 2.1 | 4.0 | 1.9 | 4.0 | 0.00 | 0 |  |
-| `wave9.si_surs_electricity_municipality` | 2.5 | 4.0 | 2.4 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_agri_k2` | 2.4 | 3.9 | 2.3 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_bx_gsr_ccis_zs` | 2.4 | 3.9 | 2.4 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_loss_zs` | 2.7 | 3.9 | 2.7 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_ch4_ag_mt_ce_ar5` | 2.6 | 3.9 | 2.7 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_ch4_mt_ce_ar5` | 2.4 | 3.9 | 2.3 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_ic_mt_ce_ar5` | 2.3 | 3.9 | 2.3 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_ip_mt_ce_ar5` | 2.4 | 3.9 | 2.3 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_pc_ce_ar5` | 2.4 | 3.9 | 2.3 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_pi_mt_ce_ar5` | 2.4 | 3.9 | 2.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_er_h2o_fwst_zs` | 2.3 | 3.9 | 2.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_ie_ppi_tran_cd` | 2.6 | 3.9 | 2.6 | 4.1 | 0.00 | 0 |  |
-| `wave10.wb_iq_cpa_pubs_xq` | 2.3 | 3.9 | 2.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_it_cel_sets` | 2.6 | 3.9 | 2.4 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_svng_gn_zs` | 2.2 | 3.9 | 2.4 | 3.5 | 0.00 | 0 |  |
-| `wave10.wb_sh_h2o_smdw_ur_zs` | 2.4 | 3.9 | 2.3 | 3.6 | 0.00 | 0 |  |
-| `wave9.dk_energinet_countertrade` | 2.0 | 3.9 | 1.9 | 4.0 | 0.00 | 0 |  |
-| `co2stop.dgf_input` | 3.8 | 3.8 | 3.5 | 3.5 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_neep` | 3.3 | 3.8 | 3.2 | 3.8 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_difec` | 2.9 | 3.8 | 2.8 | 3.5 | 0.00 | 0 |  |
-| `wave10.eu_nrg_inf_lbpc` | 2.3 | 3.8 | 2.2 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_arbl_zs` | 2.5 | 3.8 | 2.6 | 3.6 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_prcp_mm` | 2.4 | 3.8 | 2.4 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_en_atm_pm25_mc_t1_zs` | 2.4 | 3.8 | 2.4 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_en_atm_pm25_mc_t2_zs` | 2.5 | 3.8 | 2.2 | 3.5 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_n2o_ag_mt_ce_ar5` | 2.3 | 3.8 | 2.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_en_pop_slum_ur_zs` | 2.5 | 3.8 | 2.3 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_er_h2o_fwin_zs` | 2.5 | 3.8 | 2.3 | 4.2 | 0.00 | 0 |  |
-| `wave10.wb_ic_elc_durs` | 2.3 | 3.8 | 2.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_ie_ppn_icti_cd` | 2.3 | 3.8 | 2.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_it_net_secr_p6` | 2.4 | 3.8 | 2.3 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dfor_cd` | 2.3 | 3.8 | 2.2 | 3.8 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dpem_cd` | 2.4 | 3.8 | 2.4 | 4.0 | 0.00 | 0 |  |
-| `wave9.pt_ine_heating_freguesia` | 1.6 | 3.8 | 1.3 | 3.8 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_ccminv` | 2.9 | 3.7 | 3.0 | 4.0 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_epissp1` | 3.2 | 3.7 | 3.1 | 3.5 | 0.00 | 0 |  |
-| `wave10.wb_ag_yld_crel_kg` | 2.3 | 3.7 | 2.2 | 3.6 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_accs_zs` | 2.3 | 3.7 | 2.4 | 3.4 | 0.00 | 0 |  |
-| `wave10.wb_en_atm_pm25_mc_zs` | 2.3 | 3.7 | 2.3 | 3.6 | 0.00 | 0 |  |
-| `wave10.wb_ie_ppn_engy_cd` | 2.3 | 3.7 | 2.3 | 4.0 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_pois_p5_ma` | 2.2 | 3.7 | 2.2 | 3.5 | 0.00 | 0 |  |
-| `wave10.wb_sp_urb_grow` | 2.3 | 3.7 | 2.5 | 3.6 | 0.00 | 0 |  |
-| `wave9.eu_entsoe_balancing` | 1.7 | 3.7 | 1.5 | 3.5 | 0.00 | 0 |  |
-| `wave9.sk_susr_energy_consumption_okres` | 2.1 | 3.7 | 1.9 | 3.7 | 0.00 | 0 |  |
-| `tri.releases` | 3.6 | 3.6 | 3.0 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_env_watabs_rb` | 1.6 | 3.6 | 1.4 | 3.5 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_ioc` | 2.6 | 3.6 | 2.6 | 3.3 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_frst_k2` | 2.2 | 3.6 | 2.2 | 3.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_all_mt_ce_ar5` | 2.6 | 3.6 | 2.3 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dngy_gn_zs` | 2.3 | 3.6 | 2.2 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_ny_gdp_totl_rt_zs` | 2.1 | 3.6 | 2.2 | 3.8 | 0.00 | 0 |  |
-| `wave10.gb_census_travel_method` | 2.4 | 3.5 | 2.4 | 3.7 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_all_pc_ce_ar5` | 2.3 | 3.5 | 2.3 | 3.3 | 0.00 | 0 |  |
-| `history.registers__be` | 3.2 | 3.4 | 2.4 | 2.9 | 0.00 | 0 |  |
-| `mastr_grid.operators` | 1.5 | 3.4 | 1.5 | 3.5 | 0.00 | 0 |  |
-| `pse_capacity.requests` | 2.2 | 3.4 | 2.2 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_cfin` | 2.8 | 3.4 | 2.7 | 3.4 | 0.00 | 0 |  |
-| `wave10.eu_env_wat_res` | 3.3 | 3.4 | 3.1 | 3.2 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_epsc` | 3.2 | 3.4 | 3.2 | 3.4 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_irig_ag_zs` | 2.3 | 3.4 | 2.2 | 3.6 | 0.00 | 0 |  |
-| `wave10.wb_eg_use_comm_fo_zs` | 2.4 | 3.4 | 2.2 | 3.4 | 0.00 | 0 |  |
-| `wave10.wb_en_atm_pm25_mc_t3_zs` | 2.5 | 3.4 | 2.5 | 3.4 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_hygn_ur_zs` | 2.1 | 3.4 | 2.2 | 3.5 | 0.00 | 0 |  |
-| `wave9.gb_elexon_balancing` | 1.9 | 3.4 | 1.7 | 3.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_rcaebt` | 2.5 | 3.3 | 2.6 | 3.4 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_zev` | 2.2 | 3.3 | 2.5 | 3.2 | 0.00 | 0 |  |
-| `wave10.eu_ten00126` | 3.0 | 3.3 | 2.8 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_rnew_zs` | 2.3 | 3.3 | 2.1 | 3.5 | 0.00 | 0 |  |
-| `wave10.wb_is_air_good_mt_k1` | 1.8 | 3.3 | 1.9 | 3.3 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_odfc_ur_zs` | 1.9 | 3.3 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_odfc_zs` | 1.8 | 3.3 | 1.8 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_smss_ur_zs` | 2.1 | 3.3 | 2.1 | 2.9 | 0.00 | 0 |  |
-| `wave9.eu_wastewater_connected` | 3.0 | 3.3 | 3.0 | 3.3 | 0.00 | 0 |  |
-| `wave9.gb_ons_income_msoa` | 2.6 | 3.3 | 2.0 | 3.5 | 0.00 | 0 |  |
-| `econnextion.requests` | 3.0 | 3.2 | 2.3 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_pefa05` | 2.2 | 3.2 | 2.3 | 3.2 | 0.00 | 0 |  |
-| `wave10.eu_iww_eq_power_lo` | 1.9 | 3.2 | 1.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_id3cf` | 2.7 | 3.2 | 3.0 | 3.1 | 0.00 | 0 |  |
-| `wave10.eu_tran_hv_ms_psmod` | 2.4 | 3.2 | 2.4 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_eg_cft_accs_ur_zs` | 2.0 | 3.2 | 1.9 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_ch4_tr_mt_ce_ar5` | 2.4 | 3.2 | 2.2 | 3.2 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_tr_mt_ce_ar5` | 1.9 | 3.2 | 1.9 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_n2o_mt_ce_ar5` | 1.9 | 3.2 | 1.9 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_is_rrs_pasg_km` | 2.0 | 3.2 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dfor_gn_zs` | 2.1 | 3.2 | 2.0 | 3.1 | 0.00 | 0 |  |
-| `wave10.wb_se_prm_cmpt_zs` | 1.9 | 3.2 | 2.0 | 2.9 | 0.00 | 0 |  |
-| `wave9.eu_air_passengers` | 2.2 | 3.2 | 2.2 | 3.5 | 0.00 | 0 |  |
-| `wave9.eu_broadband_nuts2` | 2.0 | 3.2 | 2.0 | 3.0 | 0.00 | 0 |  |
-| `wave9.fr_odre_balancing_volumes` | 1.7 | 3.2 | 1.5 | 2.9 | 0.00 | 0 |  |
-| `eaglei.coverage` | 2.0 | 3.1 | 2.0 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_cei_cie011` | 2.2 | 3.1 | 2.2 | 3.1 | 0.00 | 0 |  |
-| `wave10.eu_cei_pc031` | 2.2 | 3.1 | 2.4 | 3.1 | 0.00 | 0 |  |
-| `wave10.eu_cei_srm030` | 2.1 | 3.1 | 2.1 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_env_air_emis_ind` | 2.9 | 3.1 | 2.9 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_env_air_no2` | 2.6 | 3.1 | 2.6 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_di` | 2.1 | 3.1 | 2.2 | 3.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_esr` | 2.1 | 3.1 | 2.1 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_id` | 3.0 | 3.1 | 2.7 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_busmot` | 2.3 | 3.1 | 2.3 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_carhab` | 1.9 | 3.1 | 2.0 | 3.1 | 0.00 | 0 |  |
-| `wave10.eu_sdg_07_30` | 2.0 | 3.1 | 2.0 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_ten00106` | 2.0 | 3.1 | 2.0 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_ten00123` | 2.9 | 3.1 | 3.0 | 3.2 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_totl_ru_k2` | 1.8 | 3.1 | 1.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_eg_egy_prim_pp_kd` | 1.8 | 3.1 | 1.8 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_eg_fec_rnew_zs` | 1.8 | 3.1 | 1.8 | 3.2 | 0.00 | 0 |  |
-| `wave10.wb_eg_use_crnw_zs` | 1.8 | 3.1 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_ag_mt_ce_ar5` | 1.8 | 3.1 | 1.8 | 3.2 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_lu_df_mt_ce_ar5` | 2.0 | 3.1 | 1.8 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_wa_mt_ce_ar5` | 2.0 | 3.1 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_tot_zg_ar5` | 2.0 | 3.1 | 1.9 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_ie_ppi_icti_cd` | 1.9 | 3.1 | 1.8 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_svnx_gn_zs` | 2.3 | 3.1 | 2.1 | 3.3 | 0.00 | 0 |  |
-| `wave10.wb_ny_gdp_minr_rt_zs` | 1.8 | 3.1 | 1.8 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_ny_gdp_petr_rt_zs` | 1.8 | 3.1 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_tm_val_mmtl_zs_un` | 1.8 | 3.1 | 1.8 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_tx_val_ictg_zs_un` | 1.8 | 3.1 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave9.eu_land_prices` | 2.1 | 3.1 | 2.1 | 2.8 | 0.00 | 0 |  |
-| `wave9.eu_water_use` | 2.4 | 3.1 | 2.2 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_cei_gsr030` | 2.0 | 3.0 | 2.1 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_cei_pc050` | 2.0 | 3.0 | 2.1 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_nrg_d_cv` | 2.8 | 3.0 | 2.8 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_resovsh` | 2.7 | 3.0 | 2.8 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_pc_202_v` | 2.3 | 3.0 | 2.3 | 3.1 | 0.00 | 0 |  |
-| `wave10.eu_rail_eq_trset` | 2.0 | 3.0 | 2.0 | 3.1 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_carmot` | 2.2 | 3.0 | 2.4 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_lorrit` | 2.7 | 3.0 | 2.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_unlweig` | 2.3 | 3.0 | 2.3 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_busage` | 2.4 | 3.0 | 2.2 | 2.7 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_mopeds` | 2.3 | 3.0 | 2.3 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_semit` | 2.1 | 3.0 | 2.1 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_sdg_07_50` | 2.1 | 3.0 | 2.3 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_sdg_09_70` | 2.1 | 3.0 | 2.2 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_11_20` | 1.9 | 3.0 | 2.0 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_sdg_13_40` | 2.5 | 3.0 | 2.3 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_ten00006` | 2.4 | 3.0 | 2.4 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_totl_k2` | 1.8 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_fosl_zs` | 2.1 | 3.0 | 1.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_hyro_zs` | 2.0 | 3.0 | 1.9 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_rnwx_zs` | 2.0 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_eg_gdp_puse_ko_pp_kd` | 1.8 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_bir_thrd_no` | 2.0 | 3.0 | 1.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_ch4_fe_mt_ce_ar5` | 1.8 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_ch4_zg_ar5` | 1.9 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_fe_mt_ce_ar5` | 1.8 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_lu_ol_mt_ce_ar5` | 1.9 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_rt_gdp_kd` | 1.9 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_en_pop_el5m_zs` | 1.8 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_er_gdp_fwtl_m3_kd` | 2.2 | 3.0 | 1.9 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_er_h2o_fwdm_zs` | 2.0 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_er_h2o_fwtl_k3` | 2.1 | 3.0 | 2.0 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_er_h2o_intr_pc` | 2.0 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_ic_frm_bnks_zs` | 1.9 | 3.0 | 1.9 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_ie_ppi_engy_cd` | 1.7 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_ie_ppi_watr_cd` | 1.8 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_is_shp_gcnw_xq` | 1.7 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_it_net_bbnd` | 1.8 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_aedu_cd` | 1.9 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dkap_gn_zs` | 1.7 | 3.0 | 1.7 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dmin_cd` | 2.0 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dngy_cd` | 1.8 | 3.0 | 1.8 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dpem_gn_zs` | 2.0 | 3.0 | 1.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_nnat_cd` | 1.9 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_sh_h2o_basw_ur_zs` | 1.8 | 3.0 | 1.7 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_sh_med_cmhw_p3` | 2.0 | 3.0 | 1.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_pois_p5_fe` | 1.9 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_si_pov_dday` | 2.0 | 3.0 | 1.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_sp_pop_totl` | 1.8 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave9.fr_ore_solar_commune` | 3.0 | 3.0 | 3.0 | 3.0 | 0.00 | 0 |  |
-| `gem.energy_ownership_gas_pipeline_ownership` | 2.5 | 2.9 | 2.3 | 2.9 | 0.00 | 0 |  |
-| `ghsl.population` | 1.9 | 2.9 | 1.7 | 2.9 | 0.00 | 0 |  |
-| `registers.be` | 2.8 | 2.9 | 2.1 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_cei_wm060` | 2.0 | 2.9 | 1.9 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_nrg_chp_f` | 2.8 | 2.9 | 2.6 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_nrg_dhdc_cpl` | 2.7 | 2.9 | 2.7 | 2.7 | 0.00 | 0 |  |
-| `wave10.eu_nrg_dhdc_n` | 2.1 | 2.9 | 2.2 | 2.7 | 0.00 | 0 |  |
-| `wave10.eu_nrg_stk_gas` | 2.8 | 2.9 | 2.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_nrg_stk_oem` | 2.8 | 2.9 | 2.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_rail_eq_wagon` | 2.8 | 2.9 | 2.7 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_rail_if_line_sp` | 2.3 | 2.9 | 2.2 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_rail_if_lvlcros` | 2.0 | 2.9 | 2.0 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_rail_if_tracks` | 2.2 | 2.9 | 2.4 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_motors` | 2.2 | 2.9 | 2.3 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_07_10` | 2.2 | 2.9 | 2.3 | 2.7 | 0.00 | 0 |  |
-| `wave10.eu_sdg_12_31` | 2.0 | 2.9 | 2.0 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_sdg_12_51` | 1.9 | 2.9 | 1.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_13_11` | 2.2 | 2.9 | 2.2 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_13_70` | 1.9 | 2.9 | 2.1 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_ten00110` | 2.1 | 2.9 | 2.1 | 2.7 | 0.00 | 0 |  |
-| `wave10.eu_ten00129` | 2.9 | 2.9 | 2.9 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_ten00137` | 2.1 | 2.9 | 2.2 | 3.1 | 0.00 | 0 |  |
-| `wave10.gb_census_tenure` | 2.0 | 2.9 | 1.9 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_el5m_ru_zs` | 1.8 | 2.9 | 2.0 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_el5m_ur_k2` | 1.9 | 2.9 | 1.8 | 2.6 | 0.00 | 0 |  |
-| `wave10.wb_ag_srf_totl_k2` | 1.8 | 2.9 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_eg_cft_accs_ru_zs` | 1.8 | 2.9 | 1.8 | 3.1 | 0.00 | 0 |  |
-| `wave10.wb_eg_elc_ngas_zs` | 1.8 | 2.9 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_atm_pm25_mc_m3` | 1.8 | 2.9 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_fsh_thrd_no` | 1.9 | 2.9 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_mt_ce_ar5` | 1.8 | 2.9 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_n2o_fe_mt_ce_ar5` | 2.0 | 2.9 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_n2o_ip_mt_ce_ar5` | 2.0 | 2.9 | 2.0 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_n2o_tr_mt_ce_ar5` | 1.8 | 2.9 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_en_pop_el5m_ru_zs` | 1.8 | 2.9 | 1.7 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_er_mrn_ptmr_zs` | 1.9 | 2.9 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_ip_ids_rsct` | 1.8 | 2.9 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_ip_tmk_rsct` | 1.8 | 2.9 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_it_cel_sets_p2` | 1.9 | 2.9 | 1.8 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_dco2_cd` | 1.8 | 2.9 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_svng_cd` | 1.8 | 2.9 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_ny_gdp_frst_rt_zs` | 1.8 | 2.9 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_sh_h2o_smdw_ru_zs` | 1.8 | 2.9 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_bass_ur_zs` | 1.8 | 2.9 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_hygn_ru_zs` | 1.8 | 2.9 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_sp_urb_totl_in_zs` | 2.0 | 2.9 | 1.9 | 2.6 | 0.00 | 0 |  |
-| `wave10.wb_tm_val_ictg_zs_un` | 1.7 | 2.9 | 1.7 | 2.9 | 0.00 | 0 |  |
-| `wave9.eu_energy_productivity` | 2.3 | 2.9 | 2.3 | 2.9 | 0.00 | 0 |  |
-| `wave9.gr_elstat_heating_energy_regional_unit` | 2.8 | 2.9 | 2.5 | 2.9 | 0.00 | 0 |  |
-| `history.econnextion__requests` | 2.7 | 2.8 | 2.1 | 2.3 | 0.00 | 0 |  |
-| `prepared.answers` | 1.4 | 2.8 | 1.0 | 1.1 | 0.00 | 0 |  |
-| `wave10.eu_cei_pc034` | 1.9 | 2.8 | 1.8 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_cei_pc035` | 1.8 | 2.8 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_cei_wm010` | 1.8 | 2.8 | 1.7 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_invsp` | 2.1 | 2.8 | 2.3 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_env_wat_cat` | 2.7 | 2.8 | 2.5 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_rail_eq_pa_csb` | 2.1 | 2.8 | 2.2 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_trams` | 1.8 | 2.8 | 1.7 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_trail` | 1.9 | 2.8 | 1.9 | 3.0 | 0.00 | 0 |  |
-| `wave10.eu_sdg_06_30` | 2.0 | 2.8 | 2.0 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_sdg_06_50` | 1.9 | 2.8 | 1.9 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_sdg_07_20` | 1.8 | 2.8 | 1.8 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_sdg_09_40` | 2.3 | 2.8 | 2.4 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_sdg_11_60` | 1.9 | 2.8 | 1.9 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_12_21` | 2.0 | 2.8 | 1.9 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_ten00108` | 1.8 | 2.8 | 1.8 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_ten00139` | 1.9 | 2.8 | 1.8 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_ten00141` | 1.9 | 2.8 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.gb_census_heating` | 2.1 | 2.8 | 1.9 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_ag_lnd_el5m_zs` | 1.8 | 2.8 | 1.7 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_eg_use_elec_kh_pc` | 1.9 | 2.8 | 1.8 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_en_clc_drsk_xq` | 1.8 | 2.8 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_ch4_bu_mt_ce_ar5` | 1.8 | 2.8 | 1.7 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_ch4_ip_mt_ce_ar5` | 1.8 | 2.8 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_co2_lu_mt_ce_ar5` | 1.7 | 2.8 | 1.7 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_er_fsh_aqua_mt` | 2.0 | 2.8 | 2.0 | 3.0 | 0.00 | 0 |  |
-| `wave10.wb_er_fsh_prod_mt` | 1.8 | 2.8 | 1.7 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_is_rrs_good_mt_k6` | 1.7 | 2.8 | 1.7 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_it_mlt_main_p2` | 1.8 | 2.8 | 1.7 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_it_net_secr` | 1.8 | 2.8 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_nv_agr_totl_zs` | 1.7 | 2.8 | 1.7 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_ny_adj_ictr_gn_zs` | 1.9 | 2.8 | 1.8 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_sh_h2o_basw_ru_zs` | 1.8 | 2.8 | 1.8 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_bass_ru_zs` | 1.8 | 2.8 | 1.7 | 2.8 | 0.00 | 0 |  |
-| `wave10.wb_sh_sta_wash_p5` | 1.7 | 2.8 | 1.7 | 2.8 | 0.00 | 0 |  |
-| `wave9.eu_nonhousehold_prices` | 2.1 | 2.8 | 2.0 | 2.7 | 0.00 | 0 |  |
-| `wave9.gb_neso_constraint_costs` | 1.4 | 2.8 | 1.3 | 2.6 | 0.00 | 0 |  |
-| `wave9.gb_npg_opendata` | 2.3 | 2.8 | 2.0 | 2.4 | 0.00 | 0 |  |
-| `wave9.us_nrel_sharing_sun` | 1.7 | 2.8 | 1.6 | 2.6 | 0.00 | 0 |  |
-| `entsog_tyndp.projects` | 2.4 | 2.7 | 2.3 | 2.8 | 0.00 | 0 |  |
-| `gem.energy_ownership_coal_mine_ownership` | 2.2 | 2.7 | 2.1 | 2.6 | 0.00 | 0 |  |
-| `mastr.locations` | 2.7 | 2.7 | 2.6 | 2.7 | 0.00 | 0 |  |
-| `wave10.eu_cei_gsr011` | 1.8 | 2.7 | 1.8 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_epneis1` | 2.4 | 2.7 | 2.4 | 2.9 | 0.00 | 0 |  |
-| `wave10.eu_iww_eq_age` | 1.9 | 2.7 | 1.9 | 2.4 | 0.00 | 0 |  |
-| `wave10.eu_iww_eq_age_loa` | 1.8 | 2.7 | 1.7 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_nrg_dhdc_c` | 2.0 | 2.7 | 1.8 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_nrg_inf_epct` | 2.6 | 2.7 | 2.6 | 2.7 | 0.00 | 0 |  |
-| `wave10.eu_nrg_pc_203_v` | 2.1 | 2.7 | 2.0 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_nrg_pc_204_v` | 2.0 | 2.7 | 1.9 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_tracmot` | 2.1 | 2.7 | 2.1 | 2.8 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_busveh` | 2.1 | 2.7 | 2.1 | 2.7 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_caremiss` | 1.8 | 2.7 | 1.9 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_roaene` | 2.3 | 2.7 | 2.2 | 2.7 | 0.00 | 0 |  |
-| `wave10.eu_sdg_13_31` | 1.8 | 2.7 | 1.7 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_ten00062` | 2.5 | 2.7 | 2.2 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_ten00125` | 2.6 | 2.7 | 2.5 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_tran_hv_frtra` | 1.9 | 2.7 | 1.8 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_en_ghg_fgas_ip_mt_ce_ar5` | 1.8 | 2.7 | 1.8 | 2.9 | 0.00 | 0 |  |
-| `wave10.wb_en_mam_thrd_no` | 1.8 | 2.7 | 1.7 | 2.6 | 0.00 | 0 |  |
-| `wave10.wb_er_h2o_intr_k3` | 1.8 | 2.7 | 1.7 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_ip_ids_nrct` | 1.7 | 2.7 | 1.7 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_it_net_user_ma_zs` | 1.7 | 2.7 | 1.6 | 2.5 | 0.00 | 0 |  |
-| `wave9.eu_nuclear_capacity` | 2.4 | 2.7 | 2.2 | 2.7 | 0.00 | 0 |  |
-| `gem_ownership.all_entities` | 2.6 | 2.6 | 2.5 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_curm` | 2.1 | 2.6 | 2.1 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_epigg1` | 2.0 | 2.6 | 2.0 | 2.3 | 0.00 | 0 |  |
-| `wave10.eu_env_wat_bal` | 2.4 | 2.6 | 2.4 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_ep` | 2.0 | 2.6 | 2.0 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_fechm2` | 1.8 | 2.6 | 1.7 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_ren` | 2.1 | 2.6 | 2.0 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_rail_eq_pa_nty` | 2.0 | 2.6 | 1.9 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_sdg_06_20` | 1.8 | 2.6 | 1.7 | 2.5 | 0.00 | 0 |  |
-| `wave10.eu_sdg_09_60` | 2.2 | 2.6 | 2.0 | 2.6 | 0.00 | 0 |  |
-| `wave10.eu_sdg_11_11` | 1.5 | 2.6 | 1.4 | 2.4 | 0.00 | 0 |  |
-| `wave10.eu_tran_hv_pstra` | 1.8 | 2.6 | 1.8 | 2.5 | 0.00 | 0 |  |
-| `wave10.gb_census_accommodation` | 1.8 | 2.6 | 1.7 | 2.5 | 0.00 | 0 |  |
-| `wave10.gb_census_travel_distance` | 1.8 | 2.6 | 1.8 | 2.7 | 0.00 | 0 |  |
-| `wave10.wb_ie_ppn_tran_cd` | 1.7 | 2.6 | 1.6 | 2.5 | 0.00 | 0 |  |
-| `wave9.gb_neso_tnuos` | 1.5 | 2.6 | 1.4 | 2.4 | 0.00 | 0 |  |
-| `wave9.ro_transelectrica_zone_capacity` | 1.7 | 2.6 | 1.5 | 2.7 | 0.00 | 0 |  |
-| `gem.chemicals_plant_data` | 2.2 | 2.5 | 2.1 | 2.3 | 0.00 | 0 |  |
-| `gem.energy_ownership_oil_ngl_pipeline_ownership` | 1.9 | 2.5 | 1.9 | 2.4 | 0.00 | 0 |  |
-| `wave10.eu_cei_gsr020` | 1.8 | 2.5 | 1.7 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_invte` | 1.4 | 2.5 | 1.3 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_ten00127` | 2.3 | 2.5 | 2.3 | 2.4 | 0.00 | 0 |  |
-| `wave10.eu_tran_hv_frmod` | 1.9 | 2.5 | 2.0 | 2.4 | 0.00 | 0 |  |
-| `wave10.gb_census_cars` | 1.7 | 2.5 | 1.7 | 2.6 | 0.00 | 0 |  |
-| `wave10.gb_census_households` | 1.7 | 2.5 | 1.8 | 2.5 | 0.00 | 0 |  |
-| `wave9.ie_cso_datacentres` | 2.0 | 2.5 | 1.9 | 2.4 | 0.00 | 0 |  |
-| `wave9.rs_ems_connection_queue` | 2.4 | 2.5 | 1.7 | 2.0 | 0.00 | 0 |  |
-| `gem.energy_ownership_bioenergy_power_ownership` | 2.0 | 2.4 | 1.8 | 2.3 | 0.00 | 0 |  |
-| `gem_ownership.cement_and_concrete_ownership` | 2.4 | 2.4 | 2.2 | 2.2 | 0.00 | 0 |  |
-| `power_plants_eu.jrc_performance` | 1.3 | 2.4 | 1.2 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_cei_wm011` | 1.8 | 2.4 | 1.7 | 2.3 | 0.00 | 0 |  |
-| `wave10.eu_sdg_12_41` | 1.5 | 2.4 | 1.6 | 2.3 | 0.00 | 0 |  |
-| `wave10.eu_sdg_12_61` | 1.5 | 2.4 | 1.4 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_ten00121` | 2.2 | 2.4 | 2.1 | 2.1 | 0.00 | 0 |  |
-| `wave9.fr_enedis_interruptions` | 1.3 | 2.4 | 1.1 | 2.1 | 0.00 | 0 |  |
-| `gem.energy_ownership_all_entities` | 1.9 | 2.3 | 1.8 | 2.2 | 0.00 | 0 |  |
-| `gem.methane_emitters_plumes` | 2.0 | 2.3 | 1.9 | 2.2 | 0.00 | 0 |  |
-| `gem_ownership.steel_plant_ownership` | 2.3 | 2.3 | 2.3 | 2.3 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_rp` | 1.5 | 2.3 | 1.4 | 2.3 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_ffgae` | 1.7 | 2.3 | 1.8 | 2.4 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_psth2` | 1.8 | 2.3 | 1.7 | 2.2 | 0.00 | 0 |  |
-| `wave10.eu_nrg_inf_stcs` | 1.7 | 2.3 | 1.6 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_rail_eq_locon` | 1.7 | 2.3 | 1.5 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_rail_eq_pa_cty` | 1.5 | 2.3 | 1.5 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_rail_if_line_ga` | 2.0 | 2.3 | 2.1 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_rail_if_line_na` | 2.2 | 2.3 | 2.1 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_carmot` | 1.6 | 2.3 | 1.5 | 2.3 | 0.00 | 0 |  |
-| `wave10.eu_sdg_09_30` | 2.0 | 2.3 | 1.8 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_sdg_11_52` | 1.5 | 2.3 | 1.5 | 2.0 | 0.00 | 0 |  |
-| `co2stop.dic_geol_basin` | 1.8 | 2.2 | 1.9 | 2.0 | 0.00 | 0 |  |
-| `eaglei.dqi` | 1.2 | 2.2 | 1.2 | 2.0 | 0.00 | 0 |  |
-| `gem.coal_mines_historical_production_non_chin` | 1.9 | 2.2 | 2.1 | 3.2 | 0.00 | 0 |  |
-| `gem.energy_ownership_asset_ownership` | 1.9 | 2.2 | 1.6 | 2.1 | 0.00 | 0 |  |
-| `gem.energy_ownership_iron_mine_ownership` | 1.8 | 2.2 | 1.7 | 2.2 | 0.00 | 0 |  |
-| `gem.iron_steel_plant_capacities_and_status` | 1.9 | 2.2 | 2.0 | 2.3 | 0.00 | 0 |  |
-| `gem_ownership.gas_plant_ownership` | 2.2 | 2.2 | 2.3 | 2.3 | 0.00 | 0 |  |
-| `history.eredes_capacity__substations` | 2.2 | 2.2 | 2.0 | 2.2 | 0.00 | 0 |  |
-| `wave10.eu_env_watuse_rb` | 1.1 | 2.2 | 1.1 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_busveh` | 1.5 | 2.2 | 1.5 | 2.2 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_busmot` | 2.0 | 2.2 | 2.0 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_lorroa` | 2.0 | 2.2 | 1.8 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_sdg_06_10` | 1.7 | 2.2 | 1.5 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_sdg_06_60` | 1.5 | 2.2 | 1.4 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_11_40` | 2.0 | 2.2 | 1.9 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_13_50` | 1.5 | 2.2 | 1.4 | 2.3 | 0.00 | 0 |  |
-| `wave10.eu_ten00122` | 2.1 | 2.2 | 2.1 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_ten00135` | 1.7 | 2.2 | 1.6 | 2.0 | 0.00 | 0 |  |
-| `wave10.gb_census_bedrooms` | 1.5 | 2.2 | 1.6 | 2.2 | 0.00 | 0 |  |
-| `wave9.eu_new_cars_fuel` | 2.0 | 2.2 | 1.9 | 2.1 | 0.00 | 0 |  |
-| `connect_eu.se` | 1.5 | 2.1 | 1.3 | 2.0 | 0.00 | 0 |  |
-| `gem.gas_finance_gas_power_plants` | 2.1 | 2.1 | 1.9 | 2.2 | 0.00 | 0 |  |
-| `gem.iron_steel_blast_furnaces` | 1.9 | 2.1 | 1.8 | 2.1 | 0.00 | 0 |  |
-| `gem_ownership.iron_mine_ownership` | 2.1 | 2.1 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `history.connect_eu__se` | 1.5 | 2.1 | 1.8 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_cei_pc020` | 2.1 | 2.1 | 1.7 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_landfp` | 1.1 | 2.1 | 1.1 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_env_epea_invgg` | 1.6 | 2.1 | 1.6 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_nrg_chdd_a` | 1.6 | 2.1 | 1.5 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_nrg_chp_n` | 1.9 | 2.1 | 1.9 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_dhdc_e` | 1.7 | 2.1 | 1.6 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_hpind` | 1.5 | 2.1 | 1.5 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_idooil` | 2.0 | 2.1 | 1.8 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_inf_h2stpc` | 1.7 | 2.1 | 1.6 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_nrg_stk_h2` | 1.6 | 2.1 | 1.5 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_rail_eq_locop` | 1.6 | 2.1 | 1.5 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_rail_if_line_tr` | 2.0 | 2.1 | 1.9 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_rail_if_traff` | 1.6 | 2.1 | 1.6 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_mopeds` | 1.5 | 2.1 | 1.4 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_semit` | 2.0 | 2.1 | 1.8 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_trail` | 2.0 | 2.1 | 1.8 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_carage` | 1.7 | 2.1 | 1.6 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_lorton` | 1.6 | 2.1 | 1.6 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_unlweig` | 1.6 | 2.1 | 1.5 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_sdg_07_11` | 1.5 | 2.1 | 1.5 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_07_40` | 1.5 | 2.1 | 1.5 | 2.2 | 0.00 | 0 |  |
-| `wave10.eu_sdg_13_10` | 1.8 | 2.1 | 1.7 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_ten00003` | 1.5 | 2.1 | 1.5 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_ten00030` | 1.6 | 2.1 | 1.5 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_tran_hv_ms_frmod6` | 1.8 | 2.1 | 1.8 | 1.9 | 0.00 | 0 |  |
-| `wave9.us_pjm_rpm` | 1.4 | 2.1 | 1.2 | 1.9 | 0.00 | 0 |  |
-| `connect_eu.at` | 1.4 | 2.0 | 1.1 | 1.9 | 0.00 | 0 |  |
-| `gem.coal_mines_historic_production_2018_2025` | 1.7 | 2.0 | 1.6 | 1.8 | 0.00 | 0 |  |
-| `gem.iron_ore_mines_prodconsmetcoalironore` | 1.8 | 2.0 | 1.7 | 2.1 | 0.00 | 0 |  |
-| `gem.oil_gas_extraction_field_level_reserves_data` | 1.8 | 2.0 | 1.7 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_cei_pc030` | 1.5 | 2.0 | 1.7 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_cei_pc040` | 1.3 | 2.0 | 1.3 | 1.7 | 0.00 | 0 |  |
-| `wave10.eu_cei_wm020` | 1.6 | 2.0 | 1.6 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_taxener` | 1.7 | 2.0 | 1.7 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_env_wat_ind` | 1.5 | 2.0 | 1.4 | 1.8 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_ei` | 1.5 | 2.0 | 1.5 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_nrg_ind_rctcbt` | 2.0 | 2.0 | 1.9 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_nrg_inf_bt` | 1.7 | 2.0 | 1.6 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_rail_eq_vans` | 1.4 | 2.0 | 1.6 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_bussea` | 1.4 | 2.0 | 1.4 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_spurp` | 1.4 | 2.0 | 1.3 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_bussea` | 1.5 | 2.0 | 1.4 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_spurp` | 1.4 | 2.0 | 1.4 | 2.1 | 0.00 | 0 |  |
-| `wave10.eu_sdg_06_40` | 1.5 | 2.0 | 1.4 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_sdg_06_70` | 1.4 | 2.0 | 1.3 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_09_10` | 1.4 | 2.0 | 1.4 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_09_50` | 1.6 | 2.0 | 1.5 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_sdg_13_21` | 1.5 | 2.0 | 1.4 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_ten00124` | 1.8 | 2.0 | 1.6 | 2.0 | 0.00 | 0 |  |
-| `wave10.eu_ten00138` | 1.4 | 2.0 | 1.3 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_tran_hv_ms_frmod` | 1.8 | 2.0 | 1.6 | 2.0 | 0.00 | 0 |  |
-| `wave9.eu_broadband_coverage` | 1.7 | 2.0 | 1.6 | 1.9 | 0.00 | 0 |  |
-| `gem.integrated_power_regions_area_and_countries` | 1.7 | 1.9 | 1.6 | 1.9 | 0.00 | 0 |  |
-| `gem.iron_steel_electric_arc_furnaces` | 1.8 | 1.9 | 1.5 | 1.8 | 0.00 | 0 |  |
-| `gem.iron_steel_induction_furnaces` | 1.8 | 1.9 | 1.6 | 1.8 | 0.00 | 0 |  |
-| `gem_ownership.coal_plant_ownership` | 1.9 | 1.9 | 1.9 | 1.9 | 0.00 | 0 |  |
-| `history.connect_eu__at` | 1.2 | 1.9 | 1.1 | 1.7 | 0.00 | 0 |  |
-| `ree_nodes.nodes` | 1.8 | 1.9 | 1.7 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_cei_cie012` | 1.6 | 1.9 | 1.5 | 1.8 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_cur` | 1.4 | 1.9 | 1.4 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_epite1` | 1.4 | 1.9 | 1.4 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_iww_eq_loadcap` | 1.3 | 1.9 | 1.2 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_nrg_pc_205_v` | 1.4 | 1.9 | 1.4 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqr_carpda` | 1.7 | 1.9 | 1.7 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_motorc` | 1.4 | 1.9 | 1.4 | 1.8 | 0.00 | 0 |  |
-| `wave10.eu_road_eqs_trams` | 1.4 | 1.9 | 1.3 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_sdg_12_10` | 1.7 | 1.9 | 1.5 | 1.8 | 0.00 | 0 |  |
-| `wave10.eu_sdg_13_70a` | 1.4 | 1.9 | 1.3 | 1.8 | 0.00 | 0 |  |
-| `wave10.eu_ten00136` | 1.4 | 1.9 | 1.3 | 1.9 | 0.00 | 0 |  |
-| `wave10.eu_tran_hv_psmod` | 1.6 | 1.9 | 1.5 | 2.0 | 0.00 | 0 |  |
-| `wave10.gb_dft_evcd_devices` | 1.2 | 1.9 | 1.2 | 1.9 | 0.00 | 0 |  |
-| `wave10.gb_dft_evcd_rapid` | 1.5 | 1.9 | 1.3 | 1.9 | 0.00 | 0 |  |
-| `wave9.eu_internet_households` | 1.5 | 1.9 | 1.4 | 1.8 | 0.00 | 0 |  |
-| `wave9.eu_rail_electrified` | 1.5 | 1.9 | 1.4 | 1.8 | 0.00 | 0 |  |
-| `wave9.fr_ademe_dpe` | 1.2 | 1.9 | 1.1 | 1.7 | 0.00 | 0 |  |
-| `wave9.gb_desnz_subregional_fit` | 1.9 | 1.9 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `wave9.us_eia861_reliability_xlsx` | 1.9 | 1.9 | 1.8 | 1.8 | 0.00 | 0 |  |
-| `wave9.us_nrc_operating_reactors` | 1.9 | 1.9 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `co2stop.total_storage_cap_aquif_hcfields` | 1.4 | 1.8 | 1.4 | 1.7 | 0.00 | 0 |  |
-| `eia930.bas` | 1.7 | 1.8 | 1.7 | 1.8 | 0.00 | 0 |  |
-| `gem.energy_ownership_entity_ownership` | 1.6 | 1.8 | 1.3 | 1.7 | 0.00 | 0 |  |
-| `gem.gas_finance_lng_terminals` | 1.6 | 1.8 | 1.5 | 1.7 | 0.00 | 0 |  |
-| `gem.oil_gas_extraction_field_level_production_data` | 1.4 | 1.8 | 1.3 | 1.8 | 0.00 | 0 |  |
-| `gem_ownership.entity_ownership` | 1.8 | 1.8 | 1.7 | 1.7 | 0.00 | 0 |  |
-| `wave10.eu_cei_pc032` | 1.5 | 1.8 | 1.3 | 1.8 | 0.00 | 0 |  |
-| `wave10.eu_env_ac_mid` | 1.6 | 1.8 | 1.4 | 1.7 | 0.00 | 0 |  |
-| `wave10.gb_dft_evcd_per_100k` | 1.8 | 1.8 | 1.8 | 1.8 | 0.00 | 0 |  |
-| `wave9.gb_dec_certificates` | 1.8 | 1.8 | 1.6 | 1.6 | 0.00 | 0 |  |
-| `co2stop.dic_assess_traptype` | 1.7 | 1.7 | 1.9 | 1.9 | 0.00 | 0 |  |
-| `eredes_capacity.substations` | 1.6 | 1.7 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `gem.gas_infrastructure_pipelines` | 1.5 | 1.7 | 1.4 | 1.6 | 0.00 | 0 |  |
-| `gem.iron_steel_plant_data` | 1.7 | 1.7 | 1.4 | 1.6 | 0.00 | 0 |  |
-| `gem.oil_gas_extraction_project_level_production_data` | 1.6 | 1.7 | 1.4 | 1.6 | 0.00 | 0 |  |
-| `gem.oil_gas_extraction_project_level_reserves_data` | 1.5 | 1.7 | 1.4 | 1.7 | 0.00 | 0 |  |
-| `gem_ownership.asset_ownership` | 1.7 | 1.7 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `gem_ownership.coal_mine_ownership` | 1.7 | 1.7 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `wave10.gb_census_density` | 1.4 | 1.7 | 1.2 | 1.6 | 0.00 | 0 |  |
-| `wave10.gb_desnz_ren_generation_la` | 1.7 | 1.7 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `wave10.gb_desnz_ren_sites_la` | 1.7 | 1.7 | 1.6 | 1.6 | 0.00 | 0 |  |
-| `wave9.eu_eea_wei` | 1.7 | 1.7 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `co2stop.dic_content` | 1.6 | 1.6 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `co2stop.dic_geocapacity_countries` | 1.6 | 1.6 | 1.6 | 1.6 | 0.00 | 0 |  |
-| `co2stop.dic_pred_lith` | 1.6 | 1.6 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `gem.coal_mines_historical_production_non_china` | 1.4 | 1.6 | 1.3 | 1.5 | 0.00 | 0 |  |
-| `history.pse_capacity__full_substations` | 1.2 | 1.6 | 1.1 | 1.2 | 0.00 | 0 |  |
-| `wave10.gb_desnz_elec_distribution` | 1.6 | 1.6 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `wave10.gb_desnz_ren_capacity_la` | 1.6 | 1.6 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `wave9.cz_ceps_balancing` | 1.6 | 1.6 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `wave9.de_kba_districts` | 1.6 | 1.6 | 1.4 | 1.4 | 0.00 | 0 |  |
-| `wave9.gb_ulev_la` | 1.6 | 1.6 | 1.3 | 1.3 | 0.00 | 0 |  |
-| `wave9.nl_rdw_vehicles` | 1.6 | 1.6 | 1.5 | 1.5 | 0.00 | 0 |  |
-| `gem.energy_ownership_cement_and_concrete_ownership` | 1.1 | 1.5 | 1.1 | 1.4 | 0.00 | 0 |  |
-| `gem.iron_steel_direct_reduced_iron_furnaces` | 1.3 | 1.5 | 1.2 | 1.4 | 0.00 | 0 |  |
-| `history.connect_eu__de` | 1.2 | 1.5 | 1.2 | 1.3 | 0.00 | 0 |  |
-| `mastr.catalog_values` | 1.3 | 1.5 | 1.3 | 1.5 | 0.00 | 0 |  |
-| `pse_capacity.full_substations` | 1.4 | 1.5 | 1.2 | 1.2 | 0.00 | 0 |  |
-| `connect_eu.de` | 1.2 | 1.4 | 1.2 | 1.3 | 0.00 | 0 |  |
-| `entsoe.areas` | 1.2 | 1.4 | 1.2 | 1.2 | 0.00 | 0 |  |
-| `gem.energy_ownership_steel_plant_ownership` | 1.1 | 1.4 | 1.1 | 1.4 | 0.00 | 0 |  |
-| `gem.iron_steel_basic_oxygen_furnaces` | 1.4 | 1.4 | 1.2 | 1.4 | 0.00 | 0 |  |
-| `gem_ownership.bioenergy_power_ownership` | 1.4 | 1.4 | 1.4 | 1.4 | 0.00 | 0 |  |
-| `gem_ownership.oil___ngl_pipeline_ownership` | 1.4 | 1.4 | 1.3 | 1.3 | 0.00 | 0 |  |
-| `hotmaps.industrial_sites` | 1.2 | 1.4 | 1.1 | 1.4 | 0.00 | 0 |  |
-| `wave9.gb_dft_veh0142` | 1.4 | 1.4 | 1.3 | 1.3 | 0.00 | 0 |  |
-| `wave9.ie_semo_imbalance` | 1.4 | 1.4 | 1.2 | 1.2 | 0.00 | 0 |  |
-| `wave9.nl_cbs_datacentres` | 1.4 | 1.4 | 1.4 | 1.4 | 0.00 | 0 |  |
-| `wave9.us_epa_agstar` | 1.4 | 1.4 | 1.3 | 1.3 | 0.00 | 0 |  |
-| `co2stop.country_totals` | 1.3 | 1.3 | 1.0 | 1.2 | 0.00 | 0 |  |
-| `co2stop.dic_yes_no` | 1.3 | 1.3 | 1.3 | 1.3 | 0.00 | 0 |  |
-| `co2stop.storage_units_user_and_database_calc_storage` | 1.0 | 1.3 | 1.1 | 1.2 | 0.00 | 0 |  |
-| `gem.coal_mines_change_log` | 1.1 | 1.3 | 1.1 | 1.3 | 0.00 | 0 |  |
-| `wave9.us_afdc_registrations` | 1.3 | 1.3 | 1.0 | 1.0 | 0.00 | 0 |  |
-| `wave9.us_eia_recs_heat_pumps_state` | 1.3 | 1.3 | 1.4 | 1.4 | 0.00 | 0 |  |
-| `co2stop.dic_status` | 1.2 | 1.2 | 1.0 | 1.0 | 0.00 | 0 |  |
-| `wave9.eu_cleanh2_electrolyser_mfg` | 1.2 | 1.2 | 1.0 | 1.0 | 0.00 | 0 |  |
-| `wave9.gb_npg_curtailment_events` | 1.2 | 1.2 | 1.2 | 1.2 | 0.00 | 0 |  |
-| `wave9.us_eia861_reliability` | 1.2 | 1.2 | 1.0 | 1.0 | 0.00 | 0 |  |
-| `co2stop.dic_assess_type` | 1.1 | 1.1 | 1.1 | 1.1 | 0.00 | 0 |  |
-| `gem_ownership.gas_pipeline_ownership` | 1.1 | 1.1 | 1.1 | 1.1 | 0.00 | 0 |  |
-| `wave10.gb_desnz_gas_distribution` | 1.1 | 1.1 | 1.0 | 1.0 | 0.00 | 0 |  |
-| `wave9.gb_bus_heat_pumps_la` | 1.1 | 1.1 | 1.0 | 1.0 | 0.00 | 0 |  |
-| `wave9.gb_epc_stats` | 1.1 | 1.1 | 1.1 | 1.1 | 0.00 | 0 |  |
-| `co2stop.dic_distrib_type` | 1.0 | 1.0 | 1.0 | 1.0 | 0.00 | 0 |  |
-| `co2stop.dic_methods` | 1.0 | 1.0 | 1.0 | 1.0 | 0.00 | 0 |  |
-| `wave9.us_eia861m_small_solar` | 1.0 | 1.0 | 1.0 | 1.0 | 0.00 | 0 |  |
+| `wave9.gb_ea_flood_zones` | 53,825 | 57,764 | 5.8 | 136 | 5,102.63 | 2607 | city: TimeoutError: query stopped after 60 s |
+| `main.plants` | 6,100 | 56,399 | 721 | 1,080 | 691.71 | 1004 | region: TimeoutError: query stopped after 60 s; country: TimeoutError: query stopped after 60 s |
+| `overture_power.sites` | 2,924 | 53,060 | 51.5 | 4,811 | 280.80 | 129 |  |
+| `main.prices` | 672 | 50,422 | 61.0 | 114 | 126.74 | 303 |  |
+| `mastr.units_solar` | 6,035 | 49,470 | 62.3 | 462 | 187.43 | 245 | city: TimeoutError: query stopped after 60 s |
+| `outlines.divisions` | 25,720 | 37,256 | 114 | 464 | 5,270.18 | 3474 |  |
+| `power_plants_eu.ppm_plants` | 188 | 35,081 | 11.7 | 162 | 8.16 | 5 |  |
+| `entsoe.imbalance_price` | 102 | 34,803 | 57.1 | 109 | 27.33 | 353 |  |
+| `us_lmp.day_ahead` | 70.4 | 31,190 | 27.5 | 73.1 | 111.61 | 286 |  |
+| `main.outages` | 1,060 | 29,045 | 85.5 | 1,069 | 263.38 | 335 |  |
+| `overture_power.lines` | 2,454 | 26,205 | 112 | 3,946 | 881.83 | 193 |  |
+| `overture_transport.segments` | 13,160 | 24,388 | 500 | 13,137 | 1,385.41 | 311 | region: TimeoutError: query stopped after 60 s |
+| `wave9.eu_kohesio_2014_2020` | 3,481 | 23,750 | 3.6 | 452 | 504.11 | 256 |  |
+| `wave9.de_zensus_heating` | 5,214 | 17,123 | 4,786 | 5,140 | 66.59 | 80 | region: TimeoutError: query stopped after 60 s |
+| `industrial.installations` | 362 | 14,250 | 46.1 | 14,249 | 14.49 | 35 |  |
+| `entsoe.unit_output` | 2,661 | 13,233 | 20.2 | 333 | 23.19 | 167 |  |
+| `wave9.it_istat_sezioni` | 2,926 | 11,661 | 722 | 9,511 | 1,424.36 | 188 |  |
+| `rollups.mastr__units_solar_r7` | 3.9 | 11,458 | 3.9 | 11,464 | 0.00 | 0 |  |
+| `rollups.overture_power__sites_r7` | 8.7 | 9,797 | 4.9 | 9,786 | 0.00 | 0 |  |
+| `industrial.lcp` | 224 | 9,260 | 17.1 | 9,212 | 4.20 | 3 |  |
+| `mastr.units_storage` | 336 | 8,448 | 42.2 | 2,261 | 321.78 | 181 | city: TimeoutError: query stopped after 60 s |
+| `wave9.eu_emodnet_mpa` | 640 | 8,168 | 625 | 5,045 | 349.45 | 91 |  |
+| `ev_eu.de` | 149 | 8,061 | 9.6 | 8,023 | 10.31 | 19 |  |
+| `rollups.wave9__de_zensus_heating_r7` | 11.8 | 7,576 | 10.0 | 7,486 | 0.00 | 0 |  |
+| `outlines.geostat_grid` | 3,318 | 7,098 | 557 | 4,182 | 129.88 | 89 | region: TimeoutError: query stopped after 60 s |
+| `mastr.units_combustion` | 20.7 | 7,086 | 19.2 | 7,044 | 12.96 | 10 |  |
+| `wave10.eu_nrg_ti_oilm` | 2,200 | 6,952 | 15.6 | 442 | 2.14 | 51 |  |
+| `mastr.units_biomass` | 35.9 | 6,496 | 17.6 | 6,515 | 8.34 | 18 |  |
+| `afdc.stations` | 19.8 | 6,299 | 8.2 | 656 | 20.05 | 36 |  |
+| `wave10.eu_nrg_stk_oam` | 4,849 | 6,219 | 20.2 | 333 | 1.94 | 108 |  |
+| `industrial.water_releases` | 294 | 6,209 | 15.4 | 6,211 | 4.00 | 15 |  |
+| `wave9.cz_zsj` | 143 | 5,415 | 100 | 5,277 | 75.72 | 38 |  |
+| `wave10.eu_nrg_cb_oil` | 331 | 5,386 | 10.7 | 297 | 3.14 | 30 |  |
+| `iso_queues.requests` | 20.1 | 5,157 | 5.1 | 18.7 | 3.52 | 39 |  |
+| `wave9.eur_overture_comm_lines` | 364 | 5,109 | 7.8 | 4,991 | 3.57 | 3 |  |
+| `grw.solar` | 299 | 5,075 | 216 | 1,659 | 112.89 | 65 |  |
+| `aqueduct.baseline_annual` | 2,855 | 5,071 | 2,145 | 2,830 | 449.15 | 117 |  |
+| `wave10.eu_nrg_te_oilm` | 2,443 | 5,002 | 15.0 | 327 | 2.07 | 52 |  |
+| `entsoe.generation` | 2,644 | 4,904 | 11.3 | 84.8 | 3.44 | 142 |  |
+| `entsoe.congestion_costs` | 29.0 | 4,772 | 3.0 | 5.8 | 0.38 | 23 |  |
+| `rollups.overture_transport__segments_r6` | 4.9 | 4,438 | 4.2 | 4,461 | 0.00 | 0 |  |
+| `outlines.uk_ons` | 682 | 4,322 | 673 | 5,772 | 191.16 | 53 |  |
+| `main.water_risk` | 2,417 | 4,239 | 745 | 2,718 | 349.93 | 72 |  |
+| `rollups.overture_power__sites_r6` | 4.1 | 4,209 | 4.0 | 4,209 | 0.00 | 0 |  |
+| `wave10.eu_nrg_stk_oilm` | 707 | 4,169 | 14.6 | 330 | 3.81 | 18 |  |
+| `small_area_energy.poverty` | 18.0 | 4,138 | 7.1 | 28.1 | 4.28 | 44 |  |
+| `industrial.air_releases` | 322 | 4,093 | 12.8 | 4,061 | 8.19 | 13 |  |
+| `wave10.eu_env_ac_aeint_r2` | 336 | 3,965 | 33.6 | 527 | 6.56 | 13 |  |
+| `wave9.us_usgs_landslides` | 1,311 | 3,958 | 320 | 2,211 | 42.58 | 47 |  |
+| `entsoe.congestion_redispatch_internal` | 7.8 | 3,720 | 7.7 | 36.3 | 2.06 | 29 |  |
+| `app.world_plants` | 24.4 | 3,614 | 5.6 | 3,609 | 0.00 | 0 |  |
+| `dams.reservoirs` | 1,224 | 3,580 | 724 | 795 | 151.58 | 57 | lookup: OutOfMemoryException: Out of Memory Error: failed to allocate data of size 943.8 KiB (1.8 GiB/1.8 GiB used)
+
+Possible solutions:
+* Reducing the number o |
+| `wave9.eu_emodnet_msp_zoning` | 148 | 3,355 | 144 | 170 | 72.41 | 37 |  |
+| `outlines.us_tracts` | 836 | 3,309 | 868 | 1,474 | 138.40 | 23 |  |
+| `protected.padus` | 1,305 | 3,287 | 183 | 2,284 | 229.74 | 48 |  |
+| `wave9.at_zaehlsprengel` | 293 | 3,155 | 73.2 | 2,118 | 95.46 | 34 |  |
+| `wave10.eu_env_ac_pefasu` | 308 | 3,107 | 26.7 | 392 | 4.03 | 18 |  |
+| `outlines.adm2` | 220 | 3,041 | 159 | 484 | 136.24 | 66 |  |
+| `wave9.us_epa_repowering` | 311 | 2,948 | 276 | 393 | 24.30 | 19 |  |
+| `protected.natura2000` | 208 | 2,866 | 153 | 2,828 | 32.35 | 18 |  |
+| `wave9.us_noaa_mpa` | 193 | 2,783 | 16.7 | 1,642 | 133.29 | 36 |  |
+| `wave9.us_opportunity_zones` | 94.2 | 2,718 | 70.3 | 93.5 | 56.70 | 29 |  |
+| `aqueduct.basins` | 1,621 | 2,704 | 316 | 857 | 120.89 | 48 | city: OutOfMemoryException: Out of Memory Error: could not allocate block of size 2.0 MiB (1.8 GiB/1.8 GiB used)
+
+Possible solutions:
+* Reducing the number of t |
+| `grw.wind` | 692 | 2,594 | 308 | 1,697 | 19.58 | 37 |  |
+| `wave10.eu_env_ac_egss2` | 308 | 2,522 | 21.9 | 574 | 2.97 | 13 |  |
+| `entsoe.forecast_wind_solar` | 616 | 2,515 | 7.0 | 16.0 | 14.35 | 28 |  |
+| `rollups.overture_transport__segments_r7` | 3.1 | 2,494 | 2.7 | 2,339 | 0.00 | 0 |  |
+| `rollups.overture_power__lines_r7` | 2.9 | 2,456 | 4.3 | 2,455 | 0.00 | 0 |  |
+| `rollups.mastr__units_storage_r7` | 4.5 | 2,418 | 3.0 | 2,408 | 0.00 | 0 |  |
+| `entsoe.transfer_capacity` | 30.5 | 2,403 | 9.5 | 30.4 | 7.49 | 16 |  |
+| `outlines.fr_iris` | 565 | 2,353 | 539 | 1,230 | 141.18 | 35 |  |
+| `wave9.us_nyc_ll84` | 608 | 2,251 | 151 | 689 | 19.59 | 14 |  |
+| `gem.integrated_power_power_facilities` | 654 | 2,172 | 222 | 2,172 | 9.04 | 6 |  |
+| `wave9.us_usgs_mrds` | 750 | 2,168 | 49.4 | 801 | 25.17 | 20 |  |
+| `entsoe.flows` | 1,602 | 2,076 | 10.5 | 56.9 | 19.88 | 47 |  |
+| `mastr.units_wind` | 37.5 | 2,054 | 22.0 | 2,018 | 9.63 | 8 |  |
+| `rollups.mastr__units_solar_r6` | 5.0 | 2,002 | 2.1 | 1,962 | 0.00 | 0 |  |
+| `wave9.us_noaa_storm_events` | 12.1 | 1,970 | 9.8 | 125 | 6.43 | 7 |  |
+| `entsoe.load` | 1,026 | 1,950 | 4.2 | 370 | 2.62 | 35 |  |
+| `outlines.us_places` | 824 | 1,932 | 536 | 731 | 73.36 | 15 |  |
+| `neso.constraint_breakdown` | 8.2 | 1,924 | 5.4 | 7.3 | 0.30 | 18 |  |
+| `outlines.us_cousub` | 600 | 1,913 | 644 | 881 | 101.13 | 18 |  |
+| `eaglei.outages` | 1,858 | 1,880 | 44.8 | 66.8 | 19.07 | 43 |  |
+| `outlines.nl_cbs` | 101 | 1,739 | 123 | 1,180 | 74.11 | 31 |  |
+| `small_area_energy.consumption` | 664 | 1,698 | 2.7 | 44.3 | 43.29 | 36 |  |
+| `eia930.demand` | 824 | 1,643 | 75.9 | 201 | 37.25 | 40 |  |
+| `wave9.eu_eshm20` | 78.5 | 1,638 | 14.8 | 1,644 | 1.21 | 1 |  |
+| `rollups.wave9__de_zensus_heating_r6` | 12.2 | 1,632 | 11.4 | 1,636 | 0.00 | 0 |  |
+| `main.grid_capacity` | 12.7 | 1,580 | 10.0 | 11.6 | 1.90 | 17 |  |
+| `outlines.small_areas` | 298 | 1,534 | 309 | 612 | 93.18 | 36 |  |
+| `wave9.gb_he_listed` | 1,188 | 1,505 | 812 | 1,335 | 39.83 | 34 |  |
+| `wave10.eu_nrg_cb_oilm` | 217 | 1,497 | 19.7 | 262 | 2.34 | 7 |  |
+| `wave9.es_ine_secciones` | 162 | 1,481 | 85.1 | 160 | 66.85 | 34 |  |
+| `wave10.eu_env_ac_ainah_r2` | 283 | 1,475 | 42.2 | 400 | 33.51 | 20 |  |
+| `wave9.ie_seai_ber` | 826 | 1,452 | 25.8 | 806 | 5.31 | 9 |  |
+| `wave10.eu_env_ac_ch4fp` | 467 | 1,438 | 2.5 | 40.0 | 6.66 | 13 |  |
+| `wave9.world_ourairports` | 25.4 | 1,427 | 15.9 | 350 | 6.35 | 8 |  |
+| `wave10.eu_nrg_bal_s` | 237 | 1,374 | 19.9 | 338 | 2.74 | 5 |  |
+| `wave9.world_ihfc_heat_flow` | 15.2 | 1,373 | 13.2 | 202 | 5.27 | 5 |  |
+| `wave9.fr_georisques_ssp` | 270 | 1,352 | 288 | 410 | 35.07 | 12 |  |
+| `rollups.mastr__units_storage_r6` | 3.5 | 1,339 | 2.9 | 1,335 | 0.00 | 0 |  |
+| `outlines.urban_centres` | 340 | 1,313 | 315 | 414 | 14.28 | 15 |  |
+| `wave9.us_epa_frs_cleanups` | 68.7 | 1,306 | 14.6 | 218 | 3.44 | 5 |  |
+| `wave9.eu_emodnet_substrate` | 145 | 1,290 | 135 | 618 | 85.61 | 36 |  |
+| `mastr.units_hydro` | 16.5 | 1,219 | 10.3 | 1,162 | 1.97 | 2 |  |
+| `rollups.overture_power__lines_r6` | 114 | 1,217 | 6.4 | 1,203 | 5.76 | 10 |  |
+| `wave9.ee_grid` | 8.7 | 1,171 | 6.4 | 11.8 | 2.26 | 6 |  |
+| `wave10.eu_env_ac_co2fp` | 331 | 1,166 | 1.4 | 29.2 | 22.31 | 17 |  |
+| `places.cities` | 33.6 | 1,125 | 7.3 | 96.4 | 2.37 | 4 |  |
+| `wave10.eu_env_ac_io10` | 289 | 1,116 | 22.5 | 767 | 2.58 | 3 |  |
+| `wave9.us_usaspending_doe` | 18.6 | 1,096 | 18.0 | 482 | 2.83 | 2 |  |
+| `wave10.eu_env_ac_pfcfp` | 325 | 1,087 | 2.5 | 24.5 | 1.60 | 15 |  |
+| `wave9.be_elia_balancing` | 296 | 1,020 | 2.3 | 83.2 | 20.22 | 13 |  |
+| `wave10.eu_env_ac_nf3sf6fp` | 321 | 1,007 | 2.4 | 19.2 | 1.88 | 12 |  |
+| `wave10.eu_env_ac_ghgfp` | 346 | 1,004 | 2.0 | 56.0 | 22.05 | 15 |  |
+| `wave10.eu_env_ac_hfcfp` | 215 | 981 | 2.1 | 55.5 | 12.61 | 18 |  |
+| `atb.electricity` | 279 | 979 | 15.8 | 42.1 | 6.36 | 7 |  |
+| `rollups.overture_transport__segments_r5` | 4.1 | 974 | 3.6 | 965 | 0.00 | 0 |  |
+| `wave10.gb_desnz_ghg_dataset` | 372 | 949 | 11.1 | 535 | 5.50 | 4 |  |
+| `rollups.overture_power__sites_r5` | 3.6 | 900 | 2.8 | 925 | 0.00 | 0 |  |
+| `osm.eu_lines` | 10.5 | 894 | 8.1 | 73.6 | 14.29 | 13 |  |
+| `wave9.gb_srn` | 299 | 893 | 10.3 | 605 | 15.86 | 10 |  |
+| `wave9.us_smu_heat_flow` | 9.7 | 892 | 6.7 | 51.1 | 12.67 | 11 |  |
+| `co2stop.storage_units_user_and_database_calc_storage` | 1.6 | 874 | 1.4 | 1.9 | 0.03 | 3 |  |
+| `wave10.eu_rail_eq_pa_cty` | 2.6 | 870 | 1.7 | 2.3 | 0.05 | 3 |  |
+| `eia930.generation_by_fuel` | 198 | 866 | 2.1 | 23.0 | 4.26 | 6 |  |
+| `wave9.us_eia_gas_pipelines` | 9.2 | 864 | 6.6 | 459 | 4.41 | 6 |  |
+| `wave9.gb_brownfield_register` | 351 | 862 | 10.1 | 196 | 4.17 | 7 |  |
+| `wave9.ie_cso_saps_heating` | 594 | 857 | 15.6 | 84.6 | 10.45 | 8 |  |
+| `eia930.interchange` | 333 | 841 | 1.2 | 14.9 | 4.38 | 8 |  |
+| `dams.barriers` | 19.1 | 832 | 11.6 | 131 | 3.99 | 6 |  |
+| `rollups.mastr__units_solar_r5` | 2.6 | 829 | 2.5 | 828 | 0.00 | 0 |  |
+| `wave9.gr_admie_balancing` | 242 | 824 | 2.4 | 30.0 | 9.37 | 7 |  |
+| `ev_eu.at` | 11.9 | 807 | 4.0 | 800 | 0.47 | 3 |  |
+| `wave9.us_epa_aqs_annual` | 22.9 | 795 | 18.0 | 301 | 3.64 | 5 |  |
+| `wave9.us_usgs_nwis_sites` | 358 | 792 | 27.6 | 481 | 10.61 | 7 |  |
+| `connect_eu.cz` | 13.5 | 789 | 9.1 | 12.9 | 0.03 | 2 |  |
+| `wave9.fi_statfin_heating_fuel_municipality` | 231 | 786 | 18.3 | 724 | 0.99 | 1 |  |
+| `wave10.eu_nrg_ind_idooil` | 3.0 | 780 | 2.0 | 2.7 | 0.05 | 3 |  |
+| `outlines.aliases` | 288 | 774 | 67.4 | 71.1 | 27.06 | 16 |  |
+| `wave9.us_natcarb` | 556 | 741 | 24.9 | 555 | 5.75 | 10 |  |
+| `history.connect_eu__ee` | 9.9 | 733 | 3.6 | 11.2 | 0.05 | 2 |  |
+| `wave10.eu_cei_cie012` | 3.1 | 731 | 2.2 | 3.2 | 0.99 | 2 |  |
+| `wave10.eu_env_ac_n2ofp` | 430 | 731 | 2.2 | 29.4 | 8.27 | 15 |  |
+| `connect_eu.at` | 3.3 | 731 | 1.5 | 3.1 | 0.04 | 2 |  |
+| `wave9.pl_pse_balancing` | 324 | 727 | 1.9 | 14.1 | 2.60 | 4 |  |
+| `gem.iron_steel_induction_furnaces` | 1.7 | 724 | 1.4 | 1.7 | 0.10 | 3 |  |
+| `eaglei.counties` | 3.6 | 720 | 2.0 | 3.4 | 0.04 | 2 |  |
+| `aqueduct.baseline_monthly` | 11.7 | 712 | 6.1 | 8.0 | 4.83 | 5 |  |
+| `ev_eu.dk` | 11.1 | 712 | 3.3 | 20.4 | 0.22 | 2 |  |
+| `gem.chemicals_plant_data` | 1.8 | 707 | 1.3 | 1.9 | 0.13 | 3 |  |
+| `history.wave9__gb_brownfield_register` | 9.7 | 706 | 7.2 | 14.5 | 6.28 | 7 |  |
+| `co2stop.dic_content` | 702 | 702 | 1.0 | 1.0 | 0.01 | 2 |  |
+| `eaglei.dqi` | 3.1 | 702 | 1.7 | 3.4 | 0.08 | 3 |  |
+| `wave10.eu_env_ac_ainah_rd` | 303 | 699 | 17.7 | 110 | 3.92 | 3 |  |
+| `rollups.mastr__units_storage_r5` | 3.2 | 695 | 3.0 | 686 | 0.00 | 0 |  |
+| `connect_eu.mt` | 10.3 | 692 | 7.5 | 9.8 | 0.13 | 2 |  |
+| `ev_eu.fi` | 13.7 | 689 | 3.8 | 16.6 | 0.10 | 2 |  |
+| `entsog.flows` | 78.2 | 687 | 28.0 | 64.0 | 10.72 | 6 |  |
+| `gem.iron_steel_direct_reduced_iron_furnaces` | 2.0 | 685 | 1.5 | 2.0 | 0.06 | 2 |  |
+| `neso_tec.projects` | 8.8 | 680 | 4.0 | 4.3 | 0.32 | 4 |  |
+| `wave9.dk_energinet_reserves` | 1.7 | 679 | 1.2 | 11.0 | 3.11 | 3 |  |
+| `wave9.fr_ore_ev_commune` | 312 | 674 | 1.7 | 19.5 | 2.22 | 4 |  |
+| `history.pse_capacity__full_substations` | 1.9 | 674 | 1.8 | 2.0 | 0.05 | 2 |  |
+| `co2stop.country_totals` | 1.6 | 673 | 1.2 | 1.5 | 0.02 | 2 |  |
+| `entsog.operator_point_directions` | 6.8 | 670 | 4.8 | 7.4 | 0.22 | 3 |  |
+| `gem.coal_mines_historic_production_2018_2025` | 1.8 | 663 | 1.4 | 1.8 | 0.18 | 2 |  |
+| `gem.oil_gas_extraction_project_level_reserves_data` | 1.7 | 661 | 1.2 | 1.6 | 0.05 | 2 |  |
+| `hotmaps.industrial_sites` | 1.5 | 660 | 1.2 | 1.5 | 0.35 | 2 |  |
+| `main.emissions` | 374 | 660 | 3.0 | 13.8 | 2.00 | 7 |  |
+| `rollups.wave9__de_zensus_heating_r5` | 14.1 | 658 | 9.9 | 193 | 0.12 | 2 |  |
+| `co2stop.dgf_input` | 654 | 654 | 2.5 | 2.5 | 0.09 | 2 |  |
+| `wave9.us_usseabed` | 11.4 | 650 | 7.1 | 271 | 1.26 | 5 |  |
+| `aqueduct.future_annual` | 13.2 | 650 | 8.4 | 12.8 | 7.07 | 6 |  |
+| `history.connect_eu__lt` | 16.4 | 648 | 13.2 | 15.5 | 0.05 | 2 |  |
+| `gem.oil_infrastructure_data` | 2.8 | 648 | 2.2 | 2.7 | 0.22 | 2 |  |
+| `econnextion.requests` | 2.6 | 647 | 1.9 | 2.4 | 0.07 | 3 |  |
+| `wave10.eu_road_eqr_trail` | 2.0 | 642 | 1.6 | 1.8 | 1.49 | 2 |  |
+| `history.connect_eu__cz` | 14.0 | 640 | 9.9 | 11.3 | 0.02 | 2 |  |
+| `small_area_energy.heating` | 5.6 | 639 | 3.6 | 8.0 | 1.95 | 3 |  |
+| `connect_eu.es_dso` | 14.2 | 636 | 4.5 | 16.3 | 0.14 | 2 |  |
+| `gem.coal_terminals_terminals` | 18.6 | 634 | 17.2 | 17.3 | 0.17 | 3 |  |
+| `co2stop.dic_pred_lith` | 633 | 633 | 0.9 | 0.9 | 0.04 | 2 |  |
+| `wave10.eu_nrg_ind_rctcbt` | 2.5 | 633 | 2.0 | 2.3 | 0.07 | 2 |  |
+| `euets.installations` | 33.6 | 633 | 18.0 | 30.0 | 5.50 | 5 |  |
+| `gem.iron_steel_plant_data` | 2.8 | 632 | 2.1 | 2.7 | 0.32 | 2 |  |
+| `gem.methane_emitters_pipelines` | 2.2 | 628 | 1.8 | 2.1 | 0.79 | 2 |  |
+| `ree_nodes.nodes` | 2.9 | 626 | 2.9 | 2.9 | 0.33 | 4 |  |
+| `ev_eu.hu` | 11.1 | 625 | 3.2 | 16.7 | 0.15 | 2 |  |
+| `history.registers__be` | 2.7 | 625 | 2.1 | 2.5 | 0.03 | 2 |  |
+| `gem.oil_gas_extraction_project_level_main_data` | 16.5 | 624 | 14.9 | 15.6 | 0.12 | 2 |  |
+| `ev_eu.pl` | 13.1 | 623 | 3.4 | 10.8 | 0.25 | 2 |  |
+| `gem.methane_emitters_lng_terminals` | 17.1 | 621 | 15.1 | 15.7 | 0.15 | 2 |  |
+| `history.connect_eu__mt` | 23.5 | 621 | 8.0 | 10.5 | 0.14 | 3 |  |
+| `esb_heatmap.transformers` | 23.9 | 620 | 14.4 | 14.7 | 2.23 | 4 |  |
+| `ev_eu.be` | 10.1 | 618 | 4.8 | 16.5 | 0.36 | 2 |  |
+| `connect_eu.se` | 3.0 | 618 | 2.7 | 297 | 0.02 | 2 |  |
+| `ev_eu.ro` | 11.5 | 618 | 2.8 | 15.0 | 0.14 | 3 |  |
+| `history.esb_heatmap__transformers` | 18.2 | 617 | 13.2 | 16.4 | 2.33 | 6 |  |
+| `wave10.eu_cei_pc032` | 3.3 | 617 | 1.8 | 2.8 | 0.10 | 2 |  |
+| `gem.iron_steel_open_hearth_furnaces` | 1.9 | 616 | 1.9 | 2.0 | 0.03 | 2 |  |
+| `history.registers__pt` | 14.8 | 615 | 4.7 | 15.9 | 0.14 | 2 |  |
+| `gem.gas_infrastructure_lng_terminals` | 19.5 | 614 | 17.7 | 18.6 | 0.18 | 2 |  |
+| `history.connect_eu__at` | 3.5 | 613 | 1.9 | 3.4 | 0.04 | 2 |  |
+| `ev_eu.se` | 10.5 | 612 | 5.1 | 17.1 | 0.27 | 2 |  |
+| `history.eredes_capacity__substations` | 2.1 | 611 | 2.0 | 2.1 | 0.11 | 2 |  |
+| `gem.coal_mines_change_log` | 1.7 | 609 | 1.5 | 1.6 | 0.05 | 2 |  |
+| `history.connect_eu__de` | 1.6 | 608 | 1.3 | 1.6 | 0.05 | 2 |  |
+| `gem.iron_ore_mines_main_data` | 12.5 | 607 | 2.2 | 2.9 | 0.12 | 2 |  |
+| `ev_eu.es` | 9.7 | 606 | 3.2 | 17.6 | 0.21 | 2 |  |
+| `gem.gas_infrastructure_pipelines` | 2.0 | 606 | 1.6 | 1.9 | 0.42 | 2 |  |
+| `wave10.eu_env_ac_rp` | 3.0 | 604 | 1.7 | 2.3 | 0.02 | 1 |  |
+| `connect_eu.lt` | 15.1 | 604 | 10.9 | 17.0 | 0.04 | 2 |  |
+| `gem.methane_emitters_oil_and_gas_reserves` | 17.5 | 604 | 14.3 | 15.8 | 0.14 | 2 |  |
+| `gem.iron_steel_blast_furnaces` | 1.6 | 603 | 1.2 | 1.5 | 0.06 | 2 |  |
+| `ev_eu.hr` | 10.4 | 602 | 2.9 | 13.2 | 0.05 | 2 |  |
+| `connect_eu.de` | 2.5 | 600 | 1.9 | 2.2 | 0.01 | 2 |  |
+| `co2stop.dic_geocapacity_countries` | 2.1 | 598 | 1.7 | 2.0 | 0.06 | 2 |  |
+| `gem.methane_emitters_coal_mines_non_closed` | 18.0 | 598 | 16.3 | 17.1 | 0.25 | 2 |  |
+| `co2stop.total_storecap_nolargestorage_countries` | 2.3 | 598 | 2.0 | 2.3 | 0.02 | 2 |  |
+| `history.connect_eu__se` | 2.5 | 596 | 1.6 | 2.3 | 0.05 | 2 |  |
+| `eredes_capacity.substations` | 2.5 | 596 | 2.2 | 2.3 | 0.08 | 3 |  |
+| `history.connect_eu__es_dso` | 14.7 | 596 | 4.8 | 16.4 | 0.20 | 3 |  |
+| `co2stop.dic_yes_no` | 594 | 594 | 1.3 | 1.3 | 0.04 | 2 |  |
+| `entsoe.areas` | 1.7 | 594 | 1.7 | 1.8 | 0.02 | 2 |  |
+| `co2stop.total_storage_cap_aquif_hcfields` | 1.7 | 593 | 1.4 | 1.6 | 0.04 | 2 |  |
+| `wave10.eu_rail_if_line_tr` | 2.7 | 590 | 2.0 | 2.6 | 0.62 | 2 |  |
+| `gem.integrated_power_regions_area_and_countries` | 1.9 | 589 | 1.5 | 1.8 | 0.06 | 2 |  |
+| `co2stop.dic_distrib_type` | 588 | 588 | 1.7 | 1.7 | 0.02 | 2 |  |
+| `co2stop.hydrocarbon_traps` | 18.0 | 586 | 13.4 | 36.7 | 0.16 | 2 |  |
+| `ev_eu.cy` | 14.7 | 585 | 3.9 | 21.6 | 0.04 | 2 |  |
+| `wave10.eu_env_ac_cur` | 2.6 | 584 | 1.7 | 2.4 | 0.53 | 3 |  |
+| `wave10.eu_cei_srm040` | 14.0 | 583 | 2.5 | 13.3 | 0.13 | 2 |  |
+| `co2stop.hydrocarbon_traps_temp` | 23.3 | 583 | 9.9 | 22.0 | 0.07 | 2 |  |
+| `wave10.eu_nrg_stk_oom` | 515 | 582 | 21.4 | 510 | 1.20 | 1 |  |
+| `connect_eu.ee` | 8.0 | 581 | 2.8 | 11.4 | 0.05 | 2 |  |
+| `wave9.si_surs_heating_settlement` | 296 | 581 | 8.3 | 569 | 0.66 | 1 |  |
+| `gem.coal_mines_historical_production_china` | 2.5 | 578 | 2.4 | 2.4 | 0.08 | 2 |  |
+| `ev_eu.sk` | 12.0 | 577 | 4.1 | 22.7 | 0.08 | 2 |  |
+| `ev_eu.lv` | 14.4 | 577 | 3.8 | 22.2 | 0.06 | 3 |  |
+| `ev_eu.lt` | 11.5 | 575 | 3.7 | 16.5 | 0.06 | 3 |  |
+| `co2stop.dic_assess_type` | 574 | 574 | 1.8 | 1.8 | 0.04 | 2 |  |
+| `entsog.points` | 5.1 | 574 | 4.6 | 4.7 | 0.04 | 2 |  |
+| `wave10.wb_ag_lnd_el5m_zs` | 2.6 | 572 | 1.5 | 2.4 | 0.01 | 1 |  |
+| `wave10.eu_env_ac_epite1` | 3.3 | 572 | 1.7 | 2.5 | 0.27 | 2 |  |
+| `co2stop.dic_status` | 570 | 570 | 2.0 | 2.0 | 0.00 | 1 |  |
+| `co2stop.hydrocarbon_formations` | 17.2 | 569 | 12.0 | 15.4 | 0.05 | 2 |  |
+| `wave10.wb_ag_lnd_agri_zs` | 3.9 | 568 | 2.5 | 4.0 | 0.06 | 1 |  |
+| `gem.iron_steel_basic_oxygen_furnaces` | 2.4 | 567 | 1.8 | 2.4 | 0.03 | 1 |  |
+| `co2stop.dic_age` | 566 | 566 | 1.5 | 1.5 | 0.02 | 2 |  |
+| `co2stop.dic_geocgraph_area` | 2.0 | 566 | 1.4 | 1.9 | 0.02 | 2 |  |
+| `wave9.eu_egdi_minerals` | 63.0 | 565 | 51.5 | 563 | 1.70 | 1 |  |
+| `gem.coal_mines_historical_production_non_china` | 2.5 | 564 | 1.9 | 2.5 | 0.08 | 2 |  |
+| `wave9.us_nrhp` | 34.5 | 563 | 15.5 | 208 | 6.96 | 6 |  |
+| `co2stop.dic_methods` | 548 | 548 | 1.6 | 1.6 | 0.04 | 2 |  |
+| `wave9.lv_csp_central_heating` | 8.1 | 547 | 5.5 | 500 | 0.00 | 0 |  |
+| `osm.datacentres` | 62.6 | 545 | 28.1 | 55.2 | 0.45 | 2 |  |
+| `gem.gas_finance_lng_terminals` | 2.5 | 544 | 2.0 | 2.6 | 0.09 | 2 |  |
+| `wave9.be_fluvius_consumption` | 210 | 522 | 1.7 | 15.3 | 5.90 | 5 |  |
+| `lbnl_queue.requests` | 8.1 | 521 | 7.9 | 8.4 | 1.21 | 2 |  |
+| `euets.verified_emissions` | 191 | 505 | 29.5 | 117 | 4.08 | 4 |  |
+| `rollups.overture_power__lines_r5` | 2.7 | 500 | 2.1 | 501 | 0.00 | 0 |  |
+| `wave10.wb_eg_elc_loss_zs` | 3.0 | 496 | 1.6 | 2.7 | 0.06 | 1 |  |
+| `wave9.world_ourairports_runways` | 12.6 | 493 | 11.1 | 140 | 1.48 | 1 |  |
+| `wave9.us_openei_urdb` | 488 | 488 | 19.4 | 19.4 | 0.13 | 2 |  |
+| `wave10.eu_nrg_te_oil` | 234 | 486 | 19.4 | 473 | 1.06 | 1 |  |
+| `gem.energy_ownership_all_entities` | 1.8 | 480 | 1.5 | 1.8 | 1.66 | 2 |  |
+| `wave9.de_regelleistung` | 207 | 475 | 3.0 | 19.9 | 2.48 | 4 |  |
+| `wave10.eu_nrg_ti_coifpm` | 314 | 469 | 12.7 | 407 | 0.89 | 1 |  |
+| `wave10.wb_en_ghg_ch4_ic_mt_ce_ar5` | 2.8 | 455 | 1.6 | 2.6 | 0.06 | 1 |  |
+| `wave10.eu_env_ac_rmefd` | 312 | 445 | 12.5 | 441 | 1.67 | 1 |  |
+| `gem_ownership.coal_mine_ownership` | 442 | 442 | 1.2 | 1.2 | 0.62 | 2 |  |
+| `entsoe.prices` | 298 | 441 | 8.0 | 46.1 | 2.26 | 4 |  |
+| `wave10.wb_ag_lnd_frst_zs` | 3.0 | 438 | 1.9 | 3.0 | 0.06 | 1 |  |
+| `wave9.se_svk_reserves` | 192 | 437 | 1.4 | 47.6 | 12.57 | 7 |  |
+| `wave10.eu_nrg_ind_fecf` | 4.0 | 432 | 2.7 | 3.4 | 0.09 | 1 |  |
+| `wave10.wb_ag_srf_totl_k2` | 2.5 | 427 | 1.5 | 2.6 | 0.02 | 1 |  |
+| `wave9.eu_tent_network` | 9.4 | 422 | 7.7 | 415 | 0.00 | 0 |  |
+| `wave10.gb_desnz_gas_la` | 4.1 | 420 | 1.3 | 3.6 | 0.57 | 1 |  |
+| `wave10.eu_nrg_ind_difec` | 3.3 | 419 | 2.6 | 2.8 | 0.09 | 2 |  |
+| `wave10.gb_desnz_elec_la` | 9.3 | 419 | 2.3 | 8.2 | 0.81 | 1 |  |
+| `nl_capacity.areas` | 7.0 | 418 | 6.0 | 399 | 0.00 | 0 |  |
+| `mastr.locations` | 5.9 | 416 | 4.2 | 6.0 | 1.16 | 3 |  |
+| `netztransparenz.redispatch` | 4.5 | 413 | 1.3 | 4.1 | 1.63 | 2 |  |
+| `shapes.nuts` | 4.5 | 413 | 4.6 | 413 | 0.00 | 0 |  |
+| `wave10.eu_nrg_d_hhq` | 14.2 | 409 | 5.2 | 13.3 | 0.20 | 1 |  |
+| `ev_eu.nl` | 24.2 | 404 | 8.5 | 47.6 | 3.50 | 4 |  |
+| `wave10.wb_ny_adj_svnx_cd` | 3.3 | 403 | 1.8 | 3.2 | 0.04 | 1 |  |
+| `wave10.wb_en_ghg_ch4_mt_ce_ar5` | 3.0 | 402 | 1.7 | 3.1 | 0.07 | 1 |  |
+| `wave10.eu_env_ac_aibrid_r2` | 193 | 400 | 19.7 | 127 | 2.66 | 3 |  |
+| `ghgrp.facilities` | 12.8 | 399 | 4.1 | 19.2 | 0.55 | 1 |  |
+| `wave10.eu_nrg_te_h2` | 3.5 | 399 | 2.6 | 3.2 | 0.03 | 2 |  |
+| `wave10.wb_eg_elc_accs_zs` | 3.9 | 392 | 2.1 | 3.8 | 0.03 | 1 |  |
+| `wave10.wb_ny_adj_dfor_cd` | 3.0 | 392 | 1.8 | 2.8 | 0.03 | 1 |  |
+| `wave10.eu_env_ac_pefafp` | 330 | 389 | 4.0 | 404 | 0.68 | 3 |  |
+| `egrid.plants` | 19.0 | 389 | 16.1 | 46.8 | 2.54 | 4 |  |
+| `wave10.wb_er_fsh_prod_mt` | 4.0 | 389 | 2.3 | 3.9 | 0.05 | 1 |  |
+| `wave9.gb_emr_cm_register` | 8.1 | 389 | 6.3 | 8.2 | 0.64 | 1 |  |
+| `wave10.wb_en_ghg_n2o_ip_mt_ce_ar5` | 4.3 | 387 | 2.3 | 4.0 | 0.07 | 1 |  |
+| `mastr.grid_connection_points` | 2.9 | 384 | 2.8 | 3.0 | 1.74 | 3 |  |
+| `wave10.eu_nrg_chddr2_m` | 8.0 | 384 | 4.2 | 7.2 | 1.19 | 1 |  |
+| `wave10.wb_eg_use_pcap_kg_oe` | 2.7 | 383 | 1.5 | 2.7 | 0.06 | 1 |  |
+| `history.registers__cz` | 4.4 | 382 | 2.1 | 4.7 | 0.81 | 2 |  |
+| `gem.energy_ownership_bioenergy_power_ownership` | 1.7 | 380 | 1.3 | 1.7 | 0.76 | 2 |  |
+| `wave10.wb_en_ghg_co2_ip_mt_ce_ar5` | 3.1 | 379 | 1.7 | 2.9 | 0.07 | 1 |  |
+| `app.eu_lines` | 20.5 | 378 | 6.0 | 379 | 0.00 | 0 |  |
+| `registers.cz` | 5.9 | 378 | 4.5 | 5.6 | 0.82 | 1 |  |
+| `wave10.wb_bx_gsr_ccis_cd` | 3.2 | 377 | 1.7 | 2.9 | 0.05 | 1 |  |
+| `wave10.wb_en_ghg_ch4_pi_mt_ce_ar5` | 3.2 | 376 | 1.7 | 3.0 | 0.05 | 1 |  |
+| `wave10.eu_nrg_cb_pem` | 24.0 | 375 | 5.7 | 22.3 | 0.66 | 1 |  |
+| `wave9.gb_nged_opendata` | 20.4 | 375 | 11.9 | 40.4 | 0.83 | 1 |  |
+| `wave10.wb_bx_gsr_ccis_zs` | 3.8 | 375 | 2.1 | 3.7 | 0.05 | 1 |  |
+| `wave10.gb_desnz_co2_la` | 16.2 | 375 | 2.2 | 13.6 | 2.07 | 1 |  |
+| `wave10.wb_en_ghg_co2_mt_ce_ar5` | 2.6 | 375 | 1.5 | 2.5 | 0.07 | 1 |  |
+| `gem.oil_gas_extraction_field_level_main_data` | 283 | 373 | 42.9 | 47.0 | 3.12 | 5 |  |
+| `wave10.eu_env_ac_mfadpo` | 7.5 | 372 | 3.8 | 6.7 | 0.16 | 1 |  |
+| `wave9.us_iso_as_prices` | 339 | 372 | 4.6 | 326 | 0.07 | 1 |  |
+| `wave10.wb_er_h2o_fwtl_k3` | 4.1 | 372 | 2.2 | 4.1 | 0.04 | 1 |  |
+| `wave10.eu_env_esst_ggcp` | 46.4 | 369 | 4.1 | 46.4 | 0.14 | 1 |  |
+| `small_area_energy.renewables` | 4.9 | 362 | 4.0 | 6.0 | 0.51 | 1 |  |
+| `wave10.eu_env_ac_tax` | 3.9 | 361 | 3.1 | 4.7 | 0.04 | 1 |  |
+| `tri.releases` | 358 | 358 | 4.1 | 4.1 | 0.02 | 1 |  |
+| `wave10.eu_ten00126` | 3.8 | 358 | 2.9 | 3.8 | 0.03 | 1 |  |
+| `wave10.eu_env_esst_rw` | 9.5 | 357 | 2.7 | 8.0 | 0.03 | 1 |  |
+| `wave10.wb_eg_elc_accs_ur_zs` | 3.1 | 355 | 1.8 | 3.2 | 0.03 | 1 |  |
+| `wave9.us_usgs_nshm` | 248 | 355 | 57.4 | 334 | 9.83 | 6 |  |
+| `wave10.eu_env_ac_eptrf1` | 7.8 | 355 | 3.5 | 7.3 | 0.05 | 1 |  |
+| `wave10.eu_nrg_ti_oil` | 347 | 354 | 16.4 | 436 | 1.10 | 1 |  |
+| `mastr_grid.operators` | 4.4 | 354 | 1.7 | 4.1 | 0.12 | 2 |  |
+| `wave10.eu_nrg_ind_peh` | 33.7 | 354 | 5.0 | 31.2 | 0.30 | 1 |  |
+| `wave10.wb_en_ghg_co2_lu_os_mt_ce_ar5` | 2.5 | 352 | 1.5 | 2.4 | 0.02 | 1 |  |
+| `wave10.wb_eg_use_comm_cl_zs` | 3.6 | 351 | 2.0 | 3.2 | 0.05 | 1 |  |
+| `cenace.pml` | 2.9 | 348 | 1.2 | 3.0 | 0.29 | 1 |  |
+| `wave10.eu_env_epea_pgg` | 18.0 | 348 | 3.3 | 17.6 | 0.05 | 1 |  |
+| `wave10.wb_er_mrn_ptmr_zs` | 2.7 | 348 | 1.6 | 2.6 | 0.02 | 1 |  |
+| `history.netztransparenz__redispatch` | 5.9 | 347 | 5.7 | 235 | 0.42 | 1 |  |
+| `wave10.eu_nrg_te_gasm` | 154 | 347 | 6.8 | 221 | 0.41 | 1 |  |
+| `wave10.eu_env_ac_pepsns1` | 72.7 | 346 | 7.6 | 72.3 | 0.25 | 1 |  |
+| `wave10.wb_eg_gdp_puse_ko_pp_kd` | 2.6 | 342 | 1.5 | 2.6 | 0.05 | 1 |  |
+| `wave9.eu_eea_aq_stats` | 34.6 | 342 | 31.5 | 336 | 0.39 | 1 |  |
+| `gem_ownership.iron_mine_ownership` | 341 | 341 | 1.7 | 1.7 | 0.24 | 2 |  |
+| `wave10.wb_eg_elc_petr_zs` | 3.1 | 341 | 1.6 | 2.8 | 0.06 | 1 |  |
+| `wave10.eu_env_ac_mfain` | 3.6 | 340 | 3.2 | 3.3 | 0.10 | 1 |  |
+| `wave10.wb_sh_sta_smss_ru_zs` | 3.2 | 340 | 2.0 | 3.3 | 0.03 | 1 |  |
+| `wave10.wb_er_fsh_aqua_mt` | 4.2 | 340 | 2.2 | 4.0 | 0.04 | 1 |  |
+| `wave10.eu_nrg_ti_gasm` | 170 | 339 | 8.3 | 150 | 0.54 | 1 |  |
+| `wave10.eu_nrg_bal_cv` | 13.1 | 339 | 6.3 | 11.3 | 0.25 | 1 |  |
+| `wave10.eu_nrg_cb_gasm` | 29.4 | 339 | 5.9 | 29.5 | 0.33 | 1 |  |
+| `wave10.wb_sp_urb_totl_in_zs` | 3.9 | 339 | 2.2 | 3.7 | 0.07 | 1 |  |
+| `wave10.wb_en_ghg_co2_bu_mt_ce_ar5` | 2.9 | 338 | 1.8 | 3.1 | 0.07 | 1 |  |
+| `wave10.wb_ag_lnd_arbl_zs` | 3.9 | 338 | 2.1 | 3.7 | 0.05 | 1 |  |
+| `wave10.eu_nrg_ind_pehnf` | 31.7 | 336 | 5.4 | 31.4 | 0.12 | 1 |  |
+| `wave10.wb_eg_gdp_puse_ko_pp` | 2.8 | 335 | 1.5 | 2.7 | 0.05 | 1 |  |
+| `wave10.eu_env_ac_egss1` | 61.7 | 335 | 9.8 | 63.5 | 0.46 | 1 |  |
+| `wave10.wb_en_pop_el5m_zs` | 2.6 | 335 | 1.6 | 2.5 | 0.02 | 1 |  |
+| `wave10.eu_env_ac_pepsgg1` | 11.4 | 334 | 3.9 | 11.2 | 0.08 | 1 |  |
+| `wave10.wb_en_atm_pm25_mc_m3` | 2.4 | 334 | 1.4 | 2.3 | 0.07 | 1 |  |
+| `wave10.wb_ie_ppi_watr_cd` | 2.5 | 334 | 1.5 | 2.6 | 0.01 | 1 |  |
+| `irena.capacity` | 7.1 | 331 | 4.7 | 6.8 | 0.30 | 1 |  |
+| `wave10.eu_nrg_cb_cosm` | 5.6 | 330 | 3.8 | 5.2 | 0.10 | 1 |  |
+| `wave10.gb_desnz_tfec_la` | 14.9 | 330 | 2.3 | 13.7 | 1.79 | 1 |  |
+| `ev_eu.cz` | 3.5 | 329 | 3.1 | 328 | 0.00 | 0 |  |
+| `wave9.eu_household_income` | 5.7 | 329 | 5.3 | 5.5 | 0.26 | 1 |  |
+| `wave10.eu_road_eqs_zev` | 7.5 | 329 | 5.2 | 5.5 | 0.03 | 1 |  |
+| `wave10.eu_nrg_ind_ibmg` | 7.0 | 328 | 4.2 | 6.5 | 0.00 | 1 |  |
+| `wave10.wb_it_cel_sets` | 2.8 | 328 | 1.6 | 2.6 | 0.04 | 1 |  |
+| `uk_pi.releases` | 16.5 | 328 | 11.5 | 13.2 | 0.38 | 1 |  |
+| `wave10.wb_en_atm_pm25_mc_t2_zs` | 3.0 | 327 | 1.7 | 2.8 | 0.02 | 1 |  |
+| `wave10.eu_nrg_ti_h2` | 4.6 | 327 | 3.3 | 4.2 | 0.01 | 1 |  |
+| `wave10.wb_en_ghg_co2_pi_mt_ce_ar5` | 2.9 | 327 | 1.6 | 2.8 | 0.07 | 1 |  |
+| `wave10.wb_er_h2o_intr_k3` | 3.9 | 326 | 2.3 | 4.0 | 0.01 | 1 |  |
+| `wave10.wb_eg_egy_prim_pp_kd` | 2.9 | 326 | 1.6 | 2.7 | 0.04 | 1 |  |
+| `gem_ownership.asset_ownership` | 326 | 326 | 1.6 | 1.6 | 0.82 | 1 |  |
+| `wave10.wb_se_prm_cmpt_zs` | 4.3 | 326 | 2.3 | 4.0 | 0.04 | 1 |  |
+| `wave10.wb_eg_use_comm_fo_zs` | 4.0 | 326 | 2.3 | 4.0 | 0.04 | 1 |  |
+| `wave10.eu_nrg_d_traq` | 13.1 | 325 | 4.1 | 14.2 | 0.15 | 2 |  |
+| `wave10.eu_nrg_ind_resovsh` | 4.3 | 325 | 4.1 | 4.1 | 0.03 | 1 |  |
+| `wave10.eu_nrg_cb_rw` | 139 | 325 | 9.6 | 88.2 | 0.34 | 1 |  |
+| `wave10.eu_env_air_emis` | 59.3 | 325 | 9.7 | 59.5 | 0.29 | 1 |  |
+| `wave10.eu_nrg_dhdc_cpl` | 3.3 | 324 | 2.7 | 3.4 | 0.02 | 1 |  |
+| `wave10.eu_nrg_ind_pehap` | 31.2 | 324 | 5.7 | 30.0 | 0.19 | 1 |  |
+| `wave10.wb_eg_elc_ngas_zs` | 2.6 | 323 | 1.6 | 2.4 | 0.05 | 1 |  |
+| `wave10.wb_en_ghg_fgas_ip_mt_ce_ar5` | 2.6 | 323 | 1.6 | 2.5 | 0.05 | 1 |  |
+| `ei_review.series` | 6.1 | 323 | 1.7 | 6.2 | 1.52 | 2 |  |
+| `wave10.eu_nrg_cb_sffm` | 55.2 | 323 | 7.9 | 55.0 | 0.43 | 1 |  |
+| `gem.energy_ownership_coal_plant_ownership` | 289 | 322 | 1.8 | 2.6 | 0.08 | 4 |  |
+| `wave10.wb_ag_lnd_el5m_ur_zs` | 2.6 | 321 | 1.5 | 2.5 | 0.02 | 1 |  |
+| `wave10.wb_ic_elc_durs` | 3.1 | 321 | 1.6 | 2.6 | 0.02 | 1 |  |
+| `wave10.eu_nrg_ind_epsc` | 4.3 | 321 | 3.9 | 4.1 | 0.02 | 1 |  |
+| `wave10.eu_env_epea_invap` | 12.1 | 320 | 4.8 | 11.9 | 0.09 | 1 |  |
+| `edgar.ghg_by_sector` | 6.2 | 320 | 1.9 | 4.7 | 1.79 | 2 |  |
+| `wave10.eu_env_epea_trf` | 4.5 | 320 | 3.5 | 4.0 | 0.03 | 1 |  |
+| `wave10.wb_eg_elc_rnwx_zs` | 4.1 | 320 | 2.3 | 4.1 | 0.05 | 1 |  |
+| `wave9.world_ourairports_navaids` | 8.5 | 319 | 5.6 | 41.0 | 0.61 | 1 |  |
+| `wave10.eu_nrg_ind_eff` | 3.3 | 319 | 2.7 | 3.4 | 0.02 | 1 |  |
+| `wave10.eu_env_ac_mfa` | 54.8 | 318 | 9.9 | 54.0 | 2.05 | 1 |  |
+| `wave10.wb_en_pop_el5m_ur_zs` | 2.6 | 318 | 1.5 | 2.5 | 0.02 | 1 |  |
+| `registers.se` | 10.9 | 318 | 4.0 | 19.4 | 0.47 | 1 |  |
+| `wave10.wb_en_ghg_co2_tr_mt_ce_ar5` | 4.2 | 318 | 2.3 | 4.1 | 0.07 | 1 |  |
+| `wave10.wb_en_ghg_n2o_tr_mt_ce_ar5` | 2.6 | 318 | 1.5 | 2.5 | 0.06 | 1 |  |
+| `gem.energy_ownership_cement_and_concrete_ownership` | 2.9 | 317 | 2.2 | 2.3 | 0.38 | 2 |  |
+| `mastr.units_nuclear` | 12.5 | 317 | 5.1 | 11.4 | 0.09 | 3 |  |
+| `wave10.wb_en_ghg_n2o_bu_mt_ce_ar5` | 3.0 | 317 | 1.6 | 2.8 | 0.06 | 1 |  |
+| `wave10.wb_it_net_user_fe_zs` | 3.0 | 316 | 1.6 | 2.8 | 0.02 | 1 |  |
+| `wave10.wb_ny_adj_dpem_gn_zs` | 4.2 | 316 | 2.3 | 4.0 | 0.05 | 1 |  |
+| `wave10.eu_env_ac_aibrid_rd` | 14.1 | 316 | 3.1 | 12.6 | 0.19 | 1 |  |
+| `wave10.eu_env_ac_mfabi` | 3.5 | 316 | 2.8 | 2.9 | 0.60 | 2 |  |
+| `wave10.eu_nrg_ind_urtd` | 5.2 | 316 | 3.1 | 4.6 | 0.08 | 1 |  |
+| `wave10.wb_ie_ppi_tran_cd` | 2.6 | 316 | 1.7 | 2.4 | 0.01 | 1 |  |
+| `wave10.wb_sh_med_cmhw_p3` | 4.0 | 316 | 2.3 | 3.8 | 0.01 | 1 |  |
+| `wave10.eu_env_epea_pap` | 10.6 | 315 | 4.9 | 9.1 | 0.17 | 1 |  |
+| `wave10.wb_en_mam_thrd_no` | 4.0 | 315 | 2.3 | 4.0 | 0.01 | 1 |  |
+| `wave9.ee_stat_heating_2011` | 9.3 | 314 | 3.7 | 8.3 | 0.06 | 1 |  |
+| `wave10.eu_nrg_inf_bt` | 2.4 | 314 | 1.7 | 2.4 | 0.05 | 2 |  |
+| `gem.energy_ownership_gas_plant_ownership` | 287 | 314 | 1.3 | 1.9 | 0.07 | 3 |  |
+| `wave10.wb_sh_h2o_smdw_zs` | 3.4 | 314 | 1.8 | 3.4 | 0.04 | 1 |  |
+| `wave10.wb_sh_sta_hygn_zs` | 3.8 | 314 | 2.4 | 4.1 | 0.02 | 1 |  |
+| `wave10.wb_en_fsh_thrd_no` | 2.6 | 314 | 1.5 | 2.6 | 0.01 | 1 |  |
+| `wave10.eu_nrg_pc_203_c` | 15.6 | 314 | 4.3 | 13.2 | 0.34 | 1 |  |
+| `wave10.wb_se_enr_prsc_fm_zs` | 3.5 | 313 | 1.7 | 3.0 | 0.03 | 1 |  |
+| `wave10.wb_en_clc_mdat_zs` | 2.7 | 313 | 1.5 | 2.6 | 0.01 | 1 |  |
+| `history.registers__fr` | 10.6 | 313 | 3.4 | 9.8 | 2.00 | 2 |  |
+| `wave10.eu_road_eqr_zev` | 4.0 | 312 | 2.9 | 4.0 | 0.03 | 1 |  |
+| `wave10.eu_env_ac_ccminv` | 5.8 | 312 | 4.2 | 5.4 | 0.06 | 1 |  |
+| `wave10.wb_it_cel_sets_p2` | 4.2 | 312 | 2.2 | 3.9 | 0.07 | 1 |  |
+| `wave10.wb_en_ghg_ch4_ip_mt_ce_ar5` | 2.5 | 312 | 1.5 | 2.6 | 0.04 | 1 |  |
+| `wave10.wb_en_urb_mcty_tl_zs` | 3.0 | 311 | 1.7 | 2.8 | 0.04 | 1 |  |
+| `wave10.wb_en_ghg_n2o_zg_ar5` | 2.8 | 311 | 1.6 | 2.6 | 0.07 | 1 |  |
+| `wave10.wb_ie_ppn_icti_cd` | 2.8 | 311 | 1.6 | 2.7 | 0.01 | 1 |  |
+| `wave10.wb_en_ghg_co2_lu_mt_ce_ar5` | 4.0 | 311 | 2.3 | 4.0 | 0.04 | 1 |  |
+| `wave10.eu_nrg_ind_ahbtc` | 9.5 | 310 | 4.0 | 8.8 | 0.03 | 1 |  |
+| `gem.oil_gas_extraction_field_level_reserves_data` | 1.5 | 310 | 1.2 | 1.5 | 0.13 | 1 |  |
+| `wave10.wb_en_ghg_tot_zg_ar5` | 4.2 | 310 | 2.3 | 4.0 | 0.07 | 1 |  |
+| `irena.generation` | 4.6 | 310 | 2.9 | 4.4 | 0.38 | 1 |  |
+| `wave10.eu_nrg_te_eh` | 32.9 | 310 | 5.1 | 32.1 | 0.03 | 1 |  |
+| `wave10.wb_sh_sta_maln_zs` | 4.2 | 310 | 2.3 | 4.0 | 0.01 | 1 |  |
+| `gem_ownership.gas_pipeline_ownership` | 309 | 309 | 1.7 | 1.7 | 0.82 | 2 |  |
+| `gem.energy_ownership_gas_pipeline_ownership` | 1.6 | 309 | 1.2 | 1.5 | 0.82 | 2 |  |
+| `wave10.eu_env_ac_cepsgh1` | 5.1 | 309 | 3.9 | 5.2 | 0.02 | 1 |  |
+| `wave10.wb_en_ghg_ch4_zg_ar5` | 4.2 | 309 | 2.3 | 4.0 | 0.07 | 1 |  |
+| `wave10.eu_road_eqr_carpda` | 2.5 | 309 | 1.9 | 2.5 | 0.02 | 1 |  |
+| `wave10.wb_eg_use_crnw_zs` | 4.1 | 309 | 2.3 | 3.9 | 0.05 | 1 |  |
+| `wave10.eu_env_esst_ceprw` | 6.6 | 308 | 4.3 | 5.9 | 0.03 | 1 |  |
+| `wave10.eu_env_wat_res` | 4.0 | 308 | 3.7 | 3.9 | 0.04 | 1 |  |
+| `wave10.eu_road_eqs_lorroa` | 3.8 | 308 | 3.1 | 3.9 | 0.02 | 1 |  |
+| `wave10.eu_env_esst_cepgg` | 73.3 | 308 | 5.5 | 73.9 | 0.13 | 1 |  |
+| `wave10.wb_ag_lnd_totl_ur_k2` | 2.6 | 307 | 1.4 | 2.5 | 0.02 | 1 |  |
+| `wave10.gb_census_travel_method` | 2.9 | 307 | 2.0 | 2.8 | 0.03 | 1 |  |
+| `wave10.wb_ag_lnd_totl_k2` | 3.8 | 307 | 2.1 | 3.6 | 0.03 | 1 |  |
+| `wave10.eu_nrg_ind_ured` | 5.2 | 307 | 4.0 | 4.9 | 0.05 | 1 |  |
+| `wave10.wb_ny_adj_svnx_gn_zs` | 4.2 | 307 | 2.3 | 4.0 | 0.04 | 1 |  |
+| `wave9.eu_emodnet_wwtp` | 17.1 | 307 | 16.6 | 75.7 | 1.78 | 1 |  |
+| `wave10.eu_env_watuse_rb` | 3.2 | 306 | 1.5 | 2.8 | 0.08 | 2 |  |
+| `wave10.wb_sh_h2o_basw_ur_zs` | 4.6 | 306 | 2.7 | 4.4 | 0.04 | 1 |  |
+| `ev_eu.it` | 10.3 | 306 | 3.9 | 10.0 | 0.55 | 1 |  |
+| `wave10.wb_sh_sta_smss_ur_zs` | 3.9 | 305 | 2.1 | 3.7 | 0.03 | 1 |  |
+| `wave10.wb_eg_cft_accs_zs` | 2.8 | 305 | 1.6 | 2.8 | 0.02 | 1 |  |
+| `gem_ownership.cement_and_concrete_ownership` | 304 | 304 | 1.3 | 1.3 | 0.36 | 1 |  |
+| `wave10.eu_nrg_te_sff` | 161 | 304 | 11.2 | 163 | 0.11 | 1 |  |
+| `entsoe.units` | 9.8 | 304 | 2.7 | 12.1 | 0.03 | 1 |  |
+| `wave10.eu_env_watres_rb` | 3.0 | 304 | 1.2 | 2.7 | 0.07 | 1 |  |
+| `wave10.wb_ie_ppi_engy_cd` | 4.1 | 304 | 2.2 | 4.2 | 0.02 | 1 |  |
+| `power_plants_eu.jrc_performance` | 3.5 | 303 | 1.3 | 2.9 | 0.07 | 1 |  |
+| `shapes.admin1` | 194 | 303 | 225 | 254 | 0.00 | 0 |  |
+| `wave10.eu_env_ac_epiap1` | 57.4 | 303 | 5.5 | 57.6 | 0.15 | 1 |  |
+| `wave10.eu_nrg_d_serq_n` | 12.5 | 303 | 4.0 | 11.1 | 0.22 | 1 |  |
+| `wave10.wb_en_bir_thrd_no` | 4.0 | 302 | 2.3 | 3.8 | 0.01 | 1 |  |
+| `gem_ownership.steel_plant_ownership` | 302 | 302 | 1.4 | 1.4 | 0.38 | 2 |  |
+| `wave10.eu_nrg_stk_oem` | 2.6 | 301 | 2.3 | 2.5 | 0.04 | 2 |  |
+| `wave10.wb_en_ghg_all_mt_ce_ar5` | 3.0 | 301 | 1.6 | 3.0 | 0.07 | 1 |  |
+| `wave10.wb_en_ghg_n2o_fe_mt_ce_ar5` | 4.1 | 301 | 2.1 | 4.0 | 0.05 | 1 |  |
+| `wave10.eu_env_ac_aigg_q` | 19.8 | 301 | 2.6 | 18.6 | 0.13 | 2 |  |
+| `wave10.wb_sp_urb_totl` | 3.3 | 301 | 1.8 | 3.4 | 0.04 | 1 |  |
+| `wave10.wb_en_ghg_co2_fe_mt_ce_ar5` | 2.5 | 300 | 1.5 | 2.4 | 0.05 | 1 |  |
+| `wave10.wb_en_ghg_n2o_pi_mt_ce_ar5` | 2.6 | 300 | 1.5 | 2.4 | 0.06 | 1 |  |
+| `wave10.wb_eg_elc_rnew_zs` | 3.8 | 299 | 2.2 | 3.6 | 0.06 | 1 |  |
+| `wave9.eu_eea_wei` | 299 | 299 | 2.5 | 2.5 | 0.40 | 1 |  |
+| `wave10.eu_nrg_stk_gasm` | 8.0 | 299 | 4.2 | 7.6 | 0.05 | 1 |  |
+| `wave10.wb_iq_cpa_pubs_xq` | 3.0 | 299 | 1.7 | 3.0 | 0.01 | 1 |  |
+| `wave10.eu_nrg_cb_eim` | 3.6 | 298 | 3.4 | 4.7 | 0.09 | 1 |  |
+| `wave10.wb_eg_cft_accs_ru_zs` | 3.9 | 298 | 2.3 | 4.0 | 0.03 | 1 |  |
+| `wave10.wb_er_lnd_ptld_zs` | 2.6 | 298 | 1.5 | 2.4 | 0.02 | 1 |  |
+| `wave10.gb_census_tenure` | 2.6 | 298 | 1.7 | 2.5 | 0.04 | 1 |  |
+| `wave10.wb_en_ghg_ch4_bu_mt_ce_ar5` | 4.1 | 298 | 2.2 | 4.1 | 0.06 | 1 |  |
+| `wave10.wb_er_h2o_fwag_zs` | 2.7 | 297 | 1.5 | 2.4 | 0.04 | 1 |  |
+| `wave10.wb_ny_adj_dpem_cd` | 3.0 | 297 | 1.6 | 3.0 | 0.05 | 1 |  |
+| `wave10.eu_nrg_chdd_m` | 3.2 | 296 | 2.8 | 2.8 | 0.05 | 1 |  |
+| `wave10.wb_en_ghg_co2_zg_ar5` | 2.6 | 296 | 1.5 | 2.4 | 0.07 | 1 |  |
+| `wave10.wb_ny_adj_dfor_gn_zs` | 4.2 | 296 | 2.2 | 3.9 | 0.03 | 1 |  |
+| `wave10.eu_nrg_cb_em` | 7.8 | 295 | 4.5 | 7.3 | 0.17 | 1 |  |
+| `wave10.eu_env_epea_cfin` | 2.7 | 295 | 2.0 | 2.6 | 0.03 | 2 |  |
+| `wave10.wb_ag_lnd_irig_ag_zs` | 3.6 | 294 | 2.1 | 3.6 | 0.02 | 1 |  |
+| `wave10.eu_rail_if_line_ga` | 4.0 | 294 | 3.7 | 4.2 | 0.01 | 1 |  |
+| `wave10.wb_er_h2o_fwdm_zs` | 2.7 | 294 | 1.6 | 2.6 | 0.04 | 1 |  |
+| `wave10.wb_en_ghg_all_pc_ce_ar5` | 4.1 | 294 | 2.3 | 4.1 | 0.07 | 1 |  |
+| `wave10.eu_nrg_cb_bm` | 2.9 | 294 | 2.3 | 2.7 | 0.04 | 1 |  |
+| `wave10.wb_er_h2o_fwst_zs` | 2.9 | 293 | 1.6 | 2.6 | 0.04 | 1 |  |
+| `gem_ownership.entity_ownership` | 293 | 293 | 1.2 | 1.2 | 0.93 | 2 |  |
+| `euets.eea_link` | 26.5 | 292 | 9.6 | 216 | 2.24 | 3 |  |
+| `ev_eu.gb` | 12.1 | 291 | 4.9 | 33.4 | 0.59 | 3 |  |
+| `wave10.eu_nrg_ti_gas` | 34.6 | 290 | 4.2 | 33.8 | 0.08 | 1 |  |
+| `wave10.wb_en_ghg_co2_lu_df_mt_ce_ar5` | 4.1 | 290 | 2.2 | 4.0 | 0.03 | 1 |  |
+| `wave10.wb_en_ghg_co2_lu_ol_mt_ce_ar5` | 4.4 | 290 | 2.6 | 4.3 | 0.03 | 1 |  |
+| `wave10.eu_nrg_ti_bio` | 94.4 | 289 | 7.8 | 99.1 | 0.08 | 1 |  |
+| `wave10.wb_sp_urb_grow` | 3.5 | 289 | 1.8 | 3.2 | 0.07 | 1 |  |
+| `wave10.wb_en_atm_pm25_mc_t3_zs` | 3.9 | 288 | 2.2 | 3.8 | 0.02 | 1 |  |
+| `registers.gb` | 12.2 | 288 | 7.2 | 35.4 | 0.80 | 1 |  |
+| `wave10.wb_ag_lnd_el5m_ru_zs` | 3.7 | 288 | 2.2 | 3.6 | 0.02 | 1 |  |
+| `wave9.nl_cbs_solar` | 5.3 | 288 | 2.9 | 5.0 | 0.14 | 1 |  |
+| `wave10.eu_nrg_cb_h2` | 3.0 | 287 | 2.7 | 2.8 | 0.01 | 1 |  |
+| `wave10.wb_ic_frm_bnks_zs` | 4.0 | 286 | 2.2 | 3.9 | 0.02 | 1 |  |
+| `wave10.wb_it_net_user_ma_zs` | 4.1 | 286 | 2.2 | 3.9 | 0.02 | 1 |  |
+| `wave10.wb_it_net_user_zs` | 4.1 | 286 | 2.2 | 4.0 | 0.05 | 1 |  |
+| `wave10.wb_is_air_dprt` | 3.1 | 285 | 1.6 | 2.7 | 0.03 | 1 |  |
+| `wave10.wb_en_ghg_ch4_tr_mt_ce_ar5` | 4.2 | 285 | 2.3 | 4.2 | 0.06 | 1 |  |
+| `history.registers__gb` | 12.8 | 284 | 6.9 | 15.8 | 0.85 | 2 |  |
+| `wave10.wb_eg_elc_fosl_zs` | 4.1 | 284 | 2.3 | 3.9 | 0.06 | 1 |  |
+| `wave10.wb_is_air_good_mt_k1` | 4.0 | 283 | 2.2 | 3.9 | 0.05 | 1 |  |
+| `wave10.wb_ie_ppn_tran_cd` | 4.1 | 282 | 2.3 | 3.9 | 0.01 | 1 |  |
+| `gem.energy_ownership_oil_ngl_pipeline_ownership` | 1.7 | 279 | 1.2 | 1.6 | 0.31 | 1 |  |
+| `gem.energy_ownership_steel_plant_ownership` | 2.4 | 278 | 1.9 | 2.4 | 0.39 | 2 |  |
+| `wave10.wb_en_ghg_ch4_fe_mt_ce_ar5` | 4.4 | 278 | 2.6 | 4.2 | 0.06 | 1 |  |
+| `wave10.wb_en_ghg_co2_rt_gdp_kd` | 4.1 | 278 | 2.3 | 3.8 | 0.07 | 1 |  |
+| `wave10.eu_nrg_ind_re` | 4.1 | 272 | 3.2 | 3.7 | 0.11 | 1 |  |
+| `wave10.eu_env_ac_sd` | 14.8 | 268 | 3.5 | 13.7 | 0.15 | 1 |  |
+| `wave10.eu_nrg_ti_sff` | 218 | 266 | 10.9 | 224 | 0.17 | 1 |  |
+| `ev_eu.fr` | 20.0 | 266 | 19.1 | 114 | 3.88 | 3 |  |
+| `wave10.gb_desnz_ghg_la` | 218 | 263 | 2.1 | 17.2 | 2.97 | 3 |  |
+| `wave9.eu_renewable_capacity` | 5.1 | 262 | 4.5 | 4.9 | 0.04 | 1 |  |
+| `wave10.wb_sh_h2o_smdw_ur_zs` | 3.4 | 258 | 1.8 | 3.1 | 0.03 | 1 |  |
+| `wave9.de_bfee_abwaerme` | 200 | 258 | 11.4 | 16.6 | 2.36 | 3 |  |
+| `wave9.ie_eirgrid_dispatch_down` | 4.0 | 257 | 1.7 | 3.7 | 0.12 | 1 |  |
+| `gem.methane_emitters_oil_and_gas_extraction_areas` | 37.0 | 256 | 19.6 | 20.6 | 0.27 | 1 |  |
+| `wave9.eu_jrc_coastal_flood` | 35.0 | 255 | 11.6 | 32.6 | 1.46 | 1 |  |
+| `wave9.eu_land_prices` | 4.3 | 253 | 2.9 | 3.9 | 0.04 | 1 |  |
+| `wave10.eu_nrg_ind_cotd` | 5.0 | 250 | 4.6 | 4.6 | 0.04 | 1 |  |
+| `wave10.wb_en_ghg_all_lu_mt_ce_ar5` | 3.4 | 250 | 1.8 | 2.9 | 0.05 | 1 |  |
+| `power_plants_eu.jrc_units` | 23.4 | 248 | 11.9 | 44.4 | 0.25 | 1 |  |
+| `wave10.eu_nrg_inf_epc` | 10.7 | 248 | 4.1 | 9.3 | 0.11 | 1 |  |
+| `wave10.wb_eg_elc_coal_zs` | 4.2 | 246 | 2.3 | 4.1 | 0.04 | 1 |  |
+| `wave10.eu_env_watabs_rb` | 6.2 | 246 | 2.2 | 5.3 | 0.10 | 1 |  |
+| `wave10.eu_nrg_pc_202_c` | 15.8 | 246 | 5.8 | 14.4 | 0.20 | 1 |  |
+| `wave10.wb_bx_klt_dinv_wd_gd_zs` | 4.0 | 245 | 2.1 | 3.9 | 0.07 | 1 |  |
+| `wave10.wb_sh_sta_odfc_ru_zs` | 4.1 | 245 | 2.3 | 4.0 | 0.04 | 1 |  |
+| `app.eu_substations` | 30.0 | 244 | 10.0 | 134 | 0.00 | 0 |  |
+| `wave10.eu_env_ac_pefa04` | 64.9 | 241 | 12.2 | 63.6 | 0.52 | 1 |  |
+| `wave10.wb_er_h2o_fwtl_zs` | 4.6 | 241 | 2.3 | 3.7 | 0.04 | 1 |  |
+| `app.us_plants` | 17.1 | 240 | 2.5 | 104 | 0.11 | 2 |  |
+| `wave10.wb_sh_sta_hygn_ur_zs` | 3.5 | 239 | 1.8 | 3.2 | 0.02 | 1 |  |
+| `wave10.wb_en_clc_drsk_xq` | 4.5 | 239 | 2.6 | 4.3 | 0.01 | 1 |  |
+| `wave10.wb_sh_sta_bass_ur_zs` | 4.6 | 239 | 2.6 | 4.3 | 0.04 | 1 |  |
+| `wave10.wb_it_mlt_main` | 4.1 | 238 | 2.2 | 3.8 | 0.03 | 1 |  |
+| `wave10.wb_en_ghg_n2o_ic_mt_ce_ar5` | 4.1 | 236 | 2.3 | 4.0 | 0.06 | 1 |  |
+| `wave10.eu_nrg_ind_ebmg` | 5.3 | 236 | 3.0 | 4.8 | 0.00 | 1 |  |
+| `wave10.eu_nrg_stk_gas` | 4.2 | 236 | 3.6 | 4.1 | 0.02 | 1 |  |
+| `wave10.wb_ny_adj_nnat_cd` | 4.5 | 236 | 2.7 | 4.5 | 0.04 | 1 |  |
+| `wave10.eu_nrg_ind_pehcf` | 164 | 235 | 13.5 | 164 | 0.71 | 1 |  |
+| `registers.fr` | 25.4 | 234 | 4.9 | 12.9 | 1.96 | 1 |  |
+| `gem.energy_ownership_asset_ownership` | 1.9 | 233 | 1.4 | 1.8 | 0.82 | 1 |  |
+| `wave10.eu_nrg_cb_gas` | 48.4 | 233 | 6.9 | 47.1 | 0.29 | 1 |  |
+| `wave10.wb_is_rrs_pasg_km` | 4.6 | 232 | 2.5 | 4.2 | 0.02 | 1 |  |
+| `wave10.wb_ny_adj_dkap_cd` | 4.3 | 232 | 2.2 | 4.4 | 0.05 | 1 |  |
+| `wave10.wb_ag_lnd_prcp_mm` | 4.1 | 231 | 2.2 | 4.0 | 0.01 | 1 |  |
+| `wave10.eu_road_eqs_lormot` | 4.2 | 231 | 3.9 | 3.9 | 0.03 | 1 |  |
+| `wave10.wb_en_ghg_co2_lu_fl_mt_ce_ar5` | 4.2 | 231 | 2.3 | 4.1 | 0.04 | 1 |  |
+| `wave10.wb_tm_val_fuel_zs_un` | 4.2 | 231 | 2.2 | 4.2 | 0.06 | 1 |  |
+| `wave10.eu_nrg_cb_sff` | 107 | 231 | 10.8 | 106 | 0.34 | 1 |  |
+| `osm.eu_buses` | 18.1 | 231 | 6.5 | 143 | 0.92 | 2 |  |
+| `wave10.wb_ic_frm_outg_zs` | 3.9 | 230 | 2.1 | 3.8 | 0.01 | 1 |  |
+| `wave10.wb_it_net_bbnd` | 4.6 | 230 | 2.7 | 4.5 | 0.03 | 1 |  |
+| `wave10.wb_tm_val_mmtl_zs_un` | 4.4 | 229 | 2.5 | 4.3 | 0.06 | 1 |  |
+| `wave10.wb_eg_elc_accs_ru_zs` | 3.3 | 229 | 1.8 | 3.4 | 0.03 | 1 |  |
+| `wave10.eu_nrg_te_bio` | 95.3 | 227 | 8.4 | 93.0 | 0.07 | 1 |  |
+| `wave10.wb_eg_elc_hyro_zs` | 4.2 | 226 | 2.5 | 4.2 | 0.06 | 1 |  |
+| `wave9.sk_susr_energy_consumption_okres` | 3.9 | 226 | 1.6 | 3.6 | 0.04 | 1 |  |
+| `wave10.eu_nrg_cb_h` | 7.9 | 226 | 4.8 | 7.0 | 0.06 | 1 |  |
+| `wave10.wb_er_h2o_intr_pc` | 4.4 | 225 | 2.5 | 4.3 | 0.06 | 1 |  |
+| `wave10.wb_ny_adj_dres_gn_zs` | 4.2 | 223 | 2.3 | 4.1 | 0.05 | 1 |  |
+| `wave10.wb_ny_gdp_coal_rt_zs` | 4.1 | 223 | 2.3 | 4.0 | 0.04 | 1 |  |
+| `wave9.fr_ore_solar_commune` | 223 | 223 | 2.7 | 2.7 | 0.02 | 1 |  |
+| `wave10.eu_env_epea_neep` | 5.4 | 222 | 4.9 | 5.0 | 0.03 | 1 |  |
+| `wave10.wb_ie_ppn_engy_cd` | 3.3 | 222 | 1.8 | 3.1 | 0.02 | 1 |  |
+| `wave10.wb_si_pov_dday` | 4.6 | 222 | 2.6 | 4.5 | 0.02 | 1 |  |
+| `wave10.wb_er_ptd_totl_zs` | 3.3 | 222 | 1.8 | 3.1 | 0.02 | 1 |  |
+| `wave10.eu_nrg_te_gas` | 58.7 | 221 | 7.8 | 57.5 | 0.03 | 1 |  |
+| `wave10.wb_en_atm_pm25_mc_t1_zs` | 3.3 | 221 | 1.8 | 3.1 | 0.02 | 1 |  |
+| `wave10.wb_sh_sta_airp_p5` | 4.1 | 221 | 2.2 | 4.3 | 0.01 | 1 |  |
+| `wave10.eu_env_epea_psp` | 23.5 | 220 | 3.4 | 21.3 | 0.05 | 1 |  |
+| `wave10.wb_eg_use_comm_gd_pp_kd` | 4.4 | 219 | 2.3 | 4.1 | 0.05 | 1 |  |
+| `mastr.operators` | 7.1 | 219 | 6.6 | 9.3 | 0.27 | 2 |  |
+| `wave10.eu_env_ac_cepsgc1` | 20.1 | 218 | 5.1 | 18.0 | 0.09 | 1 |  |
+| `gem.energy_ownership_entity_ownership` | 2.5 | 217 | 2.0 | 2.4 | 0.90 | 1 |  |
+| `wave10.wb_ny_gdp_totl_rt_zs` | 3.3 | 217 | 1.8 | 3.1 | 0.06 | 1 |  |
+| `wave10.eu_nrg_stk_oil` | 7.9 | 217 | 3.6 | 7.1 | 0.10 | 1 |  |
+| `wave10.eu_nrg_ind_esc` | 8.3 | 216 | 5.3 | 8.1 | 0.15 | 1 |  |
+| `wave10.wb_eg_imp_cons_zs` | 3.1 | 216 | 1.8 | 3.0 | 0.05 | 1 |  |
+| `wave10.wb_ny_adj_dngy_gn_zs` | 3.2 | 216 | 1.8 | 3.2 | 0.04 | 1 |  |
+| `wave9.eu_degree_days` | 3.9 | 216 | 2.4 | 3.8 | 0.21 | 1 |  |
+| `wave10.eu_nrg_d_indq_n` | 181 | 216 | 18.4 | 182 | 0.78 | 1 |  |
+| `wave9.eu_water_use` | 3.1 | 216 | 2.4 | 3.1 | 0.02 | 1 |  |
+| `wave10.wb_ie_ppn_watr_cd` | 3.9 | 216 | 2.2 | 3.7 | 0.01 | 1 |  |
+| `wave10.wb_en_atm_pm25_mc_zs` | 4.2 | 215 | 2.3 | 3.9 | 0.02 | 1 |  |
+| `wave10.wb_en_ghg_n2o_mt_ce_ar5` | 4.5 | 215 | 2.7 | 4.4 | 0.07 | 1 |  |
+| `wave10.eu_cei_srm020` | 12.9 | 215 | 5.1 | 11.0 | 0.11 | 1 |  |
+| `wave10.wb_en_ghg_co2_wa_mt_ce_ar5` | 4.1 | 215 | 2.5 | 4.4 | 0.03 | 1 |  |
+| `wave10.wb_en_ghg_co2_rt_gdp_pp_kd` | 4.2 | 215 | 2.3 | 4.2 | 0.06 | 1 |  |
+| `wave10.wb_ag_lnd_totl_ru_k2` | 4.4 | 214 | 2.5 | 4.4 | 0.02 | 1 |  |
+| `wave10.wb_ny_gdp_minr_rt_zs` | 4.8 | 214 | 2.6 | 4.6 | 0.05 | 1 |  |
+| `wave10.eu_nrg_ind_hptctc` | 24.8 | 214 | 5.7 | 25.1 | 0.02 | 1 |  |
+| `wave10.wb_sh_sta_smss_zs` | 4.0 | 213 | 2.2 | 4.0 | 0.04 | 1 |  |
+| `wave10.eu_env_esst_gg` | 77.8 | 213 | 7.3 | 76.3 | 0.17 | 1 |  |
+| `wave10.wb_er_fsh_capt_mt` | 4.1 | 213 | 2.3 | 4.0 | 0.05 | 1 |  |
+| `wave10.wb_ag_lnd_agri_k2` | 3.4 | 213 | 1.8 | 3.2 | 0.03 | 1 |  |
+| `wave10.wb_ag_lnd_el5m_ru_k2` | 4.0 | 213 | 2.3 | 3.9 | 0.02 | 1 |  |
+| `wave10.wb_en_ghg_co2_ic_mt_ce_ar5` | 3.3 | 211 | 1.8 | 3.2 | 0.07 | 1 |  |
+| `wave10.wb_en_ghg_ch4_ag_mt_ce_ar5` | 4.0 | 211 | 2.2 | 4.0 | 0.06 | 1 |  |
+| `wave10.gb_census_heating` | 4.2 | 211 | 2.8 | 4.0 | 0.03 | 1 |  |
+| `wave10.eu_env_ac_epigg1` | 4.3 | 211 | 4.0 | 4.1 | 0.01 | 1 |  |
+| `wave10.wb_ag_lnd_el5m_ur_k2` | 4.3 | 211 | 2.6 | 4.1 | 0.02 | 1 |  |
+| `wave10.wb_is_air_psgr` | 4.1 | 211 | 2.2 | 3.8 | 0.04 | 1 |  |
+| `wave10.wb_ny_adj_dco2_gn_zs` | 3.4 | 211 | 1.9 | 3.3 | 0.05 | 1 |  |
+| `wave10.eu_nrg_ind_id` | 4.8 | 210 | 3.9 | 4.3 | 0.03 | 1 |  |
+| `wave10.gb_census_travel_distance` | 3.1 | 210 | 1.9 | 3.0 | 0.03 | 1 |  |
+| `wave10.wb_eg_elc_rnwx_kh` | 4.3 | 209 | 2.3 | 4.2 | 0.03 | 1 |  |
+| `wave10.eu_nrg_ind_stjpjss` | 4.6 | 209 | 4.2 | 4.4 | 0.00 | 1 |  |
+| `wave10.eu_env_esst_cepggcp` | 72.7 | 209 | 6.4 | 69.6 | 0.10 | 1 |  |
+| `wave10.wb_sh_sta_odfc_zs` | 4.5 | 208 | 2.6 | 4.5 | 0.04 | 1 |  |
+| `wave10.wb_en_ghg_co2_pc_ce_ar5` | 3.5 | 208 | 1.8 | 3.2 | 0.07 | 1 |  |
+| `wave10.eu_nrg_cb_e` | 6.9 | 208 | 3.5 | 6.1 | 0.12 | 1 |  |
+| `wave10.wb_er_h2o_fwin_zs` | 3.3 | 208 | 1.8 | 3.1 | 0.04 | 1 |  |
+| `wave10.eu_env_epea_cint` | 7.0 | 208 | 4.0 | 6.5 | 0.08 | 1 |  |
+| `wave10.wb_en_ghg_ch4_wa_mt_ce_ar5` | 4.0 | 208 | 2.2 | 4.0 | 0.07 | 1 |  |
+| `wave10.wb_it_net_secr_p6` | 3.2 | 207 | 1.8 | 3.2 | 0.04 | 1 |  |
+| `gem.oil_gas_extraction_field_level_production_data` | 2.8 | 207 | 2.1 | 2.6 | 0.21 | 1 |  |
+| `gem_ownership.bioenergy_power_ownership` | 207 | 207 | 2.1 | 2.1 | 0.73 | 1 |  |
+| `gem_ownership.oil___ngl_pipeline_ownership` | 207 | 207 | 2.1 | 2.1 | 0.34 | 1 |  |
+| `wave10.wb_en_hpt_thrd_no` | 4.1 | 207 | 2.2 | 4.1 | 0.01 | 1 |  |
+| `wave10.eu_env_ac_taxind2` | 87.6 | 206 | 10.0 | 86.9 | 0.60 | 1 |  |
+| `wave10.eu_env_ac_pepssp1` | 16.4 | 206 | 4.8 | 15.2 | 0.06 | 1 |  |
+| `wave10.wb_ag_lnd_frst_k2` | 3.3 | 206 | 1.8 | 3.1 | 0.03 | 1 |  |
+| `wave10.eu_nrg_ind_ioc` | 3.4 | 205 | 2.9 | 3.2 | 0.04 | 1 |  |
+| `wave10.eu_env_air_emis_ind` | 4.5 | 205 | 4.2 | 4.4 | 0.02 | 1 |  |
+| `wave10.wb_ny_adj_svng_gn_zs` | 3.3 | 204 | 1.8 | 3.1 | 0.04 | 1 |  |
+| `wave10.wb_en_pop_slum_ur_zs` | 3.2 | 204 | 1.7 | 3.1 | 0.02 | 1 |  |
+| `wave10.wb_sh_dyn_mort` | 4.4 | 204 | 2.3 | 4.1 | 0.03 | 1 |  |
+| `wave10.wb_sh_sta_pois_p5_ma` | 3.3 | 203 | 1.8 | 3.1 | 0.03 | 1 |  |
+| `wave10.wb_ie_ppi_icti_cd` | 4.4 | 203 | 2.5 | 4.4 | 0.01 | 1 |  |
+| `wave9.eu_heat_pumps` | 4.5 | 202 | 3.3 | 4.2 | 0.03 | 1 |  |
+| `wave10.eu_nrg_ind_urhcd` | 6.1 | 202 | 4.7 | 5.9 | 0.05 | 1 |  |
+| `wave10.wb_eg_use_elec_kh_pc` | 4.2 | 202 | 2.5 | 4.1 | 0.05 | 1 |  |
+| `wave10.wb_eg_fec_rnew_zs` | 4.5 | 202 | 2.6 | 4.4 | 0.03 | 1 |  |
+| `wave10.wb_ip_ids_rsct` | 4.6 | 202 | 2.7 | 4.4 | 0.02 | 1 |  |
+| `wave9.pt_ine_heating_freguesia` | 5.4 | 201 | 1.9 | 5.1 | 0.17 | 1 |  |
+| `wave10.wb_tx_val_mmtl_zs_un` | 3.3 | 201 | 1.8 | 3.2 | 0.06 | 1 |  |
+| `wave10.wb_ny_adj_aedu_cd` | 4.4 | 201 | 2.6 | 4.4 | 0.05 | 1 |  |
+| `wave10.wb_eg_cft_accs_ur_zs` | 4.5 | 200 | 2.5 | 4.2 | 0.02 | 1 |  |
+| `wave10.wb_ny_adj_dmin_cd` | 4.7 | 200 | 2.7 | 4.4 | 0.04 | 1 |  |
+| `wave9.gb_ons_income_msoa` | 2.8 | 200 | 1.4 | 2.7 | 0.10 | 1 |  |
+| `jepx.spot` | 5.0 | 199 | 1.6 | 4.3 | 0.45 | 1 |  |
+| `wave10.wb_is_shp_good_tu` | 3.0 | 199 | 1.7 | 2.9 | 0.02 | 1 |  |
+| `wave9.eu_emodnet_port_goods` | 6.4 | 199 | 5.2 | 195 | 0.00 | 0 |  |
+| `gem_ownership.coal_plant_ownership` | 198 | 198 | 1.6 | 1.6 | 0.02 | 1 |  |
+| `wave10.eu_env_ac_rme` | 7.6 | 198 | 4.8 | 7.3 | 0.15 | 1 |  |
+| `ev_eu.pt` | 11.8 | 198 | 4.0 | 11.5 | 0.40 | 1 |  |
+| `wave9.cz_csu_sldb_heating_energy` | 11.2 | 198 | 2.3 | 11.4 | 0.44 | 1 |  |
+| `wave10.wb_en_ghg_n2o_wa_mt_ce_ar5` | 3.1 | 197 | 1.8 | 3.2 | 0.06 | 1 |  |
+| `wave10.eu_nrg_ti_eh` | 27.9 | 197 | 6.6 | 26.3 | 0.03 | 1 |  |
+| `wave10.eu_road_eqr_lormot` | 3.3 | 196 | 2.2 | 3.2 | 0.02 | 1 |  |
+| `wave10.eu_nrg_chp_cpfe` | 17.6 | 196 | 4.8 | 16.4 | 0.31 | 1 |  |
+| `wave10.wb_eg_elc_nucl_zs` | 3.3 | 196 | 1.8 | 3.1 | 0.03 | 1 |  |
+| `wave10.wb_en_ghg_n2o_ag_mt_ce_ar5` | 3.2 | 196 | 1.8 | 3.0 | 0.06 | 1 |  |
+| `wave10.wb_en_ghg_co2_ag_mt_ce_ar5` | 4.5 | 195 | 2.7 | 4.3 | 0.04 | 1 |  |
+| `history.registers__se` | 14.6 | 194 | 6.0 | 26.2 | 0.44 | 1 |  |
+| `gem.energy_ownership_iron_mine_ownership` | 2.0 | 194 | 1.5 | 1.9 | 0.19 | 1 |  |
+| `wave10.wb_en_pop_el5m_ru_zs` | 4.5 | 192 | 2.7 | 4.4 | 0.02 | 1 |  |
+| `wave10.wb_er_gdp_fwtl_m3_kd` | 4.4 | 190 | 2.5 | 4.2 | 0.06 | 1 |  |
+| `wave10.wb_ag_yld_crel_kg` | 3.3 | 189 | 1.8 | 3.2 | 0.04 | 1 |  |
+| `wave10.eu_cei_gsr010` | 6.0 | 188 | 3.0 | 5.0 | 0.04 | 1 |  |
+| `app.eu_plants` | 8.0 | 168 | 1.7 | 91.3 | 0.02 | 1 |  |
+| `app.data_centres` | 18.1 | 154 | 6.2 | 27.5 | 0.00 | 0 |  |
+| `eia860m.generators` | 17.6 | 134 | 18.4 | 135 | 0.02 | 1 |  |
+| `ev_eu.si` | 3.7 | 114 | 3.3 | 18.0 | 0.00 | 0 |  |
+| `wave9.gb_ne_alc` | 10.4 | 83.1 | 6.6 | 69.2 | 0.00 | 0 |  |
+| `connect.harmonised` | 14.2 | 81.7 | 17.6 | 88.1 | 0.00 | 0 |  |
+| `wave9.eu_heat_production` | 9.0 | 78.0 | 7.8 | 75.6 | 0.00 | 0 |  |
+| `wave9.eu_emodnet_desalination` | 48.2 | 74.4 | 46.3 | 71.5 | 0.00 | 0 |  |
+| `mastr.units_other` | 6.7 | 74.1 | 4.8 | 72.6 | 0.00 | 0 |  |
+| `shapes.admin1_simplified` | 12.4 | 63.6 | 11.0 | 62.0 | 0.00 | 0 |  |
+| `entsoe.congestion_redispatch_cross_border` | 8.5 | 62.6 | 7.5 | 13.2 | 0.00 | 0 |  |
+| `wave9.us_fhwa_afc` | 32.1 | 57.3 | 28.1 | 44.8 | 0.00 | 0 |  |
+| `wave9.us_ira_energy_communities` | 35.7 | 54.3 | 33.1 | 43.9 | 0.00 | 0 |  |
+| `wave9.eu_emodnet_pipelines` | 8.3 | 49.8 | 7.4 | 44.5 | 0.00 | 0 |  |
+| `connect_eu.gb_dso` | 7.1 | 43.9 | 7.6 | 49.6 | 0.00 | 0 |  |
+| `registers.ie` | 12.6 | 41.6 | 11.0 | 20.0 | 0.00 | 0 |  |
+| `tyndp.projects` | 4.5 | 40.0 | 4.0 | 39.7 | 0.00 | 0 |  |
+| `wave9.us_boem_active_leases` | 11.9 | 37.7 | 6.0 | 34.6 | 0.00 | 0 |  |
+| `wave9.fi_paavo` | 11.7 | 37.5 | 8.4 | 32.6 | 0.00 | 0 |  |
+| `wave9.gb_ssen_opendata` | 7.1 | 36.4 | 6.0 | 35.7 | 0.00 | 0 |  |
+| `wave9.us_boem_wind_leases` | 8.3 | 34.7 | 5.4 | 31.6 | 0.00 | 0 |  |
+| `entsoe.congestion_countertrading` | 5.9 | 34.3 | 8.4 | 11.8 | 0.00 | 0 |  |
+| `wave9.dk_district_heating` | 9.7 | 33.8 | 5.7 | 11.3 | 0.00 | 0 |  |
+| `gem.coal_mines_non_closed_mines` | 30.3 | 33.5 | 28.5 | 28.8 | 0.00 | 0 |  |
+| `history.connect_eu__gb_dso` | 9.0 | 33.1 | 8.2 | 36.8 | 0.00 | 0 |  |
+| `co2stop.hydrocarbon_storage_units` | 14.8 | 32.0 | 13.2 | 31.5 | 0.00 | 0 |  |
+| `wave9.us_drought_monitor` | 10.6 | 31.2 | 7.6 | 28.7 | 0.00 | 0 |  |
+| `co2stop.hydrocarbon_traps1` | 15.9 | 30.5 | 13.9 | 30.0 | 0.00 | 0 |  |
+| `wave9.us_cpc_degree_days` | 4.9 | 30.4 | 3.6 | 19.6 | 0.00 | 0 |  |
+| `entsoe.outages` | 11.6 | 29.0 | 8.8 | 12.9 | 0.01 | 1 |  |
+| `app.eu_prices` | 2.4 | 28.9 | 1.7 | 2.3 | 0.00 | 0 |  |
+| `history.capareseau__substations` | 6.2 | 27.4 | 5.5 | 17.4 | 0.00 | 0 |  |
+| `connect_eu.lu` | 3.6 | 26.6 | 3.4 | 19.0 | 0.00 | 0 |  |
+| `history.connect_eu__lu` | 4.3 | 25.6 | 3.5 | 15.2 | 0.00 | 0 |  |
+| `wave9.us_eia_gas_storage` | 5.3 | 25.3 | 3.9 | 15.7 | 0.00 | 0 |  |
+| `shapes.bidding_zones` | 9.2 | 23.4 | 8.1 | 18.1 | 0.00 | 0 |  |
+| `wave9.gb_defra_aurn` | 10.4 | 21.8 | 9.1 | 17.1 | 0.00 | 0 |  |
+| `wave9.eu_emodnet_wind_farms` | 9.1 | 21.4 | 3.6 | 8.3 | 0.00 | 0 |  |
+| `hydrogen.projects` | 12.6 | 21.3 | 11.2 | 19.2 | 0.00 | 0 |  |
+| `wave9.eu_emodnet_ocean_energy` | 6.1 | 21.2 | 4.8 | 21.3 | 0.00 | 0 |  |
+| `history.registers__ie` | 14.9 | 20.9 | 15.6 | 28.2 | 0.00 | 0 |  |
+| `wave9.us_nexrad` | 12.1 | 20.5 | 10.9 | 20.1 | 0.00 | 0 |  |
+| `gem.coal_mines_closed_mines` | 20.0 | 20.3 | 19.0 | 20.1 | 0.00 | 0 |  |
+| `entsoe.capacity` | 1.8 | 19.5 | 1.7 | 2.0 | 0.00 | 0 |  |
+| `wave9.us_eia_ethanol` | 2.9 | 19.5 | 2.5 | 11.4 | 0.00 | 0 |  |
+| `ev_eu.lu` | 4.9 | 18.3 | 3.3 | 17.9 | 0.00 | 0 |  |
+| `connect_eu.dk` | 9.2 | 17.8 | 8.0 | 11.3 | 0.00 | 0 |  |
+| `wave9.us_usgs_water_use` | 5.3 | 17.2 | 2.8 | 10.8 | 0.00 | 0 |  |
+| `ev_eu.bg` | 3.6 | 17.1 | 3.3 | 17.0 | 0.00 | 0 |  |
+| `ev_eu.ie` | 2.6 | 16.7 | 2.2 | 16.3 | 0.00 | 0 |  |
+| `registers.dk` | 3.9 | 16.5 | 3.4 | 15.7 | 0.00 | 0 |  |
+| `wave9.us_eia_gas_processing` | 9.9 | 16.4 | 3.7 | 15.6 | 0.00 | 0 |  |
+| `wave9.us_eia_lng` | 4.6 | 16.4 | 3.4 | 14.8 | 0.00 | 0 |  |
+| `wave9.us_eia_crude_rail` | 7.9 | 16.3 | 6.6 | 9.3 | 0.00 | 0 |  |
+| `wave9.us_epa_lmop` | 4.6 | 16.0 | 3.9 | 14.7 | 0.00 | 0 |  |
+| `wave9.eu_salt_caverns` | 8.5 | 15.9 | 7.4 | 13.3 | 0.00 | 0 |  |
+| `entsoe.transmission_outages` | 2.6 | 15.6 | 2.4 | 15.0 | 0.00 | 0 |  |
+| `wave9.us_eia_biodiesel` | 3.9 | 15.6 | 3.1 | 14.7 | 0.00 | 0 |  |
+| `wave9.us_epa_lmop_landfills` | 3.5 | 15.1 | 2.8 | 13.9 | 0.00 | 0 |  |
+| `capareseau.substations` | 4.6 | 15.0 | 4.4 | 14.4 | 0.00 | 0 |  |
+| `history.connect_eu__bg` | 3.5 | 14.9 | 3.3 | 14.0 | 0.00 | 0 |  |
+| `connect_eu.bg` | 3.5 | 14.8 | 3.1 | 14.1 | 0.00 | 0 |  |
+| `ev_eu.gr` | 3.2 | 14.7 | 3.1 | 13.5 | 0.00 | 0 |  |
+| `ev_eu.mt` | 3.5 | 14.3 | 3.1 | 13.7 | 0.00 | 0 |  |
+| `wave9.eu_emodnet_platforms` | 4.4 | 13.9 | 4.0 | 10.7 | 0.00 | 0 |  |
+| `osm.eu_links` | 5.0 | 13.8 | 3.9 | 8.9 | 0.00 | 0 |  |
+| `wave9.us_blm_solar_dla` | 3.5 | 13.8 | 3.4 | 9.2 | 0.00 | 0 |  |
+| `wave9.gb_dft_veh0142` | 13.7 | 13.7 | 1.4 | 1.4 | 0.00 | 0 |  |
+| `wave9.us_eia_product_terminals` | 2.3 | 13.7 | 2.1 | 11.7 | 0.00 | 0 |  |
+| `wave9.eu_emodnet_hydrocarbon_licences` | 9.7 | 13.6 | 7.6 | 11.3 | 0.00 | 0 |  |
+| `wave9.us_usgs_geoelectric` | 10.7 | 13.0 | 7.2 | 11.5 | 0.00 | 0 |  |
+| `wave9.us_eia_refineries` | 4.2 | 12.9 | 3.4 | 11.4 | 0.00 | 0 |  |
+| `history.connect_eu__dk` | 9.6 | 12.8 | 8.2 | 11.4 | 0.00 | 0 |  |
+| `wave9.us_eia_hgl_pipelines` | 8.3 | 12.8 | 7.7 | 8.8 | 0.00 | 0 |  |
+| `wave9.eu_emodnet_aggregates` | 5.9 | 12.7 | 3.9 | 9.3 | 0.00 | 0 |  |
+| `history.registers__dk` | 3.1 | 12.5 | 2.7 | 11.4 | 0.00 | 0 |  |
+| `wave9.eu_emodnet_nuclear` | 8.7 | 12.5 | 7.9 | 9.7 | 0.00 | 0 |  |
+| `wave9.gb_pins_dco` | 7.9 | 12.4 | 7.2 | 8.1 | 0.00 | 0 |  |
+| `ev_eu.ee` | 2.6 | 12.2 | 2.1 | 11.1 | 0.00 | 0 |  |
+| `wave9.fr_emodnet_telecom_shom` | 4.1 | 11.9 | 3.2 | 10.4 | 0.00 | 0 |  |
+| `outlines.names` | 4.7 | 11.6 | 4.2 | 9.6 | 0.00 | 0 |  |
+| `caiso.curtailment` | 5.0 | 11.4 | 4.6 | 11.5 | 0.00 | 0 |  |
+| `wave9.gb_hnpd` | 6.6 | 11.1 | 5.5 | 9.7 | 0.00 | 0 |  |
+| `registers.pt` | 3.0 | 10.6 | 2.2 | 9.1 | 0.00 | 0 |  |
+| `aures.auctions` | 5.4 | 10.4 | 4.6 | 9.8 | 0.00 | 0 |  |
+| `wave9.gb_neso_etys` | 3.4 | 10.4 | 2.9 | 16.6 | 0.00 | 0 |  |
+| `wave9.us_eia_product_pipelines` | 6.3 | 10.3 | 5.3 | 6.2 | 0.00 | 0 |  |
+| `wave10.eu_env_ac_curm` | 1.6 | 10.0 | 1.6 | 2.2 | 0.00 | 0 |  |
+| `wave9.gb_neso_constraint_costs` | 3.2 | 9.6 | 1.3 | 2.7 | 0.00 | 0 |  |
+| `wave9.mt_emodnet_telecom` | 2.3 | 9.6 | 2.1 | 7.2 | 0.00 | 0 |  |
+| `wave9.es_emodnet_telecom_cica` | 3.3 | 9.5 | 2.8 | 8.3 | 0.00 | 0 |  |
+| `osm.cables` | 5.4 | 9.2 | 2.3 | 7.2 | 0.00 | 0 |  |
+| `wave9.eu_emodnet_military` | 2.8 | 9.2 | 2.4 | 5.7 | 0.00 | 0 |  |
+| `wave9.fr_emodnet_telecom_sigcables` | 2.4 | 8.7 | 2.1 | 5.5 | 0.00 | 0 |  |
+| `wave9.gb_npg_heatmap_substations` | 6.6 | 8.7 | 5.5 | 7.0 | 0.00 | 0 |  |
+| `wave9.us_eia_crude_pipelines` | 6.3 | 7.9 | 4.8 | 6.0 | 0.00 | 0 |  |
+| `wave9.eu_emodnet_ports` | 2.4 | 7.8 | 2.1 | 5.9 | 0.00 | 0 |  |
+| `wave9.de_emodnet_telecom_bsh` | 3.8 | 7.3 | 3.1 | 6.4 | 0.00 | 0 |  |
+| `wave9.gr_elstat_heating_settlement` | 4.3 | 6.5 | 4.5 | 6.4 | 0.00 | 0 |  |
+| `wave9.eu_network_costs` | 4.3 | 6.2 | 3.4 | 5.4 | 0.00 | 0 |  |
+| `wave9.ie_semo_imbalance` | 6.1 | 6.1 | 1.6 | 1.6 | 0.00 | 0 |  |
+| `wave9.cz_csu_sldb_heating_mode` | 1.2 | 5.1 | 1.2 | 5.0 | 0.00 | 0 |  |
+| `wave10.eu_cei_pc030` | 3.0 | 4.8 | 2.0 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_iww_eq_age` | 1.5 | 4.7 | 1.4 | 2.3 | 0.00 | 0 |  |
+| `wave10.gb_dft_evcd_devices` | 2.7 | 4.7 | 1.7 | 2.5 | 0.00 | 0 |  |
+| `wave9.eu_entsoe_balancing` | 1.9 | 4.7 | 1.7 | 4.6 | 0.00 | 0 |  |
+| `wave10.eu_nrg_chdd_a` | 3.0 | 4.6 | 2.0 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_bussea` | 2.9 | 4.5 | 1.9 | 2.7 | 0.00 | 0 |  |
+| `wave9.fr_odre_balancing_volumes` | 4.1 | 4.5 | 1.4 | 3.0 | 0.00 | 0 |  |
+| `wave10.eu_sdg_09_30` | 3.0 | 4.4 | 2.4 | 3.0 | 0.00 | 0 |  |
+| `wave10.eu_ten00062` | 2.0 | 4.4 | 1.8 | 2.2 | 0.00 | 0 |  |
+| `wave9.eu_air_passengers` | 3.0 | 4.4 | 2.9 | 4.2 | 0.00 | 0 |  |
+| `wave9.us_pjm_rpm` | 3.6 | 4.4 | 1.5 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_nrg_stk_h2` | 3.2 | 4.3 | 2.2 | 3.1 | 0.00 | 0 |  |
+| `wave10.wb_sh_sta_odfc_ur_zs` | 2.4 | 4.3 | 2.3 | 4.0 | 0.00 | 0 |  |
+| `wave10.wb_tm_val_ictg_zs_un` | 2.4 | 4.3 | 2.4 | 4.0 | 0.00 | 0 |  |
+| `wave10.eu_cei_gsr011` | 2.5 | 4.2 | 1.5 | 2.4 | 0.00 | 0 |  |
+| `wave10.wb_it_mlt_main_p2` | 2.4 | 4.2 | 2.3 | 4.0 | 0.00 | 0 |  |
+| `prepared.answers` | 2.5 | 4.1 | 1.3 | 2.0 | 0.00 | 0 |  |
+| `wave10.eu_env_ac_egss3` | 3.1 | 4.1 | 3.0 | 3.7 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_psth2` | 3.3 | 4.1 | 2.3 | 3.0 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_unlweig` | 3.1 | 4.1 | 2.1 | 3.0 | 0.00 | 0 |  |
+| `wave10.gb_desnz_gas_distribution` | 4.1 | 4.1 | 1.4 | 1.4 | 0.00 | 0 |  |
+| `wave10.wb_ny_adj_dkap_gn_zs` | 2.3 | 4.1 | 2.3 | 3.9 | 0.00 | 0 |  |
+| `wave10.wb_ny_gdp_frst_rt_zs` | 2.3 | 4.1 | 2.3 | 4.1 | 0.00 | 0 |  |
+| `wave10.wb_sh_h2o_basw_ru_zs` | 2.4 | 4.1 | 2.3 | 4.0 | 0.00 | 0 |  |
+| `wave9.gb_npg_curtailment_events` | 4.1 | 4.1 | 1.6 | 1.6 | 0.00 | 0 |  |
+| `wave10.eu_env_ac_landfp` | 3.7 | 4.0 | 1.5 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_busveh` | 3.1 | 4.0 | 2.0 | 3.0 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_unlweig` | 2.6 | 4.0 | 1.5 | 2.1 | 0.00 | 0 |  |
+| `wave10.wb_is_rrs_good_mt_k6` | 2.4 | 4.0 | 2.3 | 4.0 | 0.00 | 0 |  |
+| `wave10.wb_nv_agr_totl_zs` | 2.3 | 4.0 | 2.3 | 3.9 | 0.00 | 0 |  |
+| `wave10.wb_ny_adj_ictr_gn_zs` | 2.5 | 4.0 | 2.3 | 3.8 | 0.00 | 0 |  |
+| `wave9.gb_epc_stats` | 4.0 | 4.0 | 1.5 | 1.5 | 0.00 | 0 |  |
+| `wave10.wb_ip_ids_nrct` | 2.3 | 3.9 | 2.3 | 3.8 | 0.00 | 0 |  |
+| `wave10.wb_sh_sta_bass_ru_zs` | 2.2 | 3.9 | 2.3 | 3.8 | 0.00 | 0 |  |
+| `wave10.wb_sh_sta_wash_p5` | 2.3 | 3.9 | 2.3 | 3.8 | 0.00 | 0 |  |
+| `wave10.eu_cei_gsr020` | 2.8 | 3.8 | 2.7 | 3.5 | 0.00 | 0 |  |
+| `wave10.eu_cei_pc035` | 2.4 | 3.8 | 1.4 | 2.3 | 0.00 | 0 |  |
+| `wave9.ie_cso_dc_consumption` | 3.1 | 3.8 | 2.6 | 3.7 | 0.00 | 0 |  |
+| `wave10.eu_nrg_chp_f` | 2.4 | 3.7 | 2.0 | 2.4 | 0.00 | 0 |  |
+| `wave10.eu_ten00136` | 2.7 | 3.7 | 1.8 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_ten00141` | 2.2 | 3.7 | 1.6 | 2.0 | 0.00 | 0 |  |
+| `wave10.gb_census_accommodation` | 2.4 | 3.7 | 1.2 | 2.4 | 0.00 | 0 |  |
+| `wave9.eu_broadband_coverage` | 3.1 | 3.7 | 2.2 | 3.1 | 0.00 | 0 |  |
+| `wave9.gb_elexon_balancing` | 1.6 | 3.7 | 1.6 | 3.4 | 0.00 | 0 |  |
+| `eaglei.coverage` | 1.9 | 3.6 | 1.7 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_nrg_pc_204_v` | 2.4 | 3.6 | 1.5 | 2.3 | 0.00 | 0 |  |
+| `wave10.eu_rail_eq_locop` | 3.1 | 3.6 | 2.1 | 3.1 | 0.00 | 0 |  |
+| `wave10.eu_tran_hv_ms_frmod6` | 2.9 | 3.6 | 2.3 | 2.8 | 0.00 | 0 |  |
+| `wave10.gb_desnz_ren_capacity_la` | 3.6 | 3.6 | 1.2 | 1.2 | 0.00 | 0 |  |
+| `wave10.eu_env_wat_cat` | 2.6 | 3.5 | 1.8 | 2.4 | 0.00 | 0 |  |
+| `wave10.eu_iww_eq_age_loa` | 2.1 | 3.5 | 1.2 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_ffgae` | 2.4 | 3.5 | 1.3 | 2.5 | 0.00 | 0 |  |
+| `wave10.eu_rail_if_line_na` | 3.0 | 3.5 | 3.0 | 3.2 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_lorton` | 3.0 | 3.5 | 2.2 | 3.1 | 0.00 | 0 |  |
+| `wave10.eu_ten00122` | 3.0 | 3.5 | 2.8 | 2.9 | 0.00 | 0 |  |
+| `wave9.eu_water_abstraction` | 2.8 | 3.5 | 2.8 | 3.4 | 0.00 | 0 |  |
+| `wave9.eu_nuclear_capacity` | 2.9 | 3.4 | 2.1 | 3.2 | 0.00 | 0 |  |
+| `wave10.eu_env_ac_epissp1` | 2.4 | 3.3 | 2.1 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_nrg_chp_n` | 3.0 | 3.3 | 2.9 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_spurp` | 3.2 | 3.3 | 1.8 | 3.0 | 0.00 | 0 |  |
+| `wave10.eu_sdg_07_30` | 2.3 | 3.3 | 1.4 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_sdg_11_52` | 3.2 | 3.3 | 2.0 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_sdg_13_10` | 2.9 | 3.3 | 2.3 | 2.8 | 0.00 | 0 |  |
+| `wave9.si_surs_electricity_municipality` | 3.3 | 3.3 | 2.6 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_cei_wm011` | 2.3 | 3.2 | 1.3 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_nrg_dhdc_n` | 2.3 | 3.2 | 2.2 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_nrg_inf_stcs` | 2.2 | 3.2 | 1.9 | 3.1 | 0.00 | 0 |  |
+| `wave10.eu_rail_eq_trset` | 2.3 | 3.2 | 1.5 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_lorrit` | 2.4 | 3.2 | 1.7 | 2.1 | 0.00 | 0 |  |
+| `wave10.eu_sdg_09_70` | 2.4 | 3.2 | 1.5 | 2.3 | 0.00 | 0 |  |
+| `wave10.eu_sdg_12_51` | 2.1 | 3.2 | 2.1 | 3.0 | 0.00 | 0 |  |
+| `wave10.eu_sdg_12_61` | 2.0 | 3.2 | 1.9 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_nrg_d_cv` | 3.0 | 3.1 | 2.8 | 3.0 | 0.00 | 0 |  |
+| `wave10.eu_nrg_inf_h2stpc` | 2.4 | 3.1 | 2.2 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_carhab` | 2.3 | 3.1 | 1.3 | 2.1 | 0.00 | 0 |  |
+| `wave10.eu_sdg_06_70` | 2.9 | 3.1 | 1.8 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_sdg_11_11` | 1.9 | 3.1 | 1.9 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_sdg_13_70` | 1.9 | 3.1 | 1.9 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_env_epea_invte` | 1.8 | 3.0 | 1.7 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_env_wat_ind` | 2.5 | 3.0 | 2.4 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_iww_eq_loadcap` | 2.0 | 3.0 | 1.9 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_nrg_dhdc_e` | 2.6 | 3.0 | 2.4 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_hpind` | 2.2 | 3.0 | 2.1 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_rail_if_tracks` | 2.3 | 3.0 | 1.4 | 2.1 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_mopeds` | 1.9 | 3.0 | 1.8 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_carmot` | 2.2 | 3.0 | 2.1 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_sdg_06_30` | 2.2 | 3.0 | 1.3 | 2.1 | 0.00 | 0 |  |
+| `wave10.eu_sdg_06_60` | 1.9 | 3.0 | 1.9 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_sdg_11_20` | 1.9 | 3.0 | 1.9 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_ten00108` | 1.9 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_ten00110` | 1.9 | 3.0 | 1.8 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_ten00127` | 3.0 | 3.0 | 2.6 | 2.9 | 0.00 | 0 |  |
+| `wave10.eu_ten00135` | 2.0 | 3.0 | 2.1 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_tran_hv_frtra` | 1.8 | 3.0 | 1.7 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_tran_hv_ms_frmod` | 2.3 | 3.0 | 2.2 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_env_ac_mid` | 2.5 | 2.9 | 2.1 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_env_epea_invgg` | 2.1 | 2.9 | 2.0 | 3.0 | 0.00 | 0 |  |
+| `wave10.eu_env_epea_invsp` | 2.1 | 2.9 | 2.1 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_iww_eq_power_lo` | 1.7 | 2.9 | 1.7 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_nrg_pc_205_v` | 2.0 | 2.9 | 2.1 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_rail_eq_locon` | 2.0 | 2.9 | 2.0 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_rail_eq_wagon` | 2.6 | 2.9 | 2.4 | 3.0 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_busmot` | 2.2 | 2.9 | 2.0 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_bussea` | 1.8 | 2.9 | 1.8 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_sdg_07_50` | 2.0 | 2.9 | 2.0 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_sdg_09_10` | 1.8 | 2.9 | 1.8 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_sdg_11_40` | 2.9 | 2.9 | 2.6 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_ten00003` | 2.7 | 2.9 | 2.0 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_ten00129` | 2.9 | 2.9 | 2.6 | 2.8 | 0.00 | 0 |  |
+| `wave10.gb_census_bedrooms` | 1.8 | 2.9 | 1.9 | 2.7 | 0.00 | 0 |  |
+| `wave9.eu_energy_productivity` | 2.0 | 2.9 | 1.9 | 2.7 | 0.00 | 0 |  |
+| `entsog_tyndp.projects` | 2.2 | 2.8 | 2.1 | 2.9 | 0.00 | 0 |  |
+| `gem.energy_ownership_coal_mine_ownership` | 2.4 | 2.8 | 2.3 | 3.0 | 0.00 | 0 |  |
+| `wave10.eu_cei_gsr030` | 2.0 | 2.8 | 1.8 | 3.1 | 0.00 | 0 |  |
+| `wave10.eu_cei_pc020` | 1.9 | 2.8 | 1.8 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_cei_pc040` | 1.8 | 2.8 | 1.7 | 2.6 | 0.00 | 0 |  |
+| `wave10.eu_env_wat_pop` | 1.9 | 2.8 | 1.8 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_ep` | 1.9 | 2.8 | 1.8 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_nrg_inf_lbpc` | 2.3 | 2.8 | 2.2 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_rail_if_traff` | 1.9 | 2.8 | 1.9 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_motors` | 1.9 | 2.8 | 1.9 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_semit` | 2.7 | 2.8 | 2.5 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_busage` | 2.2 | 2.8 | 2.0 | 2.6 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_busmot` | 2.5 | 2.8 | 2.3 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_spurp` | 1.8 | 2.8 | 1.7 | 2.6 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_trail` | 1.9 | 2.8 | 1.8 | 2.8 | 0.00 | 0 |  |
+| `wave10.eu_sdg_07_40` | 2.1 | 2.8 | 2.0 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_sdg_13_70a` | 1.8 | 2.8 | 1.7 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_ten00121` | 2.8 | 2.8 | 2.6 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_tran_hv_frmod` | 2.1 | 2.8 | 2.1 | 2.6 | 0.00 | 0 |  |
+| `wave10.wb_is_rrs_totl_km` | 1.5 | 2.8 | 1.5 | 2.6 | 0.00 | 0 |  |
+| `wave10.wb_it_net_bbnd_p2` | 1.8 | 2.8 | 1.5 | 2.7 | 0.00 | 0 |  |
+| `wave9.eu_internet_households` | 2.3 | 2.8 | 2.2 | 2.8 | 0.00 | 0 |  |
+| `wave9.gb_bus_heat_pumps_la` | 2.8 | 2.8 | 1.4 | 1.4 | 0.00 | 0 |  |
+| `gem.coal_mines_historical_production_non_chin` | 2.0 | 2.7 | 1.9 | 2.5 | 0.00 | 0 |  |
+| `wave10.eu_cei_pc050` | 1.8 | 2.7 | 1.7 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_cei_srm010` | 2.7 | 2.7 | 2.4 | 2.6 | 0.00 | 0 |  |
+| `wave10.eu_cei_wm020` | 2.3 | 2.7 | 2.1 | 2.6 | 0.00 | 0 |  |
+| `wave10.eu_cei_wm060` | 1.9 | 2.7 | 1.7 | 2.6 | 0.00 | 0 |  |
+| `wave10.eu_env_ac_taxener` | 2.3 | 2.7 | 2.3 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_ei` | 2.1 | 2.7 | 2.0 | 2.6 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_ren` | 2.3 | 2.7 | 1.6 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_trams` | 1.8 | 2.7 | 1.7 | 2.6 | 0.00 | 0 |  |
+| `wave10.eu_sdg_06_40` | 1.8 | 2.7 | 1.7 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_sdg_06_50` | 1.7 | 2.7 | 1.7 | 2.7 | 0.00 | 0 |  |
+| `wave10.eu_sdg_13_40` | 2.7 | 2.7 | 1.3 | 2.7 | 0.00 | 0 |  |
+| `wave10.gb_census_cars` | 1.7 | 2.7 | 1.6 | 2.6 | 0.00 | 0 |  |
+| `wave10.wb_tx_val_fuel_zs_un` | 1.5 | 2.7 | 1.5 | 2.5 | 0.00 | 0 |  |
+| `wave10.wb_tx_val_ictg_zs_un` | 1.5 | 2.7 | 1.7 | 2.7 | 0.00 | 0 |  |
+| `wave9.dk_energinet_countertrade` | 1.4 | 2.7 | 1.2 | 2.5 | 0.00 | 0 |  |
+| `wave9.eu_ev_stock_nuts2` | 1.8 | 2.7 | 1.8 | 2.5 | 0.00 | 0 |  |
+| `wave9.fr_ademe_dpe` | 1.3 | 2.7 | 1.3 | 2.3 | 0.00 | 0 |  |
+| `wave9.gb_neso_tnuos` | 1.4 | 2.7 | 1.4 | 2.4 | 0.00 | 0 |  |
+| `history.econnextion__requests` | 1.8 | 2.6 | 1.9 | 2.3 | 0.00 | 0 |  |
+| `history.pse_capacity__requests` | 1.9 | 2.6 | 1.9 | 2.5 | 0.00 | 0 |  |
+| `registers.be` | 2.4 | 2.6 | 1.6 | 2.3 | 0.00 | 0 |  |
+| `wave10.eu_rail_eq_vans` | 2.0 | 2.6 | 1.6 | 2.5 | 0.00 | 0 |  |
+| `wave10.eu_sdg_12_31` | 2.1 | 2.6 | 1.2 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_sdg_12_41` | 1.8 | 2.6 | 1.8 | 2.5 | 0.00 | 0 |  |
+| `wave10.eu_sdg_13_50` | 1.7 | 2.6 | 1.8 | 2.9 | 0.00 | 0 |  |
+| `wave10.wb_ip_tmk_nrct` | 1.5 | 2.6 | 1.5 | 2.4 | 0.00 | 0 |  |
+| `wave10.wb_ip_tmk_rsct` | 1.6 | 2.6 | 1.6 | 2.4 | 0.00 | 0 |  |
+| `wave10.wb_is_shp_gcnw_xq` | 1.6 | 2.6 | 1.6 | 2.5 | 0.00 | 0 |  |
+| `wave10.wb_ny_adj_aedu_gn_zs` | 1.5 | 2.6 | 1.4 | 2.8 | 0.00 | 0 |  |
+| `wave10.wb_ny_adj_dmin_gn_zs` | 1.5 | 2.6 | 1.5 | 2.5 | 0.00 | 0 |  |
+| `wave10.wb_ny_adj_dngy_cd` | 1.5 | 2.6 | 1.5 | 2.5 | 0.00 | 0 |  |
+| `wave10.wb_sh_h2o_basw_zs` | 1.5 | 2.6 | 1.5 | 2.5 | 0.00 | 0 |  |
+| `wave9.eu_rail_electrified` | 2.1 | 2.6 | 2.0 | 2.5 | 0.00 | 0 |  |
+| `gem.iron_steel_blast_furnace_relinings` | 1.8 | 2.5 | 1.5 | 1.9 | 0.00 | 0 |  |
+| `gem_ownership.all_entities` | 2.5 | 2.5 | 2.4 | 2.4 | 0.00 | 0 |  |
+| `ghsl.population` | 1.5 | 2.5 | 1.3 | 2.3 | 0.00 | 0 |  |
+| `wave10.eu_nrg_pc_203_v` | 1.8 | 2.5 | 1.6 | 2.4 | 0.00 | 0 |  |
+| `wave10.eu_sdg_06_20` | 1.4 | 2.5 | 1.4 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_sdg_12_21` | 1.6 | 2.5 | 1.6 | 2.3 | 0.00 | 0 |  |
+| `wave10.eu_ten00106` | 2.4 | 2.5 | 1.4 | 2.2 | 0.00 | 0 |  |
+| `wave10.gb_census_density` | 1.8 | 2.5 | 1.6 | 2.4 | 0.00 | 0 |  |
+| `wave10.wb_ny_adj_nnat_gn_zs` | 1.4 | 2.5 | 1.4 | 2.5 | 0.00 | 0 |  |
+| `wave10.wb_ny_gdp_ngas_rt_zs` | 1.4 | 2.5 | 1.4 | 2.5 | 0.00 | 0 |  |
+| `wave10.wb_sh_h2o_smdw_ru_zs` | 1.5 | 2.5 | 1.5 | 2.5 | 0.00 | 0 |  |
+| `wave10.wb_sh_sta_bass_zs` | 1.5 | 2.5 | 1.5 | 2.4 | 0.00 | 0 |  |
+| `wave10.wb_sh_sta_hygn_ru_zs` | 1.5 | 2.5 | 1.5 | 2.5 | 0.00 | 0 |  |
+| `wave10.wb_sh_sta_pois_p5` | 1.5 | 2.5 | 1.5 | 2.4 | 0.00 | 0 |  |
+| `wave10.wb_sh_sta_pois_p5_fe` | 1.5 | 2.5 | 1.5 | 2.4 | 0.00 | 0 |  |
+| `wave10.wb_sp_pop_grow` | 1.5 | 2.5 | 1.4 | 2.4 | 0.00 | 0 |  |
+| `wave10.wb_sp_pop_totl` | 1.5 | 2.5 | 1.5 | 2.5 | 0.00 | 0 |  |
+| `gem.cement_final_data` | 2.2 | 2.4 | 1.9 | 2.2 | 0.00 | 0 |  |
+| `gem.gas_finance_gas_power_plants` | 2.0 | 2.4 | 2.1 | 2.1 | 0.00 | 0 |  |
+| `gem_ownership.gas_plant_ownership` | 2.4 | 2.4 | 2.2 | 2.2 | 0.00 | 0 |  |
+| `pse_capacity.full_substations` | 1.7 | 2.4 | 1.5 | 1.6 | 0.00 | 0 |  |
+| `wave10.eu_env_wat_bal` | 2.0 | 2.4 | 1.8 | 2.3 | 0.00 | 0 |  |
+| `wave10.eu_nrg_dhdc_c` | 1.6 | 2.4 | 1.5 | 2.3 | 0.00 | 0 |  |
+| `wave10.eu_nrg_inf_epct` | 2.2 | 2.4 | 1.8 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_trams` | 1.4 | 2.4 | 1.3 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_roaene` | 1.8 | 2.4 | 1.6 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_sdg_07_10` | 1.9 | 2.4 | 1.2 | 1.7 | 0.00 | 0 |  |
+| `wave10.wb_it_net_secr` | 1.5 | 2.4 | 1.5 | 2.3 | 0.00 | 0 |  |
+| `wave10.wb_ny_adj_dco2_cd` | 1.5 | 2.4 | 1.5 | 2.3 | 0.00 | 0 |  |
+| `wave10.wb_ny_adj_svng_cd` | 1.5 | 2.4 | 1.5 | 2.4 | 0.00 | 0 |  |
+| `wave10.wb_ny_gdp_petr_rt_zs` | 1.5 | 2.4 | 1.5 | 2.6 | 0.00 | 0 |  |
+| `wave9.eu_nonhousehold_prices` | 1.7 | 2.4 | 1.6 | 2.3 | 0.00 | 0 |  |
+| `gem.methane_emitters_plumes` | 2.0 | 2.3 | 1.8 | 2.3 | 0.00 | 0 |  |
+| `wave10.eu_env_ac_epneis1` | 1.8 | 2.3 | 1.7 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_fechm2` | 1.4 | 2.3 | 1.4 | 2.0 | 0.00 | 0 |  |
+| `wave10.eu_rail_eq_pa_nty` | 1.6 | 2.3 | 1.5 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_rail_if_lvlcros` | 1.6 | 2.3 | 1.5 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_semit` | 2.2 | 2.3 | 1.3 | 2.1 | 0.00 | 0 |  |
+| `wave10.eu_sdg_07_20` | 1.4 | 2.3 | 1.4 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_sdg_09_60` | 1.8 | 2.3 | 1.6 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_ten00139` | 1.5 | 2.3 | 1.4 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_tran_hv_pstra` | 1.5 | 2.3 | 1.4 | 2.1 | 0.00 | 0 |  |
+| `wave9.us_nrel_sharing_sun` | 1.4 | 2.3 | 1.2 | 2.1 | 0.00 | 0 |  |
+| `gem.iron_ore_mines_prodconsmetcoalironore` | 1.7 | 2.2 | 1.6 | 1.8 | 0.00 | 0 |  |
+| `gem.iron_steel_plant_capacities_and_status` | 1.9 | 2.2 | 1.7 | 2.0 | 0.00 | 0 |  |
+| `wave10.eu_cei_pc034` | 1.5 | 2.2 | 1.4 | 2.2 | 0.00 | 0 |  |
+| `wave10.eu_cei_wm010` | 1.4 | 2.2 | 1.3 | 2.1 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_caremiss` | 1.4 | 2.2 | 1.4 | 2.1 | 0.00 | 0 |  |
+| `wave10.eu_sdg_09_40` | 1.4 | 2.2 | 1.2 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_sdg_13_31` | 1.4 | 2.2 | 1.4 | 2.1 | 0.00 | 0 |  |
+| `wave10.eu_ten00125` | 2.1 | 2.2 | 2.0 | 2.3 | 0.00 | 0 |  |
+| `wave9.nl_cbs_datacentres` | 2.2 | 2.2 | 1.4 | 1.4 | 0.00 | 0 |  |
+| `gem.gas_infrastructure_data` | 2.0 | 2.1 | 1.8 | 2.0 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_id3cf` | 1.6 | 2.1 | 1.5 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_rcaebt` | 1.5 | 2.1 | 1.4 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_rail_eq_pa_csb` | 1.3 | 2.1 | 1.2 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_carmot` | 1.4 | 2.1 | 1.3 | 1.9 | 0.00 | 0 |  |
+| `wave10.gb_desnz_ren_generation_la` | 2.1 | 2.1 | 1.5 | 1.5 | 0.00 | 0 |  |
+| `wave9.cz_ceps_balancing` | 2.1 | 2.1 | 1.9 | 1.9 | 0.00 | 0 |  |
+| `wave9.ie_cso_datacentres` | 1.4 | 2.1 | 1.4 | 2.0 | 0.00 | 0 |  |
+| `wave10.eu_env_ac_pefa05` | 1.4 | 2.0 | 1.3 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_env_air_no2` | 1.7 | 2.0 | 1.5 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_esr` | 1.3 | 2.0 | 1.2 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_nrg_pc_202_v` | 1.3 | 2.0 | 1.2 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_rail_if_line_sp` | 1.5 | 2.0 | 1.4 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_road_eqr_tracmot` | 1.3 | 2.0 | 1.2 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_busveh` | 1.3 | 2.0 | 1.2 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_mopeds` | 1.6 | 2.0 | 1.3 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_ten00006` | 1.4 | 2.0 | 1.3 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_ten00123` | 1.7 | 2.0 | 1.6 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_tran_hv_ms_psmod` | 1.4 | 2.0 | 1.3 | 1.8 | 0.00 | 0 |  |
+| `wave9.fr_enedis_interruptions` | 1.1 | 2.0 | 0.9 | 1.8 | 0.00 | 0 |  |
+| `wave9.gb_npg_opendata` | 1.5 | 2.0 | 1.4 | 1.8 | 0.00 | 0 |  |
+| `wave9.rs_ems_connection_queue` | 1.7 | 2.0 | 1.4 | 1.7 | 0.00 | 0 |  |
+| `wave10.eu_cei_cie011` | 1.4 | 1.9 | 1.2 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_cei_pc031` | 1.2 | 1.9 | 1.1 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_nrg_ind_di` | 1.2 | 1.9 | 1.1 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_carage` | 1.4 | 1.9 | 1.3 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_road_eqs_motorc` | 1.3 | 1.9 | 1.2 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_sdg_06_10` | 1.5 | 1.9 | 1.3 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_sdg_09_50` | 1.4 | 1.9 | 1.3 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_sdg_11_60` | 1.1 | 1.9 | 1.0 | 1.7 | 0.00 | 0 |  |
+| `wave10.eu_sdg_12_10` | 1.5 | 1.9 | 1.3 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_sdg_13_11` | 1.3 | 1.9 | 1.2 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_sdg_13_21` | 1.3 | 1.9 | 1.3 | 1.7 | 0.00 | 0 |  |
+| `wave10.eu_ten00030` | 1.4 | 1.9 | 1.3 | 1.9 | 0.00 | 0 |  |
+| `wave10.eu_ten00137` | 1.2 | 1.9 | 1.1 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_ten00138` | 1.2 | 1.9 | 1.1 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_tran_hv_psmod` | 1.4 | 1.9 | 1.3 | 1.8 | 0.00 | 0 |  |
+| `wave9.de_kba_districts` | 1.9 | 1.9 | 1.6 | 1.6 | 0.00 | 0 |  |
+| `wave9.eu_broadband_nuts2` | 1.2 | 1.9 | 1.1 | 1.7 | 0.00 | 0 |  |
+| `wave9.eu_new_cars_fuel` | 1.8 | 1.9 | 1.5 | 1.8 | 0.00 | 0 |  |
+| `wave9.eu_wastewater_connected` | 1.9 | 1.9 | 1.7 | 1.8 | 0.00 | 0 |  |
+| `wave9.ro_transelectrica_zone_capacity` | 1.3 | 1.9 | 1.0 | 1.6 | 0.00 | 0 |  |
+| `co2stop.dic_geol_basin` | 1.7 | 1.8 | 1.7 | 1.7 | 0.00 | 0 |  |
+| `wave10.eu_sdg_07_11` | 1.3 | 1.8 | 1.3 | 1.8 | 0.00 | 0 |  |
+| `wave10.eu_ten00124` | 1.5 | 1.8 | 1.4 | 1.8 | 0.00 | 0 |  |
+| `wave9.gb_ulev_la` | 1.8 | 1.8 | 1.6 | 1.6 | 0.00 | 0 |  |
+| `wave9.us_eia861_reliability` | 1.8 | 1.8 | 1.6 | 1.6 | 0.00 | 0 |  |
+| `gem.iron_steel_plant_production` | 1.7 | 1.7 | 1.5 | 1.8 | 0.00 | 0 |  |
+| `wave9.us_eia861_reliability_xlsx` | 1.7 | 1.7 | 1.6 | 1.6 | 0.00 | 0 |  |
+| `wave9.us_nrc_operating_reactors` | 1.7 | 1.7 | 1.3 | 1.3 | 0.00 | 0 |  |
+| `eia930.bas` | 1.5 | 1.6 | 1.4 | 1.7 | 0.00 | 0 |  |
+| `gem.iron_steel_electric_arc_furnaces` | 1.5 | 1.6 | 1.3 | 1.5 | 0.00 | 0 |  |
+| `pse_capacity.requests` | 1.3 | 1.6 | 1.1 | 1.4 | 0.00 | 0 |  |
+| `wave10.eu_cei_srm030` | 1.1 | 1.6 | 1.1 | 1.6 | 0.00 | 0 |  |
+| `wave10.gb_dft_evcd_rapid` | 1.4 | 1.6 | 1.1 | 1.6 | 0.00 | 0 |  |
+| `wave9.gb_desnz_subregional_fit` | 1.6 | 1.6 | 1.2 | 1.2 | 0.00 | 0 |  |
+| `wave9.gr_elstat_heating_energy_regional_unit` | 1.5 | 1.6 | 1.3 | 1.5 | 0.00 | 0 |  |
+| `co2stop.daughter_units_summary` | 1.4 | 1.5 | 1.1 | 1.2 | 0.00 | 0 |  |
+| `co2stop.dic_assess_traptype` | 1.5 | 1.5 | 1.4 | 1.4 | 0.00 | 0 |  |
+| `co2stop.dic_availabledata` | 1.5 | 1.5 | 1.4 | 1.4 | 0.00 | 0 |  |
+| `wave10.gb_census_households` | 1.1 | 1.5 | 1.0 | 1.4 | 0.00 | 0 |  |
+| `wave10.gb_desnz_ren_sites_la` | 1.5 | 1.5 | 1.5 | 1.5 | 0.00 | 0 |  |
+| `wave9.us_afdc_registrations` | 1.5 | 1.5 | 1.2 | 1.2 | 0.00 | 0 |  |
+| `wave9.us_epa_agstar` | 1.5 | 1.5 | 1.5 | 1.5 | 0.00 | 0 |  |
+| `co2stop.dic_on_offshore` | 1.4 | 1.4 | 1.3 | 1.3 | 0.00 | 0 |  |
+| `gem.oil_gas_extraction_project_level_production_data` | 1.3 | 1.4 | 1.1 | 1.3 | 0.00 | 0 |  |
+| `wave10.gb_desnz_elec_distribution` | 1.3 | 1.3 | 1.3 | 1.3 | 0.00 | 0 |  |
+| `wave9.nl_rdw_vehicles` | 1.3 | 1.3 | 1.2 | 1.2 | 0.00 | 0 |  |
+| `co2stop.sum_output` | 1.0 | 1.2 | 1.0 | 1.2 | 0.00 | 0 |  |
+| `mastr.catalog_values` | 1.1 | 1.2 | 1.0 | 1.2 | 0.00 | 0 |  |
+| `wave9.us_eia861m_small_solar` | 1.2 | 1.2 | 1.2 | 1.2 | 0.00 | 0 |  |
+| `wave10.gb_dft_evcd_per_100k` | 1.1 | 1.1 | 0.9 | 0.9 | 0.00 | 0 |  |
+| `wave9.eu_cleanh2_electrolyser_mfg` | 1.1 | 1.1 | 0.9 | 0.9 | 0.00 | 0 |  |
+| `wave9.us_eia_recs_heat_pumps_state` | 1.1 | 1.1 | 1.0 | 1.0 | 0.00 | 0 |  |
+| `co2stop.dic_fault_extent` | 1.0 | 1.0 | 1.0 | 1.0 | 0.00 | 0 |  |
+| `co2stop.dic_surfissues` | 1.0 | 1.0 | 1.0 | 1.0 | 0.00 | 0 |  |
+| `wave9.gb_dec_certificates` | 1.0 | 1.0 | 0.9 | 0.9 | 0.00 | 0 |  |
 <!-- measured:end -->
