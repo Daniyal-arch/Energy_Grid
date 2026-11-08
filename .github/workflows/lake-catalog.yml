@@ -17,6 +17,11 @@ on:
         description: "Time the PUDL queries too"
         type: boolean
         default: false
+      storage:
+        description: "Brief 32 Step 5 instead of the catalogue: audit (read only) or apply (the approved deletions in data/lake_deletions.yaml)"
+        type: choice
+        options: [none, audit, apply]
+        default: none
   push:
     branches: [main]
     paths: [.github/workflows/lake-catalog.yml, scripts/lake_catalog.py, scripts/probe_pudl.py]
@@ -26,6 +31,7 @@ permissions:
 
 jobs:
   catalog:
+    if: github.event_name != 'workflow_dispatch' || inputs.storage == 'none'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -96,3 +102,30 @@ jobs:
           pip install duckdb httpx
           set -o pipefail
           python scripts/probe_pudl.py | tee -a "$GITHUB_STEP_SUMMARY"
+
+  # brief 32 Step 5 (scripts/lake_storage.py): the audit of both buckets, or the deletions the
+  # owner approved (exact keys in data/lake_deletions.yaml), by hand only
+  storage:
+    if: github.event_name == 'workflow_dispatch' && inputs.storage != 'none'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install duckdb pyyaml
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: ${{ inputs.storage }}
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python scripts/lake_storage.py ${{ inputs.storage }} | tee storage.md
+          cat storage.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: lake-storage, path: "data/lake_audit.json\nstorage.md", if-no-files-found: ignore}
+
