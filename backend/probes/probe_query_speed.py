@@ -572,6 +572,7 @@ def run_extras(ctx: Any) -> dict[str, Any]:
     from app.main import app
     from tools.area_stats import area_stats
     from tools.areas import resolve_area
+    from tools.quick import _area as quick_area
     from tools.quick import quick
 
     out: dict[str, Any] = {"routes": [], "quick": [], "resolve": [], "area_stats": []}
@@ -625,6 +626,24 @@ def run_extras(ctx: Any) -> dict[str, Any]:
         ]  # fmt: skip
     except Exception as e:  # noqa: BLE001
         diag["fingerprints_stored"] = f"{type(e).__name__}: {str(e)[:160]}"
+    cur = ctx.lake.cursor()
+    checks = []
+    for name in ("Germany", "Bavaria", "Berlin"):
+        try:
+            a = quick_area(ctx, name)
+            stored = cur.execute(
+                "SELECT list(key) FROM prepared.answers WHERE area_id = ?", [a["area_id"]]
+            ).fetchone()[0]
+            by_name = cur.execute(
+                "SELECT list(DISTINCT area_id) FROM prepared.answers WHERE name = ?", [name]
+            ).fetchone()[0]
+            hit = prep.lookup(ctx, "profile", a["area_id"], 10, "plants")
+            checks.append({"name": name, "area_id": a["area_id"], "keys": stored,
+                           "ids_by_name": by_name, "lookup": hit is not None})  # fmt: skip
+        except Exception as e:  # noqa: BLE001
+            checks.append({"name": name, "error": f"{type(e).__name__}: {str(e)[:160]}"})
+    diag["checks"] = checks
+    diag["missing_flag"] = id(ctx.lake) in prep._missing
     out["prepared_diag"] = diag
     print("prepared:", json.dumps(diag), flush=True)
     from tools import areas as areas_mod
