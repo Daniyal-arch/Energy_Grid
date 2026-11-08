@@ -5,7 +5,9 @@ query most, read from local disk instead of R2.
 
 It holds, as plain tables with the same schemas and rows as their lake views:
 
-- every lake table whose files are at most `--max-mb` MB compressed (the lake catalogue's bytes);
+- lake tables of at most `--max-mb` MB compressed and `--max-rows` rows, smallest first, until
+  the file reaches 90 % of `--budget-mb` (the Lambda's /tmp is 2,048 MB); the rest stay in the
+  lake and are listed in the log;
 - every rollup (`rollups.*`), shape set (`shapes.*`) and the prepared answers
   (`prepared.answers`, Tier 0), whatever their size;
 - the outline name index (`outlines.names`, `outlines.aliases`);
@@ -72,6 +74,42 @@ def sort_of(cols: dict[str, str]) -> str:
     return ""
 
 
+def add_simplified(src: duckdb.DuckDBPyConnection, cat: dict, built: str) -> None:
+    """Per outline set, `outlines_simple.<set>`: outlines simplified for maps and large areas."""
+    src.execute("CREATE SCHEMA IF NOT EXISTS hot.outlines_simple")
+    for t, info in sorted(
+        ((cat.get("datasets") or {}).get("outlines") or {}).get("tables", {}).items()
+    ):
+        if t in ("names", "aliases"):
+            continue
+        cols = info.get("columns") or {}
+        if "geometry" not in cols:
+            continue
+        pick = [c for c in ("id", "name", "level", "iso3", "parent_name") if c in cols]
+        path = f"{R2}/{info['path']}"
+        hive = "true" if info.get("partitions") else "false"
+        try:
+            src.execute(
+                f"CREATE TABLE hot.outlines_simple.{q(t)} AS SELECT {', '.join(q(c) for c in pick)}, "
+                f"ST_XMin(geometry) AS xmin, ST_YMin(geometry) AS ymin, ST_XMax(geometry) AS xmax, "
+                f"ST_YMax(geometry) AS ymax, ST_SimplifyPreserveTopology(geometry, {SIMPLIFY_DEG}) AS geometry "
+                f"FROM read_parquet('{path}', hive_partitioning = {hive}, union_by_name = true)"
+            )
+            rows = src.execute(f"SELECT count(*) FROM hot.outlines_simple.{q(t)}").fetchone()[0]
+            if "id" in pick:
+                src.execute(
+                    f"CREATE INDEX {q(f'ix_simple_{t}_id')} ON hot.outlines_simple.{q(t)} (id)"
+                )
+            src.execute(
+                "INSERT INTO hot._hot.tables VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                ["outlines_simple", t, path, rows, info.get("bytes"), cat.get("updated"), built,
+                 f"outline simplified with a {SIMPLIFY_DEG} degree tolerance"],
+            )  # fmt: skip
+            print(f"  outlines_simple.{t}: {rows:,} outlines", flush=True)
+        except duckdb.Error as e:
+            print(f"  outlines_simple.{t}: skipped ({str(e)[:160]})", flush=True)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--max-mb", type=float, default=50.0)
@@ -109,7 +147,23 @@ def main() -> None:
     )
     built = datetime.now(UTC).isoformat(timespec="seconds")
     t0, n_ok, n_rows = time.time(), 0, 0
+    add_simplified(src, cat, built)
+    src.execute("CHECKPOINT hot")
+    print(f"simplified outlines: file {a.out.stat().st_size / 1e6:,.0f} MB", flush=True)
+    # the always-kept sets first, then the smallest tables: the most tables per MB of /tmp
+    chosen.sort(
+        key=lambda c: (
+            not (c[0] in ALWAYS or f"{c[0]}.{c[1]}" in NAME_INDEX),
+            c[2].get("rows") or 0,
+        )
+    )
+    stop_mb = a.budget_mb * 0.9  # the next table may add up to ~100 MB (1 M rows at most)
+    left: list[str] = []
     for ds, t, info in chosen:
+        must = ds in ALWAYS or f"{ds}.{t}" in NAME_INDEX
+        if not must and (left or a.out.stat().st_size > stop_mb * 1e6):
+            left.append(f"{ds}.{t}")  # stays in the lake (Tier 2)
+            continue
         path = f"{R2}/{info['path']}"
         hive = "true" if info.get("partitions") else "false"
         view = f"read_parquet('{path}', hive_partitioning = {hive}, union_by_name = true)"
@@ -141,42 +195,15 @@ def main() -> None:
             )
             n_ok += 1
             n_rows += rows
-            print(f"  {ds}.{t}: {rows:,} rows", flush=True)
+            src.execute("CHECKPOINT hot")
+            print(
+                f"  {ds}.{t}: {rows:,} rows (file {a.out.stat().st_size / 1e6:,.0f} MB)", flush=True
+            )
         except duckdb.Error as e:
             print(f"  {ds}.{t}: skipped ({type(e).__name__}: {str(e)[:160]})", flush=True)
-    # simplified outlines per set
-    src.execute("CREATE SCHEMA IF NOT EXISTS hot.outlines_simple")
-    for t, info in sorted(
-        ((cat.get("datasets") or {}).get("outlines") or {}).get("tables", {}).items()
-    ):
-        if t in ("names", "aliases"):
-            continue
-        cols = info.get("columns") or {}
-        if "geometry" not in cols:
-            continue
-        pick = [c for c in ("id", "name", "level", "iso3", "parent_name") if c in cols]
-        path = f"{R2}/{info['path']}"
-        hive = "true" if info.get("partitions") else "false"
-        try:
-            src.execute(
-                f"CREATE TABLE hot.outlines_simple.{q(t)} AS SELECT {', '.join(q(c) for c in pick)}, "
-                f"ST_XMin(geometry) AS xmin, ST_YMin(geometry) AS ymin, ST_XMax(geometry) AS xmax, "
-                f"ST_YMax(geometry) AS ymax, ST_SimplifyPreserveTopology(geometry, {SIMPLIFY_DEG}) AS geometry "
-                f"FROM read_parquet('{path}', hive_partitioning = {hive}, union_by_name = true)"
-            )
-            rows = src.execute(f"SELECT count(*) FROM hot.outlines_simple.{q(t)}").fetchone()[0]
-            if "id" in pick:
-                src.execute(
-                    f"CREATE INDEX {q(f'ix_simple_{t}_id')} ON hot.outlines_simple.{q(t)} (id)"
-                )
-            src.execute(
-                "INSERT INTO hot._hot.tables VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                ["outlines_simple", t, path, rows, info.get("bytes"), cat.get("updated"), built,
-                 f"outline simplified with a {SIMPLIFY_DEG} degree tolerance"],
-            )  # fmt: skip
-            print(f"  outlines_simple.{t}: {rows:,} outlines", flush=True)
-        except duckdb.Error as e:
-            print(f"  outlines_simple.{t}: skipped ({str(e)[:160]})", flush=True)
+    if left:
+        print(f"{len(left)} tables left in the lake (budget {a.budget_mb:,.0f} MB): {', '.join(left[:40])}"
+              + (" ..." if len(left) > 40 else ""))  # fmt: skip
     src.execute("DETACH hot")
     size = a.out.stat().st_size
     print(
