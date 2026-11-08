@@ -21,6 +21,7 @@ import os
 import re
 import threading
 import time
+from collections import OrderedDict
 from dataclasses import dataclass, field
 from decimal import Decimal
 from pathlib import Path
@@ -96,6 +97,8 @@ class Lake:
         # rest) once hot.duckdb is attached; until then to the lake
         self.default = "lake"
         self.hot_tables: set[str] = set()
+        self._areas_seen: OrderedDict[str, bool] = OrderedDict()  # ids in areamem.areas
+        self._areas_lock = threading.Lock()
         self.hot_state: dict[str, Any] = {"ready": False}
         self._hot_done = threading.Event()
         self.con = self._open()
@@ -134,6 +137,13 @@ class Lake:
                 [s.r2_access_key_id, s.r2_secret_access_key, s.r2_account_id],
             )
         con.execute("ATTACH ':memory:' AS app")
+        # the areas queries use, parsed once per container and shared by every cursor (brief 32:
+        # serialising and parsing a detailed outline cost 60-80 ms on every query)
+        con.execute("ATTACH ':memory:' AS areamem")
+        con.execute(
+            "CREATE TABLE areamem.areas (area_id VARCHAR PRIMARY KEY, name VARCHAR, "
+            "level VARCHAR, geometry GEOMETRY, xmin DOUBLE, ymin DOUBLE, xmax DOUBLE, ymax DOUBLE)"
+        )
         self._attach_lake(con)
         self._load_app_tables(con)
         self._lock(con)
@@ -446,6 +456,35 @@ class Lake:
         con.execute("SET lock_configuration = true")
 
     # ------------------------------------------------------------------ queries
+    AREAS_KEPT = 300
+
+    def register_areas(self, cur: duckdb.DuckDBPyConnection, areas: list[dict[str, Any]]) -> None:
+        """The areas as the view `areas` and the area macros, on this cursor only; each
+        outline is parsed once into the shared `areamem.areas` (most recently used kept)."""
+        with self._areas_lock:
+            new = [a for a in areas if a["area_id"] not in self._areas_seen]
+            if new:
+                cur.executemany(
+                    "INSERT OR REPLACE INTO areamem.areas "
+                    "VALUES (?, ?, ?, ST_GeomFromGeoJSON(?), ?, ?, ?, ?)",
+                    [[a["area_id"], a["name"], a["level"], json.dumps(a["geometry"]), *a["bbox"]]
+                     for a in new],
+                )  # fmt: skip
+            for a in areas:
+                self._areas_seen[a["area_id"]] = True
+                self._areas_seen.move_to_end(a["area_id"])
+            old = []
+            while len(self._areas_seen) > max(self.AREAS_KEPT, len(areas)):
+                old.append(self._areas_seen.popitem(last=False)[0])
+            if old:
+                cur.execute("DELETE FROM areamem.areas WHERE area_id IN (SELECT unnest(?))", [old])
+        ids = ", ".join("'" + a["area_id"].replace("'", "''") + "'" for a in areas)
+        cur.execute(
+            f"CREATE TEMP VIEW areas AS SELECT * FROM areamem.areas WHERE area_id IN ({ids})"
+        )
+        for m in AREA_MACROS:
+            cur.execute(m)
+
     def cursor(self) -> duckdb.DuckDBPyConnection:
         """A cursor (own connection to the same database) with the lake as default catalog."""
         cur = self.con.cursor()
@@ -571,7 +610,7 @@ class Lake:
             tables = [t for t in tables if t != "areas"]
         cur = self.cursor()
         if areas:
-            register_areas(cur, areas)
+            self.register_areas(cur, areas)
         timer = threading.Timer(timeout_s or s.sql_timeout_s, cur.interrupt)
         t0 = time.perf_counter()
         with span("sql.query", {"db.system": "duckdb", "db.statement.hash": _hash(sql)}) as sp:
@@ -631,23 +670,6 @@ AREA_MACROS = [
     "CREATE TEMP MACRO km2_inside(geom, aid) AS "
     "ST_Area_Spheroid(ST_Intersection(geom, area_geom(aid))) / 1e6",
 ]
-
-
-def register_areas(cur: duckdb.DuckDBPyConnection, areas: list[dict[str, Any]]) -> None:
-    """The areas as a temporary table `areas` and the area macros, on this cursor only."""
-    cur.execute(
-        "CREATE TEMP TABLE areas (area_id VARCHAR, name VARCHAR, level VARCHAR, "
-        "geometry GEOMETRY, xmin DOUBLE, ymin DOUBLE, xmax DOUBLE, ymax DOUBLE)"
-    )
-    cur.executemany(
-        "INSERT INTO areas VALUES (?, ?, ?, ST_GeomFromGeoJSON(?), ?, ?, ?, ?)",
-        [
-            [a["area_id"], a["name"], a["level"], json.dumps(a["geometry"]), *a["bbox"]]
-            for a in areas
-        ],
-    )
-    for m in AREA_MACROS:
-        cur.execute(m)
 
 
 def expand_in_area(sql: str, areas: list[dict[str, Any]]) -> str:
