@@ -41,6 +41,7 @@ COPY frontend/public/data/eu/countries.json frontend/public/data/eu/world.json \
      frontend/public/data/eu/grid.json frontend/public/data/eu/plants.json \
      frontend/public/data/eu/world_plants.json frontend/public/data/eu/prices.json \
      frontend/public/data/eu/water.json frontend/public/data/eu/cities.json \
+     frontend/public/data/eu/datacentres.json frontend/public/data/eu/coverage.json \
      /var/task/frontend/public/data/eu/
 COPY frontend/public/data/us/states.json frontend/public/data/us/plants.json /var/task/frontend/public/data/us/
 ARG GIT_SHA=dev
