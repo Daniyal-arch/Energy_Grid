@@ -406,7 +406,7 @@ cheapest source that answers **exactly**, and every answer names it.
 | Tier | What | Where | Used when |
 |---|---|---|---|
 | 0 | prepared answers of the fixed questions (`quick` profile, top plants / substations / data centres, totals) for the areas asked most | `prepared.answers` (lake, copied into `hot.duckdb`), public `answers/v1/<area_id>.json` | the area id and template are prepared and the data fingerprint (the app tables' sources) matches; else the template runs |
-| 1 | `hot.duckdb`: lake tables up to 50 MB, every rollup and shape set, the outline name index, simplified outlines (0.001°) | downloaded from R2 to `/tmp/hot/` at cold start, attached read-only; catalog `fast` = one view per table over `hot` or the lake | every query, once attached (`/api/health` → `hot`); until then the lake |
+| 1 | `hot.duckdb`: every rollup and shape set, the prepared answers and the outline name index, then lake tables (up to 50 MB and 1 M rows) smallest first until the file reaches 90 % of 1,200 MB | downloaded from R2 to `/tmp/hot/` at cold start, attached read-only; catalog `fast` = one view per table over `hot` or the lake | every query, once attached (`/api/health` → `hot`); until then the lake |
 | 2 | the lake, rewritten for selective reads (Hilbert order, capped row groups, `bbox`) | R2 Parquet | everything else |
 
 - **Exact sums for any area** (`area_sum`, `backend/tools/area_sum.py`): the H3 rollup of the

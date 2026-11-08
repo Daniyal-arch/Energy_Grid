@@ -21,8 +21,8 @@ filter by attribute, an aggregate and a join, and each is made fast on every dat
   1-3, GB LADs, urban centres, local units of 10,000+ people), ambiguous names skipped. Public
   copy: `infraatlas-data/answers/v1/<area_id>.json`.
 - **Tier 1, `hot.duckdb`** (`scripts/build_hot.py`, job `hot` after each lake catalogue):
-  tables up to 50 MB, rollups, shapes, `prepared`, the name index, `outlines_simple.*`
-  (0.001°). `Lake._load_hot` downloads it to `/tmp/hot/` in a background thread, attaches it
+  rollups, shapes, `prepared` and the name index, then lake tables (≤50 MB, ≤1 M rows)
+  smallest first until the file reaches 90 % of 1,200 MB (the Lambda's `/tmp` is 2,048 MB). `Lake._load_hot` downloads it to `/tmp/hot/` in a background thread, attaches it
   read-only and builds catalog `fast` (a view per table over `hot` or `lake`); `Lake.default`
   switches from `lake` to `fast`; `QueryResult.tier` says which. `HOT_DB=""` switches it off.
 - **Tier 2, the lake**: views name their files (`scripts/lake_catalog.py view_path`), so a

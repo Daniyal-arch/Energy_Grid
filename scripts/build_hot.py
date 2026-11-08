@@ -11,12 +11,9 @@ It holds, as plain tables with the same schemas and rows as their lake views:
 - every rollup (`rollups.*`), shape set (`shapes.*`) and the prepared answers
   (`prepared.answers`, Tier 0), whatever their size;
 - the outline name index (`outlines.names`, `outlines.aliases`);
-- per outline set, `outlines_simple.<set>`: id, name, level, iso3, the bounding box and the
-  outline simplified with a 0.001° (about 100 m) tolerance, for maps and large areas (answers
-  that use it say so; exact answers read the full outline from the lake).
 
 Tables are sorted by their position (lon, lat), id or name so DuckDB's zone maps skip blocks,
-and get ART indexes on id and name-key columns. A table `_hot.tables` lists each table with its
+and get ART indexes on id columns other than the sort column. A table `_hot.tables` lists each table with its
 source path, rows and the lake catalogue's date; a row count check against the lake view runs
 for every table before the file is written. Runs in Actions (`.github/workflows/lake-catalog.yml`,
 job `hot`) where R2 is readable, and uploads to `r2://infraatlas-raw/lake/hot.duckdb`.
@@ -55,7 +52,6 @@ ID_COLS = (
     "admin1_id",
 )
 NAME_KEYS = ("name_norm", "alias_norm", "name")
-SIMPLIFY_DEG = 0.001
 
 
 def q(c: str) -> str:
@@ -72,42 +68,6 @@ def sort_of(cols: dict[str, str]) -> str:
         if k in low:
             return q(low[k])
     return ""
-
-
-def add_simplified(src: duckdb.DuckDBPyConnection, cat: dict, built: str) -> None:
-    """Per outline set, `outlines_simple.<set>`: outlines simplified for maps and large areas."""
-    src.execute("CREATE SCHEMA IF NOT EXISTS hot.outlines_simple")
-    for t, info in sorted(
-        ((cat.get("datasets") or {}).get("outlines") or {}).get("tables", {}).items()
-    ):
-        if t in ("names", "aliases"):
-            continue
-        cols = info.get("columns") or {}
-        if "geometry" not in cols:
-            continue
-        pick = [c for c in ("id", "name", "level", "iso3", "parent_name") if c in cols]
-        path = f"{R2}/{info['path']}"
-        hive = "true" if info.get("partitions") else "false"
-        try:
-            src.execute(
-                f"CREATE TABLE hot.outlines_simple.{q(t)} AS SELECT {', '.join(q(c) for c in pick)}, "
-                f"ST_XMin(geometry) AS xmin, ST_YMin(geometry) AS ymin, ST_XMax(geometry) AS xmax, "
-                f"ST_YMax(geometry) AS ymax, ST_SimplifyPreserveTopology(geometry, {SIMPLIFY_DEG}) AS geometry "
-                f"FROM read_parquet('{path}', hive_partitioning = {hive}, union_by_name = true)"
-            )
-            rows = src.execute(f"SELECT count(*) FROM hot.outlines_simple.{q(t)}").fetchone()[0]
-            if "id" in pick:
-                src.execute(
-                    f"CREATE INDEX {q(f'ix_simple_{t}_id')} ON hot.outlines_simple.{q(t)} (id)"
-                )
-            src.execute(
-                "INSERT INTO hot._hot.tables VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                ["outlines_simple", t, path, rows, info.get("bytes"), cat.get("updated"), built,
-                 f"outline simplified with a {SIMPLIFY_DEG} degree tolerance"],
-            )  # fmt: skip
-            print(f"  outlines_simple.{t}: {rows:,} outlines", flush=True)
-        except duckdb.Error as e:
-            print(f"  outlines_simple.{t}: skipped ({str(e)[:160]})", flush=True)
 
 
 def main() -> None:
@@ -147,9 +107,6 @@ def main() -> None:
     )
     built = datetime.now(UTC).isoformat(timespec="seconds")
     t0, n_ok, n_rows = time.time(), 0, 0
-    add_simplified(src, cat, built)
-    src.execute("CHECKPOINT hot")
-    print(f"simplified outlines: file {a.out.stat().st_size / 1e6:,.0f} MB", flush=True)
     # the always-kept sets first, then the smallest tables: the most tables per MB of /tmp
     chosen.sort(
         key=lambda c: (
@@ -182,9 +139,15 @@ def main() -> None:
             if rows != want:
                 raise SystemExit(f"{ds}.{t}: {rows} rows in hot, {want} in the lake")
             low = {c.lower(): c for c in cols}
-            for k in (*ID_COLS, *NAME_KEYS):
-                if k in low and not cols[low[k]].upper().startswith(
-                    ("STRUCT", "LIST", "MAP", "GEOMETRY", "BLOB")
+            # ART indexes on id columns only, and not on the sort column (zone maps cover it):
+            # an index on 3.4 M names costs hundreds of MB the sorted table does not need
+            for k in ID_COLS:
+                if (
+                    k in low
+                    and q(low[k]) != order
+                    and not cols[low[k]]
+                    .upper()
+                    .startswith(("STRUCT", "LIST", "MAP", "GEOMETRY", "BLOB"))
                 ):
                     src.execute(
                         f"CREATE INDEX {q(f'ix_{ds}_{t}_{k}')} ON hot.{q(ds)}.{q(t)} ({q(low[k])})"
