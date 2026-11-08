@@ -199,9 +199,8 @@ def rewrite_file(
     ).fetchone()[0]
     per_row = (size or 0) / max(before["rows"], 1)
     if per_row > 0:
-        rows_cap = max(
-            10_000 if gexpr else 100_000, min(rows_cap, int(0.8 * mb_cap * 1e6 / per_row))
-        )
+        # 2,048 rows: DuckDB's smallest group (few, very large polygons stay above the MB cap)
+        rows_cap = max(2_048, min(rows_cap, int(0.8 * mb_cap * 1e6 / per_row)))
     out = work / "rewrite.parquet"
     out.unlink(missing_ok=True)
     meta = ", ".join(f"{json.dumps(k)}: {json.dumps(str(v))}" for k, v in kv.items())
