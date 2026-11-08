@@ -2,7 +2,7 @@
 title: Zoning
 tags: [data, lake, zoning]
 updated: 2026-11-08
-paths: [scripts/build_zoning.py, scripts/zoning_documents.py, scripts/zoning_discover.py, scripts/probe_zoning.py, docs/research/zoning.md]
+paths: [scripts/build_zoning.py, scripts/build_zoning_hub.py, scripts/zoning_documents.py, scripts/zoning_discover.py, scripts/probe_zoning.py, docs/research/zoning.md]
 ---
 
 # Zoning
@@ -21,7 +21,12 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
 - `scripts/zoning_discover.py`: finds more sources. data.europa.eu search per country in its own
   plan terms (whole-word title match, geodata or PDF distributions); `--hub` sweeps ArcGIS Hub
   in 2-degree tiles for US counties and cities and UK councils.
-- Workflow: `lake-catalog.yml` input `zoning` = all, a source list, or discover. One source at a time.
+- `scripts/build_zoning_hub.py`: the zoning layers of the ArcGIS services the Hub sweep found
+  (`data/zoning_discovery/hub_services.csv`), partition `source=us_hub` (or `eu_hub`, `gb_hub`);
+  one row per layer read in `zoning.hub_layers` (field chosen, rows, status, licence). Country from
+  the GISCO outlines. 48 shards in Actions; `--merge` joins their partial catalogues.
+- Workflow: `lake-catalog.yml` input `zoning` = all, a source list, discover, or `hub:us`
+  (`hub:us@4,15` reruns only those shards).
 
 ## How it works
 - Each row keeps the source's own code and label plus `attributes` (all fields, JSON): nothing is
@@ -35,4 +40,7 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
 > - wrangler answered "The specified bucket does not exist" on 2026-11-08; `scripts/lake.py`
 >   `wrangler()` uploads over R2's S3 API when `scripts/r2_creds.sh` has set the keys.
 > - The INSPIRE geoportal's TLS certificate had expired (2026-11-08); use data.europa.eu, which harvests it.
+> - France: `ST_MakeValid` fails on mixed-dimension rows; `make_valid()` forces 2D and repairs
+>   row by row (2 of 9,345 kept as published). R2 refused the AWS CLI's multipart checksums
+>   (`InvalidPart`): uploads set `AWS_REQUEST_CHECKSUM_CALCULATION=when_required`.
 > - The National Zoning Atlas bucket no longer exists and mercatus.org refuses scripted downloads.
