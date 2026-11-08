@@ -187,9 +187,9 @@ class Lake:
                         ).fetchone()[0]
                         or 0
                     )
-                    if biggest <= GROUP_MB[kind] * 1e6 or group_rows <= 10_000:
+                    if biggest <= GROUP_MB[kind] * 1e6 or group_rows <= 2_048:
                         break
-                    group_rows = max(10_000, int(group_rows * 0.8 * GROUP_MB[kind] * 1e6 / biggest))
+                    group_rows = max(2_048, int(group_rows * 0.8 * GROUP_MB[kind] * 1e6 / biggest))
                     opts = COPY_OPTIONS.replace(
                         "ROW_GROUP_SIZE 1000000", f"ROW_GROUP_SIZE {group_rows}"
                     )
