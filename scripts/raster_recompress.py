@@ -178,7 +178,7 @@ def test(keys: list[str], out: Path) -> None:
         )  # kept if a later key times out
     out.write_text(json.dumps(res, indent=1) + "\n", encoding="utf-8")
     print(
-        "| raster | GB | type | now | zstd22 (identical) | lerc0 (identical) |\n|---|---:|---|---|---|---|"
+        "| raster | GB | type | now | zstd (identical) | lerc0 (identical) |\n|---|---:|---|---|---|---|"
     )
     for r in res:
         c = r["candidates"]
