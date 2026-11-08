@@ -14,7 +14,7 @@ on:
     inputs:
       questions: {description: "Eval questions to ask", default: "30"}
       load: {description: "Concurrent asks for the load test (0 = none)", default: "50"}
-      job: {description: "latency, speed (brief 32: every dataset) or both", default: "both"}
+      job: {description: "latency, speed (brief 32: every dataset), both, or prepared (Tier 0 build)", default: "both"}
       only: {description: "speed: regex of the tables to probe (empty = all)", default: ""}
       hot: {description: "speed: attach hot.duckdb (on) or read the lake only (off, the before)", default: "on"}
 
@@ -29,7 +29,7 @@ concurrency:
 
 jobs:
   probe:
-    if: github.event_name == 'pull_request' || inputs.job != 'speed'
+    if: github.event_name == 'pull_request' || (inputs.job != 'speed' && inputs.job != 'prepared')
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -60,7 +60,7 @@ jobs:
   # brief 32 Step 1: the standard query set on every lake and app table, eight shards in
   # parallel (each its own Lambda-sized container); the merge job writes the report
   query-speed:
-    if: github.event_name == 'workflow_dispatch' && inputs.job != 'latency'
+    if: github.event_name == 'workflow_dispatch' && inputs.job != 'latency' && inputs.job != 'prepared'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -105,3 +105,60 @@ jobs:
       - run: sed -n '/measured:start/,/### Every table/p' docs/research/query-speed.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with: {name: query-speed-report, path: "data/query_speed.json\ndocs/research/query-speed.md"}
+
+  # brief 32 Tier 0 (backend/probes/build_prepared.py): prepared answers in eight shards, then
+  # the lake table, its catalogue and the public JSON per area
+  prepared:
+    if: github.event_name == 'workflow_dispatch' && inputs.job == 'prepared'
+    runs-on: ubuntu-latest
+    timeout-minutes: 130
+    strategy:
+      fail-fast: false
+      matrix: {shard: [0, 1, 2, 3, 4, 5, 6, 7]}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/r2_creds.sh
+      - run: |
+          { echo "R2_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID"; echo "R2_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"; echo "R2_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"; } >> "$GITHUB_ENV"
+      - run: bash backend/deploy/build_image.sh infraatlas-backend:probe linux/amd64
+      - name: Prepare shard ${{ matrix.shard }}
+        run: |
+          mkdir -p out
+          docker run --rm --cpus 2 --memory 3008m \
+            -e R2_ACCOUNT_ID -e R2_ACCESS_KEY_ID -e R2_SECRET_ACCESS_KEY \
+            -v "$PWD/backend/probes:/var/task/backend/probes:ro" -v "$PWD/out:/out" \
+            infraatlas-backend:probe \
+            python -m probes.build_prepared --shard ${{ matrix.shard }} --shards 8 --max-minutes 110 \
+              --out /out/prepared-${{ matrix.shard }}.jsonl 2>&1 | grep -v '"logger"' | tail -60
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: "prepared-${{ matrix.shard }}", path: "out/"}
+
+  prepared-upload:
+    needs: prepared
+    if: always() && needs.prepared.result != 'skipped'
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {pattern: "prepared-*", path: shards}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: bash scripts/r2_creds.sh
+      - name: Merge and upload (lake table, catalogue, public JSON)
+        run: |
+          pip install duckdb
+          python backend/probes/build_prepared.py --merge shards --lake lake-out --public public-out | tee prepared.md
+          ep="https://$CLOUDFLARE_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 cp --only-show-errors --endpoint-url "$ep" lake-out/prepared/answers/part-0.parquet s3://infraatlas-raw/lake/prepared/answers/part-0.parquet
+          aws s3 cp --only-show-errors --endpoint-url "$ep" lake-out/prepared/_catalog.json s3://infraatlas-raw/lake/prepared/_catalog.json
+          aws s3 cp --only-show-errors --recursive --content-type application/json --cache-control "public, max-age=86400" \
+            --endpoint-url "$ep" public-out/answers s3://infraatlas-data/answers
+          cat prepared.md >> "$GITHUB_STEP_SUMMARY"
+

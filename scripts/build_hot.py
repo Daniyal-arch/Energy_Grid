@@ -6,7 +6,8 @@ query most, read from local disk instead of R2.
 It holds, as plain tables with the same schemas and rows as their lake views:
 
 - every lake table whose files are at most `--max-mb` MB compressed (the lake catalogue's bytes);
-- every rollup (`rollups.*`) and every shape set (`shapes.*`), whatever their size;
+- every rollup (`rollups.*`), shape set (`shapes.*`) and the prepared answers
+  (`prepared.answers`, Tier 0), whatever their size;
 - the outline name index (`outlines.names`, `outlines.aliases`);
 - per outline set, `outlines_simple.<set>`: id, name, level, iso3, the bounding box and the
   outline simplified with a 0.001° (about 100 m) tolerance, for maps and large areas (answers
@@ -36,7 +37,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import lake  # noqa: E402
 from lake_catalog import R2, r2_secret  # noqa: E402
 
-ALWAYS = ("rollups", "shapes")
+ALWAYS = ("rollups", "shapes", "prepared")
 NAME_INDEX = ("outlines.names", "outlines.aliases")
 ID_COLS = (
     "id",
