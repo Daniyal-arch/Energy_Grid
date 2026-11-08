@@ -38,7 +38,7 @@ on:
         description: "Raster keys (space-separated; empty = the default list in scripts/raster_recompress.py)"
         default: ""
       zoning:
-        description: "Zoning instead of the catalogue (scripts/build_zoning.py): all, a list such as fr_gpu,ie_myplan, discover (the source sweeps), or hub:us / hub:eu / hub:gb / hub:us_ak_hi (the ArcGIS services found, scripts/build_zoning_hub.py)"
+        description: "Zoning instead of the catalogue (scripts/build_zoning.py): all, a list such as fr_gpu,ie_myplan, discover (the source sweeps), or hub:us / hub:eu / hub:gb / hub:us_ak_hi (the ArcGIS services found, scripts/build_zoning_hub.py; hub:us@4,15 reruns only those of the 48 shards)"
         default: ""
   push:
     branches: [main]
@@ -241,6 +241,7 @@ jobs:
     outputs:
       sources: ${{ steps.p.outputs.sources }}
       hub: ${{ steps.p.outputs.hub }}
+      shards: ${{ steps.p.outputs.shards }}
     steps:
       - id: p
         env:
@@ -251,9 +252,12 @@ jobs:
           allsrc = ["ie_myplan", "dk_plandata", "fi_helsinki", "gb_england", "us_ca", "fr_gpu"]
           raw = os.environ["SOURCES"].strip()
           hub = raw[4:] if raw.startswith("hub:") else ""
+          hub, _, only = hub.partition("@")
+          shards = [int(x) for x in only.split(",") if x.strip()] or list(range(48))
           pick = [] if hub else allsrc if raw in ("", "all") else [s.strip() for s in raw.split(",") if s.strip()]
           print("sources=" + json.dumps(pick))
           print("hub=" + hub)
+          print("shards=" + json.dumps(shards))
           PY
 
   zoning:
@@ -303,7 +307,7 @@ jobs:
       fail-fast: false
       max-parallel: 16
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47]
+        shard: ${{ fromJSON(needs.zoning-plan.outputs.shards) }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -321,7 +325,7 @@ jobs:
           pip install duckdb httpx pycountry
           set -o pipefail
           cd scripts && python build_zoning_hub.py --region ${{ needs.zoning-plan.outputs.hub }} --shard ${{ matrix.shard }} --shards 48 \
-            --max-minutes 290 --lake ../lake-out --tmp /tmp/zoning-hub --upload 2>&1 | tail -n 40
+            --max-minutes 290 --lake ../lake-out --tmp /tmp/zoning-hub --upload 2>&1
       - uses: actions/upload-artifact@v4
         with:
           name: zoning-hub-${{ matrix.shard }}
