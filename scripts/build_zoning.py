@@ -182,9 +182,38 @@ def _ndjson(path: Path, feats: Iterator[dict[str, Any]], extra: dict[str, Any]) 
 
 
 def fetch_fr(c: httpx.Client, out: Path, limit: int | None) -> None:
+    """Paged by gid ranges (`cql_filter`): offset paging over 1.35 M zones timed out deep in
+    the table (run 42492842706); a range of 5,000 ids answers in about 2 s."""
+    from concurrent.futures import ThreadPoolExecutor
+
     base = "https://data.geopf.fr/wfs/ows"
-    n = _ndjson(out, wfs(c, base, "wfs_du:zone_urba", sort="gid", limit=limit), {})
-    print(f"  fr zone_urba: {n:,}", flush=True)
+    common = {"service": "WFS", "version": "2.0.0", "request": "GetFeature",
+              "typeNames": "wfs_du:zone_urba", "outputFormat": "application/json"}  # fmt: skip
+    top = _get(c, base, {**common, "count": 1, "sortBy": "gid DESC", "propertyName": "gid"})
+    gid_max = int(top.json()["features"][0]["properties"]["gid"])
+    total = int(top.json().get("numberMatched") or 0)
+    width = 5000
+    starts = list(range(0, gid_max + 1, width))
+    if limit:
+        starts = starts[: max(1, limit // width)]
+
+    def page(lo: int) -> list[dict[str, Any]]:
+        params = {**common, "srsName": "EPSG:4326", "count": width * 2,
+                  "cql_filter": f"gid>={lo} AND gid<{lo + width}"}  # fmt: skip
+        feats = _get(c, base, params).json().get("features") or []
+        if len(feats) >= width * 2:
+            raise SystemExit(f"fr gid range {lo}: page full, rows would be lost")
+        return feats
+
+    n = 0
+    with ThreadPoolExecutor(4) as pool:
+        for i, feats in enumerate(pool.map(page, starts)):
+            n += _ndjson(out, iter(feats), {})
+            if i % 100 == 0:
+                print(f"  fr gid {starts[i]:,} of {gid_max:,}: {n:,} zones", flush=True)
+    print(f"  fr zone_urba: {n:,} (the service counts {total:,})", flush=True)
+    if not limit and n != total:
+        raise SystemExit(f"fr: {n:,} zones read, the service counts {total:,}")
 
 
 def fetch_ie(c: httpx.Client, out: Path, limit: int | None) -> None:
