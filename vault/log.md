@@ -8,6 +8,12 @@ updated: 2026-11-03
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-08** (main, local): R2 audit (2026-11-05): 2,739 objects, 38.6 GB, all 790 lake views
+  open, Parquet all ZSTD, no identical copies; waste in older MaStR snapshots (2.7 GB) and
+  oversized row groups (England flood zones, Italy census sections). Brief 32 written
+  (`docs/tasks/32-millisecond-queries.md`): tiered serving for millisecond queries and a lean
+  lake. Notes: none.
+
 - **2026-11-04** (main, local): brief 30 written (`docs/tasks/30-long-run.md`): a multi-day
   cloud run in seven tracks (harden, coverage, new data, agent speed, frontend, product MVPs,
   docs). Notes: none.
