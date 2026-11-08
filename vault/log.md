@@ -8,6 +8,13 @@ updated: 2026-11-07
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-08** (claude/loving-dijkstra-5q8n1c, PR #20, brief 32): speed probe on 924 tables
+  (before: warm p50 269 ms, p95 692 ms; a ~250 ms LIST per query found and removed); exact
+  interior-plus-boundary area sums (`area_sum`); hot.duckdb (Tier 1); prepared answers (Tier 0);
+  lake rewrite and writer standard; MaStR 2026-10-13 deleted, 152 orphans registered; CI speed
+  check; bugs fixed: pytz, image files, quick top outside Europe. Notes: query-tiers, lake,
+  backend-service, index.
+
 - **2026-11-08** (main, local): R2 audit (2026-11-05): 2,739 objects, 38.6 GB, all 790 lake views
   open, Parquet all ZSTD, no identical copies; waste in older MaStR snapshots (2.7 GB) and
   oversized row groups (England flood zones, Italy census sections). Brief 32 written
