@@ -127,3 +127,31 @@ checksum. Retyping `lon`/`lat` to DOUBLE changes those two columns' values (text
    nothing is lost) and rebuild. Recommended: place queries on these tables drop from whole-table
    reads to row-group reads.
 2. Keep the text; the agent keeps casting (correct, slow on the large ones).
+
+## 7. Lossy recompression of the largest rasters (2026-11-08, brief 32 Step 5)
+
+**Decision.** Brief 32 applies only lossless recompression (`scripts/raster_recompress.py`,
+values checked bit for bit). Measured on the real files (`lake-catalog.yml` input `rasters`):
+
+| raster | now | lossless best | lossy option | lossy size | largest change of any cell | change of the sum over four windows |
+|---|---:|---:|---|---:|---:|---:|
+| `lake/atlas/atlas-wind100.tif` (Global Wind Atlas, 100 m speed, float32) | 14.075 GB | ZSTD 14.019 GB (0.4 %), not applied | int16 in 0.01 m/s steps | 2.983 GB (−78.8 %) | 0.005 m/s | 3.7e-8 to 1.6e-7 relative |
+| `lake/rasters/ghsl_pop_e2025_30ss.tif` (GHSL population, float64) | 0.415 GB | none smaller | float32 | 0.376 GB (−9.6 %) | 0.0154 people | below 1e-9 relative |
+| `lake/rasters/ghsl_pop_e2025_3ss/R6_C10.tif` (one 3ss tile, float64) | 0.310 GB | none smaller | float32 | 0.292 GB (−5.7 %) | 0.00006 people | below 1e-9 relative |
+
+Applied losslessly: `lake/rasters/slope_1km_shares.tif` 650 MB to 571 MB (LERC, max error 0,
+values identical). `worldcover_1km_shares.tif` would save 6 %, under the 10 % threshold: kept.
+
+**Why it is a question.** The wind atlas is the single largest object (a third of the private
+bucket). At $0.015 per GB-month above 10 GB, the int16 version saves 11.1 GB, about $0.17 a
+month, and the 1 GB raster reads in area statistics get about 4.7 times smaller. The change
+(at most half a step of 0.01 m/s) is below the source's own precision, but it is a change to
+sourced values, which CLAUDE.md does not allow without the owner.
+
+**Options.**
+1. Convert the wind atlas to int16 (0.01 m/s, scale factor in the file's metadata, the
+   original kept nowhere) and label wind figures "rounded to 0.01 m/s". Recommended: large
+   saving, change below the data's precision.
+2. Convert, and keep the original float32 in a cold archive outside the lake.
+3. Keep everything as it is. The population float32 options save too little to be worth a
+   change either way; recommended: keep them.
