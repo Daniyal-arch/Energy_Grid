@@ -165,6 +165,7 @@ os.environ.update(
         "AGENT_MODEL": "fake",
         "AGENT_MODEL_FAST": "fake",
         "LAKE_DB": "",
+        "HOT_DB": "",
         "LAKE_DIR": str(LAKE),
         "RASTERS_DIR": str(TMP / "rasters"),
         "LOCAL_STORE_DIR": str(TMP / "store"),

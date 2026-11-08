@@ -65,6 +65,8 @@ class QueryResult:
     ms: float
     truncated: bool
     tables: list[str] = field(default_factory=list)
+    # brief 32: where the rows came from ("hot": the local hot.duckdb; "lake": R2 or the app)
+    tier: str = "lake"
 
 
 def _jsonable(v: Any) -> Any:
@@ -90,7 +92,14 @@ class Lake:
         self.lake_mode = "none"
         self.catalog_date: str | None = None
         self.allowed: list[str] = []
+        # brief 32 Tier 1: queries go to the catalog `fast` (hot.duckdb first, the lake for the
+        # rest) once hot.duckdb is attached; until then to the lake
+        self.default = "lake"
+        self.hot_tables: set[str] = set()
+        self.hot_state: dict[str, Any] = {"ready": False}
+        self._hot_done = threading.Event()
         self.con = self._open()
+        self._start_hot()
 
     # ------------------------------------------------------------------ setup
     def _open(self) -> duckdb.DuckDBPyConnection:
@@ -413,6 +422,9 @@ class Lake:
             allowed.append(str(Path(s.lake_dir)) + "/")
         if s.r2_configured:
             allowed.append(f"r2://{s.r2_lake_bucket}/lake/")
+        hot = self._hot_local()
+        if hot:
+            allowed.append(str(Path(hot).parent) + "/")
         self.allowed = allowed
         dirs = ", ".join(f"'{a}'" for a in allowed)
         con.execute(f"SET allowed_directories = [{dirs}]")
@@ -437,8 +449,80 @@ class Lake:
     def cursor(self) -> duckdb.DuckDBPyConnection:
         """A cursor (own connection to the same database) with the lake as default catalog."""
         cur = self.con.cursor()
-        cur.execute("USE lake")
+        cur.execute(f"USE {self.default}")
         return cur
+
+    # ------------------------------------------------------------------ hot.duckdb (brief 32)
+    def _hot_local(self) -> str | None:
+        """Where hot.duckdb lives on this machine: the setting itself, or /tmp/hot/ for R2."""
+        h = self.settings.hot_db
+        if not h:
+            return None
+        if h.startswith("r2://"):
+            return "/tmp/hot/hot.duckdb" if self.settings.r2_configured else None
+        return h
+
+    def _start_hot(self) -> None:
+        if not self._hot_local():
+            self._hot_done.set()
+            return
+        threading.Thread(target=self._load_hot, name="hot-duckdb", daemon=True).start()
+
+    def wait_hot(self, timeout_s: float | None = None) -> bool:
+        self._hot_done.wait(timeout_s)
+        return bool(self.hot_state.get("ready"))
+
+    def _load_hot(self) -> None:
+        """Download (from R2) and attach hot.duckdb read-only, then build the catalog `fast`:
+        one view per lake table, over the hot copy when there is one, else over the lake view,
+        so every query path reads hot tables with no change to its SQL. The lake keeps
+        answering while this runs."""
+        t0 = time.perf_counter()
+        local = self._hot_local()
+        try:
+            h = self.settings.hot_db or ""
+            if h.startswith("r2://"):
+                Path(local).parent.mkdir(parents=True, exist_ok=True)  # type: ignore[arg-type]
+                if not Path(local).exists():  # type: ignore[arg-type]
+                    _download_r2(self.settings, h, local)  # type: ignore[arg-type]
+            t_dl = time.perf_counter() - t0
+            cur = self.con.cursor()
+            cur.execute(f"ATTACH '{local}' AS hot (READ_ONLY)")
+            hot = {
+                (sch, t)
+                for sch, t in cur.execute(
+                    "SELECT schema_name, table_name FROM duckdb_tables() "
+                    "WHERE database_name = 'hot' AND schema_name <> '_hot'"
+                ).fetchall()
+            }
+            lake = cur.execute(
+                "SELECT schema_name, view_name FROM duckdb_views() "
+                "WHERE database_name = 'lake' UNION SELECT schema_name, table_name "
+                "FROM duckdb_tables() WHERE database_name = 'lake'"
+            ).fetchall()
+            cur.execute("ATTACH ':memory:' AS fast")
+            schemas: set[str] = set()
+            for sch, t in sorted(set(lake) | hot):
+                if sch not in schemas:
+                    cur.execute(f'CREATE SCHEMA IF NOT EXISTS fast."{sch}"')
+                    schemas.add(sch)
+                src = "hot" if (sch, t) in hot else "lake"
+                cur.execute(f'CREATE VIEW fast."{sch}"."{t}" AS SELECT * FROM {src}."{sch}"."{t}"')
+            self.hot_tables = {f"{sch}.{t}" for sch, t in hot}
+            self.default = "fast"
+            self.hot_state = {
+                "ready": True,
+                "tables": len(hot),
+                "bytes": Path(local).stat().st_size,  # type: ignore[arg-type]
+                "download_s": round(t_dl, 2),
+                "ready_s": round(time.perf_counter() - t0, 2),
+            }
+            log.info("hot.duckdb attached", extra=self.hot_state)
+        except Exception as e:  # noqa: BLE001 - the lake answers without it
+            self.hot_state = {"ready": False, "error": f"{type(e).__name__}: {str(e)[:200]}"}
+            log.warning("hot.duckdb not attached", extra=self.hot_state)
+        finally:
+            self._hot_done.set()
 
     def tables(self) -> list[str]:
         """The lake's and the app's tables (cached: the catalogue does not change while the
@@ -507,6 +591,11 @@ class Lake:
             sp.set_attribute("db.rows", len(rows))
             sp.set_attribute("db.ms", round(ms, 1))
         truncated = len(rows) > s.sql_rows_kept
+        tier = (
+            "hot"
+            if tables and self.default == "fast" and all(t in self.hot_tables for t in tables)
+            else "lake"
+        )
         return QueryResult(
             sql=sql,
             columns=cols,
@@ -515,6 +604,7 @@ class Lake:
             ms=ms,
             truncated=truncated,
             tables=tables,
+            tier=tier,
         )
 
     def source_for(self, table: str, catalog: dict[str, dict] | None = None) -> Source:
