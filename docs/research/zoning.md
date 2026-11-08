@@ -131,3 +131,17 @@ Edward County, Ontario), so the country is read from the geometry, not the tile.
 Scale: about 20,000 features a service in the sample, so the US set may hold on the order of
 100 M features; built in 48 shards in GitHub Actions (`lake-catalog.yml` zoning = `hub:us`),
 each with a 290-minute budget, every layer logged in `zoning.hub_layers`.
+
+## Wallonia and Catalonia probe (2026-11-08)
+
+- Wallonia, plan de secteur: ArcGIS `geoservices.wallonie.be/.../AMENAGEMENT_TERRITOIRE/PDS/MapServer`
+  layer 22 "Zones d'affectation", 43,797 polygons, 29 `AFFECT` codes with labels, paging
+  supported, maxRecordCount 2,000. Metadata: CC BY 4.0 (an older clause asks written consent for
+  commercial use; the record's licence line is CC BY 4.0). Built as `be_wallonia`.
+- Catalonia, MUC: `gissrv.diba.cat/.../CARTOBASE/MUC/MapServer` (Diputació de Barcelona)
+  covers the 311 municipalities of Barcelona province only: layer 1 qualification (221,357,
+  `C_QUAL_MUC` with a legend of 36 codes), layer 0 classification (5,772). The server resets
+  some connections; the build retries. Built as `es_barcelona`.
+- Catalonia, whole region: `sig.gencat.cat/ows/*` answers HTTP 403 `UserAgentFilterError` to
+  non-browser clients (also with an honest project User-Agent); the territori.gencat.cat
+  shapefile page answers 404. Not worked around (owner question 9).

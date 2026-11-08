@@ -16,6 +16,9 @@ Sources (all open, no key):
   us_ca         US, California statewide zoning (north and south)
   gb_england    England, planning.data.gov.uk: green belt, conservation areas, article 4
                 directions, brownfield land
+  be_wallonia   Belgium, Wallonia: plan de secteur in force, zones d'affectation (SPW)
+  es_barcelona  Spain, Mapa Urbanístic de Catalunya for the province of Barcelona
+                (Diputació de Barcelona service): land qualification and classification
 
     uv run python scripts/build_zoning.py fr_gpu ie_myplan --lake lake-out [--upload]
     uv run python scripts/build_zoning.py ie_myplan --limit 5000   # a quick local test
@@ -98,6 +101,30 @@ CLASSES: dict[str, dict[str, str]] = {
         "Suburban residential": "residential", "Urban residential": "residential",
         "High intensity commercial": "commercial",
         "Low intensity commercial and public facilities": "commercial",
+    },
+    # Wallonia: plan de secteur `AFFECT` codes, labels from the service (`DESCRIPTION`).
+    "be_wallonia": {
+        "H01": "residential", "H02": "residential", "A01": "employment", "A02": "industrial",
+        "A11": "employment", "A12": "commercial", "D01": "reserve", "D02": "reserve",
+        "R01": "agricultural", "R02": "natural", "R03": "open_space", "R04": "natural",
+        "R05": "open_space", "P01": "community", "P02": "infrastructure", "E01": "water",
+        "E02": "water", "X01": "extraction", "XR1": "extraction", "XR3": "extraction",
+        "XR4": "extraction",
+    },
+    # Mapa Urbanístic de Catalunya: qualification codes and labels from the service's legend
+    # (A activity, D development sectors, M mixed, N non-developable, R residential, S systems);
+    # the classification layer by its label.
+    "es_barcelona": {
+        "A1": "industrial", "A2": "commercial", "A3": "industrial", "D1": "residential",
+        "D2": "employment", "D3": "mixed", "D4": "community", "D5": "to_urbanise",
+        "M1": "mixed", "M2": "mixed", "M3": "mixed", "N1": "agricultural", "N2": "natural",
+        "N3": "natural", "R1": "residential", "R2": "residential", "R3": "residential",
+        "R4": "residential", "R5": "residential", "R6": "residential", "SA": "infrastructure",
+        "SC": "water", "SD": "community", "SE": "community", "SF": "infrastructure",
+        "SH": "water", "SP": "infrastructure", "ST": "infrastructure", "SV": "open_space",
+        "SX0": "infrastructure", "SX1": "infrastructure", "SX2": "infrastructure",
+        "SX3": "infrastructure", "Sòl urbà": "urban", "Sòl urbà no consolidat": "urban",
+        "Sòl urbanitzable delimitat": "to_urbanise", "Sòl urbanitzable no delimitat": "to_urbanise",
     },
     # England: each dataset is one designation.
     "gb_england": {},
@@ -251,6 +278,33 @@ def fetch_ca(c: httpx.Client, out: Path, limit: int | None) -> None:
         print(f"  us_ca {name}: {n:,}", flush=True)
 
 
+def _count(c: httpx.Client, layer: str) -> int:
+    return int(_get(c, f"{layer}/query", {"where": "1=1", "returnCountOnly": "true",
+                                          "f": "json"}).json()["count"])  # fmt: skip
+
+
+def _arcgis_all(c: httpx.Client, out: Path, layer: str, limit: int | None,
+                extra: dict[str, Any], tag: str) -> None:  # fmt: skip
+    """A whole ArcGIS layer; stops when the rows read differ from the service's count."""
+    total = _count(c, layer)
+    n = _ndjson(out, arcgis(c, layer, limit=limit), extra)
+    print(f"  {tag}: {n:,} (the service counts {total:,})", flush=True)
+    if not limit and n != total:
+        raise SystemExit(f"{tag}: {n:,} read, the service counts {total:,}")
+
+
+def fetch_be(c: httpx.Client, out: Path, limit: int | None) -> None:
+    url = ("https://geoservices.wallonie.be/arcgis/rest/services/AMENAGEMENT_TERRITOIRE/PDS/"
+           "MapServer/22")  # fmt: skip
+    _arcgis_all(c, out, url, limit, {}, "be zones d'affectation")
+
+
+def fetch_es_bcn(c: httpx.Client, out: Path, limit: int | None) -> None:
+    base = "https://gissrv.diba.cat/arcgis/rest/services/CARTOBASE/MUC/MapServer"
+    for layer, kind in ((1, "qualificació"), (0, "classificació")):
+        _arcgis_all(c, out, f"{base}/{layer}", limit, {"_kind": kind}, f"es {kind}")
+
+
 ENGLAND = ("green-belt", "conservation-area", "article-4-direction-area", "brownfield-land")
 
 
@@ -307,6 +361,22 @@ MAPS: dict[str, dict[str, str]] = {
         "zone_label": a("Description"), "class_code": a("ucd_description"),
         "class": _cls("us_ca", a("ucd_description")), "doc_url": a("Source"),
     },
+    "be_wallonia": {
+        "country": "'BE'", "authority": "'Wallonia (SPW)'", "plan_id": "NULL",
+        "plan_name": "'Plan de secteur'", "plan_status": "'in force'", "adopted": "NULL",
+        "zone_code": a("AFFECT"), "zone_label": a("DESCRIPTION"), "class_code": a("AFFECT"),
+        "class": _cls("be_wallonia", a("AFFECT")), "doc_url": a("LIEN_WALLEX"),
+    },
+    "es_barcelona": {
+        "country": "'ES'", "authority": a("CODI_INE"), "plan_id": a("CODI_INE"),
+        "plan_name": "'Mapa Urbanístic de Catalunya, ' || " + a("_kind"),
+        "plan_status": "'in force'", "adopted": "NULL",
+        "zone_code": "coalesce(" + a("C_QUAL_MUC") + ", " + a("D_CLAS_MUC") + ")",
+        "zone_label": "coalesce(" + a("D_QUAL_AJT") + ", " + a("D_CLAS_MUC") + ")",
+        "class_code": "coalesce(" + a("C_QUAL_MUC") + ", " + a("D_CLAS_MUC") + ")",
+        "class": _cls("es_barcelona", "coalesce(" + a("C_QUAL_MUC") + ", " + a("D_CLAS_MUC") + ")"),
+        "doc_url": "NULL",
+    },
 }  # fmt: skip
 
 SOURCES: dict[str, tuple[Fetch, str, str]] = {
@@ -322,6 +392,11 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
               "(ArcGIS FeatureServer)", "no licence stated (public access)"),
     "gb_england": (fetch_gb, "planning.data.gov.uk (MHCLG): green belt, conservation area, "
                    "article 4 direction area, brownfield land", "OGL 3.0"),
+    "be_wallonia": (fetch_be, "Plan de secteur en vigueur, Service public de Wallonie (SPW "
+                    "Territoire), ArcGIS AMENAGEMENT_TERRITOIRE/PDS layer 22", "CC BY 4.0"),
+    "es_barcelona": (fetch_es_bcn, "Mapa Urbanístic de Catalunya (Generalitat de Catalunya, "
+                     "Departament de Territori), served for the province of Barcelona by the "
+                     "Diputació de Barcelona (CARTOBASE/MUC)", "no licence stated on the service"),
 }  # fmt: skip
 
 STANDARD = ["country", "authority", "plan_id", "plan_name", "plan_status", "adopted", "zone_code", "zone_label", "class_code", "class", "doc_url"]  # fmt: skip

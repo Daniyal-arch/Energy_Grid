@@ -187,6 +187,11 @@ needs, is far smaller than the PDFs (one 22 MB Danish plan gave 1,011 pages of t
 
 - **California Statewide Zoning** (Office of Land Use and Climate Innovation): public
   access, no licence stated. In the lake, private; may it be shown on the public map?
+- **Mapa Urbanístic de Catalunya** (Barcelona province, via the Diputació de Barcelona
+  service): no licence on the service; the Generalitat's own download page moved (HTTP 404) and
+  its map server (sig.gencat.cat) refuses non-browser clients (`UserAgentFilterError`). In the
+  lake, private; may it be shown on the public map? The other three Catalan provinces need the
+  Generalitat's shapefile, downloaded by hand into `infraatlas-raw/zoning-raw/muc/`.
 - **National Zoning Atlas** (US, about 10 states): the S3 bucket is gone and mercatus.org
   refuses scripted downloads (HTTP 403). Options: the owner downloads the state ZIPs by hand
   into R2 (`infraatlas-raw/zoning-raw/zoning-atlas/`), or the state teams are asked for files.
