@@ -9,7 +9,8 @@ and stores, per area id and template key (`tools.prepared.PREPARED`), the templa
 its sources, the build time and the data fingerprint:
 
 - every country;
-- NUTS 1, 2 and 3 regions; US states;
+- US states; Overture regions by their own and their English names;
+- NUTS 1, 2 and 3 regions;
 - GB local authority districts (ONS);
 - every GHS urban centre;
 - every local administrative unit (Overture `localadmin` and `locality`, GISCO LAU) with 10,000
@@ -43,6 +44,13 @@ def names_to_prepare(ctx: Any) -> list[tuple[str, str | None, str]]:
     out += [(p.name, None, "us_state") for p in ctx.gazetteer.us_states]
     cur = ctx.lake.cursor()
     queries = {
+        # regions and counties by their own and their English names ("Bavaria" resolves to
+        # the Overture region, not the NUTS outline "Bayern"); before the large sets, so the
+        # shards' time budget reaches them
+        "region": "SELECT DISTINCT name FROM outlines.names WHERE \"set\" = 'divisions' "
+        "AND level = 'region' ORDER BY 1",
+        "region_en": "SELECT DISTINCT alias FROM outlines.aliases WHERE language = 'en' "
+        "AND level = 'region' ORDER BY 1",
         "nuts": "SELECT DISTINCT name FROM shapes.nuts WHERE level IN (1, 2, 3) ORDER BY 1",
         "lad": "SELECT DISTINCT name FROM outlines.uk_ons WHERE regexp_matches(lower(level), 'lad|district') ORDER BY 1",
         "urban_centre": "SELECT DISTINCT name FROM outlines.urban_centres ORDER BY 1",
