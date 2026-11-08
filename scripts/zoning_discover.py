@@ -222,7 +222,17 @@ def main() -> None:
                             ),
                             "",
                         )
-                        pub = (d.get("publisher") or {}).get("name") or ""
+                        # INSPIRE harvests often carry no publisher: fall back to the contact
+                        # point, then to the source catalogue's title.
+                        contact = (d.get("contact_point") or [{}])[0]
+                        cat = d.get("catalog") or {}
+                        cat_title = (cat.get("title") or {}) if isinstance(cat, dict) else {}
+                        pub = (
+                            (d.get("publisher") or {}).get("name")
+                            or contact.get("name")
+                            or next(iter(cat_title.values()), "")
+                            or ""
+                        )
                         rows[d["id"]] = {
                             "country": cc,
                             "term": term,
