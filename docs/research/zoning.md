@@ -47,6 +47,10 @@ stay `other` with the source label kept.
 | Czechia | Územní plány (plochy s rozdílným způsobem využití), ÚAP | to find (per kraj geoportals) | |
 | US, Massachusetts | MassGIS ZONING_POLY (all communities, about 2007, not maintained); city layers (Cambridge 2026, Worcester) | ArcGIS, shapefile | Statewide layer for regional analysis only, per MassGIS. |
 | US, Connecticut | Connecticut Zoning Atlas (2,620 districts); city layers (Hartford GeoJSON) | to find export | Part of the National Zoning Atlas. |
+| Italy | Regional only: Friuli Venezia Giulia PRG homogeneous zones (shapefile, 2001), Sicily SITR (shapefile + PDF by directive), Emilia-Romagna PRG database (2004); Torino zones restricted | shapefile | No national layer; Lombardy PGT per comune, to find. |
+| Sweden | Lantmäteriet National Geodata Platform (NGP), Detaljplan | GeoPackage via NGP | Coverage growing (municipal agreements); PDF-only plans are outside the digital requirement. |
+| Finland | City WFS: Helsinki `kartta.hel.fi/ws/geoserver/avoindata/wfs` (Kaavahakemisto_kaava_voimassa), Espoo, Vantaa | WFS, EPSG:3879 | Plan index with links to plan documents; Espoo stale (2016). |
+| UK, England (more) | planning.data.gov.uk: 100+ datasets (brownfield land, conservation areas, article 4, tree preservation, ...) | CSV and GeoJSON per dataset; bulk download recommended | Check each dataset's coverage (providers). |
 | US | City and county open-data zoning layers (NYC, SCAG Southern California parcels, Wisconsin statewide) | ArcGIS REST, shapefile | No free national layer; Regrid / LightBox zoning is commercial (out). |
 | EU | Renewables acceleration areas (RED III) | per member state | No consolidated download; Oeko-Institut 2025 follow-up covers 10 member states' progress. |
 
