@@ -84,6 +84,12 @@ def build(shard: int, shards: int, out: Path, max_minutes: float) -> None:
 
     t0 = time.time()
     ctx = ToolContext(Settings())
+    from tools.sql import query_areas
+
+    # areas are answered one after another: keep few in the shared area tables (300 detailed
+    # regions' cells and clips made every later query slower, ~6 s to ~20 s a name)
+    if hasattr(ctx.lake, "AREAS_KEPT"):
+        ctx.lake.AREAS_KEPT = 20
     if hasattr(ctx.lake, "wait_hot"):
         ctx.lake.wait_hot(600)
     fp = prepared.fingerprint(ctx)
@@ -119,6 +125,9 @@ def build(shard: int, shards: int, out: Path, max_minutes: float) -> None:
             done.add(a["area_id"])
             if hasattr(ctx.lake, "wait_area_cells"):  # its cells once, not 3 s in every query
                 tw = time.time()
+                recs = query_areas(ctx, f"'{a['area_id']}'")
+                if recs:  # registering starts the cell build; then wait for it
+                    ctx.lake.run("SELECT 1", guard=False, areas=recs)
                 ctx.lake.wait_area_cells([a["area_id"]], 300)
                 stats["cell_wait_s"] = round(stats.get("cell_wait_s", 0) + time.time() - tw, 1)
             stats["areas"] += 1
