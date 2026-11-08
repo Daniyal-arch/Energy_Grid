@@ -60,7 +60,7 @@ jobs:
   # brief 32 Step 1: the standard query set on every lake and app table, eight shards in
   # parallel (each its own Lambda-sized container); the merge job writes the report
   query-speed:
-    if: github.event_name == 'pull_request' || inputs.job != 'latency'
+    if: github.event_name == 'workflow_dispatch' && inputs.job != 'latency'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
