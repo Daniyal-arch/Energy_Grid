@@ -188,7 +188,11 @@ def rewrite_file(
             order = ""
         else:
             box = f"{{'min_x': {ext[0]!r}, 'min_y': {ext[1]!r}, 'max_x': {ext[2]!r}, 'max_y': {ext[3]!r}}}::BOX_2D"
-            order = f" ORDER BY ST_Hilbert({pos}, {box}) NULLS LAST"
+            # empty geometries have no position: ST_Hilbert refuses them, they sort last
+            order = (
+                f" ORDER BY CASE WHEN {pos} IS NULL OR ST_IsEmpty({pos}) THEN NULL "
+                f"ELSE ST_Hilbert({pos}, {box}) END NULLS LAST"
+            )
     else:
         order = (
             " ORDER BY " + ", ".join(q(c) for c in sort if c in cols)
