@@ -82,3 +82,23 @@ Connecticut, Wisconsin), and the largest cities' zoning portals.
 | California statewide zoning | 200 | 304,324 + 264,417 zones | local code, description, harmonised class |
 | National Zoning Atlas | 404 / 403 | | blocked (above) |
 | Ireland MyPlan GZT (`services.arcgis.com/NzlPQPKn5QF9v2US/.../GZT_Current_Plan`, `GZT_Expired_Plan`) | 200 | 86,686 current zones | `ZONE_ORIG` (the plan's own code), `ZONE_DESC`, `ZONE_LINK` (plan document), `ZONE_GZT` and `GZT_DESC` (national harmonised type), `PLAN_NAME`, `PLAN_FROM`/`PLAN_TO`, `LA_NAME`; same owner also publishes Solar Safeguarding Zones (43, CC BY) and the Residential Zoned Land Tax maps 2023-2027. `maps.housing.gov.ie` does not answer from this container. |
+| France, national WFS (Géoplateforme `data.geopf.fr/wfs/ows`) | 200 | `wfs_du:zone_urba` 1,345,010 zones; `wfs_du:doc_urba` 23,390 plan records; `wfs_du:document` 12,903 documents; `wfs_du:prescription_surf` 4,352,651 prescriptions; SUP and SCoT layers | Plan files listed per document at `geoportail-urbanisme.gouv.fr/api/document/<gpu_doc_id>/files` and served from `data.geopf.fr/annexes/gpu/documents/<partition>/<id>/<file>` (PDF, no key). Document details give legal status and `EN_VIGUEUR`. |
+
+## Discovery method
+
+1. **Known national services first** (above), probed with `scripts/probe_zoning.py`.
+2. **The EU open-data portal** (`data.europa.eu`, which harvests every national and INSPIRE
+   catalogue): `scripts/zoning_discover.py` searches each country for its own legal plan
+   names (Bebauungsplan, bestemmingsplan, MPZP, územní plán, asemakaava, ...), keeps a hit only
+   when its title in a publisher language contains the term as a whole word and it offers a
+   geodata distribution or a PDF, and writes one row per dataset plus a count per publisher.
+   The INSPIRE geoportal itself serves an expired TLS certificate (2026-11-08), so its
+   harvest through data.europa.eu is used instead.
+3. **ArcGIS Hub** (`hub.arcgis.com` search API): most US counties and cities and many UK
+   councils publish zoning on ArcGIS Online, not in a national catalogue.
+   `zoning_discover.py --hub` sweeps the US, UK and EU in 2-degree tiles and keeps services
+   whose title names zoning, land-use plans, local plans, green belt or allocations.
+4. **PDF-only plans** (Wales, Northern Ireland, many Italian and Portuguese municipalities):
+   the plan documents are stored with their text, and their maps are only georeferenced where
+   the publisher has not done so; a georeferenced PDF map without a vector source is an owner
+   question (manual control points are an estimate of position).
