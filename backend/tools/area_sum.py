@@ -25,6 +25,8 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from pydantic import BaseModel, Field
+
 from tools.context import ToolContext, result
 
 # the H3 resolution for an area of this many km² (cells of about 253, 36 and 5 km²)
@@ -34,6 +36,20 @@ MARGIN_DEG = 1e-5  # about 1 m: a cell counts as interior only with this margin 
 
 class AreaSumError(ValueError):
     pass
+
+
+class AreaSumArgs(BaseModel):
+    table: str = Field(
+        max_length=200, description="a lake table, dataset.table (e.g. mastr.units_solar)"
+    )
+    area_id: str = Field(pattern=r"^a_[0-9a-f]{12}$", description="from resolve_area")
+    measures: list[str] = Field(
+        default_factory=list, max_length=6, description="numeric columns to sum (empty: count only)"
+    )
+    by: list[str] = Field(default_factory=list, max_length=3, description="columns to group by")
+    where: dict[str, str | int | float] = Field(
+        default_factory=dict, description="column = value filters"
+    )
 
 
 def _q(c: str) -> str:
