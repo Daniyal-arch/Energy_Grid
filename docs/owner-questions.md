@@ -167,9 +167,10 @@ text in `zoning.document_pages` for the agent. Measured:
 |---|---:|---:|---:|---:|
 | Denmark Plandata (lokalplaner and kommuneplanrammer) | 88,688 | 200, 200 | 79.1 MB | at most 7.0 TB (a municipal plan PDF linked from many frames counts once per frame, so the distinct files are fewer) |
 | England (conservation area appraisals) | 5,945 | 200, 126 | 3.4 MB | 20.3 GB |
-| France GPU (report, regulation, annexes per plan) | 12,903 documents, several files each | measured with the France build | | |
+| France GPU (regulation document per plan, `urlfic`) | 9,596 | 200, 79 (82 answered) | 6.93 MB | 66.5 GB |
 
-Measured by `scripts/zoning_documents.py --measure 200` in run 42492842706 (2026-11-08).
+Measured by `scripts/zoning_documents.py --measure 200` in run 42492842706 (Denmark, England) and run
+42519477572 (France), both 2026-11-08. France keeps 25 PDFs (26 document rows, 2,667 pages of text).
 
 **Why it is a question.** All of it is a large download (rule 4) and a storage cost: about
 7 TB at $0.015 per GB-month would be about $105 a month for Denmark alone (an upper bound). The text, which the agent

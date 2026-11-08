@@ -1750,7 +1750,7 @@ Geometry as the publisher's service returns it in EPSG:4326; invalid rings repai
 
 | source | publisher, service | rows (2026-11-08) | class from | licence |
 |---|---|---:|---|---|
-| `fr_gpu` | Géoportail de l'Urbanisme (IGN), WFS `wfs_du:zone_urba` | 1,345,010 (service count) | CNIG `typezone`: U urban, AU to be urbanised, A agricultural, N natural | Licence Ouverte 2.0 |
+| `fr_gpu` | Géoportail de l'Urbanisme (IGN), WFS `wfs_du:zone_urba` | 1,345,010 (all fetched; 9,345 invalid geometries repaired with `ST_MakeValid`, 2 kept as published) | CNIG `typezone`: U urban, AU to be urbanised, A agricultural, N natural | Licence Ouverte 2.0 |
 | `ie_myplan` | MyPlan, Department of Housing, ArcGIS `GZT_Current_Plan`, `GZT_Expired_Plan` | 124,473 | Generalised Zoning Types (R, C, M, G, N, P, S, O codes) | CC BY 4.0 |
 | `dk_plandata` | Plandata.dk, WFS: adopted kommuneplanrammer, lokalplaner, solar and wind lokalplaner | 50,608 frames + 38,080 + 285 + 608 local plans (service counts) | `anvgen` (11 housing ... 91 rural) | Plandata terms |
 | `fi_helsinki` | City of Helsinki, Kaavahakemisto plans in force | 4,393 | none (plan outlines) | CC BY 4.0 |
