@@ -13,7 +13,8 @@ Newest first. One entry per session or merged pull request.
   prepared build waits once per area; Overture regions prepared; speed check prints hot state.
   Zoning: six sources into `lake/zoning/zones` (France 1.35 M fetched), discovery lists, plan
   documents measured (owner question 8). France uploaded (1,345,010 zones, 25 PDFs);
-  US ArcGIS services: 32,997,727 zones from 6,521 services (all 48 shards; layers streamed to disk). Notes:
+  US ArcGIS services: 32,997,727 zones from 6,521 services (all 48 shards; layers streamed to disk);
+  Wallonia plan de secteur 43,797 and Barcelona province MUC 227,129 zones. Notes:
   query-tiers, zoning.
 - **2026-11-08** (claude/loving-dijkstra-5q8n1c, PR #20, brief 32): speed probe on 924 tables
   (before: warm p50 269 ms, p95 692 ms; a ~250 ms LIST per query found and removed); exact
