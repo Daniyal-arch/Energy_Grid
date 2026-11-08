@@ -42,9 +42,9 @@ stay `other` with the source label kept.
 | UK, Northern Ireland | OpenDataNI Settlement Boundaries (from the area plans) | shapefile | Last updated 2016; area plan zonings mostly PDF maps. |
 | US | National Zoning Atlas state datasets (Mercatus compilation; state teams such as New Hampshire) | GeoJSON, CSV | Covers about 10 states by mid-2025. Cite Bronin et al. (2025), doi 10.4079/zoning-atlas. |
 | Belgium, Flanders | Gewestplan (raster GeoTIFF, WMS); provincial RUPs as vector (`grondvlak` plan elements, DSI catalogue) | GeoTIFF, vector download | Gewestplan as vector to find; municipal RUPs per plan. |
-| Belgium, Wallonia | Plan de secteur | to find (geoportail.wallonie.be) | |
-| Portugal | PDM land classification (SNIT, DGT) | to find (dados.gov.pt, SNIT) | PDMs revised by 31 December 2024 for the new land classification rules. |
-| Czechia | Územní plány (plochy s rozdílným způsobem využití), ÚAP | to find (per kraj geoportals) | |
+| Belgium, Wallonia | Plan de secteur en vigueur (INSPIRE record 37502a64-868e-4e3d-bf66-31ff65a24a5a): `LU_PlannedLandUse_PDS.gml.zip` direct download; ArcGIS `geoservices.wallonie.be/arcgis/rest/services/AMENAGEMENT_TERRITOIRE/PDS/MapServer`; OGC API Features | GML (ETRS89-LAEA), GPKG, WMS | Regional, complete (digitised 1:10,000, 1994-2001). Indicative, no legal value per the portal. |
+| Portugal | PDM land classification (SNIT, DGT); municipal open data such as Cascais `dadosabertos.cascais.pt/dataset/pdm-classificacao-do-solo`, dados.gov.pt `pdm-planta-de-classificacao-do-solo-ordenamento` | per municipality (GeoJSON, SHP) | No national WFS found; DGT SNIT holds the PDM documents (PDF). PDMs revised by 31 December 2024 for the new land classification rules. |
+| Czechia | Územní plány in the single standard (vyhláška 360/2021, standard 2023: vector layer of `plochy s rozdílným způsobem využití` with national codes) | per kraj and municipality; national download not found | The standard gives one code list for every new plan, so a harmonised class is a direct lookup. |
 | US, Massachusetts | MassGIS ZONING_POLY (all communities, about 2007, not maintained); city layers (Cambridge 2026, Worcester) | ArcGIS, shapefile | Statewide layer for regional analysis only, per MassGIS. |
 | US, Connecticut | Connecticut Zoning Atlas (2,620 districts); city layers (Hartford GeoJSON) | to find export | Part of the National Zoning Atlas. |
 | Italy | Regional only: Friuli Venezia Giulia PRG homogeneous zones (shapefile, 2001), Sicily SITR (shapefile + PDF by directive), Emilia-Romagna PRG database (2004); Torino zones restricted | shapefile | No national layer; Lombardy PGT per comune, to find. |
@@ -52,6 +52,13 @@ stay `other` with the source label kept.
 | Finland | City WFS: Helsinki `kartta.hel.fi/ws/geoserver/avoindata/wfs` (Kaavahakemisto_kaava_voimassa), Espoo, Vantaa | WFS, EPSG:3879 | Plan index with links to plan documents; Espoo stale (2016). |
 | UK, England (more) | planning.data.gov.uk: 100+ datasets (brownfield land, conservation areas, article 4, tree preservation, ...) | CSV and GeoJSON per dataset; bulk download recommended | Check each dataset's coverage (providers). |
 | US | City and county open-data zoning layers (NYC, SCAG Southern California parcels, Wisconsin statewide) | ArcGIS REST, shapefile | No free national layer; Regrid / LightBox zoning is commercial (out). |
+| Spain, Catalonia | Mapa Urbanístic de Catalunya (MUC), Generalitat Territori; ArcGIS `gissrv.diba.cat/arcgis/rest/services/CARTOBASE/MUC/MapServer` | shapefile (updated 2023-01) | Region-wide classification and qualification of land; codes per Orden TES/195/2019. |
+| Italy, Lombardy | PGT "Tavola delle previsioni" (all comuni, SIT integrato), Geoportale della Lombardia | WMS / WFS; GeoPackage download to check | Municipalities upload to one regional schema. |
+| Estonia | Maa-amet "Digital layers of plans" (planeeringud), public detailed plans | WMS (WFS to check) | National register; Latvia (TAPIS) and Lithuania (TPDRIS) to probe. |
+| Latvia | TAPIS (`tapis.gov.lv`): functional zoning (`funkcionālais zonējums`) structured nationally by regulation 392 | WMS/WFS planned per the ministry; to probe | National schema for every municipal plan. |
+| US (bulk) | Zoning Atlas data bucket `statezoningatlasdata.s3.amazonaws.com/index.html`; Mercatus mirror; data dictionary (Mercatus 2024) | GeoJSON, XLS/CSV per state | Codes explained per state index on GitHub `zoningatlas`. |
+| US, California | California Statewide Zoning (north, south; data.ca.gov) | GeoJSON / shapefile | Statewide compilation of local zoning. |
+| Germany, NRW | Windenergiebereiche der Regionalplanung NRW (LANUK, `ckan.open.nrw.de` dataset de7e9cff-...) | shapefile / WFS | Regional plans in force (Arnsberg, Detmold, Düsseldorf, Köln, Münster); 1:50,000, generalised. |
 | EU | Renewables acceleration areas (RED III) | per member state | No consolidated download; Oeko-Institut 2025 follow-up covers 10 member states' progress. |
 
 ## Still to research
