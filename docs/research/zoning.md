@@ -41,6 +41,12 @@ stay `other` with the source label kept.
 | UK, Wales | No national allocations layer found; Welsh Government development-plan coverage map; councils' LDP proposals maps (often PDF) | PDF, council GIS | Candidates for PDF georeferencing. |
 | UK, Northern Ireland | OpenDataNI Settlement Boundaries (from the area plans) | shapefile | Last updated 2016; area plan zonings mostly PDF maps. |
 | US | National Zoning Atlas state datasets (Mercatus compilation; state teams such as New Hampshire) | GeoJSON, CSV | Covers about 10 states by mid-2025. Cite Bronin et al. (2025), doi 10.4079/zoning-atlas. |
+| Belgium, Flanders | Gewestplan (raster GeoTIFF, WMS); provincial RUPs as vector (`grondvlak` plan elements, DSI catalogue) | GeoTIFF, vector download | Gewestplan as vector to find; municipal RUPs per plan. |
+| Belgium, Wallonia | Plan de secteur | to find (geoportail.wallonie.be) | |
+| Portugal | PDM land classification (SNIT, DGT) | to find (dados.gov.pt, SNIT) | PDMs revised by 31 December 2024 for the new land classification rules. |
+| Czechia | Územní plány (plochy s rozdílným způsobem využití), ÚAP | to find (per kraj geoportals) | |
+| US, Massachusetts | MassGIS ZONING_POLY (all communities, about 2007, not maintained); city layers (Cambridge 2026, Worcester) | ArcGIS, shapefile | Statewide layer for regional analysis only, per MassGIS. |
+| US, Connecticut | Connecticut Zoning Atlas (2,620 districts); city layers (Hartford GeoJSON) | to find export | Part of the National Zoning Atlas. |
 | US | City and county open-data zoning layers (NYC, SCAG Southern California parcels, Wisconsin statewide) | ArcGIS REST, shapefile | No free national layer; Regrid / LightBox zoning is commercial (out). |
 | EU | Renewables acceleration areas (RED III) | per member state | No consolidated download; Oeko-Institut 2025 follow-up covers 10 member states' progress. |
 
