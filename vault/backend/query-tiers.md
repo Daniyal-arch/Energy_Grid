@@ -38,8 +38,15 @@ filter by attribute, an aggregate and a join, and each is made fast on every dat
   (`areamem.cells`) and the outline clipped to each buffered edge cell (`areamem.clips`, with
   its boundary); `expand_in_area` then tests cell membership, else the clip, else (within 1e-9°
   of a clip's edge) the whole outline. Equal to `ST_Contains` (`tests/test_area_registry.py`);
-  20,000 points in a 60,000-vertex outline: 10 s plain, 60 ms with cells. Until the cells exist,
-  the plain test answers.
+  20,000 points in a 60,000-vertex outline: 10 s plain, 60 ms with cells. A query with
+  `_area(` waits up to `CELLS_WAIT_S` (3 s) for its areas' cells, then the plain test answers.
+  Two workers build cells (`_cells_pool`); batch jobs call `wait_area_cells` once per area.
+- Outlines over `DETAILED_VERTICES` (5,000; `tools/area_sum.py` `_cells_detailed`): boundary
+  cells from sampling the rings at 0.4 x the smallest edge length plus one ring, candidates
+  from a polyfill of the outline simplified and buffered, one exact `ST_Contains` per connected
+  group of off-boundary cells (200,000 vertices at res 6: 22 s to 0.9 s). Clips in two steps:
+  pieces per res-3 parent group, then each cell from its piece (one copy of the outline per row
+  ran out of memory).
 - `Areas.from_candidate` keeps built areas by reference (validate, hash, measure once);
   name search over `shapes.*` reads ids first and the `bbox` column.
 
@@ -73,3 +80,7 @@ apply, lossy options measured for the owner). All by hand in `lake-catalog.yml` 
 >   detailed outline whatever the query form.
 > - hot.duckdb: native storage of repetitive tables is far larger than their Parquet; the
 >   build fills a 1,200 MB budget (the Lambda's `/tmp` is 2,048 MB).
+> - DuckDB's HTTP log (`enable_logging`) grows without end: the probe truncates it after
+>   each read (`CALL truncate_duckdb_logs()`).
+> - Prepared answers: without `wait_area_cells`, queued cell builds made every query wait 3 s
+>   and the shards ran out of time (5,999 of ~9,600 areas).

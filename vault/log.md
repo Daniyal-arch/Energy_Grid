@@ -1,13 +1,18 @@
 ---
 title: Log
 tags: [log]
-updated: 2026-11-07
+updated: 2026-11-08
 ---
 
 # Log
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-08** (claude/loving-dijkstra-5q8n1c, PR #20, brief 32 and zoning): detailed-outline
+  cells (sampling boundary, grouped interior tests, two-step clips), queries wait 3 s for cells,
+  prepared build waits once per area; Overture regions prepared; speed check prints hot state.
+  Zoning: six sources into `lake/zoning/zones` (France 1.35 M fetched), discovery lists, plan
+  documents measured (owner question 8). Notes: query-tiers, zoning.
 - **2026-11-08** (claude/loving-dijkstra-5q8n1c, PR #20, brief 32): speed probe on 924 tables
   (before: warm p50 269 ms, p95 692 ms; a ~250 ms LIST per query found and removed); exact
   interior-plus-boundary area sums (`area_sum`); hot.duckdb (Tier 1); prepared answers (Tier 0);
