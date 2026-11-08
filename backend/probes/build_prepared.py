@@ -15,7 +15,8 @@ its sources, the build time and the data fingerprint:
 - every local administrative unit (Overture `localadmin` and `locality`, GISCO LAU) with 10,000
   people or more (the outline table's own population column).
 
-Names that resolve ambiguously are skipped and counted; an area reached twice is stored once.
+Names that resolve ambiguously are counted (the answer is stored for the area picked, by its
+outline id, which is exactly what `quick` looks up); an area reached twice is stored once.
 
 Merge mode (no backend needed) writes `lake/prepared/answers/part-0.parquet` with its catalogue,
 and one public JSON per area (`answers/v1/<area_id>.json`: every prepared template) for the app.
@@ -103,9 +104,8 @@ def build(shard: int, shards: int, out: Path, max_minutes: float) -> None:
             if not a:
                 stats["unresolved"] += 1
                 continue
-            if d.get("ambiguous") or d.get("candidates"):
-                stats["ambiguous"] += 1
-                continue
+            if d.get("ambiguous"):  # counted only: answers are keyed by the area resolved
+                stats["ambiguous"] += 1  # (its outline's id), which is what quick looks up
             if a["area_id"] in done:
                 continue
             done.add(a["area_id"])
