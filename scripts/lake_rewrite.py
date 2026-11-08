@@ -133,6 +133,10 @@ def inspect(con: duckdb.DuckDBPyConnection, out: Path) -> dict[str, Any]:
     return res
 
 
+def sql_str(v: str) -> str:
+    return "'" + v.replace("'", "''") + "'"
+
+
 def checksums(con: duckdb.DuckDBPyConnection, src: str, cols: list[str]) -> dict[str, Any]:
     parts = ["count(*)"] + [f"count({q(c)}), bit_xor(hash({q(c)}))" for c in cols]
     r = con.execute(f"SELECT {', '.join(parts)} FROM {src}").fetchone()
@@ -203,7 +207,8 @@ def rewrite_file(
         rows_cap = max(2_048, min(rows_cap, int(0.8 * mb_cap * 1e6 / per_row)))
     out = work / "rewrite.parquet"
     out.unlink(missing_ok=True)
-    meta = ", ".join(f"{json.dumps(k)}: {json.dumps(str(v))}" for k, v in kv.items())
+    # string literals, not quoted identifiers: an empty value would be a zero-length identifier
+    meta = ", ".join(f"{sql_str(k)}: {sql_str(str(v))}" for k, v in kv.items())
     con.execute(
         f"COPY (SELECT * FROM _rows{order}) TO '{out}' (FORMAT parquet, COMPRESSION zstd, "
         f"COMPRESSION_LEVEL 9, PARQUET_VERSION V2, ROW_GROUP_SIZE {rows_cap}"
