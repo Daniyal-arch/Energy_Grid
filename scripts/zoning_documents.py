@@ -160,7 +160,9 @@ def main() -> None:
     per = links(con, zones)
     with httpx.Client(timeout=120, headers=UA, follow_redirects=True) as c:
         if (a.zones / "zones" / "source=fr_gpu").exists():
-            per["fr_gpu (plan files)"] = france_files(c, con, zones, max(a.measure, a.fetch, 50))
+            per["fr_gpu"] = per.get("fr_gpu", []) + france_files(
+                c, con, zones, max(a.measure, a.fetch, 50)
+            )
         if a.measure:
             measure(c, per, a.measure)
         if a.fetch:
@@ -176,10 +178,21 @@ def main() -> None:
                         [docs])  # fmt: skip
             con.execute("CREATE TABLE t AS SELECT * FROM (SELECT unnest($1, recursive := true))",
                         [texts])  # fmt: skip
-            lake.write(con, "documents", "SELECT * FROM d", sort=["source", "plan_id"],
-                       bloom=["doc_id", "plan_id"])  # fmt: skip
-            lake.write(con, "document_pages", "SELECT * FROM t", sort=["doc_id", "page"],
-                       bloom=["doc_id"])  # fmt: skip
+            # one partition per source, so runs per source add to the tables
+            for src in sorted({d["source"] for d in docs}):
+                part = {"source": src}
+                lake.write(
+                    con,
+                    "documents",
+                    f"SELECT * FROM d WHERE source = '{src}'",
+                    sort=["plan_id"],
+                    bloom=["doc_id", "plan_id"],
+                    partition=part,
+                )
+                lake.write(con, "document_pages",
+                           "SELECT t.* FROM t WHERE doc_id IN "
+                           f"(SELECT doc_id FROM d WHERE source = '{src}')",
+                           sort=["doc_id", "page"], bloom=["doc_id"], partition=part)  # fmt: skip
             lake.finish()
             if a.upload:
                 lake.upload()

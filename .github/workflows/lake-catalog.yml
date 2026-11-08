@@ -275,6 +275,14 @@ jobs:
           pip install duckdb httpx
           set -o pipefail
           cd scripts && python build_zoning.py ${{ matrix.source }} --lake ../lake-out --tmp /tmp/zoning --upload 2>&1 | tail -n 60
+      - name: ${{ matrix.source }} documents (sizes measured, a sample kept with its text)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install pypdf
+          set -o pipefail
+          cd scripts && python zoning_documents.py --zones ../lake-out/zoning --measure 200 --fetch 25 --lake ../lake-out --upload 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" | tail -n 40
 
   zoning-discover:
     if: github.event_name == 'workflow_dispatch' && inputs.zoning == 'discover'
