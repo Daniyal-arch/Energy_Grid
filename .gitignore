@@ -32,6 +32,7 @@ data/*
 !data/wave10_gather.json
 !data/wave10_probes.json
 !data/wave10_built/
+!data/zoning_discovery/
 !frontend/public/data/
 
 # editor/os

@@ -102,3 +102,17 @@ Connecticut, Wisconsin), and the largest cities' zoning portals.
    the plan documents are stored with their text, and their maps are only georeferenced where
    the publisher has not done so; a georeferenced PDF map without a vector source is an owner
    question (manual control points are an estimate of position).
+
+## Discovery results (2026-11-08, `lake-catalog.yml` zoning = discover, files in `data/zoning_discovery/`)
+
+- `datasets.csv` (data.europa.eu): 6,614 zoning and land-use plan datasets with a geodata or PDF
+  distribution in 21 countries: Germany 4,264 (municipal Bebauungspläne and
+  Flächennutzungspläne, mostly XPlanung WMS/WFS), France 1,111, Poland 366, England and
+  Scotland 152, Ireland 150, Austria 147, Italy 103, Greece 77, Portugal 57, Belgium 52, and
+  fewer than 30 in each other country. `publishers.csv` counts them per publisher.
+- `hub_services.csv` (ArcGIS Hub, 2-degree tiles): 7,477 services whose title names zoning,
+  land-use plans, local plans, green belt or allocations: 6,894 in the contiguous US, 94 in
+  Alaska and Hawaii, 488 in Europe and the UK (one region per service; the EU box covers GB).
+- Not covered by either: countries whose plans are not in the EU portal (Bulgaria, Cyprus,
+  Denmark's register is national and built directly, Estonia, Hungary, Luxembourg, Malta,
+  Romania); these need their national planning portals (leads above).
