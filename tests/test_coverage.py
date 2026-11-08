@@ -34,8 +34,12 @@ def test_json_has_every_country() -> None:
     j = coverage.to_json(coverage.load())
     assert set(j["countries"]) == set(coverage.COUNTRIES) | set(coverage.NEIGHBOURS)
     assert all(len(j["countries"][cc]) == len(j["families"]) for cc in coverage.COUNTRIES)
-    # a neighbour holds only the families that cover the neighbours (room to connect)
-    assert all(set(j["countries"][cc]) == {"connect"} for cc in coverage.NEIGHBOURS)
+    # a neighbour holds only the families that list the neighbours (room to connect, and the
+    # families with a world source since brief 30)
+    reg = coverage.load()["families"]
+    listed = {k for k, f in reg.items() if "neighbours" in (f.get("regions") or [])}
+    assert "connect" in listed
+    assert all(set(j["countries"][cc]) == listed for cc in coverage.NEIGHBOURS)
 
 
 def test_neighbours_only_where_a_family_lists_them() -> None:

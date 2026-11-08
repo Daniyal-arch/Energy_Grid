@@ -1,12 +1,76 @@
 {
+ "eu_effis_danger": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'Fire Weather Index (FWI) from ECMWF data, one float32 band per day (TIME 2018-01-01 onwards, forecasts ahead)', '/tmp/wave9/eu_effis_danger/gwis', '/tmp/wave9/eu_effis_danger/eu_effis_danger.tif']' retur"
+ },
+ "eu_eshm20": {
+  "bbox": [
+   -31.257,
+   27.665,
+   44.782,
+   71.3
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "longitude",
+   "latitude",
+   "pga"
+  ],
+  "example": {
+   "answer": 100636,
+   "sql": "SELECT count(*) FROM wave9.eu_eshm20"
+  },
+  "geometry": true,
+  "rows": 100636,
+  "seconds": 4,
+  "tiles": {
+   "fields": [
+    "longitude",
+    "latitude",
+    "pga"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_eshm20.pmtiles"
+  },
+  "with_position": 100636
+ },
+ "eu_jrc_coastal_flood": {
+  "as_of": "2020-02-26",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -180.0,
+   -58.456,
+   180.0,
+   77.267
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "latitude",
+   "longitude",
+   "valuemedian",
+   "value5th",
+   "value95th"
+  ],
+  "example": {
+   "answer": 20865,
+   "sql": "SELECT count(*) FROM wave9.eu_jrc_coastal_flood"
+  },
+  "geometry": true,
+  "rows": 20865,
+  "seconds": 2,
+  "with_position": 20865
+ },
  "us_drought_monitor": {
+  "as_of": "2026-10-29",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -156.054,
    17.884,
    -65.221,
    64.306
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "objectid",
@@ -32,14 +96,20 @@
   },
   "with_position": 5
  },
+ "us_noaa_slr": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'depth of ocean-connected inundation above ground for a sea level rise of N ft above MHHW (0-10 ft in 0.5 ft steps), float32 COG, nodata -3.4028e38', '/tmp/wave9/us_noaa_slr/DE_slr_depth_3ft.tif', '/tmp/w"
+ },
  "us_noaa_storm_events": {
+  "as_of": "2026-08-19",
+  "as_of_basis": "Last-Modified of the published file",
   "bbox": [
    -170.834,
    -14.338,
    171.306,
    69.378
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "begin_yearmonth",
    "begin_day",
@@ -99,7 +169,7 @@
   },
   "geometry": true,
   "rows": 72360,
-  "seconds": 3,
+  "seconds": 2,
   "tiles": {
    "fields": [
     "name",
@@ -115,5 +185,135 @@
    "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_noaa_storm_events.pmtiles"
   },
   "with_position": 43917
+ },
+ "us_usfs_whp": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'whp2023_cnt_conus.tif (143 MB): continuous integer WHP index; whp2023_cls_conus.tif (23 MB): class 1 very low, 2 low, 3 moderate, 4 high, 5 very high, 6 non-burnable, 7 water; AK and HI files too', '/tmp"
+ },
+ "us_usfs_whp_service": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'continuous WHP index, 1 band, S32, values 0-144153', '/tmp/wave9/us_usfs_whp_service/ImageServer', '/tmp/wave9/us_usfs_whp_service/us_usfs_whp_service.tif']' returned non-zero exit status 1."
+ },
+ "us_usgs_geoelectric": {
+  "as_of": "2026-11-05",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -124.505,
+   25.431,
+   -67.423,
+   48.986
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "name1",
+   "rlong1",
+   "rlat1",
+   "p_value",
+   "a",
+   "b",
+   "sig",
+   "eh",
+   "Eh-",
+   "Eh+"
+  ],
+  "example": {
+   "answer": 1616,
+   "sql": "SELECT count(*) FROM wave9.us_usgs_geoelectric"
+  },
+  "geometry": true,
+  "rows": 1616,
+  "seconds": 1,
+  "with_position": 1616
+ },
+ "us_usgs_landslides": {
+  "as_of": "2026-11-05",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -155.746,
+   17.951,
+   -65.934,
+   63.666
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "fid",
+   "usgs_id",
+   "date_min",
+   "date_max",
+   "fatalities",
+   "confidence",
+   "ls_type",
+   "inventory",
+   "inv_url",
+   "info_source",
+   "notes",
+   "lat_n",
+   "lon_w"
+  ],
+  "example": {
+   "answer": 680497,
+   "sql": "SELECT count(*) FROM wave9.us_usgs_landslides"
+  },
+  "geometry": true,
+  "rows": 680497,
+  "seconds": 5,
+  "tiles": {
+   "fields": [
+    "usgs_id",
+    "date_min",
+    "date_max",
+    "fatalities",
+    "confidence",
+    "ls_type"
+   ],
+   "kind": "point",
+   "minzoom": 6,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_landslides.pmtiles"
+  },
+  "with_position": 680497
+ },
+ "us_usgs_nshm": {
+  "as_of": "2026-11-05",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -180.0,
+   18.7,
+   180.0,
+   71.6
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "low_cont",
+   "high_cont",
+   "range_cont",
+   "valley",
+   "shape_leng",
+   "shape_area",
+   "geometry"
+  ],
+  "example": {
+   "answer": 9794,
+   "sql": "SELECT count(*) FROM wave9.us_usgs_nshm"
+  },
+  "geometry": true,
+  "rows": 9794,
+  "seconds": 13,
+  "tiles": {
+   "fields": [
+    "low_cont",
+    "high_cont",
+    "range_cont",
+    "valley"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_nshm.pmtiles"
+  },
+  "with_position": 9794
+ },
+ "world_nex_gddp": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'tasmax, daily maximum near-surface air temperature, 365 daily bands per file (NetCDF4 time × 600 × 1440, float32)', '/tmp/wave9/world_nex_gddp/tasmax_day_ACCESS-CM2_ssp245_r1i1p1f1_gn_2015_v2.0.nc', '/tm"
  }
 }

@@ -1,0 +1,36 @@
+name: History snapshots
+
+# Brief 30 Track 3.2: the tables their publishers overwrite (room to connect, connection
+# queues, registers) are copied weekly into lake/history/<dataset>__<table>/snapshot=<date>/,
+# never overwritten (scripts/snapshot_tables.py). Weekly, by hand, and from a branch push whose
+# commit message holds "[history]".
+
+on:
+  schedule:
+    - cron: "29 7 * * 3"
+  workflow_dispatch:
+  push:
+    branches: ["claude/**"]
+
+permissions:
+  contents: read
+
+env:
+  AWS_REQUEST_CHECKSUM_CALCULATION: WHEN_REQUIRED
+  AWS_RESPONSE_CHECKSUM_VALIDATION: WHEN_REQUIRED
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  snapshot:
+    if: github.event_name != 'push' || contains(github.event.head_commit.message, '[history]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - run: pip install httpx duckdb pycountry
+      - run: bash scripts/r2_creds.sh
+      - working-directory: scripts
+        run: python snapshot_tables.py --lake ../lake-out --upload | tee -a "$GITHUB_STEP_SUMMARY"

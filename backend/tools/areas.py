@@ -16,7 +16,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
-from data.areas import LEVEL_CLASS, LEVEL_WORDS, Area, AreaError, Candidate
+from data.areas import LEVEL_CLASS, LEVEL_WORDS, Area, AreaError, Candidate, norm
 from tools.context import ToolContext, result
 
 
@@ -104,6 +104,94 @@ def _from_view(ctx: ToolContext, which: str) -> Area:
     return A.polygon([[ring]], "The map on screen", level="bbox")
 
 
+def _coverage_counts(ctx: ToolContext, iso3: list[str]) -> dict[str, Any] | None:
+    """The coverage registry's cells for the area's countries, counted by status (brief 30):
+    every answer can say how much is published there; explain_coverage gives the reasons."""
+    from tools.quick import ISO3_TO_ISO2, _coverage
+
+    cov = _coverage(str(ctx.settings.atlas_root))
+    if not cov or not iso3 or len(iso3) > 3:
+        return None
+    out: dict[str, Any] = {}
+    for i3 in iso3:
+        cc = "US" if i3 == "USA" else "GB" if i3 == "GBR" else ISO3_TO_ISO2.get(i3, "")
+        counts: dict[str, int] = {}
+        for c in (cov["countries"].get(cc) or {}).values():
+            counts[c.get("status") or "?"] = counts.get(c.get("status") or "?", 0) + 1
+        if counts:
+            out[cc] = counts
+    if not out:
+        return None
+    why = "explain_coverage(area, family)"
+    return {"cells": out, "checked": cov.get("checked"), "reasons": why}
+
+
+def _same_place(a: Candidate, b: Candidate) -> bool:
+    """One place found in two outline sets (Overture's region and the NUTS shape of Bayern):
+    the same country and boxes that overlap by half the smaller one."""
+    if tuple(a.iso3) != tuple(b.iso3):
+        return False
+    if not (a.bbox and b.bbox):
+        return (a.parent or "") == (b.parent or "")
+    w = min(a.bbox[2], b.bbox[2]) - max(a.bbox[0], b.bbox[0])
+    h = min(a.bbox[3], b.bbox[3]) - max(a.bbox[1], b.bbox[1])
+    if w <= 0 or h <= 0:
+        return False
+
+    def size(x: list[float]) -> float:
+        return max((x[2] - x[0]) * (x[3] - x[1]), 1e-12)
+
+    return w * h >= 0.5 * min(size(a.bbox), size(b.bbox))
+
+
+def _places(cands: list[Candidate]) -> list[Candidate]:
+    """The distinct places among candidates: one per group of the same place."""
+    out: list[Candidate] = []
+    for c in cands:
+        if not any(_same_place(c, o) for o in out):
+            out.append(c)
+    return out
+
+
+def _named_area(ctx: ToolContext, n: str, level: str | None, notes: list[str]) -> Area | None:
+    """A name from agent/areas/named.yaml (the Ruhr, Silesia...) as the union of its members'
+    outlines; None when the name is not one, or (when: fallback) an outline carries it."""
+    A = ctx.areas
+    na = A.named_areas.get(norm(n))
+    if na is None:
+        return None
+    if na.get("when") == "fallback" and any(
+        c.match == 0 and c.outline for c in A.search(n, level=level, view=ctx.view)
+    ):
+        return None
+    found: list[Area] = []
+    missing: list[str] = []
+    for m in na["members"]:
+        hits = [
+            c
+            for c in A.search(f"{m}, {na['iso3']}", level=na.get("level"), view=ctx.view)
+            if c.outline and c.match == 0
+        ]
+        if hits:
+            found.append(A.from_candidate(hits[0]))
+        else:
+            missing.append(m)
+    if missing:
+        notes.append(
+            f"{n!r} is {na['name']}: {na['note']}; but no outline was found for "
+            f"{', '.join(missing)}, so it is not built (a part would undercount)"
+        )
+        raise AreaError(notes[-1])
+    notes.append(f"{n!r} is {na['name']}: {na['note']} (membership: {na['source']})")
+    if len(found) == 1:
+        a = found[0]
+        if a.name != na["name"]:
+            a.name = f"{na['name']} ({a.name})" if norm(a.name) != norm(na["name"]) else a.name
+            ctx.area_store.put(a)
+        return a
+    return A.union(found, name=na["name"], level="group")
+
+
 def resolve_area(
     ctx: ToolContext,
     names: list[str] | None = None,
@@ -115,8 +203,41 @@ def resolve_area(
     intersect_with: str | None = None,
     name: str | None = None,
 ) -> dict[str, Any]:
-    A = ctx.areas
     names = [n for n in (names or []) if n.strip()]
+    # a name asked before (same level, same view) is answered from memory (brief 30)
+    key = None
+    if names and not (from_view or point or radius_km or buffer_km or intersect_with or name):
+        key = json.dumps([[norm(n) for n in names], level, ctx.view], sort_keys=True, default=str)
+        hit = _RESOLVED.get(key)
+        if hit and hit["data"].get("area") and ctx.area_store.get(hit["data"]["area"]["area_id"]):
+            a = hit["data"]["area"]
+            if a["area_id"] not in ctx.turn_areas:
+                ctx.turn_areas.append(a["area_id"])
+            ctx.emit("area", {"area_id": a["area_id"], "name": a["name"], "level": a["level"]})
+            return hit
+    out = _resolve(ctx, names, level, from_view, point, radius_km, buffer_km, intersect_with, name)
+    if key and out["data"].get("area"):
+        if len(_RESOLVED) > 2000:
+            _RESOLVED.clear()
+        _RESOLVED[key] = out
+    return out
+
+
+_RESOLVED: dict[str, dict[str, Any]] = {}
+
+
+def _resolve(
+    ctx: ToolContext,
+    names: list[str],
+    level: str | None,
+    from_view: str | None,
+    point: tuple[float, float] | None,
+    radius_km: float | None,
+    buffer_km: float | None,
+    intersect_with: str | None,
+    name: str | None,
+) -> dict[str, Any]:
+    A = ctx.areas
     candidates: list[Candidate] = []
     notes: list[str] = []
     ambiguous = False
@@ -128,6 +249,10 @@ def resolve_area(
         elif names:
             parts: list[Area] = []
             for n in names:
+                named = _named_area(ctx, n, level, notes)
+                if named is not None:
+                    parts.append(named)
+                    continue
                 ref = n if ":" in n and " " not in n else None
                 found = A.search(n, level=level, view=ctx.view) if ref is None else []
                 if ref:
@@ -145,11 +270,7 @@ def resolve_area(
                     pick = found[0]
                     exact = [c for c in found if c.match == 0]
                     cls = LEVEL_CLASS.get(pick.level, 3)
-                    others = {
-                        (tuple(c.iso3), c.parent)
-                        for c in exact
-                        if LEVEL_CLASS.get(c.level, 3) == cls
-                    }
+                    others = _places([c for c in exact if LEVEL_CLASS.get(c.level, 3) == cls])
                     if len(names) == 1:
                         candidates = found
                     if len(others) > 1:
@@ -243,6 +364,9 @@ def resolve_area(
             "outlines leave coastal and offshore records outside)"
         )
     data["datasets_at_level"] = ctx.areas.datasets_at(area.level)
+    cov = _coverage_counts(ctx, area.iso3)
+    if cov:
+        data["coverage"] = cov
     if candidates and (ambiguous or len(candidates) > 1):
         data["candidates"] = [c.as_dict() for c in candidates[:6]]
     if ambiguous:

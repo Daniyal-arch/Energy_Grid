@@ -46,8 +46,14 @@ class StatsError(RuntimeError):
 
 @lru_cache
 def measures(agent_dir: str) -> dict[str, Any]:
-    p = Path(agent_dir) / "rasters.yaml"
-    return (yaml.safe_load(p.read_text(encoding="utf-8")) or {}).get("measures") or {}
+    """agent/rasters.yaml, then agent/rasters_waves.yaml (the registry rasters of the waves,
+    written by `scripts/wave9.py render`; brief 30)."""
+    out: dict[str, Any] = {}
+    for name in ("rasters.yaml", "rasters_waves.yaml"):
+        p = Path(agent_dir) / name
+        if p.exists():
+            out.update((yaml.safe_load(p.read_text(encoding="utf-8")) or {}).get("measures") or {})
+    return out
 
 
 def gdal_path(ctx: ToolContext, url: str) -> str | None:

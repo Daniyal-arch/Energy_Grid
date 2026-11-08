@@ -59,7 +59,8 @@ const RAMPS: Record<string, RGB[]> = {
   green: [[30, 60, 40], [50, 120, 70], [110, 190, 110], [210, 245, 180]],
   purple: [[50, 36, 80], [100, 70, 160], [160, 120, 220], [230, 200, 255]],
   emissions: [[60, 50, 50], [150, 90, 70], [230, 140, 90], [255, 210, 160]],
-  room: [[150, 70, 60], [214, 150, 80], [200, 190, 110], [96, 190, 150]],
+  // brief 30: the green end lighter, so lightness rises at every step for deutan and protan
+  room: [[150, 70, 60], [214, 150, 80], [200, 190, 110], [150, 230, 210]],
   voltage: [[160, 100, 70], [206, 132, 84], [236, 178, 120], [255, 220, 170]],
 };
 const CATEGORICAL: RGB[] = [
@@ -68,7 +69,7 @@ const CATEGORICAL: RGB[] = [
   [120, 210, 150],
   [230, 120, 180],
   [250, 210, 110],
-  [170, 140, 255],
+  [60, 160, 145], // brief 30: was lavender, indistinguishable from the blue for deutan (ΔE 1.7)
   [110, 210, 220],
   [210, 170, 130],
 ];

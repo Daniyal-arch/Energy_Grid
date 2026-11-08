@@ -6,7 +6,7 @@
    29.92,
    60.281
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "code",
@@ -41,7 +41,7 @@
   },
   "geometry": true,
   "rows": 1202,
-  "seconds": 2,
+  "seconds": 1,
   "tiles": {
    "fields": [
     "name",
@@ -58,6 +58,10 @@
   },
   "with_position": 1202
  },
+ "eu_emodnet_bathy": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'Depth: mean water depth of the EMODnet DTM (float32; sample -71.8 to -5.1 in the 1° probe tile); full grid 108,960 × 75,840, lon -70.5..43, lat 11..90', '/tmp/wave9/eu_emodnet_bathy/wcs', '/tmp/wave9/eu_"
+ },
  "eu_emodnet_military": {
   "bbox": [
    -18.984,
@@ -65,7 +69,7 @@
    29.35,
    65.958
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "id",
@@ -87,7 +91,7 @@
   },
   "geometry": true,
   "rows": 746,
-  "seconds": 2,
+  "seconds": 1,
   "tiles": {
    "fields": [
     "id",
@@ -110,7 +114,7 @@
    35.785,
    81.028
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "id",
@@ -139,7 +143,7 @@
   },
   "geometry": true,
   "rows": 826,
-  "seconds": 52,
+  "seconds": 51,
   "tiles": {
    "fields": [
     "name",
@@ -157,8 +161,70 @@
   "with_position": 826
  },
  "eu_emodnet_msp_zoning": {
-  "built": null,
-  "error": "IOException: IO Error: Failed to read GeoJSON data\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/eu_emodnet_msp_zoning/src.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+  "bbox": [
+   -21.541,
+   24.592,
+   28.045,
+   65.815
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "localid",
+   "versionid",
+   "offsource",
+   "ms",
+   "hiluclu",
+   "hilucsmsp",
+   "seausename",
+   "seausefct",
+   "seausedsc",
+   "originun",
+   "originunen",
+   "regnature",
+   "vertdistr",
+   "procstepg",
+   "hilucspres",
+   "speclanus",
+   "specpres",
+   "backgmap",
+   "validfrom",
+   "validto",
+   "prevmsppla",
+   "beginlsver",
+   "endlsver",
+   "dimind",
+   "spid",
+   "offdoc",
+   "coast_dist",
+   "areakm2",
+   "shape_leng",
+   "shape_area",
+   "drawpriori",
+   "geometry"
+  ],
+  "example": {
+   "answer": 4257,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_msp_zoning"
+  },
+  "geometry": true,
+  "rows": 4257,
+  "seconds": 14,
+  "tiles": {
+   "fields": [
+    "name",
+    "localid",
+    "versionid",
+    "offsource",
+    "ms",
+    "hiluclu",
+    "hilucsmsp"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_msp_zoning.pmtiles"
+  },
+  "with_position": 4257
  },
  "eu_emodnet_ocean_energy": {
   "bbox": [
@@ -167,7 +233,7 @@
    43.653,
    70.664
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "id",
    "id_1",
@@ -211,7 +277,7 @@
   },
   "geometry": true,
   "rows": 361,
-  "seconds": 0,
+  "seconds": 1,
   "with_position": 361
  },
  "eu_emodnet_platforms": {
@@ -221,7 +287,7 @@
    32.713,
    72.541
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "id",
@@ -260,7 +326,7 @@
    55.282,
    77.85
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "id",
    "data_src_c",
@@ -283,7 +349,7 @@
   },
   "geometry": true,
   "rows": 429668,
-  "seconds": 20,
+  "seconds": 19,
   "tiles": {
    "fields": [
     "id",
@@ -306,7 +372,7 @@
    55.282,
    77.85
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "id",
@@ -332,8 +398,74 @@
   "with_position": 946
  },
  "eu_emodnet_substrate": {
+  "bbox": [
+   -88.737,
+   7.903,
+   68.004,
+   81.852
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "shape_leng",
+   "shape_area",
+   "code",
+   "country",
+   "name",
+   "data_holde",
+   "contact",
+   "scale",
+   "original_s",
+   "original_g",
+   "mapping_me",
+   "references",
+   "comments",
+   "reclassifi",
+   "method",
+   "sample_num",
+   "original_0",
+   "relation",
+   "folk_16cl",
+   "folk_16cl_",
+   "folk_7cl",
+   "folk_7cl_t",
+   "folk_5cl",
+   "folk_5cl_t",
+   "surface_fe",
+   "surface_f0",
+   "conf_rs",
+   "conf_s",
+   "conf_d",
+   "conf_tot",
+   "geometry"
+  ],
+  "example": {
+   "answer": 67254,
+   "sql": "SELECT count(*) FROM wave9.eu_emodnet_substrate"
+  },
+  "geometry": true,
+  "rows": 67254,
+  "seconds": 77,
+  "tiles": {
+   "fields": [
+    "name",
+    "code",
+    "country",
+    "data_holde",
+    "contact",
+    "scale",
+    "original_s"
+   ],
+   "kind": "polygon",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eu_emodnet_substrate.pmtiles"
+  },
+  "with_position": 67254
+ },
+ "eu_emodnet_vessel_density": {
   "built": null,
-  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/wave9/eu_emodnet_substrate/src.geojson\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/eu_emodnet_substrate/src.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'vessel density, annual average, all ship types (float32); per-type coverages emodnet__vesseldensity_NNavg and monthly ones; years 2017-2024', '/tmp/wave9/eu_emodnet_vessel_density/wcs', '/tmp/wave9/eu_em"
  },
  "eu_emodnet_wind_farms": {
   "bbox": [
@@ -342,7 +474,7 @@
    24.738,
    65.471
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "ogc_fid",
    "id",
@@ -367,7 +499,7 @@
   },
   "geometry": true,
   "rows": 600,
-  "seconds": 2,
+  "seconds": 1,
   "tiles": {
    "fields": [
     "name",
@@ -385,12 +517,130 @@
   "with_position": 600
  },
  "us_boem_active_leases": {
-  "built": null,
-  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/wave9/us_boem_active_leases/src.geojson\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/us_boem_active_leases/src.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+  "as_of": "2026-04-20",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -124.812,
+   29.028,
+   -68.573,
+   43.341
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "lease_number",
+   "lease_type",
+   "resource",
+   "company",
+   "lease_number_company",
+   "lease_date",
+   "lease_term",
+   "project_easement",
+   "state",
+   "protraction_number",
+   "protraction_name",
+   "block_number",
+   "block_label",
+   "sub_block",
+   "lease_document1",
+   "lease_document2",
+   "geometry"
+  ],
+  "example": {
+   "answer": 4892,
+   "sql": "SELECT count(*) FROM wave9.us_boem_active_leases"
+  },
+  "geometry": true,
+  "rows": 4892,
+  "seconds": 6,
+  "tiles": {
+   "fields": [
+    "name",
+    "lease_number",
+    "lease_type",
+    "resource",
+    "lease_number_company",
+    "lease_date",
+    "lease_term"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_boem_active_leases.pmtiles"
+  },
+  "with_position": 4891
  },
  "us_boem_wind_leases": {
+  "as_of": "2026-03-03",
+  "as_of_basis": "Last-Modified of the published file",
+  "bbox": [
+   -124.812,
+   29.028,
+   -68.573,
+   43.341
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "ogc_fid",
+   "objectid",
+   "lease_number",
+   "lease_document1",
+   "lease_document2",
+   "lease_type",
+   "resource",
+   "company",
+   "lease_number_company",
+   "lease_date",
+   "lease_term",
+   "project_easement",
+   "acres",
+   "state",
+   "protraction_number",
+   "protraction_name",
+   "project_name_1",
+   "project_name_2",
+   "project_name_3",
+   "fast41",
+   "geometry"
+  ],
+  "example": {
+   "answer": 52,
+   "sql": "SELECT count(*) FROM wave9.us_boem_wind_leases"
+  },
+  "geometry": true,
+  "rows": 52,
+  "seconds": 4,
+  "tiles": {
+   "fields": [
+    "name",
+    "lease_number",
+    "lease_document1",
+    "lease_document2",
+    "lease_type",
+    "resource",
+    "lease_number_company"
+   ],
+   "kind": "polygon",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_boem_wind_leases.pmtiles"
+  },
+  "with_position": 52
+ },
+ "us_marinecadastre_ais": {
   "built": null,
-  "error": "IOException: IO Error: Could not open GDAL dataset at: /tmp/wave9/us_boem_wind_leases/src.geojson\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/us_boem_wind_leases/src.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'annual vessel transit count 2024 (uint32, 126,318 × 51,893, nodata 0): one transit each time a track passes through, starts or stops in a 100 m cell', '/tmp/wave9/us_marinecadastre_ais/ais-transit-count-"
+ },
+ "us_noaa_mpa": {
+  "built": null,
+  "error": "IOException: IO Error: Failed to read GeoJSON data\n\nLINE 1: CREATE OR REPLACE TABLE t AS SELECT * FROM ST_Read('/tmp/wave9/us_noaa_mpa/layer.geojson')\n                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+ },
+ "us_usseabed": {
+  "built": null,
+  "error": "BinderException: Binder Error: Cannot cast GEOMETRY with CRS 'ESRI:104000' to GEOMETRY with different CRS 'EPSG:4269'"
+ },
+ "world_gebco": {
+  "built": null,
+  "error": "CalledProcessError: Command '['gdal_translate', '-of', 'COG', '-co', 'COMPRESS=ZSTD', '-co', 'PREDICTOR=YES', '-b', 'elevation of ocean floor and land (GEBCO_2026 Grid, 8 tiles of 90° × 90°); a TID grid gives the source type', '/tmp/wave9/world_gebco/gebco_2026_n0.0_s-90.0_w0.0_e90.0_geotiff.tif', '/tmp/wave9/world_geb"
  },
  "world_port_index": {
   "built": null,

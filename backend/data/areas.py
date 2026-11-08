@@ -19,8 +19,9 @@ import json
 import logging
 import re
 import unicodedata
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
-from functools import cached_property
+from functools import cached_property, lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -136,8 +137,10 @@ ISO2_TO_ISO3 = {
 }  # fmt: skip
 
 
+@lru_cache(maxsize=200_000)
 def norm(s: str) -> str:
-    """Lower case, no accents, single spaces: the form names are matched in."""
+    """Lower case, no accents, single spaces: the form names are matched in. Cached: a search
+    compares the query with every gazetteer name (about 10,000 per call)."""
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
     s = re.sub(r"[^a-z0-9 ]", " ", s.casefold().replace("-", " ").replace("'", ""))
     return re.sub(r"\s+", " ", s).strip()
@@ -207,6 +210,12 @@ class Area:
         )
 
 
+# one background writer: area records reach the object store in the order they were made
+_WRITER = ThreadPoolExecutor(max_workers=1, thread_name_prefix="area-store")
+# reads of the name index that run beside the main query
+_READER = ThreadPoolExecutor(max_workers=4, thread_name_prefix="area-read")
+
+
 class AreaStore:
     """Areas by id: in the results directory (this container) and in the object store (saved
     maps and later turns in another container)."""
@@ -217,13 +226,22 @@ class AreaStore:
         self.store = store
 
     def put(self, area: Area) -> None:
+        """The local copy at once; the object store's copy in the background (brief 30: two
+        R2 writes took ~3 s of a 6.5 s resolve_area), and only when the record changed."""
         d = area.as_dict()
-        (self.root / f"{area.area_id}.json").write_text(json.dumps(d), encoding="utf-8")
+        text = json.dumps(d)
+        p = self.root / f"{area.area_id}.json"
+        if p.exists() and p.read_text(encoding="utf-8") == text:
+            return
+        p.write_text(text, encoding="utf-8")
         if self.store is not None:
-            try:
-                self.store.put_json(f"agent/areas/{area.area_id}.json", d)
-            except Exception:  # the local copy serves this container
-                log.warning("area not saved to the store", extra={"area_id": area.area_id})
+            _WRITER.submit(self._to_store, area.area_id, d)
+
+    def _to_store(self, area_id: str, d: dict[str, Any]) -> None:
+        try:
+            self.store.put_json(f"agent/areas/{area_id}.json", d)  # type: ignore[union-attr]
+        except Exception:  # the local copy serves this container
+            log.warning("area not saved to the store", extra={"area_id": area_id})
 
     def get(self, area_id: str) -> Area | None:
         if not re.fullmatch(r"a_[0-9a-f]{12}", area_id):
@@ -383,6 +401,7 @@ class Areas:
     """Builds areas: searches outlines, unions, buffers and intersections in DuckDB spatial."""
 
     def __init__(self, lake: Any, gazetteer: Gazetteer, agent_dir: Path, store: AreaStore) -> None:
+        self._has_norm: bool | None = None
         self.lake = lake
         self.gaz = gazetteer
         self.agent_dir = agent_dir
@@ -395,6 +414,20 @@ class Areas:
         if not p.exists():
             return {}
         return (yaml.safe_load(p.read_text(encoding="utf-8")) or {}).get("groups") or {}
+
+    @cached_property
+    def named_areas(self) -> dict[str, dict[str, Any]]:
+        """Areas that are no single outline (agent/areas/named.yaml): the Ruhr as its 15
+        member districts, Silesia as the voivodeship; keyed by every normalised alias."""
+        f = self.agent_dir / "areas" / "named.yaml"
+        if not f.exists():
+            return {}
+        out: dict[str, dict[str, Any]] = {}
+        doc = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+        for key, a in doc.get("areas", {}).items():
+            for n in [key, a["name"], *a.get("aliases", [])]:
+                out[norm(n)] = {"key": key, **a}
+        return out
 
     @cached_property
     def levels(self) -> dict[str, dict[str, str]]:
@@ -711,12 +744,11 @@ class Areas:
         out: list[Candidate] = []
         sets = [s for s in OUTLINE_SETS if s.table in tables and s.key != "zones"]
         cur = self.lake.cursor()
-        if "outlines.names" in tables:  # the name index covers every brief-27 set
+        use_index = "outlines.names" in tables  # the name index covers every brief-27 set
+        if use_index:
             sets = [s for s in sets if s.key not in B1_SETS]
-            out += self._names_index(cur, q)
-        if not sets:
-            return out
-        for s in sets:
+
+        def one(s: OutlineSet) -> list[tuple]:
             # the same normal form as norm(): no accents or apostrophes, other signs as spaces
             nn = (
                 f"trim(regexp_replace(replace(lower(strip_accents({s.name})), chr(39), ''), "
@@ -732,10 +764,17 @@ class Areas:
                 WHERE {nn} = $q OR lower(CAST({s.id} AS VARCHAR)) = $q
                 LIMIT 200"""
             try:
-                rows = cur.execute(sql, {"q": q}).fetchall()
+                return self.lake.cursor().execute(sql, {"q": q}).fetchall()
             except Exception as e:
                 log.warning("outline search failed", extra={"set": s.key, "error": str(e)[:200]})
-                continue
+                return []
+
+        # every set at once, beside the name index (each a read of its own on R2; brief 30)
+        pending = [_READER.submit(one, s) for s in sets]
+        if use_index:
+            out += self._names_index(cur, q)
+        for s, fut in zip(sets, pending, strict=True):
+            rows = fut.result()
             for rid, name, lv, iso, parent, pop, x0, y0, x1, y1, r in rows:
                 i3 = iso3_of(iso)
                 out.append(
@@ -753,22 +792,63 @@ class Areas:
                 )
         return out
 
+    def _names_norm(self, cur: Any) -> bool:
+        """Whether the name index carries `name_norm` (built since 2026-11-05)."""
+        if self._has_norm is None:
+            try:
+                cols = {r[0] for r in cur.execute("DESCRIBE outlines.names").fetchall()}
+                self._has_norm = "name_norm" in cols
+            except Exception:  # noqa: BLE001 - no index: the older query path
+                self._has_norm = False
+        return self._has_norm
+
     def _names_index(self, cur: Any, q: str) -> list[Candidate]:
         nn = (
             "trim(regexp_replace(replace(lower(strip_accents(name)), chr(39), ''), "
             "'[^a-z0-9]+', ' ', 'g'))"
         )
         try:
-            rows = cur.execute(
-                f"""SELECT "set", CAST(id AS VARCHAR), name, level, iso3, parent_name, population,
-                           xmin, ymin, xmax, ymax, CASE WHEN {nn} = $q THEN 0 ELSE 1 END
-                    FROM outlines.names WHERE {nn} = $q OR lower(CAST(id AS VARCHAR)) = $q
-                    LIMIT 400""",
-                {"q": q},
-            ).fetchall()
+            if self._names_norm(cur):  # the precomputed normal form: no scan of every name
+                where, rank = "name_norm = $q", "0"
+                if re.fullmatch(r"[a-z0-9 _-]*\d[a-z0-9 _-]*", q):  # a code (DE21, fr-75056): ids
+                    where += " OR lower(CAST(id AS VARCHAR)) = $q"
+                    rank = "CASE WHEN name_norm = $q THEN 0 ELSE 1 END"
+            else:
+                where = f"{nn} = $q OR lower(CAST(id AS VARCHAR)) = $q"
+                rank = f"CASE WHEN {nn} = $q THEN 0 ELSE 1 END"
+            names_sql = f"""SELECT "set", CAST(id AS VARCHAR), name, level, iso3, parent_name,
+                           population, xmin, ymin, xmax, ymax, {rank}
+                    FROM outlines.names WHERE {where} LIMIT 400"""
         except Exception as e:
             log.warning("name index search failed", extra={"error": str(e)[:200]})
             return []
+
+        def aliases() -> list[tuple]:
+            # English and local-language names, exonyms (Overture names.common and names.rules)
+            try:
+                return (
+                    self.lake.cursor()
+                    .execute(
+                        """SELECT "set", CAST(id AS VARCHAR), name, level, iso3, parent_name,
+                                  population, xmin, ymin, xmax, ymax, 0
+                           FROM outlines.aliases WHERE alias_norm = $q LIMIT 200""",
+                        {"q": q},
+                    )
+                    .fetchall()
+                )
+            except Exception as e:
+                log.warning("alias search failed", extra={"error": str(e)[:200]})
+                return []
+
+        # the two reads at once (each about 0.9 s on R2; brief 30)
+        pending = _READER.submit(aliases) if "outlines.aliases" in self.tables() else None
+        try:
+            rows = cur.execute(names_sql, {"q": q}).fetchall()
+        except Exception as e:
+            log.warning("name index search failed", extra={"error": str(e)[:200]})
+            rows = []
+        if pending is not None:
+            rows += pending.result()
         out = []
         for st, rid, name, lv, iso, parent, pop, x0, y0, x1, y1, r in rows:
             s = SET_BY_KEY.get(st)
@@ -799,8 +879,10 @@ class Areas:
             raise AreaError("the spatial extension is not loaded in this service") from e
         return cur
 
-    def geometry_of(self, ref: str) -> str:
-        """GeoJSON text of a candidate's outline (by its ref)."""
+    def geometry_of(self, ref: str, bbox: list[float] | None = None) -> str:
+        """GeoJSON text of a candidate's outline (by its ref). With the candidate's box (from the
+        name index), the lake's bbox column skips every row group but the one holding it (an id
+        alone scanned the whole 2.26 GB divisions table, about 5 s on R2; brief 30)."""
         kind, _, key = ref.partition(":")
         if kind == "world":
             ring = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]]
@@ -821,15 +903,27 @@ class Areas:
             s = SET_BY_KEY[kind]
             if s.table not in self.tables():
                 raise AreaError(f"the outline table {s.table} is not in this service's lake")
-            row = (
-                self._cur()
-                .execute(
+            cur = self._cur()
+            row = None
+            if bbox and all(v is not None for v in bbox):
+                e = 1e-6
+                try:
+                    row = cur.execute(
+                        f"SELECT ST_AsGeoJSON({s.geometry}) FROM {s.table} "
+                        "WHERE bbox.xmin BETWEEN ? AND ? AND bbox.ymin BETWEEN ? AND ? "
+                        "AND bbox.xmax BETWEEN ? AND ? AND bbox.ymax BETWEEN ? AND ? "
+                        f"AND CAST({s.id} AS VARCHAR) = ? LIMIT 1",
+                        [bbox[0] - e, bbox[0] + e, bbox[1] - e, bbox[1] + e,
+                         bbox[2] - e, bbox[2] + e, bbox[3] - e, bbox[3] + e, key],
+                    ).fetchone()  # fmt: skip
+                except Exception:  # noqa: BLE001 - a table without the bbox column
+                    row = None
+            if row is None:
+                row = cur.execute(
                     f"SELECT ST_AsGeoJSON({s.geometry}) FROM {s.table} "
                     f"WHERE CAST({s.id} AS VARCHAR) = ? LIMIT 1",
                     [key],
-                )
-                .fetchone()
-            )
+                ).fetchone()
             if not row:
                 raise AreaError(f"no outline {ref}")
             return row[0]
@@ -908,7 +1002,7 @@ class Areas:
             )
         if not c.outline:
             raise AreaError(f"{c.name} has no outline here ({c.source['dataset']})")
-        gj = self.geometry_of(c.ref)
+        gj = self.geometry_of(c.ref, c.bbox)
         parents = [p for p in [c.parent] if p]
         for i3 in c.iso3:
             n = self.country_names.get(i3)

@@ -25,3 +25,19 @@ def test_precision_and_scales():
 def test_question_numbers_allowed():
     r = check("Plants within 50 km: 12,345 MW", [{"v": 12345}], question="within 50 km")
     assert r["ungrounded"] == []
+
+
+def test_dates_and_percentages_are_grounded():
+    """Brief 30 Track 4.7: an ISO date must be in the results; shares match as per cent."""
+    from agent.grounding import check
+
+    res = [
+        {
+            "data": {"rows": [[0.237, "2026-10-05"]]},
+            "sources": [{"retrieved": "fetched 2026-11-01"}],
+        }
+    ]
+    ok = check("Share 23.7 % as of 2026-11-01, period from 2026-10-05.", res)
+    assert ok["ungrounded"] == [] and ok["grounded"] == 3
+    bad = check("As of 2025-01-01 the share was 23.7 %.", res)
+    assert bad["ungrounded"] == ["2025-01-01"]

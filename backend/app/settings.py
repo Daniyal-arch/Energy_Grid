@@ -79,6 +79,9 @@ class Settings(BaseSettings):
     results_dir: Path = Path("/tmp/atlas-results")
     local_store_dir: Path = Path("/tmp/atlas-store")
 
+    # open the lake and the catalogue in the background at start (brief 30)
+    warm_on_start: bool = True
+
     # limits and caps
     max_tool_calls: int = 12
     soft_deadline_s: float = 60.0
@@ -94,6 +97,10 @@ class Settings(BaseSettings):
     # keys (SSM in Lambda)
     admin_api_key: str | None = None
     mcp_api_keys: Annotated[list[str], NoDecode] = []
+    # the data API (brief 30): keys and budgets per hour
+    data_api_keys: Annotated[list[str], NoDecode] = []
+    data_api_per_key_hour: int = 3600
+    data_api_per_ip_hour: int = 600
     proxy_secret: str | None = None
     require_proxy: bool = False
     ip_hash_salt: str = "infraatlas"
@@ -109,7 +116,9 @@ class Settings(BaseSettings):
     otel_console: bool = False
     run_records: bool = True
 
-    @field_validator("cors_origins", "agent_models_allowed", "mcp_api_keys", mode="before")
+    @field_validator(
+        "cors_origins", "agent_models_allowed", "mcp_api_keys", "data_api_keys", mode="before"
+    )
     @classmethod
     def _list(cls, v: object) -> object:
         """A JSON list or a comma-separated string (SAM parameters, SSM values)."""
@@ -154,6 +163,7 @@ SSM_NAMES = {
     "LANGFUSE_SECRET_KEY",
     "LANGFUSE_HOST",
     "MCP_API_KEYS",
+    "DATA_API_KEYS",
     "ADMIN_API_KEY",
     "PROXY_SECRET",
     "EIA_API_KEY",

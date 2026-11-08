@@ -16,7 +16,7 @@ def call(ctx, tool, **kw):
     out = by_name()[tool].run(ctx, **kw)
     assert set(out) >= {"data", "sources"}
     for s in out["sources"]:
-        assert set(s) == {"dataset", "table", "licence", "retrieved"}
+        assert set(s) - {"as_of"} == {"dataset", "table", "licence", "retrieved"}
     return out
 
 
@@ -176,3 +176,11 @@ def test_skills_tools(ctx):
     assert (
         "error" in call(ctx, "read_skill_file", name="lake-sql", path="../../models.yaml")["data"]
     )
+
+
+def test_live_fema_needs_an_area_or_box():
+    from tools.live import live
+
+    ctx = ToolContext(settings())
+    assert "error" in live(ctx, "fema_nfhl", {})["data"]
+    assert "resolve_area" in live(ctx, "fema_nfhl", {"area_id": "a_000000000000"})["data"]["error"]

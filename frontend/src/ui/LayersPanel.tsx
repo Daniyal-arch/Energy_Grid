@@ -6,7 +6,7 @@
 
 import { isWaveColour, waveKey } from "../app/waves";
 import { type W9cFile, w9cNumber, w9cStops } from "../lib/wave9";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import { FUEL_COLOR, FUEL_LABEL } from "../lib/energy";
 import { GAS_FLOW, GAS_TRANSIT, GAS_TRANSIT_LABEL_GWH, type GasFlowsFile } from "../lib/gasFlows";
@@ -16,12 +16,10 @@ import { RETAIL_STOPS, RETAIL_TICKS } from "../lib/retail";
 import { CT_COLOR, type CtraceFile } from "../lib/ctrace";
 import { OUTAGE_STOPS, OUTAGE_TICKS, WATER_COLOR, WATER_INDICATORS, newestYear, type UsOutagesFile, type WaterFile } from "../lib/risk";
 import { MASTR_LABEL, MASTR_STOPS, MASTR_TECHS, MASTR_TICKS, MASTR_UNIT_ZOOM, type MastrMuniFile } from "../lib/mastr";
-import { GB_TYPE_COLOR, NL_COLOR, gwText, type ConnectFile } from "../lib/connect";
 import { H, H_CLASSES, H_COLOR, H_LABEL, H_NO_CLASS, ROOM_STOPS, ROOM_TICKS, countryRoom, type HClass, type HFile } from "../lib/connectH";
 import { shapeOf } from "../app/areaShape";
 import { inAreaCountry } from "../app/datasets";
 import { inside } from "../lib/area";
-import { IT_CLASSES, IT_COLOR, ROOM_CLASSES } from "../lib/connectMore";
 import { SEA_CABLE_COLOR } from "../lib/seaCables";
 import { GAS_CAT_COLOR, H2_STAGE_COLOR } from "../lib/coming";
 import { PROTECTED_COLOR, RAIL_COLOR, ROAD_COLOR, floodLabel, type ConstraintsFile } from "../lib/constraints";
@@ -32,17 +30,17 @@ import { SUN_MAX_WM2 } from "../lib/sunLayer";
 import { rgbCss, type RGB } from "../lib/theme";
 import { OFFSHORE_LABEL, OFFSHORE_STYLE, type OffshoreWindFile } from "../lib/offshoreWind";
 import { METRICS, metricGradient } from "../lib/transition";
-import { ACCESS_STOPS, ACCESS_TICKS, BR_COLOR, DC_COLOR, ON_COLOR, TW_COLOR, US_COLOR } from "../lib/world";
+import { ACCESS_STOPS, ACCESS_TICKS, BR_COLOR, ON_COLOR, TW_COLOR, US_COLOR } from "../lib/world";
 import { HV_STEPS, PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, STATUS_LABEL } from "../lib/worldPlants";
 import { QUEUE_COLOR, QUEUE_RATIO_TICKS, US_BANDS, US_TYPE_COLOR, US_TYPE_LABEL, US_TYPE_ORDER, queueRatioCss } from "../lib/us";
 import { PLANT_DETAIL_ZOOM, PLANT_MIN_MW, QUEUE_M_PER_GW } from "../map/usLayers";
-import { CABLE_STYLE, FLOW, GAS, HVDC, MULTI_ZONE, OFFLINE_STOPS, PRICE_STOPS, SHARE_STOPS, SUBSTATION, VOLTAGE_BANDS, gradientCss } from "../app/colors";
+import { CABLE_STYLE, GAS, HVDC, MULTI_ZONE, OFFLINE_STOPS, PRICE_STOPS, SHARE_STOPS, SUBSTATION, VOLTAGE_BANDS, gradientCss } from "../app/colors";
 import { BEAM_MIN_MW } from "../app/geo";
 import { useDataStore, useFile } from "../app/data";
 import type { CountriesFile, StatsFile, WorldFile } from "../app/types";
 import { priceRange, rampCss } from "../map/priceTerrain";
 import { currentDay } from "../map/tooltip";
-import { COLOURS, actions, findDashboard, useApp, type ColourId, type LayerGroup, type LayerId, type PlantStatus, type TimeMode } from "../app/store";
+import { actions, findDashboard, useApp, type ColourId, type LayerGroup, type LayerId, type PlantStatus, type TimeMode } from "../app/store";
 import { panelOf, type MapPanel, type Style } from "../app/maps";
 import { CATEGORIES, DATASETS, coverageLabel, covers, datasetModes, datasetOn, datasetsOn, partsIn, placesText, toggleDataset, type Dataset } from "../app/datasets";
 import { useCountryNames } from "./Dashboards";
@@ -1083,10 +1081,9 @@ function DatasetRow({ d }: { d: Dataset }) {
   return (
     <div className={`rounded-lg transition-colors ${on ? "bg-white/[0.05]" : "hover:bg-white/[0.03]"}`}>
       <div className="flex w-full items-center gap-2 px-2 py-1.5">
-        <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-center gap-2 text-left" aria-expanded={open} title={d.description}>
+        <button onClick={() => setOpen(!open)} className="flex min-w-0 flex-1 items-center gap-2 text-left" aria-expanded={open} title={where ? `${d.description} (${where})` : d.description}>
           <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: d.color, opacity: on ? 1 : 0.4 }} />
           <span className={`truncate text-[12.5px] ${on ? "text-slate-50" : "text-slate-300"}`}>{d.name}</span>
-          {where && <span className="shrink-0 text-[9px] uppercase tracking-wider text-slate-500">{where}</span>}
           <span className={`ml-auto shrink-0 text-[10px] text-slate-500 transition-transform ${open ? "rotate-90" : ""}`}>›</span>
         </button>
         <button
@@ -1111,6 +1108,7 @@ function DatasetRow({ d }: { d: Dataset }) {
       {ask && on && <AddChoice d={d} onDone={() => setAsk(false)} />}
       {open && (
         <div className="space-y-2 px-2 pb-2 pl-[26px]">
+          {where && <div className={`text-[10px] uppercase tracking-wider ${muted}`}>{where}</div>}
           {on && stylesOf(d.id).length > 0 && (
             <div>
               <div className={`mb-0.5 text-[9.5px] uppercase tracking-[0.12em] ${muted}`}>Draw as</div>
@@ -1181,7 +1179,12 @@ export default function LayersPanel() {
   const [onlyHere, setOnlyHere] = useState(true);
   const names = useCountryNames();
   const active = DATASETS.filter((d) => partsIn(d, mode).length > 0 && datasetOn(d, layers, colour));
-  const groupHasActive = (g: LayerGroup) => active.some((d) => d.category === g);
+  const recent = useRecent(active.map((d) => d.id));
+  const recentRows = recent
+    .filter((id) => !active.some((d) => d.id === id))
+    .map((id) => DATASETS.find((d) => d.id === id))
+    .filter((d): d is Dataset => !!d && partsIn(d, mode).length > 0)
+    .slice(0, 5);
   const found = t ? DATASETS.filter((d) => matches(d, t)).length : 0;
   // the categories list what is not on the map yet; with an area, what has data there
   const here = (d: Dataset) => !area || !onlyHere || covers(d, area);
@@ -1219,34 +1222,64 @@ export default function LayersPanel() {
           <DatasetRow key={d.id} d={d} />
         ))}
       </div>
+      {recentRows.length > 0 && !t && (
+        <>
+          <div className="border-t border-white/[0.06] px-3 pb-1 pt-2.5 text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">Recently used</div>
+          <div className="px-1.5 pb-2">
+            {recentRows.map((d) => (
+              <DatasetRow key={d.id} d={d} />
+            ))}
+          </div>
+        </>
+      )}
 
 
 
       <div className="flex items-center justify-between border-t border-white/[0.06] px-3 pb-1 pt-2.5">
-        <span className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">Browse by category</span>
+        <span className="text-[10px] uppercase tracking-[0.18em] text-[#8d94a1]">All datasets</span>
         <button onClick={() => useApp.setState({ catalogue: true })} className="text-[10.5px] text-sky-300/90 hover:text-sky-200" title="Every dataset with its sources and coverage">
-          Data catalogue ↗
+          Catalogue ↗
         </button>
       </div>
-      <div className={`px-3 pb-1.5 text-[10px] ${muted}`}>
-        {area ? (
-          <>
-            {onlyHere ? `With data in ${areaName}` : "Every dataset"}
-            {elsewhere > 0 && (
-              <button onClick={() => setOnlyHere(!onlyHere)} className="ml-1 text-sky-300/90 hover:text-sky-200">
-                {onlyHere ? `· show all (${elsewhere} more)` : `· only those with data in ${areaName}`}
-              </button>
-            )}
-            . Click a name for its key, style and sources; the switch shows it.
-          </>
-        ) : (
-          "Click a name for its key, style and sources; the switch shows it on the map."
-        )}
-      </div>
+      {area && elsewhere > 0 && (
+        <div className="px-3 pb-1.5 text-[10px]">
+          <button onClick={() => setOnlyHere(!onlyHere)} className="text-sky-300/90 hover:text-sky-200">
+            {onlyHere ? `With data in ${areaName} · show all (${elsewhere} more)` : `All · only those with data in ${areaName}`}
+          </button>
+        </div>
+      )}
       {CATEGORIES.map((g) => (
         <Category key={g} group={g} q={t} show={show} open={open[g] ?? false} onToggle={() => setOpen((o) => ({ ...o, [g]: !(o[g] ?? false) }))} />
       ))}
       <div className="h-2" />
     </div>
   );
+}
+
+
+/** The datasets switched on lately, newest first, kept in this browser only (brief 30). */
+const RECENT_KEY = "atlas.recentDatasets";
+function useRecent(onIds: string[]): string[] {
+  const [list, setList] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]") as string[];
+    } catch {
+      return [];
+    }
+  });
+  const key = onIds.join(",");
+  useEffect(() => {
+    if (!onIds.length) return;
+    setList((old) => {
+      const next = [...onIds.filter((id) => !old.includes(id)), ...old].slice(0, 12);
+      try {
+        localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+      } catch {
+        /* storage blocked: the list lives for this visit */
+      }
+      return next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+  return list;
 }

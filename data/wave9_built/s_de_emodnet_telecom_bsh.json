@@ -1,0 +1,45 @@
+{
+ "de_emodnet_telecom_bsh": {
+  "bbox": [
+   3.415,
+   53.574,
+   14.579,
+   55.913
+  ],
+  "built": "2026-11-06",
+  "columns": [
+   "ogc_fid",
+   "id",
+   "featureid",
+   "featurespe",
+   "status",
+   "featuretyp",
+   "name",
+   "uuid",
+   "shape_leng",
+   "geometry"
+  ],
+  "example": {
+   "answer": 28,
+   "sql": "SELECT count(*) FROM wave9.de_emodnet_telecom_bsh"
+  },
+  "geometry": true,
+  "rows": 28,
+  "seconds": 1,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "featureid",
+    "featurespe",
+    "status",
+    "featuretyp",
+    "uuid"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/de_emodnet_telecom_bsh.pmtiles"
+  },
+  "with_position": 28
+ }
+}

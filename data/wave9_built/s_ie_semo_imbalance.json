@@ -1,0 +1,22 @@
+{
+ "ie_semo_imbalance": {
+  "built": "2026-11-06",
+  "columns": [
+   "file",
+   "published",
+   "row",
+   "starttime",
+   "endtime",
+   "imbalancevolume",
+   "imbalanceprice",
+   "imbalancecost"
+  ],
+  "example": {
+   "answer": 651,
+   "sql": "SELECT count(*) FROM wave9.ie_semo_imbalance"
+  },
+  "geometry": false,
+  "rows": 651,
+  "seconds": 35
+ }
+}

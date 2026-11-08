@@ -1,0 +1,16 @@
+dataset: history
+title: Snapshots of tables their publishers overwrite (room to connect, connection queues, registers), one partition per week
+licence: as each source table (see its catalogue entry)
+notes: >-
+  Built weekly by scripts/snapshot_tables.py (history.yml). Table names are
+  <dataset>__<table>, e.g. history.connect_eu__fr. Every row as published plus `snapshot`
+  (the date the copy was taken; partition). A partition is never overwritten, so the change
+  of a site's free capacity or a queue's size over time is a comparison of snapshots. The US
+  markets' queues keep their own weekly partitions in iso_queues.requests (column snapshot).
+  For installed capacity per year use wave10 Eurostat series (per country) or the trend tool
+  (today's plants by commissioning year).
+tables:
+  "<dataset>__<table>":
+    grain: one row per source row and snapshot date
+    keys: {snapshot: date the copy was taken}
+    measures: {}

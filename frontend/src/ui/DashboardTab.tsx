@@ -3,7 +3,7 @@
 // electricity for countries), then the figures of the datasets switched on. The area is the country
 // clicked on the map, else the dashboard's countries, drawn polygon or circle around a city.
 
-import { DATASETS, covers, datasetOn, partsFor, partsIn, placesText, toggleDataset } from "../app/datasets";
+import { DATASETS, datasetOn, partsFor, partsIn, placesText } from "../app/datasets";
 import { useAreaShape } from "../app/areaShape";
 import { actions, useApp } from "../app/store";
 import { AreaCards } from "../components/AreaCards";
@@ -20,7 +20,7 @@ function AreaControls() {
   const drawn = useApp((s) => s.drawn);
   const area = useApp((s) => s.area);
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-1">
+    <div className="flex flex-wrap items-center gap-1">
       {drawn?.kind === "circle" &&
         RADII.map((r) => (
           <button
@@ -32,7 +32,7 @@ function AreaControls() {
           </button>
         ))}
       <button onClick={() => actions.startDrawing()} className="rounded-full border border-white/10 px-2 py-0.5 text-[10.5px] text-slate-300 hover:bg-white/[0.07]">
-        ⬠ Draw another area
+        {drawn || area ? "⬠ Draw another area" : "⬠ Draw an area"}
       </button>
       {(drawn || area) && (
         <button onClick={() => (drawn ? actions.setDrawn(null) : actions.setArea(null))} className="rounded-full border border-white/10 px-2 py-0.5 text-[10.5px] text-slate-400 hover:bg-white/[0.07] hover:text-slate-100">
@@ -54,27 +54,25 @@ export function DashboardTab({ iso3 }: { iso3?: string }) {
   return (
     <>
       <Card title={name} note={edited ? "edited" : undefined} accent={[120, 190, 255]}>
-        <div className="flex items-start justify-between gap-2 text-[11px]">
+        <div className="flex items-center justify-between gap-2 text-[11px]">
           <span className="min-w-0 text-slate-300">
-            <span className={muted}>Area: </span>
             {shape ? (
               <>
                 {shape.label} <span className={muted}>· {km2Text(shape.km2)}</span>
               </>
             ) : pending ? (
-              "reading the outlines…"
-            ) : (
-              "none yet"
-            )}
+              "…"
+            ) : !iso3 ? (
+              <AreaControls />
+            ) : null}
           </span>
           <button onClick={() => actions.openBuilder({ kind: "save", id: mineId })} className="shrink-0 rounded-md border border-white/10 px-2 py-0.5 text-[10.5px] text-slate-300 hover:bg-white/[0.08]">
             {edited || !mineId ? "Save as dashboard" : "Edit"}
           </button>
         </div>
-        {!iso3 && <AreaControls />}
-        {!shape && !pending && (
-          <div className={`mt-2 text-[11px] leading-snug ${muted}`}>
-            Pick an area for its figures: click a country, <span className="text-slate-200">⬠ Draw an area</span> on the map, or search a city (25 km around it). Below: the datasets on the map, worldwide.
+        {!iso3 && (shape || pending) && (
+          <div className="mt-2">
+            <AreaControls />
           </div>
         )}
         {on.length > 0 && (

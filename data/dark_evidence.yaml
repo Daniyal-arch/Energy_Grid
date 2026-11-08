@@ -1,0 +1,451 @@
+# Second research pass for dark cells (brief 30 Track 2.3): what was searched, in which language,
+# and what was found. scripts/wave9.py render appends each note to its cell; scripts/apply_evidence.py
+# does the same for the families kept by hand in data/coverage.yaml.
+balancing:
+  AT:
+    checked: '2026-11-05'
+    note: 'APG markttransparenz.apg.at / transparency.apg.at did not answer from the sandbox (connection failed, 2026-11-06). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+      2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+      10YAT-APG------L: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices
+      and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  BE:
+    checked: '2026-11-05'
+    note: 'Elia Open Data (French/Dutch/English portal) has balancing price and reserve bid sets: new source be_elia_balancing (ods166, ods207, ods206; licence page down at the probe, quote before build).
+      ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves
+      to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YBE----------2: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR;
+      type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL
+      areas'
+  BG:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves
+      to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YCA-BULGARIA-R: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR;
+      type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL
+      areas'
+  CY:
+    checked: '2026-11-05'
+    note: Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched beyond that).
+  CZ:
+    checked: '2026-11-05'
+    note: 'Searched ČEPS in Czech (podpůrné služby, podmínky užití): cz_ceps_balancing (blocked, no licence statement). ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+      2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+      10YCZ-CEPS-----N: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices
+      and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  DE:
+    checked: '2026-11-05'
+    note: 'Alternatives to regelleistung.net (licence missing): netztransparenz.de API needs an OAuth client (free registration, credential: NETZTRANSPARENZ_CLIENT_ID/SECRET), terms to read after registration.
+      ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here),
+      controlArea_Domain 10Y1001A1001A83F (or the four TSO LFC areas): A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their
+      prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  EE:
+    checked: '2026-11-05'
+    note: 'Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API all null). ENTSO-E A85 imbalance prices already
+      answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY;
+      not run from the sandbox, no key here), controlArea_Domain 10Y1001A1001A39I: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
+      and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  ES:
+    checked: '2026-11-05'
+    note: 'Searched REE in Spanish (servicios de ajuste, regulación secundaria): es_ree_esios (blocked: token; REData mercados behind Incapsula). ENTSO-E A85 imbalance prices already answer for this area
+      (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the
+      sandbox, no key here), controlArea_Domain 10YES-REE------0: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices;
+      A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  FI:
+    checked: '2026-11-05'
+    note: 'Not dark: fi_fingrid_reserves is ready and answers 401 only because FINGRID_API_KEY is not set (register at data.fingrid.fi, set the repo secret). ENTSO-E A85 imbalance prices already answer
+      for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not
+      run from the sandbox, no key here), controlArea_Domain 10YFI-1--------U: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and
+      A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  FR:
+    checked: '2026-11-05'
+    note: 'Searched ODRÉ (French: ''mécanisme d''ajustement'', ''réserve'', ''services système''): new source fr_odre_balancing_volumes (annual activated volumes and mean costs, Licence Ouverte 2.0); daily
+      reserve data need RTE''s data-portal OAuth key (credential) or ENTSO-E. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell
+      can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YFR-RTE------C: A81 contracted
+      reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16);
+      A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  GR:
+    checked: '2026-11-05'
+    note: 'Searched IPTO (Greek: Αγορά Εξισορρόπησης): file API with weekly balancing settlement xlsx, no reuse licence: gr_admie_balancing (blocked, request). ENTSO-E A85 imbalance prices already answer
+      for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not
+      run from the sandbox, no key here), controlArea_Domain 10YGR-HTSO-----Y: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and
+      A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  HR:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YHR-HEP------M:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  HU:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YHU-MAVIR----U:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  IE:
+    checked: '2026-11-05'
+    note: 'New source ie_semo_imbalance (SEMO report API, EirGrid Group Open Data Licence, commercial use allowed). ENTSO-E A85 answered nothing for this area in build_imbalance.py (eu/imbalance.json ''none'',
+      2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YIE-1001A00010: A81 contracted reserves (businessType B95; processType
+      A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType
+      A51/A47) for EB GL areas'
+  IT:
+    checked: '2026-11-05'
+    note: 'Terna''s download centre states no reuse licence (see it_terna_province); MSD results on GME not checked as data. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json,
+      2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain
+      10YIT-GRTN-----B: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices
+      and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  LT:
+    checked: '2026-11-05'
+    note: 'Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API all null). ENTSO-E A85 answered nothing for this
+      area in build_imbalance.py (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLT-1001A0008Q:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  LU:
+    checked: '2026-11-05'
+    note: 'Luxembourg (Creos) sits in Amprion''s LFC block; reserves are procured in the German market (regelleistung.net, licence missing). ENTSO-E A85 answered nothing for this area in build_imbalance.py
+      (eu/imbalance.json ''none'', 2026-10-20). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YLU-CEGEDEL-NQ: A81 contracted reserves (businessType
+      B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing
+      capacity (processType A51/A47) for EB GL areas'
+  LV:
+    checked: '2026-11-05'
+    note: 'Searched Baltic sources (Estonian ''tasakaalustamine'', Latvian/Lithuanian balancing): ee_lv_lt_baltic_balancing blocked (Cloudflare; Elering API all null). ENTSO-E A85 imbalance prices already
+      answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY;
+      not run from the sandbox, no key here), controlArea_Domain 10YLV-1001A00074: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
+      and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  MT:
+    checked: '2026-11-05'
+    note: Isolated system without an ENTSO-E control area; no balancing market data published (not re-searched beyond that).
+  NL:
+    checked: '2026-11-05'
+    note: 'TenneT''s API (api.tennet.eu) answers 403 without a key (free registration, credential: TENNET_API_KEY); the old export_data.aspx did not answer. ENTSO-E A85 imbalance prices already answer for
+      this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run
+      from the sandbox, no key here), controlArea_Domain 10YNL----------L: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89
+      their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  PL:
+    checked: '2026-11-05'
+    note: 'Searched in Polish (rynek bilansujący, ceny rezerw): PSE''s open API answers balancing and reserve prices but states no licence: pl_pse_balancing (blocked, request). ENTSO-E A85 imbalance prices
+      already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY;
+      not run from the sandbox, no key here), controlArea_Domain 10YPL-AREA-----S: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily)
+      and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  PT:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YPT-REN------W:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  RO:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YRO-TEL------P:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  SE:
+    checked: '2026-11-05'
+    note: 'Not dark: se_svk_reserves (CC BY 4.0) answers 200; the CSV is plain (header _id,start_time_sweden,start_time_utc,reserve_product,reserve_direction,auction_round,price,price_unit,volume,volume_unit,soda_hashbyte,soda_identity),
+      so the DuckDB sniff failure is a reader issue: read with sample_size=-1 / all_varchar or explicit columns. Sister CKAN sets afrr_capacity_market, mfrr_capacity_market (CC-BY-4.0, package_show). ENTSO-E
+      A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to
+      run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain SE1-SE4 zones: A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type
+      A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  SI:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YSI-ELES-----O:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+  SK:
+    checked: '2026-11-05'
+    note: 'No national source re-probed in this pass (time); ENTSO-E is the route. ENTSO-E A85 imbalance prices already answer for this area (frontend/public/data/eu/imbalance.json, 2026-10-20), so the
+      cell can be ''partial'' now (imbalance price built, reserves not). ENTSO-E reserves to run in Actions (ENTSOE_API_KEY; not run from the sandbox, no key here), controlArea_Domain 10YSK-SEPS-----K:
+      A81 contracted reserves (businessType B95; processType A52 FCR, A51 aFRR, A47 mFRR; type_MarketAgreement.Type A01 daily) and A89 their prices; A84 activated balancing energy prices and A83 volumes
+      (processType A16); A15 procured balancing capacity (processType A51/A47) for EB GL areas'
+congestion:
+  BG:
+    checked: '2026-11-06'
+    note: 'Searched in Bulgarian (''редиспечиране'', ''ограничаване'', ''ограничения ВЕИ'', ESO, КЕВР): eso.bg publishes live generation/load, historical generation, balancing forecasts, the free-capacity
+      map (connect) and the MMS portal; no redispatch or curtailment series. Press (Capital 2024) reports ESO curtailment orders, and the ministry required ESO to publish its justification, but no such
+      list or file was found on eso.bg.'
+  CY:
+    checked: '2026-11-06'
+    note: 'Searched in Greek and English (''περικοπές ΑΠΕ'', ''curtailment''): EAC''s DSO publishes daily PV curtailment reports as monthly PDFs (2022 onward; per day: estimated energy, curtailed MWh, %,
+      TSOC instruction), but EAC''s terms allow own use only and forbid reproduction without written consent: cy_eac_pv_curtailment (blocked). TSOC answers 403 behind Cloudflare.'
+  DK:
+    checked: '2026-11-05'
+    note: 'Searched Energi Data Service (Danish/English catalogue, ''countertrade'', ''special regulation''): new source dk_energinet_countertrade (CountertradeIntraday_v2, 15-min up/down MW, CC BY 4.0).'
+  EE:
+    checked: '2026-11-05'
+    note: Elering dashboard API (OpenAPI listed, 2026-11-06) has no redispatch or countertrade endpoint; the Baltic dashboard is behind Cloudflare. Not published as open data.
+  FI:
+    checked: '2026-11-05'
+    note: 'Searched Fingrid (Finnish ''erikoissäätö'', ''vastakauppa''): new source fi_fingrid_special_regulation (dataset 391, CC BY 4.0, needs FINGRID_API_KEY).'
+  GR:
+    checked: '2026-11-05'
+    note: IPTO's file API list for 2026-10-01 holds no redispatch or curtailment file (balancing, ISP, availability, load); and IPTO states no reuse licence (see gr_admie_balancing).
+  HR:
+    checked: '2026-11-06'
+    note: 'Searched in Croatian (''redispečiranje'', ''ograničenja'', HOPS, HERA, data.gov.hr: nothing): HOPS market and balancing pages link rules only; the yearly ''Temeljni podaci'' PDFs (2009-2025;
+      2025 read) carry no redispatch figures; HERA publishes approvals of the HOPS-HEP cross-border redispatch contract (2026) and congestion-income reports (PDF) without a series.'
+  IE:
+    checked: '2026-11-05'
+    note: 'Searched EirGrid (English, ''dispatch down'', ''constraints and curtailment''): new source ie_eirgrid_dispatch_down (monthly MWh and % per jurisdiction and region, EirGrid Group Open Data Licence).'
+  LU:
+    checked: '2026-11-06'
+    note: 'Searched in German, French and English (''Redispatch'', ''Netzengpass'', ''congestion'', Creos, ILR, data.public.lu: 0 datasets for redispatch/Creos): Creos publishes no redispatch or curtailment
+      series; Luxembourg is in Amprion''s load-frequency control block, so redispatch involving it is reported on the German side (netztransparenz.de / SMARD), not per LU.'
+  MT:
+    checked: '2026-11-06'
+    note: 'Searched in English (''curtailment'', Enemalta, REWS): Enemalta''s site search and WordPress API return no curtailment page (its ''Available Capacity'' page belongs to connect); REWS and the
+      NAO''s 2024 distribution review are reports (PDF) without a series. Not published as data.'
+  RO:
+    checked: '2026-11-06'
+    note: 'Searched in Romanian (''redispecerizare'', ''congestii'', ''contrapartidă'', Transelectrica, ANRE): Transelectrica''s market, balancing and system-services pages link no redispatch data; congestion
+      costs appear only in quarterly financial reports and the ANRE-approved structural congestion report (PDF, 2020). Not published as data.'
+  SE:
+    checked: '2026-11-05'
+    note: 'Searched SVK''s data service (Swedish ''mothandel'', ''specialreglering'', ''countertrade'', ''redispatch''): its CKAN lists 10 packages, none on countertrade or redispatch; Mimer states no licence.
+      Still not published as open data.'
+  SI:
+    checked: '2026-11-06'
+    note: 'Searched in Slovenian (''redispečing'', ''prerazporejanje'', ''omejitve'', ELES, Agencija za energijo, podatki.gov.si: 0 datasets): ELES operation, system-services and notices pages carry no
+      redispatch or countertrading data; only cross-border capacity, balancing auctions and the hosting-capacity PDF (connect). Not published as data.'
+  SK:
+    checked: '2026-11-05'
+    note: 'Searched in Slovak (''redispečing'', SEPS, ÚRSO): only tender documents and ÚRSO decisions (PDF), no series as data.'
+connect:
+  AL:
+    checked: '2026-11-06'
+    note: 'Searched in Albanian (''kapaciteti i lirë'', ''lidhje në rrjetin e transmetimit'', OST, ERE): ost.al still answers 403 (Cloudflare challenge, not bypassed); OST''s 2022 activity report (PDF)
+      gives substation counts only; press reports >10 GW waiting for grid access, but no queue or capacity file found.'
+  BA:
+    checked: '2026-11-06'
+    note: 'Searched in Bosnian/Serbian (''raspoloživi kapacitet'', ''priključenje'', ''registar zahtjeva'', Elektroprenos BiH, NOS BiH, DERK): elprenos.ba and nosbih.ba home pages carry no connection or
+      capacity links (2026-11-06); DERK lists licence and permit registers only; press cites NOS BiH''s indicative generation plan (PDF) but no per-substation capacity or queue file.'
+  BE:
+    checked: '2026-11-05'
+    note: 'Searched Elia Open Data (110 datasets listed): ods183 congestion risk indicator per electrical zone exists but is an operational signal, not connection capacity: be_elia_congestion_risk (left_out).
+      Elia''s hosting-capacity map still behind Cloudflare.'
+  CY:
+    checked: '2026-11-06'
+    note: 'Searched in Greek and English (EAC DSO site pilot.eac.com.cy WordPress search/media API: ''δυναμικότητα'', ''χωρητικότητα'', ''hosting capacity''; TSOC and CERA answer 403 behind Cloudflare).
+      EAC''s RES page links the ArcGIS dashboard ''Δυναμικότητα ΑΠΕ Υποσταθμών Μεταφοράς'' (hosted and available RES capacity per transmission substation), but both feature layers are utility.arcgis.com
+      secured proxies answering 403 to a direct query (not bypassed) and EAC''s terms forbid reproduction without written consent: cy_eac_hosting_capacity (blocked).'
+  IS:
+    checked: '2026-11-06'
+    note: 'Searched in Icelandic (''laus flutningsgeta'', ''tengigeta'', ''afhendingargeta'', ''tenging við flutningskerfið''): Landsnet publishes connection guidance, an enquiry form, the system plan (kerfisáætlun,
+      PDF) and a grid map viewer (map.is/landsnet) with no capacity layer; RARIK''s distribution map (arcgis-y1.rarik.is) did not answer from the sandbox. No capacity map, list or file published.'
+  LV:
+    checked: '2026-11-06'
+    note: 'Searched in Latvian (''brīvā jauda'', ''pieslēgums'', ''apakšstacija''; data.gov.lv CKAN: nothing; AST answers 403 behind Cloudflare). Sadales tīkls'' map karte.sadalestikls.lv/lv/briva-jauda
+      now answers HTTP 200 to an honest client and its page JS reads <url>/all: 132 medium-voltage substations with free capacity for load and generation (MW), name, number, LKS-92 coordinates, update date
+      2026-11-02: new source lv_st_free_capacity (build; licence quote pending, sadalestikls.lv terms page unreachable from the sandbox).'
+  MD:
+    checked: '2026-11-06'
+    note: 'Searched in Romanian (''capacitate disponibilă'', ''racordare'', Moldelectrica, Premier Energy Distribution, RED Nord, ANRE): moldelectrica.md answers 403 (Cloudflare challenge); only connection
+      request forms and the TYNDP (PDF) are indexed; a 2024 government decision requires informing producers of available capacity, but no map or file is published.'
+  ME:
+    checked: '2026-11-06'
+    note: 'Searched in Montenegrin (''priključenje na prenosnu mrežu'', ''kapacitet'', CGES, CEDIS): CGES''s connection page describes the procedure and links cross-border capacity auctions only; CEDIS
+      publishes forms and technical requirements for small plants; no capacity map, list or file.'
+  MK:
+    checked: '2026-11-06'
+    note: 'Searched in Macedonian (''слободен капацитет за приклучување'', ''приклучоци'', MEPSO, Електродистрибуција, ERC): MEPSO''s ''Приклучоци'' page holds the connection request form and templates
+      only (''© 2026 МЕПСО. Сите права се задржани''); ERC decisions show Elektrodistribucija refusing connections for lack of capacity, but no capacity data is published.'
+  'NO':
+    checked: '2026-11-05'
+    note: 'Searched in Norwegian (''ledig kapasitet'', ''kapasitetskart'', Statnett, Elvia): only reports and press; Statnett''s request/reservation view is Power BI. Still not published as data.'
+  RO:
+    checked: '2026-11-06'
+    note: 'Searched in Romanian (''capacitate disponibilă'', ''alocarea capacității'', ''zone de rețea'', Transelectrica, ANRE, data.gov.ro unreachable). Transelectrica''s capacity-allocation page now publishes
+      as HTML tables the available capacity (MW) and auction starting price (lei/MW) per grid zone A-J and allocation year 2028-2037 (ANRE Order 53/2024 art. 6); zones are defined by counties in Anexa 4
+      (PDF): new source ro_transelectrica_zone_capacity (build; needs an HTML-table kind; no licence stated, public notice as for AT/BG). The requested capacity per zone stays an image.'
+  RS:
+    checked: '2026-11-06'
+    note: 'Searched in Serbian (Cyrillic and Latin: ''прикључење на преносни систем'', ''списак захтева'', ''slobodni kapacitet''). EMS publishes no free-capacity map, but its connection page links the
+      list of all connection requests (one-page PDF, 2026-11-04: plant, type, kV, requested and approved MW, location, phase, dates) required by the RES law, plus a storage/customer project table: new source
+      rs_ems_connection_queue (build; needs a PDF-table kind; no licence stated, public notice). Elektrodistribucija Srbije: no capacity file found.'
+  UA:
+    checked: '2026-11-06'
+    note: 'Searched in Ukrainian (''вільна потужність для приєднання'', ''резерв потужності'', Укренерго, обленерго, НКРЕКП): ua.energy answers 403 (Cloudflare); DTEK Grids publishes overload/replacement
+      summaries (PDF) only; no per-substation capacity map or file found (grid data publication is limited under martial law).'
+  XK:
+    checked: '2026-11-06'
+    note: 'Searched in Albanian (''kapacitete të lira për kyçje'', ''kërkesat për kyçje'', KOSTT, ZRrE/ERO): kostt.com still fails the TLS handshake from the sandbox; web results show only annual reports
+      and tariff PDFs; ero-ks.org home page has no capacity links. Nothing published as data.'
+consumption:
+  AT:
+    checked: 2026-11-05
+    note: 'Searched data.gv.at hub in German ("Stromverbrauch Gemeinden", "Energieverbrauch Bezirk"): Stadt Wien publishes final energy by sector for Vienna only, Land Steiermark an energy report (PDF);
+      no Statistik Austria, E-Control or DSO table per Gemeinde'
+  BG:
+    checked: '2026-11-06'
+    note: 'Searched NSI in Bulgarian (nsi.bg "Енергетика" section 74, regional statistics section 46, "потребление на електроенергия по общини"): energy balances, final consumption and district heating
+      are national; monthly energy-product deliveries national (PDF). data.egov.bg answers HTTP 403 to the probe. No per-obshtina electricity or gas consumption from NSI, KEVR or the DSOs found. Stays not_published'
+  CY:
+    checked: '2026-11-06'
+    note: 'Walked CYSTAT-DB (PxWeb API, Greek, all folders, terms "ηλεκτρ", "κατανάλ", "καύσιμ"): Energy holds only petroleum sales and imports (0900010G-0900015G), national. data.gov.cy search returns
+      no matching set. No EAC/DSO Cyprus consumption per municipality or community found. Stays not_published'
+  CZ:
+    checked: 2026-11-05
+    note: 'Searched in Czech ("spotřeba elektřiny podle obcí otevřená data"): ERÚ yearly and monthly reports give consumption per kraj and per regional distribution system only; ČSÚ releases national/regional;
+      no DSO (ČEZ, EG.D, PRE) open file per obec found'
+  DE:
+    checked: 2026-11-05
+    note: 'Searched GovData CKAN in German ("Stromverbrauch Gemeinden", "Energieverbrauch Gemeinde Strom Netzbetreiber"): only open.bydata sets (Energie-Atlas Bayern renewable share of consumption per Gemeinde,
+      based on modelled consumption) and an NRW supplier list; no metered consumption per Gemeinde from Destatis or DSOs. Destatis 43531 (industry per Kreis) still behind the GENESIS login. Registered de_govdata_consumption
+      (not_published)'
+  EE:
+    checked: '2026-11-06'
+    note: 'Searched Statistics Estonia PxWeb in Estonian ("elektrienergia tarbimine", "maakonna") and avaandmed.eesti.ee ("tarbimine", "elektritarbimine", "Elering"): live energy tables are national; archived
+      KE07 gives fuel consumption per maakond 1991-2019 (county, fuels only): registered ee_stat_ke07_fuel_county (left_out). Only an Elektrilevi weekly network total 2020 on the portal; Elering postcode
+      aggregates are paid. Stays not_published'
+  FI:
+    checked: 2026-11-05
+    note: 'Searched Statistics Finland PxWeb (all StatFin folders, Finnish "sähkön kulutus kunnittain"), Energiateollisuus and Fingrid open data: industry electricity per maakunta (tene 12bu) is the finest;
+      Fingrid Datahub open data are national aggregates by customer type (Fingrid: no distribution-system or accounting-point breakdown). Registered fi_fingrid_datahub (left_out)'
+  GR:
+    checked: '2026-11-06'
+    note: 'Searched ELSTAT census 2021 (Greek, SAM04/SAM05 publication lists) and HEDNO (deddie.gr, "Στατιστικά", "καταναλώσεις"): ELSTAT has no metered consumption per Δήμος; deddie.gr links statistics
+      only for the non-interconnected islands; data.gov.gr API paths answer 404 without a token (registered API). No per-municipality electricity or gas consumption found. Stays not_published'
+  HR:
+    checked: '2026-11-06'
+    note: 'Searched data.gov.hr CKAN in Croatian ("energija", "energije", "potrošnja", "plin", "električne"): DZS publishes PEFA energy accounts (PC-Axis, national) and short-term energy indicators (msi-energija.xlsx,
+      national); HERA a register of heat customers; city sets only (Rijeka ENERGO tariffs, Zagreb municipal buildings). No HEP ODS or DZS consumption per grad/općina. Stays not_published'
+  HU:
+    checked: '2026-11-06'
+    note: 'Searched in Hungarian (KSH STADAT "villamosenergia", "vezetékes gáz településenként"; MEKH statisztikák; TEIR): www.ksh.hu and statinfo.ksh.hu answer an F5 "Request Rejected" page to every request
+      (not bypassed); MEKH pages are a JavaScript app; settlement utility data sit in TEIR behind a login; data.gov.hu reset the connection. Registered hu_ksh_energy_settlement (blocked)'
+  IT:
+    checked: 2026-11-05
+    note: 'Searched dati.gov.it and dati.emilia-romagna.it CKAN in Italian ("consumi energia elettrica comuni"): only city datasets (Milano series, Torino per abitante 2000-2014, Genova and Reggio Emilia
+      municipal buildings) and Regione Puglia ENEL 2006-2011 per category; e-distribuzione publishes no per-comune open file. Terna per province stays blocked on licence (it_terna_province)'
+  LT:
+    checked: 2026-11-05
+    note: 'Searched the Statistics Lithuania SDMX catalogue and the web in Lithuanian ("elektros energijos suvartojimas savivaldybė"): no open per-municipality consumption table; ESO open data per municipality
+      or postcode not found'
+  LU:
+    checked: '2026-11-06'
+    note: 'Searched data.public.lu in French and German ("électricité", "consommation", "gaz", "Stromverbrauch", "compteur", "Creos") and LUSTAT: ILR electricity and gas dashboards (CC BY 4.0) give monthly
+      kWh by customer class for the whole country only; LUSTAT DF_A4300-A4304 national; Creos publishes nothing there. Registered lu_ilr_energy_statistics (left_out, national)'
+  LV:
+    checked: 2026-11-05
+    note: 'Walked CSP PxWeb energy folder (Latvian "elektroenerģijas patēriņš novados"): per-novads tables cover heat and electricity production shares (ENB200, ENB210, ENA050/060), not consumption; household
+      energy (ENM) is national'
+  MT:
+    checked: '2026-11-06'
+    note: 'Re-probed nso.gov.mt (non-residential smart-meter statistics per district), open.data.gov.mt and rews.org.mt: all answer a Cloudflare challenge (HTTP 403), not bypassed; mt_nso_consumption stays
+      blocked'
+  PL:
+    checked: 2026-11-05
+    note: 'Tried dane.gov.pl API and GUS BDL API (Polish "zużycie energii elektrycznej gmina"): both timed out from the sandbox (30-40 s, no bytes) on 2026-11-06; nothing verified. Previous finding stands:
+      BDL no longer carries municipal electricity use. Retry from Actions'
+  RO:
+    checked: '2026-11-06'
+    note: 'Searched in Romanian (INS TEMPO-Online "gaze naturale distribuite pe localități", "energie termică distribuită"; data.gov.ro "energie"): TEMPO is plain HTTP on port 8077, which the sandbox proxy
+      does not carry; insse.ro and data.gov.ro gave no answer. Registered ro_ins_tempo_locality (blocked: probe from Actions; licence to read)'
+  SI:
+    checked: 2026-11-05
+    note: 'Searched SURS SiStat (Slovene: "poraba električne energije občine"): table 1817609S gives electricity consumption in kWh per občina (212 + total) by consumer type (households / business), 2020-2025,
+      CC BY 4.0 via podatki.gov.si; monthly 1817607S and NACE split 1817610S too. New source si_surs_electricity_municipality (needs a pxweb kind)'
+  SK:
+    checked: '2026-11-06'
+    note: 'Searched ŠÚ SR STATdata in Slovak ("spotreba elektriny", "spotreba palív, elektriny, tepla") and data.slovensko.sk (SPARQL): DATAcube en3001rr gives electricity (MWh), natural gas (tisíc m3),
+      heat (GJ), heating oil, diesel and coal consumption per okres (79 districts), kraj and oblasť, 2000-2024, CC BY 4.0 (data.gov.sk terms of use); covers the reporting organisations of the ŠÚ SR survey
+      (sums to 14.4 TWh electricity 2024, not households). New source sk_susr_energy_consumption_okres'
+heat_pumps:
+  GB:
+    checked: 2026-11-05
+    note: 'Searched gov.uk (DESNZ/Ofgem Boiler Upgrade Scheme statistics): monthly workbook, table Q1.2 heat pump redemptions per local authority district and Q1.3 per constituency, England and Wales, OGL
+      v3. New source gb_bus_heat_pumps_la (grant-funded installs only; MCS stays blocked)'
+  US:
+    checked: 2026-11-05
+    note: 'Searched EIA RECS 2020 state data: "State Space Heating.xlsx" gives million homes and % with a central heat pump as main heating equipment per state (survey estimates, Q/N marks), public domain.
+      New source us_eia_recs_heat_pumps_state'
+heating:
+  AT:
+    checked: 2026-11-05
+    note: 'Searched data.gv.at in German ("Heizungsart Gemeinde", "Heizung"): only Stadt Wien "Heizungsart" for Vienna (CC BY 4.0, CSV links now answer page-not-found); Statistik Austria publishes heating
+      per Gemeinde only in STATcube (account). Registered at_wien_heizungsart (left_out)'
+  BE:
+    checked: 2026-11-05
+    note: 'Statbel Census 2021 has no heating variable; Fluvius open data (Dutch "warmtepomp", "verwarming", "aansluitingen") could not be searched: opendata.fluvius.be reset every connection from the sandbox
+      (2026-11-06). Retry from Actions'
+  BG:
+    checked: '2026-11-06'
+    note: 'Searched NSI in Bulgarian ("отопление", Census 2021 results page 151/1349): the census asked the energy used for heating, but it is published only nationally (Census2021_housing_conditions.pdf,
+      table 4); the open xlsx workbooks (buildings and dwellings, households) per oblast/obshtina have no heating column. Registered bg_nsi_census2021_heating (not_published)'
+  CY:
+    checked: '2026-11-06'
+    note: 'Walked CYSTAT-DB in Greek ("θέρμανση", census 2021 and 2011 folders): Living Quarters has year of construction, tenure and building type per Επαρχία only; no heating system or fuel table. Registered
+      cy_cystat_census2021_heating (not_published)'
+  CZ:
+    checked: 2026-11-05
+    note: 'Searched ČSÚ in Czech ("SLDB 2021 způsob vytápění obce"): Census 2021 open data give occupied dwellings by main heating energy source (incl. Tepelné čerpadlo, Elektřina, Dřevo, Uhlí, Z kotelny)
+      and by heating method per obec, CC BY 4.0. New sources cz_csu_sldb_heating_energy, cz_csu_sldb_heating_mode'
+  EE:
+    checked: 2026-11-05
+    note: 'Walked Statistics Estonia PxWeb census folders in Estonian ("kütmisviis"): 2011 RL0223 main heating method per municipality (district, local central, stove, electric); 2021 RL21217 only with/without
+      central heating. Licence CC BY-SA 4.0. New source ee_stat_heating_2011 (2011 boundaries)'
+  ES:
+    checked: 2026-11-05
+    note: 'Searched in Spanish ("Censo 2021 viviendas tipo de calefacción municipio sección censal"): the register-based Censo 2021 dwelling tables carry tenure, use and size but no heating variable (INE
+      jaxi tables; ineAtlas variable list); heating was a 2011 sample-census question only'
+  FI:
+    checked: 2026-11-05
+    note: 'Searched StatFin in Finnish ("rakennukset lämmitysaineen mukaan"): table raku/15er gives buildings and floor area by heating fuel (district heat, oil/gas, electricity, coal, wood/peat, ground
+      heat, other) per kunta, 2025, CC BY 4.0. New source fi_statfin_heating_fuel_municipality'
+  GR:
+    checked: '2026-11-06'
+    note: 'Searched ELSTAT in Greek ("θέρμανση", "κύρια πηγή ενέργειας", SAM05 census 2021 dwellings and households): table Α13 gives households by main energy source for heating (electricity, natural gas,
+      oil, solar, biomass, other) per Περιφερειακή Ενότητα (75), and table Γ09 dwellings with central (autonomous / non-autonomous), other or no heating per settlement (13,586 οικισμοί); ELSTAT reuse policy
+      allows commercial reuse with the source. New sources gr_elstat_heating_energy_regional_unit (fuel, regional unit), gr_elstat_heating_settlement (type, settlement)'
+  HR:
+    checked: 2026-11-05
+    note: 'Searched in Croatian ("Popis 2021 stanovi prema vrsti grijanja po gradovima i općinama"): DZS census 2021 results workbooks found for population; no dwelling heating table per grad/općina found'
+  HU:
+    checked: 2026-11-05
+    note: 'Searched in Hungarian ("lakások fűtési mód szerint településenként"): KSH Census 2022 has settlement-level heating inside the nepszamlalas2022.ksh.hu JavaScript database; the results page answers
+      403 to the probe and no file or API found. Registered hu_ksh_census2022_heating (blocked)'
+  IT:
+    checked: 2026-11-05
+    note: 'Searched in Italian ("Istat censimento abitazioni impianto di riscaldamento combustibile comune 2021"): the permanent census 2021 housing release has no heating variable per comune; heating per
+      comune exists only for census 2011 (regional PDFs, e.g. Emilia-Romagna) and ISTAT household energy survey results are by area type. ISTAT SDMX catalogue timed out from the sandbox (90 s)'
+  LT:
+    checked: 2026-11-05
+    note: 'Searched the Statistics Lithuania SDMX catalogue (Lithuanian "šildymas", "šildymo būdas"): heating tables S1R009, S3R0516, S3R0518 are national only (DS_REGIONAL=N); no census 2021 table per
+      savivaldybė. Registered lt_osp_heating (not_published)'
+  LU:
+    checked: 2026-11-05
+    note: 'Searched in French ("recensement 2021 logements chauffage commune STATEC"): STATEC Panorama du logement 2021 reports heating oil share nationally (27.8 %); no LUSTAT table of heating per commune
+      found'
+  LV:
+    checked: 2026-11-05
+    note: 'Walked CSP PxWeb housing tables in Latvian ("apkure"): MAS080 gives dwellings with/without central heating per novads, valstspilsēta and Riga apkaime, 2011 and 2021, CC0 (data.gov.lv). No fuel.
+      New source lv_csp_central_heating'
+  MT:
+    checked: '2026-11-06'
+    note: 'Searched NSO Malta (Census 2021 dwellings, heating) and open.data.gov.mt: both answer a Cloudflare challenge (HTTP 403), not bypassed; nothing read. Registered mt_nso_census2021_heating (blocked)'
+  PL:
+    checked: 2026-11-05
+    note: 'Searched in Polish ("CEEB źródła ciepła gmina dane.gov.pl", "sposób ogrzewania"): CEEB (GUNB building emission register) gives municipal heat-source breakdowns only to authorised bodies (public
+      maps blurred); dane.gov.pl and BDL APIs timed out from the sandbox. NSP 2021 publishes only central heating yes/no per gmina (not probed)'
+  PT:
+    checked: 2026-11-05
+    note: 'Searched dados.gov.pt / INE in Portuguese ("tipo de aquecimento alojamentos freguesia"): INE indicator 0011526, Census 2021 dwellings by heating type used most often per freguesia, CC BY 4.0
+      (INE API answers, 5 MB JSON); 2011 indicator 0006297 has the main heating energy source per freguesia. New source pt_ine_heating_freguesia'
+  RO:
+    checked: 2026-11-05
+    note: 'Searched in Romanian ("locuințe după modul de încălzire recensământ 2021"): RPL 2021 final results table 8.9 (heating mode per county, urban/rural) and 8.23 (regions, counties) as xlsx; no table
+      per UAT. Licence not stated on the page. New source ro_ins_rpl2021_heating_county (licence to confirm)'
+  SI:
+    checked: 2026-11-05
+    note: 'Searched SiStat in Slovene ("stanovanja po načinu ogrevanja"): 0871205S per naselje (settlement) and 0861120S per občina, heating method (district / central / other / none), 2011-2021, CC BY
+      4.0. New source si_surs_heating_settlement (method, not fuel)'
+  SK:
+    checked: 2026-11-05
+    note: 'Searched in Slovak ("SODB 2021 byty podľa spôsobu vykurovania obce"): ŠÚ SR multidimensional tables (SAS Visual Analytics) offer CSV export at region/district level; scitanie.sk open-data paths
+      answered 404, data.statistics.sk reset the connection, data.slovensko.sk returned no JSON. Nothing machine-readable per obec verified'
+  US:
+    checked: '2026-11-06'
+    note: 'Census API: ACS 5-year 2024 (2020-2024) group B25040 house heating fuel (10 categories, estimate and MOE) answers its metadata without a key; data calls redirect to missing_key.html, so it waits
+      for CENSUS_API_KEY. New source us_acs_heating_fuel (kind census, per tract)'
+rooftop_solar:
+  US:
+    checked: '2026-11-05'
+    note: 'Searched EIA (English, small-scale solar): new source us_eia861m_small_solar (EIA-861M estimated small-scale PV capacity and generation per state and month, public domain); LBNL Tracking the
+      Sun stays blocked (403).'

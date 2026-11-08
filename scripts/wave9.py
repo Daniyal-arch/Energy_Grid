@@ -8,6 +8,22 @@ scripts/wave9_sources.yaml.
 Probe results go to `data/wave9_probes.json` (committed: the evidence behind every registry
 cell and docs/research/wave9-sources.md). Builds go to the lake (`lake/w9_<id>/...`) and write
 `data/wave9_built.json` (rows, columns and the answer of each table's example query).
+
+A registry row's `kind` picks the reader (`load_one`); `urls` stacks several files of one
+kind (`tag_urls` adds each row's `source_url`).
+
+    files     csv csv_zip csv_gz (sep, skip, encoding, varchar, lenient, member, inner),
+              xlsx xls ods (sheet, range, pandas), geojson gpkg shp_zip gpkg_zip geojson_zip,
+              parquet, json (records, coords, lon/lat, crs), fwf, raster (member, var, band)
+    APIs      arcgis (page, where), ckan, socrata, ods_api, odata, pxweb (max_cells),
+              jsonstat, eurostat_tsv, wdi, govuk, sciencebase, dirlist, datafair_agg,
+              census ({env:CENSUS_API_KEY}), entsoe, aqviewer
+    custom    one function per source in CUSTOM: eirgrid_dispatch_down, xlsx_multihead
+              (head, data, ids, id_names, group), ine_pt_indicator, semo_reports,
+              bfee_abwaerme, ins_ro_census_blocks, odata_paged (endpoints), pjm_rpm_rcp,
+              transelectrica_zones, pdf_tables (head, names, numbers), admie_files
+              (start, match, sheet), regelleistung_results (start, markets), ceps_soap
+              (start, operations), overture_comm_lines
 """
 
 from __future__ import annotations
@@ -24,6 +40,9 @@ from typing import Any
 
 import httpx
 import yaml
+
+# GDAL caps a GeoJSON object at 200 MB by default: ArcGIS layers written whole can be larger
+os.environ.setdefault("OGR_GEOJSON_MAX_OBJ_SIZE", "0")
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import wave5_common as w  # noqa: E402
@@ -263,36 +282,156 @@ def read_geo(con, path: Path, s: dict[str, Any]) -> None:  # noqa: ANN001
         for (c,) in con.execute("SELECT column_name FROM (DESCRIBE t)").fetchall()
         if c.lower() in ("geom", "geometry", "shape", "wkb_geometry")
     )
+    if crs == "ESRI:104000":  # "GCS_Assumed_Geographic_1": degrees with no datum, as published
+        crs = None
+    # a new table, not UPDATE: a column typed with the file's CRS refuses other geometries
+    g = f"ST_GeomFromWKB(ST_AsWKB({geom}))"
     if crs and crs not in ("EPSG:4326", "OGC:CRS84"):
         print(f"  {path.name}: {crs} to EPSG:4326", flush=True)
-        con.execute(
-            f"UPDATE t SET {geom} = ST_Transform({geom}, '{crs}', 'EPSG:4326', always_xy := true)"
-        )
-    con.execute(f"UPDATE t SET {geom} = ST_GeomFromWKB(ST_AsWKB({geom}))")
+        g = f"ST_Transform({g}, '{crs}', 'EPSG:4326', always_xy := true)"
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * REPLACE ({g} AS {geom}) FROM t")
 
 
 def arcgis_pages(s: dict[str, Any], dest: Path) -> Path:
     """Every feature of an ArcGIS layer, paged (its maxRecordCount), as one GeoJSON file."""
     meta = w.get_json(s["url"], params={"f": "json"})
-    step = min(int(meta.get("maxRecordCount") or 1000), 2000)  # type: ignore[union-attr]
+    # `page`: a smaller page for layers of large polygons (a full page can time out server-side)
+    step = min(int(meta.get("maxRecordCount") or 1000), 2000, int(s.get("page", 2000)))  # type: ignore[union-attr]
     feats: list[dict[str, Any]] = []
+    tries = 0
     while True:
         page = w.get_json(
             s["url"] + "/query",
             params={
-                "where": s.get("where", "1=1"), "outFields": "*", "outSR": "4326", "f": "geojson",
+                "where": s.get("where", "1=1"), "outFields": s.get("fields", "*"), "outSR": "4326", "f": "geojson",
                 "resultOffset": len(feats), "resultRecordCount": step, "orderByFields": s.get("order", ""),
             },
             timeout=300,
         )  # fmt: skip
+        err = page.get("error") or {}  # type: ignore[union-attr]
+        if err.get("code") == 429 and tries < 5:  # a per-minute quota: wait as asked, same page
+            tries += 1
+            time.sleep(61)
+            continue
+        tries = 0
+        if err:
+            raise SystemExit(f"ArcGIS error at offset {len(feats):,}: {page['error']}")  # type: ignore[index]
         got = page.get("features") or []  # type: ignore[union-attr]
         feats += got
         if len(feats) % 20000 < step:
             print(f"  {s['id']}: {len(feats):,} features", flush=True)
         if not got or not (page.get("exceededTransferLimit") or len(got) == step):  # type: ignore[union-attr]
             break
+    if not feats:
+        raise SystemExit("the layer returned no features")
     dest.write_text(json.dumps({"type": "FeatureCollection", "features": feats}))
     return dest
+
+
+# ENTSO-E time-series fields kept with each point (what the value is)
+ENTSOE_META = ("businessType", "flowDirection.direction", "type_MarketAgreement.type", "mktPSRType",
+               "psrType", "quantity_Measure_Unit.name", "price_Measure_Unit.name", "currency_Unit.name")  # fmt: skip
+
+
+class KeyMissing(RuntimeError):
+    """A source whose URL or headers need a key that is not in the environment."""
+
+
+ENV_REF = re.compile(r"\{env:([A-Z0-9_]+)\}")
+
+
+def with_keys(s: dict[str, Any]) -> dict[str, Any]:
+    """`{env:NAME}` in url, urls or headers replaced by the environment's value (brief 30); a
+    missing key raises KeyMissing, so the build is a skip that names the key."""
+
+    def sub(v: Any) -> Any:
+        if isinstance(v, str):
+            for name in ENV_REF.findall(v):
+                if not os.environ.get(name):
+                    raise KeyMissing(f"{name} is not set: skipped (set it as a repo secret)")
+            return ENV_REF.sub(lambda m: os.environ[m.group(1)], v)
+        if isinstance(v, list):
+            return [sub(x) for x in v]
+        if isinstance(v, dict):
+            return {k: sub(x) for k, x in v.items()}
+        return v
+
+    return {k: sub(v) if k in ("url", "urls", "headers", "params") else v for k, v in s.items()}
+
+
+STATE_FIPS = (  # noqa: SIM905
+    "01 02 04 05 06 08 09 10 11 12 13 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 "
+    "34 35 36 37 38 39 40 41 42 44 45 46 47 48 49 50 51 53 54 55 56 72"
+).split()
+
+
+def census_tracts(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """kind census: an ACS table per tract, state by state (the API answers one state's tracts
+    at a time). `url` is the dataset endpoint, `get` the variables; values as published (the
+    Census Bureau's negative codes such as -666666666 mark a missing estimate, kept)."""
+    if not os.environ.get("CENSUS_API_KEY"):
+        raise KeyMissing("CENSUS_API_KEY is not set: skipped (set it as a repo secret)")
+    rows: list[list[str]] = []
+    head: list[str] = []
+    for st in STATE_FIPS:
+        r = httpx.get(
+            s["url"],
+            params={
+                "get": s["get"],
+                "for": "tract:*",
+                "in": f"state:{st}",
+                "key": os.environ.get("CENSUS_API_KEY", ""),
+            },
+            timeout=300,
+        )
+        r.raise_for_status()
+        data = r.json()
+        head, rows = data[0], rows + data[1:]
+    f = d / "src.csv"
+    import csv
+
+    with f.open("w", newline="", encoding="utf-8") as fh:
+        wr = csv.writer(fh)
+        wr.writerow([*head, "geoid"])
+        for row in rows:
+            rec = dict(zip(head, row, strict=False))
+            wr.writerow([*row, f"{rec['state']}{rec['county']}{rec['tract']}"])
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('{f}', all_varchar = true)")
+
+
+def zip_member(folder: Path, s: dict[str, Any]) -> Path:
+    """The table file of an unzipped archive: the one whose path matches `member` (a regex),
+    else the first CSV or text file. A matching zip inside the zip (zip-in-zip, e.g. SMU's heat
+    flow release) is unzipped in turn and read the same way with `inner`."""
+    if not s.get("member"):
+        return first_file(folder, (".csv", ".txt"))
+    rx = re.compile(s["member"], re.I)
+    hits = sorted(p for p in folder.rglob("*") if p.is_file() and rx.search(p.as_posix()))
+    if not hits:
+        raise SystemExit(f"no file matching {s['member']!r} in the archive")
+    f = hits[0]
+    if f.suffix.lower() == ".zip":
+        return zip_member(w.unzip(f), {"member": s.get("inner")} if s.get("inner") else {})
+    return f
+
+
+def _entsoe_docs(client: httpx.Client, params: dict[str, str]) -> list[Any]:
+    """The documents of one ENTSO-E request: plain XML, or a zip of XML documents (balancing
+    data is often zipped); an acknowledgement (no data) gives none."""
+    import io
+    import xml.etree.ElementTree as ET
+    import zipfile
+
+    q = {"securityToken": os.environ["ENTSOE_API_KEY"].strip(), **params}
+    r = client.get("https://web-api.tp.entsoe.eu/api", params=q)
+    if r.status_code != 200:
+        return []
+    blobs = [r.content]
+    if r.content[:2] == b"PK":
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        blobs = [z.read(n) for n in z.namelist() if n.lower().endswith(".xml")]
+    roots = [ET.fromstring(b) for b in blobs]
+    return [x for x in roots if not x.tag.endswith("Acknowledgement_MarketDocument")]
 
 
 def load(con, s: dict[str, Any]) -> None:  # noqa: ANN001
@@ -300,7 +439,10 @@ def load(con, s: dict[str, Any]) -> None:  # noqa: ANN001
     if s.get("urls"):
         for i, u in enumerate(s["urls"]):
             load_one(con, {**s, "url": u, "id": f"{s['id']}/{i}"})
-            con.execute(f"CREATE OR REPLACE TABLE part_{i} AS SELECT * FROM t")
+            tag = (
+                f", '{u}' AS source_url" if s.get("tag_urls") else ""
+            )  # several datasets: which one
+            con.execute(f"CREATE OR REPLACE TABLE part_{i} AS SELECT *{tag} FROM t")
         union = " UNION ALL BY NAME ".join(f"SELECT * FROM part_{i}" for i in range(len(s["urls"])))
         con.execute(f"CREATE OR REPLACE TABLE t AS {union}")
         return
@@ -311,7 +453,114 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
     kind, url = s["kind"], s["url"]
     d = TMP / s["id"]
     d.mkdir(parents=True, exist_ok=True)
-    if kind == "arcgis":
+    if kind == "ods_api":  # an Opendatasoft dataset: its CSV export (semicolons), as published
+        url = url if "/exports/" in url else url.rstrip("/") + "/exports/csv"
+        url += ("&" if "?" in url else "?") + "delimiter=%3B"
+        s, kind = {**s, "url": url, "kind": "csv", "sep": ";"}, "csv"
+    if kind == "census":
+        census_tracts(con, s, d)
+    elif kind == "parquet":  # (Geo)Parquet: read as is; a WKB `geometry` becomes a geometry
+        f = w.download(url, d / "src.parquet", timeout=3600)
+        con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_parquet('{f}')")
+        cols = dict(con.execute("SELECT column_name, column_type FROM (DESCRIBE t)").fetchall())
+        if cols.get("geometry") == "BLOB":
+            con.execute(
+                "CREATE OR REPLACE TABLE t AS SELECT * EXCLUDE (geometry), "
+                "ST_GeomFromWKB(geometry) AS geometry FROM t"
+            )
+    elif (
+        kind == "aqviewer"
+    ):  # EEA AQ Viewer: a POSTed filter, a zipped CSV, one country and year at a time
+        import io
+        import zipfile
+
+        frames = []
+        for country in s["countries"]:
+            for year in s["years"]:
+                body = {"Page": 0, "SortBy": None, "SortAscending": True, "RequestFilter": {
+                    "Country": {"FieldName": "Country", "Values": [country]},
+                    "ReportingYear": {"FieldName": "ReportingYear", "Values": [str(year)]}}}  # fmt: skip
+                r = httpx.post(url, json=body, headers=UA, timeout=600)
+                r.raise_for_status()
+                if r.content[:2] != b"PK":
+                    continue  # no rows for this country and year
+                z = zipfile.ZipFile(io.BytesIO(r.content))
+                f = d / f"{country}_{year}.csv".replace(" ", "_")
+                f.write_bytes(z.read(z.namelist()[0]))
+                n = con.execute(
+                    f"SELECT count(*) FROM read_csv('{f}', all_varchar = true)"
+                ).fetchone()[0]
+                if n >= 100_000:  # the viewer stops at 100,000 rows: a cut answer is not kept
+                    raise SystemExit(
+                        f"{country} {year}: {n} rows, the viewer's cap; split the request"
+                    )
+                frames.append(str(f))
+        if not frames:
+            raise SystemExit("no rows for any country and year")
+        files = ", ".join(f"'{f}'" for f in frames)
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv([{files}], all_varchar = true, union_by_name = true)"
+        )
+    elif kind == "entsoe":  # brief 30: any Transparency document per area, points as published
+        if not os.environ.get("ENTSOE_API_KEY"):
+            raise KeyMissing("ENTSOE_API_KEY is not set: skipped (set it as a repo secret)")
+        from datetime import UTC, datetime, timedelta
+
+        import entsoe
+
+        end = datetime.now(UTC).replace(hour=0, minute=0, second=0, microsecond=0)
+        start = end - timedelta(days=int(s.get("days", 30)))
+        stamp = {
+            "periodStart": start.strftime("%Y%m%d%H%M"),
+            "periodEnd": end.strftime("%Y%m%d%H%M"),
+        }
+        rows = []
+        with httpx.Client(timeout=120) as client:
+            for area in s["areas"]:
+                eic = entsoe.AREA_EIC.get(area) or entsoe.ZONE_EIC.get(area)
+                if not eic:
+                    continue
+                params = {
+                    **{k: str(v) for k, v in s["params"].items()},
+                    s["domain_param"]: eic,
+                    **stamp,
+                }
+                docs = _entsoe_docs(client, params)
+                for meta, points in [
+                    p
+                    for root in docs
+                    for p in entsoe.points_of(root, s.get("value_tag", "quantity"))
+                ]:
+                    for t, minutes, value in points:
+                        rows.append({"area": area, "start_utc": t.isoformat(), "minutes": minutes, "value": value,
+                                     **{k: v for k, v in meta.items() if k in ENTSOE_META}})  # fmt: skip
+        if not rows:
+            raise SystemExit("no data for any area in the window")
+        f = d / "src.json"
+        f.write_text(json.dumps(rows), encoding="utf-8")
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array')"
+        )
+    elif kind == "datafair_agg":  # data-fair values_agg: nested counts flattened to rows
+        data = w.get_json(url, timeout=600)
+        fields = re.search(r"field=([^&]+)", url).group(1).split(";")  # type: ignore[union-attr]
+        rows: list[dict[str, Any]] = []
+
+        def walk(aggs: list[dict[str, Any]], keys: dict[str, Any], depth: int) -> None:
+            for a in aggs:
+                k = {**keys, fields[depth]: a.get("value")}
+                if a.get("aggs") and depth + 1 < len(fields):
+                    walk(a["aggs"], k, depth + 1)
+                else:
+                    rows.append({**k, "count": a.get("total")})
+
+        walk(data.get("aggs") or [], {}, 0)  # type: ignore[union-attr]
+        f = d / "src.json"
+        f.write_text(json.dumps(rows), encoding="utf-8")
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array')"
+        )
+    elif kind == "arcgis":
         read_geo(con, arcgis_pages(s, d / "layer.geojson"), {**s, "crs": "EPSG:4326"})
     elif kind in ("shp_zip", "gpkg_zip", "geojson_zip"):
         z = w.unzip(w.download(url, d / "src.zip", timeout=3600))
@@ -320,7 +569,19 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             "gpkg_zip": (".gpkg",),
             "geojson_zip": (".geojson", ".json"),
         }
-        read_geo(con, first_file(z, ext[kind]), s)
+        if s.get("all_files"):  # every layer file of the zip (points and polygons), stacked
+            files = sorted(p for p in z.rglob("*") if p.is_file() and p.suffix.lower() in ext[kind])
+            for i, f in enumerate(files):
+                read_geo(con, f, s)
+                con.execute(
+                    f"CREATE OR REPLACE TABLE zpart_{i} AS SELECT *, '{f.stem}' AS src_file FROM t"
+                )
+            union = " UNION ALL BY NAME ".join(
+                f"SELECT * FROM zpart_{i}" for i in range(len(files))
+            )
+            con.execute(f"CREATE OR REPLACE TABLE t AS {union}")
+        else:
+            read_geo(con, first_file(z, ext[kind]), s)
     elif kind in ("geojson", "gpkg"):
         read_geo(con, w.download(url, d / f"src.{kind}", timeout=3600), s)
     elif kind in ("csv", "csv_zip", "csv_gz"):
@@ -329,6 +590,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             d
             / ("src.zip" if kind == "csv_zip" else "src.csv.gz" if kind == "csv_gz" else "src.csv"),
             timeout=3600,
+            headers=s.get("headers"),
         )
         # Eurostat queues a large extraction (a SOAP "queued" answer) and serves it from its
         # cache once ready: ask again until the table comes
@@ -340,7 +602,7 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             time.sleep(30)
             f = w.download(url, f, timeout=3600)
         if kind == "csv_zip":
-            f = first_file(w.unzip(f), (".csv", ".txt"))
+            f = zip_member(w.unzip(f), s)
         if s.get("recode"):  # a legacy encoding DuckDB does not read: to UTF-8 first
             utf8 = f.with_suffix(".utf8.csv")
             utf8.write_text(f.read_bytes().decode(s["recode"], errors="replace"), encoding="utf-8")
@@ -354,6 +616,8 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             parts.append(f"encoding = '{s['encoding']}'")
         if s.get("varchar"):
             parts.append("all_varchar = true")
+        if s.get("lenient"):  # rows whose line endings or quoting the strict sniffer refuses
+            parts.append("strict_mode = false")
         opts = ", ".join(parts)
         con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_csv('{f}', {opts})")
     elif kind == "xlsx" and not (s.get("sheets") or s.get("pandas")):
@@ -370,10 +634,20 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
             data = data[k]  # type: ignore[index]
         if isinstance(data, dict):
             data = [data]
+        if s.get(
+            "coords"
+        ):  # a nested [a, b] pair, e.g. "geometry.coordinates" (`latlon`: lat first)
+            for rec in data:  # type: ignore[union-attr]
+                v: Any = rec
+                for k in s["coords"].split("."):
+                    v = v.get(k) if isinstance(v, dict) else None
+                if isinstance(v, list) and len(v) >= 2:
+                    rec["lon"], rec["lat"] = (v[1], v[0]) if s.get("latlon") else (v[0], v[1])
+                rec.pop(s["coords"].split(".")[0], None)  # the pair now lives in lon and lat
         f = d / "src.json"
         f.write_text(json.dumps(data))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000, sample_size = -1)"
         )
     elif kind == "socrata":
         rows: list[dict[str, Any]] = []
@@ -387,7 +661,39 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(rows))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000, sample_size = -1)"
+        )
+    elif kind == "pxweb":  # a PxWeb table, every variable asked for (left out, it is summed away)
+        meta = w.get_json(url, timeout=300)
+        variables = meta.get("variables") or []  # type: ignore[union-attr]
+        # the API refuses a request over its cell limit (403): the largest variable in batches
+        limit = int(s.get("max_cells", 100_000))
+        sizes = [len(v["values"]) for v in variables] or [1]
+        cells = 1
+        for n in sizes:
+            cells *= n
+        big = max(range(len(sizes)), key=lambda i: sizes[i])
+        per = max(1, limit // max(1, cells // sizes[big]))
+        rows = []
+        for k in range(0, sizes[big], per):
+            query = [
+                {
+                    "code": v["code"],
+                    "selection": {"filter": "item", "values": v["values"][k : k + per]},
+                }
+                if i == big
+                else {"code": v["code"], "selection": {"filter": "all", "values": ["*"]}}
+                for i, v in enumerate(variables)
+            ]
+            body = {"query": query, "response": {"format": "json-stat2"}}
+            r = httpx.post(url, json=body, headers=UA, timeout=600)
+            r.raise_for_status()
+            rows += jsonstat_rows(r.json())
+            time.sleep(1)  # the APIs allow a few requests a second
+        f = d / "src.json"
+        f.write_text(json.dumps(rows))
+        con.execute(
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1)"
         )
     elif kind == "jsonstat":
         con.execute("CREATE OR REPLACE TABLE t AS SELECT * FROM (VALUES (1)) LIMIT 0")
@@ -408,11 +714,15 @@ def load_one(con, s: dict[str, Any]) -> None:  # noqa: ANN001
         f = d / "src.json"
         f.write_text(json.dumps(rows))
         con.execute(
-            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000)"
+            f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{f}', format = 'array', map_inference_threshold = -1, maximum_object_size = 1000000000, sample_size = -1)"
         )
     elif kind == "ckan":
         # the newest CSV (or `fmt`) resource of the first package the search finds
         res = w.get_json(url)["result"]  # type: ignore[index]
+        if isinstance(res, list):  # package_list names packages only: no resources to pick from
+            raise SystemExit(
+                f"CKAN answered a list of {len(res)} names: use package_show?id=<name>"
+            )
         pkgs = res.get("results", [res])
         fmt = (s.get("fmt") or "csv").lower()
         cand = [
@@ -613,8 +923,738 @@ def jsonstat_rows(d: dict[str, Any]) -> list[dict[str, Any]]:
 CUSTOM: dict[str, Any] = {}
 
 
+def overture_comm_lines(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """OSM communication lines through Overture's base/infrastructure theme (class
+    communication_line) in the Europe box, read in place from Overture's public bucket (no
+    credentials: the R2 keys in AWS_* would be refused there); OSM tags kept as published."""
+    con.execute(
+        "CREATE OR REPLACE SECRET overture (TYPE s3, KEY_ID '', SECRET '', REGION 'us-west-2', "
+        "SCOPE 's3://overturemaps-us-west-2')"
+    )
+    con.execute(
+        f"""CREATE OR REPLACE TABLE t AS
+            SELECT id, class, subtype, names.primary AS name, source_tags,
+                   ST_GeomFromWKB(ST_AsWKB(geometry)) AS geometry
+            FROM read_parquet('{s["url"]}', hive_partitioning = false)
+            WHERE class = 'communication_line'
+              AND bbox.xmin < 45 AND bbox.xmax > -25 AND bbox.ymin < 72 AND bbox.ymax > 34"""
+    )
+
+
+CUSTOM["eur_overture_comm_lines"] = overture_comm_lines
+
+
+def eirgrid_dispatch_down(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """EirGrid's dispatch-down workbook, sheet `sheet`: a band per year (a title row naming
+    each section, a header row, month and quarter rows) and, side by side, one section per area
+    and technology (All Island / Ireland / Northern Ireland; wind, solar), each with a
+    "Volumes (MWh)" and a "Percentages" group. Long form: area, year, period, measure, unit,
+    value, as published (quarters are the workbook's own sums, kept and labelled)."""
+    import pandas as pd
+
+    f = w.download(s["url"], d / "src.xlsx", timeout=600)
+    df = pd.read_excel(f, sheet_name=s["sheet"], header=None)
+    rows: list[dict[str, Any]] = []
+    i = 0
+    while i < len(df) - 1:
+        title = df.iloc[i]
+        groups = {c: str(v).strip() for c, v in title.items() if isinstance(v, str)}
+        areas = {
+            c: v for c, v in groups.items() if not v.lower().startswith(("volumes", "percent"))
+        }
+        if not areas or not any(v.lower().startswith("volumes") for v in groups.values()):
+            i += 1
+            continue
+        head = df.iloc[i + 1]
+        starts = sorted(areas)
+        j = i + 2
+        while j < len(df) and not any(
+            isinstance(df.iloc[j, c], str) and c in areas for c in starts
+        ):
+            r = df.iloc[j]
+            for k, c0 in enumerate(starts):
+                end = starts[k + 1] if k + 1 < len(starts) else len(r)
+                year, period = r.iloc[c0], r.iloc[c0 + 1]
+                if pd.isna(period):
+                    continue
+                if not pd.isna(year):
+                    areas_year = int(year) if str(year).strip().isdigit() else None
+                    groups[("year", c0)] = areas_year  # type: ignore[index]
+                y = groups.get(("year", c0))  # type: ignore[call-overload]
+                unit = "MWh"
+                for c in range(c0 + 2, end):
+                    g = groups.get(c, "")
+                    if g.lower().startswith("percent"):
+                        unit = "%"
+                    elif g.lower().startswith("volumes"):
+                        unit = "MWh"
+                    name, v = head.iloc[c], r.iloc[c]
+                    if isinstance(name, str) and not pd.isna(v) and isinstance(v, int | float):
+                        rows.append({"area": areas[c0], "year": y, "period": str(period).strip(),
+                                     "measure": " ".join(name.split()), "unit": unit, "value": float(v)})  # fmt: skip
+            j += 1
+        i = j
+    if not rows:
+        raise SystemExit("no rows read from the workbook")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["ie_eirgrid_dispatch_down"] = eirgrid_dispatch_down
+
+
+def xlsx_multihead(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """A census workbook whose column names span several header rows (`head`: first and last
+    row, 0-based; the data start at `data`). Each header cell covers the columns up to the next
+    cell in its row or the end of its parent's span; the parts join into one column name with
+    " / ". The first `ids` columns identify the row (named `id_names`); every other column becomes a long row
+    (measure, value) as published. With `group: true` an area's first row names the area and the
+    rows after it with the same code are its categories (category "Total" for the first)."""
+    import pandas as pd
+
+    f = w.download(s["url"], d / "src.xlsx", timeout=600)
+    df = pd.read_excel(f, sheet_name=s["sheet"], header=None, dtype=str)
+    h0, h1 = s["head"]
+    n_ids, width = int(s.get("ids", 3)), df.shape[1]
+    names: list[list[str]] = [[] for _ in range(width)]
+    bounds = {0, width}
+    for r in range(h0, h1 + 1):
+        cells = {c for c in range(width) if pd.notna(df.iat[r, c]) and str(df.iat[r, c]).strip()}
+        stops = sorted(bounds | cells)
+        for c in sorted(cells):
+            end = next(x for x in stops if x > c)
+            for k in range(c, end):
+                names[k].append(" ".join(str(df.iat[r, c]).split()))
+        bounds |= cells
+    cols = [" / ".join(n) for n in names]
+    cols[:n_ids] = s.get("id_names", cols[:n_ids])  # stable names for the identifying columns
+    rows: list[dict[str, Any]] = []
+    area, code = "", None
+    for r in range(int(s["data"]), len(df)):
+        ident = [df.iat[r, c] for c in range(n_ids)]
+        if any(pd.isna(v) for v in ident[:2]):
+            continue
+        base = {cols[c]: str(ident[c]).strip() for c in range(n_ids)}
+        if s.get("group"):
+            label = base[cols[n_ids - 1]]
+            if ident[1] != code:
+                area, code, cat = label, ident[1], "Total"
+            else:
+                cat = label
+            base = {
+                **{cols[c]: base[cols[c]] for c in range(n_ids - 1)},
+                "area": area,
+                "category": cat,
+            }
+        for c in range(n_ids, width):
+            v = df.iat[r, c]
+            if pd.notna(v):
+                rows.append({**base, "measure": cols[c], "value": float(v)})
+    if not rows:
+        raise SystemExit("no rows read from the workbook")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["gr_elstat_heating_energy_regional_unit"] = xlsx_multihead
+CUSTOM["gr_elstat_heating_settlement"] = xlsx_multihead
+
+
+def ine_pt_indicator(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """An INE Portugal indicator from its JSON API (pindica.jsp?op=2): one record per period,
+    area (geocod: the NUTS / municipality / freguesia code, geodsg its name) and dimension
+    value (dim_N, dim_N_t), with valor as published. Flattened to one row per record."""
+    f = w.download(s["url"], d / "src.json", timeout=600)
+    j = json.loads(Path(f).read_text(encoding="utf-8"))[0]
+    rows = [
+        {"period": p, **{k: v for k, v in r.items() if k != "valor"}, "value": float(r["valor"])}
+        if str(r.get("valor", "")).replace(".", "", 1).replace("-", "", 1).isdigit()
+        else {"period": p, **r, "value": None}
+        for p, recs in j["Dados"].items()
+        for r in recs
+    ]
+    if not rows:
+        raise SystemExit("no records in the indicator")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["pt_ine_heating_freguesia"] = ine_pt_indicator
+
+
+def semo_reports(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """A SEMO static report (`url`: the report API's list for one DPuG_ID): every file the API
+    still lists (SEMO keeps about two weeks), each an XML document of rows whose attributes are
+    the columns. Read four at a time; one row per XML row, attributes as published, with the
+    file's name and publish time."""
+    import xml.etree.ElementTree as ET
+
+    base, items, page = s["url"], [], 1
+    with httpx.Client(headers=UA, timeout=120, follow_redirects=True) as c:
+        while True:
+            j = c.get(f"{base}&page={page}").raise_for_status().json()
+            items += j["items"]
+            if page >= j["pagination"]["totalPages"]:
+                break
+            page += 1
+        docs = "https://reports.sem-o.com/documents/"
+
+        def one(it: dict[str, Any]) -> list[dict[str, Any]]:
+            root = ET.fromstring(c.get(docs + it["ResourceName"]).raise_for_status().content)
+            return [
+                {"file": it["ResourceName"], "published": it["PublishTime"], **e.attrib}
+                for e in root
+                if e.attrib
+            ]
+
+        with cf.ThreadPoolExecutor(4) as ex:
+            rows = [r for part in ex.map(one, items) for r in part]
+    if not rows:
+        raise SystemExit("no rows in the listed reports")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["ie_semo_imbalance"] = semo_reports
+
+
+def bfee_abwaerme(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """The BfEE excess-heat platform's public list (zvi-api/pfa/abwaermepotenziale, no
+    registration): every reported potential, 100 a page (`seite`, `anzahl`; larger pages are
+    refused), one request a second. Records as published, the platform's own estimated-figure
+    flags included; addresses only, no coordinates."""
+    rows: list[dict[str, Any]] = []
+    with httpx.Client(headers=UA, timeout=120, follow_redirects=True) as c:
+        page, total = 0, None
+        while total is None or len(rows) < total:
+            j = c.get(s["api"], params={"seite": page, "anzahl": 100}).raise_for_status().json()
+            total = j["total"]
+            if not j["inhalt"]:
+                break
+            rows += j["inhalt"]
+            page += 1
+            time.sleep(1)
+    if len(rows) != total:
+        raise SystemExit(f"read {len(rows):,} of {total:,} records")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(
+        f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array', sample_size = -1)"
+    )
+
+
+CUSTOM["de_bfee_abwaerme"] = bfee_abwaerme
+
+
+def ins_ro_census_blocks(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """An INS Romania census table laid out in blocks: a medium heading (ROMANIA, URBAN,
+    RURAL), then an area name row (the country or a county, with its total) and the category
+    rows below it, nested by indentation. Column names from the header rows (`head`, as
+    xlsx_multihead). Long form: medium, area, row (order in the block), label (trimmed),
+    indent (leading spaces as published), section (the top-level category above the row),
+    measure, value; "-" (none) kept as a null value with flag "-"."""
+    import pandas as pd
+
+    f = w.download(s["url"], d / "src.xlsx", timeout=600)
+    df = pd.read_excel(f, sheet_name=s["sheet"], header=None, dtype=str)
+    h0, h1 = s["head"]
+    width = df.shape[1]
+    names: list[list[str]] = [[] for _ in range(width)]
+    bounds = {0, width}
+    for r in range(h0, h1 + 1):
+        cells = {c for c in range(1, width) if pd.notna(df.iat[r, c]) and str(df.iat[r, c]).strip()}
+        stops = sorted(bounds | cells)
+        for c in sorted(cells):
+            for k in range(c, next(x for x in stops if x > c)):
+                names[k].append(" ".join(str(df.iat[r, c]).split()))
+        bounds |= cells
+    cols = [" / ".join(dict.fromkeys(n)) for n in names]
+    media, skip = set(s.get("media", ["ROMANIA", "URBAN", "RURAL"])), set(s.get("headings", []))
+    rows: list[dict[str, Any]] = []
+    medium = area = section = ""
+    order = 0
+    for r in range(int(s["data"]), len(df)):
+        raw = df.iat[r, 0]
+        if not isinstance(raw, str) or not raw.strip():
+            continue
+        label = " ".join(raw.split())
+        vals = [df.iat[r, c] for c in range(1, width)]
+        has = any(pd.notna(v) for v in vals)
+        if label in media and not has:
+            medium, area = label, label
+            continue
+        if label in skip or not has:
+            continue
+        spaces = len(raw) - len(raw.lstrip(" "))
+        if label == s.get("total_label"):  # the medium's own total (country, urban or rural)
+            area, section, order = medium, "", 0
+            label = "Total"
+        elif spaces == 0 and label.isupper():  # an area name row: a county and its total
+            area, section, order = label, "", 0
+            label = "Total"
+        elif spaces <= 1 and not label.startswith("-"):
+            section = label
+        order += 1
+        for c, v in zip(range(1, width), vals, strict=True):
+            if pd.isna(v):
+                continue
+            num = str(v).strip()
+            rows.append({
+                "medium": medium, "area": area, "row": order, "label": label.lstrip("- ").strip(),
+                "indent": spaces, "section": section, "measure": cols[c],
+                "value": float(num) if num.replace(".", "", 1).isdigit() else None,
+                "flag": None if num.replace(".", "", 1).isdigit() else num,
+            })  # fmt: skip
+    if not rows:
+        raise SystemExit("no rows read from the workbook")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["ro_ins_rpl2021_heating_county"] = ins_ro_census_blocks
+
+
+def odata_paged(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """OData-style APIs (`endpoints`: one URL per dataset, each with its $filter): rows under "value",
+    pages followed through "nextLink" (or "@odata.nextLink") to the end. One row per record as
+    published, with the endpoint's name as `dataset`."""
+    rows: list[dict[str, Any]] = []
+    with httpx.Client(headers=UA, timeout=300, follow_redirects=True) as c:
+        for url in s.get("endpoints") or [s["url"]]:
+            name, nxt, n = url.split("?")[0].rstrip("/").rsplit("/", 1)[-1], url, 0
+            while nxt:
+                j = c.get(nxt).raise_for_status().json()
+                part = j.get("value") or []
+                rows += [{"dataset": name, **r} for r in part]
+                n += len(part)
+                nxt = j.get("nextLink") or j.get("@odata.nextLink")
+                time.sleep(0.2)
+            print(f"  {s['id']}: {name} {n:,} rows", flush=True)
+    if not rows:
+        raise SystemExit("no records")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(
+        f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array', sample_size = -1, union_by_name = true)"
+    )
+
+
+CUSTOM["pl_pse_balancing"] = odata_paged
+
+
+def pjm_rpm_rcp(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """PJM's RPM resource clearing price summary (sheet RCP): a header row of LDAs, then per
+    delivery year ("DY 07/08") one row per auction (BRA, 1IA-3IA) and product type, a price
+    ($/MW-day) per LDA. Long form: delivery_year, auction, product, lda, value; the workbook's
+    marks (" **" LDA not modelled, "AUCTION CANCELLED", blanks for auctions not yet held) are
+    kept in `flag`, not turned into numbers."""
+    import pandas as pd
+
+    f = w.download(s["url"], d / "src.xlsx", timeout=300)
+    df = pd.read_excel(f, sheet_name=s.get("sheet", "RCP"), header=None, dtype=str)
+    head = {c: str(v).strip() for c, v in df.iloc[1].items() if c >= 2 and pd.notna(v)}
+    rows: list[dict[str, Any]] = []
+    dy = auction = None
+    for i in range(2, len(df)):
+        first, second = df.iat[i, 0], df.iat[i, 1]
+        if isinstance(first, str) and first.strip().upper().startswith("DY"):
+            dy = first.strip().replace("DY ", "DY").replace("DY", "DY ")
+            continue
+        if isinstance(first, str) and first.strip().startswith(("*", "Note")):
+            break
+        if isinstance(first, str) and first.strip():
+            auction = first.strip()
+        elif pd.isna(second):
+            continue
+        product = None if pd.isna(second) else str(second).strip()
+        if product and "CANCELLED" in product.upper():
+            rows.append({"delivery_year": dy, "auction": auction, "product": None, "lda": None,
+                         "value": None, "flag": " ".join(product.strip("* ").split())})  # fmt: skip
+            continue
+        for c, lda in head.items():
+            v = df.iat[i, c]
+            txt = None if pd.isna(v) else str(v).strip()
+            try:
+                num = float(txt) if txt else None
+            except ValueError:
+                num = None
+            rows.append({"delivery_year": dy, "auction": auction, "product": product, "lda": lda,
+                         "value": num, "flag": None if num is not None else (txt or "blank")})  # fmt: skip
+    if not rows:
+        raise SystemExit("no rows read from the workbook")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["us_pjm_rpm"] = pjm_rpm_rcp
+
+
+def transelectrica_zones(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """Transelectrica's capacity-allocation page: HTML tables with a row per grid zone and a
+    column per year, each cell "<MW> MW / <starting price> lei/MW" ("0 / –" where nothing is
+    offered). Long form: zone, year, capacity_mw, start_price_lei_per_mw, cell (the text as
+    published)."""
+    import io
+
+    import pandas as pd
+
+    f = w.download(s["url"], d / "page.html", timeout=120)
+    tables = pd.read_html(io.StringIO(Path(f).read_bytes().decode("utf-8")))
+    num = re.compile(r"[\d\s.,]+")
+    rows: list[dict[str, Any]] = []
+    for t in tables:
+        for _, r in t.iterrows():
+            zone = str(r.iloc[0]).strip()
+            for col, v in list(r.items())[1:]:
+                year = next((str(x) for x in col if str(x).strip().isdigit()), None)
+                cell = " ".join(str(v).split())
+                parts = [p.strip() for p in cell.split("/")]
+
+                def value(p: str) -> float | None:
+                    m = num.match(p)
+                    txt = (
+                        m.group(0).replace(" ", "").replace(".", "").replace(",", ".") if m else ""
+                    )
+                    return float(txt) if txt else None
+
+                rows.append({"zone": zone, "year": int(year) if year else None,
+                             "capacity_mw": value(parts[0]) if parts else None,
+                             "start_price_lei_per_mw": value(parts[1]) if len(parts) > 1 else None,
+                             "cell": cell})  # fmt: skip
+    if not rows:
+        raise SystemExit("no tables on the page")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["ro_transelectrica_zone_capacity"] = transelectrica_zones
+
+
+def pdf_tables(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """Tables of a PDF (pdfplumber): the header is the first row of the first table whose
+    cells start with `head` (e.g. "Ред."); every row whose first cell is a number is a record,
+    with `table` (the table's place in the document) and its cells as published (named by
+    `names` when given, else by the header). Columns named
+    in `numbers` are also parsed as numbers ("42,00" to 42.0) into `<column> (number)`."""
+    import pdfplumber
+
+    f = w.download(s["url"], d / "src.pdf", timeout=300)
+    header: list[str] | None = None
+    rows: list[dict[str, Any]] = []
+    with pdfplumber.open(f) as pdf:
+        n = 0
+        for page in pdf.pages:
+            for tb in page.extract_tables():
+                n += 1
+                for r in tb:
+                    cells = [" ".join(str(c).split()) if c is not None else "" for c in r]
+                    if (
+                        header is None
+                        and cells
+                        and cells[0].startswith(s.get("head", ""))
+                        and s.get("head")
+                    ):
+                        header = (
+                            s.get("names") or cells
+                        )  # `names`: stable names, in the header order
+                    elif header and cells and cells[0].isdigit() and len(cells) == len(header):
+                        rows.append({"table": n, **dict(zip(header, cells, strict=True))})
+    if not rows:
+        raise SystemExit("no table rows found in the PDF")
+    for r in rows:
+        for col in s.get("numbers", []):
+            txt = str(r.get(col, "")).replace(".", "").replace(",", ".")
+            try:
+                r[f"{col} (number)"] = float(txt) if txt else None
+            except ValueError:
+                r[f"{col} (number)"] = None
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array')")
+
+
+CUSTOM["rs_ems_connection_queue"] = pdf_tables
+
+
+def admie_files(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """IPTO (ADMIE) market files: the file API (getOperationMarketFilewRange) asked month by
+    month from `start`, the files whose description contains `match` read (sheet `sheet`), every
+    published version kept: `file`, `version` (v1, v2 ...) and `latest` (the newest version of
+    that period), rows as published."""
+    import datetime as dt
+
+    import pandas as pd
+
+    api = "https://www.admie.gr/getOperationMarketFilewRange"
+    files: dict[str, dict[str, Any]] = {}
+    day, today = dt.date.fromisoformat(s["start"]), dt.date.today()
+    with httpx.Client(headers=UA, timeout=120, follow_redirects=True) as c:
+        while day <= today:
+            end = min(
+                (day.replace(day=28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1),
+                today,
+            )
+            for x in (
+                c.get(api, params={"dateStart": day.isoformat(), "dateEnd": end.isoformat()})
+                .raise_for_status()
+                .json()
+            ):
+                if s["match"] in x["file_description"]:
+                    files[x["file_path"]] = x
+            day = end + dt.timedelta(days=1)
+            time.sleep(0.5)
+        frames = []
+        for path, x in sorted(files.items()):
+            f = d / path.rsplit("/", 1)[-1]
+            f.write_bytes(c.get(path).raise_for_status().content)
+            df = pd.read_excel(f, sheet_name=s["sheet"])
+            m = re.search(r"\bv(\d+)\s*$", x["file_description"])
+            df.insert(0, "period", x["file_description"].split()[0])
+            df.insert(1, "version", int(m.group(1)) if m else None)
+            df.insert(2, "file", path.rsplit("/", 1)[-1])
+            frames.append(df)
+            time.sleep(0.3)
+    if not frames:
+        raise SystemExit(f"no files matching {s['match']!r}")
+    t = pd.concat(frames, ignore_index=True)
+    data_cols = [c for c in t.columns if c not in ("period", "version", "file")][2:]
+    t = t.dropna(how="all", subset=data_cols)  # footnote lines under the table, not records
+    t["latest"] = t["version"] == t.groupby("period")["version"].transform("max")
+    t.columns = [str(c) for c in t.columns]
+    out = d / "rows.json"  # dates as ISO text: the files mix text and Excel dates
+    out.write_text(
+        t.to_json(orient="records", date_format="iso", force_ascii=False), encoding="utf-8"
+    )
+    con.execute(
+        f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array', sample_size = -1)"
+    )
+
+
+CUSTOM["gr_admie_balancing"] = admie_files
+
+
+def regelleistung_results(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """regelleistung.net tender results (cpp-publisher API, one xlsx per day, market and
+    product type: `markets`, e.g. "CAPACITY:FCR"), every day from `start`; rows as published (the
+    workbook's columns per country), with `market` and `product_type`. Four requests at a time."""
+    import datetime as dt
+    import io
+
+    import pandas as pd
+
+    api = "https://www.regelleistung.net/apps/cpp-publisher/api/v1/download/tenders/resultsoverview"
+    start, today = dt.date.fromisoformat(s["start"]), dt.date.today()
+    jobs = [
+        (start + dt.timedelta(days=i), *m.split(":"))
+        for i in range((today - start).days + 1)
+        for m in s["markets"]
+    ]
+    with httpx.Client(headers=UA, timeout=120, follow_redirects=True) as c:
+
+        def one(job: tuple[Any, str, str]) -> bytes:
+            day, market, product = job
+            q = {
+                "date": day.isoformat(),
+                "exportFormat": "xlsx",
+                "market": market,
+                "productTypes": product,
+            }
+            r = c.get(api, params=q)
+            return r.content if r.status_code == 200 and r.content.startswith(b"PK") else b""
+
+        with cf.ThreadPoolExecutor(4) as ex:
+            blobs = list(ex.map(one, jobs))
+    rows: list[dict[str, Any]] = []
+    for (_, market, product), blob in zip(jobs, blobs, strict=True):
+        if not blob:  # no tender that day (or no file yet)
+            continue
+        df = pd.read_excel(io.BytesIO(blob))  # parsed here: openpyxl is not thread-safe to import
+        df.insert(0, "market", market)
+        df.insert(1, "product_type", product)
+        rows += json.loads(df.to_json(orient="records", date_format="iso"))
+    if not rows:
+        raise SystemExit("no tender results read")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows), encoding="utf-8")
+    con.execute(
+        f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array', sample_size = -1, union_by_name = true)"
+    )
+
+
+CUSTOM["de_regelleistung"] = regelleistung_results
+
+
+def ceps_soap(con, s: dict[str, Any], d: Path) -> None:  # noqa: ANN001
+    """ČEPS data web service (CepsData.asmx, SOAP): each of `operations` asked month by month
+    from `start` (aggregation QH, function AVG, param1 all, as the ČEPS site asks). Every answer
+    names its series ("aFRR+ [MW]" ...); one row per item: operation, dataset (the answer's own
+    name), date and a column per series, values as published."""
+    import datetime as dt
+    import xml.etree.ElementTree as ET
+
+    ns = "{https://www.ceps.cz/CepsData/StructuredData/1.0}"
+    url = "https://www.ceps.cz/_layouts/CepsData.asmx"
+    rows: list[dict[str, Any]] = []
+    with httpx.Client(headers=UA, timeout=300) as c:
+        for op in s["operations"]:
+            day, today = dt.date.fromisoformat(s["start"]), dt.date.today()
+            while day <= today:
+                nxt = (day.replace(day=28) + dt.timedelta(days=4)).replace(day=1)
+                body = (
+                    '<?xml version="1.0" encoding="utf-8"?><soap:Envelope '
+                    'xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body>'
+                    f'<{op} xmlns="https://www.ceps.cz/CepsData/"><dateFrom>{day}T00:00:00</dateFrom>'
+                    f"<dateTo>{nxt}T00:00:00</dateTo><agregation>QH</agregation><function>AVG</function>"
+                    f"<param1>all</param1></{op}></soap:Body></soap:Envelope>"
+                )
+                r = c.post(url, content=body.encode(), headers={
+                    "Content-Type": "text/xml; charset=utf-8", "SOAPAction": f'"https://www.ceps.cz/CepsData/{op}"'})  # fmt: skip
+                r.raise_for_status()
+                root = ET.fromstring(r.content).find(f".//{ns}root")
+                if root is not None:
+                    name = root.findtext(f"{ns}information/{ns}name")
+                    series = {x.get("id"): x.get("name") for x in root.iter(f"{ns}serie")}
+                    for it in root.iter(f"{ns}item"):
+                        row: dict[str, Any] = {
+                            "operation": op,
+                            "dataset": name,
+                            "date": it.get("date"),
+                        }
+                        for k, v in it.attrib.items():
+                            if k != "date":
+                                row[series.get(k, k)] = v
+                        rows.append(row)
+                day = nxt
+                time.sleep(0.5)
+            print(f"  {s['id']}: {op} read to {today}", flush=True)
+    if not rows:
+        raise SystemExit("no data in the answers")
+    out = d / "rows.json"
+    out.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+    con.execute(
+        f"CREATE OR REPLACE TABLE t AS SELECT * FROM read_json('{out}', format = 'array', sample_size = -1, union_by_name = true)"
+    )
+
+
+CUSTOM["cz_ceps_balancing"] = ceps_soap
+
+
+def build_raster(s: dict[str, Any]) -> dict[str, Any]:
+    """A raster source (kind raster, brief 30): each file in `url`/`urls` (GeoTIFF, NetCDF with
+    `var`, or a zip with `member`) becomes one cloud-optimised GeoTIFF, values as published, in
+    the private lake: `lake/rasters/<wave>/<id>[_<n>].tif`. The build record keeps the CRS, cell
+    size, band, unit and the min and max of the band (read on an overview) so the
+    catalogue can describe it; area_stats reads it through agent/rasters_waves.yaml."""
+    import subprocess
+    import zipfile
+
+    import rasterio
+
+    t0 = time.time()
+    urls = s.get("urls") or [s["url"]]
+    d = TMP / s["id"]
+    d.mkdir(parents=True, exist_ok=True)
+    inputs: list[str] = []
+    for i, url in enumerate(urls):
+        name = url.split("?")[0].rsplit("/", 1)[-1] or f"src{i}"
+        src = d / name
+        if not src.exists():
+            with httpx.stream("GET", url, headers=UA, timeout=600, follow_redirects=True) as r:
+                r.raise_for_status()
+                with src.open("wb") as f:
+                    for chunk in r.iter_bytes(1 << 20):
+                        f.write(chunk)
+        if zipfile.is_zipfile(src):
+            with zipfile.ZipFile(src) as z:
+                names, want = z.namelist(), s.get("member")
+                # `member`: the file's name in the archive, or a regex for it (the first match)
+                member = (
+                    want if want in names
+                    else next(m for m in names if re.search(want, m, re.I)) if want
+                    else next(m for m in names if m.lower().endswith((".tif", ".tiff", ".nc", ".asc")))
+                )  # fmt: skip
+                z.extract(member, d)
+                src = d / member
+        inputs.append(f'NETCDF:"{src}":{s["var"]}' if s.get("var") else str(src))
+    # several files (tiles) become one mosaic: one COG per source
+    gd = inputs[0]
+    if len(inputs) > 1:
+        gd = str(d / "mosaic.vrt")
+        subprocess.run(["gdalbuildvrt", gd, *inputs], check=True)
+    out = d / f"{s['id']}.tif"
+    cmd = ["gdal_translate", "-of", "COG", "-co", "COMPRESS=ZSTD", "-co", "PREDICTOR=YES"]
+    if isinstance(s.get("band"), int):  # a band number; a text `band` only describes it
+        cmd += ["-b", str(s["band"])]
+    if s.get("assign_crs"):  # a file without a CRS: the one its publisher states
+        cmd += ["-a_srs", s["assign_crs"]]
+    subprocess.run([*cmd, gd, str(out)], check=True)
+    with rasterio.open(out) as r:
+        a = r.read(1, masked=True, out_shape=(min(r.height, 2000), min(r.width, 2000)))
+        files = [
+            {
+                "key": f"lake/rasters/{WN}/{out.name}",
+                "bytes": out.stat().st_size,
+                "crs": str(r.crs),
+                "cell": [abs(r.transform.a), abs(r.transform.e)],
+                "size": [r.width, r.height],
+                "bounds": [round(x, 4) for x in r.bounds],
+                "nodata": r.nodata,
+                "dtype": r.dtypes[0],
+                # on a read of at most 2,000 x 2,000 cells (an overview): a description only
+                "min": float(a.min()) if a.count() else None,
+                "max": float(a.max()) if a.count() else None,
+            }
+        ]
+    if UPLOAD["on"]:
+        subprocess.run(
+            ["aws", "s3", "cp", "--only-show-errors", "--endpoint-url",
+             f"https://{w.env('CLOUDFLARE_ACCOUNT_ID')}.r2.cloudflarestorage.com",
+             str(out), f"s3://infraatlas-raw/{files[0]['key']}"],
+            check=True,
+        )  # fmt: skip
+    return {
+        "rows": 0, "raster": files, "unit": s.get("unit"), "band": s.get("band_meaning") or str(s.get("band") or ""),
+        "seconds": round(time.time() - t0), "built": time.strftime("%Y-%m-%d"),
+        "example": {"sql": f"area_stats(measure='{PFX}_{s['id']}')", "answer": None},
+    }  # fmt: skip
+
+
+def as_of(s: dict[str, Any]) -> dict[str, str]:
+    """The source's own date (brief 30): the registry's `as_of` when it names one (a release or
+    reference date stated by the publisher), else the newest Last-Modified header of the files
+    downloaded for it; empty when neither exists (the build date is then all we know)."""
+    if s.get("as_of"):
+        return {
+            "as_of": str(s["as_of"]),
+            "as_of_basis": s.get("as_of_basis", "stated by the publisher"),
+        }
+    from email.utils import parsedate_to_datetime
+
+    dates = []
+    for f in (TMP / s["id"]).rglob("*.last-modified"):
+        try:
+            dates.append(parsedate_to_datetime(f.read_text(encoding="utf-8").strip()))
+        except (TypeError, ValueError):
+            continue
+    if not dates:
+        return {}
+    return {
+        "as_of": max(dates).date().isoformat(),
+        "as_of_basis": "Last-Modified of the published file",
+    }
+
+
 def build_one(con, lk, s: dict[str, Any]) -> dict[str, Any]:  # noqa: ANN001
     """One source into the lake (table = its id); the example query's answer."""
+    if s["kind"] == "raster":
+        return build_raster(s)
     t0 = time.time()
     load(con, s)
     safe_cols(con, "t")
@@ -654,12 +1694,21 @@ def build_one(con, lk, s: dict[str, Any]) -> dict[str, Any]:  # noqa: ANN001
     import lake
 
     sort = [lake.hilbert()] if geometry else [f'"{cols[0]}"']
-    lk.write(con, s["id"], query, sort=sort, geometry=geometry)
+    asof = as_of(s)
+    lk.write(
+        con,
+        s["id"],
+        query,
+        sort=sort,
+        geometry=geometry,
+        meta={**asof, "refresh": s.get("refresh", "")},
+    )
     n = con.execute("SELECT count(*) FROM t").fetchone()[0]
     out = {
         "rows": n, "columns": cols[:60], "geometry": bool(geometry), "seconds": round(time.time() - t0),
         "example": {"sql": f"SELECT count(*) FROM {WN}.{s['id']}", "answer": n},
         "built": time.strftime("%Y-%m-%d"),
+        **asof,
     }  # fmt: skip
     if s.get("choro"):
         out["choro"] = choro_file(con, s)
@@ -951,11 +2000,14 @@ def build(args: argparse.Namespace) -> None:
     for s in todo:
         print(f"== {s['id']}", flush=True)
         try:
-            status[s["id"]] = build_one(con, lk, s)
+            status[s["id"]] = build_one(con, lk, with_keys(s))
             print(
                 f"  {s['id']}: {status[s['id']]['rows']:,} rows in {status[s['id']]['seconds']} s",
                 flush=True,
             )
+        except KeyMissing as e:
+            print(f"  {s['id']}: {e}", flush=True)
+            status[s["id"]] = {"skipped": str(e), "built": None}
         except (SystemExit, Exception) as e:  # noqa: BLE001 - one source failing does not stop the others
             import traceback
 
@@ -988,6 +2040,9 @@ EXISTING = (
 LANDLOCKED = ("AT", "CZ", "HU", "LU", "SK")  # marine sources (EMODnet) do not cover them
 
 
+NEIGHBOURS = ("NO", "CH", "IS", "BA", "RS", "ME", "MK", "AL", "XK", "MD", "UA", "TR")
+
+
 def covers(places: list[str], cc: str) -> bool:
     from coverage import EU27
 
@@ -1016,10 +2071,12 @@ def outcome(s: dict[str, Any], built: dict[str, Any], probes: dict[str, Any]) ->
     if s["status"] != "build":
         return s["status"]
     b = built.get(s["id"]) or {}
-    if b.get("rows"):
+    if b.get("rows") or b.get("raster"):
         return "built"
     if s["kind"] == "page":
         return "page"
+    if b.get("skipped"):  # a key not set yet: not a failure
+        return "pending"
     return "failed" if b else "pending"
 
 
@@ -1089,21 +2146,102 @@ def cell_for(fam: str, f: dict[str, Any], cc: str, srcs: list[dict[str, Any]], b
             "note": (f"no source built in wave {WAVE}. " + " | ".join(notes)) if notes else f"no source found in wave {WAVE}"}  # fmt: skip
 
 
+RASTERS = ROOT / "agent" / "rasters_waves.yaml"
+_EV = ROOT / "data" / "dark_evidence.yaml"
+EVIDENCE: dict[str, dict[str, dict[str, str]]] = (
+    (yaml.safe_load(_EV.read_text(encoding="utf-8")) or {}) if _EV.exists() else {}
+)
+
+
+def updates_text(s: dict[str, Any], b: dict[str, Any]) -> str:
+    """The layer card's "Updated:" line (brief 30): the source's own date when known (stated, or
+    the file's Last-Modified), else the date it was built here, and its refresh rhythm."""
+    from freshness import refresh_of
+
+    every, basis = refresh_of(s)
+    if b.get("as_of"):
+        when = f"as of {b['as_of']} ({b.get('as_of_basis', 'stated by the publisher')})"
+    else:
+        when = f"built {b.get('built') or 'n/a'} (the source states no date)"
+    return f"{when}; refreshed {every} ({basis})"
+
+
+def render_rasters(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
+    """agent/rasters_waves.yaml: one area_stats measure per built raster source of this wave
+    (`<pfx>_<id>`), the mean of the cells whose centre lies inside the area unless the registry
+    says `stat: sum`; the other waves' measures are kept."""
+    doc = yaml.safe_load(RASTERS.read_text(encoding="utf-8")) if RASTERS.exists() else None
+    ms = {
+        k: v for k, v in ((doc or {}).get("measures") or {}).items() if not k.startswith(f"{PFX}_")
+    }
+    for s in srcs:
+        b = built.get(s["id"]) or {}
+        if s["kind"] != "raster" or not b.get("raster"):
+            continue
+        stat = s.get("stat", "mean")
+        cover = s["places"] if isinstance(s["places"], str) else ", ".join(s["places"])
+        ms[f"{PFX}_{s['id']}"] = {
+            "title": title_of(s),
+            "unit": s.get("unit") or "as published",
+            "stat": stat,
+            "how": f"{'sum' if stat == 'sum' else 'mean'} of the cells whose centre lies inside the area"
+            + (f"; band: {s['band_meaning']}" if s.get("band_meaning") else ""),
+            "licence": s.get("licence", ""),
+            "layers": [
+                {"url": f"r2://infraatlas-raw/{f['key']}", "cell": f"{f['cell'][0]:g} x {f['cell'][1]:g} ({f['crs']})", "cover": cover}
+                for f in b["raster"]
+            ],
+        }  # fmt: skip
+    RASTERS.write_text(
+        "# Generated by scripts/wave9.py render (brief 30): the registry rasters of waves 9 and\n"
+        "# 10 as area_stats measures. Edit scripts/wave*_sources.yaml, not this file.\n"
+        + yaml.safe_dump(
+            {"measures": dict(sorted(ms.items()))}, sort_keys=False, allow_unicode=True, width=200
+        ),
+        encoding="utf-8",
+    )
+
+
 def render(args: argparse.Namespace) -> None:
     from coverage import COUNTRIES, REGISTRY
 
     srcs = sources()
     built = built_records()
+    render_rasters(srcs, built)
     probes = json.loads(PROBES.read_text(encoding="utf-8")) if PROBES.exists() else {}
     hits = json.loads(SEARCH.read_text(encoding="utf-8")) if SEARCH.exists() else {}
     fams = families()
     reg = yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))
     for fam, f in fams.items():
         cells = {cc: cell_for(fam, f, cc, srcs, built, probes, hits) for cc in COUNTRIES}
+        for cc, ev in (EVIDENCE.get(fam) or {}).items():  # the second research pass (brief 30)
+            c = cells.get(cc)
+            if c and c.get("status") in ("not_published", "blocked") and ev.get("note"):
+                c["note"] = (
+                    f"{c.get('note', '')} Second pass ({ev.get('checked', '')}): {ev['note']}".strip()
+                )
+        # brief 30 Track 2.5: neighbours get a cell where a built source covers them (a world
+        # source, or one naming the country); elsewhere they stay unassessed, not "dark"
+        near = {}
+        for cc in NEIGHBOURS:
+            c = cell_for(fam, f, cc, srcs, built, probes, hits)
+            if c and c.get("status") in ("built", "have"):
+                c["note"] = "; ".join(
+                    x for x in (c.get("note"), "neighbour: the source covers it") if x
+                )
+                near[cc] = c
+        if near:  # the family then lists the neighbours, each with a cell (scripts/coverage.py)
+            for cc in NEIGHBOURS:
+                cells[cc] = near.get(cc) or {
+                    "status": "not_published", "url": next(iter(near.values()))["url"],
+                    "checked": time.strftime("%Y-%m-%d"),
+                    "note": f"no source of this family covers {cc}; its national sources were not searched",
+                }  # fmt: skip
         reg["families"][fam] = {
             "name": f["name"],
             "shows": f["shows"],
             "category": f["cat"],
+            **({"regions": ["neighbours"]} if any(cc in cells for cc in NEIGHBOURS) else {}),
             "cells": cells,
         }
     for fam in EXISTING:
@@ -1345,7 +2483,7 @@ def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
             layers.append({**layer, "label": title_of(s), "desc": desc, "group": group,
                            "coverage": ", ".join(w for w in where if w != "World") or "World", "color": colour})  # fmt: skip
             datasets.append({"id": lid, "name": title_of(s), "category": group, "description": f"{title_of(s)}: {b['rows']:,} records as published",
-                             "color": colour, "family": s["fam"],
+                             "color": colour, "family": s["fam"], "updates": updates_text(s, b),
                              "parts": [{"layer": lid, "where": where, "what": shows, "source": src, "doc": f"Wave {WAVE} sources"}]})  # fmt: skip
         ch = b.get("choro")
         if ch and (APPC / f"{s['id']}.json").exists():
@@ -1363,7 +2501,7 @@ def app_manifest(srcs: list[dict[str, Any]], built: dict[str, Any]) -> None:
             )
             datasets.append({"id": f"colour-{cid}", "name": label, "category": group,
                              "description": f"{label} ({s['choro'].get('unit', '')}), {ch['areas']} {AREA_WORD[ch['scope']]}, {ch.get('period') or ''}: {title_of(s)}",
-                             "color": colour, "family": s["fam"], "colour": cid,
+                             "color": colour, "family": s["fam"], "colour": cid, "updates": updates_text(s, b),
                              "parts": [{"where": where if ch["scope"] == "country" else [SCOPE_PLACE[ch["scope"]]], "what": label, "source": src, "doc": f"Wave {WAVE} sources"}]})  # fmt: skip
     (ROOT / "frontend" / "src" / "app" / f"{WN}.json").write_text(
         json.dumps(

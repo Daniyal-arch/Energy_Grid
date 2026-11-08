@@ -1,0 +1,35 @@
+{
+ "gr_admie_balancing": {
+  "built": "2026-11-06",
+  "columns": [
+   "period",
+   "version",
+   "file",
+   "startdate",
+   "enddate",
+   "total_activated_balancing_energy_up_mwh",
+   "total_activated_balancing_energy_down_mwh",
+   "balancing_energy_idev_mwh",
+   "balancing_energy_udev_mwh",
+   "total_activated_balancing_energy_mwh",
+   "imbalance_price_mwh",
+   "mfrr_price_up_mwh",
+   "mfrr_price_down_mwh",
+   "uplift_account_1_mwh",
+   "uplift_account_2_mwh",
+   "uplift_account_3_mwh",
+   "(ΔP + kΔf) \"ISP energy\" (MWh)",
+   "system_deviation_mwh",
+   "curt_flag",
+   "Imbalance Price  (€/MWh)",
+   "latest"
+  ],
+  "example": {
+   "answer": 202936,
+   "sql": "SELECT count(*) FROM wave9.gr_admie_balancing"
+  },
+  "geometry": false,
+  "rows": 202936,
+  "seconds": 297
+ }
+}

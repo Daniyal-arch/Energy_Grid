@@ -406,7 +406,7 @@ def summary(cats: dict[str, dict]) -> dict:
         tables = {
             t: {
                 k: v[k]
-                for k in ("path", "partitions", "sort", "rows", "bytes", "columns")
+                for k in ("path", "partitions", "sort", "rows", "bytes", "columns", "meta")
                 if k in v
             }
             for t, v in c.get("tables", {}).items()

@@ -1,0 +1,26 @@
+{
+ "se_svk_reserves": {
+  "built": "2026-11-06",
+  "columns": [
+   "id",
+   "start_time_sweden",
+   "start_time_utc",
+   "reserve_product",
+   "reserve_direction",
+   "auction_round",
+   "price",
+   "price_unit",
+   "volume",
+   "volume_unit",
+   "soda_hashbyte",
+   "soda_identity"
+  ],
+  "example": {
+   "answer": 439314,
+   "sql": "SELECT count(*) FROM wave9.se_svk_reserves"
+  },
+  "geometry": false,
+  "rows": 439314,
+  "seconds": 6
+ }
+}

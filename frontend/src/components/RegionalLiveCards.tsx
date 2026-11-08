@@ -1,14 +1,14 @@
 // Regional and live grids: France's regions and Spain's communities (the country's Now tab),
-// New Zealand and South Africa (World live grids and their region panels).
+// New Zealand, South Africa and South Korea (World live grids and their region panels).
 
 import type { ReactNode } from "react";
 
 import { useFile } from "../app/data";
-import { FR_LABEL, type EsRegionsFile, type FrRegionsFile, type NzFile, type ZaFile } from "../lib/regionalLive";
+import { FR_LABEL, type EsRegionsFile, type FrRegionsFile, type KrFile, type NzFile, type ZaFile } from "../lib/regionalLive";
 import { Card } from "./CountryCards";
+import { Note } from "./Note";
 
 const muted = "text-[#8d94a1]";
-const Note = ({ children }: { children: ReactNode }) => <div className={`mt-2 text-[10px] leading-snug ${muted}`}>{children}</div>;
 const gw = (mw: number | null | undefined) => (mw == null ? "–" : mw >= 1000 ? `${(mw / 1000).toFixed(1)} GW` : `${Math.round(mw).toLocaleString("en-US")} MW`);
 const Line = ({ k, v, sub }: { k: ReactNode; v: ReactNode; sub?: ReactNode }) => (
   <div className="flex justify-between gap-2 text-[11px] tabular-nums">
@@ -114,6 +114,29 @@ export function ZaCard({ za }: { za: ZaFile }) {
       {s && lastS && <Line k="Station build-up, newest hour" v={lastS[0].slice(0, 16)} />}
       {s && lastS && s.columns.map((c, i) => (i > 0 && lastS[i]?.trim() ? <Line key={`s${c}`} k={c.replace(/_/g, " ")} v={mwText(lastS[i])} /> : null))}
       <Note>Eskom's data portal files (the newest hour with measured values, as the files state it; MW as published, rounded to whole MW) and its load-shedding status.</Note>
+    </Card>
+  );
+}
+
+const SEOUL = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Seoul", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+
+export function KrCard({ kr }: { kr: KrFile }) {
+  const g = kr.generation;
+  const d = kr.demand;
+  const fuels = g ? Object.entries(g.by_fuel).sort((a, b) => b[1] - a[1]) : [];
+  const at = g?.at ?? d?.at;
+  return (
+    <Card title="South Korea · live" note={`KPX${at ? ` · ${SEOUL.format(new Date(at))} Seoul` : ""}`} accent={[170, 190, 255]}>
+      <div className="text-[26px] font-light leading-none tabular-nums text-slate-100">{gw(d?.mw ?? g?.total_mw)}</div>
+      <div className={`mt-1 text-[10px] ${muted}`}>demand now{d?.supply_capacity_mw != null ? `; supply capacity ${gw(d.supply_capacity_mw)}, reserve ${d.reserve_pct ?? "–"} %` : ""}</div>
+      <div className="mt-2 space-y-0.5">
+        {fuels.map(([k, v]) => (
+          <Line key={k} k={g?.labels[k]?.[1] ?? k} v={gw(v)} />
+        ))}
+      </div>
+      <Note>
+        KPX real-time pages, every 5 minutes, MW as published; the generation total is the sum of the source columns (computed). Behind-the-meter and PPA solar are KPX's own estimates; ESS and pumped storage are net (negative = charging). Licence: KPX's data on data.go.kr says no restriction on use, the KPX site says all rights reserved.
+      </Note>
     </Card>
   );
 }

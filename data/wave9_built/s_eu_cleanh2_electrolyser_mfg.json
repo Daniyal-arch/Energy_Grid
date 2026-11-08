@@ -1,0 +1,20 @@
+{
+ "eu_cleanh2_electrolyser_mfg": {
+  "as_of": "2026-07-13",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-06",
+  "columns": [
+   "b",
+   "c",
+   "d",
+   "e"
+  ],
+  "example": {
+   "answer": 11,
+   "sql": "SELECT count(*) FROM wave9.eu_cleanh2_electrolyser_mfg"
+  },
+  "geometry": false,
+  "rows": 11,
+  "seconds": 1
+ }
+}

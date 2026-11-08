@@ -28,6 +28,7 @@ import { US_TYPE_COLOR, US_TYPE_LABEL, gwText, type UsPlantsFile, type UsQueueFi
 import type { DataCentresFile } from "../lib/world";
 import { PLANT_TYPE_COLOR, PLANT_TYPE_LABEL, type WorldPlantsFile } from "../lib/worldPlants";
 import { Card } from "./CountryCards";
+import { Note } from "./Note";
 
 const muted = "text-[#8d94a1]";
 const GREY: RGB = [150, 154, 166];
@@ -80,7 +81,6 @@ function Row({ k, v, sub }: { k: ReactNode; v: ReactNode; sub?: ReactNode }) {
     </div>
   );
 }
-const Note = ({ children }: { children: ReactNode }) => <p className={`mt-2 text-[10px] leading-snug ${muted}`}>{children}</p>;
 const Loading = ({ what }: { what: string }) => <p className={`text-[11px] ${muted}`}>Reading {what}…</p>;
 const sum = (v: number[]) => v.reduce((a, b) => a + b, 0);
 const round = (v: number, d: number) => Number(v.toFixed(d));

@@ -1,0 +1,38 @@
+{
+ "eu_edo_cdi": {
+  "band": "cdinx, Combined Drought Indicator class per ten-day period (uint8, 29 dekads in 2026 file, 1200 × 1824 grid, extent -25..51 E, 22..72 N)",
+  "built": "2026-11-06",
+  "example": {
+   "answer": null,
+   "sql": "area_stats(measure='w9_eu_edo_cdi')"
+  },
+  "raster": [
+   {
+    "bounds": [
+     -25.0,
+     22.0,
+     51.0,
+     72.0
+    ],
+    "bytes": 2779279,
+    "cell": [
+     0.041666666666666664,
+     0.041666666666666664
+    ],
+    "crs": "EPSG:4326",
+    "dtype": "uint8",
+    "key": "lake/rasters/wave9/eu_edo_cdi.tif",
+    "max": 6.0,
+    "min": 0.0,
+    "nodata": 8.0,
+    "size": [
+     1824,
+     1200
+    ]
+   }
+  ],
+  "rows": 0,
+  "seconds": 8,
+  "unit": "class code: 0 no drought, 1 watch, 2 warning, 3 alert, 4 recovery, 5 temporary soil-moisture recovery, 6 temporary vegetation recovery, 7 no data inside LISFLOOD domain, 8 outside domain (fill)"
+ }
+}

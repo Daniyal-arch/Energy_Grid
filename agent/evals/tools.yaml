@@ -1,0 +1,10 @@
+# Cases for the tools of brief 30 Track 4.6, for the real-model eval run (the owner runs it).
+# `tool`: the tool the agent should call; `check`: what the answer must hold. Numbers come from
+# the app tables at the time of the run (no fixed values: the map files are refreshed).
+questions:
+- {id: tool-nearest, q: "Which five substations are nearest to Lyon, and how far are they?", tool: nearest, check: "five substations with km from the middle of Lyon"}
+- {id: tool-along, q: "Which power plants lie within 10 km of a line from Duisburg (6.76, 51.43) to Dortmund (7.47, 51.51)?", tool: along, check: "plants inside the 10 km corridor, the corridor named"}
+- {id: tool-compare, q: "Compare plants, substations and data centres in Belgium, the Netherlands and Denmark.", tool: compare_areas, check: "the same three measures for each country"}
+- {id: tool-trend, q: "How much of Spain's present plant capacity started in each year since 2015?", tool: trend, check: "MW by commissioning year, with the note that retired plants are not counted"}
+- {id: tool-export, q: "Give me the largest plants in Poland as a CSV file.", tool: export, check: "a file link with sources and licence terms"}
+- {id: tool-coverage, q: "Why is there no room-to-connect data for Belgium?", tool: explain_coverage, check: "the cell's status and reason with its evidence"}

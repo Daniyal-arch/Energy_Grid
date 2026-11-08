@@ -20,6 +20,7 @@ frontend/dist/
 # raw downloads for scripts/ (data/eu/ etc.); the app's files live in frontend/public/data/
 data/*
 !data/coverage.yaml
+!data/dark_evidence.yaml
 !data/wave9_probes.json
 !data/wave9_search.json
 !data/wave9_built/

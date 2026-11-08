@@ -1,7 +1,9 @@
 """The MCP server: the agent's read-only tools for Claude Code, Claude Desktop and other agents.
 
 FastMCP over streamable HTTP at `/mcp` with `search_catalog`, `describe_table`, `run_sql`,
-`find_place`, `site_figures` and `live` (the same code, limits and logs as the agent), and the
+`find_place`, `resolve_area`, `area_stats`, `site_figures`, `live`, `quick`, `nearest`, `along`,
+`compare_areas`, `trend`, `export` and `explain_coverage` (the same code, limits and logs as
+the agent; docs/MCP.md), and the
 catalogue entries and skill files as resources. Bearer keys from `MCP_API_KEYS`; off (404) when
 unset. Connect from Claude Code:
 
@@ -12,6 +14,7 @@ unset. Connect from Claude Code:
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import hmac
 import json
 from collections.abc import AsyncIterator, Callable
@@ -48,9 +51,13 @@ async def _send(send: Send, status: int, body: dict[str, Any]) -> None:
 class BearerAuth:
     """Only /mcp paths, and only with one of the keys."""
 
-    def __init__(self, app: ASGIApp, keys: list[str]) -> None:
+    def __init__(self, app: ASGIApp, keys: list[str], per_hour: int = 600) -> None:
         self.app = app
         self.keys = [k.encode() for k in keys]
+        # per key (brief 30): each key has its own budget of requests per hour
+        from agent.limits import MemoryLimits
+
+        self.limits = MemoryLimits(per_hour)
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] != "http":
@@ -61,6 +68,8 @@ class BearerAuth:
         token = auth[7:] if auth.lower().startswith(b"bearer ") else b""
         if not any(hmac.compare_digest(token, k) for k in self.keys):
             return await _send(send, 401, {"detail": "MCP needs a bearer key"})
+        if not self.limits.take("key:" + hashlib.sha256(token).hexdigest()[:16]):
+            return await _send(send, 429, {"detail": "too many requests for this key; try later"})
         await self.app(scope, receive, send)
 
 
@@ -144,6 +153,51 @@ def build_server(settings: Settings) -> FastMCP:
     def live(source: str, params: dict[str, str] | None = None) -> dict[str, Any]:
         args = registry.LiveArgs.model_validate({"source": source, "params": params or {}})
         return specs["live"].run(ctx, source=args.source, params=args.params)
+
+    # brief 30: instant answers and the six tools of Track 4.6, validated by their own models
+    def run(name: str, model: Any, **kw: Any) -> dict[str, Any]:
+        args = model.model_validate({k: v for k, v in kw.items() if v is not None})
+        return specs[name].run(ctx, **args.model_dump())
+
+    @mcp.tool(name="quick", description=doc("quick"))
+    def quick(template: str, area: str, n: int = 10, kind: str = "plants") -> dict[str, Any]:
+        return run("quick", registry.QuickArgs, template=template, area=area, n=n, kind=kind)
+
+    @mcp.tool(name="nearest", description=doc("nearest"))
+    def nearest(
+        dataset: str,
+        lon: float | None = None,
+        lat: float | None = None,
+        area: str | None = None,
+        k: int = 10,
+    ) -> dict[str, Any]:
+        return run(
+            "nearest", registry.NearestArgs, dataset=dataset, lon=lon, lat=lat, area=area, k=k
+        )
+
+    @mcp.tool(name="along", description=doc("along"))
+    def along(
+        dataset: str, line: list[list[float]], buffer_km: float, name: str = "route"
+    ) -> dict[str, Any]:
+        return run(
+            "along", registry.AlongArgs, dataset=dataset, line=line, buffer_km=buffer_km, name=name
+        )
+
+    @mcp.tool(name="compare_areas", description=doc("compare_areas"))
+    def compare_areas(areas: list[str], measures: list[str] | None = None) -> dict[str, Any]:
+        return run("compare_areas", registry.CompareArgs, areas=areas, measures=measures)
+
+    @mcp.tool(name="trend", description=doc("trend"))
+    def trend(area: str, years: list[int] | None = None) -> dict[str, Any]:
+        return run("trend", registry.TrendArgs, area=area, years=years)
+
+    @mcp.tool(name="export", description=doc("export"))
+    def export(result_id: str, format: str = "csv") -> dict[str, Any]:
+        return run("export", registry.ExportArgs, result_id=result_id, format=format)
+
+    @mcp.tool(name="explain_coverage", description=doc("explain_coverage"))
+    def explain_coverage(area: str, family: str = "") -> dict[str, Any]:
+        return run("explain_coverage", registry.CoverageArgs, area=area, family=family)
 
     @mcp.resource("catalog://index", mime_type="application/json")
     def catalog_index() -> str:

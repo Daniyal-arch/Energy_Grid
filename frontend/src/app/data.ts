@@ -9,6 +9,9 @@ export const SNAPSHOT_REMOTE = "https://raw.githubusercontent.com/Daniyal-arch/E
 export const ARCHIVE_REMOTE = "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu";
 // recordings (frontend/scripts/record-video.mjs) wait for the archive instead of falling back
 const RECORDING = new URLSearchParams(window.location.search).has("record");
+// ?shapes=open: country outlines from Natural Earth (public domain) instead of Eurostat GISCO,
+// whose terms exclude commercial use (scripts/build_open_shapes.py; the owner decides the default)
+export const SHAPES_DIR = new URLSearchParams(window.location.search).get("shapes") === "open" ? "open/" : "";
 
 export async function getJson<T>(url: string): Promise<T> {
   const r = await fetch(url);
@@ -53,9 +56,9 @@ const archive = (name: string): Loader => (set) => newer(name, ARCHIVE_REMOTE, s
 const STATIC: Record<string, Loader> = {
   grid: bundled("grid.json"),
   plants: bundled("plants.json"),
-  countries: bundled("countries.json"),
+  countries: bundled(`${SHAPES_DIR}countries.json`),
   gas: bundled("gas.json"),
-  world: bundled("world.json"),
+  world: bundled(`${SHAPES_DIR}world.json`),
   transition: bundled("transition.json"),
   monthly: bundled("monthly.json"),
   worldPlants: bundled("world_plants.json"),
@@ -129,6 +132,7 @@ const STATIC: Record<string, Loader> = {
   ontario: snapshot("ontario.json"),
   // New Zealand (Transpower) and South Africa (Eskom) live; France's regions (éCO2mix) every snapshot; Spain's regions daily
   nz: snapshot("nz.json"),
+  korea: snapshot("korea.json"),
   za: snapshot("za.json"),
   frRegions: snapshot("fr_regions.json"),
   esRegions: archive("es_regions.json"),
@@ -368,7 +372,7 @@ export function useFile<T>(key: string | null): T | undefined {
 export const fileOf = <T,>(key: string): T | undefined => useDataStore.getState().files[key] as T | undefined;
 
 /** Live files, reloaded every 10 minutes while the page is open. */
-export const LIVE_KEYS = ["flows", "stats", "outages", "wind", "aemo", "us", "brazil", "taiwan", "ontario", "nz", "za", "frRegions", "windWorld", "gbCarbon", "dkLive"];
+export const LIVE_KEYS = ["flows", "stats", "outages", "wind", "aemo", "us", "brazil", "taiwan", "ontario", "nz", "za", "korea", "frRegions", "windWorld", "gbCarbon", "dkLive"];
 
 // development only: lets headless checks read what has loaded
 if (import.meta.env.DEV) (window as unknown as { __data: typeof useDataStore }).__data = useDataStore;

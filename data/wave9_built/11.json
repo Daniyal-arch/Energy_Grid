@@ -1,4 +1,32 @@
 {
+ "eu_eea_wei": {
+  "built": "2026-11-05",
+  "columns": [
+   "countrycode",
+   "countryname_international",
+   "spatialunitidentifierscheme",
+   "spatialunitidentifier",
+   "nametextinternational",
+   "phenomenontimeperiod_year",
+   "phenomenontimeperiod_quarter",
+   "totalwaterabstraction",
+   "totalwaterreturn",
+   "netwaterconsumption",
+   "changereservoirstorage",
+   "totaloutflow",
+   "renewablewaterresources",
+   "wei",
+   "remark",
+   "computedyear"
+  ],
+  "example": {
+   "answer": 21006,
+   "sql": "SELECT count(*) FROM wave9.eu_eea_wei"
+  },
+  "geometry": false,
+  "rows": 21006,
+  "seconds": 3
+ },
  "eu_emodnet_desalination": {
   "bbox": [
    -151.745,
@@ -6,7 +34,7 @@
    165.62,
    74.988
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "id",
    "objectid",
@@ -85,7 +113,7 @@
    55.823,
    70.674
   ],
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "id",
    "uwwcode",
@@ -127,7 +155,7 @@
   },
   "geometry": true,
   "rows": 57243,
-  "seconds": 6,
+  "seconds": 7,
   "tiles": {
    "fields": [
     "name",
@@ -145,10 +173,10 @@
   "with_position": 57243
  },
  "eu_wastewater_connected": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "choro": {
-   "areas": 35,
-   "period": "2019",
+   "areas": 32,
+   "period": "2022",
    "scope": "country"
   },
   "columns": [
@@ -172,10 +200,10 @@
   "seconds": 1
  },
  "eu_water_abstraction": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "choro": {
-   "areas": 26,
-   "period": "2020",
+   "areas": 24,
+   "period": "2022",
    "scope": "country"
   },
   "columns": [
@@ -197,10 +225,10 @@
   },
   "geometry": false,
   "rows": 16316,
-  "seconds": 2
+  "seconds": 3
  },
  "eu_water_use": {
-  "built": "2026-10-31",
+  "built": "2026-11-05",
   "columns": [
    "dataflow",
    "last_update",
@@ -220,10 +248,90 @@
   },
   "geometry": false,
   "rows": 6853,
-  "seconds": 1
+  "seconds": 2
+ },
+ "us_usgs_nwis_sites": {
+  "bbox": [
+   -176.715,
+   -14.336,
+   179.91,
+   71.332
+  ],
+  "built": "2026-11-05",
+  "columns": [
+   "x",
+   "y",
+   "id",
+   "agency_code",
+   "agency_name",
+   "monitoring_location_number",
+   "monitoring_location_name",
+   "district_code",
+   "country_code",
+   "country_name",
+   "state_code",
+   "state_name",
+   "county_code",
+   "county_name",
+   "minor_civil_division_code",
+   "site_type_code",
+   "site_type",
+   "hydrologic_unit_code",
+   "basin_code",
+   "altitude",
+   "altitude_accuracy",
+   "altitude_method_code",
+   "altitude_method_name",
+   "vertical_datum",
+   "vertical_datum_name",
+   "horizontal_positional_accuracy_code",
+   "horizontal_positional_accuracy",
+   "horizontal_position_method_code",
+   "horizontal_position_method_name",
+   "original_horizontal_datum",
+   "original_horizontal_datum_name",
+   "drainage_area",
+   "contributing_drainage_area",
+   "time_zone_abbreviation",
+   "uses_daylight_savings",
+   "construction_date",
+   "aquifer_code",
+   "national_aquifer_code",
+   "aquifer_type_code",
+   "well_constructed_depth",
+   "hole_constructed_depth",
+   "depth_source_code",
+   "revision_note",
+   "revision_created",
+   "revision_modified"
+  ],
+  "example": {
+   "answer": 147741,
+   "sql": "SELECT count(*) FROM wave9.us_usgs_nwis_sites"
+  },
+  "geometry": true,
+  "rows": 147741,
+  "seconds": 45,
+  "tiles": {
+   "fields": [
+    "name",
+    "x",
+    "y",
+    "id",
+    "agency_code",
+    "monitoring_location_number",
+    "monitoring_location_name"
+   ],
+   "kind": "point",
+   "minzoom": 4,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/us_usgs_nwis_sites.pmtiles"
+  },
+  "with_position": 147729
  },
  "us_usgs_water_use": {
-  "built": "2026-10-31",
+  "as_of": "2026-11-05",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-05",
   "choro": {
    "areas": 3223,
    "period": "2015",
@@ -297,6 +405,6 @@
   },
   "geometry": false,
   "rows": 3223,
-  "seconds": 3
+  "seconds": 1
  }
 }

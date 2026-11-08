@@ -1,0 +1,54 @@
+name: backend-probe
+
+# Brief 30 Track 1.1 and Track 4: the backend image in a Lambda-sized container (2 vCPU,
+# 3,008 MB) against the real lake on R2, with the fake model. Runs every data route and every
+# tool once, then the eval questions through /api/ask, and the load test when asked.
+# The table goes to the job summary; the raw records are an artifact.
+# R2 is read with the credentials derived from CLOUDFLARE_API_TOKEN (scripts/r2_creds.sh), masked.
+
+on:
+  # new workflows can be dispatched only from the default branch: the pull request runs it too
+  pull_request:
+    paths: ["backend/probes/probe_latency.py", ".github/workflows/backend-probe.yml"]
+  workflow_dispatch:
+    inputs:
+      questions: {description: "Eval questions to ask", default: "30"}
+      load: {description: "Concurrent asks for the load test (0 = none)", default: "50"}
+
+permissions:
+  contents: read
+
+# the pull request's path filter matches every push (it compares the whole PR): one run at a
+# time, a newer one waits (a running probe is never cancelled; GitHub keeps one pending run)
+concurrency:
+  group: backend-probe-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      # the lake's read keys: the R2 credentials derived from the Cloudflare token (as wave8 T)
+      - run: bash scripts/r2_creds.sh
+      - run: |
+          { echo "R2_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID"; echo "R2_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"; echo "R2_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"; } >> "$GITHUB_ENV"
+      - name: Build the image (amd64; base images retried on registry rate limits)
+        run: bash backend/deploy/build_image.sh infraatlas-backend:probe linux/amd64
+      - name: Probe in a Lambda-sized container
+        run: |
+          [ -n "$R2_ACCESS_KEY_ID" ] || echo "### R2 credentials missing: lake tools use the app tables only" >> "$GITHUB_STEP_SUMMARY"
+          docker run --rm --cpus 2 --memory 3008m \
+            -e R2_ACCOUNT_ID -e R2_ACCESS_KEY_ID -e R2_SECRET_ACCESS_KEY \
+            -v "$PWD/backend/probes:/var/task/backend/probes:ro" -v "$PWD/out:/out" \
+            infraatlas-backend:probe \
+            python -m probes.probe_latency --questions "${{ inputs.questions || '30' }}" \
+              --load "${{ inputs.load || '50' }}" --json /out/latency.json | tee probe.md
+          cat probe.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: latency, path: "out/latency.json"}

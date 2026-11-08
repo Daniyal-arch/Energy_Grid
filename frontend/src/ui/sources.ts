@@ -1,5 +1,6 @@
 // "Sources & method" texts for the panel (the long form of docs/DATA_SOURCES.md).
 
+import { SHAPES_DIR } from "../app/data";
 export type Sources = [string, string][];
 
 export const LIVE_SOURCES: Sources = [
@@ -71,7 +72,9 @@ export const YEAR_SOURCES: Sources = [
   ],
   ["Coverage", "Countries without a figure for the year are drawn grey. Ember's newest year is not yet out for every country."],
   ["Ranking (world)", "The 30 countries with the largest total generation that year (Ember's published total)."],
-  ["Outlines", "Europe: Eurostat GISCO 1:20M; rest of the world simplified from the same dataset. © EuroGeographics."],
+  SHAPES_DIR
+    ? ["Outlines", "Natural Earth admin-0 countries 1:10m (public domain), simplified (?shapes=open)."]
+    : ["Outlines", "Europe: Eurostat GISCO 1:20M; rest of the world simplified from the same dataset. © EuroGeographics."],
 ];
 
 export const WORLD_SOURCES: Sources = [
@@ -104,6 +107,10 @@ export const WORLD_SOURCES: Sources = [
   [
     "South Africa",
     "Eskom data portal (hourly demand and station build-up files, MW as published) and the load-shedding status from loadshedding.eskom.co.za (its answer minus 1 is the stage). The marker is placed for reading.",
+  ],
+  [
+    "South Korea",
+    "KPX (Korea Power Exchange) real-time pages, no key, every 5 minutes: demand, supply capacity and reserve, and generation by source (MW as published; the generation total is the sum of the source columns, computed). Behind-the-meter and PPA solar are KPX's own estimates; ESS and pumped storage are net. Licence: KPX's generation data on data.go.kr (dataset 15106744) is marked no restriction on use, while the KPX site footer says all rights reserved; shown on the owner's decision (2026-11-06). The marker is placed for reading.",
   ],
   [
     "Taiwan",
@@ -149,5 +156,5 @@ export const US_SOURCES: Sources = [
   ["State outlines", "U.S. Census Bureau cartographic boundary file, states 1:20M (2024), public domain."],
 ];
 
-export const CREDITS =
-  "ENTSO-E · Elexon · GIE · Ember (CC BY 4.0) · Open-Meteo (CC BY 4.0) · Global Energy Monitor (CC BY 4.0) · World Bank · EIA · LBNL & GridTracker (CC BY 4.0) · USWTDB · ONS · AEMO · © OpenStreetMap contributors (ODbL) · powerplantmatching · SciGRID_gas · © EuroGeographics";
+export const CREDITS = (
+  "ENTSO-E · Elexon · GIE · Ember (CC BY 4.0) · Open-Meteo (CC BY 4.0) · Global Energy Monitor (CC BY 4.0) · World Bank · EIA · LBNL & GridTracker (CC BY 4.0) · USWTDB · ONS · AEMO · © OpenStreetMap contributors (ODbL) · powerplantmatching · SciGRID_gas · © EuroGeographics").replace("© EuroGeographics", SHAPES_DIR ? "Natural Earth" : "© EuroGeographics");

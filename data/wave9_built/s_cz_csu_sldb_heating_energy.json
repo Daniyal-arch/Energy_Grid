@@ -1,0 +1,29 @@
+{
+ "cz_csu_sldb_heating_energy": {
+  "as_of": "2024-04-09",
+  "as_of_basis": "Last-Modified of the published file",
+  "built": "2026-11-06",
+  "columns": [
+   "idhod",
+   "hodnota",
+   "ukaz_kod",
+   "energie_cis",
+   "energie_kod",
+   "uzemi_cis",
+   "uzemi_kod",
+   "sldb_rok",
+   "sldb_datum",
+   "ukaz_txt",
+   "energie_txt",
+   "uzemi_txt",
+   "uzemi_typ"
+  ],
+  "example": {
+   "answer": 87413,
+   "sql": "SELECT count(*) FROM wave9.cz_csu_sldb_heating_energy"
+  },
+  "geometry": false,
+  "rows": 87413,
+  "seconds": 3
+ }
+}

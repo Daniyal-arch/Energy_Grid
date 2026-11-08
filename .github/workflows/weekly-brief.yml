@@ -1,0 +1,42 @@
+name: Weekly brief
+
+# The weekly brief (brief 30, Track 6.5; docs/product/weekly-brief.md): scripts/weekly_brief.py
+# writes frontend/public/brief/latest.json and latest.html from the app's own data files (the
+# day archive and prices.json on eu-days, outages.json on eu-data, the bundled US queues and
+# plant files) with fixed templates and no language model. Weekly on Wednesday morning (after
+# Tuesday's US queue refresh and the daily eu-days build) and by hand. No secrets needed.
+
+on:
+  schedule:
+    - cron: "23 7 * * 3"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-brief
+  cancel-in-progress: false
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Build the brief
+        run: |
+          pip install httpx
+          python scripts/weekly_brief.py
+          python3 -c "import json; b=json.load(open('frontend/public/brief/latest.json')); print('::notice title=brief::' + b['week_label'] + ' ' + json.dumps({s['id']: s['status'] for s in b['sections']}))"
+
+      - name: Commit to the branch
+        run: |
+          # wave5_commit.sh adds frontend/public/data; the brief lives next to it
+          git add frontend/public/brief
+          bash scripts/wave5_commit.sh "Weekly brief: $(date -u +%Y-%m-%d)"

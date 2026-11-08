@@ -1,0 +1,39 @@
+{
+ "eur_overture_comm_lines": {
+  "bbox": [
+   -74.232,
+   31.21,
+   44.192,
+   78.335
+  ],
+  "built": "2026-11-06",
+  "columns": [
+   "id",
+   "class",
+   "subtype",
+   "name",
+   "source_tags",
+   "geometry"
+  ],
+  "example": {
+   "answer": 6991,
+   "sql": "SELECT count(*) FROM wave9.eur_overture_comm_lines"
+  },
+  "geometry": true,
+  "rows": 6991,
+  "seconds": 50,
+  "tiles": {
+   "fields": [
+    "name",
+    "id",
+    "class",
+    "subtype",
+    "source_tags"
+   ],
+   "kind": "linestring",
+   "minzoom": 0,
+   "url": "pmtiles://https://pub-73b8a23457984ffc93f888f77e1bebde.r2.dev/w9/eur_overture_comm_lines.pmtiles"
+  },
+  "with_position": 6991
+ }
+}

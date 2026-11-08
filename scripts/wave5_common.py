@@ -28,10 +28,11 @@ def download(url: str, dest: Path, *, tries: int = 4, timeout: float = 600, **kw
         return dest
     dest.parent.mkdir(parents=True, exist_ok=True)
     part = dest.with_suffix(dest.suffix + ".part")
+    headers = {**UA, **(kw.pop("headers", None) or {})}  # type: ignore[dict-item]
     for attempt in range(1, tries + 1):
         try:
             with httpx.stream(
-                "GET", url, timeout=timeout, follow_redirects=True, headers=UA, **kw
+                "GET", url, timeout=timeout, follow_redirects=True, headers=headers, **kw
             ) as r:  # type: ignore[arg-type]
                 r.raise_for_status()
                 total = int(r.headers.get("content-length") or 0)
@@ -48,6 +49,10 @@ def download(url: str, dest: Path, *, tries: int = 4, timeout: float = 600, **kw
                                 flush=True,
                             )
             part.rename(dest)
+            # the publisher's own date of the file, for "as of" (brief 30)
+            lm = r.headers.get("last-modified")
+            if lm:
+                dest.with_name(dest.name + ".last-modified").write_text(lm, encoding="utf-8")
             print(f"  {dest.name}: {dest.stat().st_size / 1e6:,.1f} MB", flush=True)
             return dest
         except (httpx.HTTPError, OSError) as err:

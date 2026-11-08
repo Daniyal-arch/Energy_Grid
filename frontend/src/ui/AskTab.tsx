@@ -6,8 +6,9 @@
 
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 
-import { ask, clearConversation, removeAgentMap, showAgentMap, useAgent, type ChartMsg, type Msg, type ToolStep } from "../app/agent";
+import { API_BASE, ask, clearConversation, shareConversation, removeAgentMap, showAgentMap, useAgent, type ChartMsg, type Msg, type ToolStep } from "../app/agent";
 import { useApp } from "../app/store";
+import { isNarrow } from "../app/geo";
 import type { Overlay } from "../lib/mapspec";
 import { rgbCss } from "../lib/theme";
 import { rampCss, useAgentKeys } from "../map/agentLayers";
@@ -63,7 +64,7 @@ function AskInput({ autoFocus = false }: { autoFocus?: boolean }) {
           if (e.key === "Escape") useAgent.setState({ open: false });
         }}
         rows={1}
-        placeholder={busy ? "Answering…" : "Ask the atlas, or ask to change the map"}
+        placeholder={busy ? "Answering…" : "Ask, or change the map"}
         className="min-w-0 flex-1 resize-none bg-transparent py-0.5 text-[12.5px] text-slate-100 placeholder:text-slate-500 focus:outline-none"
       />
       <button
@@ -89,13 +90,15 @@ export function AskPanel() {
   }, [messages, open]);
   if (!open) return null;
   return (
-    <aside className="absolute bottom-14 right-3 top-16 z-[24] flex w-[400px] flex-col overflow-hidden rounded-xl border border-sky-300/20 bg-[#080b11]/97 shadow-2xl shadow-black/50 backdrop-blur">
+    <aside
+      className={`absolute z-[24] flex flex-col overflow-hidden bg-[#080b11]/97 shadow-2xl shadow-black/50 backdrop-blur ${
+        isNarrow() ? "inset-x-0 bottom-12 top-0 border-b border-sky-300/20" : "bottom-14 right-3 top-16 w-[400px] rounded-xl border border-sky-300/20"
+      }`}
+    >
       <div className="flex items-center gap-2 border-b border-white/[0.07] px-3.5 py-2.5">
         <span className="text-[13px] text-sky-200">✦</span>
-        <div className="min-w-0 flex-1">
-          <div className="text-[14px] font-light tracking-wide text-slate-100">Ask the atlas</div>
-          <div className={`truncate text-[10px] ${muted}`}>answers from the atlas&apos;s own data, with its steps and maps</div>
-        </div>
+        <div className="min-w-0 flex-1 text-[14px] font-light tracking-wide text-slate-100">Ask the atlas</div>
+        {messages.length > 0 && <ShareButton />}
         {messages.length > 0 && (
           <button onClick={clearConversation} className="rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] text-slate-300 hover:bg-white/[0.07]" title="Clears the conversation and the agent's maps">
             New
@@ -108,13 +111,7 @@ export function AskPanel() {
       <div ref={scroller} className="min-h-0 flex-1 space-y-2.5 overflow-y-auto px-3 py-3">
         {messages.length === 0 && (
           <div className="rounded-xl border border-white/[0.07] bg-[#0b0f16]/90 px-3 py-3">
-            <div className="text-[12px] text-slate-200">Ask about the power system: grids, plants, prices, flows, emissions, room to connect.</div>
-            <div className={`mt-1 text-[10.5px] leading-snug ${muted}`}>
-              Each answer shows how the agent worked (what it searched, the queries it ran, the map design it chose) and every number&apos;s source. It picks the map design for
-              the question (flat or 3D, one map or several side by side) and changes a map on request: &ldquo;make it 3D&rdquo;, &ldquo;use hexagons&rdquo;, &ldquo;split into
-              two maps&rdquo;.
-            </div>
-            <div className="mt-2 flex flex-col gap-1">
+            <div className="flex flex-col gap-1">
               {EXAMPLES.map((e) => (
                 <button key={e} onClick={() => void ask(e)} className="rounded-md border border-white/10 px-2 py-1 text-left text-[11px] text-slate-300 hover:bg-white/[0.06]">
                   {e}
@@ -247,6 +244,40 @@ function AgentMsg({ m }: { m: Msg }) {
         </div>
       )}
       {m.error && <div className="mt-1 text-[11px] text-red-300">{m.error}</div>}
+      {m.done && m.tools.some((t) => t.result_id) && (
+        <div className={`mt-1 text-[10px] ${muted}`}>
+          Data:{" "}
+          {m.tools
+            .filter((t) => t.result_id)
+            .slice(-3)
+            .map((t) => (
+              <span key={t.result_id!} className="mr-2">
+                {t.name} ({t.rows ?? "?"} rows){" "}
+                <a className="text-sky-300 hover:text-sky-200" href={`${API_BASE}/api/export?result_id=${t.result_id}&format=csv`}>
+                  CSV
+                </a>{" "}
+                <a className="text-sky-300 hover:text-sky-200" href={`${API_BASE}/api/export?result_id=${t.result_id}&format=geojson`}>
+                  GeoJSON
+                </a>
+              </span>
+            ))}
+          <span>(with sources and licence terms; refused where a source forbids redistribution)</span>
+        </div>
+      )}
+      {m.done?.suggestions?.length ? (
+        <div className="mt-1.5 flex flex-wrap gap-1" aria-label="Follow-up questions">
+          {m.done.suggestions.map((q) => (
+            <button
+              key={q}
+              onClick={() => void ask(q)}
+              className="rounded-full border border-white/10 px-2 py-0.5 text-[10.5px] text-slate-300 hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-400"
+              title="Answered at once from the data (no language model)"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -485,4 +516,26 @@ function Markdown({ text }: { text: string }) {
     i++;
   }
   return <Fragment>{blocks}</Fragment>;
+}
+
+
+/** A permalink to the conversation (brief 30): saved by the backend, copied to the clipboard. */
+function ShareButton() {
+  const [state, setState] = useState<"" | "saving" | "copied" | "failed">("");
+  const share = async () => {
+    setState("saving");
+    try {
+      const link = await shareConversation();
+      await navigator.clipboard?.writeText(link).catch(() => {});
+      window.history.replaceState(null, "", link);
+      setState("copied");
+    } catch {
+      setState("failed");
+    }
+  };
+  return (
+    <button onClick={() => void share()} className="rounded-md border border-white/10 px-1.5 py-0.5 text-[10px] text-slate-300 hover:bg-white/[0.07]" title="A link to this conversation (questions, answers, sources and maps), read-only">
+      {state === "saving" ? "…" : state === "copied" ? "Link copied" : state === "failed" ? "Not saved" : "Share"}
+    </button>
+  );
 }
