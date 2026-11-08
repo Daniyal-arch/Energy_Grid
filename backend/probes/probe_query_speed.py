@@ -30,6 +30,7 @@ measures the app tables only.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import statistics
@@ -419,6 +420,136 @@ def areas_for_probe(ctx: Any) -> dict[str, Any]:
     }
 
 
+def drawn_polygons(ctx: Any, n: int, rng: Any) -> list[str]:
+    """Random drawn polygons (five to eight corners around a European point, 2-60 km across),
+    stored as area records the way a drawing on the map is."""
+    import math
+
+    from data.areas import Area
+
+    out = []
+    cur = ctx.lake.cursor()
+    for i in range(n):
+        cx, cy = rng.uniform(-8, 26), rng.uniform(38, 58)
+        r = rng.uniform(0.02, 0.5)
+        k = rng.randint(5, 8)
+        pts = [
+            (
+                cx + r * rng.uniform(0.5, 1) * math.cos(2 * math.pi * j / k),
+                cy + r * rng.uniform(0.5, 1) * math.sin(2 * math.pi * j / k),
+            )
+            for j in range(k)
+        ]
+        wkt = "POLYGON((" + ", ".join(f"{x:.5f} {y:.5f}" for x, y in [*pts, pts[0]]) + "))"
+        gj, x0, y0, x1, y1, km2 = cur.execute(
+            "SELECT ST_AsGeoJSON(g), ST_XMin(g), ST_YMin(g), ST_XMax(g), ST_YMax(g), ST_Area_Spheroid(g) / 1e6 "
+            "FROM (SELECT ST_GeomFromText(?) AS g)",
+            [wkt],
+        ).fetchone()
+        aid = "a_" + hashlib.md5(wkt.encode()).hexdigest()[:12]  # noqa: S324 - an id
+        ctx.area_store.put(
+            Area(area_id=aid, name=f"drawn {i}", level="drawn", iso3=[], parents=[], geometry=json.loads(gj),
+                 bbox=[x0, y0, x1, y1], area_km2=float(km2), source={"dataset": "drawn polygon (probe)", "licence": "none"})
+        )  # fmt: skip
+        out.append(aid)
+    return out
+
+
+def unseen_queries(
+    ctx: Any, cols: dict[str, list[tuple[str, str]]], names: list[str], n: int
+) -> list[dict[str, Any]]:
+    """`n` generated queries that match no template (brief 32): random tables, random areas
+    (named places, circles, drawn polygons), random filters and aggregations. Seeded, so every
+    shard and every run generates the same list."""
+    import random
+
+    from tools.areas import resolve_area
+
+    rng = random.Random(32)
+    places = []
+    for nm, lv in (
+        ("Berlin", "city"),
+        ("Bavaria", None),
+        ("Germany", None),
+        ("Lyon", "city"),
+        ("Catalonia", None),
+        ("Poland", None),
+    ):
+        a = (resolve_area(ctx, names=[nm], level=lv)["data"].get("area") or {}).get("area_id")
+        if a:
+            places.append(a)
+    for lon, lat, km in ((13.4, 52.5, 30), (2.35, 48.86, 50), (11.6, 48.1, 80), (4.9, 52.37, 20)):
+        a = (resolve_area(ctx, point=(lon, lat), radius_km=km)["data"].get("area") or {}).get(
+            "area_id"
+        )
+        if a:
+            places.append(a)
+    places += drawn_polygons(ctx, 12, rng)
+    out = []
+    for i in range(n):
+        t = rng.choice(names)
+        c = cols[t]
+        lower = {x.lower(): x for x, _ in c}
+        lon = lower.get("lon") or lower.get("longitude")
+        lat = lower.get("lat") or lower.get("latitude")
+        geom = lower.get("geometry")
+        nums = [
+            x
+            for x, typ in c
+            if typ.upper().startswith(NUMERIC)
+            and x.lower() not in ("lon", "lat", "longitude", "latitude", "x", "y")
+        ]
+        texts = [x for x, typ in c if typ.upper().startswith("VARCHAR")]
+        where = []
+        if (lon and lat) or geom:
+            aid = rng.choice(places)
+            where.append(
+                f"in_area({q(lon)}, {q(lat)}, '{aid}')"
+                if lon and lat
+                else f"intersects_area({q(geom)}, '{aid}')"
+            )
+        kind = rng.choice(["count", "sum", "avg", "top", "group"])
+        if nums and rng.random() < 0.4:
+            where.append(f"{q(rng.choice(nums))} > 0")
+        if texts and rng.random() < 0.3:
+            where.append(f"{q(rng.choice(texts))} IS NOT NULL")
+        w = (" WHERE " + " AND ".join(where)) if where else ""
+        m = rng.choice(nums) if nums else None
+        if kind == "sum" and m:
+            sql = f"SELECT sum({q(m)}) FROM {t}{w}"
+        elif kind == "avg" and m:
+            sql = f"SELECT avg({q(m)}) FROM {t}{w}"
+        elif kind == "top" and m:
+            sql = f"SELECT * FROM {t}{w} ORDER BY {q(m)} DESC NULLS LAST LIMIT 10"
+        elif kind == "group" and texts:
+            g = rng.choice(texts)
+            agg = f"sum({q(m)})" if m else "count(*)"
+            sql = f"SELECT {q(g)}, {agg} FROM {t}{w} GROUP BY 1 ORDER BY 2 DESC NULLS LAST LIMIT 50"
+        else:
+            sql = f"SELECT count(*) FROM {t}{w}"
+        out.append({"i": i, "table": t, "kind": kind, "sql": sql})
+    return out
+
+
+def run_unseen(ctx: Any, http: Http, queries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    from tools.sql import query_areas
+
+    out = []
+    for qd in queries:
+        r = timed(ctx.lake, http, qd["sql"], query_areas(ctx, qd["sql"]) or None)
+        out.append(
+            {
+                **qd,
+                "ms": ms(r["s"]),
+                "rows": r["rows"],
+                "bytes": r["bytes"],
+                "gets": r["gets"],
+                "error": r["error"],
+            }
+        )
+    return out
+
+
 def run_extras(ctx: Any) -> dict[str, Any]:
     from fastapi.testclient import TestClient
 
@@ -528,6 +659,7 @@ def main() -> None:
     ap.add_argument("--only", default="", help="regex: the tables to probe")
     ap.add_argument("--json", default="/tmp/query-speed.json")
     ap.add_argument("--merge", default="", help="a directory of shard files: write the report")
+    ap.add_argument("--unseen", type=int, default=200, help="generated queries in all (0 = none)")
     a = ap.parse_args()
     if a.merge:
         merge(Path(a.merge))
@@ -557,6 +689,15 @@ def main() -> None:
             flush=True,
         )
         out.write_text(json.dumps(rec), encoding="utf-8")  # partial results survive a timeout
+    if a.unseen:
+        allq = unseen_queries(ctx, cols, names, a.unseen)
+        rec["unseen"] = run_unseen(ctx, http, allq[a.shard :: a.shards])
+        done = [x["ms"] for x in rec["unseen"] if not x["error"]]
+        print(
+            f"unseen: {len(done)} of {len(rec['unseen'])} answered, p50 {pct(done, 50)} ms, p95 {pct(done, 95)} ms",
+            flush=True,
+        )
+        out.write_text(json.dumps(rec), encoding="utf-8")
     if a.extras:
         rec["extras"] = run_extras(ctx)
     rec["seconds"] = round(time.perf_counter() - t0)
@@ -632,6 +773,29 @@ def merge(d: Path) -> None:
         for x in t["queries"]
         if x.get("warm_ms") and not x.get("error")
     ]
+    unseen = [x for s in shards for x in s.get("unseen", [])]
+    ok = [x["ms"] for x in unseen if not x.get("error")]
+    data["unseen"] = {
+        "queries": len(unseen),
+        "answered": len(ok),
+        "p50_ms": pct(ok, 50),
+        "p95_ms": pct(ok, 95),
+    }
+    (ROOT / "data" / "query_speed.json").write_text(
+        json.dumps(data, indent=1) + "\n", encoding="utf-8"
+    )
+    lines += [
+        f"### Unseen queries (generated, no template, result cache off): {len(ok)} of {len(unseen)} answered, "
+        f"p50 {fmt(pct(ok, 50))} ms, p95 {fmt(pct(ok, 95))} ms, max {fmt(max(ok) if ok else None)} ms",
+        "",
+        "| # | table | kind | ms | rows | MB | error |",
+        "|---:|---|---|---:|---:|---:|---|",
+    ]
+    lines += [
+        f"| {x['i']} | `{x['table']}` | {x['kind']} | {fmt(x.get('ms'))} | {x.get('rows')} | {mb(x.get('bytes'))} | {(x.get('error') or '')[:80].replace('|', '/')} |"
+        for x in sorted(unseen, key=lambda x: x["i"])
+    ]
+    lines.append("")
     lines += [
         "### All dataset queries",
         "",
