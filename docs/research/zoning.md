@@ -145,3 +145,9 @@ each with a 290-minute budget, every layer logged in `zoning.hub_layers`.
 - Catalonia, whole region: `sig.gencat.cat/ows/*` answers HTTP 403 `UserAgentFilterError` to
   non-browser clients (also with an honest project User-Agent); the territori.gencat.cat
   shapefile page answers 404. Not worked around (owner question 9).
+- Netherlands (2026-11-08): `service.pdok.nl/kadaster/plu/wfs/v1_0`, `.../ruimtelijke-plannen/wfs/v1_0`,
+  `.../rvo/bestemmingsplannen/wfs/v1_0` and `api.pdok.nl/kadaster/ruimtelijke-plannen/ogc/v1` all
+  answer HTTP 404; `kadaster/plu` is WMS only; the data.overheid.nl record 51670 ("Gepland
+  landgebruik RPNL Wro, INSPIRE geharmoniseerd") answered 503. Next leads: the Ruimtelijke Plannen
+  API v4 (Informatiehuis Ruimte, needs an API key: owner question if pursued) and municipal WFS
+  (Utrecht, Zuid-Holland).
