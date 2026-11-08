@@ -1135,6 +1135,359 @@ ModuleNotFoundError: No modul |
 | `app.us_plants` | 21.3 | 217 | 2.4 | 220 | 0.00 | 0 |  |
 | `app.eu_prices` | 2.3 | 27.5 | 1.4 | 2.1 | 0.00 | 0 |  |
 
+## Before the tiers, second pass with the unseen benchmark (run 42454909363, hot.duckdb off)
+
+The same lake (MaStR 2026-10-13 snapshot deleted, orphans registered) with hot.duckdb switched off and views still on globs. The 5 unanswered unseen queries are licence-guard refusals (GEM tables a user may only see aggregated), not failures. Slowest unseen: `main.outages` grouped (25 s, 243 MB: one wide unsorted file), `small_area_energy.poverty`, `wave9.at_zaehlsprengel`, `wave10.eu_env_ac_ainah_r2` (4-7 s each, whole files read).
+
+Probed 2026-11-08T06:31:06+00:00 in the Lambda-sized container (2 vCPU, 3,008 MB) against `r2:r2://infraatlas-raw/lake/lake.duckdb`; 925 tables in 8 shards. Times in ms (cold = the first run of each query in the process; warm = the median of 3 repeats); MB and GET requests read from R2 by the cold runs of the table's query set.
+
+#### Unseen queries (generated, no template, result cache off): 195 of 200 answered, p50 833 ms, p95 1,767 ms, max 25,361 ms
+
+| # | table | kind | ms | rows | MB | error |
+|---:|---|---|---:|---:|---:|---|
+| 0 | `wave9.eu_emodnet_nuclear` | avg | 785 | 1 | 0.02 |  |
+| 1 | `wave10.eu_env_ac_hfcfp` | top | 2,031 | 10 | 12.61 |  |
+| 2 | `wave10.eu_env_epea_invap` | avg | 544 | 1 | 0.00 |  |
+| 3 | `wave10.eu_env_ac_ainah_rd` | avg | 1,402 | 1 | 3.93 |  |
+| 4 | `wave10.wb_en_ghg_fgas_ip_mt_ce_ar5` | sum | 890 | 19223820 | 0.06 |  |
+| 5 | `wave10.wb_it_net_user_fe_zs` | avg | 820 | 1 | 0.02 |  |
+| 6 | `pse_capacity.full_substations` | count | 485 | 69 | 0.00 |  |
+| 7 | `registers.be` | top | 913 | 10 | 0.01 |  |
+| 8 | `wave9.us_eia_lng` | count | 723 | 0 | 0.01 |  |
+| 9 | `history.connect_eu__de` | sum | 885 | 52 | 0.00 |  |
+| 10 | `wave9.gb_npg_curtailment_events` | group | 727 | 0 | 0.00 |  |
+| 11 | `wave9.eu_rail_electrified` | count | 834 | 2651 | 0.01 |  |
+| 12 | `gem_ownership.all_entities` | sum | 844 | 27707 | 1.61 |  |
+| 13 | `wave10.wb_eg_elc_petr_zs` | group | 734 | 50 | 0.06 |  |
+| 14 | `wave10.wb_en_ghg_co2_pc_ce_ar5` | group | 771 | 1 | 0.07 |  |
+| 15 | `wave9.us_nexrad` | avg | 939 | 1 | 0.02 |  |
+| 16 | `wave10.eu_env_ac_ainah_r2` | top | 4,958 | 10 | 33.54 |  |
+| 17 | `wave10.eu_env_wat_pop` | count | 919 | 0 | 0.00 |  |
+| 18 | `ev_eu.se` | sum | 904 | 1 | 0.24 |  |
+| 19 | `wave9.at_zaehlsprengel` | sum | 5,422 | 682024 | 61.28 |  |
+| 20 | `wave10.wb_se_enr_prsc_fm_zs` | count | 822 | 9576 | 0.03 |  |
+| 21 | `wave10.eu_env_ac_epiap1` | top | 584 | 10 | 0.00 |  |
+| 22 | `edgar.ghg_by_sector` | top | 824 | 10 | 1.78 |  |
+| 23 | `wave10.eu_nrg_ind_difec` | top | 937 | 10 | 0.07 |  |
+| 24 | `wave10.wb_sh_sta_pois_p5` | avg | 805 | 1 | 0.03 |  |
+| 25 | `wave10.eu_nrg_ind_esc` | sum | 892 | 1 | 0.15 |  |
+| 26 | `wave9.eu_emodnet_wind_farms` | count | 757 | 0 | 0.91 |  |
+| 27 | `gem.gas_infrastructure_pipelines` | count | 808 | 16 | 0.38 |  |
+| 28 | `connect_eu.dk` | avg | 812 | 1 | 0.08 |  |
+| 29 | `ghsl.population` | sum | 751 | 8613475975 | 0.12 |  |
+| 30 | `wave10.eu_env_ac_taxener` | sum | 750 | 1 | 0.02 |  |
+| 31 | `wave10.eu_env_ac_mfain` | sum | 942 | 1 | 0.10 |  |
+| 32 | `rollups.wave9__de_zensus_heating_r7` | top | 740 | 10 | 0.89 |  |
+| 33 | `wave9.eu_emodnet_aggregates` | top | 894 | 0 | 0.76 |  |
+| 34 | `wave10.wb_eg_cft_accs_zs` | avg | 776 | 1 | 0.03 |  |
+| 35 | `entsoe.areas` | sum | 829 | 86 | 0.00 |  |
+| 36 | `wave10.wb_en_ghg_n2o_ag_mt_ce_ar5` | count | 854 | 9576 | 0.06 |  |
+| 37 | `wave10.wb_en_ghg_co2_rt_gdp_kd` | sum | 822 | 19223820 | 0.07 |  |
+| 38 | `eia930.generation_by_fuel` | group | 1,291 | 16 | 4.01 |  |
+| 39 | `wave10.wb_sh_sta_pois_p5_ma` | count | 996 | 9576 | 0.03 |  |
+| 40 | `wave10.eu_cei_wm010` | group | 765 | 28 | 0.00 |  |
+| 41 | `wave9.eu_emodnet_wwtp` | group | 651 | 0 | 0.00 |  |
+| 42 | `wave10.eu_nrg_chdd_m` | sum | 797 | 1 | 0.05 |  |
+| 43 | `shapes.admin1` | count | 1,105 | 1 | 0.00 |  |
+| 44 | `ev_eu.fi` | avg | 561 | 1 | 0.00 |  |
+| 45 | `wave10.wb_eg_use_comm_gd_pp_kd` | top | 800 | 10 | 0.05 |  |
+| 46 | `wave10.eu_nrg_ind_rcaebt` | sum | 758 | 1 | 0.01 |  |
+| 47 | `wave10.eu_nrg_ti_coifpm` | group | 1,044 | 2 | 0.89 |  |
+| 48 | `wave10.wb_ny_adj_aedu_cd` | sum | 833 | 1 | 0.05 |  |
+| 49 | `wave10.wb_ny_adj_dco2_gn_zs` | sum | 638 | 19223820 | 0.00 |  |
+| 50 | `wave10.wb_ny_adj_aedu_gn_zs` | top | 796 | 10 | 0.04 |  |
+| 51 | `wave10.wb_sh_h2o_smdw_ru_zs` | count | 835 | 9576 | 0.03 |  |
+| 52 | `wave10.wb_eg_use_comm_cl_zs` | top | 816 | 10 | 0.05 |  |
+| 53 | `places.cities` | avg | 973 | 1 | 0.60 |  |
+| 54 | `gem.energy_ownership_asset_ownership` | group | 0.7 | None | 0.00 | GuardError: gem.energy_ownership_asset_ownership is licensed (Global Energy Moni |
+| 55 | `wave10.eu_cei_gsr030` | top | 934 | 10 | 0.00 |  |
+| 56 | `osm.eu_buses` | avg | 788 | 1 | 0.92 |  |
+| 57 | `wave9.ie_cso_dc_consumption` | top | 909 | 10 | 0.01 |  |
+| 58 | `wave9.fr_odre_balancing_volumes` | group | 866 | 0 | 0.01 |  |
+| 59 | `wave10.eu_nrg_ind_fecf` | count | 862 | 20298 | 0.09 |  |
+| 60 | `wave9.fr_emodnet_telecom_shom` | avg | 568 | 1 | 0.00 |  |
+| 61 | `wave10.eu_cei_pc031` | sum | 865 | 1109385 | 0.00 |  |
+| 62 | `wave10.wb_ic_elc_durs` | avg | 798 | 1 | 0.02 |  |
+| 63 | `ev_eu.gb` | sum | 1,007 | 1 | 0.50 |  |
+| 64 | `rollups.overture_transport__segments_r5` | sum | 1,723 | 49632 | 1.35 |  |
+| 65 | `wave10.wb_en_pop_el5m_ur_zs` | top | 900 | 10 | 0.02 |  |
+| 66 | `wave10.wb_ny_gdp_frst_rt_zs` | avg | 877 | 1 | 0.06 |  |
+| 67 | `wave10.wb_en_ghg_co2_lu_mt_ce_ar5` | count | 914 | 9576 | 0.04 |  |
+| 68 | `wave9.at_zaehlsprengel` | count | 846 | 0 | 0.07 |  |
+| 69 | `wave10.eu_env_epea_cfin` | sum | 810 | 1 | 0.02 |  |
+| 70 | `gem.chemicals_plant_data` | group | 0.7 | None | 0.00 | GuardError: gem.chemicals_plant_data is licensed (Global Energy Monitor): only a |
+| 71 | `ev_eu.bg` | top | 955 | 0 | 0.06 |  |
+| 72 | `wave9.us_eia_product_pipelines` | count | 775 | 0 | 0.05 |  |
+| 73 | `wave10.eu_nrg_inf_epc` | top | 906 | 10 | 0.11 |  |
+| 74 | `registers.se` | group | 778 | 0 | 0.47 |  |
+| 75 | `wave10.wb_sh_sta_maln_zs` | group | 582 | 1 | 0.00 |  |
+| 76 | `wave10.wb_en_clc_drsk_xq` | sum | 840 | 19223820 | 0.01 |  |
+| 77 | `wave10.wb_se_enr_prsc_fm_zs` | sum | 747 | 1 | 0.03 |  |
+| 78 | `industrial.air_releases` | avg | 1,308 | 1 | 1.86 |  |
+| 79 | `history.registers__gb` | count | 1,004 | 0 | 0.80 |  |
+| 80 | `wave10.wb_sh_dyn_mort` | top | 782 | 10 | 0.03 |  |
+| 81 | `wave10.wb_sh_sta_smss_zs` | sum | 957 | 1 | 0.04 |  |
+| 82 | `gem.iron_steel_plant_capacities_and_status` | count | 789 | 0 | 0.06 |  |
+| 83 | `wave10.eu_env_ac_pefafp` | avg | 854 | 1 | 0.37 |  |
+| 84 | `wave10.wb_en_ghg_co2_tr_mt_ce_ar5` | avg | 834 | 1 | 0.07 |  |
+| 85 | `wave10.wb_sh_sta_odfc_ru_zs` | group | 789 | 1 | 0.04 |  |
+| 86 | `history.connect_eu__es_dso` | top | 806 | 0 | 0.13 |  |
+| 87 | `wave10.eu_cei_wm010` | count | 963 | 154 | 0.00 |  |
+| 88 | `wave10.eu_cei_gsr011` | sum | 735 | 992343 | 0.01 |  |
+| 89 | `wave10.wb_en_ghg_ch4_zg_ar5` | count | 900 | 9576 | 0.07 |  |
+| 90 | `gem.gas_infrastructure_data` | count | 848 | 23 | 0.07 |  |
+| 91 | `wave10.wb_en_ghg_n2o_ip_mt_ce_ar5` | avg | 880 | 1 | 0.07 |  |
+| 92 | `wave10.wb_bx_klt_dinv_wd_gd_zs` | count | 557 | 9576 | 0.00 |  |
+| 93 | `wave10.eu_env_ac_pefafp` | group | 765 | 50 | 0.37 |  |
+| 94 | `wave10.wb_ny_adj_dngy_cd` | sum | 762 | 1 | 0.04 |  |
+| 95 | `wave10.wb_ag_lnd_totl_ru_k2` | avg | 1,022 | 1 | 0.02 |  |
+| 96 | `wave10.wb_en_ghg_n2o_wa_mt_ce_ar5` | count | 785 | 9576 | 0.06 |  |
+| 97 | `wave10.eu_env_esst_gg` | group | 918 | 0 | 0.17 |  |
+| 98 | `history.connect_eu__es_dso` | group | 971 | 0 | 0.13 |  |
+| 99 | `mastr.grid_connection_points` | sum | 863 | 11989310 | 0.53 |  |
+| 100 | `rollups.wave9__de_zensus_heating_r5` | avg | 927 | 1 | 0.03 |  |
+| 101 | `wave10.wb_er_h2o_fwst_zs` | top | 743 | 10 | 0.04 |  |
+| 102 | `wave10.wb_ie_ppi_watr_cd` | sum | 756 | 19223820 | 0.01 |  |
+| 103 | `history.esb_heatmap__transformers` | avg | 1,028 | 1 | 0.02 |  |
+| 104 | `wave10.wb_ny_adj_nnat_cd` | sum | 760 | 1 | 0.04 |  |
+| 105 | `wave10.wb_ag_lnd_irig_ag_zs` | count | 872 | 9576 | 0.02 |  |
+| 106 | `atb.electricity` | top | 1,830 | 10 | 6.36 |  |
+| 107 | `history.connect_eu__se` | avg | 877 | 1 | 0.00 |  |
+| 108 | `wave10.eu_cei_srm020` | top | 825 | 10 | 0.11 |  |
+| 109 | `history.esb_heatmap__transformers` | avg | 788 | 1 | 0.02 |  |
+| 110 | `history.connect_eu__es_dso` | count | 497 | 0 | 0.00 |  |
+| 111 | `gem.coal_mines_historic_production_2018_2025` | avg | 962 | 1 | 0.14 |  |
+| 112 | `wave10.eu_nrg_chdd_a` | count | 804 | 992 | 0.01 |  |
+| 113 | `wave9.us_boem_wind_leases` | avg | 941 | 1 | 0.02 |  |
+| 114 | `main.outages` | group | 25,361 | 50 | 243.28 |  |
+| 115 | `wave10.eu_nrg_stk_oilm` | avg | 1,235 | 1 | 3.68 |  |
+| 116 | `pse_capacity.requests` | top | 818 | 886 | 0.04 |  |
+| 117 | `wave9.pt_ine_heating_freguesia` | top | 799 | 10 | 0.17 |  |
+| 118 | `gem_ownership.all_entities` | top | 752 | 27707 | 1.61 |  |
+| 119 | `gem.energy_ownership_steel_plant_ownership` | group | 0.8 | None | 0.00 | GuardError: gem.energy_ownership_steel_plant_ownership is licensed (Global Energ |
+| 120 | `entsoe.load` | top | 3,379 | 10 | 10.12 |  |
+| 121 | `wave10.eu_cei_cie011` | avg | 940 | 1 | 0.01 |  |
+| 122 | `wave9.de_kba_districts` | sum | 801 | 448 | 0.04 |  |
+| 123 | `ev_eu.de` | avg | 834 | 1 | 0.02 |  |
+| 124 | `wave10.wb_en_ghg_n2o_ip_mt_ce_ar5` | top | 842 | 10 | 0.07 |  |
+| 125 | `co2stop.dic_geocapacity_countries` | top | 784 | 27 | 0.00 |  |
+| 126 | `wave10.eu_env_ac_rme` | count | 488 | 24606 | 0.00 |  |
+| 127 | `wave10.wb_sh_sta_hygn_zs` | top | 1,034 | 10 | 0.02 |  |
+| 128 | `gem_ownership.steel_plant_ownership` | sum | 557 | 20817 | 0.00 |  |
+| 129 | `wave9.eu_cleanh2_electrolyser_mfg` | sum | 931 | 11 | 0.00 |  |
+| 130 | `app.data_centres` | sum | 381 | 0 | 0.00 |  |
+| 131 | `wave10.eu_nrg_pc_202_v` | top | 572 | 10 | 0.00 |  |
+| 132 | `wave10.wb_ie_ppi_engy_cd` | top | 826 | 10 | 0.02 |  |
+| 133 | `mastr.units_other` | count | 764 | 0 | 0.11 |  |
+| 134 | `ev_eu.nl` | group | 1,259 | 0 | 2.12 |  |
+| 135 | `wave10.wb_sh_sta_smss_zs` | group | 917 | 50 | 0.04 |  |
+| 136 | `wave10.wb_sh_h2o_smdw_ur_zs` | count | 768 | 3310 | 0.03 |  |
+| 137 | `wave10.wb_tx_val_fuel_zs_un` | group | 937 | 1 | 0.06 |  |
+| 138 | `caiso.curtailment` | top | 2,968 | 10 | 4.79 |  |
+| 139 | `rollups.mastr__units_solar_r5` | avg | 829 | 1 | 0.13 |  |
+| 140 | `wave10.eu_nrg_dhdc_c` | sum | 836 | 1700378 | 0.01 |  |
+| 141 | `entsog_tyndp.projects` | top | 597 | 180 | 0.00 |  |
+| 142 | `small_area_energy.poverty` | group | 6,567 | 3 | 3.70 |  |
+| 143 | `history.eredes_capacity__substations` | avg | 944 | 470 | 0.05 |  |
+| 144 | `registers.dk` | group | 837 | 0 | 0.29 |  |
+| 145 | `ev_eu.pl` | top | 966 | 0 | 0.18 |  |
+| 146 | `wave10.wb_er_gdp_fwtl_m3_kd` | group | 814 | 1 | 0.06 |  |
+| 147 | `wave10.wb_en_ghg_co2_lu_mt_ce_ar5` | top | 572 | 10 | 0.00 |  |
+| 148 | `wave10.eu_env_esst_cepggcp` | sum | 531 | 1 | 0.00 |  |
+| 149 | `wave10.eu_nrg_cb_sff` | group | 762 | 2 | 0.34 |  |
+| 150 | `rollups.overture_power__lines_r6` | avg | 1,262 | 1 | 3.18 |  |
+| 151 | `history.netztransparenz__redispatch` | count | 1,023 | 40118 | 0.42 |  |
+| 152 | `connect_eu.de` | sum | 753 | 52 | 0.00 |  |
+| 153 | `wave10.wb_en_ghg_n2o_bu_mt_ce_ar5` | top | 910 | 10 | 0.06 |  |
+| 154 | `ev_eu.bg` | group | 787 | 0 | 0.06 |  |
+| 155 | `gem.oil_gas_extraction_project_level_production_data` | group | 0.9 | None | 0.00 | GuardError: gem.oil_gas_extraction_project_level_production_data is licensed (Gl |
+| 156 | `wave10.eu_env_ac_epigg1` | sum | 877 | 1 | 0.02 |  |
+| 157 | `wave10.wb_ag_lnd_agri_zs` | top | 793 | 10 | 0.06 |  |
+| 158 | `wave10.wb_en_ghg_ch4_ip_mt_ce_ar5` | group | 771 | 50 | 0.04 |  |
+| 159 | `ev_eu.cy` | sum | 986 | 1 | 0.01 |  |
+| 160 | `wave10.eu_nrg_d_serq_n` | count | 937 | 133670 | 0.22 |  |
+| 161 | `ghsl.population` | group | 910 | 50 | 0.12 |  |
+| 162 | `app.data_centres` | top | 379 | 0 | 0.00 |  |
+| 163 | `wave10.wb_is_rrs_totl_km` | top | 799 | 10 | 0.02 |  |
+| 164 | `history.connect_eu__gb_dso` | group | 814 | 0 | 0.58 |  |
+| 165 | `wave10.wb_eg_egy_prim_pp_kd` | avg | 773 | 1 | 0.04 |  |
+| 166 | `wave10.wb_ny_adj_aedu_cd` | avg | 492 | 1 | 0.00 |  |
+| 167 | `history.registers__fr` | count | 1,010 | 141589 | 1.96 |  |
+| 168 | `wave10.wb_si_pov_dday` | group | 790 | 1 | 0.02 |  |
+| 169 | `protected.natura2000` | group | 1,767 | 1 | 32.43 |  |
+| 170 | `esb_heatmap.transformers` | avg | 797 | 1 | 0.02 |  |
+| 171 | `co2stop.dic_distrib_type` | top | 765 | 4 | 0.00 |  |
+| 172 | `outlines.uk_ons` | sum | 860 | 1 | 0.13 |  |
+| 173 | `wave10.eu_nrg_ind_resovsh` | sum | 900 | 1 | 0.03 |  |
+| 174 | `wave10.eu_nrg_ind_re` | sum | 762 | 1 | 0.11 |  |
+| 175 | `osm.eu_links` | avg | 909 | 1 | 0.11 |  |
+| 176 | `connect_eu.cz` | group | 546 | 0 | 0.00 |  |
+| 177 | `iso_queues.requests` | group | 2,885 | 11 | 1.67 |  |
+| 178 | `wave9.gb_ea_flood_zones` | group | 2,576 | 0 | 4.10 |  |
+| 179 | `co2stop.dic_pred_lith` | top | 789 | 3 | 0.00 |  |
+| 180 | `wave10.eu_nrg_d_traq` | sum | 545 | 22932067 | 0.00 |  |
+| 181 | `gem.energy_ownership_steel_plant_ownership` | group | 0.9 | None | 0.00 | GuardError: gem.energy_ownership_steel_plant_ownership is licensed (Global Energ |
+| 182 | `wave9.de_regelleistung` | group | 1,070 | 3 | 0.03 |  |
+| 183 | `wave9.eu_emodnet_wind_farms` | count | 995 | 0 | 0.91 |  |
+| 184 | `gem.iron_ore_mines_main_data` | sum | 741 | 980 | 0.10 |  |
+| 185 | `wave10.wb_sh_sta_bass_zs` | group | 899 | 1 | 0.05 |  |
+| 186 | `wave9.fr_ore_ev_commune` | count | 742 | 773782 | 0.02 |  |
+| 187 | `rollups.overture_power__sites_r7` | top | 1,483 | 10 | 8.22 |  |
+| 188 | `wave9.es_emodnet_telecom_cica` | top | 838 | 0 | 0.01 |  |
+| 189 | `wave10.wb_en_ghg_n2o_ag_mt_ce_ar5` | sum | 854 | 19223820 | 0.06 |  |
+| 190 | `gem.iron_steel_plant_capacities_and_status` | count | 792 | 0 | 0.06 |  |
+| 191 | `wave10.eu_nrg_ind_idooil` | sum | 958 | 1 | 0.03 |  |
+| 192 | `wave9.eu_emodnet_aggregates` | group | 820 | 0 | 0.76 |  |
+| 193 | `wave10.wb_sh_h2o_smdw_ur_zs` | top | 626 | 10 | 0.00 |  |
+| 194 | `gem.iron_steel_plant_production` | avg | 798 | 1 | 0.03 |  |
+| 195 | `wave10.eu_nrg_stk_oem` | group | 828 | 1 | 0.03 |  |
+| 196 | `wave10.eu_cei_srm010` | sum | 844 | 234048 | 0.00 |  |
+| 197 | `wave10.eu_env_esst_rw` | top | 732 | 10 | 0.03 |  |
+| 198 | `gem_ownership.steel_plant_ownership` | top | 760 | 20817 | 0.38 |  |
+| 199 | `history.registers__dk` | count | 980 | 0 | 0.28 |  |
+
+#### All dataset queries
+
+| | queries | p50 | p95 | max |
+|---|---:|---:|---:|---:|
+| cold | 3496 | 354 | 1,537 | 55,940 |
+| warm | 3488 | 264 | 714 | 16,904 |
+
+#### Data routes: cold p50/p95 15.1 / 3,044, warm p50/p95 14.4 / 592
+
+| | cold | warm p50 | note |
+|---|---:|---:|---|
+| GET /api/health | 11.6 | 12.2 | status 200 |
+| GET /api/catalog/search?q=solar%20capacity%20Germany | 1,930 | 4.2 | status 200 |
+| GET /api/catalog/atb | 3.9 | 3.1 | status 200 |
+| GET /api/places?q=Bavaria | 15.1 | 12.9 | status 200 |
+| GET /api/places?q=Lyon | 13.2 | 14.4 | status 200 |
+| GET /api/site?lon=11.58&lat=48.14&radius_km=50 | 596 | 47.7 | status 200 |
+| GET /api/areas/resolve?q=Bavaria | 89.9 | 59.5 | status 200 |
+| GET /api/areas/resolve?q=Berlin&level=city | 8.2 | 7.7 | status 200 |
+| GET /api/shapes/admin1/DEU | 280 | 260 | status 200 |
+| GET /api/quick | 8.8 | 3.2 | status 200 |
+| GET /api/quick/profile?area=Germany | 31.9 | 29.7 | status 200 |
+| GET /api/quick/top?area=Bavaria&n=10 | 406 | 389 | status 200 |
+| GET /api/quick/totals?area=Europe | 3,044 | 46.3 | status 200 |
+| GET /api/quick/published?area=France | 7.4 | 7.5 | status 200 |
+| GET /api/quick/prices?area=Germany | 14.9 | 14.2 | status 200 |
+| GET /api/report.json?lon=11.58&lat=48.14&radius_km=25&task=data_centre | 6.4 | 3.0 | status 422 |
+| GET /api/feed/DEU.json | 4,156 | 480 | status 200 |
+| POST /api/maps | 972 | 618 | status 200 |
+
+#### quick templates: cold p50/p95 648 / 3,918, warm p50/p95 669 / 3,981
+
+| | cold | warm p50 | note |
+|---|---:|---:|---|
+| profile Germany | 1,142 | 1,016 |  |
+| profile Bavaria | 3,918 | 3,993 |  |
+| profile Berlin | 3,834 | 2,020 |  |
+| top Germany | 497 | 511 |  |
+| top Bavaria | 648 | 669 |  |
+| top France | 492 | 487 |  |
+| totals Europe | 2,023 | 1,995 |  |
+| totals United States | 498 | 492 |  |
+| compare France; Germany | 1,981 | 1,996 |  |
+| published Poland | 0.8 | 0.5 |  |
+| prices Germany | 512 | 485 |  |
+
+#### resolve_area: cold p50/p95 1,594 / 3,724, warm p50/p95 1,722 / 3,706
+
+| | cold | warm p50 | note |
+|---|---:|---:|---|
+| Germany | 0.4 | 2,625 |  |
+| France | 1,594 | 1,460 |  |
+| Poland | 1,895 | 2,092 |  |
+| Spain | 488 | 519 |  |
+| Italy | 1,782 | 1,988 |  |
+| United States | 502 | 550 |  |
+| Nordics | 982 | 994 |  |
+| EU-27 | 2,140 | 1,897 |  |
+| Bavaria | 2,555 | 2,413 |  |
+| Lower Saxony | 2,318 | 2,222 |  |
+| Catalonia | 3,724 | 3,706 |  |
+| Lombardy | 2,521 | 1,884 |  |
+| Texas | 2,810 | 2,437 |  |
+| California | 2,144 | 2,223 |  |
+| Scotland | 2,955 | 2,508 |  |
+| Brittany | 3,672 | 4,521 |  |
+| Masovian Voivodeship | 3,800 | 2,036 |  |
+| North Rhine-Westphalia | 1,775 | 2,401 |  |
+| Andalusia | 2,288 | 2,106 |  |
+| Upper Bavaria | 502 | 523 | not resolved |
+| Harris County | 2,546 | 2,260 |  |
+| Cook County | 2,041 | 2,368 |  |
+| Kreis Steinfurt | 2,476 | 1,884 |  |
+| Greater Manchester | 2,578 | 2,531 |  |
+| Cornwall | 2,865 | 3,365 |  |
+| Berlin | 1,063 | 1,089 |  |
+| Paris | 1,064 | 1,019 |  |
+| Madrid | 1,134 | 1,106 |  |
+| Rome | 1,961 | 2,085 |  |
+| Warsaw | 1,028 | 1,019 |  |
+| Toulouse | 1,031 | 1,084 |  |
+| Lyon | 1,114 | 1,088 |  |
+| Hamburg | 1,074 | 1,043 |  |
+| Munich | 1,055 | 1,087 |  |
+| Vienna | 996 | 1,037 |  |
+| Amsterdam | 1,039 | 1,028 |  |
+| Copenhagen | 989 | 1,020 |  |
+| Dublin | 1,056 | 1,071 |  |
+| Lisbon | 1,200 | 1,057 |  |
+| Houston | 1,056 | 1,100 |  |
+| Leeds | 1,006 | 1,064 |  |
+| Manchester | 1,075 | 1,278 |  |
+| Kreuzberg | 1,655 | 1,700 |  |
+| Schwabing | 549 | 586 | not resolved |
+| Montmartre | 2,563 | 2,354 |  |
+| DE-LU | 1,202 | 966 |  |
+| NO2 | 15,004 | 14,103 |  |
+| IT-North | 947 | 945 |  |
+| Sicily | 2,114 | 2,733 |  |
+| Saxony-Anhalt | 3,437 | 2,716 |  |
+
+#### area_stats: cold p50/p95 2.9 / 57.8, warm p50/p95 2.5 / 53.6
+
+| | cold | warm p50 | note |
+|---|---:|---:|---|
+| people (city) | 2.3 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| people (region) | 52.1 | 47.6 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| built_up (city) | 2.6 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| built_up (region) | 47.8 | 47.9 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| land_cover (city) | 2.6 | 2.4 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| land_cover (region) | 170 | 49.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| slope (city) | 2.9 | 2.5 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| slope (region) | 47.6 | 59.4 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| solar (city) | 2.7 | 2.4 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| solar (region) | 48.4 | 46.5 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| wind (city) | 2.3 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| wind (region) | 46.6 | 46.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| flood (city) | 2.4 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| flood (region) | 47.5 | 47.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| heat_demand (city) | 2.5 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| heat_demand (region) | 48.2 | 48.0 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_edo_cdi (city) | 2.6 | 2.3 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_edo_cdi (region) | 47.7 | 47.1 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_effis_danger (city) | 2.6 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_effis_danger (region) | 47.6 | 49.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_emodnet_bathy (city) | 2.6 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_emodnet_bathy (region) | 57.8 | 50.3 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_emodnet_vessel_density (city) | 2.4 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_eu_emodnet_vessel_density (region) | 49.3 | 50.7 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_marinecadastre_ais (city) | 2.4 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_marinecadastre_ais (region) | 52.3 | 52.4 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_noaa_slr (city) | 2.7 | 2.5 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_noaa_slr (region) | 52.1 | 49.6 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_usfs_whp (city) | 2.6 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_us_usfs_whp (region) | 49.8 | 47.6 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_world_gebco (city) | 2.4 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_world_gebco (region) | 49.0 | 53.6 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_world_nex_gddp (city) | 2.6 | 2.2 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+| w9_world_nex_gddp (region) | 170 | 53.8 | ImportError: libexpat.so.1: cannot open shared object file: No such file or directory |
+
+(The per-table list of this pass is in the run artifact `query-speed-report`; the first pass above lists every table.)
+
 ## Latest run
 
 <!-- measured:start -->
