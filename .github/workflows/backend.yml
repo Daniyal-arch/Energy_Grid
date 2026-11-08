@@ -76,6 +76,7 @@ jobs:
           docker run --rm --cpus 2 --memory 3008m -e R2_ACCOUNT_ID -e R2_ACCESS_KEY_ID -e R2_SECRET_ACCESS_KEY \
             -v "$PWD/backend/probes:/var/task/backend/probes:ro" -v "$PWD/out:/out" infraatlas-backend:speed \
             python -m probes.probe_query_speed --only "$SAMPLE" --unseen 0 --json /out/sample.json > /dev/null 2>&1
+          set -o pipefail  # the check's exit code, not tee's
           python3 backend/probes/probe_query_speed.py --check out/sample.json | tee check.md
           cat check.md >> "$GITHUB_STEP_SUMMARY"
 

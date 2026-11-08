@@ -781,6 +781,12 @@ def check(probe: Path, baseline: Path, tolerance: float, floor_ms: float) -> int
         if b is None or n is None:
             print(f"| `{t['table']}` | {fmt(b)} | {fmt(n)} | not compared |")
             continue
+        # a query that failed in one run is missing from its times: the two sets differ
+        errs = (base.get(t["table"]) or {}).get("errors") or 0, len(t.get("errors") or [])
+        if any(errs):
+            print(f"| `{t['table']}` | {fmt(b)} | {fmt(n)} | not compared (failed queries: "
+                  f"baseline {errs[0]}, now {errs[1]}) |")  # fmt: skip
+            continue
         grew = n > b * (1 + tolerance) and n - b > floor_ms
         print(
             f"| `{t['table']}` | {fmt(b)} | {fmt(n)} | {(n - b) / b:+.0%}{' **slower**' if grew else ''} |"
@@ -826,6 +832,7 @@ def merge(d: Path) -> None:
                     "gets_cold",
                 )
             }
+            | {"errors": len(t.get("errors") or [])}  # queries that failed: not in the times
             for t in tables
         },
         "routes": {
