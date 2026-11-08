@@ -1250,3 +1250,33 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 Per-table metadata (`TableInfo.meta` in `scripts/lake.py`, in each Parquet file's KV metadata and
 in `lake/_catalog.json`): `as_of` (the source's own date: stated in the registry, or the
 file's Last-Modified) with `as_of_basis`, and `refresh` (scripts/freshness.py).
+
+## Brief 32: speed and a lean lake (2026-11-08)
+
+**Row groups (the standard, updated).** Geometry tables: 10,000-100,000 rows a group and at most
+32 MB compressed; other tables about 1,000,000 rows (at most 128 MB). Rows in Hilbert order of
+their position, a `bbox` covering column on geometry tables. DuckDB 2.0 writes no Parquet page
+index and its reader uses none; row-group statistics on sorted rows do the skipping, and Bloom
+filters exist for dictionary-encoded (text) ids. `scripts/lake_rewrite.py` (`inspect`,
+`rewrite`) brings existing files to the standard: each file is replaced only after its row
+count and every original column's checksum (count of values and bit_xor of row hashes) match.
+
+**`hot.duckdb`** (`scripts/build_hot.py`, after each catalogue): native DuckDB copies of the
+small tables (up to 50 MB), rollups, shapes, the name index, simplified outlines and the
+prepared answers, with row counts checked against the lake and ART indexes on id and name keys.
+
+**Snapshot retention.** For snapshot tables: keep the newest snapshot, the first snapshot of
+each month and every snapshot a history table reads. Applied by the builders from 2026-11-08
+(`scripts/build_mastr.py`); older snapshots are deleted only when the owner approved them
+(`data/lake_deletions.yaml`, applied by `scripts/lake_storage.py apply` after it checks that
+nothing outside the dataset reads the snapshot). The MaStR snapshot of 2026-10-13 (27 objects,
+1.305 GB) was deleted on 2026-11-08 with the owner's approval.
+
+**Storage audit** (`scripts/lake_storage.py audit`): sizes per prefix in both buckets, MaStR
+snapshots and their readers, orphan files (Parquet no catalogue lists), the agent cache. The
+agent cache (`agent/cache/`) expires after 7 days (R2 lifecycle rule).
+
+| Dataset / table | Built by | What |
+|---|---|---|
+| `prepared/answers` | `backend/probes/build_prepared.py` (`backend-probe.yml` job `prepared`) | per area id and template key: the `quick` answer with its sources, build time and data fingerprint |
+| `lake/hot.duckdb` | `scripts/build_hot.py` | Tier 1 copy (above) |

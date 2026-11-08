@@ -396,3 +396,26 @@ Everything here is model-independent; models, providers and prompts per model ar
   real-model injection cases in `agent/evals/injection.yaml`.
 - **Product routes.** Site report (`/api/report`), change feeds (`/api/feed/{area}.rss`), the
   data API's OpenAPI (`/api/openapi.json`): specs in `docs/product/`.
+
+## 15. Every dataset query in milliseconds: the tiers (brief 32, 2026-11-08)
+
+Questions are never cached as questions; they reduce to filter by place, filter by attribute,
+aggregate and join, and each of those is made fast on every dataset. The planner reads the
+cheapest source that answers **exactly**, and every answer names it.
+
+| Tier | What | Where | Used when |
+|---|---|---|---|
+| 0 | prepared answers of the fixed questions (`quick` profile, top plants / substations / data centres, totals) for the areas asked most | `prepared.answers` (lake, copied into `hot.duckdb`), public `answers/v1/<area_id>.json` | the area id and template are prepared and the data fingerprint (the app tables' sources) matches; else the template runs |
+| 1 | `hot.duckdb`: lake tables up to 50 MB, every rollup and shape set, the outline name index, simplified outlines (0.001°) | downloaded from R2 to `/tmp/hot/` at cold start, attached read-only; catalog `fast` = one view per table over `hot` or the lake | every query, once attached (`/api/health` → `hot`); until then the lake |
+| 2 | the lake, rewritten for selective reads (Hilbert order, capped row groups, `bbox`) | R2 Parquet | everything else |
+
+- **Exact sums for any area** (`area_sum`, `backend/tools/area_sum.py`): the H3 rollup of the
+  cells wholly inside the area plus the rows of the cells on its edge, each tested against the
+  outline; equal to the row-level sum (tests on 15 shapes, three resolutions, groupings and
+  filters). A rollup alone (cells whose centre is inside) is a different rule, used only when
+  the answer says so.
+- **Query tier** in every `run_sql` result (`QueryResult.tier`: `hot` or `lake`).
+- **Measured** by `backend/probes/probe_query_speed.py` (every lake and app table, routes,
+  `quick`, `resolve_area`, `area_stats`, and 200 generated unseen queries with the result cache
+  off) in `backend-probe.yml`; results in `docs/research/query-speed.md` and
+  `data/query_speed.json`.
