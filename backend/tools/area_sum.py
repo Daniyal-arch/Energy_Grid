@@ -85,8 +85,27 @@ def resolution_for(km2: float) -> int:
     return next(r for k, r in RES_BY_KM2 if km2 >= k)
 
 
+DETAILED_VERTICES = 5_000  # above this, H3's polygon fill is slow (8 s at 200,000 vertices)
+
+
+def _rings(geometry: dict[str, Any]) -> list[list[list[float]]]:
+    t, c = geometry.get("type"), geometry.get("coordinates") or []
+    if t == "Polygon":
+        return list(c)
+    if t == "MultiPolygon":
+        return [r for poly in c for r in poly]
+    if t == "GeometryCollection":
+        return [r for g in geometry.get("geometries", []) for r in _rings(g)]
+    return []
+
+
 def cells(cur: Any, geometry: dict[str, Any], res: int) -> tuple[list[int], list[int]]:
-    """(interior, boundary) H3 cells of an outline at `res`."""
+    """(interior, boundary) H3 cells of an outline at `res`: every interior cell lies inside the
+    outline with MARGIN_DEG to spare; every cell the outline touches and is not interior is a
+    boundary cell (a superset is allowed: boundary rows are tested exactly)."""
+    rings = _rings(geometry)
+    if sum(len(r) for r in rings) > DETAILED_VERTICES:
+        return _cells_detailed(cur, geometry, rings, res)
     gj = json.dumps(geometry)
     polys = [
         r[0]
@@ -131,6 +150,99 @@ def cells(cur: Any, geometry: dict[str, Any], res: int) -> tuple[list[int], list
         }
     inner = set(interior)
     return sorted(inner), sorted((ring | touched) - inner)
+
+
+def _cells_detailed(
+    cur: Any, geometry: dict[str, Any], rings: list[list[list[float]]], res: int
+) -> tuple[list[int], list[int]]:
+    """`cells` for detailed outlines without filling the full outline with H3.
+
+    1. Boundary: the cells of points along every ring, no farther apart than 0.4 of the
+       resolution's shortest cell edge, and their neighbours: every cell the outline crosses
+       is among them (a crossing cell lies within one cell of a sampled point).
+    2. Candidates: H3 cells whose centres lie in the outline simplified by `tol` and buffered by
+       2 `tol`, a superset of the outline (Douglas-Peucker moves no point by more than `tol`).
+    3. The candidates off the boundary fall into connected groups that the outline does not
+       cross, so each group is wholly inside or wholly outside: one exact point test a group.
+       A cell off the boundary is at least a cell away from the outline: margin satisfied.
+    """
+    edge_km = cur.execute(
+        "SELECT min(h3_edge_length(e, 'km')) FROM (SELECT unnest(h3_origin_to_directed_edges("
+        "c)) AS e FROM (SELECT unnest(h3_get_pentagons(?)) AS c))",
+        [res],
+    ).fetchone()[0]
+    step = float(edge_km) * 0.4 / 111.32  # degrees; a degree of longitude is never longer
+    xs: list[float] = []
+    ys: list[float] = []
+    for ring in rings:
+        for (x0, y0), (x1, y1) in zip(ring, ring[1:], strict=False):
+            n = max(1, int(max(abs(x1 - x0), abs(y1 - y0)) / step) + 1)
+            for k in range(n):
+                xs.append(x0 + (x1 - x0) * k / n)
+                ys.append(y0 + (y1 - y0) * k / n)
+        if ring:
+            xs.append(ring[-1][0])
+            ys.append(ring[-1][1])
+    boundary = {
+        r[0]
+        for r in cur.execute(
+            "SELECT DISTINCT unnest(h3_grid_disk(c, 1)) FROM (SELECT DISTINCT "
+            "h3_latlng_to_cell(greatest(-90.0, least(90.0, y)), x, ?) AS c "
+            "FROM (SELECT unnest(?::DOUBLE[]) AS x, unnest(?::DOUBLE[]) AS y))",
+            [res, xs, ys],
+        ).fetchall()
+    }
+    tol = step * 2
+    gj = json.dumps(geometry)
+    polys = [
+        r[0]
+        for r in cur.execute(
+            "SELECT ST_AsText(unnest(ST_Dump(ST_Buffer(ST_SimplifyPreserveTopology("
+            "ST_MakeValid(ST_GeomFromGeoJSON(?)), ?), ?))).geom)",
+            [gj, tol, 2 * tol],
+        ).fetchall()
+    ]
+    cand: set[int] = set()
+    for wkt in polys:
+        cand |= set(
+            cur.execute(
+                "SELECT h3_polygon_wkt_to_cells_experimental(?, 'center', ?)", [wkt, res]
+            ).fetchone()[0]
+            or []
+        )
+    rest = sorted(cand - boundary)
+    if not rest:
+        return [], sorted(boundary)
+    adj: dict[int, list[int]] = {
+        c: list(n or [])
+        for c, n in cur.execute(
+            "SELECT c, h3_grid_ring(c, 1) FROM (SELECT unnest(?::UBIGINT[]) AS c)", [rest]
+        ).fetchall()
+    }
+    todo = set(rest)
+    groups: list[list[int]] = []
+    while todo:
+        start = todo.pop()
+        group, stack = [start], [start]
+        while stack:
+            for n in adj.get(stack.pop(), []):
+                if n in todo:
+                    todo.remove(n)
+                    group.append(n)
+                    stack.append(n)
+        groups.append(group)
+    reps = [g[0] for g in groups]
+    inside = [
+        bool(r[0])
+        for r in cur.execute(
+            "SELECT ST_Contains(g, ST_Point(h3_cell_to_lng(c), h3_cell_to_lat(c))) FROM "
+            "(SELECT unnest(?::UBIGINT[]) AS c, generate_subscripts(?::UBIGINT[], 1) AS i), "
+            "(SELECT ST_GeomFromGeoJSON(?) AS g) ORDER BY i",
+            [reps, reps, gj],
+        ).fetchall()
+    ]
+    interior = sorted(c for g, ok in zip(groups, inside, strict=True) if ok for c in g)
+    return interior, sorted(boundary)
 
 
 def area_sum(

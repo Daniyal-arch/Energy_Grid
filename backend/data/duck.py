@@ -14,6 +14,7 @@ with a timeout (interrupt).
 
 from __future__ import annotations
 
+import contextlib
 import csv
 import json
 import logging
@@ -22,7 +23,7 @@ import re
 import threading
 import time
 from collections import OrderedDict
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 from decimal import Decimal
 from pathlib import Path
@@ -101,7 +102,8 @@ class Lake:
         self._areas_seen: OrderedDict[str, bool] = OrderedDict()  # ids in areamem.areas
         self._areas_lock = threading.Lock()
         self._area_res: dict[str, int] = {}  # areas with H3 cells built: their resolution
-        self._cells_pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="area-cells")
+        self._cells_pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="area-cells")
+        self._cells_jobs: dict[str, Future[None]] = {}  # area id -> its cell build
         self.hot_state: dict[str, Any] = {"ready": False}
         self._hot_done = threading.Event()
         self.con = self._open()
@@ -480,7 +482,7 @@ class Lake:
                      for a in new],
                 )  # fmt: skip
                 for a in new:  # in the background: the plain test answers until they are ready
-                    self._cells_pool.submit(self._area_cells, a)
+                    self._cells_jobs[a["area_id"]] = self._cells_pool.submit(self._area_cells, a)
             for a in areas:
                 self._areas_seen[a["area_id"]] = True
                 self._areas_seen.move_to_end(a["area_id"])
@@ -494,6 +496,7 @@ class Lake:
                     )
                 for i in old:
                     self._area_res.pop(i, None)
+                    self._cells_jobs.pop(i, None)
         ids = ", ".join("'" + a["area_id"].replace("'", "''") + "'" for a in areas)
         cur.execute(
             f"CREATE TEMP VIEW areas AS SELECT * FROM areamem.areas WHERE area_id IN ({ids})"
@@ -502,6 +505,18 @@ class Lake:
             cur.execute(m)
 
     CELLS_MAX_KM2 = 2_000_000.0  # larger areas (continents) keep the plain test
+    # a query waits this long for its areas' cells (built in 0.1-2 s; the plain test on a
+    # detailed region costs ~0.45 ms a point, 5-14 s for a region's 10,000-30,000 rows)
+    CELLS_WAIT_S = 3.0
+
+    def _wait_area_cells(self, areas: list[dict[str, Any]]) -> None:
+        deadline = time.monotonic() + self.CELLS_WAIT_S
+        for a in areas:
+            job = self._cells_jobs.get(a["area_id"])
+            if job is None or a["area_id"] in self._area_res:
+                continue
+            with contextlib.suppress(Exception):  # timeout: the plain test answers
+                job.result(timeout=max(0.0, deadline - time.monotonic()))
 
     def _area_cells(self, a: dict[str, Any]) -> None:
         """(In a background thread.) H3 cells wholly inside the outline (a point there is
@@ -530,15 +545,7 @@ class Lake:
                     "INSERT INTO areamem.cells SELECT ?, unnest(?::UBIGINT[])", [aid, inner]
                 )
             if edge:
-                cur.execute(
-                    "INSERT INTO areamem.clips SELECT area_id, c, clip, ST_Boundary(clip) FROM ("
-                    "SELECT ? AS area_id, c, ST_Intersection(g, "
-                    "ST_Buffer(ST_GeomFromText(h3_cell_to_boundary_wkt(c)), ?)) AS clip "
-                    "FROM (SELECT unnest(?::UBIGINT[]) AS c), "
-                    "(SELECT geometry AS g FROM areamem.areas WHERE area_id = ?)) "
-                    "WHERE NOT ST_IsEmpty(clip)",
-                    [aid, MARGIN_DEG, edge, aid],
-                )
+                self._area_clips(cur, aid, edge, res, MARGIN_DEG)
             with self._areas_lock:
                 if aid in self._areas_seen:
                     self._area_res[aid] = res
@@ -547,6 +554,43 @@ class Lake:
                         cur.execute(f"DELETE FROM areamem.{t} WHERE area_id = ?", [aid])
         except duckdb.Error as e:  # no h3 here: the plain test answers
             log.warning("area cells not built", extra={"error": str(e)[:200]})
+
+    CLIP_GROUP_RES = 3  # edge cells grouped by their ancestor this many levels up
+    CLIP_BATCH = 16  # groups clipped per statement (each row holds a copy of the outline)
+
+    def _area_clips(self, cur: Any, aid: str, edge: list[int], res: int, margin: float) -> None:
+        """The outline clipped to each edge cell, in two steps so that no statement copies a
+        detailed outline into thousands of rows (a 200,000-vertex outline ran out of memory):
+        first a piece per group of edge cells (the outline cut to the box around the group's
+        buffered cells, a superset of every cell clip in it), then each cell from its piece."""
+        up = max(0, res - self.CLIP_GROUP_RES)
+        cur.execute(
+            "CREATE OR REPLACE TEMP TABLE _edge AS SELECT c, h3_cell_to_parent(c, ?) AS p, "
+            "ST_Buffer(ST_GeomFromText(h3_cell_to_boundary_wkt(c)), ?) AS cb "
+            "FROM (SELECT unnest(?::UBIGINT[]) AS c)",
+            [up, margin, edge],
+        )
+        cur.execute(
+            "CREATE OR REPLACE TEMP TABLE _box AS SELECT p, ST_MakeEnvelope(min(ST_XMin(cb)), "
+            "min(ST_YMin(cb)), max(ST_XMax(cb)), max(ST_YMax(cb))) AS box FROM _edge GROUP BY p"
+        )
+        cur.execute("CREATE OR REPLACE TEMP TABLE _piece (p UBIGINT, piece GEOMETRY)")
+        groups = [r[0] for r in cur.execute("SELECT p FROM _box ORDER BY p").fetchall()]
+        for i in range(0, len(groups), self.CLIP_BATCH):
+            cur.execute(
+                "INSERT INTO _piece SELECT b.p, ST_Intersection(a.geometry, b.box) FROM _box b, "
+                "(SELECT geometry FROM areamem.areas WHERE area_id = ?) a "
+                "WHERE b.p IN (SELECT unnest(?::UBIGINT[]))",
+                [aid, groups[i : i + self.CLIP_BATCH]],
+            )
+        cur.execute(
+            "INSERT INTO areamem.clips SELECT ?, c, clip, ST_Boundary(clip) FROM ("
+            "SELECT e.c, ST_Intersection(pc.piece, e.cb) AS clip FROM _edge e JOIN _piece pc "
+            "USING (p) WHERE NOT ST_IsEmpty(pc.piece)) WHERE NOT ST_IsEmpty(clip)",
+            [aid],
+        )
+        for t in ("_edge", "_box", "_piece"):
+            cur.execute(f"DROP TABLE IF EXISTS {t}")
 
     def wait_cells(self) -> None:
         """Until the cells of every area registered so far are built (tests, probes)."""
@@ -673,6 +717,8 @@ class Lake:
             self.register_areas(cur, areas)
         if guard:
             if areas:
+                if "_area(" in sql:  # in_area / intersects_area: use the cells when ready soon
+                    self._wait_area_cells(areas)
                 rewritten = expand_in_area(sql, areas, dict(self._area_res))
                 if rewritten != sql:
                     sql = check(

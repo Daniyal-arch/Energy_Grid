@@ -1,5 +1,7 @@
 """Areas in queries are parsed once per container and shared by every cursor (brief 32)."""
 
+import pytest
+
 from tests.conftest import settings
 from tools.context import ToolContext
 
@@ -45,14 +47,22 @@ def test_least_recently_used_areas_dropped(monkeypatch) -> None:
     assert n == 3
 
 
-def test_cell_accelerated_in_area_equals_plain_contains() -> None:
+@pytest.mark.parametrize("detailed", [False, True])
+def test_cell_accelerated_in_area_equals_plain_contains(detailed: bool, monkeypatch) -> None:
     """in_area through H3 cells and clipped outlines gives exactly ST_Contains, on every shape
-    of the area-sum tests, at points spread over each box and points within metres of edges."""
+    of the area-sum tests, at points spread over each box and points within metres of edges;
+    `detailed` builds the cells the way detailed outlines are built (boundary sampling and one
+    test per group of cells, tools.area_sum._cells_detailed)."""
     from tests.test_area_sum import _areas
+    from tools import area_sum
 
     ctx = ToolContext(settings())
     lake = ctx.lake
     areas = [a.as_dict() for a in _areas(ctx)]
+    if detailed:
+        monkeypatch.setattr(area_sum, "DETAILED_VERTICES", 0)
+        # fresh ids: the plain variant may have built cells for these areas already
+        areas = [{**a, "area_id": "a_d" + a["area_id"][3:]} for a in areas]
     cur = lake.cursor()
     for a in areas:
         if a["area_id"] in lake._area_res:

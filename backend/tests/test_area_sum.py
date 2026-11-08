@@ -13,6 +13,7 @@ import pytest
 
 from data.areas import Area
 from tests.conftest import HAVE_H3, settings
+from tools import area_sum as area_sum_mod
 from tools.area_sum import area_sum, exact_sum
 from tools.context import ToolContext
 
@@ -121,9 +122,16 @@ CASES = [
 ]
 
 
+@pytest.mark.parametrize("detailed", [False, True])
 @pytest.mark.parametrize("res", [5, 6, 7])
 @pytest.mark.parametrize(("table", "pos", "measure", "by", "where"), CASES)
-def test_interior_plus_boundary_equals_row_sum(table, pos, measure, by, where, res):
+def test_interior_plus_boundary_equals_row_sum(
+    table, pos, measure, by, where, res, detailed, monkeypatch
+):
+    """`detailed`: cells built the way detailed outlines are (boundary sampling, one exact test
+    per group of cells), forced on the test shapes."""
+    if detailed:
+        monkeypatch.setattr(area_sum_mod, "DETAILED_VERTICES", 0)
     ctx = ToolContext(settings())
     used_rollup = 0
     for a in _areas(ctx):
