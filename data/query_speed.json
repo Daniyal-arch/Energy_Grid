@@ -1,0 +1,7641 @@
+{
+ "probed": "2026-11-08T06:01:27+00:00",
+ "lake_mode": "r2:r2://infraatlas-raw/lake/lake.duckdb",
+ "tables": {
+  "afdc.stations": {
+   "cold_p50_ms": 505.8,
+   "cold_p95_ms": 625.3,
+   "warm_p50_ms": 446.8,
+   "warm_p95_ms": 447.1,
+   "bytes_cold": 42172,
+   "gets_cold": 6
+  },
+  "app.eu_lines": {
+   "cold_p50_ms": 160.1,
+   "cold_p95_ms": 1210.2,
+   "warm_p50_ms": 162.7,
+   "warm_p95_ms": 1223.6,
+   "bytes_cold": 0,
+   "gets_cold": 0
+  },
+  "app.eu_plants": {
+   "cold_p50_ms": 19.8,
+   "cold_p95_ms": 240.8,
+   "warm_p50_ms": 1.7,
+   "warm_p95_ms": 233.3,
+   "bytes_cold": 0,
+   "gets_cold": 0
+  },
+  "app.eu_prices": {
+   "cold_p50_ms": 2.3,
+   "cold_p95_ms": 27.5,
+   "warm_p50_ms": 1.4,
+   "warm_p95_ms": 2.1,
+   "bytes_cold": 0,
+   "gets_cold": 0
+  },
+  "app.eu_substations": {
+   "cold_p50_ms": 124.6,
+   "cold_p95_ms": 233.1,
+   "warm_p50_ms": 125.5,
+   "warm_p95_ms": 234.7,
+   "bytes_cold": 0,
+   "gets_cold": 0
+  },
+  "app.us_plants": {
+   "cold_p50_ms": 21.3,
+   "cold_p95_ms": 217.4,
+   "warm_p50_ms": 2.4,
+   "warm_p95_ms": 219.6,
+   "bytes_cold": 0,
+   "gets_cold": 0
+  },
+  "app.world_plants": {
+   "cold_p50_ms": 25.4,
+   "cold_p95_ms": 3318.9,
+   "warm_p50_ms": 5.7,
+   "warm_p95_ms": 3352.7,
+   "bytes_cold": 0,
+   "gets_cold": 0
+  },
+  "aqueduct.baseline_annual": {
+   "cold_p50_ms": 2567.1,
+   "cold_p95_ms": 5250.8,
+   "warm_p50_ms": 1159.4,
+   "warm_p95_ms": 5190.9,
+   "bytes_cold": 471805741,
+   "gets_cold": 82
+  },
+  "aqueduct.baseline_monthly": {
+   "cold_p50_ms": 531.1,
+   "cold_p95_ms": 2128.2,
+   "warm_p50_ms": 302.5,
+   "warm_p95_ms": 321.9,
+   "bytes_cold": 4829370,
+   "gets_cold": 9
+  },
+  "aqueduct.basins": {
+   "cold_p50_ms": 858.3,
+   "cold_p95_ms": 10792.1,
+   "warm_p50_ms": 812.0,
+   "warm_p95_ms": 1002.6,
+   "bytes_cold": 130092884,
+   "gets_cold": 50
+  },
+  "aqueduct.future_annual": {
+   "cold_p50_ms": 425.7,
+   "cold_p95_ms": 5088.2,
+   "warm_p50_ms": 214.7,
+   "warm_p95_ms": 219.4,
+   "bytes_cold": 7059058,
+   "gets_cold": 10
+  },
+  "atb.electricity": {
+   "cold_p50_ms": 808.7,
+   "cold_p95_ms": 2834.8,
+   "warm_p50_ms": 295.0,
+   "warm_p95_ms": 309.3,
+   "bytes_cold": 6362531,
+   "gets_cold": 11
+  },
+  "aures.auctions": {
+   "cold_p50_ms": 287.5,
+   "cold_p95_ms": 568.4,
+   "warm_p50_ms": 278.0,
+   "warm_p95_ms": 281.5,
+   "bytes_cold": 85320,
+   "gets_cold": 5
+  },
+  "caiso.curtailment": {
+   "cold_p50_ms": 298.8,
+   "cold_p95_ms": 2924.2,
+   "warm_p50_ms": 293.2,
+   "warm_p95_ms": 296.7,
+   "bytes_cold": 4798230,
+   "gets_cold": 21
+  },
+  "capareseau.substations": {
+   "cold_p50_ms": 423.3,
+   "cold_p95_ms": 540.9,
+   "warm_p50_ms": 266.8,
+   "warm_p95_ms": 437.3,
+   "bytes_cold": 274461,
+   "gets_cold": 7
+  },
+  "cenace.pml": {
+   "cold_p50_ms": 218.8,
+   "cold_p95_ms": 454.6,
+   "warm_p50_ms": 213.9,
+   "warm_p95_ms": 219.2,
+   "bytes_cold": 291987,
+   "gets_cold": 4
+  },
+  "co2stop.country_totals": {
+   "cold_p50_ms": 328.9,
+   "cold_p95_ms": 537.2,
+   "warm_p50_ms": 264.6,
+   "warm_p95_ms": 265.5,
+   "bytes_cold": 3168,
+   "gets_cold": 3
+  },
+  "co2stop.daughter_units_summary": {
+   "cold_p50_ms": 219.5,
+   "cold_p95_ms": 428.8,
+   "warm_p50_ms": 208.7,
+   "warm_p95_ms": 215.0,
+   "bytes_cold": 4535,
+   "gets_cold": 3
+  },
+  "co2stop.dgf_input": {
+   "cold_p50_ms": 462.7,
+   "cold_p95_ms": 462.7,
+   "warm_p50_ms": 208.5,
+   "warm_p95_ms": 208.5,
+   "bytes_cold": 37085,
+   "gets_cold": 2
+  },
+  "co2stop.dic_age": {
+   "cold_p50_ms": 558.8,
+   "cold_p95_ms": 558.8,
+   "warm_p50_ms": 271.2,
+   "warm_p95_ms": 271.2,
+   "bytes_cold": 2652,
+   "gets_cold": 2
+  },
+  "co2stop.dic_assess_traptype": {
+   "cold_p50_ms": 560.9,
+   "cold_p95_ms": 560.9,
+   "warm_p50_ms": 272.6,
+   "warm_p95_ms": 272.6,
+   "bytes_cold": 1315,
+   "gets_cold": 2
+  },
+  "co2stop.dic_assess_type": {
+   "cold_p50_ms": 607.4,
+   "cold_p95_ms": 607.4,
+   "warm_p50_ms": 276.1,
+   "warm_p95_ms": 276.1,
+   "bytes_cold": 1383,
+   "gets_cold": 2
+  },
+  "co2stop.dic_availabledata": {
+   "cold_p50_ms": 556.5,
+   "cold_p95_ms": 556.5,
+   "warm_p50_ms": 245.4,
+   "warm_p95_ms": 245.4,
+   "bytes_cold": 2318,
+   "gets_cold": 2
+  },
+  "co2stop.dic_content": {
+   "cold_p50_ms": 473.7,
+   "cold_p95_ms": 473.7,
+   "warm_p50_ms": 211.1,
+   "warm_p95_ms": 211.1,
+   "bytes_cold": 1221,
+   "gets_cold": 2
+  },
+  "co2stop.dic_distrib_type": {
+   "cold_p50_ms": 597.3,
+   "cold_p95_ms": 597.3,
+   "warm_p50_ms": 319.8,
+   "warm_p95_ms": 319.8,
+   "bytes_cold": 1278,
+   "gets_cold": 2
+  },
+  "co2stop.dic_fault_extent": {
+   "cold_p50_ms": 429.2,
+   "cold_p95_ms": 429.2,
+   "warm_p50_ms": 210.4,
+   "warm_p95_ms": 210.4,
+   "bytes_cold": 1443,
+   "gets_cold": 2
+  },
+  "co2stop.dic_geocapacity_countries": {
+   "cold_p50_ms": 242.5,
+   "cold_p95_ms": 434.3,
+   "warm_p50_ms": 208.2,
+   "warm_p95_ms": 209.5,
+   "bytes_cold": 3260,
+   "gets_cold": 4
+  },
+  "co2stop.dic_geocgraph_area": {
+   "cold_p50_ms": 264.9,
+   "cold_p95_ms": 528.9,
+   "warm_p50_ms": 274.3,
+   "warm_p95_ms": 284.2,
+   "bytes_cold": 3465,
+   "gets_cold": 3
+  },
+  "co2stop.dic_geol_basin": {
+   "cold_p50_ms": 282.5,
+   "cold_p95_ms": 536.9,
+   "warm_p50_ms": 277.1,
+   "warm_p95_ms": 277.9,
+   "bytes_cold": 5004,
+   "gets_cold": 4
+  },
+  "co2stop.dic_methods": {
+   "cold_p50_ms": 557.6,
+   "cold_p95_ms": 557.6,
+   "warm_p50_ms": 295.4,
+   "warm_p95_ms": 295.4,
+   "bytes_cold": 2209,
+   "gets_cold": 2
+  },
+  "co2stop.dic_on_offshore": {
+   "cold_p50_ms": 509.1,
+   "cold_p95_ms": 509.1,
+   "warm_p50_ms": 256.3,
+   "warm_p95_ms": 256.3,
+   "bytes_cold": 1234,
+   "gets_cold": 2
+  },
+  "co2stop.dic_pred_lith": {
+   "cold_p50_ms": 432.5,
+   "cold_p95_ms": 432.5,
+   "warm_p50_ms": 207.2,
+   "warm_p95_ms": 207.2,
+   "bytes_cold": 1234,
+   "gets_cold": 2
+  },
+  "co2stop.dic_status": {
+   "cold_p50_ms": 566.3,
+   "cold_p95_ms": 566.3,
+   "warm_p50_ms": 315.0,
+   "warm_p95_ms": 315.0,
+   "bytes_cold": 1282,
+   "gets_cold": 2
+  },
+  "co2stop.dic_surfissues": {
+   "cold_p50_ms": 441.3,
+   "cold_p95_ms": 441.3,
+   "warm_p50_ms": 217.3,
+   "warm_p95_ms": 217.3,
+   "bytes_cold": 1313,
+   "gets_cold": 2
+  },
+  "co2stop.dic_yes_no": {
+   "cold_p50_ms": 500.6,
+   "cold_p95_ms": 500.6,
+   "warm_p50_ms": 209.6,
+   "warm_p95_ms": 209.6,
+   "bytes_cold": 1336,
+   "gets_cold": 2
+  },
+  "co2stop.hydrocarbon_formations": {
+   "cold_p50_ms": 265.3,
+   "cold_p95_ms": 611.0,
+   "warm_p50_ms": 266.0,
+   "warm_p95_ms": 268.3,
+   "bytes_cold": 33316,
+   "gets_cold": 3
+  },
+  "co2stop.hydrocarbon_storage_units": {
+   "cold_p50_ms": 279.5,
+   "cold_p95_ms": 591.7,
+   "warm_p50_ms": 274.2,
+   "warm_p95_ms": 280.1,
+   "bytes_cold": 87423,
+   "gets_cold": 3
+  },
+  "co2stop.hydrocarbon_traps": {
+   "cold_p50_ms": 280.1,
+   "cold_p95_ms": 555.3,
+   "warm_p50_ms": 272.3,
+   "warm_p95_ms": 284.3,
+   "bytes_cold": 127490,
+   "gets_cold": 3
+  },
+  "co2stop.hydrocarbon_traps1": {
+   "cold_p50_ms": 262.2,
+   "cold_p95_ms": 548.5,
+   "warm_p50_ms": 252.0,
+   "warm_p95_ms": 256.2,
+   "bytes_cold": 62554,
+   "gets_cold": 3
+  },
+  "co2stop.hydrocarbon_traps_temp": {
+   "cold_p50_ms": 222.6,
+   "cold_p95_ms": 449.0,
+   "warm_p50_ms": 216.9,
+   "warm_p95_ms": 219.8,
+   "bytes_cold": 35681,
+   "gets_cold": 3
+  },
+  "co2stop.storage_units_user_and_database_calc_storage": {
+   "cold_p50_ms": 334.3,
+   "cold_p95_ms": 1053.0,
+   "warm_p50_ms": 264.8,
+   "warm_p95_ms": 273.8,
+   "bytes_cold": 4002,
+   "gets_cold": 3
+  },
+  "co2stop.sum_output": {
+   "cold_p50_ms": 204.7,
+   "cold_p95_ms": 470.4,
+   "warm_p50_ms": 209.5,
+   "warm_p95_ms": 220.5,
+   "bytes_cold": 2608,
+   "gets_cold": 3
+  },
+  "co2stop.total_storage_cap_aquif_hcfields": {
+   "cold_p50_ms": 245.9,
+   "cold_p95_ms": 490.7,
+   "warm_p50_ms": 207.7,
+   "warm_p95_ms": 213.4,
+   "bytes_cold": 7007,
+   "gets_cold": 3
+  },
+  "co2stop.total_storecap_nolargestorage_countries": {
+   "cold_p50_ms": 277.0,
+   "cold_p95_ms": 844.5,
+   "warm_p50_ms": 267.2,
+   "warm_p95_ms": 269.1,
+   "bytes_cold": 6737,
+   "gets_cold": 3
+  },
+  "connect.harmonised": {
+   "cold_p50_ms": 403.3,
+   "cold_p95_ms": 793.1,
+   "warm_p50_ms": 288.0,
+   "warm_p95_ms": 433.0,
+   "bytes_cold": 3659242,
+   "gets_cold": 9
+  },
+  "connect_eu.at": {
+   "cold_p50_ms": 279.9,
+   "cold_p95_ms": 610.1,
+   "warm_p50_ms": 271.2,
+   "warm_p95_ms": 284.9,
+   "bytes_cold": 3943,
+   "gets_cold": 3
+  },
+  "connect_eu.bg": {
+   "cold_p50_ms": 416.1,
+   "cold_p95_ms": 533.4,
+   "warm_p50_ms": 254.2,
+   "warm_p95_ms": 440.2,
+   "bytes_cold": 40870,
+   "gets_cold": 7
+  },
+  "connect_eu.cz": {
+   "cold_p50_ms": 382.4,
+   "cold_p95_ms": 453.1,
+   "warm_p50_ms": 384.4,
+   "warm_p95_ms": 399.6,
+   "bytes_cold": 9721,
+   "gets_cold": 6
+  },
+  "connect_eu.de": {
+   "cold_p50_ms": 263.3,
+   "cold_p95_ms": 557.4,
+   "warm_p50_ms": 274.2,
+   "warm_p95_ms": 283.0,
+   "bytes_cold": 5128,
+   "gets_cold": 4
+  },
+  "connect_eu.dk": {
+   "cold_p50_ms": 386.5,
+   "cold_p95_ms": 469.4,
+   "warm_p50_ms": 375.5,
+   "warm_p95_ms": 381.4,
+   "bytes_cold": 78074,
+   "gets_cold": 6
+  },
+  "connect_eu.ee": {
+   "cold_p50_ms": 339.7,
+   "cold_p95_ms": 495.1,
+   "warm_p50_ms": 215.0,
+   "warm_p95_ms": 341.6,
+   "bytes_cold": 17720,
+   "gets_cold": 8
+  },
+  "connect_eu.es_dso": {
+   "cold_p50_ms": 436.6,
+   "cold_p95_ms": 1162.6,
+   "warm_p50_ms": 274.0,
+   "warm_p95_ms": 499.9,
+   "bytes_cold": 127516,
+   "gets_cold": 7
+  },
+  "connect_eu.gb_dso": {
+   "cold_p50_ms": 389.2,
+   "cold_p95_ms": 573.1,
+   "warm_p50_ms": 297.7,
+   "warm_p95_ms": 436.9,
+   "bytes_cold": 586549,
+   "gets_cold": 7
+  },
+  "connect_eu.lt": {
+   "cold_p50_ms": 420.2,
+   "cold_p95_ms": 562.4,
+   "warm_p50_ms": 408.9,
+   "warm_p95_ms": 419.0,
+   "bytes_cold": 26835,
+   "gets_cold": 6
+  },
+  "connect_eu.lu": {
+   "cold_p50_ms": 432.5,
+   "cold_p95_ms": 509.2,
+   "warm_p50_ms": 256.9,
+   "warm_p95_ms": 433.4,
+   "bytes_cold": 18569,
+   "gets_cold": 7
+  },
+  "connect_eu.mt": {
+   "cold_p50_ms": 392.6,
+   "cold_p95_ms": 480.4,
+   "warm_p50_ms": 388.8,
+   "warm_p95_ms": 390.7,
+   "bytes_cold": 103774,
+   "gets_cold": 6
+  },
+  "connect_eu.se": {
+   "cold_p50_ms": 268.2,
+   "cold_p95_ms": 545.3,
+   "warm_p50_ms": 268.8,
+   "warm_p95_ms": 275.6,
+   "bytes_cold": 4856,
+   "gets_cold": 4
+  },
+  "dams.barriers": {
+   "cold_p50_ms": 434.2,
+   "cold_p95_ms": 2071.9,
+   "warm_p50_ms": 239.4,
+   "warm_p95_ms": 545.8,
+   "bytes_cold": 3989857,
+   "gets_cold": 12
+  },
+  "dams.reservoirs": {
+   "cold_p50_ms": 481.5,
+   "cold_p95_ms": 3250.6,
+   "warm_p50_ms": 510.2,
+   "warm_p95_ms": 1473.5,
+   "bytes_cold": 134760546,
+   "gets_cold": 44
+  },
+  "eaglei.counties": {
+   "cold_p50_ms": 333.7,
+   "cold_p95_ms": 546.0,
+   "warm_p50_ms": 267.8,
+   "warm_p95_ms": 267.8,
+   "bytes_cold": 28834,
+   "gets_cold": 4
+  },
+  "eaglei.coverage": {
+   "cold_p50_ms": 274.9,
+   "cold_p95_ms": 547.5,
+   "warm_p50_ms": 273.8,
+   "warm_p95_ms": 275.8,
+   "bytes_cold": 8871,
+   "gets_cold": 4
+  },
+  "eaglei.dqi": {
+   "cold_p50_ms": 279.9,
+   "cold_p95_ms": 540.7,
+   "warm_p50_ms": 275.2,
+   "warm_p95_ms": 291.9,
+   "bytes_cold": 5863,
+   "gets_cold": 4
+  },
+  "eaglei.outages": {
+   "cold_p50_ms": 3177.6,
+   "cold_p95_ms": 7864.4,
+   "warm_p50_ms": 319.0,
+   "warm_p95_ms": 595.0,
+   "bytes_cold": 18499608,
+   "gets_cold": 45
+  },
+  "econnextion.requests": {
+   "cold_p50_ms": 209.4,
+   "cold_p95_ms": 498.9,
+   "warm_p50_ms": 211.9,
+   "warm_p95_ms": 214.8,
+   "bytes_cold": 10678,
+   "gets_cold": 5
+  },
+  "edgar.ghg_by_sector": {
+   "cold_p50_ms": 335.2,
+   "cold_p95_ms": 543.9,
+   "warm_p50_ms": 274.6,
+   "warm_p95_ms": 280.4,
+   "bytes_cold": 1777449,
+   "gets_cold": 4
+  },
+  "egrid.plants": {
+   "cold_p50_ms": 650.8,
+   "cold_p95_ms": 1132.0,
+   "warm_p50_ms": 378.5,
+   "warm_p95_ms": 388.1,
+   "bytes_cold": 2547556,
+   "gets_cold": 11
+  },
+  "ei_review.series": {
+   "cold_p50_ms": 277.5,
+   "cold_p95_ms": 536.2,
+   "warm_p50_ms": 204.2,
+   "warm_p95_ms": 240.6,
+   "bytes_cold": 1504752,
+   "gets_cold": 4
+  },
+  "eia860m.generators": {
+   "cold_p50_ms": 587.9,
+   "cold_p95_ms": 746.5,
+   "warm_p50_ms": 285.8,
+   "warm_p95_ms": 287.3,
+   "bytes_cold": 2057644,
+   "gets_cold": 6
+  },
+  "eia930.bas": {
+   "cold_p50_ms": 271.2,
+   "cold_p95_ms": 580.4,
+   "warm_p50_ms": 276.6,
+   "warm_p95_ms": 287.9,
+   "bytes_cold": 3588,
+   "gets_cold": 3
+  },
+  "eia930.demand": {
+   "cold_p50_ms": 1436.6,
+   "cold_p95_ms": 3553.5,
+   "warm_p50_ms": 282.8,
+   "warm_p95_ms": 336.9,
+   "bytes_cold": 14123324,
+   "gets_cold": 24
+  },
+  "eia930.generation_by_fuel": {
+   "cold_p50_ms": 237.5,
+   "cold_p95_ms": 543.5,
+   "warm_p50_ms": 246.7,
+   "warm_p95_ms": 251.7,
+   "bytes_cold": 18564,
+   "gets_cold": 3
+  },
+  "eia930.interchange": {
+   "cold_p50_ms": 211.8,
+   "cold_p95_ms": 519.0,
+   "warm_p50_ms": 207.8,
+   "warm_p95_ms": 208.0,
+   "bytes_cold": 19308,
+   "gets_cold": 3
+  },
+  "entsoe.areas": {
+   "cold_p50_ms": 270.4,
+   "cold_p95_ms": 535.0,
+   "warm_p50_ms": 277.2,
+   "warm_p95_ms": 312.4,
+   "bytes_cold": 4290,
+   "gets_cold": 4
+  },
+  "entsoe.capacity": {
+   "cold_p50_ms": 234.5,
+   "cold_p95_ms": 1853.0,
+   "warm_p50_ms": 224.3,
+   "warm_p95_ms": 225.9,
+   "bytes_cold": 52952,
+   "gets_cold": 15
+  },
+  "entsoe.congestion_costs": {
+   "cold_p50_ms": 216.8,
+   "cold_p95_ms": 2060.5,
+   "warm_p50_ms": 220.2,
+   "warm_p95_ms": 245.1,
+   "bytes_cold": 73540,
+   "gets_cold": 17
+  },
+  "entsoe.congestion_countertrading": {
+   "cold_p50_ms": 288.9,
+   "cold_p95_ms": 3356.2,
+   "warm_p50_ms": 501.8,
+   "warm_p95_ms": 518.2,
+   "bytes_cold": 340178,
+   "gets_cold": 20
+  },
+  "entsoe.congestion_redispatch_cross_border": {
+   "cold_p50_ms": 278.1,
+   "cold_p95_ms": 3017.4,
+   "warm_p50_ms": 298.9,
+   "warm_p95_ms": 305.6,
+   "bytes_cold": 195655,
+   "gets_cold": 20
+  },
+  "entsoe.congestion_redispatch_internal": {
+   "cold_p50_ms": 356.9,
+   "cold_p95_ms": 2824.3,
+   "warm_p50_ms": 299.7,
+   "warm_p95_ms": 307.3,
+   "bytes_cold": 1376485,
+   "gets_cold": 20
+  },
+  "entsoe.flows": {
+   "cold_p50_ms": 1972.1,
+   "cold_p95_ms": 4098.8,
+   "warm_p50_ms": 268.6,
+   "warm_p95_ms": 281.0,
+   "bytes_cold": 2344875,
+   "gets_cold": 33
+  },
+  "entsoe.forecast_wind_solar": {
+   "cold_p50_ms": 1257.8,
+   "cold_p95_ms": 2045.3,
+   "warm_p50_ms": 223.9,
+   "warm_p95_ms": 242.8,
+   "bytes_cold": 14114333,
+   "gets_cold": 26
+  },
+  "entsoe.generation": {
+   "cold_p50_ms": 7041.3,
+   "cold_p95_ms": 13127.2,
+   "warm_p50_ms": 340.6,
+   "warm_p95_ms": 490.7,
+   "bytes_cold": 747591,
+   "gets_cold": 119
+  },
+  "entsoe.imbalance_price": {
+   "cold_p50_ms": 854.6,
+   "cold_p95_ms": 44994.0,
+   "warm_p50_ms": 692.5,
+   "warm_p95_ms": 794.1,
+   "bytes_cold": 27857087,
+   "gets_cold": 356
+  },
+  "entsoe.load": {
+   "cold_p50_ms": 746.6,
+   "cold_p95_ms": 1790.4,
+   "warm_p50_ms": 218.7,
+   "warm_p95_ms": 224.6,
+   "bytes_cold": 286681,
+   "gets_cold": 26
+  },
+  "entsoe.outages": {
+   "cold_p50_ms": 274.2,
+   "cold_p95_ms": 2639.3,
+   "warm_p50_ms": 278.7,
+   "warm_p95_ms": 279.6,
+   "bytes_cold": 16488271,
+   "gets_cold": 15
+  },
+  "entsoe.prices": {
+   "cold_p50_ms": 1724.7,
+   "cold_p95_ms": 2240.9,
+   "warm_p50_ms": 279.8,
+   "warm_p95_ms": 291.9,
+   "bytes_cold": 11847667,
+   "gets_cold": 16
+  },
+  "entsoe.transfer_capacity": {
+   "cold_p50_ms": 319.3,
+   "cold_p95_ms": 2037.3,
+   "warm_p50_ms": 289.8,
+   "warm_p95_ms": 305.5,
+   "bytes_cold": 7231336,
+   "gets_cold": 14
+  },
+  "entsoe.transmission_outages": {
+   "cold_p50_ms": 258.6,
+   "cold_p95_ms": 588.3,
+   "warm_p50_ms": 260.4,
+   "warm_p95_ms": 266.6,
+   "bytes_cold": 149185,
+   "gets_cold": 4
+  },
+  "entsoe.unit_output": {
+   "cold_p50_ms": 2010.9,
+   "cold_p95_ms": 21651.9,
+   "warm_p50_ms": 262.2,
+   "warm_p95_ms": 262.2,
+   "bytes_cold": 910942,
+   "gets_cold": 116
+  },
+  "entsoe.units": {
+   "cold_p50_ms": 416.5,
+   "cold_p95_ms": 536.5,
+   "warm_p50_ms": 282.9,
+   "warm_p95_ms": 437.7,
+   "bytes_cold": 31905,
+   "gets_cold": 7
+  },
+  "entsog.flows": {
+   "cold_p50_ms": 262.2,
+   "cold_p95_ms": 1077.3,
+   "warm_p50_ms": 218.9,
+   "warm_p95_ms": 227.8,
+   "bytes_cold": 10720460,
+   "gets_cold": 8
+  },
+  "entsog.operator_point_directions": {
+   "cold_p50_ms": 209.3,
+   "cold_p95_ms": 470.2,
+   "warm_p50_ms": 210.2,
+   "warm_p95_ms": 216.6,
+   "bytes_cold": 109689,
+   "gets_cold": 3
+  },
+  "entsog.points": {
+   "cold_p50_ms": 329.7,
+   "cold_p95_ms": 814.8,
+   "warm_p50_ms": 285.0,
+   "warm_p95_ms": 315.0,
+   "bytes_cold": 34156,
+   "gets_cold": 5
+  },
+  "entsog_tyndp.projects": {
+   "cold_p50_ms": 275.5,
+   "cold_p95_ms": 641.8,
+   "warm_p50_ms": 279.2,
+   "warm_p95_ms": 293.7,
+   "bytes_cold": 26179,
+   "gets_cold": 4
+  },
+  "eredes_capacity.substations": {
+   "cold_p50_ms": 270.9,
+   "cold_p95_ms": 552.9,
+   "warm_p50_ms": 272.5,
+   "warm_p95_ms": 284.6,
+   "bytes_cold": 49928,
+   "gets_cold": 3
+  },
+  "esb_heatmap.transformers": {
+   "cold_p50_ms": 434.7,
+   "cold_p95_ms": 857.7,
+   "warm_p50_ms": 439.2,
+   "warm_p95_ms": 471.0,
+   "bytes_cold": 2232713,
+   "gets_cold": 9
+  },
+  "euets.eea_link": {
+   "cold_p50_ms": 373.0,
+   "cold_p95_ms": 909.7,
+   "warm_p50_ms": 380.1,
+   "warm_p95_ms": 901.3,
+   "bytes_cold": 400231,
+   "gets_cold": 6
+  },
+  "euets.installations": {
+   "cold_p50_ms": 329.1,
+   "cold_p95_ms": 833.4,
+   "warm_p50_ms": 291.0,
+   "warm_p95_ms": 314.7,
+   "bytes_cold": 5453675,
+   "gets_cold": 7
+  },
+  "euets.verified_emissions": {
+   "cold_p50_ms": 545.3,
+   "cold_p95_ms": 1731.5,
+   "warm_p50_ms": 253.4,
+   "warm_p95_ms": 387.0,
+   "bytes_cold": 4087131,
+   "gets_cold": 8
+  },
+  "ev_eu.at": {
+   "cold_p50_ms": 326.1,
+   "cold_p95_ms": 1370.9,
+   "warm_p50_ms": 243.5,
+   "warm_p95_ms": 1387.9,
+   "bytes_cold": 406178,
+   "gets_cold": 7
+  },
+  "ev_eu.be": {
+   "cold_p50_ms": 429.9,
+   "cold_p95_ms": 548.3,
+   "warm_p50_ms": 283.2,
+   "warm_p95_ms": 502.3,
+   "bytes_cold": 345828,
+   "gets_cold": 7
+  },
+  "ev_eu.bg": {
+   "cold_p50_ms": 396.5,
+   "cold_p95_ms": 556.2,
+   "warm_p50_ms": 275.9,
+   "warm_p95_ms": 443.1,
+   "bytes_cold": 60654,
+   "gets_cold": 7
+  },
+  "ev_eu.cy": {
+   "cold_p50_ms": 407.5,
+   "cold_p95_ms": 608.4,
+   "warm_p50_ms": 278.5,
+   "warm_p95_ms": 419.4,
+   "bytes_cold": 10382,
+   "gets_cold": 7
+  },
+  "ev_eu.cz": {
+   "cold_p50_ms": 449.8,
+   "cold_p95_ms": 735.9,
+   "warm_p50_ms": 268.6,
+   "warm_p95_ms": 733.2,
+   "bytes_cold": 191413,
+   "gets_cold": 7
+  },
+  "ev_eu.de": {
+   "cold_p50_ms": 398.5,
+   "cold_p95_ms": 33632.3,
+   "warm_p50_ms": 237.2,
+   "warm_p95_ms": 405.8,
+   "bytes_cold": 4405018,
+   "gets_cold": 11
+  },
+  "ev_eu.dk": {
+   "cold_p50_ms": 434.0,
+   "cold_p95_ms": 543.5,
+   "warm_p50_ms": 277.4,
+   "warm_p95_ms": 446.9,
+   "bytes_cold": 200688,
+   "gets_cold": 7
+  },
+  "ev_eu.ee": {
+   "cold_p50_ms": 370.4,
+   "cold_p95_ms": 576.5,
+   "warm_p50_ms": 238.2,
+   "warm_p95_ms": 386.2,
+   "bytes_cold": 35555,
+   "gets_cold": 7
+  },
+  "ev_eu.es": {
+   "cold_p50_ms": 342.2,
+   "cold_p95_ms": 527.7,
+   "warm_p50_ms": 219.2,
+   "warm_p95_ms": 344.7,
+   "bytes_cold": 172603,
+   "gets_cold": 7
+  },
+  "ev_eu.fi": {
+   "cold_p50_ms": 430.9,
+   "cold_p95_ms": 537.7,
+   "warm_p50_ms": 270.8,
+   "warm_p95_ms": 443.0,
+   "bytes_cold": 89833,
+   "gets_cold": 7
+  },
+  "ev_eu.fr": {
+   "cold_p50_ms": 397.9,
+   "cold_p95_ms": 1214.5,
+   "warm_p50_ms": 306.1,
+   "warm_p95_ms": 409.3,
+   "bytes_cold": 3725827,
+   "gets_cold": 9
+  },
+  "ev_eu.gb": {
+   "cold_p50_ms": 416.8,
+   "cold_p95_ms": 565.8,
+   "warm_p50_ms": 296.8,
+   "warm_p95_ms": 466.8,
+   "bytes_cold": 502355,
+   "gets_cold": 7
+  },
+  "ev_eu.gr": {
+   "cold_p50_ms": 433.8,
+   "cold_p95_ms": 522.5,
+   "warm_p50_ms": 263.2,
+   "warm_p95_ms": 438.4,
+   "bytes_cold": 323343,
+   "gets_cold": 7
+  },
+  "ev_eu.hr": {
+   "cold_p50_ms": 411.2,
+   "cold_p95_ms": 463.0,
+   "warm_p50_ms": 214.9,
+   "warm_p95_ms": 395.9,
+   "bytes_cold": 39027,
+   "gets_cold": 7
+  },
+  "ev_eu.hu": {
+   "cold_p50_ms": 425.9,
+   "cold_p95_ms": 569.8,
+   "warm_p50_ms": 290.7,
+   "warm_p95_ms": 446.1,
+   "bytes_cold": 99947,
+   "gets_cold": 7
+  },
+  "ev_eu.ie": {
+   "cold_p50_ms": 366.2,
+   "cold_p95_ms": 474.4,
+   "warm_p50_ms": 219.3,
+   "warm_p95_ms": 397.8,
+   "bytes_cold": 69564,
+   "gets_cold": 7
+  },
+  "ev_eu.it": {
+   "cold_p50_ms": 329.2,
+   "cold_p95_ms": 540.4,
+   "warm_p50_ms": 216.3,
+   "warm_p95_ms": 341.4,
+   "bytes_cold": 556044,
+   "gets_cold": 7
+  },
+  "ev_eu.lt": {
+   "cold_p50_ms": 427.9,
+   "cold_p95_ms": 530.2,
+   "warm_p50_ms": 268.4,
+   "warm_p95_ms": 469.1,
+   "bytes_cold": 31213,
+   "gets_cold": 7
+  },
+  "ev_eu.lu": {
+   "cold_p50_ms": 400.9,
+   "cold_p95_ms": 552.0,
+   "warm_p50_ms": 288.8,
+   "warm_p95_ms": 415.5,
+   "bytes_cold": 40751,
+   "gets_cold": 7
+  },
+  "ev_eu.lv": {
+   "cold_p50_ms": 404.1,
+   "cold_p95_ms": 568.5,
+   "warm_p50_ms": 283.1,
+   "warm_p95_ms": 428.6,
+   "bytes_cold": 29431,
+   "gets_cold": 7
+  },
+  "ev_eu.mt": {
+   "cold_p50_ms": 451.4,
+   "cold_p95_ms": 544.1,
+   "warm_p50_ms": 283.5,
+   "warm_p95_ms": 468.6,
+   "bytes_cold": 8615,
+   "gets_cold": 7
+  },
+  "ev_eu.nl": {
+   "cold_p50_ms": 374.6,
+   "cold_p95_ms": 806.2,
+   "warm_p50_ms": 219.7,
+   "warm_p95_ms": 395.0,
+   "bytes_cold": 3371435,
+   "gets_cold": 9
+  },
+  "ev_eu.pl": {
+   "cold_p50_ms": 429.8,
+   "cold_p95_ms": 520.3,
+   "warm_p50_ms": 273.1,
+   "warm_p95_ms": 437.5,
+   "bytes_cold": 182886,
+   "gets_cold": 7
+  },
+  "ev_eu.pt": {
+   "cold_p50_ms": 371.8,
+   "cold_p95_ms": 466.8,
+   "warm_p50_ms": 217.6,
+   "warm_p95_ms": 407.8,
+   "bytes_cold": 404710,
+   "gets_cold": 7
+  },
+  "ev_eu.ro": {
+   "cold_p50_ms": 339.9,
+   "cold_p95_ms": 462.5,
+   "warm_p50_ms": 215.3,
+   "warm_p95_ms": 354.6,
+   "bytes_cold": 48948,
+   "gets_cold": 7
+  },
+  "ev_eu.se": {
+   "cold_p50_ms": 434.2,
+   "cold_p95_ms": 584.1,
+   "warm_p50_ms": 295.1,
+   "warm_p95_ms": 440.2,
+   "bytes_cold": 241222,
+   "gets_cold": 7
+  },
+  "ev_eu.si": {
+   "cold_p50_ms": 388.0,
+   "cold_p95_ms": 587.5,
+   "warm_p50_ms": 292.4,
+   "warm_p95_ms": 413.5,
+   "bytes_cold": 36724,
+   "gets_cold": 7
+  },
+  "ev_eu.sk": {
+   "cold_p50_ms": 417.3,
+   "cold_p95_ms": 560.3,
+   "warm_p50_ms": 298.5,
+   "warm_p95_ms": 425.1,
+   "bytes_cold": 71149,
+   "gets_cold": 7
+  },
+  "gem.cement_final_data": {
+   "cold_p50_ms": 257.0,
+   "cold_p95_ms": 537.5,
+   "warm_p50_ms": 251.1,
+   "warm_p95_ms": 265.5,
+   "bytes_cold": 388030,
+   "gets_cold": 3
+  },
+  "gem.chemicals_plant_data": {
+   "cold_p50_ms": 203.9,
+   "cold_p95_ms": 472.9,
+   "warm_p50_ms": 198.2,
+   "warm_p95_ms": 224.7,
+   "bytes_cold": 86041,
+   "gets_cold": 3
+  },
+  "gem.coal_mines_change_log": {
+   "cold_p50_ms": 262.4,
+   "cold_p95_ms": 569.7,
+   "warm_p50_ms": 254.4,
+   "warm_p95_ms": 270.6,
+   "bytes_cold": 11798,
+   "gets_cold": 3
+  },
+  "gem.coal_mines_closed_mines": {
+   "cold_p50_ms": 455.8,
+   "cold_p95_ms": 455.8,
+   "warm_p50_ms": 213.3,
+   "warm_p95_ms": 213.3,
+   "bytes_cold": 118308,
+   "gets_cold": 2
+  },
+  "gem.coal_mines_historic_production_2018_2025": {
+   "cold_p50_ms": 202.5,
+   "cold_p95_ms": 447.3,
+   "warm_p50_ms": 210.2,
+   "warm_p95_ms": 215.6,
+   "bytes_cold": 144307,
+   "gets_cold": 3
+  },
+  "gem.coal_mines_historical_production_china": {
+   "cold_p50_ms": 477.9,
+   "cold_p95_ms": 1402.3,
+   "warm_p50_ms": 280.1,
+   "warm_p95_ms": 283.4,
+   "bytes_cold": 39095,
+   "gets_cold": 3
+  },
+  "gem.coal_mines_historical_production_non_chin": {
+   "cold_p50_ms": 278.8,
+   "cold_p95_ms": 550.3,
+   "warm_p50_ms": 262.9,
+   "warm_p95_ms": 270.7,
+   "bytes_cold": 45969,
+   "gets_cold": 3
+  },
+  "gem.coal_mines_historical_production_non_china": {
+   "cold_p50_ms": 267.5,
+   "cold_p95_ms": 549.9,
+   "warm_p50_ms": 273.7,
+   "warm_p95_ms": 274.4,
+   "bytes_cold": 58534,
+   "gets_cold": 3
+  },
+  "gem.coal_mines_non_closed_mines": {
+   "cold_p50_ms": 453.1,
+   "cold_p95_ms": 552.2,
+   "warm_p50_ms": 437.9,
+   "warm_p95_ms": 469.7,
+   "bytes_cold": 671178,
+   "gets_cold": 5
+  },
+  "gem.coal_terminals_terminals": {
+   "cold_p50_ms": 565.3,
+   "cold_p95_ms": 565.3,
+   "warm_p50_ms": 211.8,
+   "warm_p95_ms": 211.8,
+   "bytes_cold": 43496,
+   "gets_cold": 2
+  },
+  "gem.energy_ownership_all_entities": {
+   "cold_p50_ms": 274.1,
+   "cold_p95_ms": 567.4,
+   "warm_p50_ms": 265.6,
+   "warm_p95_ms": 276.4,
+   "bytes_cold": 1610792,
+   "gets_cold": 3
+  },
+  "gem.energy_ownership_asset_ownership": {
+   "cold_p50_ms": 206.2,
+   "cold_p95_ms": 438.4,
+   "warm_p50_ms": 215.0,
+   "warm_p95_ms": 215.9,
+   "bytes_cold": 824028,
+   "gets_cold": 3
+  },
+  "gem.energy_ownership_bioenergy_power_ownership": {
+   "cold_p50_ms": 202.5,
+   "cold_p95_ms": 463.0,
+   "warm_p50_ms": 203.2,
+   "warm_p95_ms": 210.7,
+   "bytes_cold": 717373,
+   "gets_cold": 3
+  },
+  "gem.energy_ownership_cement_and_concrete_ownership": {
+   "cold_p50_ms": 262.2,
+   "cold_p95_ms": 540.3,
+   "warm_p50_ms": 264.3,
+   "warm_p95_ms": 264.7,
+   "bytes_cold": 361917,
+   "gets_cold": 3
+  },
+  "gem.energy_ownership_coal_mine_ownership": {
+   "cold_p50_ms": 278.0,
+   "cold_p95_ms": 555.4,
+   "warm_p50_ms": 273.2,
+   "warm_p95_ms": 273.4,
+   "bytes_cold": 510836,
+   "gets_cold": 3
+  },
+  "gem.energy_ownership_coal_plant_ownership": {
+   "cold_p50_ms": 518.8,
+   "cold_p95_ms": 600.5,
+   "warm_p50_ms": 266.6,
+   "warm_p95_ms": 271.4,
+   "bytes_cold": 25202,
+   "gets_cold": 4
+  },
+  "gem.energy_ownership_entity_ownership": {
+   "cold_p50_ms": 257.7,
+   "cold_p95_ms": 550.6,
+   "warm_p50_ms": 248.1,
+   "warm_p95_ms": 256.0,
+   "bytes_cold": 901231,
+   "gets_cold": 3
+  },
+  "gem.energy_ownership_gas_pipeline_ownership": {
+   "cold_p50_ms": 204.3,
+   "cold_p95_ms": 471.4,
+   "warm_p50_ms": 200.8,
+   "warm_p95_ms": 211.6,
+   "bytes_cold": 751211,
+   "gets_cold": 3
+  },
+  "gem.energy_ownership_gas_plant_ownership": {
+   "cold_p50_ms": 534.4,
+   "cold_p95_ms": 537.8,
+   "warm_p50_ms": 261.9,
+   "warm_p95_ms": 264.6,
+   "bytes_cold": 24556,
+   "gets_cold": 4
+  },
+  "gem.energy_ownership_iron_mine_ownership": {
+   "cold_p50_ms": 210.2,
+   "cold_p95_ms": 618.8,
+   "warm_p50_ms": 208.4,
+   "warm_p95_ms": 212.9,
+   "bytes_cold": 186408,
+   "gets_cold": 3
+  },
+  "gem.energy_ownership_oil_ngl_pipeline_ownership": {
+   "cold_p50_ms": 206.5,
+   "cold_p95_ms": 587.5,
+   "warm_p50_ms": 209.7,
+   "warm_p95_ms": 243.3,
+   "bytes_cold": 313751,
+   "gets_cold": 3
+  },
+  "gem.energy_ownership_steel_plant_ownership": {
+   "cold_p50_ms": 317.9,
+   "cold_p95_ms": 534.4,
+   "warm_p50_ms": 274.1,
+   "warm_p95_ms": 278.1,
+   "bytes_cold": 377240,
+   "gets_cold": 3
+  },
+  "gem.gas_finance_gas_power_plants": {
+   "cold_p50_ms": 275.1,
+   "cold_p95_ms": 549.4,
+   "warm_p50_ms": 268.4,
+   "warm_p95_ms": 279.0,
+   "bytes_cold": 53130,
+   "gets_cold": 3
+  },
+  "gem.gas_finance_lng_terminals": {
+   "cold_p50_ms": 260.2,
+   "cold_p95_ms": 583.6,
+   "warm_p50_ms": 270.2,
+   "warm_p95_ms": 273.2,
+   "bytes_cold": 29431,
+   "gets_cold": 3
+  },
+  "gem.gas_infrastructure_data": {
+   "cold_p50_ms": 264.4,
+   "cold_p95_ms": 605.0,
+   "warm_p50_ms": 254.8,
+   "warm_p95_ms": 257.8,
+   "bytes_cold": 68029,
+   "gets_cold": 3
+  },
+  "gem.gas_infrastructure_lng_terminals": {
+   "cold_p50_ms": 392.6,
+   "cold_p95_ms": 507.1,
+   "warm_p50_ms": 379.0,
+   "warm_p95_ms": 383.2,
+   "bytes_cold": 165236,
+   "gets_cold": 5
+  },
+  "gem.gas_infrastructure_pipelines": {
+   "cold_p50_ms": 270.5,
+   "cold_p95_ms": 553.6,
+   "warm_p50_ms": 265.8,
+   "warm_p95_ms": 275.9,
+   "bytes_cold": 384353,
+   "gets_cold": 3
+  },
+  "gem.integrated_power_power_facilities": {
+   "cold_p50_ms": 1243.3,
+   "cold_p95_ms": 3148.1,
+   "warm_p50_ms": 403.7,
+   "warm_p95_ms": 3130.2,
+   "bytes_cold": 2233905,
+   "gets_cold": 7
+  },
+  "gem.integrated_power_regions_area_and_countries": {
+   "cold_p50_ms": 280.0,
+   "cold_p95_ms": 478.0,
+   "warm_p50_ms": 214.7,
+   "warm_p95_ms": 230.0,
+   "bytes_cold": 15587,
+   "gets_cold": 3
+  },
+  "gem.iron_ore_mines_main_data": {
+   "cold_p50_ms": 260.7,
+   "cold_p95_ms": 532.4,
+   "warm_p50_ms": 267.1,
+   "warm_p95_ms": 273.3,
+   "bytes_cold": 104813,
+   "gets_cold": 3
+  },
+  "gem.iron_ore_mines_prodconsmetcoalironore": {
+   "cold_p50_ms": 259.5,
+   "cold_p95_ms": 581.1,
+   "warm_p50_ms": 264.7,
+   "warm_p95_ms": 284.9,
+   "bytes_cold": 9482,
+   "gets_cold": 3
+  },
+  "gem.iron_steel_basic_oxygen_furnaces": {
+   "cold_p50_ms": 330.0,
+   "cold_p95_ms": 558.0,
+   "warm_p50_ms": 268.4,
+   "warm_p95_ms": 279.7,
+   "bytes_cold": 30964,
+   "gets_cold": 3
+  },
+  "gem.iron_steel_blast_furnace_relinings": {
+   "cold_p50_ms": 249.9,
+   "cold_p95_ms": 540.8,
+   "warm_p50_ms": 251.2,
+   "warm_p95_ms": 256.9,
+   "bytes_cold": 13031,
+   "gets_cold": 3
+  },
+  "gem.iron_steel_blast_furnaces": {
+   "cold_p50_ms": 206.2,
+   "cold_p95_ms": 487.1,
+   "warm_p50_ms": 204.2,
+   "warm_p95_ms": 216.3,
+   "bytes_cold": 45619,
+   "gets_cold": 3
+  },
+  "gem.iron_steel_direct_reduced_iron_furnaces": {
+   "cold_p50_ms": 269.4,
+   "cold_p95_ms": 552.0,
+   "warm_p50_ms": 261.4,
+   "warm_p95_ms": 269.7,
+   "bytes_cold": 24215,
+   "gets_cold": 3
+  },
+  "gem.iron_steel_electric_arc_furnaces": {
+   "cold_p50_ms": 219.6,
+   "cold_p95_ms": 495.3,
+   "warm_p50_ms": 213.1,
+   "warm_p95_ms": 215.4,
+   "bytes_cold": 60677,
+   "gets_cold": 3
+  },
+  "gem.iron_steel_induction_furnaces": {
+   "cold_p50_ms": 209.3,
+   "cold_p95_ms": 521.6,
+   "warm_p50_ms": 207.7,
+   "warm_p95_ms": 230.1,
+   "bytes_cold": 22062,
+   "gets_cold": 3
+  },
+  "gem.iron_steel_open_hearth_furnaces": {
+   "cold_p50_ms": 257.5,
+   "cold_p95_ms": 538.6,
+   "warm_p50_ms": 293.7,
+   "warm_p95_ms": 335.9,
+   "bytes_cold": 7111,
+   "gets_cold": 3
+  },
+  "gem.iron_steel_plant_capacities_and_status": {
+   "cold_p50_ms": 262.7,
+   "cold_p95_ms": 554.1,
+   "warm_p50_ms": 272.4,
+   "warm_p95_ms": 277.4,
+   "bytes_cold": 60533,
+   "gets_cold": 3
+  },
+  "gem.iron_steel_plant_data": {
+   "cold_p50_ms": 356.3,
+   "cold_p95_ms": 549.0,
+   "warm_p50_ms": 271.7,
+   "warm_p95_ms": 273.7,
+   "bytes_cold": 257173,
+   "gets_cold": 3
+  },
+  "gem.iron_steel_plant_production": {
+   "cold_p50_ms": 259.6,
+   "cold_p95_ms": 557.6,
+   "warm_p50_ms": 250.9,
+   "warm_p95_ms": 263.8,
+   "bytes_cold": 25695,
+   "gets_cold": 3
+  },
+  "gem.methane_emitters_coal_mines_non_closed": {
+   "cold_p50_ms": 405.6,
+   "cold_p95_ms": 529.9,
+   "warm_p50_ms": 385.8,
+   "warm_p95_ms": 389.7,
+   "bytes_cold": 248465,
+   "gets_cold": 5
+  },
+  "gem.methane_emitters_lng_terminals": {
+   "cold_p50_ms": 438.7,
+   "cold_p95_ms": 537.6,
+   "warm_p50_ms": 431.7,
+   "warm_p95_ms": 447.7,
+   "bytes_cold": 96455,
+   "gets_cold": 5
+  },
+  "gem.methane_emitters_oil_and_gas_extraction_areas": {
+   "cold_p50_ms": 381.9,
+   "cold_p95_ms": 458.9,
+   "warm_p50_ms": 381.4,
+   "warm_p95_ms": 391.6,
+   "bytes_cold": 268218,
+   "gets_cold": 5
+  },
+  "gem.methane_emitters_oil_and_gas_reserves": {
+   "cold_p50_ms": 342.1,
+   "cold_p95_ms": 459.7,
+   "warm_p50_ms": 346.2,
+   "warm_p95_ms": 373.2,
+   "bytes_cold": 99103,
+   "gets_cold": 5
+  },
+  "gem.methane_emitters_pipelines": {
+   "cold_p50_ms": 272.7,
+   "cold_p95_ms": 561.0,
+   "warm_p50_ms": 263.8,
+   "warm_p95_ms": 271.6,
+   "bytes_cold": 771954,
+   "gets_cold": 3
+  },
+  "gem.methane_emitters_plumes": {
+   "cold_p50_ms": 268.7,
+   "cold_p95_ms": 542.3,
+   "warm_p50_ms": 267.8,
+   "warm_p95_ms": 281.0,
+   "bytes_cold": 227098,
+   "gets_cold": 3
+  },
+  "gem.oil_gas_extraction_field_level_main_data": {
+   "cold_p50_ms": 535.3,
+   "cold_p95_ms": 1121.5,
+   "warm_p50_ms": 428.1,
+   "warm_p95_ms": 431.5,
+   "bytes_cold": 119443,
+   "gets_cold": 6
+  },
+  "gem.oil_gas_extraction_field_level_production_data": {
+   "cold_p50_ms": 259.4,
+   "cold_p95_ms": 550.4,
+   "warm_p50_ms": 257.6,
+   "warm_p95_ms": 259.8,
+   "bytes_cold": 212901,
+   "gets_cold": 3
+  },
+  "gem.oil_gas_extraction_field_level_reserves_data": {
+   "cold_p50_ms": 211.6,
+   "cold_p95_ms": 430.9,
+   "warm_p50_ms": 203.1,
+   "warm_p95_ms": 206.2,
+   "bytes_cold": 136185,
+   "gets_cold": 3
+  },
+  "gem.oil_gas_extraction_project_level_main_data": {
+   "cold_p50_ms": 448.6,
+   "cold_p95_ms": 540.8,
+   "warm_p50_ms": 428.3,
+   "warm_p95_ms": 439.3,
+   "bytes_cold": 85747,
+   "gets_cold": 5
+  },
+  "gem.oil_gas_extraction_project_level_production_data": {
+   "cold_p50_ms": 209.8,
+   "cold_p95_ms": 443.2,
+   "warm_p50_ms": 208.5,
+   "warm_p95_ms": 214.5,
+   "bytes_cold": 11891,
+   "gets_cold": 3
+  },
+  "gem.oil_gas_extraction_project_level_reserves_data": {
+   "cold_p50_ms": 210.9,
+   "cold_p95_ms": 413.2,
+   "warm_p50_ms": 211.7,
+   "warm_p95_ms": 214.9,
+   "bytes_cold": 14357,
+   "gets_cold": 3
+  },
+  "gem.oil_infrastructure_data": {
+   "cold_p50_ms": 262.2,
+   "cold_p95_ms": 539.3,
+   "warm_p50_ms": 260.5,
+   "warm_p95_ms": 264.3,
+   "bytes_cold": 181422,
+   "gets_cold": 3
+  },
+  "gem_ownership.all_entities": {
+   "cold_p50_ms": 597.8,
+   "cold_p95_ms": 597.8,
+   "warm_p50_ms": 263.9,
+   "warm_p95_ms": 263.9,
+   "bytes_cold": 1610615,
+   "gets_cold": 2
+  },
+  "gem_ownership.asset_ownership": {
+   "cold_p50_ms": 553.8,
+   "cold_p95_ms": 553.8,
+   "warm_p50_ms": 279.3,
+   "warm_p95_ms": 279.3,
+   "bytes_cold": 822907,
+   "gets_cold": 2
+  },
+  "gem_ownership.bioenergy_power_ownership": {
+   "cold_p50_ms": 540.2,
+   "cold_p95_ms": 540.2,
+   "warm_p50_ms": 259.6,
+   "warm_p95_ms": 259.6,
+   "bytes_cold": 734320,
+   "gets_cold": 2
+  },
+  "gem_ownership.cement_and_concrete_ownership": {
+   "cold_p50_ms": 416.6,
+   "cold_p95_ms": 416.6,
+   "warm_p50_ms": 205.6,
+   "warm_p95_ms": 205.6,
+   "bytes_cold": 361025,
+   "gets_cold": 2
+  },
+  "gem_ownership.coal_mine_ownership": {
+   "cold_p50_ms": 556.9,
+   "cold_p95_ms": 556.9,
+   "warm_p50_ms": 273.4,
+   "warm_p95_ms": 273.4,
+   "bytes_cold": 580635,
+   "gets_cold": 2
+  },
+  "gem_ownership.coal_plant_ownership": {
+   "cold_p50_ms": 554.4,
+   "cold_p95_ms": 554.4,
+   "warm_p50_ms": 212.2,
+   "warm_p95_ms": 212.2,
+   "bytes_cold": 20172,
+   "gets_cold": 2
+  },
+  "gem_ownership.entity_ownership": {
+   "cold_p50_ms": 479.6,
+   "cold_p95_ms": 479.6,
+   "warm_p50_ms": 285.1,
+   "warm_p95_ms": 285.1,
+   "bytes_cold": 899627,
+   "gets_cold": 2
+  },
+  "gem_ownership.gas_pipeline_ownership": {
+   "cold_p50_ms": 797.6,
+   "cold_p95_ms": 797.6,
+   "warm_p50_ms": 265.0,
+   "warm_p95_ms": 265.0,
+   "bytes_cold": 758527,
+   "gets_cold": 2
+  },
+  "gem_ownership.gas_plant_ownership": {
+   "cold_p50_ms": 567.5,
+   "cold_p95_ms": 567.5,
+   "warm_p50_ms": 267.7,
+   "warm_p95_ms": 267.7,
+   "bytes_cold": 19492,
+   "gets_cold": 2
+  },
+  "gem_ownership.iron_mine_ownership": {
+   "cold_p50_ms": 625.4,
+   "cold_p95_ms": 625.4,
+   "warm_p50_ms": 272.2,
+   "warm_p95_ms": 272.2,
+   "bytes_cold": 221198,
+   "gets_cold": 2
+  },
+  "gem_ownership.oil___ngl_pipeline_ownership": {
+   "cold_p50_ms": 526.4,
+   "cold_p95_ms": 526.4,
+   "warm_p50_ms": 249.4,
+   "warm_p95_ms": 249.4,
+   "bytes_cold": 342854,
+   "gets_cold": 2
+  },
+  "gem_ownership.steel_plant_ownership": {
+   "cold_p50_ms": 427.9,
+   "cold_p95_ms": 427.9,
+   "warm_p50_ms": 197.7,
+   "warm_p95_ms": 197.7,
+   "bytes_cold": 377280,
+   "gets_cold": 2
+  },
+  "ghgrp.facilities": {
+   "cold_p50_ms": 429.4,
+   "cold_p95_ms": 535.8,
+   "warm_p50_ms": 277.4,
+   "warm_p95_ms": 446.4,
+   "bytes_cold": 553324,
+   "gets_cold": 7
+  },
+  "ghsl.population": {
+   "cold_p50_ms": 262.9,
+   "cold_p95_ms": 603.2,
+   "warm_p50_ms": 223.5,
+   "warm_p95_ms": 238.0,
+   "bytes_cold": 124438,
+   "gets_cold": 5
+  },
+  "grw.solar": {
+   "cold_p50_ms": 789.5,
+   "cold_p95_ms": 4160.7,
+   "warm_p50_ms": 760.4,
+   "warm_p95_ms": 4078.3,
+   "bytes_cold": 112980143,
+   "gets_cold": 52
+  },
+  "grw.wind": {
+   "cold_p50_ms": 789.0,
+   "cold_p95_ms": 12535.5,
+   "warm_p50_ms": 838.7,
+   "warm_p95_ms": 2156.0,
+   "bytes_cold": 45636588,
+   "gets_cold": 30
+  },
+  "history.capareseau__substations": {
+   "cold_p50_ms": 395.5,
+   "cold_p95_ms": 602.2,
+   "warm_p50_ms": 277.6,
+   "warm_p95_ms": 419.3,
+   "bytes_cold": 276353,
+   "gets_cold": 7
+  },
+  "history.connect_eu__at": {
+   "cold_p50_ms": 344.3,
+   "cold_p95_ms": 570.2,
+   "warm_p50_ms": 285.6,
+   "warm_p95_ms": 299.6,
+   "bytes_cold": 4860,
+   "gets_cold": 4
+  },
+  "history.connect_eu__bg": {
+   "cold_p50_ms": 424.2,
+   "cold_p95_ms": 526.3,
+   "warm_p50_ms": 277.0,
+   "warm_p95_ms": 463.4,
+   "bytes_cold": 41373,
+   "gets_cold": 7
+  },
+  "history.connect_eu__cz": {
+   "cold_p50_ms": 378.7,
+   "cold_p95_ms": 482.3,
+   "warm_p50_ms": 382.3,
+   "warm_p95_ms": 392.9,
+   "bytes_cold": 10303,
+   "gets_cold": 6
+  },
+  "history.connect_eu__de": {
+   "cold_p50_ms": 269.4,
+   "cold_p95_ms": 529.6,
+   "warm_p50_ms": 263.2,
+   "warm_p95_ms": 272.3,
+   "bytes_cold": 5608,
+   "gets_cold": 4
+  },
+  "history.connect_eu__dk": {
+   "cold_p50_ms": 383.2,
+   "cold_p95_ms": 494.6,
+   "warm_p50_ms": 387.7,
+   "warm_p95_ms": 394.6,
+   "bytes_cold": 78583,
+   "gets_cold": 6
+  },
+  "history.connect_eu__ee": {
+   "cold_p50_ms": 331.9,
+   "cold_p95_ms": 468.2,
+   "warm_p50_ms": 211.8,
+   "warm_p95_ms": 343.2,
+   "bytes_cold": 18179,
+   "gets_cold": 8
+  },
+  "history.connect_eu__es_dso": {
+   "cold_p50_ms": 422.7,
+   "cold_p95_ms": 1080.5,
+   "warm_p50_ms": 314.1,
+   "warm_p95_ms": 447.4,
+   "bytes_cold": 128096,
+   "gets_cold": 7
+  },
+  "history.connect_eu__gb_dso": {
+   "cold_p50_ms": 395.1,
+   "cold_p95_ms": 557.8,
+   "warm_p50_ms": 279.9,
+   "warm_p95_ms": 411.5,
+   "bytes_cold": 580042,
+   "gets_cold": 7
+  },
+  "history.connect_eu__lt": {
+   "cold_p50_ms": 424.9,
+   "cold_p95_ms": 534.2,
+   "warm_p50_ms": 415.5,
+   "warm_p95_ms": 420.6,
+   "bytes_cold": 27350,
+   "gets_cold": 6
+  },
+  "history.connect_eu__lu": {
+   "cold_p50_ms": 432.1,
+   "cold_p95_ms": 544.1,
+   "warm_p50_ms": 263.9,
+   "warm_p95_ms": 445.2,
+   "bytes_cold": 19128,
+   "gets_cold": 7
+  },
+  "history.connect_eu__mt": {
+   "cold_p50_ms": 382.5,
+   "cold_p95_ms": 457.5,
+   "warm_p50_ms": 377.9,
+   "warm_p95_ms": 395.2,
+   "bytes_cold": 104309,
+   "gets_cold": 6
+  },
+  "history.connect_eu__se": {
+   "cold_p50_ms": 303.1,
+   "cold_p95_ms": 555.9,
+   "warm_p50_ms": 268.3,
+   "warm_p95_ms": 268.7,
+   "bytes_cold": 5862,
+   "gets_cold": 5
+  },
+  "history.econnextion__requests": {
+   "cold_p50_ms": 270.4,
+   "cold_p95_ms": 436.5,
+   "warm_p50_ms": 218.8,
+   "warm_p95_ms": 227.4,
+   "bytes_cold": 11202,
+   "gets_cold": 5
+  },
+  "history.eredes_capacity__substations": {
+   "cold_p50_ms": 203.2,
+   "cold_p95_ms": 468.2,
+   "warm_p50_ms": 212.0,
+   "warm_p95_ms": 217.0,
+   "bytes_cold": 50694,
+   "gets_cold": 3
+  },
+  "history.esb_heatmap__transformers": {
+   "cold_p50_ms": 444.9,
+   "cold_p95_ms": 1620.9,
+   "warm_p50_ms": 433.5,
+   "warm_p95_ms": 486.8,
+   "bytes_cold": 2233555,
+   "gets_cold": 9
+  },
+  "history.netztransparenz__redispatch": {
+   "cold_p50_ms": 289.5,
+   "cold_p95_ms": 554.3,
+   "warm_p50_ms": 272.9,
+   "warm_p95_ms": 281.1,
+   "bytes_cold": 422500,
+   "gets_cold": 3
+  },
+  "history.pse_capacity__full_substations": {
+   "cold_p50_ms": 265.4,
+   "cold_p95_ms": 539.6,
+   "warm_p50_ms": 265.9,
+   "warm_p95_ms": 275.0,
+   "bytes_cold": 4231,
+   "gets_cold": 3
+  },
+  "history.pse_capacity__requests": {
+   "cold_p50_ms": 276.8,
+   "cold_p95_ms": 578.1,
+   "warm_p50_ms": 260.7,
+   "warm_p95_ms": 262.2,
+   "bytes_cold": 40192,
+   "gets_cold": 4
+  },
+  "history.registers__be": {
+   "cold_p50_ms": 220.1,
+   "cold_p95_ms": 421.0,
+   "warm_p50_ms": 205.0,
+   "warm_p95_ms": 215.8,
+   "bytes_cold": 10245,
+   "gets_cold": 5
+  },
+  "history.registers__cz": {
+   "cold_p50_ms": 277.4,
+   "cold_p95_ms": 538.9,
+   "warm_p50_ms": 270.0,
+   "warm_p95_ms": 276.9,
+   "bytes_cold": 768827,
+   "gets_cold": 6
+  },
+  "history.registers__dk": {
+   "cold_p50_ms": 384.8,
+   "cold_p95_ms": 474.2,
+   "warm_p50_ms": 213.0,
+   "warm_p95_ms": 395.4,
+   "bytes_cold": 280793,
+   "gets_cold": 7
+  },
+  "history.registers__fr": {
+   "cold_p50_ms": 223.3,
+   "cold_p95_ms": 444.9,
+   "warm_p50_ms": 215.8,
+   "warm_p95_ms": 220.2,
+   "bytes_cold": 1965375,
+   "gets_cold": 5
+  },
+  "history.registers__gb": {
+   "cold_p50_ms": 417.6,
+   "cold_p95_ms": 522.7,
+   "warm_p50_ms": 277.4,
+   "warm_p95_ms": 459.9,
+   "bytes_cold": 804314,
+   "gets_cold": 8
+  },
+  "history.registers__ie": {
+   "cold_p50_ms": 412.2,
+   "cold_p95_ms": 542.5,
+   "warm_p50_ms": 404.5,
+   "warm_p95_ms": 418.9,
+   "bytes_cold": 29011,
+   "gets_cold": 6
+  },
+  "history.registers__pt": {
+   "cold_p50_ms": 412.0,
+   "cold_p95_ms": 546.8,
+   "warm_p50_ms": 303.3,
+   "warm_p95_ms": 424.7,
+   "bytes_cold": 83300,
+   "gets_cold": 8
+  },
+  "history.registers__se": {
+   "cold_p50_ms": 470.6,
+   "cold_p95_ms": 591.2,
+   "warm_p50_ms": 269.5,
+   "warm_p95_ms": 446.1,
+   "bytes_cold": 447399,
+   "gets_cold": 8
+  },
+  "history.wave9__gb_brownfield_register": {
+   "cold_p50_ms": 381.6,
+   "cold_p95_ms": 1410.5,
+   "warm_p50_ms": 375.5,
+   "warm_p95_ms": 385.3,
+   "bytes_cold": 4169026,
+   "gets_cold": 9
+  },
+  "hotmaps.industrial_sites": {
+   "cold_p50_ms": 283.2,
+   "cold_p95_ms": 543.5,
+   "warm_p50_ms": 263.0,
+   "warm_p95_ms": 270.2,
+   "bytes_cold": 313578,
+   "gets_cold": 3
+  },
+  "hydrogen.projects": {
+   "cold_p50_ms": 382.0,
+   "cold_p95_ms": 430.6,
+   "warm_p50_ms": 389.3,
+   "warm_p95_ms": 426.7,
+   "bytes_cold": 28265,
+   "gets_cold": 6
+  },
+  "industrial.air_releases": {
+   "cold_p50_ms": 1077.2,
+   "cold_p95_ms": 5906.2,
+   "warm_p50_ms": 340.5,
+   "warm_p95_ms": 5766.7,
+   "bytes_cold": 6168894,
+   "gets_cold": 11
+  },
+  "industrial.installations": {
+   "cold_p50_ms": 1658.7,
+   "cold_p95_ms": 14593.5,
+   "warm_p50_ms": 451.1,
+   "warm_p95_ms": 14442.9,
+   "bytes_cold": 13429760,
+   "gets_cold": 15
+  },
+  "industrial.lcp": {
+   "cold_p50_ms": 1497.1,
+   "cold_p95_ms": 7767.7,
+   "warm_p50_ms": 397.4,
+   "warm_p95_ms": 7755.8,
+   "bytes_cold": 4200920,
+   "gets_cold": 11
+  },
+  "industrial.water_releases": {
+   "cold_p50_ms": 1459.0,
+   "cold_p95_ms": 8243.2,
+   "warm_p50_ms": 421.8,
+   "warm_p95_ms": 8237.6,
+   "bytes_cold": 3498723,
+   "gets_cold": 10
+  },
+  "irena.capacity": {
+   "cold_p50_ms": 282.5,
+   "cold_p95_ms": 561.7,
+   "warm_p50_ms": 257.1,
+   "warm_p95_ms": 258.7,
+   "bytes_cold": 298242,
+   "gets_cold": 5
+  },
+  "irena.generation": {
+   "cold_p50_ms": 217.9,
+   "cold_p95_ms": 432.2,
+   "warm_p50_ms": 210.2,
+   "warm_p95_ms": 210.5,
+   "bytes_cold": 378061,
+   "gets_cold": 5
+  },
+  "iso_queues.requests": {
+   "cold_p50_ms": 388.6,
+   "cold_p95_ms": 5436.6,
+   "warm_p50_ms": 331.5,
+   "warm_p95_ms": 341.0,
+   "bytes_cold": 3163569,
+   "gets_cold": 33
+  },
+  "jepx.spot": {
+   "cold_p50_ms": 226.2,
+   "cold_p95_ms": 452.0,
+   "warm_p50_ms": 222.9,
+   "warm_p95_ms": 224.3,
+   "bytes_cold": 450932,
+   "gets_cold": 4
+  },
+  "lbnl_queue.requests": {
+   "cold_p50_ms": 218.3,
+   "cold_p95_ms": 455.0,
+   "warm_p50_ms": 218.4,
+   "warm_p95_ms": 230.0,
+   "bytes_cold": 1149663,
+   "gets_cold": 5
+  },
+  "main.emissions": {
+   "cold_p50_ms": 537.7,
+   "cold_p95_ms": 1207.5,
+   "warm_p50_ms": 274.9,
+   "warm_p95_ms": 280.6,
+   "bytes_cold": 1211178,
+   "gets_cold": 7
+  },
+  "main.grid_capacity": {
+   "cold_p50_ms": 1208.6,
+   "cold_p95_ms": 3090.2,
+   "warm_p50_ms": 1111.2,
+   "warm_p95_ms": 1120.4,
+   "bytes_cold": 1921261,
+   "gets_cold": 37
+  },
+  "main.outages": {
+   "cold_p50_ms": 1338.9,
+   "cold_p95_ms": 5156.9,
+   "warm_p50_ms": 632.3,
+   "warm_p95_ms": 1357.1,
+   "bytes_cold": 21401447,
+   "gets_cold": 35
+  },
+  "main.plants": {
+   "cold_p50_ms": 26248.4,
+   "cold_p95_ms": 31829.8,
+   "warm_p50_ms": 3470.0,
+   "warm_p95_ms": 3475.4,
+   "bytes_cold": 390038860,
+   "gets_cold": 689
+  },
+  "main.prices": {
+   "cold_p50_ms": 1073.4,
+   "cold_p95_ms": 38391.6,
+   "warm_p50_ms": 1136.0,
+   "warm_p95_ms": 1178.9,
+   "bytes_cold": 123710637,
+   "gets_cold": 306
+  },
+  "main.water_risk": {
+   "cold_p50_ms": 2747.1,
+   "cold_p95_ms": 4081.0,
+   "warm_p50_ms": 1534.0,
+   "warm_p95_ms": 4596.9,
+   "bytes_cold": 396978041,
+   "gets_cold": 28
+  },
+  "mastr.catalog_values": {
+   "cold_p50_ms": 215.7,
+   "cold_p95_ms": 691.9,
+   "warm_p50_ms": 211.1,
+   "warm_p95_ms": 220.7,
+   "bytes_cold": 52742,
+   "gets_cold": 5
+  },
+  "mastr.grid_connection_points": {
+   "cold_p50_ms": 245.4,
+   "cold_p95_ms": 642.9,
+   "warm_p50_ms": 213.9,
+   "warm_p95_ms": 216.2,
+   "bytes_cold": 792183,
+   "gets_cold": 5
+  },
+  "mastr.locations": {
+   "cold_p50_ms": 276.6,
+   "cold_p95_ms": 825.7,
+   "warm_p50_ms": 280.9,
+   "warm_p95_ms": 298.3,
+   "bytes_cold": 796182,
+   "gets_cold": 5
+  },
+  "mastr.operators": {
+   "cold_p50_ms": 279.4,
+   "cold_p95_ms": 948.3,
+   "warm_p50_ms": 287.7,
+   "warm_p95_ms": 291.1,
+   "bytes_cold": 399410,
+   "gets_cold": 5
+  },
+  "mastr.units_biomass": {
+   "cold_p50_ms": 767.8,
+   "cold_p95_ms": 16342.5,
+   "warm_p50_ms": 307.6,
+   "warm_p95_ms": 15998.0,
+   "bytes_cold": 8269811,
+   "gets_cold": 21
+  },
+  "mastr.units_combustion": {
+   "cold_p50_ms": 429.4,
+   "cold_p95_ms": 13597.8,
+   "warm_p50_ms": 314.6,
+   "warm_p95_ms": 13688.0,
+   "bytes_cold": 6490772,
+   "gets_cold": 11
+  },
+  "mastr.units_hydro": {
+   "cold_p50_ms": 384.0,
+   "cold_p95_ms": 5539.9,
+   "warm_p50_ms": 238.2,
+   "warm_p95_ms": 5590.2,
+   "bytes_cold": 2958494,
+   "gets_cold": 9
+  },
+  "mastr.units_nuclear": {
+   "cold_p50_ms": 477.9,
+   "cold_p95_ms": 825.9,
+   "warm_p50_ms": 280.9,
+   "warm_p95_ms": 461.6,
+   "bytes_cold": 47701,
+   "gets_cold": 9
+  },
+  "mastr.units_other": {
+   "cold_p50_ms": 374.7,
+   "cold_p95_ms": 659.2,
+   "warm_p50_ms": 223.9,
+   "warm_p95_ms": 468.9,
+   "bytes_cold": 175887,
+   "gets_cold": 9
+  },
+  "mastr.units_solar": {
+   "cold_p50_ms": 6246.2,
+   "cold_p95_ms": 11399.5,
+   "warm_p50_ms": 384.4,
+   "warm_p95_ms": 1324.3,
+   "bytes_cold": 378314136,
+   "gets_cold": 366
+  },
+  "mastr.units_storage": {
+   "cold_p50_ms": 844.5,
+   "cold_p95_ms": 13244.8,
+   "warm_p50_ms": 438.2,
+   "warm_p95_ms": 3721.1,
+   "bytes_cold": 230776552,
+   "gets_cold": 142
+  },
+  "mastr.units_wind": {
+   "cold_p50_ms": 831.0,
+   "cold_p95_ms": 3681.5,
+   "warm_p50_ms": 290.9,
+   "warm_p95_ms": 3666.9,
+   "bytes_cold": 6069775,
+   "gets_cold": 20
+  },
+  "mastr_grid.operators": {
+   "cold_p50_ms": 278.5,
+   "cold_p95_ms": 557.0,
+   "warm_p50_ms": 282.5,
+   "warm_p95_ms": 295.8,
+   "bytes_cold": 88113,
+   "gets_cold": 4
+  },
+  "neso.constraint_breakdown": {
+   "cold_p50_ms": 276.8,
+   "cold_p95_ms": 2899.8,
+   "warm_p50_ms": 274.7,
+   "warm_p95_ms": 284.7,
+   "bytes_cold": 320343,
+   "gets_cold": 21
+  },
+  "neso_tec.projects": {
+   "cold_p50_ms": 232.9,
+   "cold_p95_ms": 820.7,
+   "warm_p50_ms": 213.3,
+   "warm_p95_ms": 221.7,
+   "bytes_cold": 322025,
+   "gets_cold": 8
+  },
+  "netztransparenz.redispatch": {
+   "cold_p50_ms": 261.1,
+   "cold_p95_ms": 531.6,
+   "warm_p50_ms": 266.6,
+   "warm_p95_ms": 267.0,
+   "bytes_cold": 423507,
+   "gets_cold": 3
+  },
+  "nl_capacity.areas": {
+   "cold_p50_ms": 403.4,
+   "cold_p95_ms": 11220.4,
+   "warm_p50_ms": 381.2,
+   "warm_p95_ms": 2709.3,
+   "bytes_cold": 70504476,
+   "gets_cold": 45
+  },
+  "osm.cables": {
+   "cold_p50_ms": 319.6,
+   "cold_p95_ms": 441.1,
+   "warm_p50_ms": 216.1,
+   "warm_p95_ms": 351.8,
+   "bytes_cold": 193920,
+   "gets_cold": 8
+  },
+  "osm.datacentres": {
+   "cold_p50_ms": 463.6,
+   "cold_p95_ms": 556.5,
+   "warm_p50_ms": 430.3,
+   "warm_p95_ms": 485.9,
+   "bytes_cold": 449558,
+   "gets_cold": 6
+  },
+  "osm.eu_buses": {
+   "cold_p50_ms": 398.5,
+   "cold_p95_ms": 575.9,
+   "warm_p50_ms": 284.0,
+   "warm_p95_ms": 502.2,
+   "bytes_cold": 924030,
+   "gets_cold": 8
+  },
+  "osm.eu_lines": {
+   "cold_p50_ms": 407.1,
+   "cold_p95_ms": 3426.4,
+   "warm_p50_ms": 330.3,
+   "warm_p95_ms": 431.0,
+   "bytes_cold": 14148696,
+   "gets_cold": 17
+  },
+  "osm.eu_links": {
+   "cold_p50_ms": 430.6,
+   "cold_p95_ms": 617.1,
+   "warm_p50_ms": 257.8,
+   "warm_p95_ms": 440.2,
+   "bytes_cold": 231294,
+   "gets_cold": 8
+  },
+  "outlines.adm2": {
+   "cold_p50_ms": 886.0,
+   "cold_p95_ms": 6243.5,
+   "warm_p50_ms": 821.4,
+   "warm_p95_ms": 1618.6,
+   "bytes_cold": 200363192,
+   "gets_cold": 74
+  },
+  "outlines.aliases": {
+   "cold_p50_ms": 488.5,
+   "cold_p95_ms": 1428.5,
+   "warm_p50_ms": 357.7,
+   "warm_p95_ms": 391.0,
+   "bytes_cold": 3344520,
+   "gets_cold": 7
+  },
+  "outlines.divisions": {
+   "cold_p50_ms": 6970.9,
+   "cold_p95_ms": 35772.9,
+   "warm_p50_ms": 1568.1,
+   "warm_p95_ms": 4469.2,
+   "bytes_cold": 868253012,
+   "gets_cold": 487
+  },
+  "outlines.fr_iris": {
+   "cold_p50_ms": 373.6,
+   "cold_p95_ms": 3632.5,
+   "warm_p50_ms": 334.4,
+   "warm_p95_ms": 815.8,
+   "bytes_cold": 107127869,
+   "gets_cold": 48
+  },
+  "outlines.geostat_grid": {
+   "cold_p50_ms": 1945.3,
+   "cold_p95_ms": 5287.5,
+   "warm_p50_ms": 482.9,
+   "warm_p95_ms": 2628.2,
+   "bytes_cold": 155945513,
+   "gets_cold": 47
+  },
+  "outlines.names": {
+   "cold_p50_ms": 794.6,
+   "cold_p95_ms": 857.9,
+   "warm_p50_ms": 393.8,
+   "warm_p95_ms": 445.3,
+   "bytes_cold": 1525884,
+   "gets_cold": 9
+  },
+  "outlines.nl_cbs": {
+   "cold_p50_ms": 416.4,
+   "cold_p95_ms": 1769.0,
+   "warm_p50_ms": 417.0,
+   "warm_p95_ms": 911.7,
+   "bytes_cold": 75789862,
+   "gets_cold": 31
+  },
+  "outlines.small_areas": {
+   "cold_p50_ms": 592.0,
+   "cold_p95_ms": 3722.7,
+   "warm_p50_ms": 428.2,
+   "warm_p95_ms": 1318.3,
+   "bytes_cold": 111960780,
+   "gets_cold": 39
+  },
+  "outlines.uk_ons": {
+   "cold_p50_ms": 446.2,
+   "cold_p95_ms": 3167.4,
+   "warm_p50_ms": 390.0,
+   "warm_p95_ms": 1798.5,
+   "bytes_cold": 163129618,
+   "gets_cold": 57
+  },
+  "outlines.urban_centres": {
+   "cold_p50_ms": 711.6,
+   "cold_p95_ms": 871.3,
+   "warm_p50_ms": 647.1,
+   "warm_p95_ms": 805.0,
+   "bytes_cold": 10835026,
+   "gets_cold": 12
+  },
+  "outlines.us_cousub": {
+   "cold_p50_ms": 839.2,
+   "cold_p95_ms": 2700.9,
+   "warm_p50_ms": 914.3,
+   "warm_p95_ms": 1153.3,
+   "bytes_cold": 101136321,
+   "gets_cold": 24
+  },
+  "outlines.us_places": {
+   "cold_p50_ms": 913.5,
+   "cold_p95_ms": 1964.5,
+   "warm_p50_ms": 690.4,
+   "warm_p95_ms": 945.9,
+   "bytes_cold": 73366437,
+   "gets_cold": 21
+  },
+  "outlines.us_tracts": {
+   "cold_p50_ms": 1210.2,
+   "cold_p95_ms": 2977.7,
+   "warm_p50_ms": 1022.4,
+   "warm_p95_ms": 1521.5,
+   "bytes_cold": 138402931,
+   "gets_cold": 29
+  },
+  "overture_power.lines": {
+   "cold_p50_ms": 2015.9,
+   "cold_p95_ms": 44950.5,
+   "warm_p50_ms": 369.4,
+   "warm_p95_ms": 1312.2,
+   "bytes_cold": 326425578,
+   "gets_cold": 129
+  },
+  "overture_power.sites": {
+   "cold_p50_ms": 928.2,
+   "cold_p95_ms": 4015.7,
+   "warm_p50_ms": 368.4,
+   "warm_p95_ms": 1542.7,
+   "bytes_cold": 135026126,
+   "gets_cold": 69
+  },
+  "overture_transport.segments": {
+   "cold_p50_ms": 9297.3,
+   "cold_p95_ms": 25379.6,
+   "warm_p50_ms": 6554.8,
+   "warm_p95_ms": 6886.4,
+   "bytes_cold": 1345570823,
+   "gets_cold": 265
+  },
+  "places.cities": {
+   "cold_p50_ms": 390.1,
+   "cold_p95_ms": 1214.1,
+   "warm_p50_ms": 223.8,
+   "warm_p95_ms": 624.3,
+   "bytes_cold": 2369995,
+   "gets_cold": 10
+  },
+  "power_plants_eu.jrc_performance": {
+   "cold_p50_ms": 289.0,
+   "cold_p95_ms": 521.6,
+   "warm_p50_ms": 263.4,
+   "warm_p95_ms": 264.1,
+   "bytes_cold": 69982,
+   "gets_cold": 4
+  },
+  "power_plants_eu.jrc_units": {
+   "cold_p50_ms": 388.0,
+   "cold_p95_ms": 512.5,
+   "warm_p50_ms": 381.7,
+   "warm_p95_ms": 413.4,
+   "bytes_cold": 253106,
+   "gets_cold": 6
+  },
+  "power_plants_eu.ppm_plants": {
+   "cold_p50_ms": 335.9,
+   "cold_p95_ms": 46533.0,
+   "warm_p50_ms": 244.4,
+   "warm_p95_ms": 356.7,
+   "bytes_cold": 8164596,
+   "gets_cold": 12
+  },
+  "protected.natura2000": {
+   "cold_p50_ms": 556.8,
+   "cold_p95_ms": 6167.6,
+   "warm_p50_ms": 430.5,
+   "warm_p95_ms": 6187.1,
+   "bytes_cold": 32429597,
+   "gets_cold": 22
+  },
+  "protected.padus": {
+   "cold_p50_ms": 1890.6,
+   "cold_p95_ms": 6863.3,
+   "warm_p50_ms": 562.0,
+   "warm_p95_ms": 2033.9,
+   "bytes_cold": 228445358,
+   "gets_cold": 48
+  },
+  "pse_capacity.full_substations": {
+   "cold_p50_ms": 277.3,
+   "cold_p95_ms": 616.2,
+   "warm_p50_ms": 278.1,
+   "warm_p95_ms": 280.5,
+   "bytes_cold": 3789,
+   "gets_cold": 3
+  },
+  "pse_capacity.requests": {
+   "cold_p50_ms": 289.3,
+   "cold_p95_ms": 507.4,
+   "warm_p50_ms": 246.4,
+   "warm_p95_ms": 248.1,
+   "bytes_cold": 39116,
+   "gets_cold": 4
+  },
+  "ree_nodes.nodes": {
+   "cold_p50_ms": 212.5,
+   "cold_p95_ms": 696.7,
+   "warm_p50_ms": 231.9,
+   "warm_p95_ms": 242.6,
+   "bytes_cold": 310682,
+   "gets_cold": 5
+  },
+  "registers.be": {
+   "cold_p50_ms": 275.4,
+   "cold_p95_ms": 525.4,
+   "warm_p50_ms": 271.1,
+   "warm_p95_ms": 272.4,
+   "bytes_cold": 9236,
+   "gets_cold": 4
+  },
+  "registers.cz": {
+   "cold_p50_ms": 226.6,
+   "cold_p95_ms": 483.8,
+   "warm_p50_ms": 216.1,
+   "warm_p95_ms": 216.1,
+   "bytes_cold": 820263,
+   "gets_cold": 5
+  },
+  "registers.dk": {
+   "cold_p50_ms": 323.1,
+   "cold_p95_ms": 454.5,
+   "warm_p50_ms": 218.9,
+   "warm_p95_ms": 372.5,
+   "bytes_cold": 293661,
+   "gets_cold": 7
+  },
+  "registers.fr": {
+   "cold_p50_ms": 309.4,
+   "cold_p95_ms": 541.0,
+   "warm_p50_ms": 275.3,
+   "warm_p95_ms": 277.3,
+   "bytes_cold": 1964152,
+   "gets_cold": 4
+  },
+  "registers.gb": {
+   "cold_p50_ms": 407.8,
+   "cold_p95_ms": 676.8,
+   "warm_p50_ms": 276.6,
+   "warm_p95_ms": 457.4,
+   "bytes_cold": 803142,
+   "gets_cold": 8
+  },
+  "registers.ie": {
+   "cold_p50_ms": 403.6,
+   "cold_p95_ms": 599.8,
+   "warm_p50_ms": 409.5,
+   "warm_p95_ms": 432.5,
+   "bytes_cold": 28493,
+   "gets_cold": 6
+  },
+  "registers.pt": {
+   "cold_p50_ms": 426.4,
+   "cold_p95_ms": 545.0,
+   "warm_p50_ms": 276.2,
+   "warm_p95_ms": 434.5,
+   "bytes_cold": 84876,
+   "gets_cold": 8
+  },
+  "registers.se": {
+   "cold_p50_ms": 378.6,
+   "cold_p95_ms": 529.0,
+   "warm_p50_ms": 210.0,
+   "warm_p95_ms": 389.7,
+   "bytes_cold": 471420,
+   "gets_cold": 8
+  },
+  "rollups.mastr__units_solar_r5": {
+   "cold_p50_ms": 432.1,
+   "cold_p95_ms": 1450.6,
+   "warm_p50_ms": 282.5,
+   "warm_p95_ms": 1466.7,
+   "bytes_cold": 135293,
+   "gets_cold": 7
+  },
+  "rollups.mastr__units_solar_r6": {
+   "cold_p50_ms": 383.8,
+   "cold_p95_ms": 3490.2,
+   "warm_p50_ms": 297.8,
+   "warm_p95_ms": 3489.4,
+   "bytes_cold": 444737,
+   "gets_cold": 7
+  },
+  "rollups.mastr__units_solar_r7": {
+   "cold_p50_ms": 332.9,
+   "cold_p95_ms": 9579.3,
+   "warm_p50_ms": 220.5,
+   "warm_p95_ms": 9543.8,
+   "bytes_cold": 1313374,
+   "gets_cold": 7
+  },
+  "rollups.mastr__units_storage_r5": {
+   "cold_p50_ms": 435.0,
+   "cold_p95_ms": 1104.5,
+   "warm_p50_ms": 278.5,
+   "warm_p95_ms": 1140.5,
+   "bytes_cold": 66435,
+   "gets_cold": 7
+  },
+  "rollups.mastr__units_storage_r6": {
+   "cold_p50_ms": 408.3,
+   "cold_p95_ms": 1442.1,
+   "warm_p50_ms": 279.4,
+   "warm_p95_ms": 1435.3,
+   "bytes_cold": 111331,
+   "gets_cold": 7
+  },
+  "rollups.mastr__units_storage_r7": {
+   "cold_p50_ms": 417.3,
+   "cold_p95_ms": 2475.3,
+   "warm_p50_ms": 280.8,
+   "warm_p95_ms": 2481.7,
+   "bytes_cold": 132041,
+   "gets_cold": 7
+  },
+  "rollups.overture_power__lines_r5": {
+   "cold_p50_ms": 421.8,
+   "cold_p95_ms": 1649.7,
+   "warm_p50_ms": 256.8,
+   "warm_p95_ms": 1673.3,
+   "bytes_cold": 1759970,
+   "gets_cold": 7
+  },
+  "rollups.overture_power__lines_r6": {
+   "cold_p50_ms": 438.0,
+   "cold_p95_ms": 3200.7,
+   "warm_p50_ms": 222.6,
+   "warm_p95_ms": 3102.6,
+   "bytes_cold": 3482999,
+   "gets_cold": 12
+  },
+  "rollups.overture_power__lines_r7": {
+   "cold_p50_ms": 601.4,
+   "cold_p95_ms": 3496.5,
+   "warm_p50_ms": 288.7,
+   "warm_p95_ms": 3513.2,
+   "bytes_cold": 5361903,
+   "gets_cold": 13
+  },
+  "rollups.overture_power__sites_r5": {
+   "cold_p50_ms": 441.3,
+   "cold_p95_ms": 1825.8,
+   "warm_p50_ms": 221.0,
+   "warm_p95_ms": 1898.4,
+   "bytes_cold": 2405629,
+   "gets_cold": 11
+  },
+  "rollups.overture_power__sites_r6": {
+   "cold_p50_ms": 650.4,
+   "cold_p95_ms": 5069.2,
+   "warm_p50_ms": 215.9,
+   "warm_p95_ms": 5033.6,
+   "bytes_cold": 4967019,
+   "gets_cold": 13
+  },
+  "rollups.overture_power__sites_r7": {
+   "cold_p50_ms": 545.9,
+   "cold_p95_ms": 16150.1,
+   "warm_p50_ms": 287.1,
+   "warm_p95_ms": 15900.9,
+   "bytes_cold": 8225595,
+   "gets_cold": 14
+  },
+  "rollups.overture_transport__segments_r5": {
+   "cold_p50_ms": 383.8,
+   "cold_p95_ms": 1151.2,
+   "warm_p50_ms": 281.6,
+   "warm_p95_ms": 1151.1,
+   "bytes_cold": 1350105,
+   "gets_cold": 7
+  },
+  "rollups.overture_transport__segments_r6": {
+   "cold_p50_ms": 536.4,
+   "cold_p95_ms": 4373.2,
+   "warm_p50_ms": 295.7,
+   "warm_p95_ms": 4341.2,
+   "bytes_cold": 3895025,
+   "gets_cold": 12
+  },
+  "rollups.overture_transport__segments_r7": {
+   "cold_p50_ms": 528.9,
+   "cold_p95_ms": 10469.6,
+   "warm_p50_ms": 284.2,
+   "warm_p95_ms": 10392.4,
+   "bytes_cold": 9217606,
+   "gets_cold": 14
+  },
+  "rollups.wave9__de_zensus_heating_r5": {
+   "cold_p50_ms": 381.2,
+   "cold_p95_ms": 791.4,
+   "warm_p50_ms": 380.6,
+   "warm_p95_ms": 820.5,
+   "bytes_cold": 29214,
+   "gets_cold": 6
+  },
+  "rollups.wave9__de_zensus_heating_r6": {
+   "cold_p50_ms": 444.7,
+   "cold_p95_ms": 2466.4,
+   "warm_p50_ms": 443.5,
+   "warm_p95_ms": 2446.7,
+   "bytes_cold": 163775,
+   "gets_cold": 6
+  },
+  "rollups.wave9__de_zensus_heating_r7": {
+   "cold_p50_ms": 475.6,
+   "cold_p95_ms": 12761.8,
+   "warm_p50_ms": 379.8,
+   "warm_p95_ms": 12302.1,
+   "bytes_cold": 893157,
+   "gets_cold": 6
+  },
+  "shapes.admin1": {
+   "cold_p50_ms": 680.3,
+   "cold_p95_ms": 1785.5,
+   "warm_p50_ms": 648.3,
+   "warm_p95_ms": 2003.2,
+   "bytes_cold": 78402798,
+   "gets_cold": 6
+  },
+  "shapes.admin1_simplified": {
+   "cold_p50_ms": 573.4,
+   "cold_p95_ms": 2135.0,
+   "warm_p50_ms": 451.5,
+   "warm_p95_ms": 600.2,
+   "bytes_cold": 13257091,
+   "gets_cold": 13
+  },
+  "shapes.bidding_zones": {
+   "cold_p50_ms": 402.6,
+   "cold_p95_ms": 640.7,
+   "warm_p50_ms": 391.6,
+   "warm_p95_ms": 412.8,
+   "bytes_cold": 69351,
+   "gets_cold": 5
+  },
+  "shapes.nuts": {
+   "cold_p50_ms": 311.1,
+   "cold_p95_ms": 1031.6,
+   "warm_p50_ms": 288.7,
+   "warm_p95_ms": 1027.9,
+   "bytes_cold": 3204,
+   "gets_cold": 6
+  },
+  "small_area_energy.consumption": {
+   "cold_p50_ms": 892.0,
+   "cold_p95_ms": 3616.6,
+   "warm_p50_ms": 296.1,
+   "warm_p95_ms": 325.3,
+   "bytes_cold": 43307897,
+   "gets_cold": 42
+  },
+  "small_area_energy.heating": {
+   "cold_p50_ms": 210.1,
+   "cold_p95_ms": 700.3,
+   "warm_p50_ms": 206.5,
+   "warm_p95_ms": 218.5,
+   "bytes_cold": 1958369,
+   "gets_cold": 8
+  },
+  "small_area_energy.poverty": {
+   "cold_p50_ms": 496.2,
+   "cold_p95_ms": 6207.7,
+   "warm_p50_ms": 317.1,
+   "warm_p95_ms": 779.6,
+   "bytes_cold": 4329652,
+   "gets_cold": 49
+  },
+  "small_area_energy.renewables": {
+   "cold_p50_ms": 217.1,
+   "cold_p95_ms": 458.8,
+   "warm_p50_ms": 212.1,
+   "warm_p95_ms": 227.5,
+   "bytes_cold": 515070,
+   "gets_cold": 6
+  },
+  "tri.releases": {
+   "cold_p50_ms": 461.9,
+   "cold_p95_ms": 461.9,
+   "warm_p50_ms": 215.0,
+   "warm_p95_ms": 215.0,
+   "bytes_cold": 19982,
+   "gets_cold": 2
+  },
+  "tyndp.projects": {
+   "cold_p50_ms": 422.3,
+   "cold_p95_ms": 535.4,
+   "warm_p50_ms": 436.4,
+   "warm_p95_ms": 524.1,
+   "bytes_cold": 65077,
+   "gets_cold": 8
+  },
+  "uk_pi.releases": {
+   "cold_p50_ms": 394.1,
+   "cold_p95_ms": 558.8,
+   "warm_p50_ms": 395.2,
+   "warm_p95_ms": 418.2,
+   "bytes_cold": 379235,
+   "gets_cold": 5
+  },
+  "us_lmp.day_ahead": {
+   "cold_p50_ms": 804.8,
+   "cold_p95_ms": 43372.3,
+   "warm_p50_ms": 808.6,
+   "warm_p95_ms": 808.6,
+   "bytes_cold": 111776617,
+   "gets_cold": 288
+  },
+  "wave10.eu_cei_cie011": {
+   "cold_p50_ms": 254.0,
+   "cold_p95_ms": 531.7,
+   "warm_p50_ms": 255.3,
+   "warm_p95_ms": 256.8,
+   "bytes_cold": 6677,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_cie012": {
+   "cold_p50_ms": 213.2,
+   "cold_p95_ms": 448.7,
+   "warm_p50_ms": 200.6,
+   "warm_p95_ms": 202.7,
+   "bytes_cold": 7979,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_gsr010": {
+   "cold_p50_ms": 270.3,
+   "cold_p95_ms": 803.1,
+   "warm_p50_ms": 273.8,
+   "warm_p95_ms": 279.5,
+   "bytes_cold": 46651,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_gsr011": {
+   "cold_p50_ms": 218.2,
+   "cold_p95_ms": 442.1,
+   "warm_p50_ms": 209.1,
+   "warm_p95_ms": 212.9,
+   "bytes_cold": 8526,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_gsr020": {
+   "cold_p50_ms": 212.6,
+   "cold_p95_ms": 424.7,
+   "warm_p50_ms": 211.3,
+   "warm_p95_ms": 211.9,
+   "bytes_cold": 5429,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_gsr030": {
+   "cold_p50_ms": 334.3,
+   "cold_p95_ms": 645.4,
+   "warm_p50_ms": 273.4,
+   "warm_p95_ms": 279.7,
+   "bytes_cold": 6221,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_pc020": {
+   "cold_p50_ms": 287.1,
+   "cold_p95_ms": 553.3,
+   "warm_p50_ms": 275.7,
+   "warm_p95_ms": 276.0,
+   "bytes_cold": 8435,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_pc030": {
+   "cold_p50_ms": 310.4,
+   "cold_p95_ms": 560.3,
+   "warm_p50_ms": 277.0,
+   "warm_p95_ms": 294.1,
+   "bytes_cold": 16204,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_pc031": {
+   "cold_p50_ms": 255.8,
+   "cold_p95_ms": 604.6,
+   "warm_p50_ms": 251.8,
+   "warm_p95_ms": 257.3,
+   "bytes_cold": 5673,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_pc032": {
+   "cold_p50_ms": 210.4,
+   "cold_p95_ms": 451.2,
+   "warm_p50_ms": 204.4,
+   "warm_p95_ms": 220.0,
+   "bytes_cold": 5357,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_pc034": {
+   "cold_p50_ms": 703.8,
+   "cold_p95_ms": 1285.9,
+   "warm_p50_ms": 274.3,
+   "warm_p95_ms": 277.1,
+   "bytes_cold": 6087,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_pc035": {
+   "cold_p50_ms": 239.1,
+   "cold_p95_ms": 542.1,
+   "warm_p50_ms": 211.4,
+   "warm_p95_ms": 215.8,
+   "bytes_cold": 5337,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_pc040": {
+   "cold_p50_ms": 214.1,
+   "cold_p95_ms": 442.4,
+   "warm_p50_ms": 211.7,
+   "warm_p95_ms": 213.9,
+   "bytes_cold": 7691,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_pc050": {
+   "cold_p50_ms": 487.7,
+   "cold_p95_ms": 540.3,
+   "warm_p50_ms": 270.7,
+   "warm_p95_ms": 273.4,
+   "bytes_cold": 7683,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_srm010": {
+   "cold_p50_ms": 289.6,
+   "cold_p95_ms": 530.1,
+   "warm_p50_ms": 278.1,
+   "warm_p95_ms": 281.1,
+   "bytes_cold": 4804,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_srm020": {
+   "cold_p50_ms": 282.0,
+   "cold_p95_ms": 574.3,
+   "warm_p50_ms": 278.6,
+   "warm_p95_ms": 283.5,
+   "bytes_cold": 115898,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_srm030": {
+   "cold_p50_ms": 289.6,
+   "cold_p95_ms": 567.1,
+   "warm_p50_ms": 260.9,
+   "warm_p95_ms": 270.2,
+   "bytes_cold": 5497,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_srm040": {
+   "cold_p50_ms": 292.2,
+   "cold_p95_ms": 525.6,
+   "warm_p50_ms": 212.2,
+   "warm_p95_ms": 220.3,
+   "bytes_cold": 18284,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_wm010": {
+   "cold_p50_ms": 278.5,
+   "cold_p95_ms": 531.1,
+   "warm_p50_ms": 272.9,
+   "warm_p95_ms": 296.0,
+   "bytes_cold": 5159,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_wm011": {
+   "cold_p50_ms": 213.0,
+   "cold_p95_ms": 436.6,
+   "warm_p50_ms": 215.3,
+   "warm_p95_ms": 220.3,
+   "bytes_cold": 6246,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_wm020": {
+   "cold_p50_ms": 210.7,
+   "cold_p95_ms": 456.1,
+   "warm_p50_ms": 217.2,
+   "warm_p95_ms": 219.9,
+   "bytes_cold": 11456,
+   "gets_cold": 5
+  },
+  "wave10.eu_cei_wm060": {
+   "cold_p50_ms": 280.9,
+   "cold_p95_ms": 539.6,
+   "warm_p50_ms": 274.6,
+   "warm_p95_ms": 276.7,
+   "bytes_cold": 5674,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_aeint_r2": {
+   "cold_p50_ms": 609.0,
+   "cold_p95_ms": 3404.5,
+   "warm_p50_ms": 298.5,
+   "warm_p95_ms": 668.7,
+   "bytes_cold": 6560423,
+   "gets_cold": 17
+  },
+  "wave10.eu_env_ac_aibrid_r2": {
+   "cold_p50_ms": 526.7,
+   "cold_p95_ms": 1213.3,
+   "warm_p50_ms": 291.2,
+   "warm_p95_ms": 366.5,
+   "bytes_cold": 2667104,
+   "gets_cold": 7
+  },
+  "wave10.eu_env_ac_aibrid_rd": {
+   "cold_p50_ms": 276.7,
+   "cold_p95_ms": 511.6,
+   "warm_p50_ms": 257.1,
+   "warm_p95_ms": 270.3,
+   "bytes_cold": 190047,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_aigg_q": {
+   "cold_p50_ms": 237.6,
+   "cold_p95_ms": 438.0,
+   "warm_p50_ms": 217.2,
+   "warm_p95_ms": 232.6,
+   "bytes_cold": 117252,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_ainah_r2": {
+   "cold_p50_ms": 2330.8,
+   "cold_p95_ms": 7698.0,
+   "warm_p50_ms": 339.2,
+   "warm_p95_ms": 816.8,
+   "bytes_cold": 33513222,
+   "gets_cold": 24
+  },
+  "wave10.eu_env_ac_ainah_rd": {
+   "cold_p50_ms": 627.1,
+   "cold_p95_ms": 863.3,
+   "warm_p50_ms": 252.9,
+   "warm_p95_ms": 440.4,
+   "bytes_cold": 3925896,
+   "gets_cold": 7
+  },
+  "wave10.eu_env_ac_ccminv": {
+   "cold_p50_ms": 213.7,
+   "cold_p95_ms": 451.1,
+   "warm_p50_ms": 211.9,
+   "warm_p95_ms": 218.0,
+   "bytes_cold": 58149,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_cepsgc1": {
+   "cold_p50_ms": 322.1,
+   "cold_p95_ms": 560.1,
+   "warm_p50_ms": 269.4,
+   "warm_p95_ms": 299.7,
+   "bytes_cold": 92814,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_cepsgh1": {
+   "cold_p50_ms": 276.3,
+   "cold_p95_ms": 562.3,
+   "warm_p50_ms": 274.3,
+   "warm_p95_ms": 280.0,
+   "bytes_cold": 22087,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_ch4fp": {
+   "cold_p50_ms": 890.7,
+   "cold_p95_ms": 2163.6,
+   "warm_p50_ms": 266.3,
+   "warm_p95_ms": 313.3,
+   "bytes_cold": 6662115,
+   "gets_cold": 15
+  },
+  "wave10.eu_env_ac_co2fp": {
+   "cold_p50_ms": 536.0,
+   "cold_p95_ms": 3537.4,
+   "warm_p50_ms": 243.1,
+   "warm_p95_ms": 309.2,
+   "bytes_cold": 22311456,
+   "gets_cold": 19
+  },
+  "wave10.eu_env_ac_cur": {
+   "cold_p50_ms": 269.8,
+   "cold_p95_ms": 443.6,
+   "warm_p50_ms": 206.8,
+   "warm_p95_ms": 207.0,
+   "bytes_cold": 5497,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_curm": {
+   "cold_p50_ms": 269.2,
+   "cold_p95_ms": 538.7,
+   "warm_p50_ms": 269.7,
+   "warm_p95_ms": 270.5,
+   "bytes_cold": 4924,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_egss1": {
+   "cold_p50_ms": 310.5,
+   "cold_p95_ms": 486.6,
+   "warm_p50_ms": 260.8,
+   "warm_p95_ms": 308.7,
+   "bytes_cold": 458993,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_egss2": {
+   "cold_p50_ms": 462.8,
+   "cold_p95_ms": 2203.7,
+   "warm_p50_ms": 218.2,
+   "warm_p95_ms": 663.5,
+   "bytes_cold": 2972672,
+   "gets_cold": 17
+  },
+  "wave10.eu_env_ac_egss3": {
+   "cold_p50_ms": 554.0,
+   "cold_p95_ms": 580.9,
+   "warm_p50_ms": 266.1,
+   "warm_p95_ms": 268.3,
+   "bytes_cold": 6441,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_epiap1": {
+   "cold_p50_ms": 299.2,
+   "cold_p95_ms": 549.2,
+   "warm_p50_ms": 277.0,
+   "warm_p95_ms": 312.1,
+   "bytes_cold": 155791,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_epigg1": {
+   "cold_p50_ms": 278.9,
+   "cold_p95_ms": 548.6,
+   "warm_p50_ms": 269.6,
+   "warm_p95_ms": 282.0,
+   "bytes_cold": 16796,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_epissp1": {
+   "cold_p50_ms": 265.9,
+   "cold_p95_ms": 596.6,
+   "warm_p50_ms": 253.7,
+   "warm_p95_ms": 254.9,
+   "bytes_cold": 14661,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_epite1": {
+   "cold_p50_ms": 218.2,
+   "cold_p95_ms": 419.1,
+   "warm_p50_ms": 208.0,
+   "warm_p95_ms": 208.9,
+   "bytes_cold": 6353,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_epneis1": {
+   "cold_p50_ms": 297.6,
+   "cold_p95_ms": 538.6,
+   "warm_p50_ms": 267.9,
+   "warm_p95_ms": 271.1,
+   "bytes_cold": 11706,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_eptrf1": {
+   "cold_p50_ms": 222.9,
+   "cold_p95_ms": 449.6,
+   "warm_p50_ms": 225.7,
+   "warm_p95_ms": 232.2,
+   "bytes_cold": 53100,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_ghgfp": {
+   "cold_p50_ms": 441.9,
+   "cold_p95_ms": 2441.5,
+   "warm_p50_ms": 201.7,
+   "warm_p95_ms": 254.6,
+   "bytes_cold": 22052788,
+   "gets_cold": 17
+  },
+  "wave10.eu_env_ac_hfcfp": {
+   "cold_p50_ms": 529.8,
+   "cold_p95_ms": 3792.7,
+   "warm_p50_ms": 268.8,
+   "warm_p95_ms": 322.9,
+   "bytes_cold": 12614482,
+   "gets_cold": 20
+  },
+  "wave10.eu_env_ac_io10": {
+   "cold_p50_ms": 574.4,
+   "cold_p95_ms": 1175.5,
+   "warm_p50_ms": 302.4,
+   "warm_p95_ms": 840.5,
+   "bytes_cold": 2586197,
+   "gets_cold": 7
+  },
+  "wave10.eu_env_ac_landfp": {
+   "cold_p50_ms": 276.2,
+   "cold_p95_ms": 537.0,
+   "warm_p50_ms": 281.3,
+   "warm_p95_ms": 281.9,
+   "bytes_cold": 4395,
+   "gets_cold": 3
+  },
+  "wave10.eu_env_ac_mfa": {
+   "cold_p50_ms": 354.0,
+   "cold_p95_ms": 606.5,
+   "warm_p50_ms": 305.6,
+   "warm_p95_ms": 353.3,
+   "bytes_cold": 2051359,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_mfabi": {
+   "cold_p50_ms": 211.6,
+   "cold_p95_ms": 445.4,
+   "warm_p50_ms": 206.3,
+   "warm_p95_ms": 207.2,
+   "bytes_cold": 93339,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_mfadpo": {
+   "cold_p50_ms": 300.4,
+   "cold_p95_ms": 531.3,
+   "warm_p50_ms": 271.1,
+   "warm_p95_ms": 273.5,
+   "bytes_cold": 163388,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_mfain": {
+   "cold_p50_ms": 216.2,
+   "cold_p95_ms": 447.1,
+   "warm_p50_ms": 215.1,
+   "warm_p95_ms": 219.3,
+   "bytes_cold": 98679,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_mid": {
+   "cold_p50_ms": 232.5,
+   "cold_p95_ms": 510.1,
+   "warm_p50_ms": 204.5,
+   "warm_p95_ms": 213.3,
+   "bytes_cold": 10580,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_n2ofp": {
+   "cold_p50_ms": 924.9,
+   "cold_p95_ms": 2445.1,
+   "warm_p50_ms": 272.5,
+   "warm_p95_ms": 291.1,
+   "bytes_cold": 8271162,
+   "gets_cold": 17
+  },
+  "wave10.eu_env_ac_nf3sf6fp": {
+   "cold_p50_ms": 558.8,
+   "cold_p95_ms": 3363.8,
+   "warm_p50_ms": 264.4,
+   "warm_p95_ms": 290.2,
+   "bytes_cold": 1878006,
+   "gets_cold": 14
+  },
+  "wave10.eu_env_ac_pefa04": {
+   "cold_p50_ms": 323.2,
+   "cold_p95_ms": 552.6,
+   "warm_p50_ms": 279.0,
+   "warm_p95_ms": 322.1,
+   "bytes_cold": 524923,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_pefa05": {
+   "cold_p50_ms": 268.1,
+   "cold_p95_ms": 517.3,
+   "warm_p50_ms": 256.7,
+   "warm_p95_ms": 259.4,
+   "bytes_cold": 20111,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_pefafp": {
+   "cold_p50_ms": 465.8,
+   "cold_p95_ms": 779.0,
+   "warm_p50_ms": 214.4,
+   "warm_p95_ms": 769.8,
+   "bytes_cold": 371400,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_pefasu": {
+   "cold_p50_ms": 536.5,
+   "cold_p95_ms": 4571.6,
+   "warm_p50_ms": 291.8,
+   "warm_p95_ms": 796.8,
+   "bytes_cold": 4031980,
+   "gets_cold": 22
+  },
+  "wave10.eu_env_ac_pepsgg1": {
+   "cold_p50_ms": 227.1,
+   "cold_p95_ms": 465.1,
+   "warm_p50_ms": 219.8,
+   "warm_p95_ms": 229.3,
+   "bytes_cold": 78059,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_pepsns1": {
+   "cold_p50_ms": 251.3,
+   "cold_p95_ms": 441.2,
+   "warm_p50_ms": 222.8,
+   "warm_p95_ms": 265.0,
+   "bytes_cold": 249400,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_pepssp1": {
+   "cold_p50_ms": 292.3,
+   "cold_p95_ms": 566.4,
+   "warm_p50_ms": 270.4,
+   "warm_p95_ms": 273.1,
+   "bytes_cold": 66743,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_pfcfp": {
+   "cold_p50_ms": 548.5,
+   "cold_p95_ms": 1808.8,
+   "warm_p50_ms": 267.1,
+   "warm_p95_ms": 302.2,
+   "bytes_cold": 1602532,
+   "gets_cold": 17
+  },
+  "wave10.eu_env_ac_rme": {
+   "cold_p50_ms": 317.6,
+   "cold_p95_ms": 575.5,
+   "warm_p50_ms": 274.2,
+   "warm_p95_ms": 280.9,
+   "bytes_cold": 151967,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_rmefd": {
+   "cold_p50_ms": 550.7,
+   "cold_p95_ms": 940.8,
+   "warm_p50_ms": 269.4,
+   "warm_p95_ms": 928.8,
+   "bytes_cold": 1674804,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_rp": {
+   "cold_p50_ms": 208.2,
+   "cold_p95_ms": 442.0,
+   "warm_p50_ms": 197.9,
+   "warm_p95_ms": 208.4,
+   "bytes_cold": 20030,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_sd": {
+   "cold_p50_ms": 322.2,
+   "cold_p95_ms": 549.1,
+   "warm_p50_ms": 267.8,
+   "warm_p95_ms": 291.3,
+   "bytes_cold": 154288,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_tax": {
+   "cold_p50_ms": 215.2,
+   "cold_p95_ms": 430.3,
+   "warm_p50_ms": 217.1,
+   "warm_p95_ms": 220.4,
+   "bytes_cold": 43734,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_taxener": {
+   "cold_p50_ms": 316.2,
+   "cold_p95_ms": 455.3,
+   "warm_p50_ms": 221.8,
+   "warm_p95_ms": 234.7,
+   "bytes_cold": 23712,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_ac_taxind2": {
+   "cold_p50_ms": 360.3,
+   "cold_p95_ms": 573.6,
+   "warm_p50_ms": 278.2,
+   "warm_p95_ms": 349.0,
+   "bytes_cold": 599305,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_air_emis": {
+   "cold_p50_ms": 330.4,
+   "cold_p95_ms": 568.0,
+   "warm_p50_ms": 301.4,
+   "warm_p95_ms": 307.9,
+   "bytes_cold": 294466,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_air_emis_ind": {
+   "cold_p50_ms": 312.2,
+   "cold_p95_ms": 528.7,
+   "warm_p50_ms": 272.4,
+   "warm_p95_ms": 275.3,
+   "bytes_cold": 25227,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_air_no2": {
+   "cold_p50_ms": 264.5,
+   "cold_p95_ms": 519.5,
+   "warm_p50_ms": 249.1,
+   "warm_p95_ms": 253.3,
+   "bytes_cold": 11523,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_cfin": {
+   "cold_p50_ms": 205.0,
+   "cold_p95_ms": 455.5,
+   "warm_p50_ms": 213.3,
+   "warm_p95_ms": 222.3,
+   "bytes_cold": 16940,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_cint": {
+   "cold_p50_ms": 275.5,
+   "cold_p95_ms": 545.2,
+   "warm_p50_ms": 267.4,
+   "warm_p95_ms": 271.0,
+   "bytes_cold": 80698,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_invap": {
+   "cold_p50_ms": 225.1,
+   "cold_p95_ms": 456.7,
+   "warm_p50_ms": 220.6,
+   "warm_p95_ms": 229.0,
+   "bytes_cold": 93341,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_invgg": {
+   "cold_p50_ms": 252.7,
+   "cold_p95_ms": 438.3,
+   "warm_p50_ms": 211.3,
+   "warm_p95_ms": 226.8,
+   "bytes_cold": 11611,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_invsp": {
+   "cold_p50_ms": 268.1,
+   "cold_p95_ms": 538.6,
+   "warm_p50_ms": 268.9,
+   "warm_p95_ms": 270.1,
+   "bytes_cold": 11344,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_invte": {
+   "cold_p50_ms": 304.7,
+   "cold_p95_ms": 531.4,
+   "warm_p50_ms": 275.0,
+   "warm_p95_ms": 283.7,
+   "bytes_cold": 6016,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_neep": {
+   "cold_p50_ms": 284.5,
+   "cold_p95_ms": 698.6,
+   "warm_p50_ms": 272.6,
+   "warm_p95_ms": 286.5,
+   "bytes_cold": 36078,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_pap": {
+   "cold_p50_ms": 279.0,
+   "cold_p95_ms": 523.4,
+   "warm_p50_ms": 261.4,
+   "warm_p95_ms": 274.7,
+   "bytes_cold": 172134,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_pgg": {
+   "cold_p50_ms": 235.0,
+   "cold_p95_ms": 434.5,
+   "warm_p50_ms": 204.6,
+   "warm_p95_ms": 242.3,
+   "bytes_cold": 52059,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_psp": {
+   "cold_p50_ms": 293.1,
+   "cold_p95_ms": 542.7,
+   "warm_p50_ms": 265.0,
+   "warm_p95_ms": 292.2,
+   "bytes_cold": 49713,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_epea_trf": {
+   "cold_p50_ms": 218.7,
+   "cold_p95_ms": 471.4,
+   "warm_p50_ms": 212.0,
+   "warm_p95_ms": 228.2,
+   "bytes_cold": 33953,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_esst_cepgg": {
+   "cold_p50_ms": 258.4,
+   "cold_p95_ms": 431.7,
+   "warm_p50_ms": 220.8,
+   "warm_p95_ms": 260.8,
+   "bytes_cold": 134435,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_esst_cepggcp": {
+   "cold_p50_ms": 336.0,
+   "cold_p95_ms": 552.0,
+   "warm_p50_ms": 281.7,
+   "warm_p95_ms": 369.0,
+   "bytes_cold": 107252,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_esst_ceprw": {
+   "cold_p50_ms": 307.5,
+   "cold_p95_ms": 552.7,
+   "warm_p50_ms": 281.7,
+   "warm_p95_ms": 286.3,
+   "bytes_cold": 28338,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_esst_gg": {
+   "cold_p50_ms": 319.1,
+   "cold_p95_ms": 555.2,
+   "warm_p50_ms": 279.8,
+   "warm_p95_ms": 333.4,
+   "bytes_cold": 170886,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_esst_ggcp": {
+   "cold_p50_ms": 327.9,
+   "cold_p95_ms": 523.1,
+   "warm_p50_ms": 253.0,
+   "warm_p95_ms": 340.1,
+   "bytes_cold": 144761,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_esst_rw": {
+   "cold_p50_ms": 223.2,
+   "cold_p95_ms": 445.1,
+   "warm_p50_ms": 211.7,
+   "warm_p95_ms": 215.6,
+   "bytes_cold": 31826,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_wat_bal": {
+   "cold_p50_ms": 281.2,
+   "cold_p95_ms": 505.0,
+   "warm_p50_ms": 266.3,
+   "warm_p95_ms": 267.8,
+   "bytes_cold": 23446,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_wat_cat": {
+   "cold_p50_ms": 237.0,
+   "cold_p95_ms": 461.8,
+   "warm_p50_ms": 213.2,
+   "warm_p95_ms": 221.2,
+   "bytes_cold": 34831,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_wat_ind": {
+   "cold_p50_ms": 215.4,
+   "cold_p95_ms": 433.2,
+   "warm_p50_ms": 200.9,
+   "warm_p95_ms": 211.5,
+   "bytes_cold": 27516,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_wat_pop": {
+   "cold_p50_ms": 294.3,
+   "cold_p95_ms": 529.7,
+   "warm_p50_ms": 267.0,
+   "warm_p95_ms": 278.8,
+   "bytes_cold": 6100,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_wat_res": {
+   "cold_p50_ms": 273.5,
+   "cold_p95_ms": 603.8,
+   "warm_p50_ms": 279.6,
+   "warm_p95_ms": 285.8,
+   "bytes_cold": 40238,
+   "gets_cold": 5
+  },
+  "wave10.eu_env_watabs_rb": {
+   "cold_p50_ms": 277.2,
+   "cold_p95_ms": 527.2,
+   "warm_p50_ms": 274.1,
+   "warm_p95_ms": 276.4,
+   "bytes_cold": 100826,
+   "gets_cold": 3
+  },
+  "wave10.eu_env_watres_rb": {
+   "cold_p50_ms": 248.0,
+   "cold_p95_ms": 522.6,
+   "warm_p50_ms": 250.6,
+   "warm_p95_ms": 254.6,
+   "bytes_cold": 75947,
+   "gets_cold": 3
+  },
+  "wave10.eu_env_watuse_rb": {
+   "cold_p50_ms": 221.3,
+   "cold_p95_ms": 423.1,
+   "warm_p50_ms": 205.7,
+   "warm_p95_ms": 219.4,
+   "bytes_cold": 39691,
+   "gets_cold": 3
+  },
+  "wave10.eu_nrg_bal_cv": {
+   "cold_p50_ms": 277.2,
+   "cold_p95_ms": 564.2,
+   "warm_p50_ms": 278.7,
+   "warm_p95_ms": 284.6,
+   "bytes_cold": 255907,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_bal_s": {
+   "cold_p50_ms": 452.0,
+   "cold_p95_ms": 1751.9,
+   "warm_p50_ms": 256.6,
+   "warm_p95_ms": 563.6,
+   "bytes_cold": 2739157,
+   "gets_cold": 9
+  },
+  "wave10.eu_nrg_cb_bm": {
+   "cold_p50_ms": 210.1,
+   "cold_p95_ms": 446.3,
+   "warm_p50_ms": 217.0,
+   "warm_p95_ms": 218.4,
+   "bytes_cold": 41903,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_cosm": {
+   "cold_p50_ms": 286.2,
+   "cold_p95_ms": 538.8,
+   "warm_p50_ms": 273.0,
+   "warm_p95_ms": 279.9,
+   "bytes_cold": 98770,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_e": {
+   "cold_p50_ms": 277.5,
+   "cold_p95_ms": 566.2,
+   "warm_p50_ms": 272.3,
+   "warm_p95_ms": 274.6,
+   "bytes_cold": 121917,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_eim": {
+   "cold_p50_ms": 303.4,
+   "cold_p95_ms": 553.4,
+   "warm_p50_ms": 276.4,
+   "warm_p95_ms": 278.6,
+   "bytes_cold": 91570,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_em": {
+   "cold_p50_ms": 257.1,
+   "cold_p95_ms": 547.5,
+   "warm_p50_ms": 260.0,
+   "warm_p95_ms": 264.8,
+   "bytes_cold": 170367,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_gas": {
+   "cold_p50_ms": 250.1,
+   "cold_p95_ms": 421.6,
+   "warm_p50_ms": 216.3,
+   "warm_p95_ms": 253.8,
+   "bytes_cold": 290968,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_gasm": {
+   "cold_p50_ms": 328.0,
+   "cold_p95_ms": 586.3,
+   "warm_p50_ms": 275.9,
+   "warm_p95_ms": 282.9,
+   "bytes_cold": 330475,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_h": {
+   "cold_p50_ms": 225.8,
+   "cold_p95_ms": 452.1,
+   "warm_p50_ms": 232.2,
+   "warm_p95_ms": 290.3,
+   "bytes_cold": 66023,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_h2": {
+   "cold_p50_ms": 224.3,
+   "cold_p95_ms": 427.6,
+   "warm_p50_ms": 206.8,
+   "warm_p95_ms": 208.7,
+   "bytes_cold": 11873,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_oil": {
+   "cold_p50_ms": 560.5,
+   "cold_p95_ms": 4479.7,
+   "warm_p50_ms": 305.8,
+   "warm_p95_ms": 731.0,
+   "bytes_cold": 2641903,
+   "gets_cold": 23
+  },
+  "wave10.eu_nrg_cb_oilm": {
+   "cold_p50_ms": 556.2,
+   "cold_p95_ms": 2232.8,
+   "warm_p50_ms": 285.5,
+   "warm_p95_ms": 512.3,
+   "bytes_cold": 2337445,
+   "gets_cold": 11
+  },
+  "wave10.eu_nrg_cb_pem": {
+   "cold_p50_ms": 303.2,
+   "cold_p95_ms": 580.5,
+   "warm_p50_ms": 299.4,
+   "warm_p95_ms": 311.8,
+   "bytes_cold": 663829,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_rw": {
+   "cold_p50_ms": 329.4,
+   "cold_p95_ms": 531.7,
+   "warm_p50_ms": 272.5,
+   "warm_p95_ms": 385.9,
+   "bytes_cold": 338007,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_sff": {
+   "cold_p50_ms": 313.1,
+   "cold_p95_ms": 422.3,
+   "warm_p50_ms": 232.3,
+   "warm_p95_ms": 308.4,
+   "bytes_cold": 346330,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_cb_sffm": {
+   "cold_p50_ms": 331.9,
+   "cold_p95_ms": 553.5,
+   "warm_p50_ms": 279.9,
+   "warm_p95_ms": 314.6,
+   "bytes_cold": 436349,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_chdd_a": {
+   "cold_p50_ms": 226.8,
+   "cold_p95_ms": 451.9,
+   "warm_p50_ms": 208.5,
+   "warm_p95_ms": 209.9,
+   "bytes_cold": 10434,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_chdd_m": {
+   "cold_p50_ms": 206.8,
+   "cold_p95_ms": 466.2,
+   "warm_p50_ms": 203.1,
+   "warm_p95_ms": 228.1,
+   "bytes_cold": 54603,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_chddr2_m": {
+   "cold_p50_ms": 339.3,
+   "cold_p95_ms": 623.1,
+   "warm_p50_ms": 271.5,
+   "warm_p95_ms": 312.5,
+   "bytes_cold": 1188382,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_chp_cpfe": {
+   "cold_p50_ms": 324.9,
+   "cold_p95_ms": 527.0,
+   "warm_p50_ms": 295.9,
+   "warm_p95_ms": 297.4,
+   "bytes_cold": 311156,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_chp_f": {
+   "cold_p50_ms": 277.6,
+   "cold_p95_ms": 537.9,
+   "warm_p50_ms": 276.1,
+   "warm_p95_ms": 296.4,
+   "bytes_cold": 29615,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_chp_n": {
+   "cold_p50_ms": 275.3,
+   "cold_p95_ms": 549.2,
+   "warm_p50_ms": 253.8,
+   "warm_p95_ms": 254.5,
+   "bytes_cold": 15101,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_d_cv": {
+   "cold_p50_ms": 214.2,
+   "cold_p95_ms": 460.1,
+   "warm_p50_ms": 204.4,
+   "warm_p95_ms": 208.2,
+   "bytes_cold": 23396,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_d_hhq": {
+   "cold_p50_ms": 285.3,
+   "cold_p95_ms": 526.6,
+   "warm_p50_ms": 280.2,
+   "warm_p95_ms": 320.3,
+   "bytes_cold": 202407,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_d_indq_n": {
+   "cold_p50_ms": 451.1,
+   "cold_p95_ms": 466.2,
+   "warm_p50_ms": 231.0,
+   "warm_p95_ms": 411.4,
+   "bytes_cold": 778646,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_d_serq_n": {
+   "cold_p50_ms": 210.3,
+   "cold_p95_ms": 463.7,
+   "warm_p50_ms": 208.8,
+   "warm_p95_ms": 219.3,
+   "bytes_cold": 219884,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_d_traq": {
+   "cold_p50_ms": 340.1,
+   "cold_p95_ms": 522.2,
+   "warm_p50_ms": 284.2,
+   "warm_p95_ms": 289.2,
+   "bytes_cold": 87821,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_dhdc_c": {
+   "cold_p50_ms": 279.0,
+   "cold_p95_ms": 555.3,
+   "warm_p50_ms": 273.3,
+   "warm_p95_ms": 277.9,
+   "bytes_cold": 7247,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_dhdc_cpl": {
+   "cold_p50_ms": 274.8,
+   "cold_p95_ms": 575.7,
+   "warm_p50_ms": 281.4,
+   "warm_p95_ms": 336.6,
+   "bytes_cold": 27212,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_dhdc_e": {
+   "cold_p50_ms": 305.2,
+   "cold_p95_ms": 550.9,
+   "warm_p50_ms": 259.0,
+   "warm_p95_ms": 278.0,
+   "bytes_cold": 15731,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_dhdc_n": {
+   "cold_p50_ms": 209.4,
+   "cold_p95_ms": 462.6,
+   "warm_p50_ms": 210.7,
+   "warm_p95_ms": 211.1,
+   "bytes_cold": 9726,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_ahbtc": {
+   "cold_p50_ms": 273.5,
+   "cold_p95_ms": 544.3,
+   "warm_p50_ms": 267.4,
+   "warm_p95_ms": 297.3,
+   "bytes_cold": 27331,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_cotd": {
+   "cold_p50_ms": 219.5,
+   "cold_p95_ms": 494.7,
+   "warm_p50_ms": 216.2,
+   "warm_p95_ms": 226.6,
+   "bytes_cold": 44613,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_di": {
+   "cold_p50_ms": 263.9,
+   "cold_p95_ms": 462.2,
+   "warm_p50_ms": 203.0,
+   "warm_p95_ms": 204.6,
+   "bytes_cold": 7243,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_difec": {
+   "cold_p50_ms": 297.3,
+   "cold_p95_ms": 533.8,
+   "warm_p50_ms": 270.0,
+   "warm_p95_ms": 272.0,
+   "bytes_cold": 72901,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_ebmg": {
+   "cold_p50_ms": 271.1,
+   "cold_p95_ms": 657.7,
+   "warm_p50_ms": 273.1,
+   "warm_p95_ms": 275.4,
+   "bytes_cold": 6013,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_eff": {
+   "cold_p50_ms": 329.6,
+   "cold_p95_ms": 566.2,
+   "warm_p50_ms": 280.5,
+   "warm_p95_ms": 283.3,
+   "bytes_cold": 18736,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_ei": {
+   "cold_p50_ms": 282.6,
+   "cold_p95_ms": 549.2,
+   "warm_p50_ms": 257.8,
+   "warm_p95_ms": 264.8,
+   "bytes_cold": 17283,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_ep": {
+   "cold_p50_ms": 218.8,
+   "cold_p95_ms": 536.3,
+   "warm_p50_ms": 210.2,
+   "warm_p95_ms": 238.9,
+   "bytes_cold": 11846,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_epsc": {
+   "cold_p50_ms": 295.0,
+   "cold_p95_ms": 535.8,
+   "warm_p50_ms": 265.0,
+   "warm_p95_ms": 269.8,
+   "bytes_cold": 26471,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_esc": {
+   "cold_p50_ms": 216.6,
+   "cold_p95_ms": 422.1,
+   "warm_p50_ms": 227.8,
+   "warm_p95_ms": 232.8,
+   "bytes_cold": 155036,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_esr": {
+   "cold_p50_ms": 201.3,
+   "cold_p95_ms": 427.9,
+   "warm_p50_ms": 208.7,
+   "warm_p95_ms": 214.0,
+   "bytes_cold": 6719,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_fecf": {
+   "cold_p50_ms": 272.1,
+   "cold_p95_ms": 544.9,
+   "warm_p50_ms": 278.1,
+   "warm_p95_ms": 280.6,
+   "bytes_cold": 93327,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_fechm2": {
+   "cold_p50_ms": 272.8,
+   "cold_p95_ms": 557.0,
+   "warm_p50_ms": 272.0,
+   "warm_p95_ms": 291.5,
+   "bytes_cold": 5252,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_ffgae": {
+   "cold_p50_ms": 307.5,
+   "cold_p95_ms": 548.7,
+   "warm_p50_ms": 275.7,
+   "warm_p95_ms": 277.4,
+   "bytes_cold": 7680,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_hpind": {
+   "cold_p50_ms": 250.3,
+   "cold_p95_ms": 540.4,
+   "warm_p50_ms": 259.2,
+   "warm_p95_ms": 281.1,
+   "bytes_cold": 12308,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_hptctc": {
+   "cold_p50_ms": 254.6,
+   "cold_p95_ms": 490.4,
+   "warm_p50_ms": 228.3,
+   "warm_p95_ms": 250.9,
+   "bytes_cold": 26489,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_ibmg": {
+   "cold_p50_ms": 275.5,
+   "cold_p95_ms": 528.4,
+   "warm_p50_ms": 262.5,
+   "warm_p95_ms": 271.4,
+   "bytes_cold": 6294,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_id": {
+   "cold_p50_ms": 220.2,
+   "cold_p95_ms": 438.4,
+   "warm_p50_ms": 212.7,
+   "warm_p95_ms": 217.3,
+   "bytes_cold": 35121,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_id3cf": {
+   "cold_p50_ms": 227.6,
+   "cold_p95_ms": 649.5,
+   "warm_p50_ms": 205.9,
+   "warm_p95_ms": 214.9,
+   "bytes_cold": 19456,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_idooil": {
+   "cold_p50_ms": 275.0,
+   "cold_p95_ms": 558.0,
+   "warm_p50_ms": 263.2,
+   "warm_p95_ms": 271.8,
+   "bytes_cold": 27846,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_ioc": {
+   "cold_p50_ms": 270.6,
+   "cold_p95_ms": 570.0,
+   "warm_p50_ms": 274.8,
+   "warm_p95_ms": 279.2,
+   "bytes_cold": 46675,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_peh": {
+   "cold_p50_ms": 300.8,
+   "cold_p95_ms": 561.6,
+   "warm_p50_ms": 279.0,
+   "warm_p95_ms": 318.0,
+   "bytes_cold": 300359,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_pehap": {
+   "cold_p50_ms": 287.2,
+   "cold_p95_ms": 537.1,
+   "warm_p50_ms": 263.8,
+   "warm_p95_ms": 281.8,
+   "bytes_cold": 190249,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_pehcf": {
+   "cold_p50_ms": 354.4,
+   "cold_p95_ms": 525.9,
+   "warm_p50_ms": 229.5,
+   "warm_p95_ms": 376.6,
+   "bytes_cold": 713498,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_pehnf": {
+   "cold_p50_ms": 323.2,
+   "cold_p95_ms": 557.9,
+   "warm_p50_ms": 271.4,
+   "warm_p95_ms": 286.0,
+   "bytes_cold": 118546,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_psth2": {
+   "cold_p50_ms": 231.5,
+   "cold_p95_ms": 465.8,
+   "warm_p50_ms": 213.1,
+   "warm_p95_ms": 228.2,
+   "bytes_cold": 7278,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_rcaebt": {
+   "cold_p50_ms": 290.0,
+   "cold_p95_ms": 438.4,
+   "warm_p50_ms": 209.0,
+   "warm_p95_ms": 221.8,
+   "bytes_cold": 7126,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_rctcbt": {
+   "cold_p50_ms": 299.9,
+   "cold_p95_ms": 580.3,
+   "warm_p50_ms": 273.3,
+   "warm_p95_ms": 292.0,
+   "bytes_cold": 7490,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_re": {
+   "cold_p50_ms": 275.8,
+   "cold_p95_ms": 535.9,
+   "warm_p50_ms": 271.1,
+   "warm_p95_ms": 272.7,
+   "bytes_cold": 111480,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_ren": {
+   "cold_p50_ms": 320.3,
+   "cold_p95_ms": 564.0,
+   "warm_p50_ms": 275.3,
+   "warm_p95_ms": 281.5,
+   "bytes_cold": 20623,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_resovsh": {
+   "cold_p50_ms": 268.4,
+   "cold_p95_ms": 547.8,
+   "warm_p50_ms": 249.4,
+   "warm_p95_ms": 257.2,
+   "bytes_cold": 30510,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_stjpjss": {
+   "cold_p50_ms": 286.4,
+   "cold_p95_ms": 467.3,
+   "warm_p50_ms": 200.9,
+   "warm_p95_ms": 214.6,
+   "bytes_cold": 6244,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_ured": {
+   "cold_p50_ms": 272.6,
+   "cold_p95_ms": 520.0,
+   "warm_p50_ms": 267.0,
+   "warm_p95_ms": 268.8,
+   "bytes_cold": 47925,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_urhcd": {
+   "cold_p50_ms": 217.8,
+   "cold_p95_ms": 535.9,
+   "warm_p50_ms": 211.2,
+   "warm_p95_ms": 213.4,
+   "bytes_cold": 51275,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ind_urtd": {
+   "cold_p50_ms": 216.4,
+   "cold_p95_ms": 445.5,
+   "warm_p50_ms": 214.1,
+   "warm_p95_ms": 224.7,
+   "bytes_cold": 82992,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_inf_bt": {
+   "cold_p50_ms": 291.9,
+   "cold_p95_ms": 547.6,
+   "warm_p50_ms": 264.8,
+   "warm_p95_ms": 267.3,
+   "bytes_cold": 10787,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_inf_epc": {
+   "cold_p50_ms": 279.0,
+   "cold_p95_ms": 654.7,
+   "warm_p50_ms": 292.4,
+   "warm_p95_ms": 295.4,
+   "bytes_cold": 114053,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_inf_epct": {
+   "cold_p50_ms": 277.1,
+   "cold_p95_ms": 569.1,
+   "warm_p50_ms": 275.4,
+   "warm_p95_ms": 280.9,
+   "bytes_cold": 19750,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_inf_h2stpc": {
+   "cold_p50_ms": 291.0,
+   "cold_p95_ms": 539.4,
+   "warm_p50_ms": 258.0,
+   "warm_p95_ms": 258.6,
+   "bytes_cold": 7815,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_inf_lbpc": {
+   "cold_p50_ms": 253.1,
+   "cold_p95_ms": 447.1,
+   "warm_p50_ms": 210.8,
+   "warm_p95_ms": 227.2,
+   "bytes_cold": 8451,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_inf_stcs": {
+   "cold_p50_ms": 274.2,
+   "cold_p95_ms": 542.2,
+   "warm_p50_ms": 272.3,
+   "warm_p95_ms": 282.3,
+   "bytes_cold": 7073,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_pc_202_c": {
+   "cold_p50_ms": 235.8,
+   "cold_p95_ms": 648.7,
+   "warm_p50_ms": 230.3,
+   "warm_p95_ms": 242.5,
+   "bytes_cold": 206793,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_pc_202_v": {
+   "cold_p50_ms": 211.7,
+   "cold_p95_ms": 475.7,
+   "warm_p50_ms": 206.7,
+   "warm_p95_ms": 228.2,
+   "bytes_cold": 10471,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_pc_203_c": {
+   "cold_p50_ms": 292.1,
+   "cold_p95_ms": 555.1,
+   "warm_p50_ms": 277.0,
+   "warm_p95_ms": 283.5,
+   "bytes_cold": 347152,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_pc_203_v": {
+   "cold_p50_ms": 294.8,
+   "cold_p95_ms": 521.4,
+   "warm_p50_ms": 266.8,
+   "warm_p95_ms": 275.1,
+   "bytes_cold": 14491,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_pc_204_v": {
+   "cold_p50_ms": 269.7,
+   "cold_p95_ms": 544.9,
+   "warm_p50_ms": 274.3,
+   "warm_p95_ms": 276.2,
+   "bytes_cold": 16491,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_pc_205_v": {
+   "cold_p50_ms": 272.7,
+   "cold_p95_ms": 561.8,
+   "warm_p50_ms": 256.7,
+   "warm_p95_ms": 268.8,
+   "bytes_cold": 18840,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_stk_gas": {
+   "cold_p50_ms": 277.7,
+   "cold_p95_ms": 399.3,
+   "warm_p50_ms": 216.0,
+   "warm_p95_ms": 220.7,
+   "bytes_cold": 17670,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_stk_gasm": {
+   "cold_p50_ms": 277.8,
+   "cold_p95_ms": 624.7,
+   "warm_p50_ms": 272.4,
+   "warm_p95_ms": 296.9,
+   "bytes_cold": 55926,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_stk_h2": {
+   "cold_p50_ms": 232.9,
+   "cold_p95_ms": 435.6,
+   "warm_p50_ms": 215.7,
+   "warm_p95_ms": 217.7,
+   "bytes_cold": 6204,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_stk_oam": {
+   "cold_p50_ms": 3860.9,
+   "cold_p95_ms": 5389.1,
+   "warm_p50_ms": 255.4,
+   "warm_p95_ms": 598.9,
+   "bytes_cold": 1811037,
+   "gets_cold": 111
+  },
+  "wave10.eu_nrg_stk_oem": {
+   "cold_p50_ms": 269.7,
+   "cold_p95_ms": 530.0,
+   "warm_p50_ms": 268.7,
+   "warm_p95_ms": 274.8,
+   "bytes_cold": 27466,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_stk_oil": {
+   "cold_p50_ms": 275.9,
+   "cold_p95_ms": 593.7,
+   "warm_p50_ms": 271.6,
+   "warm_p95_ms": 281.4,
+   "bytes_cold": 98035,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_stk_oilm": {
+   "cold_p50_ms": 857.2,
+   "cold_p95_ms": 4157.2,
+   "warm_p50_ms": 286.1,
+   "warm_p95_ms": 634.3,
+   "bytes_cold": 3813193,
+   "gets_cold": 22
+  },
+  "wave10.eu_nrg_stk_oom": {
+   "cold_p50_ms": 559.7,
+   "cold_p95_ms": 743.5,
+   "warm_p50_ms": 291.8,
+   "warm_p95_ms": 775.0,
+   "bytes_cold": 1200863,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_te_bio": {
+   "cold_p50_ms": 300.4,
+   "cold_p95_ms": 444.0,
+   "warm_p50_ms": 222.9,
+   "warm_p95_ms": 283.7,
+   "bytes_cold": 71743,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_te_eh": {
+   "cold_p50_ms": 306.7,
+   "cold_p95_ms": 552.6,
+   "warm_p50_ms": 283.1,
+   "warm_p95_ms": 294.4,
+   "bytes_cold": 30711,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_te_gas": {
+   "cold_p50_ms": 278.8,
+   "cold_p95_ms": 469.6,
+   "warm_p50_ms": 238.8,
+   "warm_p95_ms": 275.2,
+   "bytes_cold": 35666,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_te_gasm": {
+   "cold_p50_ms": 450.5,
+   "cold_p95_ms": 471.2,
+   "warm_p50_ms": 225.9,
+   "warm_p95_ms": 425.5,
+   "bytes_cold": 413150,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_te_h2": {
+   "cold_p50_ms": 283.2,
+   "cold_p95_ms": 556.5,
+   "warm_p50_ms": 270.0,
+   "warm_p95_ms": 295.6,
+   "bytes_cold": 8815,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_te_oil": {
+   "cold_p50_ms": 569.0,
+   "cold_p95_ms": 735.4,
+   "warm_p50_ms": 309.1,
+   "warm_p95_ms": 720.1,
+   "bytes_cold": 1057709,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_te_oilm": {
+   "cold_p50_ms": 2544.7,
+   "cold_p95_ms": 4870.9,
+   "warm_p50_ms": 380.5,
+   "warm_p95_ms": 592.6,
+   "bytes_cold": 2069992,
+   "gets_cold": 56
+  },
+  "wave10.eu_nrg_te_sff": {
+   "cold_p50_ms": 403.2,
+   "cold_p95_ms": 553.7,
+   "warm_p50_ms": 272.5,
+   "warm_p95_ms": 473.3,
+   "bytes_cold": 109468,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ti_bio": {
+   "cold_p50_ms": 345.7,
+   "cold_p95_ms": 499.6,
+   "warm_p50_ms": 227.9,
+   "warm_p95_ms": 323.7,
+   "bytes_cold": 86256,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ti_coifpm": {
+   "cold_p50_ms": 572.0,
+   "cold_p95_ms": 656.1,
+   "warm_p50_ms": 279.3,
+   "warm_p95_ms": 675.0,
+   "bytes_cold": 891060,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ti_eh": {
+   "cold_p50_ms": 234.2,
+   "cold_p95_ms": 516.3,
+   "warm_p50_ms": 227.8,
+   "warm_p95_ms": 240.9,
+   "bytes_cold": 31200,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ti_gas": {
+   "cold_p50_ms": 245.5,
+   "cold_p95_ms": 445.7,
+   "warm_p50_ms": 220.5,
+   "warm_p95_ms": 266.9,
+   "bytes_cold": 79083,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ti_gasm": {
+   "cold_p50_ms": 459.7,
+   "cold_p95_ms": 579.5,
+   "warm_p50_ms": 290.1,
+   "warm_p95_ms": 489.9,
+   "bytes_cold": 544437,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ti_h2": {
+   "cold_p50_ms": 311.2,
+   "cold_p95_ms": 533.4,
+   "warm_p50_ms": 271.7,
+   "warm_p95_ms": 272.5,
+   "bytes_cold": 8690,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ti_oil": {
+   "cold_p50_ms": 614.0,
+   "cold_p95_ms": 879.9,
+   "warm_p50_ms": 297.3,
+   "warm_p95_ms": 748.3,
+   "bytes_cold": 1104635,
+   "gets_cold": 5
+  },
+  "wave10.eu_nrg_ti_oilm": {
+   "cold_p50_ms": 2082.6,
+   "cold_p95_ms": 5738.2,
+   "warm_p50_ms": 272.1,
+   "warm_p95_ms": 713.8,
+   "bytes_cold": 2142337,
+   "gets_cold": 55
+  },
+  "wave10.eu_nrg_ti_sff": {
+   "cold_p50_ms": 415.5,
+   "cold_p95_ms": 464.1,
+   "warm_p50_ms": 226.3,
+   "warm_p95_ms": 449.8,
+   "bytes_cold": 174716,
+   "gets_cold": 5
+  },
+  "wave10.wb_ag_lnd_agri_k2": {
+   "cold_p50_ms": 260.0,
+   "cold_p95_ms": 529.2,
+   "warm_p50_ms": 268.1,
+   "warm_p95_ms": 281.7,
+   "bytes_cold": 36401,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_agri_zs": {
+   "cold_p50_ms": 227.8,
+   "cold_p95_ms": 524.8,
+   "warm_p50_ms": 211.4,
+   "warm_p95_ms": 211.9,
+   "bytes_cold": 59696,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_arbl_zs": {
+   "cold_p50_ms": 221.4,
+   "cold_p95_ms": 489.6,
+   "warm_p50_ms": 225.1,
+   "warm_p95_ms": 231.1,
+   "bytes_cold": 56506,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_el5m_ru_k2": {
+   "cold_p50_ms": 305.5,
+   "cold_p95_ms": 520.3,
+   "warm_p50_ms": 273.9,
+   "warm_p95_ms": 275.5,
+   "bytes_cold": 17308,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_el5m_ru_zs": {
+   "cold_p50_ms": 273.5,
+   "cold_p95_ms": 534.6,
+   "warm_p50_ms": 271.2,
+   "warm_p95_ms": 272.7,
+   "bytes_cold": 17449,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_el5m_ur_k2": {
+   "cold_p50_ms": 283.7,
+   "cold_p95_ms": 641.6,
+   "warm_p50_ms": 268.4,
+   "warm_p95_ms": 277.6,
+   "bytes_cold": 17249,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_el5m_ur_zs": {
+   "cold_p50_ms": 258.6,
+   "cold_p95_ms": 516.0,
+   "warm_p50_ms": 250.9,
+   "warm_p95_ms": 262.5,
+   "bytes_cold": 17356,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_el5m_zs": {
+   "cold_p50_ms": 202.5,
+   "cold_p95_ms": 424.4,
+   "warm_p50_ms": 202.2,
+   "warm_p95_ms": 205.1,
+   "bytes_cold": 15789,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_frst_k2": {
+   "cold_p50_ms": 261.3,
+   "cold_p95_ms": 624.9,
+   "warm_p50_ms": 262.8,
+   "warm_p95_ms": 265.0,
+   "bytes_cold": 35786,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_frst_zs": {
+   "cold_p50_ms": 210.6,
+   "cold_p95_ms": 504.4,
+   "warm_p50_ms": 212.2,
+   "warm_p95_ms": 216.1,
+   "bytes_cold": 57332,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_irig_ag_zs": {
+   "cold_p50_ms": 208.1,
+   "cold_p95_ms": 465.7,
+   "warm_p50_ms": 214.7,
+   "warm_p95_ms": 215.0,
+   "bytes_cold": 24844,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_prcp_mm": {
+   "cold_p50_ms": 271.2,
+   "cold_p95_ms": 525.0,
+   "warm_p50_ms": 265.9,
+   "warm_p95_ms": 271.3,
+   "bytes_cold": 11616,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_totl_k2": {
+   "cold_p50_ms": 283.9,
+   "cold_p95_ms": 561.4,
+   "warm_p50_ms": 285.4,
+   "warm_p95_ms": 293.4,
+   "bytes_cold": 27473,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_totl_ru_k2": {
+   "cold_p50_ms": 279.1,
+   "cold_p95_ms": 551.2,
+   "warm_p50_ms": 265.4,
+   "warm_p95_ms": 279.8,
+   "bytes_cold": 18280,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_lnd_totl_ur_k2": {
+   "cold_p50_ms": 272.1,
+   "cold_p95_ms": 484.4,
+   "warm_p50_ms": 254.8,
+   "warm_p95_ms": 257.1,
+   "bytes_cold": 18215,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_srf_totl_k2": {
+   "cold_p50_ms": 204.0,
+   "cold_p95_ms": 406.7,
+   "warm_p50_ms": 201.6,
+   "warm_p95_ms": 217.2,
+   "bytes_cold": 23033,
+   "gets_cold": 4
+  },
+  "wave10.wb_ag_yld_crel_kg": {
+   "cold_p50_ms": 272.5,
+   "cold_p95_ms": 531.7,
+   "warm_p50_ms": 265.9,
+   "warm_p95_ms": 272.4,
+   "bytes_cold": 38635,
+   "gets_cold": 4
+  },
+  "wave10.wb_bx_gsr_ccis_cd": {
+   "cold_p50_ms": 216.1,
+   "cold_p95_ms": 441.9,
+   "warm_p50_ms": 231.0,
+   "warm_p95_ms": 238.9,
+   "bytes_cold": 50958,
+   "gets_cold": 4
+  },
+  "wave10.wb_bx_gsr_ccis_zs": {
+   "cold_p50_ms": 298.7,
+   "cold_p95_ms": 503.6,
+   "warm_p50_ms": 212.7,
+   "warm_p95_ms": 213.1,
+   "bytes_cold": 55968,
+   "gets_cold": 4
+  },
+  "wave10.wb_bx_klt_dinv_wd_gd_zs": {
+   "cold_p50_ms": 268.4,
+   "cold_p95_ms": 555.9,
+   "warm_p50_ms": 264.4,
+   "warm_p95_ms": 268.5,
+   "bytes_cold": 71637,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_cft_accs_ru_zs": {
+   "cold_p50_ms": 271.7,
+   "cold_p95_ms": 555.9,
+   "warm_p50_ms": 271.1,
+   "warm_p95_ms": 279.8,
+   "bytes_cold": 26774,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_cft_accs_ur_zs": {
+   "cold_p50_ms": 276.7,
+   "cold_p95_ms": 555.6,
+   "warm_p50_ms": 272.3,
+   "warm_p95_ms": 280.9,
+   "bytes_cold": 26105,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_cft_accs_zs": {
+   "cold_p50_ms": 266.6,
+   "cold_p95_ms": 492.3,
+   "warm_p50_ms": 253.6,
+   "warm_p95_ms": 264.2,
+   "bytes_cold": 26430,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_egy_prim_pp_kd": {
+   "cold_p50_ms": 224.3,
+   "cold_p95_ms": 439.5,
+   "warm_p50_ms": 219.8,
+   "warm_p95_ms": 228.7,
+   "bytes_cold": 40381,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_accs_ru_zs": {
+   "cold_p50_ms": 278.6,
+   "cold_p95_ms": 519.9,
+   "warm_p50_ms": 266.5,
+   "warm_p95_ms": 278.6,
+   "bytes_cold": 31151,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_accs_ur_zs": {
+   "cold_p50_ms": 210.0,
+   "cold_p95_ms": 459.7,
+   "warm_p50_ms": 213.9,
+   "warm_p95_ms": 216.9,
+   "bytes_cold": 29415,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_accs_zs": {
+   "cold_p50_ms": 212.8,
+   "cold_p95_ms": 436.7,
+   "warm_p50_ms": 212.1,
+   "warm_p95_ms": 216.7,
+   "bytes_cold": 30315,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_coal_zs": {
+   "cold_p50_ms": 284.1,
+   "cold_p95_ms": 591.3,
+   "warm_p50_ms": 267.8,
+   "warm_p95_ms": 276.2,
+   "bytes_cold": 42556,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_fosl_zs": {
+   "cold_p50_ms": 281.3,
+   "cold_p95_ms": 647.2,
+   "warm_p50_ms": 281.2,
+   "warm_p95_ms": 295.6,
+   "bytes_cold": 60351,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_hyro_zs": {
+   "cold_p50_ms": 333.3,
+   "cold_p95_ms": 562.1,
+   "warm_p50_ms": 275.5,
+   "warm_p95_ms": 291.8,
+   "bytes_cold": 57298,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_loss_zs": {
+   "cold_p50_ms": 249.6,
+   "cold_p95_ms": 616.5,
+   "warm_p50_ms": 251.7,
+   "warm_p95_ms": 267.8,
+   "bytes_cold": 56848,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_ngas_zs": {
+   "cold_p50_ms": 202.6,
+   "cold_p95_ms": 409.2,
+   "warm_p50_ms": 201.7,
+   "warm_p95_ms": 205.8,
+   "bytes_cold": 48288,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_nucl_zs": {
+   "cold_p50_ms": 269.7,
+   "cold_p95_ms": 529.4,
+   "warm_p50_ms": 267.1,
+   "warm_p95_ms": 278.5,
+   "bytes_cold": 27522,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_petr_zs": {
+   "cold_p50_ms": 267.1,
+   "cold_p95_ms": 453.1,
+   "warm_p50_ms": 211.1,
+   "warm_p95_ms": 211.2,
+   "bytes_cold": 62998,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_rnew_zs": {
+   "cold_p50_ms": 214.1,
+   "cold_p95_ms": 436.6,
+   "warm_p50_ms": 210.0,
+   "warm_p95_ms": 214.1,
+   "bytes_cold": 57811,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_rnwx_kh": {
+   "cold_p50_ms": 272.5,
+   "cold_p95_ms": 590.7,
+   "warm_p50_ms": 260.8,
+   "warm_p95_ms": 283.3,
+   "bytes_cold": 34962,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_elc_rnwx_zs": {
+   "cold_p50_ms": 313.8,
+   "cold_p95_ms": 537.4,
+   "warm_p50_ms": 271.0,
+   "warm_p95_ms": 285.9,
+   "bytes_cold": 56428,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_fec_rnew_zs": {
+   "cold_p50_ms": 284.7,
+   "cold_p95_ms": 558.7,
+   "warm_p50_ms": 276.8,
+   "warm_p95_ms": 306.4,
+   "bytes_cold": 33473,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_gdp_puse_ko_pp": {
+   "cold_p50_ms": 258.1,
+   "cold_p95_ms": 554.4,
+   "warm_p50_ms": 256.7,
+   "warm_p95_ms": 258.9,
+   "bytes_cold": 54947,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_gdp_puse_ko_pp_kd": {
+   "cold_p50_ms": 203.1,
+   "cold_p95_ms": 476.0,
+   "warm_p50_ms": 210.1,
+   "warm_p95_ms": 210.1,
+   "bytes_cold": 54381,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_imp_cons_zs": {
+   "cold_p50_ms": 281.1,
+   "cold_p95_ms": 563.9,
+   "warm_p50_ms": 266.6,
+   "warm_p95_ms": 268.4,
+   "bytes_cold": 52713,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_use_comm_cl_zs": {
+   "cold_p50_ms": 214.2,
+   "cold_p95_ms": 462.3,
+   "warm_p50_ms": 212.7,
+   "warm_p95_ms": 215.2,
+   "bytes_cold": 47024,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_use_comm_fo_zs": {
+   "cold_p50_ms": 265.2,
+   "cold_p95_ms": 453.3,
+   "warm_p50_ms": 204.3,
+   "warm_p95_ms": 209.9,
+   "bytes_cold": 44847,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_use_comm_gd_pp_kd": {
+   "cold_p50_ms": 315.0,
+   "cold_p95_ms": 531.8,
+   "warm_p50_ms": 270.6,
+   "warm_p95_ms": 285.0,
+   "bytes_cold": 54661,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_use_crnw_zs": {
+   "cold_p50_ms": 291.8,
+   "cold_p95_ms": 525.5,
+   "warm_p50_ms": 274.0,
+   "warm_p95_ms": 282.0,
+   "bytes_cold": 54672,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_use_elec_kh_pc": {
+   "cold_p50_ms": 274.6,
+   "cold_p95_ms": 543.2,
+   "warm_p50_ms": 270.4,
+   "warm_p95_ms": 280.8,
+   "bytes_cold": 55443,
+   "gets_cold": 4
+  },
+  "wave10.wb_eg_use_pcap_kg_oe": {
+   "cold_p50_ms": 302.4,
+   "cold_p95_ms": 526.3,
+   "warm_p50_ms": 245.4,
+   "warm_p95_ms": 248.7,
+   "bytes_cold": 56734,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_atm_pm25_mc_m3": {
+   "cold_p50_ms": 222.5,
+   "cold_p95_ms": 445.1,
+   "warm_p50_ms": 212.7,
+   "warm_p95_ms": 262.5,
+   "bytes_cold": 69663,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_atm_pm25_mc_t1_zs": {
+   "cold_p50_ms": 270.5,
+   "cold_p95_ms": 534.8,
+   "warm_p50_ms": 259.6,
+   "warm_p95_ms": 270.4,
+   "bytes_cold": 21849,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_atm_pm25_mc_t2_zs": {
+   "cold_p50_ms": 213.0,
+   "cold_p95_ms": 426.3,
+   "warm_p50_ms": 211.5,
+   "warm_p95_ms": 212.0,
+   "bytes_cold": 22807,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_atm_pm25_mc_t3_zs": {
+   "cold_p50_ms": 218.3,
+   "cold_p95_ms": 484.1,
+   "warm_p50_ms": 210.7,
+   "warm_p95_ms": 218.5,
+   "bytes_cold": 22171,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_atm_pm25_mc_zs": {
+   "cold_p50_ms": 267.9,
+   "cold_p95_ms": 531.2,
+   "warm_p50_ms": 269.8,
+   "warm_p95_ms": 273.6,
+   "bytes_cold": 22220,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_bir_thrd_no": {
+   "cold_p50_ms": 319.5,
+   "cold_p95_ms": 593.3,
+   "warm_p50_ms": 274.3,
+   "warm_p95_ms": 278.5,
+   "bytes_cold": 11395,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_clc_drsk_xq": {
+   "cold_p50_ms": 272.6,
+   "cold_p95_ms": 537.9,
+   "warm_p50_ms": 275.9,
+   "warm_p95_ms": 278.4,
+   "bytes_cold": 10645,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_clc_mdat_zs": {
+   "cold_p50_ms": 255.5,
+   "cold_p95_ms": 521.4,
+   "warm_p50_ms": 253.8,
+   "warm_p95_ms": 269.9,
+   "bytes_cold": 12324,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_fsh_thrd_no": {
+   "cold_p50_ms": 199.7,
+   "cold_p95_ms": 428.1,
+   "warm_p50_ms": 203.0,
+   "warm_p95_ms": 221.3,
+   "bytes_cold": 11839,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_all_lu_mt_ce_ar5": {
+   "cold_p50_ms": 535.3,
+   "cold_p95_ms": 700.1,
+   "warm_p50_ms": 266.0,
+   "warm_p95_ms": 269.4,
+   "bytes_cold": 47699,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_all_mt_ce_ar5": {
+   "cold_p50_ms": 213.9,
+   "cold_p95_ms": 439.3,
+   "warm_p50_ms": 209.9,
+   "warm_p95_ms": 211.2,
+   "bytes_cold": 72360,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_all_pc_ce_ar5": {
+   "cold_p50_ms": 244.3,
+   "cold_p95_ms": 451.5,
+   "warm_p50_ms": 223.2,
+   "warm_p95_ms": 227.3,
+   "bytes_cold": 70352,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_ch4_ag_mt_ce_ar5": {
+   "cold_p50_ms": 264.7,
+   "cold_p95_ms": 538.6,
+   "warm_p50_ms": 263.0,
+   "warm_p95_ms": 266.6,
+   "bytes_cold": 65810,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_ch4_bu_mt_ce_ar5": {
+   "cold_p50_ms": 280.4,
+   "cold_p95_ms": 533.9,
+   "warm_p50_ms": 278.1,
+   "warm_p95_ms": 279.6,
+   "bytes_cold": 63832,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_ch4_fe_mt_ce_ar5": {
+   "cold_p50_ms": 296.8,
+   "cold_p95_ms": 676.3,
+   "warm_p50_ms": 278.3,
+   "warm_p95_ms": 297.2,
+   "bytes_cold": 63987,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_ch4_ic_mt_ce_ar5": {
+   "cold_p50_ms": 265.0,
+   "cold_p95_ms": 507.1,
+   "warm_p50_ms": 252.3,
+   "warm_p95_ms": 259.3,
+   "bytes_cold": 57856,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_ch4_ip_mt_ce_ar5": {
+   "cold_p50_ms": 202.8,
+   "cold_p95_ms": 441.6,
+   "warm_p50_ms": 206.9,
+   "warm_p95_ms": 211.4,
+   "bytes_cold": 37720,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_ch4_mt_ce_ar5": {
+   "cold_p50_ms": 352.1,
+   "cold_p95_ms": 536.4,
+   "warm_p50_ms": 262.1,
+   "warm_p95_ms": 279.3,
+   "bytes_cold": 68220,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_ch4_pi_mt_ce_ar5": {
+   "cold_p50_ms": 231.1,
+   "cold_p95_ms": 471.7,
+   "warm_p50_ms": 210.6,
+   "warm_p95_ms": 215.3,
+   "bytes_cold": 56318,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_ch4_tr_mt_ce_ar5": {
+   "cold_p50_ms": 286.9,
+   "cold_p95_ms": 478.7,
+   "warm_p50_ms": 209.3,
+   "warm_p95_ms": 211.5,
+   "bytes_cold": 63830,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_ch4_wa_mt_ce_ar5": {
+   "cold_p50_ms": 282.3,
+   "cold_p95_ms": 525.5,
+   "warm_p50_ms": 267.3,
+   "warm_p95_ms": 274.0,
+   "bytes_cold": 66905,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_ch4_zg_ar5": {
+   "cold_p50_ms": 324.6,
+   "cold_p95_ms": 544.5,
+   "warm_p50_ms": 269.2,
+   "warm_p95_ms": 269.7,
+   "bytes_cold": 68622,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_ag_mt_ce_ar5": {
+   "cold_p50_ms": 278.3,
+   "cold_p95_ms": 591.3,
+   "warm_p50_ms": 274.8,
+   "warm_p95_ms": 293.5,
+   "bytes_cold": 46499,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_bu_mt_ce_ar5": {
+   "cold_p50_ms": 269.3,
+   "cold_p95_ms": 509.2,
+   "warm_p50_ms": 260.2,
+   "warm_p95_ms": 261.6,
+   "bytes_cold": 69891,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_fe_mt_ce_ar5": {
+   "cold_p50_ms": 216.2,
+   "cold_p95_ms": 439.8,
+   "warm_p50_ms": 217.6,
+   "warm_p95_ms": 220.2,
+   "bytes_cold": 55242,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_ic_mt_ce_ar5": {
+   "cold_p50_ms": 274.3,
+   "cold_p95_ms": 640.9,
+   "warm_p50_ms": 256.0,
+   "warm_p95_ms": 284.7,
+   "bytes_cold": 68702,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_ip_mt_ce_ar5": {
+   "cold_p50_ms": 307.1,
+   "cold_p95_ms": 536.2,
+   "warm_p50_ms": 210.7,
+   "warm_p95_ms": 210.7,
+   "bytes_cold": 66869,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_lu_df_mt_ce_ar5": {
+   "cold_p50_ms": 212.3,
+   "cold_p95_ms": 455.9,
+   "warm_p50_ms": 210.8,
+   "warm_p95_ms": 211.3,
+   "bytes_cold": 33305,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_lu_fl_mt_ce_ar5": {
+   "cold_p50_ms": 318.4,
+   "cold_p95_ms": 582.4,
+   "warm_p50_ms": 270.7,
+   "warm_p95_ms": 273.7,
+   "bytes_cold": 38170,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_lu_mt_ce_ar5": {
+   "cold_p50_ms": 271.8,
+   "cold_p95_ms": 553.2,
+   "warm_p50_ms": 271.3,
+   "warm_p95_ms": 281.3,
+   "bytes_cold": 38937,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_lu_ol_mt_ce_ar5": {
+   "cold_p50_ms": 276.7,
+   "cold_p95_ms": 548.1,
+   "warm_p50_ms": 278.2,
+   "warm_p95_ms": 285.4,
+   "bytes_cold": 33212,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_lu_os_mt_ce_ar5": {
+   "cold_p50_ms": 283.5,
+   "cold_p95_ms": 519.0,
+   "warm_p50_ms": 264.6,
+   "warm_p95_ms": 275.5,
+   "bytes_cold": 21662,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_mt_ce_ar5": {
+   "cold_p50_ms": 238.9,
+   "cold_p95_ms": 451.4,
+   "warm_p50_ms": 195.7,
+   "warm_p95_ms": 201.3,
+   "bytes_cold": 68807,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_pc_ce_ar5": {
+   "cold_p50_ms": 312.2,
+   "cold_p95_ms": 528.4,
+   "warm_p50_ms": 270.1,
+   "warm_p95_ms": 272.5,
+   "bytes_cold": 69649,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_pi_mt_ce_ar5": {
+   "cold_p50_ms": 214.8,
+   "cold_p95_ms": 519.9,
+   "warm_p50_ms": 206.2,
+   "warm_p95_ms": 215.8,
+   "bytes_cold": 68580,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_rt_gdp_kd": {
+   "cold_p50_ms": 224.5,
+   "cold_p95_ms": 473.3,
+   "warm_p50_ms": 207.5,
+   "warm_p95_ms": 208.8,
+   "bytes_cold": 66966,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_rt_gdp_pp_kd": {
+   "cold_p50_ms": 268.0,
+   "cold_p95_ms": 548.6,
+   "warm_p50_ms": 266.7,
+   "warm_p95_ms": 268.4,
+   "bytes_cold": 65232,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_tr_mt_ce_ar5": {
+   "cold_p50_ms": 277.6,
+   "cold_p95_ms": 533.0,
+   "warm_p50_ms": 267.6,
+   "warm_p95_ms": 306.7,
+   "bytes_cold": 70380,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_wa_mt_ce_ar5": {
+   "cold_p50_ms": 319.1,
+   "cold_p95_ms": 543.8,
+   "warm_p50_ms": 279.5,
+   "warm_p95_ms": 284.8,
+   "bytes_cold": 28648,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_co2_zg_ar5": {
+   "cold_p50_ms": 259.3,
+   "cold_p95_ms": 556.8,
+   "warm_p50_ms": 249.9,
+   "warm_p95_ms": 250.0,
+   "bytes_cold": 67958,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_fgas_ip_mt_ce_ar5": {
+   "cold_p50_ms": 217.2,
+   "cold_p95_ms": 522.0,
+   "warm_p50_ms": 201.5,
+   "warm_p95_ms": 241.0,
+   "bytes_cold": 56418,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_n2o_ag_mt_ce_ar5": {
+   "cold_p50_ms": 265.4,
+   "cold_p95_ms": 570.2,
+   "warm_p50_ms": 273.9,
+   "warm_p95_ms": 275.0,
+   "bytes_cold": 65966,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_n2o_bu_mt_ce_ar5": {
+   "cold_p50_ms": 233.5,
+   "cold_p95_ms": 591.3,
+   "warm_p50_ms": 211.0,
+   "warm_p95_ms": 211.6,
+   "bytes_cold": 63220,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_n2o_fe_mt_ce_ar5": {
+   "cold_p50_ms": 215.8,
+   "cold_p95_ms": 449.9,
+   "warm_p50_ms": 209.9,
+   "warm_p95_ms": 222.3,
+   "bytes_cold": 53727,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_n2o_ic_mt_ce_ar5": {
+   "cold_p50_ms": 266.3,
+   "cold_p95_ms": 536.8,
+   "warm_p50_ms": 267.8,
+   "warm_p95_ms": 273.1,
+   "bytes_cold": 59876,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_n2o_ip_mt_ce_ar5": {
+   "cold_p50_ms": 303.0,
+   "cold_p95_ms": 603.0,
+   "warm_p50_ms": 266.9,
+   "warm_p95_ms": 267.3,
+   "bytes_cold": 68503,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_n2o_mt_ce_ar5": {
+   "cold_p50_ms": 280.3,
+   "cold_p95_ms": 567.6,
+   "warm_p50_ms": 272.4,
+   "warm_p95_ms": 279.5,
+   "bytes_cold": 68394,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_n2o_pi_mt_ce_ar5": {
+   "cold_p50_ms": 260.0,
+   "cold_p95_ms": 595.5,
+   "warm_p50_ms": 252.8,
+   "warm_p95_ms": 259.4,
+   "bytes_cold": 58865,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_n2o_tr_mt_ce_ar5": {
+   "cold_p50_ms": 207.7,
+   "cold_p95_ms": 514.3,
+   "warm_p50_ms": 202.2,
+   "warm_p95_ms": 211.5,
+   "bytes_cold": 66489,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_n2o_wa_mt_ce_ar5": {
+   "cold_p50_ms": 270.8,
+   "cold_p95_ms": 552.6,
+   "warm_p50_ms": 272.2,
+   "warm_p95_ms": 273.3,
+   "bytes_cold": 63007,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_n2o_zg_ar5": {
+   "cold_p50_ms": 206.1,
+   "cold_p95_ms": 415.4,
+   "warm_p50_ms": 209.6,
+   "warm_p95_ms": 225.5,
+   "bytes_cold": 67647,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_ghg_tot_zg_ar5": {
+   "cold_p50_ms": 208.1,
+   "cold_p95_ms": 470.6,
+   "warm_p50_ms": 215.7,
+   "warm_p95_ms": 220.5,
+   "bytes_cold": 69216,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_hpt_thrd_no": {
+   "cold_p50_ms": 265.9,
+   "cold_p95_ms": 515.7,
+   "warm_p50_ms": 264.8,
+   "warm_p95_ms": 264.9,
+   "bytes_cold": 12071,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_mam_thrd_no": {
+   "cold_p50_ms": 271.3,
+   "cold_p95_ms": 529.8,
+   "warm_p50_ms": 277.2,
+   "warm_p95_ms": 292.6,
+   "bytes_cold": 11378,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_pop_el5m_ru_zs": {
+   "cold_p50_ms": 282.0,
+   "cold_p95_ms": 560.6,
+   "warm_p50_ms": 267.6,
+   "warm_p95_ms": 275.9,
+   "bytes_cold": 17686,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_pop_el5m_ur_zs": {
+   "cold_p50_ms": 253.7,
+   "cold_p95_ms": 518.3,
+   "warm_p50_ms": 246.2,
+   "warm_p95_ms": 249.8,
+   "bytes_cold": 17587,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_pop_el5m_zs": {
+   "cold_p50_ms": 279.7,
+   "cold_p95_ms": 430.6,
+   "warm_p50_ms": 203.7,
+   "warm_p95_ms": 211.9,
+   "bytes_cold": 17601,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_pop_slum_ur_zs": {
+   "cold_p50_ms": 275.7,
+   "cold_p95_ms": 544.0,
+   "warm_p50_ms": 261.3,
+   "warm_p95_ms": 266.0,
+   "bytes_cold": 26670,
+   "gets_cold": 4
+  },
+  "wave10.wb_en_urb_mcty_tl_zs": {
+   "cold_p50_ms": 209.5,
+   "cold_p95_ms": 481.5,
+   "warm_p50_ms": 217.0,
+   "warm_p95_ms": 219.6,
+   "bytes_cold": 45886,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_fsh_aqua_mt": {
+   "cold_p50_ms": 223.3,
+   "cold_p95_ms": 455.6,
+   "warm_p50_ms": 207.9,
+   "warm_p95_ms": 212.1,
+   "bytes_cold": 38757,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_fsh_capt_mt": {
+   "cold_p50_ms": 273.1,
+   "cold_p95_ms": 530.8,
+   "warm_p50_ms": 265.4,
+   "warm_p95_ms": 274.9,
+   "bytes_cold": 48957,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_fsh_prod_mt": {
+   "cold_p50_ms": 276.8,
+   "cold_p95_ms": 542.4,
+   "warm_p50_ms": 271.3,
+   "warm_p95_ms": 286.3,
+   "bytes_cold": 51518,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_gdp_fwtl_m3_kd": {
+   "cold_p50_ms": 275.0,
+   "cold_p95_ms": 574.2,
+   "warm_p50_ms": 274.1,
+   "warm_p95_ms": 278.4,
+   "bytes_cold": 57578,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_h2o_fwag_zs": {
+   "cold_p50_ms": 311.5,
+   "cold_p95_ms": 561.1,
+   "warm_p50_ms": 249.4,
+   "warm_p95_ms": 258.3,
+   "bytes_cold": 39875,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_h2o_fwdm_zs": {
+   "cold_p50_ms": 249.9,
+   "cold_p95_ms": 598.8,
+   "warm_p50_ms": 208.2,
+   "warm_p95_ms": 213.3,
+   "bytes_cold": 40265,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_h2o_fwin_zs": {
+   "cold_p50_ms": 266.1,
+   "cold_p95_ms": 533.8,
+   "warm_p50_ms": 265.0,
+   "warm_p95_ms": 270.1,
+   "bytes_cold": 40015,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_h2o_fwst_zs": {
+   "cold_p50_ms": 217.4,
+   "cold_p95_ms": 489.7,
+   "warm_p50_ms": 211.8,
+   "warm_p95_ms": 213.4,
+   "bytes_cold": 38101,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_h2o_fwtl_k3": {
+   "cold_p50_ms": 312.0,
+   "cold_p95_ms": 420.1,
+   "warm_p50_ms": 208.2,
+   "warm_p95_ms": 210.3,
+   "bytes_cold": 41521,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_h2o_fwtl_zs": {
+   "cold_p50_ms": 264.2,
+   "cold_p95_ms": 526.8,
+   "warm_p50_ms": 281.9,
+   "warm_p95_ms": 284.9,
+   "bytes_cold": 40215,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_h2o_intr_k3": {
+   "cold_p50_ms": 265.7,
+   "cold_p95_ms": 566.6,
+   "warm_p50_ms": 272.0,
+   "warm_p95_ms": 273.9,
+   "bytes_cold": 13860,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_h2o_intr_pc": {
+   "cold_p50_ms": 264.8,
+   "cold_p95_ms": 590.8,
+   "warm_p50_ms": 285.9,
+   "warm_p95_ms": 289.6,
+   "bytes_cold": 58548,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_lnd_ptld_zs": {
+   "cold_p50_ms": 298.6,
+   "cold_p95_ms": 539.5,
+   "warm_p50_ms": 253.0,
+   "warm_p95_ms": 254.0,
+   "bytes_cold": 21318,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_mrn_ptmr_zs": {
+   "cold_p50_ms": 205.2,
+   "cold_p95_ms": 449.7,
+   "warm_p50_ms": 212.6,
+   "warm_p95_ms": 219.0,
+   "bytes_cold": 18630,
+   "gets_cold": 4
+  },
+  "wave10.wb_er_ptd_totl_zs": {
+   "cold_p50_ms": 273.6,
+   "cold_p95_ms": 547.1,
+   "warm_p50_ms": 258.8,
+   "warm_p95_ms": 259.2,
+   "bytes_cold": 21174,
+   "gets_cold": 4
+  },
+  "wave10.wb_ic_elc_durs": {
+   "cold_p50_ms": 231.8,
+   "cold_p95_ms": 448.1,
+   "warm_p50_ms": 213.9,
+   "warm_p95_ms": 220.8,
+   "bytes_cold": 16674,
+   "gets_cold": 4
+  },
+  "wave10.wb_ic_frm_bnks_zs": {
+   "cold_p50_ms": 208.0,
+   "cold_p95_ms": 436.0,
+   "warm_p50_ms": 203.8,
+   "warm_p95_ms": 214.3,
+   "bytes_cold": 16754,
+   "gets_cold": 4
+  },
+  "wave10.wb_ic_frm_outg_zs": {
+   "cold_p50_ms": 260.3,
+   "cold_p95_ms": 528.9,
+   "warm_p50_ms": 265.8,
+   "warm_p95_ms": 268.1,
+   "bytes_cold": 11762,
+   "gets_cold": 4
+  },
+  "wave10.wb_ie_ppi_engy_cd": {
+   "cold_p50_ms": 264.2,
+   "cold_p95_ms": 531.3,
+   "warm_p50_ms": 272.4,
+   "warm_p95_ms": 275.6,
+   "bytes_cold": 20943,
+   "gets_cold": 4
+  },
+  "wave10.wb_ie_ppi_icti_cd": {
+   "cold_p50_ms": 301.6,
+   "cold_p95_ms": 538.8,
+   "warm_p50_ms": 269.4,
+   "warm_p95_ms": 284.4,
+   "bytes_cold": 12873,
+   "gets_cold": 4
+  },
+  "wave10.wb_ie_ppi_tran_cd": {
+   "cold_p50_ms": 267.3,
+   "cold_p95_ms": 536.6,
+   "warm_p50_ms": 253.0,
+   "warm_p95_ms": 256.2,
+   "bytes_cold": 16527,
+   "gets_cold": 4
+  },
+  "wave10.wb_ie_ppi_watr_cd": {
+   "cold_p50_ms": 243.1,
+   "cold_p95_ms": 459.5,
+   "warm_p50_ms": 220.0,
+   "warm_p95_ms": 220.9,
+   "bytes_cold": 13072,
+   "gets_cold": 4
+  },
+  "wave10.wb_ie_ppn_engy_cd": {
+   "cold_p50_ms": 262.5,
+   "cold_p95_ms": 528.2,
+   "warm_p50_ms": 266.1,
+   "warm_p95_ms": 274.6,
+   "bytes_cold": 20151,
+   "gets_cold": 4
+  },
+  "wave10.wb_ie_ppn_icti_cd": {
+   "cold_p50_ms": 209.4,
+   "cold_p95_ms": 414.2,
+   "warm_p50_ms": 214.9,
+   "warm_p95_ms": 221.8,
+   "bytes_cold": 11716,
+   "gets_cold": 4
+  },
+  "wave10.wb_ie_ppn_tran_cd": {
+   "cold_p50_ms": 258.2,
+   "cold_p95_ms": 417.8,
+   "warm_p50_ms": 209.9,
+   "warm_p95_ms": 214.2,
+   "bytes_cold": 16378,
+   "gets_cold": 4
+  },
+  "wave10.wb_ie_ppn_watr_cd": {
+   "cold_p50_ms": 289.3,
+   "cold_p95_ms": 536.2,
+   "warm_p50_ms": 266.5,
+   "warm_p95_ms": 272.3,
+   "bytes_cold": 13079,
+   "gets_cold": 4
+  },
+  "wave10.wb_ip_ids_nrct": {
+   "cold_p50_ms": 272.0,
+   "cold_p95_ms": 540.8,
+   "warm_p50_ms": 268.9,
+   "warm_p95_ms": 269.8,
+   "bytes_cold": 20834,
+   "gets_cold": 4
+  },
+  "wave10.wb_ip_ids_rsct": {
+   "cold_p50_ms": 287.9,
+   "cold_p95_ms": 523.8,
+   "warm_p50_ms": 271.0,
+   "warm_p95_ms": 278.7,
+   "bytes_cold": 21061,
+   "gets_cold": 4
+  },
+  "wave10.wb_ip_tmk_nrct": {
+   "cold_p50_ms": 255.0,
+   "cold_p95_ms": 522.8,
+   "warm_p50_ms": 264.3,
+   "warm_p95_ms": 267.7,
+   "bytes_cold": 16888,
+   "gets_cold": 4
+  },
+  "wave10.wb_ip_tmk_rsct": {
+   "cold_p50_ms": 243.7,
+   "cold_p95_ms": 420.1,
+   "warm_p50_ms": 199.1,
+   "warm_p95_ms": 212.6,
+   "bytes_cold": 16940,
+   "gets_cold": 4
+  },
+  "wave10.wb_iq_cpa_pubs_xq": {
+   "cold_p50_ms": 273.9,
+   "cold_p95_ms": 528.7,
+   "warm_p50_ms": 267.3,
+   "warm_p95_ms": 267.5,
+   "bytes_cold": 16616,
+   "gets_cold": 4
+  },
+  "wave10.wb_is_air_dprt": {
+   "cold_p50_ms": 207.4,
+   "cold_p95_ms": 462.0,
+   "warm_p50_ms": 213.3,
+   "warm_p95_ms": 215.1,
+   "bytes_cold": 33568,
+   "gets_cold": 4
+  },
+  "wave10.wb_is_air_good_mt_k1": {
+   "cold_p50_ms": 213.0,
+   "cold_p95_ms": 466.3,
+   "warm_p50_ms": 208.5,
+   "warm_p95_ms": 210.2,
+   "bytes_cold": 53327,
+   "gets_cold": 4
+  },
+  "wave10.wb_is_air_psgr": {
+   "cold_p50_ms": 265.6,
+   "cold_p95_ms": 530.4,
+   "warm_p50_ms": 264.3,
+   "warm_p95_ms": 265.2,
+   "bytes_cold": 39012,
+   "gets_cold": 4
+  },
+  "wave10.wb_is_rrs_good_mt_k6": {
+   "cold_p50_ms": 266.1,
+   "cold_p95_ms": 617.5,
+   "warm_p50_ms": 271.3,
+   "warm_p95_ms": 274.2,
+   "bytes_cold": 18773,
+   "gets_cold": 4
+  },
+  "wave10.wb_is_rrs_pasg_km": {
+   "cold_p50_ms": 275.7,
+   "cold_p95_ms": 569.7,
+   "warm_p50_ms": 279.8,
+   "warm_p95_ms": 284.6,
+   "bytes_cold": 18725,
+   "gets_cold": 4
+  },
+  "wave10.wb_is_rrs_totl_km": {
+   "cold_p50_ms": 280.1,
+   "cold_p95_ms": 548.4,
+   "warm_p50_ms": 255.0,
+   "warm_p95_ms": 282.7,
+   "bytes_cold": 18808,
+   "gets_cold": 4
+  },
+  "wave10.wb_is_shp_gcnw_xq": {
+   "cold_p50_ms": 219.7,
+   "cold_p95_ms": 401.7,
+   "warm_p50_ms": 199.8,
+   "warm_p95_ms": 216.3,
+   "bytes_cold": 28966,
+   "gets_cold": 4
+  },
+  "wave10.wb_is_shp_good_tu": {
+   "cold_p50_ms": 266.6,
+   "cold_p95_ms": 621.4,
+   "warm_p50_ms": 270.1,
+   "warm_p95_ms": 274.1,
+   "bytes_cold": 22297,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_cel_sets": {
+   "cold_p50_ms": 216.8,
+   "cold_p95_ms": 459.6,
+   "warm_p50_ms": 213.9,
+   "warm_p95_ms": 216.7,
+   "bytes_cold": 38057,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_cel_sets_p2": {
+   "cold_p50_ms": 209.1,
+   "cold_p95_ms": 482.3,
+   "warm_p50_ms": 211.7,
+   "warm_p95_ms": 214.1,
+   "bytes_cold": 66919,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_mlt_main": {
+   "cold_p50_ms": 264.4,
+   "cold_p95_ms": 537.5,
+   "warm_p50_ms": 276.8,
+   "warm_p95_ms": 281.1,
+   "bytes_cold": 36313,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_mlt_main_p2": {
+   "cold_p50_ms": 300.6,
+   "cold_p95_ms": 545.4,
+   "warm_p50_ms": 269.5,
+   "warm_p95_ms": 278.9,
+   "bytes_cold": 65954,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_net_bbnd": {
+   "cold_p50_ms": 269.0,
+   "cold_p95_ms": 550.1,
+   "warm_p50_ms": 273.7,
+   "warm_p95_ms": 274.2,
+   "bytes_cold": 26790,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_net_bbnd_p2": {
+   "cold_p50_ms": 255.7,
+   "cold_p95_ms": 532.7,
+   "warm_p50_ms": 254.4,
+   "warm_p95_ms": 256.4,
+   "bytes_cold": 47850,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_net_secr": {
+   "cold_p50_ms": 259.9,
+   "cold_p95_ms": 451.7,
+   "warm_p50_ms": 196.8,
+   "warm_p95_ms": 199.4,
+   "bytes_cold": 16989,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_net_secr_p6": {
+   "cold_p50_ms": 277.4,
+   "cold_p95_ms": 780.0,
+   "warm_p50_ms": 259.3,
+   "warm_p95_ms": 282.5,
+   "bytes_cold": 38077,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_net_user_fe_zs": {
+   "cold_p50_ms": 210.2,
+   "cold_p95_ms": 452.1,
+   "warm_p50_ms": 220.4,
+   "warm_p95_ms": 222.1,
+   "bytes_cold": 22658,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_net_user_ma_zs": {
+   "cold_p50_ms": 238.6,
+   "cold_p95_ms": 425.1,
+   "warm_p50_ms": 212.4,
+   "warm_p95_ms": 219.2,
+   "bytes_cold": 22499,
+   "gets_cold": 4
+  },
+  "wave10.wb_it_net_user_zs": {
+   "cold_p50_ms": 276.4,
+   "cold_p95_ms": 551.0,
+   "warm_p50_ms": 263.1,
+   "warm_p95_ms": 265.1,
+   "bytes_cold": 52080,
+   "gets_cold": 4
+  },
+  "wave10.wb_nv_agr_totl_zs": {
+   "cold_p50_ms": 325.0,
+   "cold_p95_ms": 539.3,
+   "warm_p50_ms": 269.0,
+   "warm_p95_ms": 269.8,
+   "bytes_cold": 67468,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_aedu_cd": {
+   "cold_p50_ms": 285.5,
+   "cold_p95_ms": 565.4,
+   "warm_p50_ms": 271.9,
+   "warm_p95_ms": 276.6,
+   "bytes_cold": 51569,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_aedu_gn_zs": {
+   "cold_p50_ms": 269.4,
+   "cold_p95_ms": 552.3,
+   "warm_p50_ms": 253.7,
+   "warm_p95_ms": 261.8,
+   "bytes_cold": 39501,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dco2_cd": {
+   "cold_p50_ms": 203.3,
+   "cold_p95_ms": 456.5,
+   "warm_p50_ms": 198.0,
+   "warm_p95_ms": 209.4,
+   "bytes_cold": 57034,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dco2_gn_zs": {
+   "cold_p50_ms": 264.4,
+   "cold_p95_ms": 541.7,
+   "warm_p50_ms": 264.1,
+   "warm_p95_ms": 270.1,
+   "bytes_cold": 52959,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dfor_cd": {
+   "cold_p50_ms": 222.4,
+   "cold_p95_ms": 478.0,
+   "warm_p50_ms": 209.2,
+   "warm_p95_ms": 212.8,
+   "bytes_cold": 36671,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dfor_gn_zs": {
+   "cold_p50_ms": 220.8,
+   "cold_p95_ms": 438.1,
+   "warm_p50_ms": 210.0,
+   "warm_p95_ms": 212.8,
+   "bytes_cold": 35181,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dkap_cd": {
+   "cold_p50_ms": 279.8,
+   "cold_p95_ms": 539.7,
+   "warm_p50_ms": 265.9,
+   "warm_p95_ms": 271.9,
+   "bytes_cold": 54867,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dkap_gn_zs": {
+   "cold_p50_ms": 288.3,
+   "cold_p95_ms": 565.0,
+   "warm_p50_ms": 263.0,
+   "warm_p95_ms": 270.1,
+   "bytes_cold": 52778,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dmin_cd": {
+   "cold_p50_ms": 375.6,
+   "cold_p95_ms": 576.0,
+   "warm_p50_ms": 272.8,
+   "warm_p95_ms": 279.2,
+   "bytes_cold": 38385,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dmin_gn_zs": {
+   "cold_p50_ms": 262.8,
+   "cold_p95_ms": 503.8,
+   "warm_p50_ms": 254.9,
+   "warm_p95_ms": 257.9,
+   "bytes_cold": 37746,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dngy_cd": {
+   "cold_p50_ms": 217.6,
+   "cold_p95_ms": 470.0,
+   "warm_p50_ms": 212.3,
+   "warm_p95_ms": 229.0,
+   "bytes_cold": 41514,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dngy_gn_zs": {
+   "cold_p50_ms": 290.4,
+   "cold_p95_ms": 548.1,
+   "warm_p50_ms": 269.4,
+   "warm_p95_ms": 269.9,
+   "bytes_cold": 39680,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dpem_cd": {
+   "cold_p50_ms": 226.8,
+   "cold_p95_ms": 464.8,
+   "warm_p50_ms": 215.4,
+   "warm_p95_ms": 216.5,
+   "bytes_cold": 49367,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dpem_gn_zs": {
+   "cold_p50_ms": 210.1,
+   "cold_p95_ms": 463.1,
+   "warm_p50_ms": 209.7,
+   "warm_p95_ms": 210.6,
+   "bytes_cold": 48457,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_dres_gn_zs": {
+   "cold_p50_ms": 316.4,
+   "cold_p95_ms": 552.5,
+   "warm_p50_ms": 273.3,
+   "warm_p95_ms": 290.1,
+   "bytes_cold": 48436,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_ictr_gn_zs": {
+   "cold_p50_ms": 280.4,
+   "cold_p95_ms": 529.1,
+   "warm_p50_ms": 266.1,
+   "warm_p95_ms": 272.1,
+   "bytes_cold": 42919,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_nnat_cd": {
+   "cold_p50_ms": 323.0,
+   "cold_p95_ms": 548.5,
+   "warm_p50_ms": 271.2,
+   "warm_p95_ms": 285.4,
+   "bytes_cold": 43483,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_nnat_gn_zs": {
+   "cold_p50_ms": 246.6,
+   "cold_p95_ms": 502.2,
+   "warm_p50_ms": 249.6,
+   "warm_p95_ms": 257.7,
+   "bytes_cold": 47138,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_svng_cd": {
+   "cold_p50_ms": 213.7,
+   "cold_p95_ms": 511.1,
+   "warm_p50_ms": 204.7,
+   "warm_p95_ms": 208.7,
+   "bytes_cold": 40213,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_svng_gn_zs": {
+   "cold_p50_ms": 272.6,
+   "cold_p95_ms": 535.0,
+   "warm_p50_ms": 271.7,
+   "warm_p95_ms": 275.4,
+   "bytes_cold": 40313,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_svnx_cd": {
+   "cold_p50_ms": 215.7,
+   "cold_p95_ms": 479.0,
+   "warm_p50_ms": 214.3,
+   "warm_p95_ms": 229.2,
+   "bytes_cold": 41271,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_adj_svnx_gn_zs": {
+   "cold_p50_ms": 215.7,
+   "cold_p95_ms": 433.3,
+   "warm_p50_ms": 215.0,
+   "warm_p95_ms": 226.3,
+   "bytes_cold": 41340,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_gdp_coal_rt_zs": {
+   "cold_p50_ms": 264.0,
+   "cold_p95_ms": 535.3,
+   "warm_p50_ms": 267.9,
+   "warm_p95_ms": 269.8,
+   "bytes_cold": 36844,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_gdp_frst_rt_zs": {
+   "cold_p50_ms": 265.9,
+   "cold_p95_ms": 537.4,
+   "warm_p50_ms": 272.6,
+   "warm_p95_ms": 280.7,
+   "bytes_cold": 61555,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_gdp_minr_rt_zs": {
+   "cold_p50_ms": 448.5,
+   "cold_p95_ms": 555.7,
+   "warm_p50_ms": 275.5,
+   "warm_p95_ms": 282.0,
+   "bytes_cold": 48335,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_gdp_ngas_rt_zs": {
+   "cold_p50_ms": 262.0,
+   "cold_p95_ms": 532.4,
+   "warm_p50_ms": 260.2,
+   "warm_p95_ms": 267.6,
+   "bytes_cold": 42547,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_gdp_petr_rt_zs": {
+   "cold_p50_ms": 220.1,
+   "cold_p95_ms": 446.0,
+   "warm_p50_ms": 202.1,
+   "warm_p95_ms": 205.5,
+   "bytes_cold": 47085,
+   "gets_cold": 4
+  },
+  "wave10.wb_ny_gdp_totl_rt_zs": {
+   "cold_p50_ms": 287.4,
+   "cold_p95_ms": 548.8,
+   "warm_p50_ms": 268.5,
+   "warm_p95_ms": 271.9,
+   "bytes_cold": 62674,
+   "gets_cold": 4
+  },
+  "wave10.wb_se_enr_prsc_fm_zs": {
+   "cold_p50_ms": 215.1,
+   "cold_p95_ms": 468.5,
+   "warm_p50_ms": 211.4,
+   "warm_p95_ms": 211.9,
+   "bytes_cold": 33808,
+   "gets_cold": 4
+  },
+  "wave10.wb_se_prm_cmpt_zs": {
+   "cold_p50_ms": 241.6,
+   "cold_p95_ms": 444.5,
+   "warm_p50_ms": 210.9,
+   "warm_p95_ms": 224.9,
+   "bytes_cold": 38395,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_dyn_mort": {
+   "cold_p50_ms": 273.4,
+   "cold_p95_ms": 525.9,
+   "warm_p50_ms": 279.2,
+   "warm_p95_ms": 284.4,
+   "bytes_cold": 31876,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_h2o_basw_ru_zs": {
+   "cold_p50_ms": 275.0,
+   "cold_p95_ms": 534.6,
+   "warm_p50_ms": 269.1,
+   "warm_p95_ms": 295.6,
+   "bytes_cold": 40459,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_h2o_basw_ur_zs": {
+   "cold_p50_ms": 267.4,
+   "cold_p95_ms": 597.6,
+   "warm_p50_ms": 283.2,
+   "warm_p95_ms": 284.1,
+   "bytes_cold": 40347,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_h2o_basw_zs": {
+   "cold_p50_ms": 259.5,
+   "cold_p95_ms": 572.1,
+   "warm_p50_ms": 250.9,
+   "warm_p95_ms": 254.4,
+   "bytes_cold": 47177,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_h2o_smdw_ru_zs": {
+   "cold_p50_ms": 197.8,
+   "cold_p95_ms": 660.3,
+   "warm_p50_ms": 202.8,
+   "warm_p95_ms": 211.9,
+   "bytes_cold": 27049,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_h2o_smdw_ur_zs": {
+   "cold_p50_ms": 271.3,
+   "cold_p95_ms": 579.5,
+   "warm_p50_ms": 260.6,
+   "warm_p95_ms": 272.0,
+   "bytes_cold": 29319,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_h2o_smdw_zs": {
+   "cold_p50_ms": 245.2,
+   "cold_p95_ms": 545.9,
+   "warm_p50_ms": 226.6,
+   "warm_p95_ms": 234.3,
+   "bytes_cold": 36871,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_med_cmhw_p3": {
+   "cold_p50_ms": 224.7,
+   "cold_p95_ms": 425.9,
+   "warm_p50_ms": 210.7,
+   "warm_p95_ms": 214.1,
+   "bytes_cold": 12001,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_airp_p5": {
+   "cold_p50_ms": 259.4,
+   "cold_p95_ms": 523.5,
+   "warm_p50_ms": 264.9,
+   "warm_p95_ms": 267.8,
+   "bytes_cold": 12362,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_bass_ru_zs": {
+   "cold_p50_ms": 266.9,
+   "cold_p95_ms": 538.3,
+   "warm_p50_ms": 266.1,
+   "warm_p95_ms": 276.6,
+   "bytes_cold": 41305,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_bass_ur_zs": {
+   "cold_p50_ms": 445.4,
+   "cold_p95_ms": 556.6,
+   "warm_p50_ms": 273.0,
+   "warm_p95_ms": 308.1,
+   "bytes_cold": 41200,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_bass_zs": {
+   "cold_p50_ms": 258.3,
+   "cold_p95_ms": 529.4,
+   "warm_p50_ms": 257.9,
+   "warm_p95_ms": 264.1,
+   "bytes_cold": 48061,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_hygn_ru_zs": {
+   "cold_p50_ms": 216.6,
+   "cold_p95_ms": 457.5,
+   "warm_p50_ms": 211.0,
+   "warm_p95_ms": 218.6,
+   "bytes_cold": 24951,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_hygn_ur_zs": {
+   "cold_p50_ms": 265.1,
+   "cold_p95_ms": 550.0,
+   "warm_p50_ms": 265.5,
+   "warm_p95_ms": 267.4,
+   "bytes_cold": 24966,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_hygn_zs": {
+   "cold_p50_ms": 214.6,
+   "cold_p95_ms": 492.6,
+   "warm_p50_ms": 218.3,
+   "warm_p95_ms": 257.7,
+   "bytes_cold": 24280,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_maln_zs": {
+   "cold_p50_ms": 210.0,
+   "cold_p95_ms": 433.6,
+   "warm_p50_ms": 211.3,
+   "warm_p95_ms": 226.1,
+   "bytes_cold": 15812,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_odfc_ru_zs": {
+   "cold_p50_ms": 328.6,
+   "cold_p95_ms": 524.6,
+   "warm_p50_ms": 264.4,
+   "warm_p95_ms": 281.0,
+   "bytes_cold": 37845,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_odfc_ur_zs": {
+   "cold_p50_ms": 257.9,
+   "cold_p95_ms": 555.4,
+   "warm_p50_ms": 273.9,
+   "warm_p95_ms": 274.3,
+   "bytes_cold": 37970,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_odfc_zs": {
+   "cold_p50_ms": 444.7,
+   "cold_p95_ms": 720.8,
+   "warm_p50_ms": 284.0,
+   "warm_p95_ms": 285.9,
+   "bytes_cold": 42456,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_pois_p5": {
+   "cold_p50_ms": 261.5,
+   "cold_p95_ms": 511.4,
+   "warm_p50_ms": 251.4,
+   "warm_p95_ms": 265.8,
+   "bytes_cold": 28814,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_pois_p5_fe": {
+   "cold_p50_ms": 207.7,
+   "cold_p95_ms": 418.6,
+   "warm_p50_ms": 230.1,
+   "warm_p95_ms": 237.4,
+   "bytes_cold": 28821,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_pois_p5_ma": {
+   "cold_p50_ms": 265.5,
+   "cold_p95_ms": 535.9,
+   "warm_p50_ms": 273.6,
+   "warm_p95_ms": 279.0,
+   "bytes_cold": 29368,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_smss_ru_zs": {
+   "cold_p50_ms": 218.1,
+   "cold_p95_ms": 430.1,
+   "warm_p50_ms": 215.3,
+   "warm_p95_ms": 223.4,
+   "bytes_cold": 30166,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_smss_ur_zs": {
+   "cold_p50_ms": 220.6,
+   "cold_p95_ms": 468.7,
+   "warm_p50_ms": 217.6,
+   "warm_p95_ms": 218.9,
+   "bytes_cold": 33856,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_smss_zs": {
+   "cold_p50_ms": 278.1,
+   "cold_p95_ms": 567.4,
+   "warm_p50_ms": 263.5,
+   "warm_p95_ms": 265.9,
+   "bytes_cold": 37009,
+   "gets_cold": 4
+  },
+  "wave10.wb_sh_sta_wash_p5": {
+   "cold_p50_ms": 274.4,
+   "cold_p95_ms": 635.4,
+   "warm_p50_ms": 269.2,
+   "warm_p95_ms": 271.6,
+   "bytes_cold": 11906,
+   "gets_cold": 4
+  },
+  "wave10.wb_si_pov_dday": {
+   "cold_p50_ms": 274.0,
+   "cold_p95_ms": 549.9,
+   "warm_p50_ms": 271.6,
+   "warm_p95_ms": 286.7,
+   "bytes_cold": 16820,
+   "gets_cold": 4
+  },
+  "wave10.wb_sp_pop_grow": {
+   "cold_p50_ms": 260.5,
+   "cold_p95_ms": 563.0,
+   "warm_p50_ms": 258.0,
+   "warm_p95_ms": 276.9,
+   "bytes_cold": 75917,
+   "gets_cold": 4
+  },
+  "wave10.wb_sp_pop_totl": {
+   "cold_p50_ms": 227.8,
+   "cold_p95_ms": 405.5,
+   "warm_p50_ms": 196.3,
+   "warm_p95_ms": 204.7,
+   "bytes_cold": 39111,
+   "gets_cold": 4
+  },
+  "wave10.wb_sp_urb_grow": {
+   "cold_p50_ms": 276.1,
+   "cold_p95_ms": 533.4,
+   "warm_p50_ms": 273.6,
+   "warm_p95_ms": 276.3,
+   "bytes_cold": 76582,
+   "gets_cold": 4
+  },
+  "wave10.wb_sp_urb_totl": {
+   "cold_p50_ms": 214.3,
+   "cold_p95_ms": 451.1,
+   "warm_p50_ms": 212.5,
+   "warm_p95_ms": 220.0,
+   "bytes_cold": 38413,
+   "gets_cold": 4
+  },
+  "wave10.wb_sp_urb_totl_in_zs": {
+   "cold_p50_ms": 207.1,
+   "cold_p95_ms": 444.5,
+   "warm_p50_ms": 207.4,
+   "warm_p95_ms": 212.6,
+   "bytes_cold": 66952,
+   "gets_cold": 4
+  },
+  "wave10.wb_tm_val_fuel_zs_un": {
+   "cold_p50_ms": 283.4,
+   "cold_p95_ms": 540.1,
+   "warm_p50_ms": 276.6,
+   "warm_p95_ms": 304.4,
+   "bytes_cold": 59092,
+   "gets_cold": 4
+  },
+  "wave10.wb_tm_val_ictg_zs_un": {
+   "cold_p50_ms": 298.0,
+   "cold_p95_ms": 536.9,
+   "warm_p50_ms": 273.5,
+   "warm_p95_ms": 308.5,
+   "bytes_cold": 40582,
+   "gets_cold": 4
+  },
+  "wave10.wb_tm_val_mmtl_zs_un": {
+   "cold_p50_ms": 287.9,
+   "cold_p95_ms": 573.9,
+   "warm_p50_ms": 274.9,
+   "warm_p95_ms": 290.6,
+   "bytes_cold": 59537,
+   "gets_cold": 4
+  },
+  "wave10.wb_tx_val_fuel_zs_un": {
+   "cold_p50_ms": 249.4,
+   "cold_p95_ms": 544.7,
+   "warm_p50_ms": 255.0,
+   "warm_p95_ms": 275.6,
+   "bytes_cold": 56688,
+   "gets_cold": 4
+  },
+  "wave10.wb_tx_val_ictg_zs_un": {
+   "cold_p50_ms": 219.4,
+   "cold_p95_ms": 429.5,
+   "warm_p50_ms": 219.2,
+   "warm_p95_ms": 220.4,
+   "bytes_cold": 39129,
+   "gets_cold": 4
+  },
+  "wave10.wb_tx_val_mmtl_zs_un": {
+   "cold_p50_ms": 273.4,
+   "cold_p95_ms": 520.5,
+   "warm_p50_ms": 272.7,
+   "warm_p95_ms": 274.8,
+   "bytes_cold": 59132,
+   "gets_cold": 4
+  },
+  "wave9.at_zaehlsprengel": {
+   "cold_p50_ms": 478.7,
+   "cold_p95_ms": 10018.6,
+   "warm_p50_ms": 387.7,
+   "warm_p95_ms": 8902.3,
+   "bytes_cold": 121884638,
+   "gets_cold": 41
+  },
+  "wave9.be_elia_balancing": {
+   "cold_p50_ms": 490.4,
+   "cold_p95_ms": 490.4,
+   "warm_p50_ms": 206.9,
+   "warm_p95_ms": 206.9,
+   "bytes_cold": 35253,
+   "gets_cold": 2
+  },
+  "wave9.be_fluvius_consumption": {
+   "cold_p50_ms": 537.7,
+   "cold_p95_ms": 2698.5,
+   "warm_p50_ms": 272.7,
+   "warm_p95_ms": 306.8,
+   "bytes_cold": 5906067,
+   "gets_cold": 7
+  },
+  "wave9.cz_ceps_balancing": {
+   "cold_p50_ms": 553.6,
+   "cold_p95_ms": 553.6,
+   "warm_p50_ms": 270.7,
+   "warm_p95_ms": 270.7,
+   "bytes_cold": 1036694,
+   "gets_cold": 2
+  },
+  "wave9.cz_csu_sldb_heating_energy": {
+   "cold_p50_ms": 295.9,
+   "cold_p95_ms": 589.1,
+   "warm_p50_ms": 280.1,
+   "warm_p95_ms": 298.6,
+   "bytes_cold": 440073,
+   "gets_cold": 3
+  },
+  "wave9.cz_csu_sldb_heating_mode": {
+   "cold_p50_ms": 261.8,
+   "cold_p95_ms": 493.0,
+   "warm_p50_ms": 254.3,
+   "warm_p95_ms": 297.6,
+   "bytes_cold": 265777,
+   "gets_cold": 3
+  },
+  "wave9.cz_zsj": {
+   "cold_p50_ms": 456.1,
+   "cold_p95_ms": 14979.0,
+   "warm_p50_ms": 461.9,
+   "warm_p95_ms": 10485.6,
+   "bytes_cold": 75710834,
+   "gets_cold": 43
+  },
+  "wave9.de_bfee_abwaerme": {
+   "cold_p50_ms": 538.1,
+   "cold_p95_ms": 1078.7,
+   "warm_p50_ms": 273.4,
+   "warm_p95_ms": 299.5,
+   "bytes_cold": 2357200,
+   "gets_cold": 6
+  },
+  "wave9.de_emodnet_telecom_bsh": {
+   "cold_p50_ms": 375.5,
+   "cold_p95_ms": 448.9,
+   "warm_p50_ms": 255.0,
+   "warm_p95_ms": 382.6,
+   "bytes_cold": 129351,
+   "gets_cold": 8
+  },
+  "wave9.de_kba_districts": {
+   "cold_p50_ms": 481.3,
+   "cold_p95_ms": 481.3,
+   "warm_p50_ms": 209.2,
+   "warm_p95_ms": 209.2,
+   "bytes_cold": 44457,
+   "gets_cold": 2
+  },
+  "wave9.de_regelleistung": {
+   "cold_p50_ms": 580.1,
+   "cold_p95_ms": 2051.4,
+   "warm_p50_ms": 310.3,
+   "warm_p95_ms": 355.6,
+   "bytes_cold": 2476256,
+   "gets_cold": 6
+  },
+  "wave9.de_zensus_heating": {
+   "cold_p50_ms": 582.3,
+   "cold_p95_ms": 2541.8,
+   "warm_p50_ms": 401.4,
+   "warm_p95_ms": 845.6,
+   "bytes_cold": 8091959,
+   "gets_cold": 6
+  },
+  "wave9.dk_energinet_countertrade": {
+   "cold_p50_ms": 389.6,
+   "cold_p95_ms": 570.6,
+   "warm_p50_ms": 280.1,
+   "warm_p95_ms": 282.7,
+   "bytes_cold": 22078,
+   "gets_cold": 3
+  },
+  "wave9.dk_energinet_reserves": {
+   "cold_p50_ms": 592.6,
+   "cold_p95_ms": 2888.9,
+   "warm_p50_ms": 254.3,
+   "warm_p95_ms": 282.1,
+   "bytes_cold": 3130532,
+   "gets_cold": 6
+  },
+  "wave9.ee_grid": {
+   "cold_p50_ms": 386.1,
+   "cold_p95_ms": 1617.4,
+   "warm_p50_ms": 239.0,
+   "warm_p95_ms": 394.9,
+   "bytes_cold": 2267442,
+   "gets_cold": 12
+  },
+  "wave9.ee_stat_heating_2011": {
+   "cold_p50_ms": 273.0,
+   "cold_p95_ms": 529.8,
+   "warm_p50_ms": 265.8,
+   "warm_p95_ms": 282.8,
+   "bytes_cold": 64868,
+   "gets_cold": 4
+  },
+  "wave9.es_emodnet_telecom_cica": {
+   "cold_p50_ms": 370.0,
+   "cold_p95_ms": 436.3,
+   "warm_p50_ms": 226.2,
+   "warm_p95_ms": 377.8,
+   "bytes_cold": 13223,
+   "gets_cold": 7
+  },
+  "wave9.es_ine_secciones": {
+   "cold_p50_ms": 371.0,
+   "cold_p95_ms": 5692.4,
+   "warm_p50_ms": 338.1,
+   "warm_p95_ms": 612.7,
+   "bytes_cold": 66689187,
+   "gets_cold": 38
+  },
+  "wave9.eu_air_passengers": {
+   "cold_p50_ms": 292.4,
+   "cold_p95_ms": 570.5,
+   "warm_p50_ms": 275.5,
+   "warm_p95_ms": 287.6,
+   "bytes_cold": 57466,
+   "gets_cold": 5
+  },
+  "wave9.eu_broadband_nuts2": {
+   "cold_p50_ms": 269.8,
+   "cold_p95_ms": 536.5,
+   "warm_p50_ms": 270.4,
+   "warm_p95_ms": 314.1,
+   "bytes_cold": 27952,
+   "gets_cold": 5
+  },
+  "wave9.eu_cleanh2_electrolyser_mfg": {
+   "cold_p50_ms": 530.5,
+   "cold_p95_ms": 530.5,
+   "warm_p50_ms": 279.2,
+   "warm_p95_ms": 279.2,
+   "bytes_cold": 1839,
+   "gets_cold": 2
+  },
+  "wave9.eu_degree_days": {
+   "cold_p50_ms": 259.7,
+   "cold_p95_ms": 570.5,
+   "warm_p50_ms": 264.7,
+   "warm_p95_ms": 265.7,
+   "bytes_cold": 208072,
+   "gets_cold": 5
+  },
+  "wave9.eu_eea_aq_stats": {
+   "cold_p50_ms": 215.2,
+   "cold_p95_ms": 445.2,
+   "warm_p50_ms": 211.9,
+   "warm_p95_ms": 214.3,
+   "bytes_cold": 386844,
+   "gets_cold": 3
+  },
+  "wave9.eu_eea_wei": {
+   "cold_p50_ms": 534.9,
+   "cold_p95_ms": 534.9,
+   "warm_p50_ms": 265.1,
+   "warm_p95_ms": 265.1,
+   "bytes_cold": 397590,
+   "gets_cold": 2
+  },
+  "wave9.eu_egdi_minerals": {
+   "cold_p50_ms": 216.2,
+   "cold_p95_ms": 533.5,
+   "warm_p50_ms": 215.0,
+   "warm_p95_ms": 219.3,
+   "bytes_cold": 1698689,
+   "gets_cold": 3
+  },
+  "wave9.eu_emodnet_aggregates": {
+   "cold_p50_ms": 325.2,
+   "cold_p95_ms": 411.3,
+   "warm_p50_ms": 208.8,
+   "warm_p95_ms": 348.8,
+   "bytes_cold": 767536,
+   "gets_cold": 8
+  },
+  "wave9.eu_emodnet_desalination": {
+   "cold_p50_ms": 278.4,
+   "cold_p95_ms": 550.8,
+   "warm_p50_ms": 290.2,
+   "warm_p95_ms": 291.4,
+   "bytes_cold": 306535,
+   "gets_cold": 3
+  },
+  "wave9.eu_emodnet_hydrocarbon_licences": {
+   "cold_p50_ms": 389.4,
+   "cold_p95_ms": 545.5,
+   "warm_p50_ms": 274.8,
+   "warm_p95_ms": 404.1,
+   "bytes_cold": 1378155,
+   "gets_cold": 8
+  },
+  "wave9.eu_emodnet_military": {
+   "cold_p50_ms": 427.1,
+   "cold_p95_ms": 569.0,
+   "warm_p50_ms": 415.6,
+   "warm_p95_ms": 631.9,
+   "bytes_cold": 2330344,
+   "gets_cold": 9
+  },
+  "wave9.eu_emodnet_mpa": {
+   "cold_p50_ms": 1000.9,
+   "cold_p95_ms": 9889.6,
+   "warm_p50_ms": 960.4,
+   "warm_p95_ms": 3562.3,
+   "bytes_cold": 348401614,
+   "gets_cold": 97
+  },
+  "wave9.eu_emodnet_msp_zoning": {
+   "cold_p50_ms": 652.3,
+   "cold_p95_ms": 4765.8,
+   "warm_p50_ms": 405.0,
+   "warm_p95_ms": 657.8,
+   "bytes_cold": 71621045,
+   "gets_cold": 41
+  },
+  "wave9.eu_emodnet_nuclear": {
+   "cold_p50_ms": 433.9,
+   "cold_p95_ms": 546.2,
+   "warm_p50_ms": 437.1,
+   "warm_p95_ms": 442.1,
+   "bytes_cold": 20680,
+   "gets_cold": 6
+  },
+  "wave9.eu_emodnet_ocean_energy": {
+   "cold_p50_ms": 367.7,
+   "cold_p95_ms": 425.8,
+   "warm_p50_ms": 219.0,
+   "warm_p95_ms": 374.8,
+   "bytes_cold": 60923,
+   "gets_cold": 8
+  },
+  "wave9.eu_emodnet_pipelines": {
+   "cold_p50_ms": 372.4,
+   "cold_p95_ms": 1922.7,
+   "warm_p50_ms": 340.7,
+   "warm_p95_ms": 529.8,
+   "bytes_cold": 25428177,
+   "gets_cold": 18
+  },
+  "wave9.eu_emodnet_platforms": {
+   "cold_p50_ms": 430.4,
+   "cold_p95_ms": 581.3,
+   "warm_p50_ms": 326.5,
+   "warm_p95_ms": 534.8,
+   "bytes_cold": 138644,
+   "gets_cold": 8
+  },
+  "wave9.eu_emodnet_port_goods": {
+   "cold_p50_ms": 414.1,
+   "cold_p95_ms": 694.1,
+   "warm_p50_ms": 280.6,
+   "warm_p95_ms": 692.3,
+   "bytes_cold": 550887,
+   "gets_cold": 7
+  },
+  "wave9.eu_emodnet_ports": {
+   "cold_p50_ms": 415.2,
+   "cold_p95_ms": 543.7,
+   "warm_p50_ms": 288.4,
+   "warm_p95_ms": 432.1,
+   "bytes_cold": 75567,
+   "gets_cold": 8
+  },
+  "wave9.eu_emodnet_substrate": {
+   "cold_p50_ms": 722.0,
+   "cold_p95_ms": 4133.2,
+   "warm_p50_ms": 723.1,
+   "warm_p95_ms": 1077.2,
+   "bytes_cold": 97199678,
+   "gets_cold": 41
+  },
+  "wave9.eu_emodnet_wind_farms": {
+   "cold_p50_ms": 385.0,
+   "cold_p95_ms": 575.9,
+   "warm_p50_ms": 224.2,
+   "warm_p95_ms": 399.4,
+   "bytes_cold": 910691,
+   "gets_cold": 8
+  },
+  "wave9.eu_emodnet_wwtp": {
+   "cold_p50_ms": 425.1,
+   "cold_p95_ms": 585.5,
+   "warm_p50_ms": 293.5,
+   "warm_p95_ms": 460.6,
+   "bytes_cold": 1779101,
+   "gets_cold": 8
+  },
+  "wave9.eu_energy_productivity": {
+   "cold_p50_ms": 228.4,
+   "cold_p95_ms": 437.1,
+   "warm_p50_ms": 215.3,
+   "warm_p95_ms": 220.0,
+   "bytes_cold": 8209,
+   "gets_cold": 5
+  },
+  "wave9.eu_entsoe_balancing": {
+   "cold_p50_ms": 431.2,
+   "cold_p95_ms": 431.2,
+   "warm_p50_ms": 211.2,
+   "warm_p95_ms": 211.2,
+   "bytes_cold": 65702,
+   "gets_cold": 2
+  },
+  "wave9.eu_eshm20": {
+   "cold_p50_ms": 447.9,
+   "cold_p95_ms": 1545.0,
+   "warm_p50_ms": 440.0,
+   "warm_p95_ms": 1556.5,
+   "bytes_cold": 1212597,
+   "gets_cold": 6
+  },
+  "wave9.eu_ev_stock_nuts2": {
+   "cold_p50_ms": 268.0,
+   "cold_p95_ms": 550.3,
+   "warm_p50_ms": 273.0,
+   "warm_p95_ms": 276.8,
+   "bytes_cold": 56780,
+   "gets_cold": 5
+  },
+  "wave9.eu_heat_production": {
+   "cold_p50_ms": 422.1,
+   "cold_p95_ms": 676.2,
+   "warm_p50_ms": 296.0,
+   "warm_p95_ms": 375.1,
+   "bytes_cold": 829719,
+   "gets_cold": 5
+  },
+  "wave9.eu_heat_pumps": {
+   "cold_p50_ms": 267.5,
+   "cold_p95_ms": 559.7,
+   "warm_p50_ms": 261.4,
+   "warm_p95_ms": 274.6,
+   "bytes_cold": 30638,
+   "gets_cold": 5
+  },
+  "wave9.eu_household_income": {
+   "cold_p50_ms": 253.8,
+   "cold_p95_ms": 416.7,
+   "warm_p50_ms": 215.2,
+   "warm_p95_ms": 233.9,
+   "bytes_cold": 259707,
+   "gets_cold": 5
+  },
+  "wave9.eu_internet_households": {
+   "cold_p50_ms": 280.5,
+   "cold_p95_ms": 524.5,
+   "warm_p50_ms": 269.4,
+   "warm_p95_ms": 277.0,
+   "bytes_cold": 33610,
+   "gets_cold": 5
+  },
+  "wave9.eu_jrc_coastal_flood": {
+   "cold_p50_ms": 387.6,
+   "cold_p95_ms": 487.2,
+   "warm_p50_ms": 372.9,
+   "warm_p95_ms": 390.3,
+   "bytes_cold": 1466221,
+   "gets_cold": 6
+  },
+  "wave9.eu_kohesio_2014_2020": {
+   "cold_p50_ms": 982.4,
+   "cold_p95_ms": 22112.8,
+   "warm_p50_ms": 213.2,
+   "warm_p95_ms": 628.7,
+   "bytes_cold": 394436139,
+   "gets_cold": 200
+  },
+  "wave9.eu_land_prices": {
+   "cold_p50_ms": 297.8,
+   "cold_p95_ms": 581.8,
+   "warm_p50_ms": 277.5,
+   "warm_p95_ms": 329.9,
+   "bytes_cold": 40336,
+   "gets_cold": 5
+  },
+  "wave9.eu_network_costs": {
+   "cold_p50_ms": 285.4,
+   "cold_p95_ms": 595.7,
+   "warm_p50_ms": 278.4,
+   "warm_p95_ms": 286.5,
+   "bytes_cold": 119648,
+   "gets_cold": 5
+  },
+  "wave9.eu_new_cars_fuel": {
+   "cold_p50_ms": 310.1,
+   "cold_p95_ms": 545.0,
+   "warm_p50_ms": 270.1,
+   "warm_p95_ms": 282.6,
+   "bytes_cold": 23769,
+   "gets_cold": 5
+  },
+  "wave9.eu_nonhousehold_prices": {
+   "cold_p50_ms": 266.8,
+   "cold_p95_ms": 485.9,
+   "warm_p50_ms": 255.6,
+   "warm_p95_ms": 286.8,
+   "bytes_cold": 17916,
+   "gets_cold": 5
+  },
+  "wave9.eu_nuclear_capacity": {
+   "cold_p50_ms": 262.6,
+   "cold_p95_ms": 456.1,
+   "warm_p50_ms": 218.7,
+   "warm_p95_ms": 232.6,
+   "bytes_cold": 8673,
+   "gets_cold": 5
+  },
+  "wave9.eu_rail_electrified": {
+   "cold_p50_ms": 278.2,
+   "cold_p95_ms": 518.5,
+   "warm_p50_ms": 260.8,
+   "warm_p95_ms": 271.2,
+   "bytes_cold": 9604,
+   "gets_cold": 5
+  },
+  "wave9.eu_renewable_capacity": {
+   "cold_p50_ms": 232.2,
+   "cold_p95_ms": 424.1,
+   "warm_p50_ms": 209.8,
+   "warm_p95_ms": 216.4,
+   "bytes_cold": 42498,
+   "gets_cold": 5
+  },
+  "wave9.eu_salt_caverns": {
+   "cold_p50_ms": 341.8,
+   "cold_p95_ms": 465.6,
+   "warm_p50_ms": 343.3,
+   "warm_p95_ms": 346.4,
+   "bytes_cold": 146206,
+   "gets_cold": 6
+  },
+  "wave9.eu_tent_network": {
+   "cold_p50_ms": 573.6,
+   "cold_p95_ms": 2577.4,
+   "warm_p50_ms": 447.8,
+   "warm_p95_ms": 1094.2,
+   "bytes_cold": 20779861,
+   "gets_cold": 17
+  },
+  "wave9.eu_wastewater_connected": {
+   "cold_p50_ms": 283.2,
+   "cold_p95_ms": 529.1,
+   "warm_p50_ms": 274.1,
+   "warm_p95_ms": 277.7,
+   "bytes_cold": 30087,
+   "gets_cold": 5
+  },
+  "wave9.eu_water_abstraction": {
+   "cold_p50_ms": 277.0,
+   "cold_p95_ms": 571.2,
+   "warm_p50_ms": 292.0,
+   "warm_p95_ms": 312.9,
+   "bytes_cold": 81668,
+   "gets_cold": 5
+  },
+  "wave9.eu_water_use": {
+   "cold_p50_ms": 285.0,
+   "cold_p95_ms": 523.2,
+   "warm_p50_ms": 256.1,
+   "warm_p95_ms": 266.3,
+   "bytes_cold": 23461,
+   "gets_cold": 5
+  },
+  "wave9.eur_overture_comm_lines": {
+   "cold_p50_ms": 454.7,
+   "cold_p95_ms": 14721.7,
+   "warm_p50_ms": 386.9,
+   "warm_p95_ms": 8407.5,
+   "bytes_cold": 3575149,
+   "gets_cold": 8
+  },
+  "wave9.fi_paavo": {
+   "cold_p50_ms": 506.8,
+   "cold_p95_ms": 2368.9,
+   "warm_p50_ms": 439.5,
+   "warm_p95_ms": 989.0,
+   "bytes_cold": 25556685,
+   "gets_cold": 16
+  },
+  "wave9.fi_statfin_heating_fuel_municipality": {
+   "cold_p50_ms": 430.3,
+   "cold_p95_ms": 914.9,
+   "warm_p50_ms": 227.0,
+   "warm_p95_ms": 910.3,
+   "bytes_cold": 990160,
+   "gets_cold": 4
+  },
+  "wave9.fr_ademe_dpe": {
+   "cold_p50_ms": 210.7,
+   "cold_p95_ms": 437.5,
+   "warm_p50_ms": 212.4,
+   "warm_p95_ms": 213.1,
+   "bytes_cold": 4389,
+   "gets_cold": 3
+  },
+  "wave9.fr_emodnet_telecom_shom": {
+   "cold_p50_ms": 414.1,
+   "cold_p95_ms": 568.4,
+   "warm_p50_ms": 278.4,
+   "warm_p95_ms": 435.8,
+   "bytes_cold": 413891,
+   "gets_cold": 8
+  },
+  "wave9.fr_emodnet_telecom_sigcables": {
+   "cold_p50_ms": 391.7,
+   "cold_p95_ms": 521.7,
+   "warm_p50_ms": 280.3,
+   "warm_p95_ms": 446.1,
+   "bytes_cold": 56615,
+   "gets_cold": 8
+  },
+  "wave9.fr_enedis_interruptions": {
+   "cold_p50_ms": 278.8,
+   "cold_p95_ms": 578.2,
+   "warm_p50_ms": 270.9,
+   "warm_p95_ms": 280.4,
+   "bytes_cold": 16030,
+   "gets_cold": 3
+  },
+  "wave9.fr_georisques_ssp": {
+   "cold_p50_ms": 746.8,
+   "cold_p95_ms": 2534.7,
+   "warm_p50_ms": 564.9,
+   "warm_p95_ms": 833.8,
+   "bytes_cold": 35074273,
+   "gets_cold": 18
+  },
+  "wave9.fr_odre_balancing_volumes": {
+   "cold_p50_ms": 221.6,
+   "cold_p95_ms": 470.3,
+   "warm_p50_ms": 209.8,
+   "warm_p95_ms": 241.9,
+   "bytes_cold": 5699,
+   "gets_cold": 3
+  },
+  "wave9.fr_ore_ev_commune": {
+   "cold_p50_ms": 573.6,
+   "cold_p95_ms": 2313.4,
+   "warm_p50_ms": 280.4,
+   "warm_p95_ms": 292.1,
+   "bytes_cold": 2220105,
+   "gets_cold": 6
+  },
+  "wave9.fr_ore_solar_commune": {
+   "cold_p50_ms": 506.1,
+   "cold_p95_ms": 506.1,
+   "warm_p50_ms": 207.2,
+   "warm_p95_ms": 207.2,
+   "bytes_cold": 19576,
+   "gets_cold": 2
+  },
+  "wave9.gb_brownfield_register": {
+   "cold_p50_ms": 468.2,
+   "cold_p95_ms": 1503.4,
+   "warm_p50_ms": 341.7,
+   "warm_p95_ms": 489.2,
+   "bytes_cold": 4168656,
+   "gets_cold": 12
+  },
+  "wave9.gb_bus_heat_pumps_la": {
+   "cold_p50_ms": 517.2,
+   "cold_p95_ms": 517.2,
+   "warm_p50_ms": 258.5,
+   "warm_p95_ms": 258.5,
+   "bytes_cold": 2490,
+   "gets_cold": 2
+  },
+  "wave9.gb_dec_certificates": {
+   "cold_p50_ms": 589.7,
+   "cold_p95_ms": 589.7,
+   "warm_p50_ms": 267.6,
+   "warm_p95_ms": 267.6,
+   "bytes_cold": 5186,
+   "gets_cold": 2
+  },
+  "wave9.gb_defra_aurn": {
+   "cold_p50_ms": 429.8,
+   "cold_p95_ms": 538.3,
+   "warm_p50_ms": 430.2,
+   "warm_p95_ms": 436.0,
+   "bytes_cold": 53938,
+   "gets_cold": 5
+  },
+  "wave9.gb_desnz_subregional_fit": {
+   "cold_p50_ms": 519.7,
+   "cold_p95_ms": 519.7,
+   "warm_p50_ms": 254.9,
+   "warm_p95_ms": 254.9,
+   "bytes_cold": 83866,
+   "gets_cold": 2
+  },
+  "wave9.gb_dft_veh0142": {
+   "cold_p50_ms": 453.1,
+   "cold_p95_ms": 453.1,
+   "warm_p50_ms": 211.8,
+   "warm_p95_ms": 211.8,
+   "bytes_cold": 17289,
+   "gets_cold": 2
+  },
+  "wave9.gb_ea_flood_zones": {
+   "cold_p50_ms": 2902.0,
+   "cold_p95_ms": 9455.7,
+   "warm_p50_ms": 465.7,
+   "warm_p95_ms": 792.1,
+   "bytes_cold": 146136886,
+   "gets_cold": 97
+  },
+  "wave9.gb_elexon_balancing": {
+   "cold_p50_ms": 439.7,
+   "cold_p95_ms": 439.7,
+   "warm_p50_ms": 212.2,
+   "warm_p95_ms": 212.2,
+   "bytes_cold": 8136,
+   "gets_cold": 2
+  },
+  "wave9.gb_emr_cm_register": {
+   "cold_p50_ms": 272.6,
+   "cold_p95_ms": 441.1,
+   "warm_p50_ms": 216.7,
+   "warm_p95_ms": 217.3,
+   "bytes_cold": 638004,
+   "gets_cold": 5
+  },
+  "wave9.gb_epc_stats": {
+   "cold_p50_ms": 527.2,
+   "cold_p95_ms": 527.2,
+   "warm_p50_ms": 261.3,
+   "warm_p95_ms": 261.3,
+   "bytes_cold": 5566,
+   "gets_cold": 2
+  },
+  "wave9.gb_he_listed": {
+   "cold_p50_ms": 523.9,
+   "cold_p95_ms": 3787.7,
+   "warm_p50_ms": 402.5,
+   "warm_p95_ms": 2226.4,
+   "bytes_cold": 29843825,
+   "gets_cold": 21
+  },
+  "wave9.gb_hnpd": {
+   "cold_p50_ms": 426.3,
+   "cold_p95_ms": 554.6,
+   "warm_p50_ms": 417.3,
+   "warm_p95_ms": 446.7,
+   "bytes_cold": 197551,
+   "gets_cold": 6
+  },
+  "wave9.gb_ne_alc": {
+   "cold_p50_ms": 459.0,
+   "cold_p95_ms": 2756.1,
+   "warm_p50_ms": 432.0,
+   "warm_p95_ms": 772.6,
+   "bytes_cold": 53513463,
+   "gets_cold": 24
+  },
+  "wave9.gb_neso_constraint_costs": {
+   "cold_p50_ms": 227.3,
+   "cold_p95_ms": 429.6,
+   "warm_p50_ms": 209.3,
+   "warm_p95_ms": 217.8,
+   "bytes_cold": 6282,
+   "gets_cold": 3
+  },
+  "wave9.gb_neso_etys": {
+   "cold_p50_ms": 422.5,
+   "cold_p95_ms": 604.5,
+   "warm_p50_ms": 278.6,
+   "warm_p95_ms": 448.7,
+   "bytes_cold": 90636,
+   "gets_cold": 7
+  },
+  "wave9.gb_neso_tnuos": {
+   "cold_p50_ms": 267.4,
+   "cold_p95_ms": 456.9,
+   "warm_p50_ms": 207.3,
+   "warm_p95_ms": 218.4,
+   "bytes_cold": 7559,
+   "gets_cold": 3
+  },
+  "wave9.gb_nged_opendata": {
+   "cold_p50_ms": 355.4,
+   "cold_p95_ms": 461.1,
+   "warm_p50_ms": 338.4,
+   "warm_p95_ms": 362.8,
+   "bytes_cold": 832550,
+   "gets_cold": 6
+  },
+  "wave9.gb_npg_curtailment_events": {
+   "cold_p50_ms": 522.4,
+   "cold_p95_ms": 522.4,
+   "warm_p50_ms": 263.6,
+   "warm_p95_ms": 263.6,
+   "bytes_cold": 1312,
+   "gets_cold": 2
+  },
+  "wave9.gb_npg_heatmap_substations": {
+   "cold_p50_ms": 391.7,
+   "cold_p95_ms": 543.5,
+   "warm_p50_ms": 392.2,
+   "warm_p95_ms": 401.3,
+   "bytes_cold": 100409,
+   "gets_cold": 6
+  },
+  "wave9.gb_npg_opendata": {
+   "cold_p50_ms": 279.8,
+   "cold_p95_ms": 573.9,
+   "warm_p50_ms": 271.4,
+   "warm_p95_ms": 282.2,
+   "bytes_cold": 7828,
+   "gets_cold": 4
+  },
+  "wave9.gb_ons_income_msoa": {
+   "cold_p50_ms": 262.9,
+   "cold_p95_ms": 527.0,
+   "warm_p50_ms": 257.6,
+   "warm_p95_ms": 263.3,
+   "bytes_cold": 99250,
+   "gets_cold": 3
+  },
+  "wave9.gb_pins_dco": {
+   "cold_p50_ms": 380.3,
+   "cold_p95_ms": 516.7,
+   "warm_p50_ms": 384.0,
+   "warm_p95_ms": 393.9,
+   "bytes_cold": 85168,
+   "gets_cold": 6
+  },
+  "wave9.gb_srn": {
+   "cold_p50_ms": 527.9,
+   "cold_p95_ms": 2235.0,
+   "warm_p50_ms": 423.0,
+   "warm_p95_ms": 950.7,
+   "bytes_cold": 15866634,
+   "gets_cold": 15
+  },
+  "wave9.gb_ssen_opendata": {
+   "cold_p50_ms": 220.8,
+   "cold_p95_ms": 456.8,
+   "warm_p50_ms": 216.0,
+   "warm_p95_ms": 223.0,
+   "bytes_cold": 185070,
+   "gets_cold": 4
+  },
+  "wave9.gb_ulev_la": {
+   "cold_p50_ms": 470.2,
+   "cold_p95_ms": 470.2,
+   "warm_p50_ms": 229.9,
+   "warm_p95_ms": 229.9,
+   "bytes_cold": 45280,
+   "gets_cold": 2
+  },
+  "wave9.gr_admie_balancing": {
+   "cold_p50_ms": 569.7,
+   "cold_p95_ms": 2185.6,
+   "warm_p50_ms": 257.5,
+   "warm_p95_ms": 280.2,
+   "bytes_cold": 9373417,
+   "gets_cold": 9
+  },
+  "wave9.gr_elstat_heating_energy_regional_unit": {
+   "cold_p50_ms": 282.7,
+   "cold_p95_ms": 588.9,
+   "warm_p50_ms": 280.3,
+   "warm_p95_ms": 284.2,
+   "bytes_cold": 14185,
+   "gets_cold": 5
+  },
+  "wave9.gr_elstat_heating_settlement": {
+   "cold_p50_ms": 303.7,
+   "cold_p95_ms": 556.8,
+   "warm_p50_ms": 282.7,
+   "warm_p95_ms": 283.8,
+   "bytes_cold": 982363,
+   "gets_cold": 4
+  },
+  "wave9.ie_cso_datacentres": {
+   "cold_p50_ms": 254.1,
+   "cold_p95_ms": 518.1,
+   "warm_p50_ms": 251.9,
+   "warm_p95_ms": 256.6,
+   "bytes_cold": 4236,
+   "gets_cold": 4
+  },
+  "wave9.ie_cso_dc_consumption": {
+   "cold_p50_ms": 212.3,
+   "cold_p95_ms": 455.2,
+   "warm_p50_ms": 209.6,
+   "warm_p95_ms": 213.0,
+   "bytes_cold": 9061,
+   "gets_cold": 4
+  },
+  "wave9.ie_cso_saps_heating": {
+   "cold_p50_ms": 870.6,
+   "cold_p95_ms": 2278.5,
+   "warm_p50_ms": 279.3,
+   "warm_p95_ms": 362.8,
+   "bytes_cold": 10455764,
+   "gets_cold": 10
+  },
+  "wave9.ie_eirgrid_dispatch_down": {
+   "cold_p50_ms": 216.1,
+   "cold_p95_ms": 475.4,
+   "warm_p50_ms": 207.6,
+   "warm_p95_ms": 208.9,
+   "bytes_cold": 118703,
+   "gets_cold": 3
+  },
+  "wave9.ie_seai_ber": {
+   "cold_p50_ms": 1255.9,
+   "cold_p95_ms": 1541.4,
+   "warm_p50_ms": 236.8,
+   "warm_p95_ms": 808.5,
+   "bytes_cold": 5312501,
+   "gets_cold": 12
+  },
+  "wave9.ie_semo_imbalance": {
+   "cold_p50_ms": 536.5,
+   "cold_p95_ms": 536.5,
+   "warm_p50_ms": 267.7,
+   "warm_p95_ms": 267.7,
+   "bytes_cold": 11228,
+   "gets_cold": 2
+  },
+  "wave9.it_istat_sezioni": {
+   "cold_p50_ms": 422.0,
+   "cold_p95_ms": 8465.8,
+   "warm_p50_ms": 416.2,
+   "warm_p95_ms": 3135.9,
+   "bytes_cold": 243597948,
+   "gets_cold": 108
+  },
+  "wave9.lv_csp_central_heating": {
+   "cold_p50_ms": 551.8,
+   "cold_p95_ms": 873.6,
+   "warm_p50_ms": 291.9,
+   "warm_p95_ms": 836.0,
+   "bytes_cold": 507673,
+   "gets_cold": 4
+  },
+  "wave9.mt_emodnet_telecom": {
+   "cold_p50_ms": 414.3,
+   "cold_p95_ms": 530.0,
+   "warm_p50_ms": 254.3,
+   "warm_p95_ms": 426.3,
+   "bytes_cold": 7655,
+   "gets_cold": 7
+  },
+  "wave9.nl_cbs_datacentres": {
+   "cold_p50_ms": 461.8,
+   "cold_p95_ms": 461.8,
+   "warm_p50_ms": 209.9,
+   "warm_p95_ms": 209.9,
+   "bytes_cold": 2986,
+   "gets_cold": 2
+  },
+  "wave9.nl_cbs_solar": {
+   "cold_p50_ms": 274.6,
+   "cold_p95_ms": 509.1,
+   "warm_p50_ms": 268.8,
+   "warm_p95_ms": 277.4,
+   "bytes_cold": 141105,
+   "gets_cold": 4
+  },
+  "wave9.nl_rdw_vehicles": {
+   "cold_p50_ms": 418.9,
+   "cold_p95_ms": 418.9,
+   "warm_p50_ms": 209.8,
+   "warm_p95_ms": 209.8,
+   "bytes_cold": 1276,
+   "gets_cold": 2
+  },
+  "wave9.pl_pse_balancing": {
+   "cold_p50_ms": 455.6,
+   "cold_p95_ms": 1589.3,
+   "warm_p50_ms": 211.3,
+   "warm_p95_ms": 213.6,
+   "bytes_cold": 2597932,
+   "gets_cold": 6
+  },
+  "wave9.pt_ine_heating_freguesia": {
+   "cold_p50_ms": 254.6,
+   "cold_p95_ms": 552.9,
+   "warm_p50_ms": 273.2,
+   "warm_p95_ms": 284.3,
+   "bytes_cold": 171525,
+   "gets_cold": 3
+  },
+  "wave9.ro_transelectrica_zone_capacity": {
+   "cold_p50_ms": 272.8,
+   "cold_p95_ms": 567.8,
+   "warm_p50_ms": 270.5,
+   "warm_p95_ms": 289.2,
+   "bytes_cold": 3106,
+   "gets_cold": 3
+  },
+  "wave9.rs_ems_connection_queue": {
+   "cold_p50_ms": 288.3,
+   "cold_p95_ms": 545.0,
+   "warm_p50_ms": 271.3,
+   "warm_p95_ms": 288.5,
+   "bytes_cold": 10139,
+   "gets_cold": 4
+  },
+  "wave9.se_svk_reserves": {
+   "cold_p50_ms": 553.7,
+   "cold_p95_ms": 1778.8,
+   "warm_p50_ms": 255.4,
+   "warm_p95_ms": 325.1,
+   "bytes_cold": 12575015,
+   "gets_cold": 9
+  },
+  "wave9.si_surs_electricity_municipality": {
+   "cold_p50_ms": 221.7,
+   "cold_p95_ms": 436.5,
+   "warm_p50_ms": 213.7,
+   "warm_p95_ms": 226.8,
+   "bytes_cold": 27058,
+   "gets_cold": 4
+  },
+  "wave9.si_surs_heating_settlement": {
+   "cold_p50_ms": 565.4,
+   "cold_p95_ms": 1185.5,
+   "warm_p50_ms": 490.5,
+   "warm_p95_ms": 836.7,
+   "bytes_cold": 665998,
+   "gets_cold": 4
+  },
+  "wave9.sk_susr_energy_consumption_okres": {
+   "cold_p50_ms": 212.4,
+   "cold_p95_ms": 429.5,
+   "warm_p50_ms": 206.9,
+   "warm_p95_ms": 208.2,
+   "bytes_cold": 42779,
+   "gets_cold": 3
+  },
+  "wave9.us_afdc_registrations": {
+   "cold_p50_ms": 429.2,
+   "cold_p95_ms": 429.2,
+   "warm_p50_ms": 212.7,
+   "warm_p95_ms": 212.7,
+   "bytes_cold": 1769,
+   "gets_cold": 2
+  },
+  "wave9.us_blm_solar_dla": {
+   "cold_p50_ms": 431.9,
+   "cold_p95_ms": 543.4,
+   "warm_p50_ms": 277.3,
+   "warm_p95_ms": 444.3,
+   "bytes_cold": 223227,
+   "gets_cold": 7
+  },
+  "wave9.us_boem_active_leases": {
+   "cold_p50_ms": 570.7,
+   "cold_p95_ms": 1715.2,
+   "warm_p50_ms": 401.2,
+   "warm_p95_ms": 747.4,
+   "bytes_cold": 5156388,
+   "gets_cold": 11
+  },
+  "wave9.us_boem_wind_leases": {
+   "cold_p50_ms": 478.6,
+   "cold_p95_ms": 1385.8,
+   "warm_p50_ms": 420.3,
+   "warm_p95_ms": 448.9,
+   "bytes_cold": 2268929,
+   "gets_cold": 8
+  },
+  "wave9.us_cpc_degree_days": {
+   "cold_p50_ms": 276.6,
+   "cold_p95_ms": 663.3,
+   "warm_p50_ms": 264.2,
+   "warm_p95_ms": 277.4,
+   "bytes_cold": 81215,
+   "gets_cold": 3
+  },
+  "wave9.us_drought_monitor": {
+   "cold_p50_ms": 388.5,
+   "cold_p95_ms": 1125.6,
+   "warm_p50_ms": 384.3,
+   "warm_p95_ms": 397.0,
+   "bytes_cold": 2296976,
+   "gets_cold": 8
+  },
+  "wave9.us_eia861_reliability": {
+   "cold_p50_ms": 596.3,
+   "cold_p95_ms": 596.3,
+   "warm_p50_ms": 309.2,
+   "warm_p95_ms": 309.2,
+   "bytes_cold": 56957,
+   "gets_cold": 2
+  },
+  "wave9.us_eia861_reliability_xlsx": {
+   "cold_p50_ms": 446.2,
+   "cold_p95_ms": 446.2,
+   "warm_p50_ms": 211.5,
+   "warm_p95_ms": 211.5,
+   "bytes_cold": 56594,
+   "gets_cold": 2
+  },
+  "wave9.us_eia861m_small_solar": {
+   "cold_p50_ms": 705.7,
+   "cold_p95_ms": 705.7,
+   "warm_p50_ms": 208.9,
+   "warm_p95_ms": 208.9,
+   "bytes_cold": 1542,
+   "gets_cold": 2
+  },
+  "wave9.us_eia_biodiesel": {
+   "cold_p50_ms": 438.6,
+   "cold_p95_ms": 558.2,
+   "warm_p50_ms": 272.5,
+   "warm_p95_ms": 444.2,
+   "bytes_cold": 14893,
+   "gets_cold": 7
+  },
+  "wave9.us_eia_crude_pipelines": {
+   "cold_p50_ms": 400.9,
+   "cold_p95_ms": 609.0,
+   "warm_p50_ms": 396.8,
+   "warm_p95_ms": 405.9,
+   "bytes_cold": 54497,
+   "gets_cold": 6
+  },
+  "wave9.us_eia_crude_rail": {
+   "cold_p50_ms": 404.7,
+   "cold_p95_ms": 546.2,
+   "warm_p50_ms": 411.9,
+   "warm_p95_ms": 422.5,
+   "bytes_cold": 14810,
+   "gets_cold": 6
+  },
+  "wave9.us_eia_ethanol": {
+   "cold_p50_ms": 427.5,
+   "cold_p95_ms": 594.6,
+   "warm_p50_ms": 260.6,
+   "warm_p95_ms": 458.5,
+   "bytes_cold": 23315,
+   "gets_cold": 7
+  },
+  "wave9.us_eia_gas_pipelines": {
+   "cold_p50_ms": 392.5,
+   "cold_p95_ms": 1813.9,
+   "warm_p50_ms": 237.1,
+   "warm_p95_ms": 808.9,
+   "bytes_cold": 4411319,
+   "gets_cold": 12
+  },
+  "wave9.us_eia_gas_processing": {
+   "cold_p50_ms": 422.8,
+   "cold_p95_ms": 543.0,
+   "warm_p50_ms": 266.0,
+   "warm_p95_ms": 460.2,
+   "bytes_cold": 52925,
+   "gets_cold": 7
+  },
+  "wave9.us_eia_gas_storage": {
+   "cold_p50_ms": 378.6,
+   "cold_p95_ms": 443.4,
+   "warm_p50_ms": 229.3,
+   "warm_p95_ms": 404.8,
+   "bytes_cold": 49369,
+   "gets_cold": 8
+  },
+  "wave9.us_eia_hgl_pipelines": {
+   "cold_p50_ms": 404.9,
+   "cold_p95_ms": 466.9,
+   "warm_p50_ms": 329.4,
+   "warm_p95_ms": 345.8,
+   "bytes_cold": 37485,
+   "gets_cold": 6
+  },
+  "wave9.us_eia_lng": {
+   "cold_p50_ms": 431.5,
+   "cold_p95_ms": 552.2,
+   "warm_p50_ms": 273.6,
+   "warm_p95_ms": 444.3,
+   "bytes_cold": 10088,
+   "gets_cold": 7
+  },
+  "wave9.us_eia_product_pipelines": {
+   "cold_p50_ms": 396.7,
+   "cold_p95_ms": 547.9,
+   "warm_p50_ms": 403.2,
+   "warm_p95_ms": 413.9,
+   "bytes_cold": 53074,
+   "gets_cold": 6
+  },
+  "wave9.us_eia_product_terminals": {
+   "cold_p50_ms": 410.7,
+   "cold_p95_ms": 548.5,
+   "warm_p50_ms": 271.4,
+   "warm_p95_ms": 428.6,
+   "bytes_cold": 103167,
+   "gets_cold": 7
+  },
+  "wave9.us_eia_recs_heat_pumps_state": {
+   "cold_p50_ms": 542.0,
+   "cold_p95_ms": 542.0,
+   "warm_p50_ms": 256.7,
+   "warm_p95_ms": 256.7,
+   "bytes_cold": 1488,
+   "gets_cold": 2
+  },
+  "wave9.us_eia_refineries": {
+   "cold_p50_ms": 377.3,
+   "cold_p95_ms": 421.1,
+   "warm_p50_ms": 215.9,
+   "warm_p95_ms": 390.5,
+   "bytes_cold": 24448,
+   "gets_cold": 8
+  },
+  "wave9.us_epa_agstar": {
+   "cold_p50_ms": 554.0,
+   "cold_p95_ms": 554.0,
+   "warm_p50_ms": 262.6,
+   "warm_p95_ms": 262.6,
+   "bytes_cold": 30309,
+   "gets_cold": 2
+  },
+  "wave9.us_epa_aqs_annual": {
+   "cold_p50_ms": 382.9,
+   "cold_p95_ms": 1395.3,
+   "warm_p50_ms": 251.4,
+   "warm_p95_ms": 694.1,
+   "bytes_cold": 3639189,
+   "gets_cold": 11
+  },
+  "wave9.us_epa_frs_cleanups": {
+   "cold_p50_ms": 343.6,
+   "cold_p95_ms": 1791.4,
+   "warm_p50_ms": 226.4,
+   "warm_p95_ms": 517.4,
+   "bytes_cold": 3445429,
+   "gets_cold": 11
+  },
+  "wave9.us_epa_lmop": {
+   "cold_p50_ms": 419.7,
+   "cold_p95_ms": 523.9,
+   "warm_p50_ms": 280.5,
+   "warm_p95_ms": 442.2,
+   "bytes_cold": 71604,
+   "gets_cold": 7
+  },
+  "wave9.us_epa_lmop_landfills": {
+   "cold_p50_ms": 398.5,
+   "cold_p95_ms": 614.7,
+   "warm_p50_ms": 274.8,
+   "warm_p95_ms": 418.1,
+   "bytes_cold": 210207,
+   "gets_cold": 8
+  },
+  "wave9.us_epa_repowering": {
+   "cold_p50_ms": 564.9,
+   "cold_p95_ms": 7194.8,
+   "warm_p50_ms": 283.4,
+   "warm_p95_ms": 1873.6,
+   "bytes_cold": 28170822,
+   "gets_cold": 22
+  },
+  "wave9.us_fhwa_afc": {
+   "cold_p50_ms": 521.2,
+   "cold_p95_ms": 2760.0,
+   "warm_p50_ms": 498.8,
+   "warm_p95_ms": 914.4,
+   "bytes_cold": 49323427,
+   "gets_cold": 23
+  },
+  "wave9.us_iso_as_prices": {
+   "cold_p50_ms": 436.2,
+   "cold_p95_ms": 436.2,
+   "warm_p50_ms": 209.7,
+   "warm_p95_ms": 209.7,
+   "bytes_cold": 73221,
+   "gets_cold": 2
+  },
+  "wave9.us_natcarb": {
+   "cold_p50_ms": 544.8,
+   "cold_p95_ms": 2663.8,
+   "warm_p50_ms": 440.1,
+   "warm_p95_ms": 1667.4,
+   "bytes_cold": 9211722,
+   "gets_cold": 13
+  },
+  "wave9.us_nexrad": {
+   "cold_p50_ms": 376.0,
+   "cold_p95_ms": 469.6,
+   "warm_p50_ms": 379.5,
+   "warm_p95_ms": 386.4,
+   "bytes_cold": 22185,
+   "gets_cold": 6
+  },
+  "wave9.us_noaa_mpa": {
+   "cold_p50_ms": 399.3,
+   "cold_p95_ms": 3067.9,
+   "warm_p50_ms": 343.4,
+   "warm_p95_ms": 1175.1,
+   "bytes_cold": 133366618,
+   "gets_cold": 43
+  },
+  "wave9.us_noaa_storm_events": {
+   "cold_p50_ms": 439.8,
+   "cold_p95_ms": 2682.3,
+   "warm_p50_ms": 315.2,
+   "warm_p95_ms": 647.0,
+   "bytes_cold": 6449013,
+   "gets_cold": 15
+  },
+  "wave9.us_nrc_operating_reactors": {
+   "cold_p50_ms": 559.9,
+   "cold_p95_ms": 559.9,
+   "warm_p50_ms": 270.4,
+   "warm_p95_ms": 270.4,
+   "bytes_cold": 23917,
+   "gets_cold": 2
+  },
+  "wave9.us_nrel_sharing_sun": {
+   "cold_p50_ms": 280.0,
+   "cold_p95_ms": 578.9,
+   "warm_p50_ms": 285.3,
+   "warm_p95_ms": 292.3,
+   "bytes_cold": 195922,
+   "gets_cold": 3
+  },
+  "wave9.us_nrhp": {
+   "cold_p50_ms": 501.1,
+   "cold_p95_ms": 1058.2,
+   "warm_p50_ms": 299.7,
+   "warm_p95_ms": 761.8,
+   "bytes_cold": 6959237,
+   "gets_cold": 13
+  },
+  "wave9.us_nyc_ll84": {
+   "cold_p50_ms": 712.9,
+   "cold_p95_ms": 2715.2,
+   "warm_p50_ms": 208.3,
+   "warm_p95_ms": 331.5,
+   "bytes_cold": 19592044,
+   "gets_cold": 16
+  },
+  "wave9.us_openei_urdb": {
+   "cold_p50_ms": 1033.8,
+   "cold_p95_ms": 1033.8,
+   "warm_p50_ms": 279.2,
+   "warm_p95_ms": 279.2,
+   "bytes_cold": 132069,
+   "gets_cold": 3
+  },
+  "wave9.us_opportunity_zones": {
+   "cold_p50_ms": 558.0,
+   "cold_p95_ms": 3188.8,
+   "warm_p50_ms": 552.7,
+   "warm_p95_ms": 631.9,
+   "bytes_cold": 56800833,
+   "gets_cold": 34
+  },
+  "wave9.us_pjm_rpm": {
+   "cold_p50_ms": 206.7,
+   "cold_p95_ms": 468.5,
+   "warm_p50_ms": 204.8,
+   "warm_p95_ms": 206.6,
+   "bytes_cold": 5470,
+   "gets_cold": 3
+  },
+  "wave9.us_usgs_geoelectric": {
+   "cold_p50_ms": 468.1,
+   "cold_p95_ms": 570.8,
+   "warm_p50_ms": 453.4,
+   "warm_p95_ms": 454.1,
+   "bytes_cold": 148585,
+   "gets_cold": 5
+  },
+  "wave9.us_usgs_landslides": {
+   "cold_p50_ms": 551.2,
+   "cold_p95_ms": 7745.8,
+   "warm_p50_ms": 409.4,
+   "warm_p95_ms": 3240.4,
+   "bytes_cold": 64379506,
+   "gets_cold": 35
+  },
+  "wave9.us_usgs_mrds": {
+   "cold_p50_ms": 549.4,
+   "cold_p95_ms": 5921.8,
+   "warm_p50_ms": 426.2,
+   "warm_p95_ms": 1867.1,
+   "bytes_cold": 34174218,
+   "gets_cold": 30
+  },
+  "wave9.us_usgs_nshm": {
+   "cold_p50_ms": 552.5,
+   "cold_p95_ms": 1517.3,
+   "warm_p50_ms": 492.1,
+   "warm_p95_ms": 897.9,
+   "bytes_cold": 9837630,
+   "gets_cold": 11
+  },
+  "wave9.us_usgs_nwis_sites": {
+   "cold_p50_ms": 391.9,
+   "cold_p95_ms": 1055.9,
+   "warm_p50_ms": 255.8,
+   "warm_p95_ms": 1049.5,
+   "bytes_cold": 10329735,
+   "gets_cold": 13
+  },
+  "wave9.us_usgs_water_use": {
+   "cold_p50_ms": 281.4,
+   "cold_p95_ms": 560.8,
+   "warm_p50_ms": 270.0,
+   "warm_p95_ms": 297.9,
+   "bytes_cold": 755702,
+   "gets_cold": 3
+  },
+  "wave9.world_ourairports": {
+   "cold_p50_ms": 401.4,
+   "cold_p95_ms": 3319.7,
+   "warm_p50_ms": 266.2,
+   "warm_p95_ms": 812.5,
+   "bytes_cold": 6352006,
+   "gets_cold": 15
+  },
+  "wave9.world_ourairports_navaids": {
+   "cold_p50_ms": 331.9,
+   "cold_p95_ms": 438.3,
+   "warm_p50_ms": 257.4,
+   "warm_p95_ms": 380.5,
+   "bytes_cold": 612588,
+   "gets_cold": 8
+  },
+  "wave9.world_ourairports_runways": {
+   "cold_p50_ms": 444.4,
+   "cold_p95_ms": 575.8,
+   "warm_p50_ms": 286.4,
+   "warm_p95_ms": 583.6,
+   "bytes_cold": 1484619,
+   "gets_cold": 7
+  }
+ },
+ "routes": {
+  "GET /api/health": {
+   "warm_p95_ms": 19.9
+  },
+  "GET /api/catalog/search?q=solar%20capacity%20Germany": {
+   "warm_p95_ms": 4.8
+  },
+  "GET /api/catalog/atb": {
+   "warm_p95_ms": 3.5
+  },
+  "GET /api/places?q=Bavaria": {
+   "warm_p95_ms": 22.5
+  },
+  "GET /api/places?q=Lyon": {
+   "warm_p95_ms": 17.5
+  },
+  "GET /api/site?lon=11.58&lat=48.14&radius_km=50": {
+   "warm_p95_ms": 48.9
+  },
+  "GET /api/areas/resolve?q=Bavaria": {
+   "warm_p95_ms": 64.6
+  },
+  "GET /api/areas/resolve?q=Berlin&level=city": {
+   "warm_p95_ms": 126.0
+  },
+  "GET /api/shapes/admin1/DEU": {
+   "warm_p95_ms": 366.6
+  },
+  "GET /api/quick": {
+   "warm_p95_ms": 3.3
+  },
+  "GET /api/quick/profile?area=Germany": {
+   "warm_p95_ms": 31.7
+  },
+  "GET /api/quick/top?area=Bavaria&n=10": {
+   "warm_p95_ms": 392.3
+  },
+  "GET /api/quick/totals?area=Europe": {
+   "warm_p95_ms": 70.7
+  },
+  "GET /api/quick/published?area=France": {
+   "warm_p95_ms": 126.9
+  },
+  "GET /api/quick/prices?area=Germany": {
+   "warm_p95_ms": 16.5
+  },
+  "GET /api/report.json?lon=11.58&lat=48.14&radius_km=25&task=data_centre": {
+   "warm_p95_ms": 3.3
+  },
+  "GET /api/feed/DEU.json": {
+   "warm_p95_ms": 348.7
+  },
+  "POST /api/maps": {
+   "warm_p95_ms": 973.6
+  }
+ },
+ "quick": {
+  "profile:Germany": {
+   "warm_p95_ms": 572.3
+  },
+  "profile:Bavaria": {
+   "warm_p95_ms": 4067.5
+  },
+  "profile:Berlin": {
+   "warm_p95_ms": 1064.7
+  },
+  "top:Germany": {
+   "warm_p95_ms": 235.0
+  },
+  "top:Bavaria": {
+   "warm_p95_ms": 409.9
+  },
+  "top:France": {
+   "warm_p95_ms": 238.7
+  },
+  "totals:Europe": {
+   "warm_p95_ms": 942.0
+  },
+  "totals:United States": {
+   "warm_p95_ms": 236.0
+  },
+  "compare:France; Germany": {
+   "warm_p95_ms": 471.9
+  },
+  "published:Poland": {
+   "warm_p95_ms": 0.5
+  },
+  "prices:Germany": {
+   "warm_p95_ms": 363.3
+  }
+ },
+ "resolve": {
+  "Germany": {
+   "warm_p95_ms": 4558.9
+  },
+  "France": {
+   "warm_p95_ms": 3281.6
+  },
+  "Poland": {
+   "warm_p95_ms": 5115.9
+  },
+  "Spain": {
+   "warm_p95_ms": 645.3
+  },
+  "Italy": {
+   "warm_p95_ms": 3209.0
+  },
+  "United States": {
+   "warm_p95_ms": 931.1
+  },
+  "Nordics": {
+   "warm_p95_ms": 1260.7
+  },
+  "EU-27": {
+   "warm_p95_ms": 2920.3
+  },
+  "Bavaria": {
+   "warm_p95_ms": 3323.9
+  },
+  "Lower Saxony": {
+   "warm_p95_ms": 5892.3
+  },
+  "Catalonia": {
+   "warm_p95_ms": 5876.4
+  },
+  "Lombardy": {
+   "warm_p95_ms": 3052.9
+  },
+  "Texas": {
+   "warm_p95_ms": 4067.8
+  },
+  "California": {
+   "warm_p95_ms": 3671.0
+  },
+  "Scotland": {
+   "warm_p95_ms": 3399.3
+  },
+  "Brittany": {
+   "warm_p95_ms": 4275.0
+  },
+  "Masovian Voivodeship": {
+   "warm_p95_ms": 3050.8
+  },
+  "North Rhine-Westphalia": {
+   "warm_p95_ms": 3134.7
+  },
+  "Andalusia": {
+   "warm_p95_ms": 2945.7
+  },
+  "Upper Bavaria": {
+   "warm_p95_ms": 619.9
+  },
+  "Harris County": {
+   "warm_p95_ms": 3825.4
+  },
+  "Cook County": {
+   "warm_p95_ms": 4009.3
+  },
+  "Kreis Steinfurt": {
+   "warm_p95_ms": 2568.9
+  },
+  "Greater Manchester": {
+   "warm_p95_ms": 5048.3
+  },
+  "Cornwall": {
+   "warm_p95_ms": 4307.3
+  },
+  "Berlin": {
+   "warm_p95_ms": 1763.1
+  },
+  "Paris": {
+   "warm_p95_ms": 1509.0
+  },
+  "Madrid": {
+   "warm_p95_ms": 1542.7
+  },
+  "Rome": {
+   "warm_p95_ms": 2682.9
+  },
+  "Warsaw": {
+   "warm_p95_ms": 1355.4
+  },
+  "Toulouse": {
+   "warm_p95_ms": 1718.8
+  },
+  "Lyon": {
+   "warm_p95_ms": 1670.0
+  },
+  "Hamburg": {
+   "warm_p95_ms": 1374.9
+  },
+  "Munich": {
+   "warm_p95_ms": 1418.6
+  },
+  "Vienna": {
+   "warm_p95_ms": 1391.0
+  },
+  "Amsterdam": {
+   "warm_p95_ms": 1316.5
+  },
+  "Copenhagen": {
+   "warm_p95_ms": 1355.6
+  },
+  "Dublin": {
+   "warm_p95_ms": 1394.2
+  },
+  "Lisbon": {
+   "warm_p95_ms": 1372.1
+  },
+  "Houston": {
+   "warm_p95_ms": 1396.7
+  },
+  "Leeds": {
+   "warm_p95_ms": 1332.9
+  },
+  "Manchester": {
+   "warm_p95_ms": 1537.1
+  },
+  "Kreuzberg": {
+   "warm_p95_ms": 2627.7
+  },
+  "Schwabing": {
+   "warm_p95_ms": 649.9
+  },
+  "Montmartre": {
+   "warm_p95_ms": 2487.0
+  },
+  "DE-LU": {
+   "warm_p95_ms": 1244.4
+  },
+  "NO2": {
+   "warm_p95_ms": 22085.8
+  },
+  "IT-North": {
+   "warm_p95_ms": 1240.8
+  },
+  "Sicily": {
+   "warm_p95_ms": 4197.8
+  },
+  "Saxony-Anhalt": {
+   "warm_p95_ms": 4571.2
+  }
+ }
+}
