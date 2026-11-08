@@ -46,7 +46,9 @@ def links(con: duckdb.DuckDBPyConnection, zones: str) -> dict[str, list[tuple[st
     ).fetchall()
     out: dict[str, list[tuple[str, str]]] = {}
     for src, plan, url in rows:
-        out.setdefault(src, []).append((plan or "", url))
+        url = url.strip()  # some links carry line breaks inside the source's field
+        if url and not any(ch in url for ch in "\r\n\t "):
+            out.setdefault(src, []).append((plan or "", url))
     return out
 
 
@@ -75,7 +77,7 @@ def head_size(c: httpx.Client, url: str) -> tuple[int | None, str]:
             total = r.headers.get("content-range", "").split("/")[-1]
             return (int(total) if total.isdigit() else None), r.headers.get("content-type", "")
         return int(r.headers["content-length"]), r.headers.get("content-type", "")
-    except httpx.HTTPError:
+    except (httpx.HTTPError, httpx.InvalidURL):
         return None, ""
 
 
@@ -116,7 +118,7 @@ def fetch(
                 break
             try:
                 r = c.get(url)
-            except httpx.HTTPError:
+            except (httpx.HTTPError, httpx.InvalidURL):
                 continue
             if r.status_code != 200 or not r.content.startswith(b"%PDF"):
                 continue
