@@ -2,7 +2,7 @@
 title: Query tiers (prepared, hot, lake) and exact area sums
 tags: [backend, lake, latency]
 updated: 2026-11-08
-paths: [backend/tools/prepared.py, backend/tools/area_sum.py, backend/data/duck.py, backend/probes/probe_query_speed.py, backend/probes/build_prepared.py, scripts/build_hot.py, scripts/lake_rewrite.py, scripts/lake_storage.py, scripts/raster_recompress.py]
+paths: [backend/tests/test_area_registry.py, backend/tools/prepared.py, backend/tools/area_sum.py, backend/data/duck.py, backend/probes/probe_query_speed.py, backend/probes/build_prepared.py, scripts/build_hot.py, scripts/lake_rewrite.py, scripts/lake_storage.py, scripts/raster_recompress.py]
 ---
 
 # Query tiers (brief 32)
@@ -30,6 +30,19 @@ filter by attribute, an aggregate and a join, and each is made fast on every dat
   standard (Hilbert order, capped groups, `bbox`) after equal checksums; `scripts/lake.py`
   enforces it for new files.
 
+## Areas in queries
+- `Lake.register_areas` (`data/duck.py`): each outline parsed once per container into the
+  shared in-memory `areamem.areas` (most recently used 300 kept); a cursor gets a view `areas`
+  of its own areas and the macros. Was 60-80 ms of GeoJSON parsing on every query.
+- `in_area` with a known area: a background thread builds the H3 cells wholly inside
+  (`areamem.cells`) and the outline clipped to each buffered edge cell (`areamem.clips`, with
+  its boundary); `expand_in_area` then tests cell membership, else the clip, else (within 1e-9°
+  of a clip's edge) the whole outline. Equal to `ST_Contains` (`tests/test_area_registry.py`);
+  20,000 points in a 60,000-vertex outline: 10 s plain, 60 ms with cells. Until the cells exist,
+  the plain test answers.
+- `Areas.from_candidate` keeps built areas by reference (validate, hash, measure once);
+  name search over `shapes.*` reads ids first and the `bbox` column.
+
 ## Exact sums for any area
 `tools/area_sum.py` (agent tool `area_sum`): H3 cells wholly inside (rollup sums) plus edge
 cells' rows tested against the outline = the row-level sum (`tests/test_area_sum.py`).
@@ -53,3 +66,10 @@ apply, lossy options measured for the owner). All by hand in `lake-catalog.yml` 
 > - `ROW_GROUP_SIZE_BYTES` needs `preserve_insertion_order = false`, which loses the sort: cap
 >   rows from bytes per row instead. DuckDB's smallest row group is 2,048 rows.
 > - Prepared answers hold no `result_id` (results live in one container).
+> - `resolve_area` lists `candidates` whenever several outlines match (Germany in the real
+>   lake); prepared answers are keyed by the resolved area's id, so ambiguous names are stored
+>   too (skipping them left Germany, Bavaria and Berlin unprepared).
+> - DuckDB spatial has no prepared geometry: `ST_Contains` costs ~0.45 ms a point against a
+>   detailed outline whatever the query form.
+> - hot.duckdb: native storage of repetitive tables is far larger than their Parquet; the
+>   build fills a 1,200 MB budget (the Lambda's `/tmp` is 2,048 MB).
