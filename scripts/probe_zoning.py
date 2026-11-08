@@ -91,12 +91,24 @@ def california(c: httpx.Client) -> None:
         print("  fields:", [f["name"] for f in meta.get("fields", [])])
 
 
+def ireland(c: httpx.Client) -> None:
+    # MyPlan Generalised Zoning Types (Department of Housing), every local authority's plans.
+    base = "https://services.arcgis.com/NzlPQPKn5QF9v2US/arcgis/rest/services"
+    for name in ("GZT_Current_Plan", "GZT_Expired_Plan"):
+        url = f"{base}/{name}/FeatureServer/0"
+        n = c.get(f"{url}/query", params={"where": "1=1", "returnCountOnly": "true", "f": "json"})
+        meta = c.get(url, params={"f": "json"}).json()
+        show(f"ireland {name}", n, f"count={n.json().get('count')}")
+        print("  fields:", [f["name"] for f in meta.get("fields", [])])
+
+
 PROBES: dict[str, Callable[[httpx.Client], None]] = {
     "france": france,
     "denmark": denmark,
     "helsinki": helsinki,
     "england": england,
     "california": california,
+    "ireland": ireland,
 }
 
 

@@ -81,4 +81,4 @@ Connecticut, Wisconsin), and the largest cities' zoning portals.
 | England planning.data.gov.uk bulk CSV | 206 | green belt 33 MB, conservation area 50 MB, article 4 24 MB, brownfield 22 MB | WKT `geometry`, `reference`, `organisation`, `document-url`, dates |
 | California statewide zoning | 200 | 304,324 + 264,417 zones | local code, description, harmonised class |
 | National Zoning Atlas | 404 / 403 | | blocked (above) |
-| Ireland MyPlan ArcGIS (`maps.housing.gov.ie`) | no answer from this container | | hub `data-housinggovie.opendata.arcgis.com` answers; download through the hub |
+| Ireland MyPlan GZT (`services.arcgis.com/NzlPQPKn5QF9v2US/.../GZT_Current_Plan`, `GZT_Expired_Plan`) | 200 | 86,686 current zones | `ZONE_ORIG` (the plan's own code), `ZONE_DESC`, `ZONE_LINK` (plan document), `ZONE_GZT` and `GZT_DESC` (national harmonised type), `PLAN_NAME`, `PLAN_FROM`/`PLAN_TO`, `LA_NAME`; same owner also publishes Solar Safeguarding Zones (43, CC BY) and the Residential Zoned Land Tax maps 2023-2027. `maps.housing.gov.ie` does not answer from this container. |
