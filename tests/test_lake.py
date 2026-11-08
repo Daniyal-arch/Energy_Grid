@@ -147,3 +147,20 @@ def test_write_splits_files_over_the_byte_limit(tmp_path: Path, monkeypatch) -> 
     assert all(f.stat().st_size <= lake.MAX_BYTES_PER_FILE for f in files)
     total = sum(con.execute(f"SELECT count(*) FROM '{f}'").fetchone()[0] for f in files)
     assert total == 200000
+
+
+def test_geometry_tables_get_small_row_groups(tmp_path: Path) -> None:
+    """Brief 32: geometry tables are written with at most 100,000 rows a group (other tables
+    keep about 1,000,000), so a city's question reads few groups."""
+    con = duckdb.connect()
+    con.execute("INSTALL spatial; LOAD spatial")
+    lk = lake.Lake("test", tmp_path, source="unit test", licence="CC0", script="tests")
+    q = (
+        "SELECT i AS id, ST_Point(5 + (i % 1000) * 0.01, 47 + (i // 1000) * 0.01) AS geometry "
+        "FROM range(250000) r(i)"
+    )
+    (f,) = lk.write(con, "pts", q, sort=["id"], geometry="geometry")
+    groups = con.execute(
+        f"SELECT count(DISTINCT row_group_id), max(row_group_num_rows) FROM parquet_metadata('{f}')"
+    ).fetchone()
+    assert groups[0] >= 3 and groups[1] <= 100_352  # DuckDB rounds groups up to 2,048-row vectors

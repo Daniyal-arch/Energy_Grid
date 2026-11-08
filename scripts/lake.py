@@ -44,6 +44,10 @@ MAX_ROWS_PER_FILE = 25_000_000
 # wrangler uploads at most 300 MiB per file; bigger files are split again by size
 MAX_BYTES_PER_FILE = 250_000_000
 COPY_OPTIONS = "FORMAT parquet, COMPRESSION zstd, COMPRESSION_LEVEL 9, ROW_GROUP_SIZE 1000000, PARQUET_VERSION V2"
+# brief 32 row-group standard (docs/DATA_LAKE.md): geometry tables 10,000-100,000 rows and at most
+# 32 MB compressed a group; other tables about 1,000,000 rows and at most 128 MB
+GROUP_ROWS = {"geo": 100_000, "flat": 1_000_000}
+GROUP_MB = {"geo": 32, "flat": 128}
 
 
 @dataclass
@@ -156,6 +160,8 @@ class Lake:
             geo_option = ", GEOPARQUET_VERSION 'NONE'"
         kv = ", ".join(f'"{k}": {_quote(str(v))}' for k, v in meta.items())
         order = ", ".join(sort)
+        kind = "geo" if geometry or any("hilbert" in x.lower() for x in sort) else "flat"
+        group_rows = GROUP_ROWS[kind]
         files: list[Path] = []
         per_file = MAX_ROWS_PER_FILE
         for _attempt in range(4):
@@ -164,10 +170,29 @@ class Lake:
             for i in range(parts):
                 path = folder / f"{stem}-{i}.parquet"
                 window = f"LIMIT {per_file} OFFSET {i * per_file}" if parts > 1 else ""
-                con.execute(
-                    f"COPY (SELECT * FROM _lake_rows ORDER BY {order} {window}) "
-                    f"TO {_quote(str(path))} ({COPY_OPTIONS}{geo_option}, KV_METADATA {{{kv}}})"
+                opts = COPY_OPTIONS.replace(
+                    "ROW_GROUP_SIZE 1000000", f"ROW_GROUP_SIZE {group_rows}"
                 )
+                for _shrink in range(
+                    3
+                ):  # groups over the MB cap: fewer rows a group, written again
+                    con.execute(
+                        f"COPY (SELECT * FROM _lake_rows ORDER BY {order} {window}) "
+                        f"TO {_quote(str(path))} ({opts}{geo_option}, KV_METADATA {{{kv}}})"
+                    )
+                    biggest = (
+                        con.execute(
+                            "SELECT max(b) FROM (SELECT sum(total_compressed_size) AS b FROM "
+                            f"parquet_metadata({_quote(str(path))}) GROUP BY row_group_id)"
+                        ).fetchone()[0]
+                        or 0
+                    )
+                    if biggest <= GROUP_MB[kind] * 1e6 or group_rows <= 10_000:
+                        break
+                    group_rows = max(10_000, int(group_rows * 0.8 * GROUP_MB[kind] * 1e6 / biggest))
+                    opts = COPY_OPTIONS.replace(
+                        "ROW_GROUP_SIZE 1000000", f"ROW_GROUP_SIZE {group_rows}"
+                    )
                 files.append(path)
             sizes = [p.stat().st_size for p in files]
             if max(sizes) <= MAX_BYTES_PER_FILE or per_file <= 1:
