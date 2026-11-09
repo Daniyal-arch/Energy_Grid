@@ -233,3 +233,13 @@ def test_outlines_built_once_and_copies_returned(ctx):
     again.parents.append("y")
     kept = A.from_candidate(c)
     assert "x" not in kept.figures and "y" not in kept.parents
+
+
+def test_resolving_again_keeps_the_population_summed(ctx, monkeypatch):
+    import tools.area_stats as st
+
+    first = area(ctx, names=["Oberbayern"])["area"]["figures"]["people"]["value"]
+    calls = []
+    monkeypatch.setattr(st, "people_in", lambda *a: calls.append(a) or {"value": -1})
+    again = area(ctx, names=["Oberbayern"])["area"]["figures"]["people"]["value"]
+    assert again == first == 240 * 170 and not calls  # no second raster read
