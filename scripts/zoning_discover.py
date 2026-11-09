@@ -181,15 +181,63 @@ def hub(c: httpx.Client, out: Path, step: float, pages: int) -> None:
         w.writerows(out_rows)
 
 
+# INSPIRE "Planned Land Use" datasets with a WFS (any country): read by build_zoning_hub.py
+# --region wfs. The access URL without its query string is the service; one row per service.
+WFS_TERMS = ['"planned land use"', '"geplante Bodennutzung"', "XPlanung"]
+
+
+def wfs_sweep(c: httpx.Client, out: Path, pages: int) -> None:
+    rows: dict[str, dict[str, Any]] = {}
+    for term in WFS_TERMS:
+        for page in range(pages):
+            params = {"q": term, "filter": "dataset", "limit": 100, "page": page}
+            try:
+                r = c.get(API, params=params)
+                r.raise_for_status()
+                hits = r.json()["result"]["results"]
+            except (httpx.HTTPError, KeyError):
+                break
+            if not hits:
+                break
+            for d in hits:
+                title = d.get("title") or {}
+                title = title.get("en") or next(iter(title.values()), "")
+                for x in d.get("distributions") or []:
+                    f = fmt(x).upper()
+                    for u in x.get("access_url") or []:
+                        low = u.lower()
+                        if "WFS" in f or "service=wfs" in low or "_wfs" in low or "/wfs" in low:
+                            base = u.split("?")[0]
+                            rows.setdefault(base, {
+                                "url": base, "title": title,
+                                "source": (d.get("publisher") or {}).get("name", ""),
+                                "licence": ((d.get("license") or {}).get("resource") or ""),
+                                "country": (d.get("country") or {}).get("id", ""),
+                                "id": d.get("id", ""),
+                            })  # fmt: skip
+        print(f"  {term}: {len(rows):,} services so far", flush=True)
+    path = out / "wfs_services.csv"
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=["url", "title", "source", "licence", "country", "id"])
+        w.writeheader()
+        w.writerows(sorted(rows.values(), key=lambda r: (r["country"], r["url"])))
+    print(f"{len(rows):,} WFS services -> {path}")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pages", type=int, default=20, help="pages of 100 per term and country")
     ap.add_argument("--out", type=Path, default=Path("data/zoning_discovery"))
     ap.add_argument("--countries", nargs="*", default=list(TERMS))
     ap.add_argument("--hub", action="store_true", help="sweep ArcGIS Hub instead")
+    ap.add_argument("--wfs", action="store_true", help="INSPIRE planned land use WFS instead")
     ap.add_argument("--step", type=float, default=2.0, help="hub tile size in degrees")
     a = ap.parse_args()
     a.out.mkdir(parents=True, exist_ok=True)
+    if a.wfs:
+        with httpx.Client(timeout=90, headers=UA) as c:
+            wfs_sweep(c, a.out, a.pages)
+        return
     if a.hub:
         with httpx.Client(timeout=90, headers=UA) as c:
             hub(c, a.out, a.step, a.pages)

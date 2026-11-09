@@ -327,7 +327,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          pip install duckdb httpx pycountry
+          pip install duckdb==1.5.6 httpx pycountry
           set -o pipefail
           cd scripts && python build_zoning_hub.py --region ${{ needs.zoning-plan.outputs.hub }} --shard ${{ matrix.shard }} --shards 48 \
             --max-minutes 290 --lake ../lake-out --tmp /tmp/zoning-hub --upload 2>&1
@@ -357,7 +357,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          pip install duckdb httpx pycountry
+          pip install duckdb==1.5.6 httpx pycountry
           cd scripts && python build_zoning_hub.py --merge ../partials/*/_catalog.json --lake ../lake-out --upload 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
 
   zoning-discover:

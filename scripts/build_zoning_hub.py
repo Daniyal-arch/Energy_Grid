@@ -38,12 +38,20 @@ from typing import Any
 
 import duckdb
 import httpx
-from build_zoning import STANDARD, UA, VOCAB, make_valid
+from build_zoning import HILUCS, STANDARD, UA, VOCAB, make_valid
 from lake import Lake, hilbert
 
 SCRIPT = "scripts/build_zoning_hub.py"
 LIST = Path(__file__).resolve().parents[1] / "data" / "zoning_discovery" / "hub_services.csv"
-REGIONS = ["us", "us_ak_hi", "gb", "eu"]
+REGIONS = ["us", "us_ak_hi", "gb", "eu", "wfs"]
+WFS_LIST = LIST.with_name("wfs_services.csv")  # INSPIRE / XPlanung WFS (zoning_discover.py --wfs)
+# zones (ZoningElement, XPlanung areas), regulations, and plan outlines (a plan published
+# only as a scanned map still has its outline and document links); `code` names the layer
+WFS_LAYER = re.compile(
+    r"ZoningElement|SupplementaryRegulation|SpatialPlan|(BP|FP|RP|SO)_Plan$|"
+    r"BaugebietsTeilFlaeche|BebauungsFlaeche|Widmung",
+    re.I,
+)
 DATASET_SOURCE = ("Zoning and land-use plans, per partition `source` (docs/DATA_SOURCES.md); the "
                   "*_hub partitions: ArcGIS services found by scripts/zoning_discover.py, each read "
                   "from its publisher's server")  # fmt: skip
@@ -238,6 +246,82 @@ class Shard:
                 f.unlink()
             self.record(**base, status="failed", reason=str(e)[:160], rows=0)
 
+    def read_wfs(self, svc: dict[str, str]) -> None:
+        """An INSPIRE Planned Land Use or XPlanung WFS through GDAL: every ZoningElement (or
+        XPlanung zone) layer in full, reprojected to EPSG:4326 by PROJ, checked against the
+        count the service reports. The class comes from the zone's HILUCS code."""
+        import os
+
+        os.environ["GML_ATTRIBUTES_TO_OGR_FIELDS"] = "YES"
+        url = f"WFS:{svc['url']}"
+        con = duckdb.connect()
+        con.execute("LOAD spatial")
+        base = {"service": svc["url"], "item": svc["id"], "title": svc["title"],
+                "owner": svc["source"], "licence": svc.get("licence") or None}  # fmt: skip
+        try:
+            layers = con.execute(
+                "SELECT l.name, l.feature_count, l.geometry_fields[1].crs.auth_name, "
+                "l.geometry_fields[1].crs.auth_code FROM (SELECT unnest(layers) AS l "
+                "FROM st_read_meta(?))", [url]).fetchall()  # fmt: skip
+        except Exception as e:  # noqa: BLE001
+            self.record(**base, status="failed", reason=f"service: {str(e)[:150]}", rows=0)
+            return
+        for name, total, auth, code in layers:
+            lb = {**base, "layer": name, "layer_name": name}
+            if not WFS_LAYER.search(name):
+                self.record(**lb, status="skipped", reason="layer name", rows=0)
+                continue
+            t0 = time.time()
+            part = self.out.with_name(f"{self.out.stem}-{abs(hash(url + name))}.part")
+            try:
+                cur = con.execute("SELECT * FROM st_read(?, layer = ?) LIMIT 0", [url, name])
+                types = [(d[0], str(d[1])) for d in cur.description]
+                gcol, gtype = next((c, t) for c, t in types if t.upper().startswith("GEOMETRY"))
+                crs = gtype[gtype.find("'") + 1 : gtype.rfind("'")] if "'" in gtype else (
+                    f"{auth}:{code}" if auth and code else "EPSG:4326")  # fmt: skip
+                rows = con.execute(
+                    f"SELECT * EXCLUDE ({gcol}), ST_AsGeoJSON(ST_Transform({gcol}::GEOMETRY, "
+                    f"'{crs}', 'EPSG:4326', always_xy := true)) FROM st_read(?, layer = ?)",
+                    [url, name])  # fmt: skip
+                names = [d[0] for d in rows.description][:-1]
+                n = 0
+                with part.open("w", encoding="utf-8") as pf:
+                    while batch := rows.fetchmany(5000):
+                        lines = []
+                        for r in batch:
+                            p = {k: (v if isinstance(v, (str, int, float, bool)) or v is None
+                                     else str(v)) for k, v in zip(names, r[:-1], strict=True)}  # fmt: skip
+                            hil = str(p.get("hilucsLandUse_href") or "")
+                            hcode = hil.rsplit("/", 1)[-1] if hil else None
+                            cls = next((v for k, v in HILUCS if hcode and hcode.startswith(k)),
+                                       "other")  # fmt: skip
+                            spec = p.get("specificLandUse_href") or p.get("allgArtDerBaulNutzung")
+                            lines.append(json.dumps({
+                                "a": p, "g": json.loads(r[-1]) if r[-1] else None,
+                                "svc": svc["url"], "layer": name, "layer_name": name,
+                                "title": svc["title"], "owner": svc["source"],
+                                "licence": svc.get("licence") or None,
+                                "code": (str(spec).rsplit("/", 1)[-1] if spec
+                                         else name.split(":")[-1]),
+                                "label": (p.get("name") or p.get("officialTitle") or hcode),
+                                "fields": "hilucsLandUse|name",
+                                "cls": cls, "word": hcode, "oid": p.get("gml_id"),
+                            }, ensure_ascii=False, default=str))  # fmt: skip
+                        pf.write("\n".join(lines) + "\n")
+                        n += len(batch)
+                if total is not None and total >= 0 and n != total:
+                    raise RuntimeError(f"read {n}, the service counts {total}")
+                with (self.lock, self.out.open("a", encoding="utf-8") as f,
+                      part.open(encoding="utf-8") as src):  # fmt: skip
+                    shutil.copyfileobj(src, f, 1 << 20)
+                    self.rows += n
+                part.unlink()
+                self.record(**lb, status="read", reason=None, rows=n, code_field="specificLandUse",
+                            label_field="name", seconds=round(time.time() - t0, 1))  # fmt: skip
+            except Exception as e:  # noqa: BLE001 - every failure is listed in hub_layers
+                part.unlink(missing_ok=True)
+                self.record(**lb, status="failed", reason=str(e)[:160], rows=0)
+
     def read_service(self, c: httpx.Client, svc: dict[str, str]) -> None:
         try:
             d = get(c, svc["url"], {"f": "json"})
@@ -305,9 +389,14 @@ def main() -> None:
             lake.upload(catalog_only=True)
         return
     t0 = time.time()
-    rows = [r for r in csv.DictReader(LIST.open(encoding="utf-8")) if r["region"] == a.region]
     svcs: dict[str, dict[str, str]] = {}
-    for r in rows:
+    if a.region == "wfs":
+        rows = list(csv.DictReader(WFS_LIST.open(encoding="utf-8")))
+        for r in rows:
+            svcs.setdefault(r["url"], {**r, "owner": r["source"]})
+    else:
+        rows = [r for r in csv.DictReader(LIST.open(encoding="utf-8")) if r["region"] == a.region]
+    for r in rows if a.region != "wfs" else []:
         if not NOISE.search(r["title"]) and r["type"] in ("Feature Service", "Map Service"):
             svcs.setdefault(r["url"].rstrip("/"), {**r, "url": r["url"].rstrip("/")})
     todo = [svcs[u] for u in sorted(svcs)][a.shard :: a.shards][: a.services]
@@ -322,8 +411,11 @@ def main() -> None:
 
     def one(svc: dict[str, str]) -> None:
         nonlocal done
-        with httpx.Client(timeout=120, headers=UA, follow_redirects=True) as c:
-            sh.read_service(c, svc)
+        if a.region == "wfs":
+            sh.read_wfs(svc)
+        else:
+            with httpx.Client(timeout=120, headers=UA, follow_redirects=True) as c:
+                sh.read_service(c, svc)
         done += 1
         if done % 20 == 0:
             print(f"  {done}/{len(todo)} services, {sh.rows:,} zones, {time.time() - t0:.0f} s", flush=True)  # fmt: skip
@@ -338,7 +430,8 @@ def main() -> None:
         stopped = len(todo) - done
         print(f"  time budget reached: {stopped} services not read", flush=True)
 
-    src = {"us": "us_hub", "us_ak_hi": "us_hub", "gb": "gb_hub", "eu": "eu_hub"}[a.region]
+    src = {"us": "us_hub", "us_ak_hi": "us_hub", "gb": "gb_hub", "eu": "eu_hub",
+           "wfs": "eu_wfs"}[a.region]  # fmt: skip
     lake = Lake("zoning", a.lake, source=DATASET_SOURCE, licence=DATASET_LICENCE, script=SCRIPT)
     con = duckdb.connect()
     con.execute("INSTALL spatial; LOAD spatial; SET preserve_insertion_order=false")
