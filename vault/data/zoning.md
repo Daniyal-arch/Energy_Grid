@@ -1,7 +1,7 @@
 ---
 title: Zoning
 tags: [data, lake, zoning]
-updated: 2026-11-08
+updated: 2026-11-09
 paths: [scripts/build_zoning.py, scripts/build_zoning_hub.py, scripts/zoning_documents.py, scripts/zoning_discover.py, scripts/probe_zoning.py, docs/research/zoning.md]
 ---
 
@@ -25,8 +25,15 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
   (`data/zoning_discovery/hub_services.csv`), partition `source=us_hub` (or `eu_hub`, `gb_hub`);
   one row per layer read in `zoning.hub_layers` (field chosen, rows, status, licence). Country from
   the GISCO outlines. 48 shards in Actions; `--merge` joins their partial catalogues.
+- `_ogr` in `build_zoning.py`: any GDAL source (`WFS:`, `OAPIF:`, a file, `/vsizip/`) through
+  DuckDB `st_read`, reprojected to EPSG:4326, streamed to disk with `COPY` and checked against
+  GDAL's feature count. Used by LU, Berlin, Upper Austria, Estonia, Burgenland, Vienna, Riga, NL.
+- `zoning_discover.py --wfs` lists INSPIRE planned-land-use and XPlanung WFS services
+  (`data/zoning_discovery/wfs_services.csv`, 2,196, mostly German municipalities); the hub
+  builder reads them with `--region wfs` (`hub:wfs`, partition `eu_wfs`).
 - Workflow: `lake-catalog.yml` input `zoning` = all, a source list, discover, or `hub:us`
-  (`hub:us@4,15` reruns only those shards).
+  (`hub:us@4,15` reruns only those shards). The zoning jobs pin `duckdb==1.5.6` and set
+  `CURL_CA_BUNDLE` (GDAL's curl has no CA bundle on the runner otherwise).
 
 ## How it works
 - Each row keeps the source's own code and label plus `attributes` (all fields, JSON): nothing is
@@ -43,4 +50,8 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
 > - France: `ST_MakeValid` fails on mixed-dimension rows; `make_valid()` forces 2D and repairs
 >   row by row (2 of 9,345 kept as published). R2 refused the AWS CLI's multipart checksums
 >   (`InvalidPart`): uploads set `AWS_REQUEST_CHECKSUM_CALCULATION=when_required`.
+> - Fetching every row in Python ran out of 12 GB on the Netherlands GML; `_ogr` writes with `COPY`.
+> - Spain SIU answers an HTML error page for big pages; `arcgis()` halves the page and retries.
+> - WFS servers cap responses (Burgenland 1,000): `OGR_WFS_PAGING_ALLOWED=ON`.
+> - Luxembourg OAPIF declares EPSG:3035 but returns WGS84 lat/lon (`latlon=True` swaps it).
 > - The National Zoning Atlas bucket no longer exists and mercatus.org refuses scripted downloads.

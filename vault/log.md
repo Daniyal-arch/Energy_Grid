@@ -8,6 +8,10 @@ updated: 2026-11-09
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-09** (claude/loving-dijkstra-5q8n1c, PR #20): zoning second wave. New sources
+  lu_pag, de_berlin, at_ooe, at_tirol, at_wien, at_bgld, ee_plan, cz_praha, lv_riga, es_siu,
+  nl_plu through a generic GDAL reader; WFS discovery list for the German sweep; streaming,
+  WFS paging and ArcGIS page halving fixes. Notes: zoning.
 - **2026-11-09** (claude/loving-dijkstra-5q8n1c, PR #20, brief 32): hot.duckdb ready in 6-10 s
   (views only over hot tables plus a cursor `search_path`), `libexpat1` in the Lambda image,
   area population cached in `resolve_area`; CI speed check rebaselined and green; final probe
