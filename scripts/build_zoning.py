@@ -19,6 +19,9 @@ Sources (all open, no key):
   be_wallonia   Belgium, Wallonia: plan de secteur in force, zones d'affectation (SPW)
   es_barcelona  Spain, Mapa Urbanístic de Catalunya for the province of Barcelona
                 (Diputació de Barcelona service): land qualification and classification
+  lu_pag        Luxembourg, PAG zones of every commune (INSPIRE OGC API Features)
+  de_berlin     Germany, Berlin: B-Plan outlines in force and in procedure, with PDF links
+  at_ooe        Austria, Upper Austria: Flächenwidmung zones (DORIS)
 
     uv run python scripts/build_zoning.py fr_gpu ie_myplan --lake lake-out [--upload]
     uv run python scripts/build_zoning.py ie_myplan --limit 5000   # a quick local test
@@ -129,6 +132,10 @@ CLASSES: dict[str, dict[str, str]] = {
     # England: each dataset is one designation.
     "gb_england": {},
     "fi_helsinki": {},
+    # codes kept as published; no harmonised lookup yet (class `other`)
+    "lu_pag": {},
+    "de_berlin": {},
+    "at_ooe": {},
 }  # fmt: skip
 
 
@@ -305,6 +312,71 @@ def fetch_es_bcn(c: httpx.Client, out: Path, limit: int | None) -> None:
         _arcgis_all(c, out, f"{base}/{layer}", limit, {"_kind": kind}, f"es {kind}")
 
 
+def _ogr(out: Path, url: str, layer: str, limit: int | None, extra: dict[str, Any],
+         tag: str, latlon: bool = False) -> None:  # fmt: skip
+    """Any GDAL source (WFS:, OAPIF:, a file or /vsizip/ path) through DuckDB's ST_Read.
+    The geometry is reprojected from the layer's declared CRS to EPSG:4326 (lon/lat) with
+    PROJ; `latlon` marks a layer whose coordinates are WGS84 latitude, longitude whatever CRS
+    it declares (they are swapped, not reprojected). The rows read are checked against the
+    layer's feature count when GDAL reports one."""
+    con = duckdb.connect()
+    con.execute("INSTALL spatial; LOAD spatial")
+    meta = con.execute(
+        "SELECT l.feature_count, l.geometry_fields[1].crs.auth_name, "
+        "l.geometry_fields[1].crs.auth_code FROM (SELECT unnest(layers) AS l "
+        "FROM st_read_meta(?)) WHERE l.name = ?", [url, layer]
+    ).fetchone()  # fmt: skip
+    if meta is None:
+        raise SystemExit(f"{tag}: layer {layer} not found at {url}")
+    total, auth, code = meta
+    cur = con.execute(f"SELECT * FROM st_read(?, layer = ?) {f'LIMIT {limit}' if limit else ''}",
+                      [url, layer])  # fmt: skip
+    cols = [d[0] for d in cur.description]
+    gtype = next(str(d[1]) for d in cur.description if str(d[1]).upper().startswith("GEOMETRY"))
+    gcol = cols[[str(d[1]) for d in cur.description].index(gtype)]
+    typed = gtype[gtype.find("'") + 1 : gtype.rfind("'")] if "'" in gtype else ""
+    crs = typed or (f"{auth}:{code}" if auth and code else "EPSG:4326")
+    geo = (
+        f"ST_FlipCoordinates({gcol}::GEOMETRY)"
+        if latlon
+        else f"ST_Transform({gcol}::GEOMETRY, '{crs}', 'EPSG:4326', always_xy := true)"
+    )
+    if latlon:
+        crs = "WGS84 latitude, longitude (swapped)"
+    rows = con.execute(
+        f"SELECT * EXCLUDE ({gcol}), ST_AsGeoJSON({geo}) AS __g FROM st_read(?, layer = ?) "
+        f"{f'LIMIT {limit}' if limit else ''}", [url, layer])  # fmt: skip
+    names = [d[0] for d in rows.description]
+    n = 0
+    with out.open("a", encoding="utf-8") as f:
+        while batch := rows.fetchmany(10_000):
+            for r in batch:
+                props = {k: (v if isinstance(v, (str, int, float, bool)) or v is None else str(v))
+                         for k, v in zip(names[:-1], r[:-1])}  # fmt: skip
+                g = json.loads(r[-1]) if r[-1] else None
+                f.write(json.dumps({"a": {**props, **extra}, "g": g}, ensure_ascii=False) + "\n")
+                n += 1
+    print(f"  {tag}: {n:,} (GDAL counts {total:,}; CRS {crs})", flush=True)
+    if not limit and total is not None and total >= 0 and n != total:
+        raise SystemExit(f"{tag}: {n:,} read, the layer counts {total:,}")
+
+
+def fetch_lu(c: httpx.Client, out: Path, limit: int | None) -> None:
+    _ogr(out, "OAPIF:https://wms.inspire.geoportail.lu/geoserver/lu/ogc/features/v1",
+         "LU.SpatialPlan.PAG", limit, {}, "lu PAG", latlon=True)  # fmt: skip
+
+
+def fetch_de_berlin(c: httpx.Client, out: Path, limit: int | None) -> None:
+    for layer, status in (("bplan:b_bp_fs", "in force"), ("bplan:a_bp_iv", "in procedure")):
+        _ogr(out, "WFS:https://gdi.berlin.de/services/wfs/bplan", layer, limit,
+             {"_status": status}, f"de-berlin {layer}")  # fmt: skip
+
+
+def fetch_at_ooe(c: httpx.Client, out: Path, limit: int | None) -> None:
+    _arcgis_all(c, out, "https://ags.doris.at/arcgis/rest/services/HVD/MapServer/12", limit, {},
+                "at-ooe Widmungen Flächen")  # fmt: skip
+
+
 ENGLAND = ("green-belt", "conservation-area", "article-4-direction-area", "brownfield-land")
 
 
@@ -377,6 +449,27 @@ MAPS: dict[str, dict[str, str]] = {
         "class": _cls("es_barcelona", "coalesce(" + a("C_QUAL_MUC") + ", " + a("D_CLAS_MUC") + ")"),
         "doc_url": "NULL",
     },
+    "lu_pag": {
+        "country": "'LU'", "authority": "json_extract_string(" + a("gml_description") + ", '$.CODE_COM')",
+        "plan_id": a("plan_id"), "plan_name": a("plantypename_xlink_title"),
+        "plan_status": "'in force'",
+        "adopted": a("legislationcitation_legislationcitation_date_ci_date_date_date"),
+        "zone_code": a("categorie"), "zone_label": a("specificlanduse0_xlink_title"),
+        "class_code": a("categorie"), "class": "'other'", "doc_url": a("regulationtext"),
+    },
+    "de_berlin": {
+        "country": "'DE'", "authority": "'Berlin, ' || " + a("bezirk"), "plan_id": a("planid"),
+        "plan_name": a("planname"), "plan_status": a("_status"), "adopted": a("festsg_am"),
+        "zone_code": a("planartname"), "zone_label": a("inhalt"), "class_code": "NULL",
+        "class": "'other'", "doc_url": a("scan_www"),
+    },
+    "at_ooe": {
+        "country": "'AT'", "authority": a("GEM_NR"), "plan_id": a("GEM_NR"),
+        "plan_name": "'Flächenwidmungsplan, Gemeinde ' || " + a("GEM_NR"),
+        "plan_status": "'in force'", "adopted": "NULL", "zone_code": a("KENNZAHL"),
+        "zone_label": a("ZUSATZTEXT"), "class_code": a("KENNZAHL"), "class": "'other'",
+        "doc_url": "NULL",
+    },
 }  # fmt: skip
 
 SOURCES: dict[str, tuple[Fetch, str, str]] = {
@@ -397,6 +490,16 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
     "es_barcelona": (fetch_es_bcn, "Mapa Urbanístic de Catalunya (Generalitat de Catalunya, "
                      "Departament de Territori), served for the province of Barcelona by the "
                      "Diputació de Barcelona (CARTOBASE/MUC)", "no licence stated on the service"),
+    "lu_pag": (fetch_lu, "Plans d'aménagement général (PAG) of every commune, INSPIRE Planned "
+               "Land Use, Administration du cadastre et de la topographie (geoportail.lu, OGC API "
+               "Features LU.SpatialPlan.PAG)",
+               "CC0 (data.public.lu, PAG géométries de tous les PAG version 2011 en vigueur)"),
+    "de_berlin": (fetch_de_berlin, "Bebauungspläne Berlin, Senatsverwaltung für "
+                  "Stadtentwicklung (gdi.berlin.de WFS bplan: in force and in procedure)",
+                  "dl-de/zero-2-0"),
+    "at_ooe": (fetch_at_ooe, "Flächenwidmungspläne Oberösterreich, Widmungen Flächen (DORIS, "
+               "Land Oberösterreich, ArcGIS HVD/MapServer layer 12)",
+               "no licence stated on the service (owner question 9)"),
 }  # fmt: skip
 
 STANDARD = ["country", "authority", "plan_id", "plan_name", "plan_status", "adopted", "zone_code", "zone_label", "class_code", "class", "doc_url"]  # fmt: skip
