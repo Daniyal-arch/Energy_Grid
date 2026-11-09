@@ -389,9 +389,23 @@ def fetch_de_berlin(c: httpx.Client, out: Path, limit: int | None) -> None:
              {"_status": status}, f"de-berlin {layer}")  # fmt: skip
 
 
+def _download(c: httpx.Client, url: str, path: Path) -> None:
+    with c.stream("GET", url) as r:
+        r.raise_for_status()
+        with path.open("wb") as f:
+            for chunk in r.iter_bytes(1 << 20):
+                f.write(chunk)
+    print(f"  downloaded {url}: {path.stat().st_size / 1e6:.1f} MB", flush=True)
+
+
 def fetch_at_ooe(c: httpx.Client, out: Path, limit: int | None) -> None:
-    _arcgis_all(c, out, "https://ags.doris.at/arcgis/rest/services/HVD/MapServer/12", limit, {},
-                "at-ooe Widmungen Flächen")  # fmt: skip
+    """The OGD shapefile: the ArcGIS service does not answer GitHub's runners (run
+    42571441861); the file holds the same 231,589 zones."""
+    z = out.with_name("at_ooe.zip")
+    _download(c, "https://e-gov.ooe.gv.at/at.gv.ooe.dorisdaten/DORIS_Basisdaten/"
+              "FLWI_WIDMUNGEN_F.zip", z)  # fmt: skip
+    _ogr(out, f"/vsizip/{z}/FLWI_WIDMUNGEN_F.shp", "FLWI_WIDMUNGEN_F", limit, {},
+         "at-ooe Widmungen Flächen")  # fmt: skip
 
 
 def fetch_ee(c: httpx.Client, out: Path, limit: int | None) -> None:
@@ -587,8 +601,8 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
                   "Stadtentwicklung (gdi.berlin.de WFS bplan: in force and in procedure)",
                   "dl-de/zero-2-0"),
     "at_ooe": (fetch_at_ooe, "Flächenwidmungspläne Oberösterreich, Widmungen Flächen (DORIS, "
-               "Land Oberösterreich, ArcGIS HVD/MapServer layer 12)",
-               "no licence stated on the service (owner question 9)"),
+               "Land Oberösterreich, OGD shapefile FLWI_WIDMUNGEN_F)",
+               "CC BY 4.0 (DORIS metadata 8FC62F91-E0F6-4DB0-91E1-9CBC329FFBA0)"),
     "ee_plan": (fetch_ee, "Maa- ja Ruumiamet planeeringute infosüsteem (PLANK): general plan "
                 "land use (yld_plan_maakas) and detailed plan areas (detail_plan_ala), WFS "
                 "gsavalik.envir.ee planeeringud", "no fees, no access constraints (service)"),
