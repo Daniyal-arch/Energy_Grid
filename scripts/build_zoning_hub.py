@@ -253,6 +253,8 @@ class Shard:
         import os
 
         os.environ["GML_ATTRIBUTES_TO_OGR_FIELDS"] = "YES"
+        os.environ["OGR_WFS_PAGING_ALLOWED"] = "ON"  # servers cap a response; GDAL pages
+        os.environ["OGR_WFS_PAGE_SIZE"] = "1000"
         url = f"WFS:{svc['url']}"
         con = duckdb.connect()
         con.execute("LOAD spatial")
