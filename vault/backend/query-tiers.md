@@ -1,7 +1,7 @@
 ---
 title: Query tiers (prepared, hot, lake) and exact area sums
 tags: [backend, lake, latency]
-updated: 2026-11-08
+updated: 2026-11-09
 paths: [backend/tests/test_area_registry.py, backend/tools/prepared.py, backend/tools/area_sum.py, backend/data/duck.py, backend/probes/probe_query_speed.py, backend/probes/build_prepared.py, scripts/build_hot.py, scripts/lake_rewrite.py, scripts/lake_storage.py, scripts/raster_recompress.py]
 ---
 
@@ -84,3 +84,12 @@ apply, lossy options measured for the owner). All by hand in `lake-catalog.yml` 
 >   each read (`CALL truncate_duckdb_logs()`).
 > - Prepared answers: without `wait_area_cells`, queued cell builds made every query wait 3 s
 >   and the shards ran out of time (5,999 of ~9,600 areas).
+> - hot.duckdb attaches as catalog `fast` with views only over its own tables; every cursor
+>   sets `search_path` to `fast.main,fast.<hot schemas>,lake.<schemas>` (`Duck.cursor`), so a
+>   lake table resolves through `lake`. A view per lake table bound its Parquet on R2 and made
+>   the file ready only after 500-570 s; now 6-10 s.
+> - main's daily `lake-catalog` run rebuilds glob views until brief 32 merges; dispatch
+>   `lake-catalog.yml` from the branch to restore file-list views and rebuild hot.duckdb.
+> - The Lambda image installs `libexpat1` (rasterio's GDAL); without it `area_stats` failed.
+> - `tools/areas.py` keeps the area population in `_PEOPLE` (2,048 areas): re-reading the
+>   raster made a warm `resolve_area` of Bavaria take 12 s.

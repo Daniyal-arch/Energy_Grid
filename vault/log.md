@@ -1,13 +1,17 @@
 ---
 title: Log
 tags: [log]
-updated: 2026-11-08
+updated: 2026-11-09
 ---
 
 # Log
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-09** (claude/loving-dijkstra-5q8n1c, PR #20, brief 32): hot.duckdb ready in 6-10 s
+  (views only over hot tables plus a cursor `search_path`), `libexpat1` in the Lambda image,
+  area population cached in `resolve_area`; CI speed check rebaselined and green; final probe
+  in docs/research/query-speed.md. Notes: [[query-tiers]].
 - **2026-11-08** (claude/loving-dijkstra-5q8n1c, PR #20, brief 32 and zoning): detailed-outline
   cells (sampling boundary, grouped interior tests, two-step clips), queries wait 3 s for cells,
   prepared build waits once per area; Overture regions prepared; speed check prints hot state.
