@@ -1488,6 +1488,58 @@ Probed 2026-11-08T06:31:06+00:00 in the Lambda-sized container (2 vCPU, 3,008 MB
 
 (The per-table list of this pass is in the run artifact `query-speed-report`; the first pass above lists every table.)
 
+## Final measurements and each miss (run 42538661868, 2026-11-09, hot.duckdb on)
+
+Run in the Lambda-sized container with `hot.duckdb` ready in every shard (7-10 s after start:
+`fast` now holds views over the 474 hot tables only and the lake answers the rest by DuckDB's
+search path; a view per lake table had bound each table's Parquet files on R2 and delayed
+`hot.duckdb` by 500-570 s). Warm = median of 3 repeats. Tier counts below are computed from
+the shard records: a table is Tier 1 when none of its queries read bytes from R2.
+
+| path | p50 | p95 | target | result |
+|---|---:|---:|---|---|
+| Tier 0, prepared `quick` answers (warm) | 2.9 ms | 543 ms (all templates) | p50 under 50 ms | met |
+| Tier 1, hot tables (476 tables, 1,876 queries, warm) | 2.2 ms | 25.6 ms | p50 under 20 ms, p95 under 100 ms | met |
+| Tier 2, lake, city (101 queries, warm) | 76.6 ms | 1,943 ms | p50 under 300 ms, p95 under 1 s | p50 met, p95 missed |
+| Tier 2, lake, region (97 queries, warm) | 112 ms | 2,033 ms | p50 under 300 ms, p95 under 1 s | p50 met, p95 missed |
+| `quick`, every template (warm) | 2.9 ms | 543 ms | p95 under 100 ms | missed |
+| `resolve_area` (warm) | 11.4 ms | 96.5 ms | p95 under 100 ms | met |
+| Unseen queries, 200 generated, result cache off | 301 ms | 2,157 ms | report | before the tiers: 833 / 1,767 ms |
+
+Same unseen queries with `hot.duckdb` off (run 42540701111): p50 452 ms; per query the ratio
+hot on / hot off has a median of 0.96, so `hot.duckdb` does not slow the lake queries beside it.
+Between runs on different GitHub runners the same query varies by about 1.4x (an earlier run
+gave p50 70.9 ms); compare within one run.
+
+Each miss:
+
+- **`quick` p95 (543 ms):** the templates that are not prepared answers run live: `totals
+  Europe` (543 ms, a sum over every country's rows), `compare France; Germany` (494 ms, two
+  profiles), `prices Germany` (119 ms, the newest prices from the lake). The prepared
+  templates (profile, top, totals by area) answer in 1.2-3.4 ms; Bavaria's profile 50 ms.
+- **Tier 2 city and region p95 (about 2 s):** 21 of 198 lake area queries take over 1 s. Two
+  causes. Whole files read on each query: `wave9.it_istat_sezioni` (407 MB a query, 7 s),
+  `overture_power.lines` (213 MB, 3.8 s), `overture_power.sites` (71 MB, 3.5 s),
+  `main.water_risk` and `aqueduct.baseline_annual` (100 MB, 1.8-2 s): their row groups are not
+  sorted by place, so no group can be skipped; they were not among the 41 tables of the Step 4
+  rewrite (chosen by bytes read in the first probe). Exact polygon tests with no bytes read:
+  `wave9.cz_zsj` (8.1 s), `protected.natura2000` (2.8 s), `wave9.at_zaehlsprengel` (2.6 s),
+  `grw.solar` (2.1 s): the boundary cells' rows are tested against detailed outlines on 2 CPUs.
+  Next steps: add the first group to the rewrite (sort by H3 cell, `bbox` column) and keep a
+  simplified-plus-exact two-step test for the polygon tables.
+- **`area_stats`:** the raster measures now answer (every earlier run failed on a missing
+  `libexpat` in the image). Slowest: NEX-GDDP climate (32-35 s, a global NetCDF-derived
+  raster read over HTTP), land cover by region (18.5 s), people by region (10 s). `resolve_area`
+  keeps the population it summed for an area, so a repeat costs nothing; the first resolve of a
+  large region still reads the raster. The flood raster `lake/flood/eu_classes.tif` answers
+  HTTP 404 on R2: the key is missing (to restore from the raster build).
+- **Unseen queries:** 192 of 200 answered. Six refusals by the licence guard (GEM tables,
+  aggregated use only); one mixed-type error in a generated filter (`wave9.gb_ssen_opendata`:
+  text compared with a number, a generator case, not an engine fault); one stopped at the 60 s
+  limit: a group-by over every row of `entsoe.imbalance_price` (27 MB read cold, CPU-bound on
+  2 CPUs; the same query took 123 ms in a run where the file was already cached, 91 s in
+  another). It needs a rollup by zone and category, or the agent's per-zone filter.
+
 ## Latest run
 
 <!-- measured:start -->
