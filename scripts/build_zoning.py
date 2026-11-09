@@ -352,7 +352,7 @@ def _ogr(out: Path, url: str, layer: str, limit: int | None, extra: dict[str, An
         while batch := rows.fetchmany(10_000):
             for r in batch:
                 props = {k: (v if isinstance(v, (str, int, float, bool)) or v is None else str(v))
-                         for k, v in zip(names[:-1], r[:-1])}  # fmt: skip
+                         for k, v in zip(names[:-1], r[:-1], strict=True)}  # fmt: skip
                 g = json.loads(r[-1]) if r[-1] else None
                 f.write(json.dumps({"a": {**props, **extra}, "g": g}, ensure_ascii=False) + "\n")
                 n += 1
