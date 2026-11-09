@@ -265,6 +265,8 @@ jobs:
     if: needs.zoning-plan.outputs.hub == ''
     runs-on: ubuntu-latest
     timeout-minutes: 300
+    env:
+      CURL_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt  # GDAL's curl (WFS, OGC API) needs it
     strategy:
       fail-fast: false
       max-parallel: 1
@@ -307,6 +309,8 @@ jobs:
     needs: zoning-plan
     if: needs.zoning-plan.outputs.hub != ''
     runs-on: ubuntu-latest
+    env:
+      CURL_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
     timeout-minutes: 330
     strategy:
       fail-fast: false
