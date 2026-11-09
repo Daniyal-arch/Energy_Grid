@@ -249,7 +249,7 @@ jobs:
         run: |
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import json, os
-          allsrc = ["ie_myplan", "dk_plandata", "fi_helsinki", "gb_england", "us_ca", "fr_gpu", "be_wallonia", "es_barcelona", "lu_pag", "de_berlin", "at_ooe", "ee_plan", "at_tirol", "at_bgld", "at_wien"]
+          allsrc = ["ie_myplan", "dk_plandata", "fi_helsinki", "gb_england", "us_ca", "fr_gpu", "be_wallonia", "es_barcelona", "lu_pag", "de_berlin", "at_ooe", "ee_plan", "at_tirol", "at_bgld", "at_wien", "nl_plu"]
           raw = os.environ["SOURCES"].strip()
           hub = raw[4:] if raw.startswith("hub:") else ""
           hub, _, only = hub.partition("@")
@@ -279,6 +279,11 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Free disk space (the Netherlands file is 11.6 GB)
+        if: matrix.source == 'nl_plu'
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h / | tail -1
       - name: ${{ matrix.source }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

@@ -22,6 +22,7 @@ Sources (all open, no key):
   lu_pag        Luxembourg, PAG zones of every commune (INSPIRE OGC API Features)
   de_berlin     Germany, Berlin: B-Plan outlines in force and in procedure, with PDF links
   at_ooe        Austria, Upper Austria: Flächenwidmung zones (DORIS)
+  nl_plu        Netherlands, every plan in the national DSO-LV harmonised to INSPIRE (11.6 GB)
   ee_plan       Estonia, national planning register: general plan land use, detailed plans
   at_tirol      Austria, Tyrol: Flächenwidmung zones
   at_bgld       Austria, Burgenland: INSPIRE zoning elements (HILUCS classes)
@@ -143,6 +144,7 @@ CLASSES: dict[str, dict[str, str]] = {
     "ee_plan": {},
     "at_tirol": {},
     "at_bgld": {},  # HILUCS (see HILUCS below)
+    "nl_plu": {},  # HILUCS
     # Vienna: Widmungsklasse codes with the service's own labels (Wiener Bauordnung)
     "at_wien": {"WO": "residential", "WOGV": "residential", "WOGF": "residential",
                 "WOFB": "residential", "WOGFGV": "residential", "GS": "residential",
@@ -408,6 +410,20 @@ def fetch_at_ooe(c: httpx.Client, out: Path, limit: int | None) -> None:
          "at-ooe Widmungen Flächen")  # fmt: skip
 
 
+def fetch_nl(c: httpx.Client, out: Path, limit: int | None) -> None:
+    """The national INSPIRE file (11.6 GB GML, PDOK Atom feed, refreshed by Kadaster): every
+    plan in the DSO-LV (Omgevingswet) harmonised to INSPIRE Planned Land Use."""
+    url = (
+        "https://service.pdok.nl/kadaster/omgevingswet-planned-land-use/atom/downloads/land_use.gml"
+    )
+    if limit:
+        src = f"/vsicurl/{url}"
+    else:
+        src = str(out.with_name("nl_land_use.gml"))
+        _download(c, url, Path(src))
+    _ogr(out, src, "ZoningElement", limit, {}, "nl ZoningElement")
+
+
 def fetch_ee(c: httpx.Client, out: Path, limit: int | None) -> None:
     url = "WFS:https://gsavalik.envir.ee/geoserver/planeeringud/wfs"
     for layer, kind in (("planeeringud:yld_plan_maakas", "general plan land use"),
@@ -566,6 +582,15 @@ MAPS: dict[str, dict[str, str]] = {
         "class_code": "regexp_extract(" + a("hilucsLandUse_href") + ", '[^/]+$')",
         "class": _hilucs(a("hilucsLandUse_href")), "doc_url": a("officialDocument_href"),
     },
+    "nl_plu": {
+        "country": "'NL'", "authority": "regexp_extract(" + a("plan_href") + ", '([^/.]+)\\.[^/]*$', 1)",
+        "plan_id": a("plan_href"), "plan_name": a("plan_href"), "plan_status": "'in force'",
+        "adopted": a("beginLifespanVersion"),
+        "zone_code": "regexp_extract(" + a("specificLandUse_href") + ", '[^/]+$')",
+        "zone_label": "coalesce(" + a("name") + ", regexp_extract(" + a("specificLandUse_href") + ", '[^/]+$'))",
+        "class_code": "regexp_extract(" + a("hilucsLandUse_href") + ", '[^/]+$')",
+        "class": _hilucs(a("hilucsLandUse_href")), "doc_url": a("officialDocument_href"),
+    },
     "at_wien": {
         "country": "'AT'", "authority": "'Wien, Bezirk ' || " + a("BEZIRK"),
         "plan_id": "NULL", "plan_name": "'Flächenwidmungsplan Wien (generalisiert)'",
@@ -603,6 +628,8 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
     "at_ooe": (fetch_at_ooe, "Flächenwidmungspläne Oberösterreich, Widmungen Flächen (DORIS, "
                "Land Oberösterreich, OGD shapefile FLWI_WIDMUNGEN_F)",
                "CC BY 4.0 (DORIS metadata 8FC62F91-E0F6-4DB0-91E1-9CBC329FFBA0)"),
+    "nl_plu": (fetch_nl, "Gepland landgebruik DSO-LV Omgevingswet (INSPIRE geharmoniseerd), "
+               "Kadaster via PDOK Atom download land_use.gml", "Public Domain Mark 1.0 (PDOK Atom feed)"),
     "ee_plan": (fetch_ee, "Maa- ja Ruumiamet planeeringute infosüsteem (PLANK): general plan "
                 "land use (yld_plan_maakas) and detailed plan areas (detail_plan_ala), WFS "
                 "gsavalik.envir.ee planeeringud", "no fees, no access constraints (service)"),
