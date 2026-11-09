@@ -1517,6 +1517,11 @@ Each miss:
   Europe` (543 ms, a sum over every country's rows), `compare France; Germany` (494 ms, two
   profiles), `prices Germany` (119 ms, the newest prices from the lake). The prepared
   templates (profile, top, totals by area) answer in 1.2-3.4 ms; Bavaria's profile 50 ms.
+- **Prepared coverage (4,568 of about 9,600 areas):** the rebuild of 2026-11-09 (run
+  42540733343, 16 shards) stopped at each shard's time budget: 4,568 areas and 22,840 answers
+  (178 countries, 49 US states, 2,265 regions; the rest cities and smaller areas). A shard
+  prepares about one area per 14 s, 757 s of that waiting for H3 cells of detailed outlines.
+  Areas not prepared are answered live (Tier 1 or 2).
 - **Tier 2 city and region p95 (about 2 s):** 21 of 198 lake area queries take over 1 s. Two
   causes. Whole files read on each query: `wave9.it_istat_sezioni` (407 MB a query, 7 s),
   `overture_power.lines` (213 MB, 3.8 s), `overture_power.sites` (71 MB, 3.5 s),
