@@ -1515,7 +1515,11 @@ Repeat after the prepared rebuild and the new `hot.duckdb` (run 42556287354, 202
 ready in 6-22 s on all eight shards): Tier 1 warm 2.5 / 27.6 ms (1,876 queries), Tier 2 city
 84.8 / 2,978 ms, Tier 2 region 96.8 / 2,004 ms, `quick` warm 4.0 / 715 ms, `resolve_area` warm
 14.5 / 103 ms, unseen 385 / 1,973 ms (192 of 200 answered). Same misses as above; `resolve_area`
-p95 sits 3 ms over the 100 ms target on this runner. The CI baseline stays on run 42538661868.
+p95 sits 3 ms over the 100 ms target on this runner. The CI speed check then failed on
+`shapes.nuts` (region query, `ST_Intersects` over 1,798 outlines, no R2 bytes): 303-316 ms
+against a baseline of 189 ms; the CI runs before the `hot.duckdb` rebuild gave 254-265 ms with the
+same code, and this probe ran slower everywhere (health route 14.5 to 24.2 ms). The cause was not
+found; `data/query_speed.json` is rebaselined from this run (the current `hot.duckdb`).
 
 Each miss:
 
