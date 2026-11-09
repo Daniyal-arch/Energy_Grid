@@ -378,19 +378,24 @@ def _ogr(out: Path, url: str, layer: str, limit: int | None, extra: dict[str, An
     )
     if latlon:
         crs = "WGS84 latitude, longitude (swapped)"
-    rows = con.execute(
-        f"SELECT * EXCLUDE ({gcol}), ST_AsGeoJSON({geo}) AS __g FROM st_read(?, layer = ?) "
-        f"{f'LIMIT {limit}' if limit else ''}", [url, layer])  # fmt: skip
-    names = [d[0] for d in rows.description]
+    # COPY streams to disk; a Python fetch materialises the whole layer (the Netherlands
+    # ZoningElement layer ran out of 12 GB that way).
+    con.execute("SET preserve_insertion_order = false")
+    part = out.with_suffix(".ogr.json")
+    con.execute(
+        f"COPY (SELECT * EXCLUDE ({gcol}), ST_AsGeoJSON({geo}) AS __g FROM st_read(?, layer = ?) "
+        f"{f'LIMIT {limit}' if limit else ''}) TO '{part}' (FORMAT JSON)", [url, layer])  # fmt: skip
     n = 0
-    with out.open("a", encoding="utf-8") as f:
-        while batch := rows.fetchmany(10_000):
-            for r in batch:
-                props = {k: (v if isinstance(v, (str, int, float, bool)) or v is None else str(v))
-                         for k, v in zip(names[:-1], r[:-1], strict=True)}  # fmt: skip
-                g = json.loads(r[-1]) if r[-1] else None
-                f.write(json.dumps({"a": {**props, **extra}, "g": g}, ensure_ascii=False) + "\n")
-                n += 1
+    with out.open("a", encoding="utf-8") as f, part.open(encoding="utf-8") as src:
+        for line in src:
+            r = json.loads(line)
+            g = r.pop("__g", None)
+            props = {k: (json.dumps(v, ensure_ascii=False) if isinstance(v, (dict, list)) else v)
+                     for k, v in r.items()}  # fmt: skip
+            g = json.loads(g) if isinstance(g, str) else g  # a JSON value already
+            f.write(json.dumps({"a": {**props, **extra}, "g": g}, ensure_ascii=False) + "\n")
+            n += 1
+    part.unlink()
     print(f"  {tag}: {n:,} (GDAL counts {total:,}; CRS {crs[:60]})", flush=True)
     if not limit and total is not None and total >= 0 and n != total:
         raise SystemExit(f"{tag}: {n:,} read, the layer counts {total:,}")
