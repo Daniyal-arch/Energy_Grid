@@ -151,3 +151,44 @@ each with a 290-minute budget, every layer logged in `zoning.hub_layers`.
   landgebruik RPNL Wro, INSPIRE geharmoniseerd") answered 503. Next leads: the Ruimtelijke Plannen
   API v4 (Informatiehuis Ruimte, needs an API key: owner question if pursued) and municipal WFS
   (Utrecht, Zuid-Holland).
+
+## Second wave: every EU country, the UK and the US (2026-11-09)
+
+Method: the data.europa.eu search API by country with each country's plan terms, keeping
+distributions that are WFS, GeoPackage, GeoJSON, shapefile or GML; GetCapabilities and
+`st_read_meta` (GDAL through DuckDB) on every candidate; ArcGIS REST `?f=json` and
+`returnCountOnly` for ArcGIS services; the ArcGIS Online search API for US statewide atlases.
+Built sources are in docs/DATA_SOURCES.md; their readers in `scripts/build_zoning.py`.
+
+| Country / area | Source found | Answer | Built as |
+|---|---|---|---|
+| Netherlands | PDOK Atom "Gepland landgebruik DSO-LV Omgevingswet (INSPIRE geharmoniseerd)", `land_use.gml` (11.6 GB, updated 2026-10-24, Public Domain Mark 1.0) | 200 | `nl_plu` (GitHub Actions only) |
+| Luxembourg | geoportail.lu OGC API Features `LU.SpatialPlan.PAG` (456,770 PAG zones of every commune; data.public.lu CC0); the service declares EPSG:3035 but returns latitude, longitude, so the axes are swapped, not reprojected | 200 | `lu_pag` |
+| Spain | SIU (Ministerio de Vivienda) ArcGIS `SIU/CLASES_DE_SUELO` (21,791 land-class polygons) and `SIU/Planeamiento_Vigente` (8,217 municipalities with the plan in force and the regional register link); CC BY 4.0. The SIU WFS lists no feature types | 200 | `es_siu` |
+| Estonia | Maa- ja Ruumiamet planning register WFS `gsavalik.envir.ee/geoserver/planeeringud`: general plan land use `yld_plan_maakas` (56,862) and detailed plan areas `detail_plan_ala` (4,379); 60 more layers (plots, buildings, restrictions) | 200 | `ee_plan` |
+| Austria, Upper Austria | DORIS OGD shapefile `FLWI_WIDMUNGEN_F.zip` (231,589 zones, CC BY 4.0); the ArcGIS service answers here but not from GitHub's runners | 200 | `at_ooe` |
+| Austria, Tyrol | ArcGIS `FLW_Flaechenwidmung` FeatureServer (79,566); its WFS returns curved geometries GDAL cannot read | 200 | `at_tirol` |
+| Austria, Burgenland | INSPIRE ZoningElement WFS on hale connect (79,705, HILUCS codes) | 200 | `at_bgld` |
+| Austria, Vienna | data.wien.gv.at WFS `GENFLWIDMUNGOGD` (26,437, CC BY 3.0 AT) | 200 | `at_wien` |
+| Austria, Carinthia | `gis.ktn.gv.at/OGD/Geographie_Planung/flawi_ktn_gpkg.zip` | connection reset from this container | to retry from Actions |
+| Austria, Lower Austria, Salzburg, Styria, Vorarlberg | NÖ OGD WFS holds regional programmes (`RRU_REGROP_*`), not Flächenwidmung | | not found yet |
+| Germany, Berlin | `gdi.berlin.de/services/wfs/bplan`: B-Plan outlines in force (2,852) and in procedure (1,196) with PDF scans; dl-de/zero-2-0 | 200 | `de_berlin` |
+| Germany, municipal | 2,196 INSPIRE PLU and XPlanung WFS services (data.europa.eu, `data/zoning_discovery/wfs_services.csv`); many hold plan outlines and scanned maps only (`BP_Plan`, `SpatialPlan`, `XP_Rasterdarstellung`) | 200 | `eu_wfs` (sweep) |
+| Germany, Schleswig-Holstein | INSPIRE WFS `WFS_SH_AIII_LU`: 64 ZoningElements only | 200 | not built (in the sweep) |
+| Czechia | Prague land-use plan functional areas (IPR Praha ArcGIS, 15,442, CC BY); regional ZÚR layers only elsewhere; no national service | 200 | `cz_praha` |
+| Latvia | Riga spatial plan functional zoning GeoPackage (6,132, CC BY 4.0); TAPIS (geolatvija.lv) holds every municipal plan but no public WFS was found | 200 | `lv_riga` |
+| Slovenia | PIS thematic layers: generalised land use `gnrp_D96.zip` (state 2024-06-03, no longer maintained) | TLS: the server sends an incomplete certificate chain | blocked (not worked around) |
+| Croatia | Zagreb planned land use 2013 (INSPIRE WFS on transformiraj.nipp.hr); ISPU offers WMS/WFS per the 2015 regulation, endpoint not found | | not built |
+| Portugal | 278 PDM datasets registered in SNIG; municipal open data (Águeda GPKG); no national WFS endpoint found | | not built |
+| Poland | National MPZP integration is WMS only (KIMPZP); vector per gmina (APP), e.g. Łódź SHP | | not built |
+| Italy | Lombardy PGT per comune (geoportal map service), Milan PGT; no national layer | | not built |
+| Sweden | City GeoPackages (Svedala, Helsingborg, Lomma) and WFS (Karlstad, Huddinge); Lantmäteriet NGP detaljplan needs an API account | | owner question |
+| Finland | City WFS (Turku, Kuopio, Raisio, Vihti, Tampere); the national Ryhti register is filling until 2029 | | not built |
+| Slovakia | Banská Bystrica region plan WFS (regional layers) | 200 | not built |
+| Greece | City WFS (Piraeus zones, Kalamata, Maroussi) | | not built |
+| Hungary, Romania, Bulgaria, Cyprus, Lithuania | no open vector zoning found (Lithuania: TPDRIS data on request) | | none |
+| Malta | INSPIRE services list statistics, no zoning layer | | none |
+| UK, Scotland | Spatial Hub Local Development Plans: WFS needs a free account; the national compilation is "Restricted Data" | | owner question |
+| UK, Wales | DataMapWales holds an urban settlement boundary, no LDP allocations | | none |
+| UK, Northern Ireland | OpenDataNI API did not answer | | none |
+| US | Washington State Zoning Atlas (470,130 zones) and New Hampshire Zoning Atlas are in the Hub sweep (`us_hub`) | 200 | `us_hub` |

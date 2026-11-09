@@ -200,3 +200,22 @@ needs, is far smaller than the PDFs (one 22 MB Danish plan gave 1,011 pages of t
   which is an estimate of position. Options: leave these as documents with text only
   (recommended), or georeference a named list of plans and label them "digitised from the PDF
   map".
+- **Austria, Tyrol and Burgenland** (`at_tirol`, `at_bgld`): Tyrol's service states no licence;
+  Burgenland's says "otherRestrictions" without naming them. In the lake, private; may they be
+  shown on the public map?
+
+## 10. Zoning: accounts and a server with a broken certificate chain (2026-11-09)
+
+- **Scotland, Spatial Hub** (Improvement Service): the Local Development Plans WFS needs a free
+  registered account, and the national compilation is marked "Restricted Data" (council layers
+  are OGL). To build it: register at data.spatialhub.scot, then store the user name and password
+  as repo secrets `SPATIALHUB_USER` and `SPATIALHUB_PASSWORD` (documented in `.env.example`
+  when the source is built). Accept the account terms?
+- **Sweden, Lantmäteriet NGP detaljplaner**: the national detailed-plan download needs an API
+  account (geotorget.lantmateriet.se). Register and store `LANTMATERIET_API_KEY`?
+- **Netherlands, Ruimtelijke Plannen API v4**: no longer needed for the national coverage (the
+  PDOK INSPIRE file is built as `nl_plu`); only the plan texts would need it.
+- **Slovenia, PIS** (`dokumenti-pis.mop.gov.si`): the server sends an incomplete TLS certificate
+  chain, so verified downloads fail. Not worked around (verification is never turned off).
+  Options: wait for the ministry to fix it, or the owner downloads `gnrp_D96.zip` by hand into
+  `infraatlas-raw/zoning-raw/si/` for the build to read.
