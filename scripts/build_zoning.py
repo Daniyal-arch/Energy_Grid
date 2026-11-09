@@ -201,10 +201,12 @@ def wfs(
 
 
 def arcgis(
-    c: httpx.Client, layer: str, *, limit: int | None = None, order: str = "OBJECTID"
-) -> Iterator[dict[str, Any]]:
-    """ArcGIS FeatureServer layer as GeoJSON in EPSG:4326, paged by resultOffset."""
-    page = int(_get(c, layer, {"f": "json"}).json().get("maxRecordCount") or 1000)
+    c: httpx.Client, layer: str, *, limit: int | None = None, order: str = "OBJECTID",
+    page: int | None = None,
+) -> Iterator[dict[str, Any]]:  # fmt: skip
+    """ArcGIS FeatureServer layer as GeoJSON in EPSG:4326, paged by resultOffset; `page`
+    caps the page below the server's maxRecordCount where full pages fail."""
+    page = page or int(_get(c, layer, {"f": "json"}).json().get("maxRecordCount") or 1000)
     start = 0
     while True:
         n = min(page, limit - start) if limit else page
@@ -317,10 +319,11 @@ def _count(c: httpx.Client, layer: str) -> int:
 
 
 def _arcgis_all(c: httpx.Client, out: Path, layer: str, limit: int | None,
-                extra: dict[str, Any], tag: str, order: str = "OBJECTID") -> None:  # fmt: skip
+                extra: dict[str, Any], tag: str, order: str = "OBJECTID",
+                page: int | None = None) -> None:  # fmt: skip
     """A whole ArcGIS layer; stops when the rows read differ from the service's count."""
     total = _count(c, layer)
-    n = _ndjson(out, arcgis(c, layer, limit=limit, order=order), extra)
+    n = _ndjson(out, arcgis(c, layer, limit=limit, order=order, page=page), extra)
     print(f"  {tag}: {n:,} (the service counts {total:,})", flush=True)
     if not limit and n != total:
         raise SystemExit(f"{tag}: {n:,} read, the service counts {total:,}")
@@ -348,6 +351,9 @@ def _ogr(out: Path, url: str, layer: str, limit: int | None, extra: dict[str, An
     import os
 
     os.environ["GML_ATTRIBUTES_TO_OGR_FIELDS"] = "YES"  # INSPIRE codes sit in xlink:href
+    # WFS servers cap a response (Burgenland: 1,000); GDAL pages through the whole layer.
+    os.environ["OGR_WFS_PAGING_ALLOWED"] = "ON"
+    os.environ["OGR_WFS_PAGE_SIZE"] = "1000"
     con = duckdb.connect()
     con.execute("INSTALL spatial; LOAD spatial")
     meta = con.execute(
@@ -437,10 +443,11 @@ def fetch_nl(c: httpx.Client, out: Path, limit: int | None) -> None:
 def fetch_es_siu(c: httpx.Client, out: Path, limit: int | None) -> None:
     base = "https://mapas.fomento.gob.es/arcgis/rest/services/SIU"
     _arcgis_all(c, out, f"{base}/CLASES_DE_SUELO/MapServer/0", limit,
-                {"_kind": "land class"}, "es SIU clases de suelo")  # fmt: skip
+                {"_kind": "land class"}, "es SIU clases de suelo", page=500)  # fmt: skip
     _arcgis_all(c, out, f"{base}/Planeamiento_Vigente/MapServer/0", limit,
                 {"_kind": "plan in force"}, "es SIU planeamiento vigente",
-                order="GIS_SIU.SIU.EGRN_recintos_municipales_inspire.OBJECTID")  # fmt: skip
+                order="GIS_SIU.SIU.EGRN_recintos_municipales_inspire.OBJECTID",
+                page=500)  # fmt: skip
 
 
 def fetch_cz_praha(c: httpx.Client, out: Path, limit: int | None) -> None:
