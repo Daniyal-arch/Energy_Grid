@@ -1511,6 +1511,12 @@ hot on / hot off has a median of 0.96, so `hot.duckdb` does not slow the lake qu
 Between runs on different GitHub runners the same query varies by about 1.4x (an earlier run
 gave p50 70.9 ms); compare within one run.
 
+Repeat after the prepared rebuild and the new `hot.duckdb` (run 42556287354, 2026-11-09, file
+ready in 6-22 s on all eight shards): Tier 1 warm 2.5 / 27.6 ms (1,876 queries), Tier 2 city
+84.8 / 2,978 ms, Tier 2 region 96.8 / 2,004 ms, `quick` warm 4.0 / 715 ms, `resolve_area` warm
+14.5 / 103 ms, unseen 385 / 1,973 ms (192 of 200 answered). Same misses as above; `resolve_area`
+p95 sits 3 ms over the 100 ms target on this runner. The CI baseline stays on run 42538661868.
+
 Each miss:
 
 - **`quick` p95 (543 ms):** the templates that are not prepared answers run live: `totals
