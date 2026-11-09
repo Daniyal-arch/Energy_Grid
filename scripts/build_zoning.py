@@ -212,7 +212,16 @@ def arcgis(
         n = min(page, limit - start) if limit else page
         params = {"where": "1=1", "outFields": "*", "outSR": 4326, "f": "geojson",
                   "resultOffset": start, "resultRecordCount": n, "orderByFields": order}  # fmt: skip
-        feats = _get(c, f"{layer}/query", params).json().get("features") or []
+        r = _get(c, f"{layer}/query", params)
+        try:
+            feats = r.json().get("features") or []
+        except json.JSONDecodeError:
+            # Some servers answer an HTML error page for a page too large to render (Spain
+            # SIU): ask the same offset again with half the rows, down to one row.
+            if n == 1:
+                raise SystemExit(f"{layer}: no JSON answer at offset {start}") from None
+            page = max(1, n // 2)
+            continue
         yield from feats
         start += len(feats)
         if not feats or (limit and start >= limit):
