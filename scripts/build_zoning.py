@@ -23,6 +23,9 @@ Sources (all open, no key):
   de_berlin     Germany, Berlin: B-Plan outlines in force and in procedure, with PDF links
   at_ooe        Austria, Upper Austria: Flächenwidmung zones (DORIS)
   nl_plu        Netherlands, every plan in the national DSO-LV harmonised to INSPIRE (11.6 GB)
+  es_siu        Spain, national SIU: land classes and the plan in force per municipality
+  cz_praha      Czechia, Prague: land-use plan functional areas
+  lv_riga       Latvia, Riga: spatial plan functional zoning
   ee_plan       Estonia, national planning register: general plan land use, detailed plans
   at_tirol      Austria, Tyrol: Flächenwidmung zones
   at_bgld       Austria, Burgenland: INSPIRE zoning elements (HILUCS classes)
@@ -145,6 +148,13 @@ CLASSES: dict[str, dict[str, str]] = {
     "at_tirol": {},
     "at_bgld": {},  # HILUCS (see HILUCS below)
     "nl_plu": {},  # HILUCS
+    # Spain SIU: the land classes of the Ley de Suelo as the service labels them
+    "es_siu": {"SUELO URBANO": "urban", "SUELO URBANO NO CONSOLIDADO": "urban",
+               "SUELO URBANIZABLE DELIMITADO O SECTORIZADO": "to_urbanise",
+               "SUELO URBANIZABLE NO DELIMITADO O SECTORIZADO": "to_urbanise",
+               "SUELO NO URBANIZABLE": "natural", "SISTEMAS GENERALES Y OTROS": "infrastructure"},
+    "cz_praha": {},
+    "lv_riga": {},
     # Vienna: Widmungsklasse codes with the service's own labels (Wiener Bauordnung)
     "at_wien": {"WO": "residential", "WOGV": "residential", "WOGF": "residential",
                 "WOFB": "residential", "WOGFGV": "residential", "GS": "residential",
@@ -307,10 +317,10 @@ def _count(c: httpx.Client, layer: str) -> int:
 
 
 def _arcgis_all(c: httpx.Client, out: Path, layer: str, limit: int | None,
-                extra: dict[str, Any], tag: str) -> None:  # fmt: skip
+                extra: dict[str, Any], tag: str, order: str = "OBJECTID") -> None:  # fmt: skip
     """A whole ArcGIS layer; stops when the rows read differ from the service's count."""
     total = _count(c, layer)
-    n = _ndjson(out, arcgis(c, layer, limit=limit), extra)
+    n = _ndjson(out, arcgis(c, layer, limit=limit, order=order), extra)
     print(f"  {tag}: {n:,} (the service counts {total:,})", flush=True)
     if not limit and n != total:
         raise SystemExit(f"{tag}: {n:,} read, the service counts {total:,}")
@@ -375,7 +385,7 @@ def _ogr(out: Path, url: str, layer: str, limit: int | None, extra: dict[str, An
                 g = json.loads(r[-1]) if r[-1] else None
                 f.write(json.dumps({"a": {**props, **extra}, "g": g}, ensure_ascii=False) + "\n")
                 n += 1
-    print(f"  {tag}: {n:,} (GDAL counts {total:,}; CRS {crs})", flush=True)
+    print(f"  {tag}: {n:,} (GDAL counts {total:,}; CRS {crs[:60]})", flush=True)
     if not limit and total is not None and total >= 0 and n != total:
         raise SystemExit(f"{tag}: {n:,} read, the layer counts {total:,}")
 
@@ -422,6 +432,28 @@ def fetch_nl(c: httpx.Client, out: Path, limit: int | None) -> None:
         src = str(out.with_name("nl_land_use.gml"))
         _download(c, url, Path(src))
     _ogr(out, src, "ZoningElement", limit, {}, "nl ZoningElement")
+
+
+def fetch_es_siu(c: httpx.Client, out: Path, limit: int | None) -> None:
+    base = "https://mapas.fomento.gob.es/arcgis/rest/services/SIU"
+    _arcgis_all(c, out, f"{base}/CLASES_DE_SUELO/MapServer/0", limit,
+                {"_kind": "land class"}, "es SIU clases de suelo")  # fmt: skip
+    _arcgis_all(c, out, f"{base}/Planeamiento_Vigente/MapServer/0", limit,
+                {"_kind": "plan in force"}, "es SIU planeamiento vigente",
+                order="GIS_SIU.SIU.EGRN_recintos_municipales_inspire.OBJECTID")  # fmt: skip
+
+
+def fetch_cz_praha(c: httpx.Client, out: Path, limit: int | None) -> None:
+    _arcgis_all(c, out, "https://mp.iprpraha.cz/arcgis/rest/services/Hosted/PUP_CUR_PVP_FVU_P/"
+                "FeatureServer/0", limit, {}, "cz-praha funkční plochy", order="objectid")  # fmt: skip
+
+
+def fetch_lv_riga(c: httpx.Client, out: Path, limit: int | None) -> None:
+    g = out.with_name("lv_riga.gpkg")
+    _download(c, "https://data.gov.lv/dati/dataset/f5fa538b-8e2a-4bee-ab64-a9c41937337a/"
+              "resource/26352840-5766-4a3b-bb85-170ce89fdbc3/download/funkcionalais_zonejums.gpkg",
+              g)  # fmt: skip
+    _ogr(out, str(g), "funkcionalais_zonejums", limit, {}, "lv-riga funkcionālais zonējums")
 
 
 def fetch_ee(c: httpx.Client, out: Path, limit: int | None) -> None:
@@ -591,6 +623,31 @@ MAPS: dict[str, dict[str, str]] = {
         "class_code": "regexp_extract(" + a("hilucsLandUse_href") + ", '[^/]+$')",
         "class": _hilucs(a("hilucsLandUse_href")), "doc_url": a("officialDocument_href"),
     },
+    "es_siu": {
+        "country": "'ES'",
+        "authority": "coalesce(" + a("ProvINE") + ", " + a("GIS_SIU.SIU.plan_mun.ProvMunText") + ")",
+        "plan_id": a("GIS_SIU.SIU.plan_mun.ProvMunText"),
+        "plan_name": "concat_ws(', ', " + a("GIS_SIU.SIU.plan_mun.FiguraVigente") + ", "
+                     + a("GIS_SIU.SIU.plan_mun.nombre") + ")",
+        "plan_status": "'in force'", "adopted": a("GIS_SIU.SIU.plan_mun.FechaFigura"),
+        "zone_code": "coalesce(" + a("ClaseSuelo") + ", " + a("_kind") + ")",
+        "zone_label": "coalesce(" + a("ClaseSuelo") + ", " + a("GIS_SIU.SIU.plan_mun.FiguraVigente") + ")",
+        "class_code": a("ClaseSuelo"), "class": _cls("es_siu", a("ClaseSuelo")),
+        "doc_url": a("GIS_SIU.SIU.plan_mun.UrlLink"),
+    },
+    "cz_praha": {
+        "country": "'CZ'", "authority": "'Praha (IPR)'", "plan_id": a("zdroj"),
+        "plan_name": "'Územní plán hl. m. Prahy, ' || " + a("zdroj"),
+        "plan_status": "'in force'", "adopted": "NULL", "zone_code": a("kodfp1_a"),
+        "zone_label": a("popis"), "class_code": a("kodfp1_a"), "class": "'other'",
+        "doc_url": "NULL",
+    },
+    "lv_riga": {
+        "country": "'LV'", "authority": "'Rīga'", "plan_id": "'Rīgas teritorijas plānojums'",
+        "plan_name": "'Rīgas teritorijas plānojums (spēkā)'", "plan_status": "'in force'",
+        "adopted": "NULL", "zone_code": a("planotais_"), "zone_label": a("planotais_"),
+        "class_code": a("planotais_"), "class": "'other'", "doc_url": a("vairak_inf"),
+    },
     "at_wien": {
         "country": "'AT'", "authority": "'Wien, Bezirk ' || " + a("BEZIRK"),
         "plan_id": "NULL", "plan_name": "'Flächenwidmungsplan Wien (generalisiert)'",
@@ -630,6 +687,13 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
                "CC BY 4.0 (DORIS metadata 8FC62F91-E0F6-4DB0-91E1-9CBC329FFBA0)"),
     "nl_plu": (fetch_nl, "Gepland landgebruik DSO-LV Omgevingswet (INSPIRE geharmoniseerd), "
                "Kadaster via PDOK Atom download land_use.gml", "Public Domain Mark 1.0 (PDOK Atom feed)"),
+    "es_siu": (fetch_es_siu, "Sistema de Información Urbana (SIU), Ministerio de Vivienda y "
+               "Agenda Urbana: clases de suelo and planeamiento vigente per municipality (ArcGIS "
+               "mapas.fomento.gob.es SIU)", "CC BY 4.0 (data.europa.eu record of the SIU)"),
+    "cz_praha": (fetch_cz_praha, "Plán využití ploch, funkční plochy (územní plán hl. m. Prahy), "
+                 "IPR Praha (ArcGIS PUP_CUR_PVP_FVU_P)", "CC BY (ArcGIS item licence)"),
+    "lv_riga": (fetch_lv_riga, "Rīgas teritorijas plānojums (spēkā), funkcionālais zonējums, "
+                "Rīgas valstspilsētas pašvaldība (data.gov.lv GeoPackage)", "CC BY 4.0"),
     "ee_plan": (fetch_ee, "Maa- ja Ruumiamet planeeringute infosüsteem (PLANK): general plan "
                 "land use (yld_plan_maakas) and detailed plan areas (detail_plan_ala), WFS "
                 "gsavalik.envir.ee planeeringud", "no fees, no access constraints (service)"),
