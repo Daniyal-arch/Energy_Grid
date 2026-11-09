@@ -50,7 +50,8 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
 > - France: `ST_MakeValid` fails on mixed-dimension rows; `make_valid()` forces 2D and repairs
 >   row by row (2 of 9,345 kept as published). R2 refused the AWS CLI's multipart checksums
 >   (`InvalidPart`): uploads set `AWS_REQUEST_CHECKSUM_CALCULATION=when_required`.
-> - Fetching every row in Python ran out of 12 GB on the Netherlands GML; `_ogr` writes with `COPY`.
+> - DuckDB `st_read` ran out of 12 GB on the Netherlands GML (huge geometries, 2,048 rows a chunk);
+>   `fetch_nl` uses `ogr2ogr` (gdal-bin installed in the job), one feature at a time.
 > - Spain SIU answers an HTML error page for big pages; `arcgis()` halves the page and retries.
 > - WFS servers cap responses (Burgenland 1,000): `OGR_WFS_PAGING_ALLOWED=ON`.
 > - Luxembourg OAPIF declares EPSG:3035 but returns WGS84 lat/lon (`latlon=True` swaps it).

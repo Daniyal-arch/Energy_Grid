@@ -447,11 +447,43 @@ def fetch_nl(c: httpx.Client, out: Path, limit: int | None) -> None:
         "https://service.pdok.nl/kadaster/omgevingswet-planned-land-use/atom/downloads/land_use.gml"
     )
     if limit:
-        src = f"/vsicurl/{url}"
-    else:
-        src = str(out.with_name("nl_land_use.gml"))
-        _download(c, url, Path(src))
-    _ogr(out, src, "ZoningElement", limit, {}, "nl ZoningElement")
+        _ogr(out, f"/vsicurl/{url}", "ZoningElement", limit, {}, "nl ZoningElement")
+        return
+    src = out.with_name("nl_land_use.gml")
+    _download(c, url, src)
+    # DuckDB's st_read ran out of 12 GB on this file (whole-municipality geometries, read 2,048
+    # rows at a time); GDAL's ogr2ogr writes one feature at a time.
+    _ogr2ogr(out, src, "ZoningElement", {}, "nl ZoningElement")
+    src.unlink()
+
+
+def _ogr2ogr(out: Path, src: Path, layer: str, extra: dict[str, Any], tag: str) -> None:
+    """One layer of a local GDAL file through the ogr2ogr command (GeoJSONSeq in EPSG:4326,
+    longitude first), checked against the feature count ogrinfo reports."""
+    import re
+    import subprocess
+
+    cfg = ["--config", "GML_ATTRIBUTES_TO_OGR_FIELDS", "YES"]
+    seq = out.with_suffix(".ogr.geojsonl")
+    subprocess.run(["ogr2ogr", *cfg, "-f", "GeoJSONSeq", "-t_srs", "EPSG:4326", str(seq),
+                    str(src), layer], check=True)  # fmt: skip
+    info = subprocess.run(["ogrinfo", *cfg, "-so", str(src), layer], check=True,
+                          capture_output=True, text=True).stdout  # fmt: skip
+    m = re.search(r"Feature Count: (-?\d+)", info)
+    total = int(m.group(1)) if m else None
+    n = 0
+    with out.open("a", encoding="utf-8") as f, seq.open(encoding="utf-8") as lines:
+        for line in lines:
+            feat = json.loads(line)
+            props = {k: (json.dumps(v, ensure_ascii=False) if isinstance(v, (dict, list)) else v)
+                     for k, v in (feat.get("properties") or {}).items()}  # fmt: skip
+            f.write(json.dumps({"a": {**props, **extra}, "g": feat.get("geometry")},
+                               ensure_ascii=False) + "\n")  # fmt: skip
+            n += 1
+    seq.unlink()
+    print(f"  {tag}: {n:,} (GDAL counts {total if total is None else f'{total:,}'})", flush=True)
+    if total is not None and total >= 0 and n != total:
+        raise SystemExit(f"{tag}: {n:,} read, the layer counts {total:,}")
 
 
 def fetch_es_siu(c: httpx.Client, out: Path, limit: int | None) -> None:

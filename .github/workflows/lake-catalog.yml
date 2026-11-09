@@ -286,6 +286,7 @@ jobs:
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
           df -h / | tail -1
+          sudo apt-get update -q && sudo apt-get install -y -q gdal-bin  # ogr2ogr streams the GML
       - name: ${{ matrix.source }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
