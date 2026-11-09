@@ -22,6 +22,10 @@ Sources (all open, no key):
   lu_pag        Luxembourg, PAG zones of every commune (INSPIRE OGC API Features)
   de_berlin     Germany, Berlin: B-Plan outlines in force and in procedure, with PDF links
   at_ooe        Austria, Upper Austria: Flächenwidmung zones (DORIS)
+  ee_plan       Estonia, national planning register: general plan land use, detailed plans
+  at_tirol      Austria, Tyrol: Flächenwidmung zones
+  at_bgld       Austria, Burgenland: INSPIRE zoning elements (HILUCS classes)
+  at_wien       Austria, Vienna: generalised zoning plan
 
     uv run python scripts/build_zoning.py fr_gpu ie_myplan --lake lake-out [--upload]
     uv run python scripts/build_zoning.py ie_myplan --limit 5000   # a quick local test
@@ -136,6 +140,16 @@ CLASSES: dict[str, dict[str, str]] = {
     "lu_pag": {},
     "de_berlin": {},
     "at_ooe": {},
+    "ee_plan": {},
+    "at_tirol": {},
+    "at_bgld": {},  # HILUCS (see HILUCS below)
+    # Vienna: Widmungsklasse codes with the service's own labels (Wiener Bauordnung)
+    "at_wien": {"WO": "residential", "WOGV": "residential", "WOGF": "residential",
+                "WOFB": "residential", "WOGFGV": "residential", "GS": "residential",
+                "GB": "mixed", "GBGV": "mixed", "GBGF": "mixed", "GBGFGV": "mixed",
+                "GBFB": "mixed", "GBBG": "employment", "IG": "industrial",
+                "E": "open_space", "S": "natural", "L": "agricultural", "VB": "infrastructure",
+                "F": "community"},
 }  # fmt: skip
 
 
@@ -319,6 +333,9 @@ def _ogr(out: Path, url: str, layer: str, limit: int | None, extra: dict[str, An
     PROJ; `latlon` marks a layer whose coordinates are WGS84 latitude, longitude whatever CRS
     it declares (they are swapped, not reprojected). The rows read are checked against the
     layer's feature count when GDAL reports one."""
+    import os
+
+    os.environ["GML_ATTRIBUTES_TO_OGR_FIELDS"] = "YES"  # INSPIRE codes sit in xlink:href
     con = duckdb.connect()
     con.execute("INSTALL spatial; LOAD spatial")
     meta = con.execute(
@@ -377,6 +394,31 @@ def fetch_at_ooe(c: httpx.Client, out: Path, limit: int | None) -> None:
                 "at-ooe Widmungen Flächen")  # fmt: skip
 
 
+def fetch_ee(c: httpx.Client, out: Path, limit: int | None) -> None:
+    url = "WFS:https://gsavalik.envir.ee/geoserver/planeeringud/wfs"
+    for layer, kind in (("planeeringud:yld_plan_maakas", "general plan land use"),
+                        ("planeeringud:detail_plan_ala", "detailed plan area")):  # fmt: skip
+        _ogr(out, url, layer, limit, {"_kind": kind}, f"ee {layer}")
+
+
+def fetch_at_tirol(c: httpx.Client, out: Path, limit: int | None) -> None:
+    url = ("https://services3.arcgis.com/hG7UfxX49PQ8XkXh/arcgis/rest/services/"
+           "FLW_Flaechenwidmung/FeatureServer/0")  # fmt: skip
+    _arcgis_all(c, out, url, limit, {}, "at-tirol Flächenwidmung")
+
+
+def fetch_at_bgld(c: httpx.Client, out: Path, limit: int | None) -> None:
+    _ogr(out, "WFS:https://haleconnect.com/ows/services/"
+         "org.868.6316de7d-2c9e-470e-addf-026d89df2dae_wfs", "plu:ZoningElement", limit, {},
+         "at-bgld ZoningElement")  # fmt: skip
+
+
+def fetch_at_wien(c: httpx.Client, out: Path, limit: int | None) -> None:
+    feats = wfs(c, "https://data.wien.gv.at/daten/geo", "ogdwien:GENFLWIDMUNGOGD", limit=limit)
+    n = _ndjson(out, feats, {})
+    print(f"  at-wien GENFLWIDMUNGOGD: {n:,}", flush=True)
+
+
 ENGLAND = ("green-belt", "conservation-area", "article-4-direction-area", "brownfield-land")
 
 
@@ -392,6 +434,22 @@ def _cls(source: str, code_sql: str) -> str:
     if not pairs:
         return "'other'"
     whens = " ".join(f"WHEN {code_sql} = '{k}' THEN '{v}'" for k, v in pairs.items())
+    return f"CASE {whens} ELSE 'other' END"
+
+
+# INSPIRE HILUCS (Hierarchical INSPIRE Land Use Classification System) to the vocabulary,
+# most specific prefix first; codes are read from the end of the codelist URI.
+HILUCS = [
+    ("3_4_4", "open_space"), ("6_3_2", "water"), ("6_3", "natural"), ("1_1", "agricultural"),
+    ("1_2", "natural"), ("1_3", "extraction"), ("1_4", "agricultural"), ("1_5", "agricultural"),
+    ("2_", "industrial"), ("3_1", "commercial"), ("3_2", "commercial"), ("3_3", "community"),
+    ("3_4", "community"), ("3_5", "commercial"), ("4_", "infrastructure"), ("5_", "residential"),
+]  # fmt: skip
+
+
+def _hilucs(uri_sql: str) -> str:
+    code = f"regexp_extract({uri_sql}, '/HILUCSValue/([0-9_]+)', 1)"
+    whens = " ".join(f"WHEN starts_with({code}, '{k}') THEN '{v}'" for k, v in HILUCS)
     return f"CASE {whens} ELSE 'other' END"
 
 
@@ -470,6 +528,37 @@ MAPS: dict[str, dict[str, str]] = {
         "zone_label": a("ZUSATZTEXT"), "class_code": a("KENNZAHL"), "class": "'other'",
         "doc_url": "NULL",
     },
+    "ee_plan": {
+        "country": "'EE'", "authority": "NULL", "plan_id": a("planid"),
+        "plan_name": "coalesce(" + a("plannim") + ", " + a("kihi_nimi") + ")",
+        "plan_status": "coalesce(" + a("planseis_vaste") + ", 'in force')",
+        "adopted": a("kehtestkp"), "zone_code": "coalesce(" + a("tahis") + ", " + a("_kind") + ")",
+        "zone_label": "coalesce(" + a("juhtots") + ", " + a("planeesm") + ")",
+        "class_code": a("tahis"), "class": "'other'", "doc_url": a("planviide"),
+    },
+    "at_tirol": {
+        "country": "'AT'", "authority": a("GEMNR"), "plan_id": a("GEMNR"),
+        "plan_name": "'Flächenwidmungsplan, Gemeinde ' || " + a("GEMNR"),
+        "plan_status": "'in force'", "adopted": a("STAND"), "zone_code": a("BESCHTXT"),
+        "zone_label": a("WIDMUNG"), "class_code": a("OBJEKT"), "class": "'other'",
+        "doc_url": "NULL",
+    },
+    "at_bgld": {
+        "country": "'AT'", "authority": "'Burgenland'", "plan_id": a("plan_href"),
+        "plan_name": "'Flächenwidmung Burgenland (INSPIRE)'", "plan_status": "'in force'",
+        "adopted": a("beginLifespanVersion"),
+        "zone_code": "regexp_extract(" + a("specificLandUse_href") + ", '[^/]+$')",
+        "zone_label": "regexp_extract(" + a("hilucsLandUse_href") + ", '[^/]+$')",
+        "class_code": "regexp_extract(" + a("hilucsLandUse_href") + ", '[^/]+$')",
+        "class": _hilucs(a("hilucsLandUse_href")), "doc_url": a("officialDocument_href"),
+    },
+    "at_wien": {
+        "country": "'AT'", "authority": "'Wien, Bezirk ' || " + a("BEZIRK"),
+        "plan_id": "NULL", "plan_name": "'Flächenwidmungsplan Wien (generalisiert)'",
+        "plan_status": "'in force'", "adopted": "NULL", "zone_code": a("WIDMUNG"),
+        "zone_label": a("WIDMUNG_TXT"), "class_code": a("WIDMUNGSKLASSE"),
+        "class": _cls("at_wien", a("WIDMUNGSKLASSE")), "doc_url": "NULL",
+    },
 }  # fmt: skip
 
 SOURCES: dict[str, tuple[Fetch, str, str]] = {
@@ -500,6 +589,15 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
     "at_ooe": (fetch_at_ooe, "Flächenwidmungspläne Oberösterreich, Widmungen Flächen (DORIS, "
                "Land Oberösterreich, ArcGIS HVD/MapServer layer 12)",
                "no licence stated on the service (owner question 9)"),
+    "ee_plan": (fetch_ee, "Maa- ja Ruumiamet planeeringute infosüsteem (PLANK): general plan "
+                "land use (yld_plan_maakas) and detailed plan areas (detail_plan_ala), WFS "
+                "gsavalik.envir.ee planeeringud", "no fees, no access constraints (service)"),
+    "at_tirol": (fetch_at_tirol, "Flächenwidmung Tirol, Land Tirol (ArcGIS FeatureServer "
+                 "FLW_Flaechenwidmung)", "no licence stated on the service"),
+    "at_bgld": (fetch_at_bgld, "Flächenwidmung Burgenland, INSPIRE Planned Land Use "
+                "ZoningElement (hale connect WFS)", "otherRestrictions, not named (service)"),
+    "at_wien": (fetch_at_wien, "Generalisierter Flächenwidmungs- und Bebauungsplan, Stadt Wien "
+                "(data.wien.gv.at WFS ogdwien:GENFLWIDMUNGOGD)", "CC BY 3.0 AT (Stadt Wien)"),
 }  # fmt: skip
 
 STANDARD = ["country", "authority", "plan_id", "plan_name", "plan_status", "adopted", "zone_code", "zone_label", "class_code", "class", "doc_url"]  # fmt: skip
