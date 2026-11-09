@@ -113,7 +113,9 @@ def fetch(
     seen: set[str] = set()  # one file linked from several plans: its pages once
     for src, items in sorted(per.items()):
         got = 0
-        for plan, url in random.sample(items, len(items)):
+        # Links that are viewer pages, not PDFs, would otherwise be tried one by one over the
+        # whole source (Estonia: hours); stop after ten tries per wanted PDF.
+        for plan, url in random.sample(items, min(len(items), 10 * n)):
             if got >= n:
                 break
             try:
