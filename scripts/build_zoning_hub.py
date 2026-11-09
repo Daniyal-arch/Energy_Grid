@@ -408,6 +408,8 @@ def main() -> None:
     raw = a.tmp / f"{a.region}-{a.shard}.ndjson"
     raw.unlink(missing_ok=True)
     sh = Shard(raw)
+    if a.region == "wfs":  # installed once here; each WFS thread only loads it
+        duckdb.connect().execute("INSTALL spatial")
     done = 0
     stopped = None
 
