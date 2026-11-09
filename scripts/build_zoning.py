@@ -421,12 +421,33 @@ def fetch_de_berlin(c: httpx.Client, out: Path, limit: int | None) -> None:
              {"_status": status}, f"de-berlin {layer}")  # fmt: skip
 
 
-def _download(c: httpx.Client, url: str, path: Path) -> None:
-    with c.stream("GET", url) as r:
-        r.raise_for_status()
-        with path.open("wb") as f:
-            for chunk in r.iter_bytes(1 << 20):
-                f.write(chunk)
+def _download(c: httpx.Client, url: str, path: Path, tries: int = 6) -> None:
+    """Stream a file to disk; a dropped connection resumes with a Range request (PDOK cut
+    the 11.6 GB Netherlands file at 9.0 GB once)."""
+    path.unlink(missing_ok=True)
+    total = None
+    for attempt in range(tries):
+        have = path.stat().st_size if path.exists() else 0
+        headers = {"Range": f"bytes={have}-"} if have else {}
+        try:
+            with c.stream("GET", url, headers=headers) as r:
+                r.raise_for_status()
+                if have and r.status_code != 206:
+                    raise SystemExit(f"{url}: the server does not resume (HTTP {r.status_code})")
+                if not have:
+                    total = int(r.headers.get("content-length") or 0) or None
+                with path.open("ab") as f:
+                    for chunk in r.iter_bytes(1 << 20):
+                        f.write(chunk)
+            if total is None or path.stat().st_size == total:
+                break
+        except (httpx.TransportError, httpx.RemoteProtocolError) as e:
+            print(f"  download cut at {path.stat().st_size:,} bytes ({e}); resuming", flush=True)
+            time.sleep(10 * (attempt + 1))
+    else:
+        raise SystemExit(f"{url}: incomplete after {tries} tries")
+    if total is not None and path.stat().st_size != total:
+        raise SystemExit(f"{url}: {path.stat().st_size:,} of {total:,} bytes")
     print(f"  downloaded {url}: {path.stat().st_size / 1e6:.1f} MB", flush=True)
 
 
