@@ -164,3 +164,14 @@ def test_geometry_tables_get_small_row_groups(tmp_path: Path) -> None:
         f"SELECT count(DISTINCT row_group_id), max(row_group_num_rows) FROM parquet_metadata('{f}')"
     ).fetchone()
     assert groups[0] >= 3 and groups[1] <= 100_352  # DuckDB rounds groups up to 2,048-row vectors
+
+
+def test_fixed_row_groups(tmp_path: Path) -> None:
+    """`group_rows` under 2,048: files of that many rows each, in sort order (very large rows)."""
+    con = duckdb.connect()
+    lk = lake.Lake("test", tmp_path, source="unit test", licence="CC0", script="tests")
+    con.execute("CREATE TABLE t AS SELECT 9 - range AS id FROM range(10)")
+    files = lk.write(con, "t", "SELECT * FROM t", sort=["id"], group_rows=3)
+    assert len(files) == 4
+    ids = [con.execute(f"SELECT list(id) FROM '{p}'").fetchone()[0] for p in files]
+    assert ids == [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]

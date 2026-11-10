@@ -108,6 +108,7 @@ class Lake:
         geometry: str | None = None,
         stem: str = "part",
         meta: dict[str, str] | None = None,
+        group_rows: int | None = None,
     ) -> list[Path]:
         """Write the query's rows, sorted, as one partition of `table` (or the whole table).
 
@@ -115,6 +116,10 @@ class Lake:
         `geometry` names a GEOMETRY column (EPSG:4326 lon/lat, DuckDB spatial loaded): the file
         becomes GeoParquet 1.1 (WKB) with a `bbox` covering column. `stem` names the files
         (`<stem>-0.parquet`): parallel jobs writing into one partition each use their own stem.
+        `group_rows` below 2,048 is for very large rows: DuckDB's writer holds a whole row group
+        in memory and never makes one under 2,048 rows (2,048 Netherlands plan zones of ~1 MB
+        each ran 8 GB out), so each file then holds `group_rows` rows (one group), cut from a
+        sort of the keys alone.
         Returns the files written.
         """
         partition = partition or {}
@@ -162,10 +167,14 @@ class Lake:
         kv = ", ".join(f'"{k}": {_quote(str(v))}' for k, v in meta.items())
         order = ", ".join(sort)
         kind = "geo" if geometry or any("hilbert" in x.lower() for x in sort) else "flat"
-        group_rows = GROUP_ROWS[kind]
         files: list[Path] = []
+        if group_rows is not None and group_rows < 2_048:
+            files = self._write_small(con, folder, stem, order, n, group_rows, geo_option, kv)
+            parts = len(files)
+        fixed = group_rows is not None
+        group_rows = group_rows or GROUP_ROWS[kind]
         per_file = MAX_ROWS_PER_FILE
-        for attempt in range(8):
+        for attempt in range(0 if fixed and group_rows < 2_048 else 8):
             files = []
             parts = max(1, -(-n // per_file))
             for i in range(parts):
@@ -188,7 +197,7 @@ class Lake:
                         ).fetchone()[0]
                         or 0
                     )
-                    if biggest <= GROUP_MB[kind] * 1e6 or group_rows <= 2_048:
+                    if fixed or biggest <= GROUP_MB[kind] * 1e6 or group_rows <= 2_048:
                         break
                     group_rows = max(2_048, int(group_rows * 0.8 * GROUP_MB[kind] * 1e6 / biggest))
                     opts = COPY_OPTIONS.replace(
@@ -217,6 +226,30 @@ class Lake:
             f"  lake/{self.dataset}/{table} {partition or ''}: {n:,} rows, {parts} file(s)",
             flush=True,
         )
+        return files
+
+    @staticmethod
+    def _write_small(
+        con: duckdb.DuckDBPyConnection, folder: Path, stem: str, order: str, n: int, rows: int,
+        geo_option: str, kv: str,
+    ) -> list[Path]:  # fmt: skip
+        """Files of `rows` rows each from `_lake_rows`, in `order`: only the keys are sorted,
+        then each file joins its slice of row ids (no full sort of the wide rows per file)."""
+        con.execute(
+            f"CREATE OR REPLACE TEMP TABLE _lake_keys AS SELECT rowid AS rid, "
+            f"row_number() OVER (ORDER BY {order}) - 1 AS rn FROM _lake_rows"
+        )
+        opts = COPY_OPTIONS.replace("ROW_GROUP_SIZE 1000000", f"ROW_GROUP_SIZE {rows}")
+        files: list[Path] = []
+        for i in range(max(1, -(-n // rows))):
+            path = folder / f"{stem}-{i}.parquet"
+            con.execute(
+                f"COPY (SELECT r.* FROM _lake_rows r JOIN (SELECT rid, rn FROM _lake_keys "
+                f"WHERE rn >= {i * rows} AND rn < {(i + 1) * rows}) k ON r.rowid = k.rid "
+                f"ORDER BY k.rn) TO {_quote(str(path))} ({opts}{geo_option}, KV_METADATA {{{kv}}})"
+            )
+            files.append(path)
+        con.execute("DROP TABLE _lake_keys")
         return files
 
     def catalog(self) -> dict:

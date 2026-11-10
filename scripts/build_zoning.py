@@ -983,6 +983,7 @@ def main() -> None:
                 sort=[hilbert("geometry")], bloom=["country", "class", "plan_id"],
                 partition={"source": s}, geometry="geometry",
                 meta={"refresh": "on demand (scripts/build_zoning.py)"},
+                group_rows=128 if gb > 2 else None,  # rows of ~1 MB: files of 128 rows
             )  # fmt: skip
             lake.finish()
             if args.upload:
