@@ -38,7 +38,7 @@ on:
         description: "Raster keys (space-separated; empty = the default list in scripts/raster_recompress.py)"
         default: ""
       zoning:
-        description: "Zoning instead of the catalogue (scripts/build_zoning.py): all, a list such as fr_gpu,ie_myplan, discover (the source sweeps), or hub:us / hub:eu / hub:gb / hub:us_ak_hi (the ArcGIS services found, scripts/build_zoning_hub.py; hub:us@4,15 reruns only those of the 48 shards)"
+        description: "Zoning instead of the catalogue (scripts/build_zoning.py): all, a list such as fr_gpu,ie_myplan, discover (the source sweeps), or hub:us / hub:eu / hub:gb / hub:us_ak_hi / hub:local (the ArcGIS services found; local: titled in local planning words, scripts/build_zoning_hub.py; hub:us@4,15 reruns only those of the 48 shards)"
         default: ""
   push:
     branches: [main]

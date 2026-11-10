@@ -1,0 +1,82 @@
+"""Probe: ArcGIS Online items titled with each country's own planning terms.
+
+The Hub sweep (zoning_discover.py --hub) searched the English word "zoning" only; this
+lists Feature and Map Services whose titles use the local words, per country, in the
+columns of hub_services.csv (region `local`), for `build_zoning_hub.py --region local`.
+Tiled (raster) services and items already in hub_services.csv are left out; the country of
+each layer is set later from its first zone, not from the search term.
+
+    uv run python scripts/probe_zoning_local.py > data/zoning_discovery/local_services.csv
+"""
+
+from __future__ import annotations
+
+import csv
+import sys
+from pathlib import Path
+
+import httpx
+
+HUB = Path(__file__).resolve().parents[1] / "data" / "zoning_discovery" / "hub_services.csv"
+SEARCH = "https://www.arcgis.com/sharing/rest/search"
+TERMS: dict[str, list[str]] = {
+    "pl": ["MPZP", "miejscowy plan zagospodarowania", "studium uwarunkowan"],
+    "pt": ["PDM ordenamento", "Plano Diretor Municipal", "classificacao do solo"],
+    "it": ["PGT", "PRG zonizzazione", "piano regolatore", "piano urbanistico"],
+    "fi": ["asemakaava", "yleiskaava", "kaavoitus"],
+    "hr": ["prostorni plan", "GUP namjena"],
+    "sk": ["uzemny plan", "územný plán"],
+    "gr": ["ΓΠΣ", "χρήσεις γης", "ζώνες χρήσεων"],
+    "hu": ["rendezési terv", "szabályozási terv", "településrendezési"],
+    "ro": ["PUG", "plan urbanistic general", "UTR"],
+    "bg": ["ОУП", "устройствен план"],
+    "lt": ["bendrasis planas", "teritorijų planavimas"],
+    "si": ["OPN", "občinski prostorski načrt", "namenska raba"],
+    "se": ["detaljplan", "översiktsplan"],
+    "gb_wales": ["Local Development Plan allocations", "LDP proposals"],
+    "gb_ni": ["area plan zoning", "development plan zonings"],
+    "cy": ["development plan zones Cyprus"],
+    "mt": ["local plan Malta"],
+}
+
+
+def main() -> None:
+    w = csv.writer(sys.stdout)
+    cols = ["region", "title", "owner", "source", "type", "url", "licence", "modified", "lon",
+            "lat", "id", "term"]  # fmt: skip
+    w.writerow(cols)
+    known = {r["url"].rstrip("/") for r in csv.DictReader(HUB.open(encoding="utf-8"))}
+    seen: set[str] = set()
+    with httpx.Client(timeout=60) as c:
+        for cc, terms in TERMS.items():
+            n = 0
+            for t in terms:
+                q = f'title:"{t}" AND (type:"Feature Service" OR type:"Map Service")'
+                for start in (1, 101):
+                    d = c.get(SEARCH, params={"q": q, "num": 100, "start": start,
+                                              "f": "json"}).json()  # fmt: skip
+                    for r in d.get("results") or []:
+                        url = (r.get("url") or "").rstrip("/")
+                        if r["id"] in seen or not url or "/tiles" in url or url in known:
+                            continue
+                        seen.add(r["id"])
+                        ext = r.get("extent") or [[None, None], [None, None]]
+                        lon = (ext[0][0] + ext[1][0]) / 2 if ext and ext[0][0] is not None else ""
+                        lat = (ext[0][1] + ext[1][1]) / 2 if ext and ext[0][1] is not None else ""
+                        # Europe and the US only (the same words name plans in Latin America)
+                        if lon == "" or not (
+                            (-25 <= lon <= 45 and 34 <= lat <= 72)
+                            or (-170 <= lon <= -65 and 18 <= lat <= 72)
+                        ):
+                            continue
+                        w.writerow(["local", r.get("title"), r.get("owner"), r.get("owner"),
+                                    r.get("type"), url, (r.get("licenseInfo") or "")[:200],
+                                    r.get("modified"), lon, lat, r["id"], f"{cc}:{t}"])  # fmt: skip
+                        n += 1
+                    if d.get("nextStart", -1) < 0:
+                        break
+            print(f"{cc}: {n}", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()

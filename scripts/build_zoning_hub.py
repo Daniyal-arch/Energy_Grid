@@ -43,7 +43,9 @@ from lake import Lake, hilbert
 
 SCRIPT = "scripts/build_zoning_hub.py"
 LIST = Path(__file__).resolve().parents[1] / "data" / "zoning_discovery" / "hub_services.csv"
-REGIONS = ["us", "us_ak_hi", "gb", "eu", "wfs"]
+REGIONS = ["us", "us_ak_hi", "gb", "eu", "wfs", "local"]
+# ArcGIS services titled in each country's own planning words (probe_zoning_local.py)
+LOCAL_LIST = LIST.with_name("local_services.csv")
 WFS_LIST = LIST.with_name("wfs_services.csv")  # INSPIRE / XPlanung WFS (zoning_discover.py --wfs)
 # zones (ZoningElement, XPlanung areas), regulations, and plan outlines (a plan published
 # only as a scanned map still has its outline and document links); `code` names the layer
@@ -104,6 +106,10 @@ CODE = [
         r"^(zoning|zone|zone_|zn_?code|zoneclass|zonecode|zoningcode|district|flu|lu_?code)$",
         r"zon",
         r"land_?use|^lu$|flu",
+        # local words: symbol, przeznaczenie, kaavamerkintä, käyttötarkoitus, namjena,
+        # destinazione, funkcia, κατηγορία, categorie, användning
+        r"symbol|oznacz|przezn|merkin|kayttotark|namjen|destin|funkc|kategor|categ|anvand|"
+        r"utr|ozn",
     )
 ]
 LABEL = [
@@ -112,27 +118,89 @@ LABEL = [
         r"^zon(e|ing)?_?(desc(ription)?|name|label|title)$",
         r"(zon|dist|flu|land_?use).*(desc|name|label)",
         r"^(desc|description|label|name)$",
+        r"opis|nazwa|selite|kuvaus|nimi|descr|naziv|popis|perigraf|denumire|beskr|namn",
     )
 ]
 # the label's words to the harmonised vocabulary; the first match wins, in this order
 WORDS: list[tuple[str, re.Pattern[str]]] = [
-    ("mixed", re.compile(r"mixed", re.I)),
+    ("mixed", re.compile(r"mixed|mieszan|sekoit|misto|mješovit|zmiešan|μικτ|mixt", re.I)),
     (
         "residential",
         re.compile(
             r"residen|dwelling|single.?family|multi.?family|duplex|"
-            r"townhouse|apartment|housing|mobile.?home",
+            r"townhouse|apartment|housing|mobile.?home|"
+            # pl, fi, it, hr/sk/cz, el, ro, bg, lt, sv, sl
+            r"mieszka|asuin|asunto|abitat|stamben|bývan|bydlen|κατοικ|locuin|жилищ|gyvenam|"
+            r"bostad|bostäder|stanovanj",
             re.I,
         ),
     ),  # fmt: skip
-    ("industrial", re.compile(r"industr|manufactur|warehous", re.I)),
-    ("commercial", re.compile(r"commerc|business|retail|office|shopping", re.I)),
-    ("agricultural", re.compile(r"agricult|farm|ranch", re.I)),
-    ("open_space", re.compile(r"open.?space|park|recreation|green", re.I)),
-    ("natural", re.compile(r"conservation|forest|resource|wetland|preserv", re.I)),
-    ("community", re.compile(r"institution|public|civic|school|government|community", re.I)),
-    ("infrastructure", re.compile(r"airport|transport|utilit|railroad|right.?of.?way", re.I)),
-    ("water", re.compile(r"\bwater\b|lake|river", re.I)),
+    (
+        "industrial",
+        re.compile(
+            r"industr|manufactur|warehous|przemysł|teollisuu|produkc|"
+            r"proizvod|βιομηχ|производ|pramon",
+            re.I,
+        ),
+    ),  # fmt: skip
+    (
+        "commercial",
+        re.compile(
+            r"commerc|business|retail|office|shopping|usług|handl|liike|"
+            r"commerci|poslovn|komerc|εμπορ|търгов|prekyb|handel",
+            re.I,
+        ),
+    ),  # fmt: skip
+    (
+        "agricultural",
+        re.compile(
+            r"agricult|farm|ranch|roln|maatalou|agricol|poljopriv|"
+            r"poľnohosp|zeměděl|γεωργ|селскостоп|žemės ūk|jordbruk|kmetij",
+            re.I,
+        ),
+    ),  # fmt: skip
+    (
+        "open_space",
+        re.compile(
+            r"open.?space|park|recreation|green|zieleń|zielen|virkist|"
+            r"puisto|verde|zelen|πράσιν|prasin|спорт|rekreac",
+            re.I,
+        ),
+    ),  # fmt: skip
+    (
+        "natural",
+        re.compile(
+            r"conservation|forest|resource|wetland|preserv|leśn|lasy|metsä|"
+            r"bosc|šum|\bles(n|y|\b)|δάσ|δασ|pădur|горск|miško|skog|gozd",
+            re.I,
+        ),
+    ),  # fmt: skip
+    (
+        "community",
+        re.compile(
+            r"institution|public|civic|school|government|community|publiczn|"
+            r"julkis|pubblic|javn|verejn|veřejn|δημόσ|κοινωφ|public|обществ|"
+            r"visuomen|allmän",
+            re.I,
+        ),
+    ),  # fmt: skip
+    (
+        "infrastructure",
+        re.compile(
+            r"airport|transport|utilit|railroad|right.?of.?way|komunik|"
+            r"drog|liikenne|infrastrutt|promet|doprav|συγκοινων|"
+            r"транспорт|susisiek|trafik",
+            re.I,
+        ),
+    ),  # fmt: skip
+    (
+        "water",
+        re.compile(
+            r"\bwater\b|lake|river|wod[ay]|wód|vesi|acqua|\bvod|νερ|"
+            r"\bape\b|вод|vanden|vatten",
+            re.I,
+        ),
+    ),  # fmt: skip
 ]
 assert all(w in VOCAB for w, _ in WORDS)
 
@@ -340,7 +408,11 @@ class Shard:
                         status="skipped", reason="no layers", rows=0)  # fmt: skip
         for ly in layers:
             name = ly.get("name") or ""
-            if LAYER.search(name) and not NOT_LAYER.search(name):
+            # a service found by its local plan title: every layer but parcels, outlines and
+            # labels (layer names are local words too); read_layer keeps polygons with a
+            # code or label field only
+            local = svc.get("region") == "local"
+            if (LAYER.search(name) or local) and not NOT_LAYER.search(name):
                 self.read_layer(c, svc, ly)
             elif LAYER.search(svc["title"]) and len(layers) == 1:
                 self.read_layer(c, svc, ly)  # a one-layer service named for zoning
@@ -397,7 +469,10 @@ def main() -> None:
         for r in rows:
             svcs.setdefault(r["url"], {**r, "owner": r["source"]})
     else:
-        rows = [r for r in csv.DictReader(LIST.open(encoding="utf-8")) if r["region"] == a.region]
+        src_list = LOCAL_LIST if a.region == "local" else LIST
+        rows = [
+            r for r in csv.DictReader(src_list.open(encoding="utf-8")) if r["region"] == a.region
+        ]
     for r in rows if a.region != "wfs" else []:
         if not NOISE.search(r["title"]) and r["type"] in ("Feature Service", "Map Service"):
             svcs.setdefault(r["url"].rstrip("/"), {**r, "url": r["url"].rstrip("/")})
@@ -435,7 +510,7 @@ def main() -> None:
         print(f"  time budget reached: {stopped} services not read", flush=True)
 
     src = {"us": "us_hub", "us_ak_hi": "us_hub", "gb": "gb_hub", "eu": "eu_hub",
-           "wfs": "eu_wfs"}[a.region]  # fmt: skip
+           "wfs": "eu_wfs", "local": "local_hub"}[a.region]  # fmt: skip
     lake = Lake("zoning", a.lake, source=DATASET_SOURCE, licence=DATASET_LICENCE, script=SCRIPT)
     con = duckdb.connect()
     con.execute("INSTALL spatial; LOAD spatial; SET preserve_insertion_order=false")
