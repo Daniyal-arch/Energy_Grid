@@ -423,12 +423,13 @@ def fetch_de_berlin(c: httpx.Client, out: Path, limit: int | None) -> None:
 
 def _download(c: httpx.Client, url: str, path: Path, tries: int = 6) -> None:
     """Stream a file to disk; a dropped connection resumes with a Range request (PDOK cut
-    the 11.6 GB Netherlands file at 9.0 GB once)."""
+    the 11.6 GB Netherlands file at 9.0 GB and at 8.6 GB)."""
     path.unlink(missing_ok=True)
     total = None
     for attempt in range(tries):
         have = path.stat().st_size if path.exists() else 0
-        headers = {"Range": f"bytes={have}-"} if have else {}
+        # PDOK answers an open range ("bytes=N-") with the whole file; a closed one works.
+        headers = {"Range": f"bytes={have}-{total - 1 if total else ''}"} if have else {}
         try:
             with c.stream("GET", url, headers=headers) as r:
                 r.raise_for_status()
