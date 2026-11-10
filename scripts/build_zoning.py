@@ -784,6 +784,23 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
 STANDARD = ["country", "authority", "plan_id", "plan_name", "plan_status", "adopted", "zone_code", "zone_label", "class_code", "class", "doc_url"]  # fmt: skip
 
 
+def _split_lines(path: Path, size: int) -> list[Path]:
+    """Split an NDJSON file into parts of about `size` bytes, each ending on a whole line."""
+    parts: list[Path] = []
+    out = None
+    with path.open("rb") as f:
+        for line in f:
+            if out is None or out.tell() >= size:
+                if out:
+                    out.close()
+                parts.append(path.with_name(f"{path.stem}.part{len(parts):03d}{path.suffix}"))
+                out = parts[-1].open("wb")
+            out.write(line)
+    if out:
+        out.close()
+    return parts or [path]
+
+
 def select_sql(source: str, path: Path) -> str:
     if source == "gb_england":
         parts = []
@@ -864,7 +881,15 @@ def main() -> None:
             gb = raw.stat().st_size / 1e9
             print(f"  {s}: raw NDJSON {gb:.1f} GB", flush=True)
             con.execute(f"SET threads = {1 if gb > 2 else os.cpu_count() or 4}")
-            con.execute(f"CREATE OR REPLACE TABLE z AS {select_sql(s, raw)}")
+            parts = _split_lines(raw, 256_000_000) if gb > 2 else [raw]
+            con.execute(f"CREATE OR REPLACE TABLE z AS {select_sql(s, parts[0])}")
+            # A big raw file is read in parts of whole lines: one read_json over 5.5 GB still
+            # ran 8 GB out even on one thread.
+            for part in parts[1:]:
+                con.execute(f"INSERT INTO z {select_sql(s, part)}")
+                part.unlink()
+            if len(parts) > 1:
+                parts[0].unlink()
             make_valid(con, s)
             n, nogeo = con.execute(
                 "SELECT count(*), count(*) FILTER (WHERE geometry IS NULL) FROM z"
