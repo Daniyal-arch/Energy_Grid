@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import time
 from collections.abc import Callable, Iterator
 from pathlib import Path
@@ -858,6 +859,11 @@ def main() -> None:
             lake = Lake("zoning", args.lake, source=source, licence=licence, script=SCRIPT)
             if args.upload:
                 lake.pull_catalog()
+            # Each read_json thread holds whole objects in memory; the Netherlands' raw file
+            # (municipality-wide geometries) ran 8 GB out with every core reading at once.
+            gb = raw.stat().st_size / 1e9
+            print(f"  {s}: raw NDJSON {gb:.1f} GB", flush=True)
+            con.execute(f"SET threads = {1 if gb > 2 else os.cpu_count() or 4}")
             con.execute(f"CREATE OR REPLACE TABLE z AS {select_sql(s, raw)}")
             make_valid(con, s)
             n, nogeo = con.execute(
