@@ -179,16 +179,17 @@ Built sources are in docs/DATA_SOURCES.md; their readers in `scripts/build_zonin
 | Latvia | Riga spatial plan functional zoning GeoPackage (6,132, CC BY 4.0); TAPIS (geolatvija.lv) holds every municipal plan but no public WFS was found | 200 | `lv_riga` |
 | Slovenia | PIS thematic layers: generalised land use `gnrp_D96.zip` (state 2024-06-03, no longer maintained) | TLS: the server sends an incomplete certificate chain | blocked (not worked around) |
 | Croatia | Zagreb planned land use 2013 (INSPIRE WFS on transformiraj.nipp.hr); ISPU offers WMS/WFS per the 2015 regulation, endpoint not found | | not built |
-| Portugal | 278 PDM datasets registered in SNIG; municipal open data (Águeda GPKG); no national WFS endpoint found | | not built |
+| Portugal | DGT Carta do Regime de Uso do Solo (CRUS): one national WFS for mainland Portugal (`servicos.dgterritorio.pt/SDISNITWFSCRUS`, layer `gmgml:CRUS`, EPSG:3763, CC BY 4.0 per the SNIG record) with class, category, plan designation, PDM publication date and status of every municipal plan; also one WFS per municipality (`SDISNITWFSCRUS_<DTCC>_1`). GDAL's WFS driver lists no layers on this Intergraph server, so pages of 500 are fetched as GML and read as local files (about 30 s a page) | 200 | `pt_crus` |
 | Poland | National MPZP integration is WMS only (KIMPZP); vector per gmina (APP), e.g. Łódź SHP | | not built |
 | Italy | Lombardy PGT per comune (geoportal map service), Milan PGT; no national layer | | not built |
 | Sweden | City GeoPackages (Svedala, Helsingborg, Lomma) and WFS (Karlstad, Huddinge); Lantmäteriet NGP detaljplan needs an API account | | owner question |
 | Finland | City WFS (Turku, Kuopio, Raisio, Vihti, Tampere); the national Ryhti register is filling until 2029 | | not built |
 | Slovakia | Banská Bystrica region plan WFS (regional layers) | 200 | not built |
 | Greece | City WFS (Piraeus zones, Kalamata, Maroussi) | | not built |
-| Hungary, Romania, Bulgaria, Cyprus, Lithuania | no open vector zoning found (Lithuania: TPDRIS data on request) | | none |
+| Hungary, Romania, Bulgaria, Cyprus, Lithuania | no national open vector zoning (Lithuania: TPDRIS data on request); municipal ArcGIS services for Romania, Bulgaria and Lithuania are in `local_hub` | | `local_hub` (RO, BG, LT) |
 | Malta | INSPIRE services list statistics, no zoning layer | | none |
 | UK, Scotland | Spatial Hub Local Development Plans: WFS needs a free account; the national compilation is "Restricted Data" | | owner question |
 | UK, Wales | DataMapWales holds an urban settlement boundary, no LDP allocations | | none |
-| UK, Northern Ireland | OpenDataNI API did not answer | | none |
+| UK, Northern Ireland | OpenDataNI API answers 404 (2026-11-10); no NI zoning service on ArcGIS Online | | none |
+| Poland, Finland, Italy, Czechia, Sweden, Greece, Slovenia, Slovakia, Croatia, Romania, Bulgaria, Lithuania, Wales | ArcGIS Online search in each country's own plan words (`scripts/probe_zoning_local.py`, 2026-11-10): the term must be a whole word of the title, test/draft/forest/flood/survey titles and items outside Europe are dropped. A first run with prefix matches read 2.27 million zones of which many were not zoning (Dutch "opname" surveys for the Slovenian "OPN", a Polish national-park atlas, Bulgarian forest base maps, Puget Sound layers for "PUG"); the filtered list replaced it | 200 | `local_hub` |
 | US | Washington State Zoning Atlas (470,130 zones) and New Hampshire Zoning Atlas are in the Hub sweep (`us_hub`) | 200 | `us_hub` |

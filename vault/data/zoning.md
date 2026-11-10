@@ -1,8 +1,8 @@
 ---
 title: Zoning
 tags: [data, lake, zoning]
-updated: 2026-11-09
-paths: [scripts/build_zoning.py, scripts/build_zoning_hub.py, scripts/zoning_documents.py, scripts/zoning_discover.py, scripts/probe_zoning.py, docs/research/zoning.md]
+updated: 2026-11-10
+paths: [scripts/build_zoning.py, scripts/build_zoning_hub.py, scripts/zoning_documents.py, scripts/zoning_discover.py, scripts/probe_zoning.py, scripts/probe_zoning_local.py, docs/research/zoning.md]
 ---
 
 # Zoning
@@ -31,6 +31,10 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
 - `zoning_discover.py --wfs` lists INSPIRE planned-land-use and XPlanung WFS services
   (`data/zoning_discovery/wfs_services.csv`, 2,196, mostly German municipalities); the hub
   builder reads them with `--region wfs` (`hub:wfs`, partition `eu_wfs`).
+- `scripts/probe_zoning_local.py` searches ArcGIS Online in each country's own plan words
+  (whole-word title match, NOT words, Europe only) into `data/zoning_discovery/local_services.csv`;
+  `--region local` (`hub:local`) reads it into partition `local_hub`. `WORDS` classes local labels.
+- `fetch_pt_crus`: Portugal's national CRUS WFS paged as GML, each page read by GDAL as a file.
 - Workflow: `lake-catalog.yml` input `zoning` = all, a source list, discover, or `hub:us`
   (`hub:us@4,15` reruns only those shards). The zoning jobs pin `duckdb==1.5.6` and set
   `CURL_CA_BUNDLE` (GDAL's curl has no CA bundle on the runner otherwise).
@@ -55,4 +59,10 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
 > - Spain SIU answers an HTML error page for big pages; `arcgis()` halves the page and retries.
 > - WFS servers cap responses (Burgenland 1,000): `OGR_WFS_PAGING_ALLOWED=ON`.
 > - Luxembourg OAPIF declares EPSG:3035 but returns WGS84 lat/lon (`latlon=True` swaps it).
+> - DuckDB's Parquet writer never makes a row group under 2,048 rows and holds it in memory; the
+>   Netherlands' ~1 MB rows use `lake.write(group_rows=128)`: files of 128 rows from a key sort.
+> - A full hub run passes `--replace <source>` to the merge so shards with no rows now drop
+>   their old files from the catalogue; parallel zoning runs can overwrite each other's
+>   catalogue, so run one at a time when they finish together.
+> - ArcGIS title search matches prefixes ("OPN" found Dutch "opname"): filter whole words.
 > - The National Zoning Atlas bucket no longer exists and mercatus.org refuses scripted downloads.
