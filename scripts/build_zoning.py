@@ -514,11 +514,11 @@ def _ogr2ogr(out: Path, src: Path, layer: str, extra: dict[str, Any], tag: str) 
 def fetch_pt_crus(c: httpx.Client, out: Path, limit: int | None) -> None:
     """DGT's national Carta do Regime de Uso do Solo WFS (mainland Portugal, every PDM in one
     harmonised layer). The Intergraph server answers GDAL's WFS driver with no layers, so the
-    GML is paged here (500 features, about 30 s a page) and each page is read by GDAL as a
+    GML is paged here (2,000 features, about 35 s a page; 500 took as long) and each page is read by GDAL as a
     local file (EPSG:3763 reprojected by PROJ). Pages overlap nowhere: the zone ids are
     checked to be unique and the total against the server's hit count."""
     url = "https://servicos.dgterritorio.pt/SDISNITWFSCRUS/WFService.aspx"
-    page, start, n = min(500, limit or 500), 0, 0
+    page, start, n = min(2_000, limit or 2_000), 0, 0
     tmp = out.with_name("pt_crus_page.gml")
     while True:
         params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature",
@@ -539,7 +539,16 @@ def fetch_pt_crus(c: httpx.Client, out: Path, limit: int | None) -> None:
         got = int(next(g for g in m.groups() if g)) if m else 0
         if got:
             tmp.write_bytes(r.content)
-            _ogr(out, str(tmp), "CRUS", None, {}, f"pt CRUS {start:,}+")
+            # DuckDB's spatial reader crashed once on a page it reads cleanly on its own
+            # (an internal error at 85,000 after four hours); read the page again.
+            for _attempt in range(3):
+                try:
+                    _ogr(out, str(tmp), "CRUS", None, {}, f"pt CRUS {start:,}+")
+                    break
+                except duckdb.Error as e:
+                    print(f"  pt CRUS page {start}: {str(e)[:80]}; read again", flush=True)
+            else:
+                raise SystemExit(f"pt CRUS: page at {start} could not be read three times")
         n += got
         start += got
         if got < page or (limit and n >= limit):
