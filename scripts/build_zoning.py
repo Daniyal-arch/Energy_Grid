@@ -43,6 +43,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import time
 from collections.abc import Callable, Iterator
 from pathlib import Path
@@ -155,6 +156,7 @@ CLASSES: dict[str, dict[str, str]] = {
                "SUELO URBANIZABLE NO DELIMITADO O SECTORIZADO": "to_urbanise",
                "SUELO NO URBANIZABLE": "natural", "SISTEMAS GENERALES Y OTROS": "infrastructure"},
     "cz_praha": {},
+    "pt_crus": {},  # PT_CRUS_CLASS (categories of Decreto Regulamentar 15/2015)
     "lv_riga": {},
     # Vienna: Widmungsklasse codes with the service's own labels (Wiener Bauordnung)
     "at_wien": {"WO": "residential", "WOGV": "residential", "WOGF": "residential",
@@ -509,6 +511,53 @@ def _ogr2ogr(out: Path, src: Path, layer: str, extra: dict[str, Any], tag: str) 
         raise SystemExit(f"{tag}: {n:,} read, the layer counts {total:,}")
 
 
+def fetch_pt_crus(c: httpx.Client, out: Path, limit: int | None) -> None:
+    """DGT's national Carta do Regime de Uso do Solo WFS (mainland Portugal, every PDM in one
+    harmonised layer). The Intergraph server answers GDAL's WFS driver with no layers, so the
+    GML is paged here (500 features, about 30 s a page) and each page is read by GDAL as a
+    local file (EPSG:3763 reprojected by PROJ). Pages overlap nowhere: the zone ids are
+    checked to be unique and the total against the server's hit count."""
+    url = "https://servicos.dgterritorio.pt/SDISNITWFSCRUS/WFService.aspx"
+    page, start, n = min(500, limit or 500), 0, 0
+    tmp = out.with_name("pt_crus_page.gml")
+    while True:
+        params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature",
+                  "typeNames": "gmgml:CRUS", "count": page, "startIndex": start}  # fmt: skip
+        for attempt in range(6):
+            try:
+                r = c.get(url, params=params, timeout=300)
+                r.raise_for_status()
+                if b"FeatureCollection" not in r.content[:2000]:
+                    raise httpx.HTTPError(f"no feature collection: {r.content[:120]!r}")
+                break
+            except httpx.HTTPError as e:
+                print(f"  pt CRUS page {start}: {str(e)[:80]}; retry {attempt + 1}", flush=True)
+                time.sleep(20 * (attempt + 1))
+        else:
+            raise SystemExit(f"pt CRUS: page at {start} failed six times")
+        m = re.search(rb'numberReturned="(\d+)"|numberOfFeatures="(\d+)"', r.content[:3000])
+        got = int(next(g for g in m.groups() if g)) if m else 0
+        if got:
+            tmp.write_bytes(r.content)
+            _ogr(out, str(tmp), "CRUS", None, {}, f"pt CRUS {start:,}+")
+        n += got
+        start += got
+        if got < page or (limit and n >= limit):
+            break
+    tmp.unlink(missing_ok=True)
+    ids = [json.loads(line)["a"].get("ID") for line in out.open(encoding="utf-8")]
+    if len(set(ids)) != len(ids):
+        raise SystemExit(f"pt CRUS: {len(ids) - len(set(ids)):,} zones read twice (paging)")
+    if not limit:
+        h = c.get(url, params={"service": "WFS", "version": "2.0.0", "request": "GetFeature",
+                               "typeNames": "gmgml:CRUS", "resultType": "hits"}, timeout=900)  # fmt: skip
+        hm = re.search(rb'numberMatched="(\d+)"', h.content)
+        total = int(hm.group(1)) if hm else None
+        print(f"  pt CRUS: {n:,} zones (server counts {total})", flush=True)
+        if total is not None and total != n:
+            raise SystemExit(f"pt CRUS: {n:,} read, the server counts {total:,}")
+
+
 def fetch_es_siu(c: httpx.Client, out: Path, limit: int | None) -> None:
     base = "https://mapas.fomento.gob.es/arcgis/rest/services/SIU"
     _arcgis_all(c, out, f"{base}/CLASES_DE_SUELO/MapServer/0", limit,
@@ -589,6 +638,22 @@ def _hilucs(uri_sql: str) -> str:
     code = f"regexp_extract({uri_sql}, '/HILUCSValue/([0-9_]+)', 1)"
     whens = " ".join(f"WHEN starts_with({code}, '{k}') THEN '{v}'" for k, v in HILUCS)
     return f"CASE {whens} ELSE 'other' END"
+
+
+PT_CRUS_CLASS = (
+    "CASE WHEN {c} ILIKE '%habitacion%' THEN 'residential' "
+    "WHEN {c} ILIKE '%centra%' THEN 'mixed' "
+    "WHEN {c} ILIKE '%atividades econ%' OR {c} ILIKE '%actividades econ%' THEN 'employment' "
+    "WHEN {c} ILIKE '%industria%' THEN 'industrial' "
+    "WHEN {c} ILIKE '%verde%' THEN 'open_space' "
+    "WHEN {c} ILIKE '%equipamento%' OR {c} ILIKE '%uso especial%' THEN 'community' "
+    "WHEN {c} ILIKE '%agr%' THEN 'agricultural' "
+    "WHEN {c} ILIKE '%florest%' OR {c} ILIKE '%natura%' THEN 'natural' "
+    "WHEN {c} ILIKE '%recursos geol%' OR {c} ILIKE '%recursos energ%' THEN 'extraction' "
+    "WHEN {c} ILIKE '%infraestrutura%' THEN 'infrastructure' "
+    "WHEN {c} ILIKE '%gua%' AND {c} ILIKE '%plano%' THEN 'water' "
+    "WHEN {r} ILIKE 'Solo Urbano%' THEN 'urban' ELSE 'other' END"
+)
 
 
 def a(field: str) -> str:
@@ -731,6 +796,14 @@ MAPS: dict[str, dict[str, str]] = {
         "zone_label": a("WIDMUNG_TXT"), "class_code": a("WIDMUNGSKLASSE"),
         "class": _cls("at_wien", a("WIDMUNGSKLASSE")), "doc_url": "NULL",
     },
+    "pt_crus": {
+        "country": "'PT'", "authority": "'Município de ' || " + a("Municipio"),
+        "plan_id": a("DTCC"), "plan_name": "'PDM ' || " + a("Municipio"),
+        "plan_status": a("Situação_PDM"), "adopted": "left(" + a("Data_PublicaçãoPDM") + ", 10)",
+        "zone_code": a("Classe") + " || ' / ' || " + a("Categoria"),
+        "zone_label": a("Designação_PlantaOrdenamento"), "class_code": a("Categoria"),
+        "class": PT_CRUS_CLASS.format(c=a("Categoria"), r=a("Classe")), "doc_url": "NULL",
+    },
 }  # fmt: skip
 
 SOURCES: dict[str, tuple[Fetch, str, str]] = {
@@ -779,6 +852,8 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
                 "ZoningElement (hale connect WFS)", "otherRestrictions, not named (service)"),
     "at_wien": (fetch_at_wien, "Generalisierter Flächenwidmungs- und Bebauungsplan, Stadt Wien "
                 "(data.wien.gv.at WFS ogdwien:GENFLWIDMUNGOGD)", "CC BY 3.0 AT (Stadt Wien)"),
+    "pt_crus": (fetch_pt_crus, "Carta do Regime de Uso do Solo (CRUS), Direção-Geral do "
+                "Território, national WFS SDISNITWFSCRUS (mainland Portugal)", "CC BY 4.0 (DGT)"),
 }  # fmt: skip
 
 STANDARD = ["country", "authority", "plan_id", "plan_name", "plan_status", "adopted", "zone_code", "zone_label", "class_code", "class", "doc_url"]  # fmt: skip

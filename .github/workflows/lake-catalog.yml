@@ -249,7 +249,7 @@ jobs:
         run: |
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
           import json, os
-          allsrc = ["ie_myplan", "dk_plandata", "fi_helsinki", "gb_england", "us_ca", "fr_gpu", "be_wallonia", "es_barcelona", "lu_pag", "de_berlin", "at_ooe", "ee_plan", "at_tirol", "at_bgld", "at_wien", "nl_plu", "es_siu", "cz_praha", "lv_riga"]
+          allsrc = ["ie_myplan", "dk_plandata", "fi_helsinki", "gb_england", "us_ca", "fr_gpu", "be_wallonia", "es_barcelona", "lu_pag", "de_berlin", "at_ooe", "ee_plan", "at_tirol", "at_bgld", "at_wien", "nl_plu", "es_siu", "cz_praha", "lv_riga", "pt_crus"]
           raw = os.environ["SOURCES"].strip()
           hub = raw[4:] if raw.startswith("hub:") else ""
           hub, _, only = hub.partition("@")
