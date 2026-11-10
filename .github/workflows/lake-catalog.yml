@@ -241,6 +241,7 @@ jobs:
     outputs:
       sources: ${{ steps.p.outputs.sources }}
       hub: ${{ steps.p.outputs.hub }}
+      replace: ${{ steps.p.outputs.replace }}
       shards: ${{ steps.p.outputs.shards }}
     steps:
       - id: p
@@ -258,6 +259,9 @@ jobs:
           print("sources=" + json.dumps(pick))
           print("hub=" + hub)
           print("shards=" + json.dumps(shards))
+          # a full run of a region with its own partition replaces that partition
+          own = {"local": "local_hub", "wfs": "eu_wfs", "eu": "eu_hub", "gb": "gb_hub"}
+          print("replace=" + (own.get(hub, "") if not only else ""))
           PY
 
   zoning:
@@ -363,7 +367,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           pip install duckdb==1.5.6 httpx pycountry
-          cd scripts && python build_zoning_hub.py --merge ../partials/*/_catalog.json --lake ../lake-out --upload 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          cd scripts && python build_zoning_hub.py --merge ../partials/*/_catalog.json --lake ../lake-out --upload ${{ needs.zoning-plan.outputs.replace && format('--replace {0}', needs.zoning-plan.outputs.replace) || '' }} 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
 
   zoning-discover:
     if: github.event_name == 'workflow_dispatch' && inputs.zoning == 'discover'

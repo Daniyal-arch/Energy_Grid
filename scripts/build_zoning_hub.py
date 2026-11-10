@@ -449,12 +449,26 @@ def main() -> None:
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--upload", action="store_true", help="files only; the catalogue is merged by the last job")  # fmt: skip
     ap.add_argument("--merge", nargs="*", type=Path, help="merge the shards' catalogues, upload it")
+    ap.add_argument("--replace", default=None,
+                    help="with --merge after a run of every shard: drop this source's old files "
+                    "from the catalogue first (a shard with no rows now writes no file)")  # fmt: skip
     a = ap.parse_args()
     if a.merge is not None:
         lake = Lake("zoning", a.lake, source=DATASET_SOURCE, licence=DATASET_LICENCE, script=SCRIPT)
         lake.dir.mkdir(parents=True, exist_ok=True)
         if a.upload:
             lake.pull_catalog()
+        old = lake.dir / "_catalog.json"
+        if a.replace and old.exists():
+            c = json.loads(old.read_text(encoding="utf-8"))
+            for t in c.get("tables", {}).values():
+                gone = [f for f in t.get("files", []) if f"source={a.replace}/" in f]
+                t["files"] = [f for f in t["files"] if f not in gone]
+                for f in gone:
+                    (t.get("file_stats") or {}).pop(f, None)
+                if gone:
+                    print(f"  {len(gone)} old {a.replace} file(s) dropped from the catalogue")
+            old.write_text(json.dumps(c, indent=1, ensure_ascii=False), encoding="utf-8")
         cat = json.loads(lake.finish(partials=a.merge).read_text(encoding="utf-8"))
         for name in ("zones", "hub_layers"):
             t = cat["tables"].get(name) or {}
