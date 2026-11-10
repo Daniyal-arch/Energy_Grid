@@ -842,8 +842,13 @@ def main() -> None:
     ap.add_argument("--upload", action="store_true")
     args = ap.parse_args()
     args.tmp.mkdir(parents=True, exist_ok=True)
-    con = duckdb.connect()
+    # A database file, not memory: the Netherlands' 5,705 municipality-wide zones ran a
+    # 12 GB runner out of memory while writing; tables and sorts spill to disk this way.
+    db = args.tmp / "build.duckdb"
+    db.unlink(missing_ok=True)
+    con = duckdb.connect(str(db))
     con.execute("INSTALL spatial; LOAD spatial; SET preserve_insertion_order=false")
+    con.execute(f"SET temp_directory = '{args.tmp / 'spill'}'; SET memory_limit = '8GB'")
     with httpx.Client(timeout=300, headers=UA, follow_redirects=True) as c:
         for s in args.sources:
             fetch, source, licence = SOURCES[s]
