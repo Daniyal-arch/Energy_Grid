@@ -513,58 +513,80 @@ def _ogr2ogr(out: Path, src: Path, layer: str, extra: dict[str, Any], tag: str) 
 
 def fetch_pt_crus(c: httpx.Client, out: Path, limit: int | None) -> None:
     """DGT's national Carta do Regime de Uso do Solo WFS (mainland Portugal, every PDM in one
-    harmonised layer). The Intergraph server answers GDAL's WFS driver with no layers, so the
-    GML is paged here (2,000 features, about 35 s a page; 500 took as long) and each page is read by GDAL as a
-    local file (EPSG:3763 reprojected by PROJ). Pages overlap nowhere: the zone ids are
-    checked to be unique and the total against the server's hit count."""
+    harmonised layer). The Intergraph server answers GDAL's WFS driver with no layers, ignores
+    `startIndex` (offset 50,000 returns the first features again), refuses attribute filters
+    and reports no hit count, so the layer is read by bounding box: WFS 1.1 with
+    `maxFeatures=20000` (the largest value it accepts; 50,000 is refused), 20 km tiles over the
+    mainland in EPSG:3763, a tile that returns the cap split in four until none does. A zone
+    crossing tile edges comes back from each tile and is kept once, by its ID; every zone
+    intersects some tile, so the read is complete. Each tile is read by GDAL as a local file
+    (EPSG:3763 reprojected by PROJ)."""
     url = "https://servicos.dgterritorio.pt/SDISNITWFSCRUS/WFService.aspx"
-    page, start, n = min(2_000, limit or 2_000), 0, 0
-    tmp = out.with_name("pt_crus_page.gml")
-    while True:
-        params = {"service": "WFS", "version": "2.0.0", "request": "GetFeature",
-                  "typeNames": "gmgml:CRUS", "count": page, "startIndex": start}  # fmt: skip
-        for attempt in range(6):
+    cap, step = 20_000, 20_000
+    tmp, part = out.with_name("pt_crus_tile.gml"), out.with_name("pt_crus_tile.ndjson")
+    seen: set[Any] = set()
+    n = tiles = dup = 0
+    # Mainland Portugal in PT-TM06 / ETRS89 (EPSG:3763) is inside x -130 to 180 km,
+    # y -320 to 290 km; empty tiles answer in about a second.
+    todo = [(x, y, x + step, y + step) for x in range(-130_000, 180_000, step)
+            for y in range(-320_000, 290_000, step)]  # fmt: skip
+    while todo:
+        x0, y0, x1, y1 = todo.pop(0)
+        params = {"service": "WFS", "version": "1.1.0", "request": "GetFeature",
+                  "typeName": "gmgml:CRUS", "maxFeatures": cap,
+                  "bbox": f"{x0},{y0},{x1},{y1},EPSG:3763"}  # fmt: skip
+        # The server answers some requests with "Value provided for a parameter is invalid"
+        # and the same request moments later with features; ask again.
+        for attempt in range(8):
             try:
-                r = c.get(url, params=params, timeout=300)
+                r = c.get(url, params=params, timeout=600)
                 r.raise_for_status()
                 if b"FeatureCollection" not in r.content[:2000]:
                     raise httpx.HTTPError(f"no feature collection: {r.content[:120]!r}")
                 break
             except httpx.HTTPError as e:
-                print(f"  pt CRUS page {start}: {str(e)[:80]}; retry {attempt + 1}", flush=True)
-                time.sleep(20 * (attempt + 1))
+                print(f"  pt CRUS tile {x0},{y0}: {str(e)[:80]}; retry {attempt + 1}", flush=True)
+                time.sleep(5 * (attempt + 1))
         else:
-            raise SystemExit(f"pt CRUS: page at {start} failed six times")
-        m = re.search(rb'numberReturned="(\d+)"|numberOfFeatures="(\d+)"', r.content[:3000])
+            raise SystemExit(f"pt CRUS: tile {x0},{y0} failed eight times")
+        tiles += 1
+        m = re.search(rb'numberOfFeatures="(\d+)"|numberReturned="(\d+)"', r.content[:3000])
         got = int(next(g for g in m.groups() if g)) if m else 0
-        if got:
-            tmp.write_bytes(r.content)
-            # DuckDB's spatial reader crashed once on a page it reads cleanly on its own
-            # (an internal error at 85,000 after four hours); read the page again.
-            for _attempt in range(3):
-                try:
-                    _ogr(out, str(tmp), "CRUS", None, {}, f"pt CRUS {start:,}+")
-                    break
-                except duckdb.Error as e:
-                    print(f"  pt CRUS page {start}: {str(e)[:80]}; read again", flush=True)
-            else:
-                raise SystemExit(f"pt CRUS: page at {start} could not be read three times")
-        n += got
-        start += got
-        if got < page or (limit and n >= limit):
+        if got >= cap:
+            h = (x1 - x0) // 2
+            todo[:0] = [(x0, y0, x0 + h, y0 + h), (x0 + h, y0, x1, y0 + h),
+                        (x0, y0 + h, x0 + h, y1), (x0 + h, y0 + h, x1, y1)]  # fmt: skip
+            continue
+        if not got:
+            continue
+        tmp.write_bytes(r.content)
+        # DuckDB's spatial reader crashed once on a page it reads cleanly on its own
+        # (an internal error after four hours); read the tile again.
+        for _attempt in range(3):
+            part.unlink(missing_ok=True)
+            try:
+                _ogr(part, str(tmp), "CRUS", None, {}, f"pt CRUS tile {x0},{y0}")
+                break
+            except duckdb.Error as e:
+                print(f"  pt CRUS tile {x0},{y0}: {str(e)[:80]}; read again", flush=True)
+        else:
+            raise SystemExit(f"pt CRUS: tile {x0},{y0} could not be read three times")
+        with out.open("a", encoding="utf-8") as f, part.open(encoding="utf-8") as src:
+            for line in src:
+                zid = json.loads(line)["a"].get("ID")
+                if zid is None:
+                    raise SystemExit(f"pt CRUS: a zone without an ID in tile {x0},{y0}")
+                if zid in seen:
+                    dup += 1
+                    continue
+                seen.add(zid)
+                f.write(line)
+                n += 1
+        if limit and n >= limit:
             break
     tmp.unlink(missing_ok=True)
-    ids = [json.loads(line)["a"].get("ID") for line in out.open(encoding="utf-8")]
-    if len(set(ids)) != len(ids):
-        raise SystemExit(f"pt CRUS: {len(ids) - len(set(ids)):,} zones read twice (paging)")
-    if not limit:
-        h = c.get(url, params={"service": "WFS", "version": "2.0.0", "request": "GetFeature",
-                               "typeNames": "gmgml:CRUS", "resultType": "hits"}, timeout=900)  # fmt: skip
-        hm = re.search(rb'numberMatched="(\d+)"', h.content)
-        total = int(hm.group(1)) if hm else None
-        print(f"  pt CRUS: {n:,} zones (server counts {total})", flush=True)
-        if total is not None and total != n:
-            raise SystemExit(f"pt CRUS: {n:,} read, the server counts {total:,}")
+    part.unlink(missing_ok=True)
+    print(f"  pt CRUS: {n:,} zones from {tiles:,} tiles ({dup:,} edge repeats dropped)", flush=True)
 
 
 def fetch_es_siu(c: httpx.Client, out: Path, limit: int | None) -> None:
