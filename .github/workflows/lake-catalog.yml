@@ -298,7 +298,7 @@ jobs:
         run: |
           pip install duckdb==1.5.6 httpx
           set -o pipefail
-          cd scripts && python build_zoning.py ${{ matrix.source }} --lake ../lake-out --tmp /tmp/zoning --upload 2>&1 | tail -n 60
+          cd scripts && python build_zoning.py ${{ matrix.source }} --lake ../lake-out --tmp /tmp/zoning --upload 2>&1 | grep -v "^  r2://" | tail -n 60
       - name: ${{ matrix.source }} documents (sizes measured, a sample kept with its text)
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
