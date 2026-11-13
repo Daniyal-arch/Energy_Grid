@@ -1,7 +1,7 @@
 ---
 title: Zoning
 tags: [data, lake, zoning]
-updated: 2026-11-10
+updated: 2026-11-13
 paths: [scripts/build_zoning.py, scripts/build_zoning_hub.py, scripts/zoning_documents.py, scripts/zoning_discover.py, scripts/probe_zoning.py, scripts/probe_zoning_local.py, docs/research/zoning.md]
 ---
 
@@ -34,7 +34,8 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
 - `scripts/probe_zoning_local.py` searches ArcGIS Online in each country's own plan words
   (whole-word title match, NOT words, Europe only) into `data/zoning_discovery/local_services.csv`;
   `--region local` (`hub:local`) reads it into partition `local_hub`. `WORDS` classes local labels.
-- `fetch_pt_crus`: Portugal's national CRUS WFS paged as GML, each page read by GDAL as a file.
+- `fetch_pt_crus`: Portugal's national CRUS WFS read by 20 km bounding-box tiles (WFS 1.1,
+  `maxFeatures=20000`, a full tile split in four), each tile read by GDAL as a file, kept once by ID.
 - Workflow: `lake-catalog.yml` input `zoning` = all, a source list, discover, or `hub:us`
   (`hub:us@4,15` reruns only those shards). The zoning jobs pin `duckdb==1.5.6` and set
   `CURL_CA_BUNDLE` (GDAL's curl has no CA bundle on the runner otherwise).
@@ -65,4 +66,9 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
 >   their old files from the catalogue; parallel zoning runs can overwrite each other's
 >   catalogue, so run one at a time when they finish together.
 > - ArcGIS title search matches prefixes ("OPN" found Dutch "opname"): filter whole words.
+> - Portugal's CRUS server ignores `startIndex` (offset 50,000 returns the first features), refuses
+>   attribute filters and `maxFeatures` above 20,000, has no hit count, and answers some requests
+>   with "Value provided for a parameter is invalid" then succeeds on retry: read by bbox tiles.
+> - DuckDB's spatial reader crashed once (internal error) on a GML page it reads cleanly alone:
+>   `fetch_pt_crus` reads a tile again up to three times.
 > - The National Zoning Atlas bucket no longer exists and mercatus.org refuses scripted downloads.
