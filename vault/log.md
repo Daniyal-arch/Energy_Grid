@@ -8,6 +8,8 @@ updated: 2026-11-09
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-13** (claude/loving-dijkstra-5q8n1c, PR #20): `pt_crus` rebuilt by bounding-box tiles (the CRUS server ignores `startIndex`): 324,894 zones; `local_hub` rerun with plural Swedish and Finnish terms (1,203,461); `nl_plu` 5,705; catalogue job limit 60 minutes; zoning.zones 38,796,284. Notes: zoning, log.
+
 - **2026-11-10** (claude/loving-dijkstra-5q8n1c, PR #20): zoning third wave. `local_hub`
   (ArcGIS services titled in local plan words, 1.09 M zones: SI, FI, IT, PL, BG, LT, CZ, ...),
   `pt_crus` (Portugal national CRUS WFS), NL memory fixes (raw file read in 256 MB parts,
