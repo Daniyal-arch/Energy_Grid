@@ -215,3 +215,31 @@ def test_a_name_asked_again_comes_from_memory(ctx, monkeypatch):
     )
     again = area(ctx, names=["Kreis Unna, DEU"], level="county")
     assert again["area"]["area_id"] == first["area"]["area_id"]
+
+
+def test_outlines_built_once_and_copies_returned(ctx):
+    import time
+
+    A = ctx.areas
+    c = next(c for c in A.search("Germany") if c.outline)
+    t0 = time.perf_counter()
+    first = A.from_candidate(c)
+    t1 = time.perf_counter()
+    again = A.from_candidate(c)
+    t2 = time.perf_counter()
+    assert again.as_dict() == first.as_dict()  # the same area, figures and id
+    assert t2 - t1 < t1 - t0  # not validated and measured again
+    again.figures["x"] = 1
+    again.parents.append("y")
+    kept = A.from_candidate(c)
+    assert "x" not in kept.figures and "y" not in kept.parents
+
+
+def test_resolving_again_keeps_the_population_summed(ctx, monkeypatch):
+    import tools.area_stats as st
+
+    first = area(ctx, names=["Oberbayern"])["area"]["figures"]["people"]["value"]
+    calls = []
+    monkeypatch.setattr(st, "people_in", lambda *a: calls.append(a) or {"value": -1})
+    again = area(ctx, names=["Oberbayern"])["area"]["figures"]["people"]["value"]
+    assert again == first == 240 * 170 and not calls  # no second raster read

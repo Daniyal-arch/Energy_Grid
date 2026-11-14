@@ -21,6 +21,7 @@ def health() -> dict[str, Any]:
         "git_sha": s.git_sha,
         "environment": s.environment,
         "lake": {"mode": lk.lake_mode, "catalog_updated": lk.catalog_date},
+        "hot": lk.hot_state,  # brief 32: hot.duckdb attached, its size and how long it took
         "models": {"main": s.agent_model, "fast": s.agent_model_fast},
         "sources": [],
     }

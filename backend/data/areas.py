@@ -18,9 +18,11 @@ from __future__ import annotations
 import json
 import logging
 import re
+import threading
 import unicodedata
+from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from functools import cached_property, lru_cache
 from pathlib import Path
 from typing import Any
@@ -406,6 +408,12 @@ class Areas:
         self.gaz = gazetteer
         self.agent_dir = agent_dir
         self.store = store
+        # outlines already built, by reference: validating, hashing and measuring a detailed
+        # outline costs ~0.5-1 s (Germany 1.1 s) and gives the same area every time for the
+        # data this container holds (brief 32); the data, not the question, is kept
+        self._made: OrderedDict[str, Area] = OrderedDict()
+        self._made_lock = threading.Lock()
+        self._bbox: dict[str, bool] = {}  # outline tables with a bbox column
 
     # ---------------------------------------------------------------- local outlines
     @cached_property
@@ -754,15 +762,24 @@ class Areas:
                 f"trim(regexp_replace(replace(lower(strip_accents({s.name})), chr(39), ''), "
                 "'[^a-z0-9]+', ' ', 'g'))"
             )
+            # the box: the table's bbox column where it has one (brief 32 rewrite), otherwise
+            # from the geometry of the matching rows only (computing it for the whole table to
+            # filter by name cost 80-160 ms on shapes.admin1)
+            if self._has_bbox(s.table):
+                box = "bbox.xmin, bbox.ymin, bbox.xmax, bbox.ymax"
+            else:
+                g = s.geometry
+                box = f"ST_XMin({g}), ST_YMin({g}), ST_XMax({g}), ST_YMax({g})"
             sql = f"""
+                WITH hit AS (
+                    SELECT {s.id} AS k FROM {s.table}
+                    WHERE {nn} = $q OR lower(CAST({s.id} AS VARCHAR)) = $q LIMIT 200)
                 SELECT CAST({s.id} AS VARCHAR), {s.name}, {s.level}, {s.iso}, {s.parent},
-                       {s.population}, ST_XMin({s.geometry}), ST_YMin({s.geometry}),
-                       ST_XMax({s.geometry}), ST_YMax({s.geometry}),
+                       {s.population}, {box},
                        CASE WHEN {nn} = $q THEN 0
                             WHEN lower(CAST({s.id} AS VARCHAR)) = $q THEN 1 ELSE 2 END AS r
                 FROM {s.table}
-                WHERE {nn} = $q OR lower(CAST({s.id} AS VARCHAR)) = $q
-                LIMIT 200"""
+                WHERE {s.id} IN (SELECT k FROM hit)"""
             try:
                 return self.lake.cursor().execute(sql, {"q": q}).fetchall()
             except Exception as e:
@@ -791,6 +808,15 @@ class Areas:
                     )
                 )
         return out
+
+    def _has_bbox(self, table: str) -> bool:
+        if table not in self._bbox:
+            try:
+                cols = {r[0] for r in self.lake.cursor().execute(f"DESCRIBE {table}").fetchall()}
+            except Exception:  # noqa: BLE001 - the geometry path answers
+                cols = set()
+            self._bbox[table] = "bbox" in cols
+        return self._bbox[table]
 
     def _names_norm(self, cur: Any) -> bool:
         """Whether the name index carries `name_norm` (built since 2026-11-05)."""
@@ -987,7 +1013,23 @@ class Areas:
         self.store.put(area)
         return area
 
+    MADE_MAX = 512
+
     def from_candidate(self, c: Candidate) -> Area:
+        with self._made_lock:
+            hit = self._made.get(c.ref)
+            if hit is not None:
+                self._made.move_to_end(c.ref)
+        if hit is not None:  # a copy: callers may add figures or parents
+            return replace(hit, figures=dict(hit.figures), parents=list(hit.parents))
+        area = self._from_candidate(c)
+        with self._made_lock:
+            self._made[c.ref] = area
+            while len(self._made) > self.MADE_MAX:
+                self._made.popitem(last=False)
+        return replace(area, figures=dict(area.figures), parents=list(area.parents))
+
+    def _from_candidate(self, c: Candidate) -> Area:
         if c.level == "group":
             key = c.ref.split(":", 1)[1]
             g = self.groups[key]

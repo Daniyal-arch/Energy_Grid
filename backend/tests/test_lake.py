@@ -63,3 +63,13 @@ def test_rows_kept_cap():
     lk = Lake(settings(lake_dir=LAKE, sql_rows_kept=10))
     r = lk.run("SELECT * FROM range(50)")
     assert len(r.rows) == 10 and r.truncated
+
+
+def test_timestamps_with_time_zone_come_back():
+    """Brief 32: DuckDB needs pytz to hand a TIMESTAMPTZ to Python; without it every query
+    returning one failed (the speed probe found 27 tables)."""
+    from data.duck import get_lake
+    from tests.conftest import settings
+
+    r = get_lake(settings()).run("SELECT TIMESTAMPTZ '2024-06-01 00:00:00+00' AS ts", guard=False)
+    assert r.rows[0][0].startswith("2024-06-01")

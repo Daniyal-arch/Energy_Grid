@@ -33,3 +33,17 @@ def test_pick() -> None:
     assert lc.pick(cols, ['"start"']) == '"start"'
     assert lc.pick(cols, ["missing"]) == "NULL"
     assert lc.pick(cols, ["'t CO2e'"]) == "'t CO2e'"
+
+
+def test_views_name_their_files():
+    """Brief 32: a view over a glob sends a LIST request to R2 on every query (~250 ms); the
+    catalogue's file list avoids it. A table without a file list keeps the glob."""
+    import lake_catalog as lc
+
+    files = ["units_solar/snapshot=2026-11-02/part-0.parquet"]
+    assert lc.view_path(
+        {"path": "lake/mastr/units_solar/snapshot=*/*.parquet", "files": files}
+    ) == ("['r2://infraatlas-raw/lake/mastr/units_solar/snapshot=2026-11-02/part-0.parquet']")
+    assert (
+        lc.view_path({"path": "lake/x/t/*.parquet"}) == "'r2://infraatlas-raw/lake/x/t/*.parquet'"
+    )

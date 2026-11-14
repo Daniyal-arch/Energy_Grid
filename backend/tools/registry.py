@@ -15,6 +15,7 @@ from pydantic import BaseModel, Field
 
 from agent.skills import get_skills
 from tools.area_stats import AreaStatsArgs, area_stats
+from tools.area_sum import AreaSumArgs, area_sum
 from tools.areas import ResolveAreaArgs, resolve_area
 from tools.catalog import APP_TABLES
 from tools.context import ToolContext, result
@@ -194,6 +195,15 @@ def specs() -> list[ToolSpec]:
             "its raster, cell size and rule.",
             AreaStatsArgs,
             area_stats,
+        ),
+        ToolSpec(
+            "area_sum",
+            "Exact count and sums of a lake table's rows inside an area (resolve_area first), "
+            "grouped and filtered by its columns: H3 rollups for the cells wholly inside plus the "
+            "edge cells' rows tested against the outline, so it equals the row-level sum while "
+            "reading far fewer bytes. Prefer it over run_sql for sums of large point tables.",
+            AreaSumArgs,
+            area_sum,
         ),
         ToolSpec(
             "site_figures",

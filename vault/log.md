@@ -1,12 +1,44 @@
 ---
 title: Log
 tags: [log]
-updated: 2026-11-07
+updated: 2026-11-09
 ---
 
 # Log
 
 Newest first. One entry per session or merged pull request.
+
+- **2026-11-14** (claude/loving-dijkstra-5q8n1c, PR #20): Germany statewide plans (`de_nrw` 70,960, `de_mv` 17,975, `de_bb` 7,909); England widened to 17 national datasets (321,942); German and English plan words in the local search (`local_hub` 1,348,603); Scotland waits for a Spatial Hub key (`.env.example`); zoning.zones 39,212,773. Notes: zoning, log.
+
+- **2026-11-13** (claude/loving-dijkstra-5q8n1c, PR #20): `pt_crus` rebuilt by bounding-box tiles (the CRUS server ignores `startIndex`): 324,894 zones; `local_hub` rerun with plural Swedish and Finnish terms (1,203,461); `nl_plu` 5,705; catalogue job limit 60 minutes; zoning.zones 38,796,284. Notes: zoning, log.
+
+- **2026-11-10** (claude/loving-dijkstra-5q8n1c, PR #20): zoning third wave. `local_hub`
+  (ArcGIS services titled in local plan words, 1.09 M zones: SI, FI, IT, PL, BG, LT, CZ, ...),
+  `pt_crus` (Portugal national CRUS WFS), NL memory fixes (raw file read in 256 MB parts,
+  `lake.write(group_rows=...)` small files). Notes: zoning, log.
+
+- **2026-11-09** (claude/loving-dijkstra-5q8n1c, PR #20): zoning second wave. New sources
+  lu_pag, de_berlin, at_ooe, at_tirol, at_wien, at_bgld, ee_plan, cz_praha, lv_riga, es_siu,
+  nl_plu through a generic GDAL reader; WFS discovery list for the German sweep; streaming,
+  WFS paging and ArcGIS page halving fixes. Notes: zoning.
+- **2026-11-09** (claude/loving-dijkstra-5q8n1c, PR #20, brief 32): hot.duckdb ready in 6-10 s
+  (views only over hot tables plus a cursor `search_path`), `libexpat1` in the Lambda image,
+  area population cached in `resolve_area`; CI speed check rebaselined and green; final probe
+  in docs/research/query-speed.md. Notes: [[query-tiers]].
+- **2026-11-08** (claude/loving-dijkstra-5q8n1c, PR #20, brief 32 and zoning): detailed-outline
+  cells (sampling boundary, grouped interior tests, two-step clips), queries wait 3 s for cells,
+  prepared build waits once per area; Overture regions prepared; speed check prints hot state.
+  Zoning: six sources into `lake/zoning/zones` (France 1.35 M fetched), discovery lists, plan
+  documents measured (owner question 8). France uploaded (1,345,010 zones, 25 PDFs);
+  US ArcGIS services: 32,997,727 zones from 6,521 services (all 48 shards; layers streamed to disk);
+  Wallonia plan de secteur 43,797 and Barcelona province MUC 227,129 zones. Notes:
+  query-tiers, zoning.
+- **2026-11-08** (claude/loving-dijkstra-5q8n1c, PR #20, brief 32): speed probe on 924 tables
+  (before: warm p50 269 ms, p95 692 ms; a ~250 ms LIST per query found and removed); exact
+  interior-plus-boundary area sums (`area_sum`); hot.duckdb (Tier 1); prepared answers (Tier 0);
+  lake rewrite and writer standard; MaStR 2026-10-13 deleted, 152 orphans registered; CI speed
+  check; bugs fixed: pytz, image files, quick top outside Europe. Notes: query-tiers, lake,
+  backend-service, index.
 
 - **2026-11-08** (main, local): R2 audit (2026-11-05): 2,739 objects, 38.6 GB, all 790 lake views
   open, Parquet all ZSTD, no identical copies; waste in older MaStR snapshots (2.7 GB) and

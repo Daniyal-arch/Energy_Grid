@@ -106,3 +106,116 @@ not be read. Both are built (Transelectrica: 100 zone-year cells; EMS: 88 reques
 "licence not stated" with the legal basis it is published under. The same instruction covers
 the other unclear cases (EDO drought, PSE, PJM, INS Romania, Elia balancing); sources whose terms
 clearly forbid reuse, need a login or refuse the client stay out.
+
+## 6. Tables that store coordinates as text: retype them? (2026-11-08, brief 32)
+
+**Decision.** Thirteen lake tables hold `lon`/`lat` as text (VARCHAR), as their sources publish
+them: `main.plants`, `eia860m.generators`, `co2stop.hydrocarbon_formations`,
+`co2stop.hydrocarbon_storage_units`, `co2stop.hydrocarbon_traps`, `co2stop.hydrocarbon_traps1`,
+`co2stop.hydrocarbon_traps_temp`, `wave9.eu_eea_aq_stats`, `wave9.eu_egdi_minerals`,
+`wave9.eu_emodnet_desalination`, `wave9.gb_ssen_opendata`, `wave9.us_epa_repowering`,
+`wave9.us_nyc_ll84`. A place filter on them must cast every row (`TRY_CAST`), so Parquet
+statistics cannot skip row groups and each place query reads the whole table (`main.plants`:
+390 MB, 3.5 s warm; `docs/research/query-speed.md`).
+
+**Why it is a question.** Brief 32 rewrites files only when every column keeps the same
+checksum. Retyping `lon`/`lat` to DOUBLE changes those two columns' values (text "8.50" becomes
+8.5; blanks and unparsable text become NULL), so it is not a lossless rewrite.
+
+**Options.**
+1. Retype in each table's build script (keep the original text in `lon_text`/`lat_text`, so
+   nothing is lost) and rebuild. Recommended: place queries on these tables drop from whole-table
+   reads to row-group reads.
+2. Keep the text; the agent keeps casting (correct, slow on the large ones).
+
+## 7. Lossy recompression of the largest rasters (2026-11-08, brief 32 Step 5)
+
+**Decision.** Brief 32 applies only lossless recompression (`scripts/raster_recompress.py`,
+values checked bit for bit). Measured on the real files (`lake-catalog.yml` input `rasters`):
+
+| raster | now | lossless best | lossy option | lossy size | largest change of any cell | change of the sum over four windows |
+|---|---:|---:|---|---:|---:|---:|
+| `lake/atlas/atlas-wind100.tif` (Global Wind Atlas, 100 m speed, float32) | 14.075 GB | ZSTD 14.019 GB (0.4 %), not applied | int16 in 0.01 m/s steps | 2.983 GB (−78.8 %) | 0.005 m/s | 3.7e-8 to 1.6e-7 relative |
+| `lake/rasters/ghsl_pop_e2025_30ss.tif` (GHSL population, float64) | 0.415 GB | none smaller | float32 | 0.376 GB (−9.6 %) | 0.0154 people | below 1e-9 relative |
+| `lake/rasters/ghsl_pop_e2025_3ss/R6_C10.tif` (one 3ss tile, float64) | 0.310 GB | none smaller | float32 | 0.292 GB (−5.7 %) | 0.00006 people | below 1e-9 relative |
+
+Applied losslessly: `lake/rasters/slope_1km_shares.tif` 650 MB to 571 MB (LERC, max error 0,
+values identical). `worldcover_1km_shares.tif` would save 6 %, under the 10 % threshold: kept.
+
+**Why it is a question.** The wind atlas is the single largest object (a third of the private
+bucket). At $0.015 per GB-month above 10 GB, the int16 version saves 11.1 GB, about $0.17 a
+month, and the 1 GB raster reads in area statistics get about 4.7 times smaller. The change
+(at most half a step of 0.01 m/s) is below the source's own precision, but it is a change to
+sourced values, which CLAUDE.md does not allow without the owner.
+
+**Options.**
+1. Convert the wind atlas to int16 (0.01 m/s, scale factor in the file's metadata, the
+   original kept nowhere) and label wind figures "rounded to 0.01 m/s". Recommended: large
+   saving, change below the data's precision.
+2. Convert, and keep the original float32 in a cold archive outside the lake.
+3. Keep everything as it is. The population float32 options save too little to be worth a
+   change either way; recommended: keep them.
+
+## 8. Zoning: plan documents (PDFs) to keep (2026-11-08, zoning request)
+
+**Decision.** The zoning lake (`scripts/build_zoning.py`, `lake/zoning/zones`) keeps every
+zone with its document link. `scripts/zoning_documents.py` measures the linked files and keeps
+a sample of 25 PDFs per source privately on R2 (`infraatlas-raw/zoning-docs/`), with their page
+text in `zoning.document_pages` for the agent. Measured:
+
+| source | linked (plan, file) pairs | sampled, answered as PDF | mean size | projected total |
+|---|---:|---:|---:|---:|
+| Denmark Plandata (lokalplaner and kommuneplanrammer) | 88,688 | 200, 200 | 79.1 MB | at most 7.0 TB (a municipal plan PDF linked from many frames counts once per frame, so the distinct files are fewer) |
+| England (conservation area appraisals) | 5,945 | 200, 126 | 3.4 MB | 20.3 GB |
+| France GPU (regulation document per plan, `urlfic`) | 9,596 | 200, 79 (82 answered) | 6.93 MB | 66.5 GB |
+
+Measured by `scripts/zoning_documents.py --measure 200` in run 42492842706 (Denmark, England) and run
+42519477572 (France), both 2026-11-08. France keeps 25 PDFs (26 document rows, 2,667 pages of text).
+
+**Why it is a question.** All of it is a large download (rule 4) and a storage cost: about
+7 TB at $0.015 per GB-month would be about $105 a month for Denmark alone (an upper bound). The text, which the agent
+needs, is far smaller than the PDFs (one 22 MB Danish plan gave 1,011 pages of text).
+
+**Options.**
+1. Keep the text of every document, and the PDF only for a sample; the agent cites the
+   publisher's link for the PDF itself. Recommended: full-text search everywhere, small storage.
+2. Keep every PDF and its text (several TB for Denmark alone).
+3. Text only for the regulation documents (France `reglement`, Denmark local plans), none for
+   reports and annexes.
+
+## 9. Zoning: sources with no licence or no scripted download (2026-11-08)
+
+- **California Statewide Zoning** (Office of Land Use and Climate Innovation): public
+  access, no licence stated. In the lake, private; may it be shown on the public map?
+- **Mapa Urbanístic de Catalunya** (Barcelona province, via the Diputació de Barcelona
+  service): no licence on the service; the Generalitat's own download page moved (HTTP 404) and
+  its map server (sig.gencat.cat) refuses non-browser clients (`UserAgentFilterError`). In the
+  lake, private; may it be shown on the public map? The other three Catalan provinces need the
+  Generalitat's shapefile, downloaded by hand into `infraatlas-raw/zoning-raw/muc/`.
+- **National Zoning Atlas** (US, about 10 states): the S3 bucket is gone and mercatus.org
+  refuses scripted downloads (HTTP 403). Options: the owner downloads the state ZIPs by hand
+  into R2 (`infraatlas-raw/zoning-raw/zoning-atlas/`), or the state teams are asked for files.
+- **PDF-only plan maps** (Wales, Northern Ireland, many Italian, Portuguese and Greek
+  municipalities): turning a scanned map into polygons needs control points and hand tracing,
+  which is an estimate of position. Options: leave these as documents with text only
+  (recommended), or georeference a named list of plans and label them "digitised from the PDF
+  map".
+- **Austria, Tyrol and Burgenland** (`at_tirol`, `at_bgld`): Tyrol's service states no licence;
+  Burgenland's says "otherRestrictions" without naming them. In the lake, private; may they be
+  shown on the public map?
+
+## 10. Zoning: accounts and a server with a broken certificate chain (2026-11-09)
+
+- **Scotland, Spatial Hub** (Improvement Service): the Local Development Plans WFS needs a free
+  registered account, and the national compilation is marked "Restricted Data" (council layers
+  are OGL). To build it: register at data.spatialhub.scot, then store the user name and password
+  as repo secrets `SPATIALHUB_USER` and `SPATIALHUB_PASSWORD` (documented in `.env.example`
+  when the source is built). Accept the account terms?
+- **Sweden, Lantmäteriet NGP detaljplaner**: the national detailed-plan download needs an API
+  account (geotorget.lantmateriet.se). Register and store `LANTMATERIET_API_KEY`?
+- **Netherlands, Ruimtelijke Plannen API v4**: no longer needed for the national coverage (the
+  PDOK INSPIRE file is built as `nl_plu`); only the plan texts would need it.
+- **Slovenia, PIS** (`dokumenti-pis.mop.gov.si`): the server sends an incomplete TLS certificate
+  chain, so verified downloads fail. Not worked around (verification is never turned off).
+  Options: wait for the ministry to fix it, or the owner downloads `gnrp_D96.zip` by hand into
+  `infraatlas-raw/zoning-raw/si/` for the build to read.

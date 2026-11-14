@@ -54,6 +54,32 @@ jobs:
           grep -q '^event: map' ask.txt && grep -q '^event: done' ask.txt
           docker stats --no-stream api
 
+  # brief 32 Step 6: a fixed sample of tables probed in the Lambda-sized container against the
+  # real lake; fails when a warm p95 grows by more than 20 % against data/query_speed.json
+  speed:
+    needs: check
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      SAMPLE: '^(app\.eu_plants|aqueduct\.basins|mastr\.units_wind|rollups\.mastr__units_solar_r6|shapes\.nuts|outlines\.names|entsoe\.prices|registers\.gb|eaglei\.outages|overture_power\.sites)$'
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash scripts/r2_creds.sh
+      - run: |
+          { echo "R2_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID"; echo "R2_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"; echo "R2_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"; } >> "$GITHUB_ENV"
+      - run: bash backend/deploy/build_image.sh infraatlas-backend:speed linux/amd64
+      - name: Probe the sample
+        run: |
+          mkdir -p out
+          if [ -z "$R2_ACCESS_KEY_ID" ]; then echo "### Speed check skipped: no R2 credentials" >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          docker run --rm --cpus 2 --memory 3008m -e R2_ACCOUNT_ID -e R2_ACCESS_KEY_ID -e R2_SECRET_ACCESS_KEY \
+            -v "$PWD/backend/probes:/var/task/backend/probes:ro" -v "$PWD/out:/out" infraatlas-backend:speed \
+            python -m probes.probe_query_speed --only "$SAMPLE" --unseen 0 --json /out/sample.json > /dev/null 2>&1
+          set -o pipefail  # the check's exit code, not tee's
+          python3 backend/probes/probe_query_speed.py --check out/sample.json | tee check.md
+          cat check.md >> "$GITHUB_STEP_SUMMARY"
+
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     needs: check
