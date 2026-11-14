@@ -1090,7 +1090,9 @@ def main() -> None:
                 lake.pull_catalog()
             # Each read_json thread holds whole objects in memory; the Netherlands' raw file
             # (municipality-wide geometries) ran 8 GB out with every core reading at once.
-            gb = raw.stat().st_size / 1e9
+            gb = (
+                raw.stat().st_size / 1e9 if raw.exists() else 0.0
+            )  # England reads its CSVs directly
             print(f"  {s}: raw NDJSON {gb:.1f} GB", flush=True)
             con.execute(f"SET threads = {1 if gb > 2 else os.cpu_count() or 4}")
             parts = _split_lines(raw, 256_000_000) if gb > 2 else [raw]
