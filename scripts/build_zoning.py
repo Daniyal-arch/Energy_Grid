@@ -14,8 +14,10 @@ Sources (all open, no key):
                 solar and wind local plans
   fi_helsinki   Finland, Helsinki detailed plans in force (plan index)
   us_ca         US, California statewide zoning (north and south)
-  gb_england    England, planning.data.gov.uk: green belt, conservation areas, article 4
-                directions, brownfield land
+  gb_england    England, planning.data.gov.uk: local plans and their boundaries, green belt,
+                housing allocations, development policy areas, conservation areas, article 4
+                directions, brownfield land, tree preservation zones, landscape and heritage
+                designations
   be_wallonia   Belgium, Wallonia: plan de secteur in force, zones d'affectation (SPW)
   es_barcelona  Spain, Mapa Urbanístic de Catalunya for the province of Barcelona
                 (Diputació de Barcelona service): land qualification and classification
@@ -145,6 +147,7 @@ CLASSES: dict[str, dict[str, str]] = {
     # codes kept as published; no harmonised lookup yet (class `other`)
     "lu_pag": {},
     "de_berlin": {},
+    "de_nrw": {},  # plan outlines; plan type kept in zone_code
     "at_ooe": {},
     "ee_plan": {},
     "at_tirol": {},
@@ -424,6 +427,25 @@ def fetch_de_berlin(c: httpx.Client, out: Path, limit: int | None) -> None:
              {"_status": status}, f"de-berlin {layer}")  # fmt: skip
 
 
+NRW_PLANTYP = {"1000": "Bebauungsplan", "2000": "Flächennutzungsplan",
+               "3000": "Innen- oder Außenbereichssatzung", "4000": "Sonstige Satzung oder Plan"}  # fmt: skip
+# Only 4000 is confirmed: the state's OGC API gives it as ProcessStepGeneral legalForce
+# ("rechtsverbindlich oder in Kraft"); NRW publishes no list for the other codes, kept as codes.
+NRW_STAND = {"4000": "in force"}
+
+
+def fetch_de_nrw(c: httpx.Client, out: Path, limit: int | None) -> None:
+    """Bauleitpläne NRW (the state's INSPIRE planned land use, the plans the municipalities
+    report): one GeoPackage, layer PlaeneNachBauGB, EPSG:25832. The plan type and process step
+    codes are the state's code lists (ogc-api.nrw.de/codelist, luplantypenamevalue and the
+    INSPIRE ProcessStepGeneralValue numbering), kept with their labels."""
+    z = out.with_name("de_nrw_bplan.zip")
+    _download(c, "https://www.opengeodata.nrw.de/produkte/infrastruktur_bauen_wohnen/"
+              "bauleitplanung/bplan_EPSG25832_GeoPackage.zip", z)  # fmt: skip
+    _ogr(out, f"/vsizip/{z}/bplan.gpkg", "PlaeneNachBauGB", limit, {}, "de-nrw Bauleitpläne")
+    z.unlink()
+
+
 def _download(c: httpx.Client, url: str, path: Path, tries: int = 6) -> None:
     """Stream a file to disk; a dropped connection resumes with a Range request (PDOK cut
     the 11.6 GB Netherlands file at 9.0 GB and at 8.6 GB)."""
@@ -637,7 +659,15 @@ def fetch_at_wien(c: httpx.Client, out: Path, limit: int | None) -> None:
     print(f"  at-wien GENFLWIDMUNGOGD: {n:,}", flush=True)
 
 
-ENGLAND = ("green-belt", "conservation-area", "article-4-direction-area", "brownfield-land")
+# Planning designations published nationally on planning.data.gov.uk (OGL). `local-plan` is
+# the plan register (adopted dates, PDF links, no geometry of its own); `local-plan-boundary`
+# its areas. Nature and flood layers are left to their own datasets.
+ENGLAND = ("green-belt", "conservation-area", "article-4-direction-area", "brownfield-land",
+           "local-plan", "local-plan-boundary", "development-policy-area", "housing-allocation",
+           "tree-preservation-zone", "area-of-outstanding-natural-beauty", "national-park",
+           "world-heritage-site", "world-heritage-site-buffer-zone", "park-and-garden",
+           "scheduled-monument", "listed-building-outline", "heritage-coast")  # fmt: skip
+ENGLAND_CLASS = {"housing-allocation": "residential"}
 
 
 def fetch_gb(c: httpx.Client, out: Path, limit: int | None) -> None:
@@ -755,6 +785,17 @@ MAPS: dict[str, dict[str, str]] = {
         "zone_code": a("planartname"), "zone_label": a("inhalt"), "class_code": "NULL",
         "class": "'other'", "doc_url": a("scan_www"),
     },
+    "de_nrw": {
+        "country": "'DE'", "authority": a("kommune"), "plan_id": a("planid"),
+        "plan_name": a("name"),
+        "plan_status": "CASE " + a("stand") + " " + " ".join(
+            f"WHEN '{k}' THEN '{v}'" for k, v in NRW_STAND.items()) + " ELSE 'NRW stand ' || " + a("stand") + " END",
+        "adopted": "left(" + a("datum") + ", 10)",
+        "zone_code": "CASE " + a("plantyp") + " " + " ".join(
+            f"WHEN '{k}' THEN '{v}'" for k, v in NRW_PLANTYP.items()) + " ELSE " + a("plantyp") + " END",
+        "zone_label": a("nr"), "class_code": a("planart"), "class": "'other'",
+        "doc_url": "coalesce(" + a("scanurl") + ", " + a("texturl") + ", " + a("sonsturl") + ")",
+    },
     "at_ooe": {
         "country": "'AT'", "authority": a("GEM_NR"), "plan_id": a("GEM_NR"),
         "plan_name": "'Flächenwidmungsplan, Gemeinde ' || " + a("GEM_NR"),
@@ -848,8 +889,10 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
                     "CC BY 4.0"),
     "us_ca": (fetch_ca, "California Statewide Zoning, Office of Land Use and Climate Innovation "
               "(ArcGIS FeatureServer)", "no licence stated (public access)"),
-    "gb_england": (fetch_gb, "planning.data.gov.uk (MHCLG): green belt, conservation area, "
-                   "article 4 direction area, brownfield land", "OGL 3.0"),
+    "gb_england": (fetch_gb, "planning.data.gov.uk (MHCLG): local plans and boundaries, green "
+                   "belt, housing allocations, development policy areas, conservation area, "
+                   "article 4 direction area, brownfield land, tree preservation zones, landscape "
+                   "and heritage designations", "OGL 3.0"),
     "be_wallonia": (fetch_be, "Plan de secteur en vigueur, Service public de Wallonie (SPW "
                     "Territoire), ArcGIS AMENAGEMENT_TERRITOIRE/PDS layer 22", "CC BY 4.0"),
     "es_barcelona": (fetch_es_bcn, "Mapa Urbanístic de Catalunya (Generalitat de Catalunya, "
@@ -859,6 +902,9 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
                "Land Use, Administration du cadastre et de la topographie (geoportail.lu, OGC API "
                "Features LU.SpatialPlan.PAG)",
                "CC0 (data.public.lu, PAG géométries de tous les PAG version 2011 en vigueur)"),
+    "de_nrw": (fetch_de_nrw, "Bauleitpläne NRW (INSPIRE planned land use), Ministerium für "
+               "Heimat, Kommunales, Bau und Digitalisierung NRW, opengeodata.nrw.de GeoPackage",
+               "no public-access limitations (INSPIRE metadata); no licence named"),
     "de_berlin": (fetch_de_berlin, "Bebauungspläne Berlin, Senatsverwaltung für "
                   "Stadtentwicklung (gdi.berlin.de WFS bplan: in force and in procedure)",
                   "dl-de/zero-2-0"),
@@ -912,16 +958,25 @@ def select_sql(source: str, path: Path) -> str:
         parts = []
         for d in ENGLAND:
             csv = path.with_name(f"{d}.csv")
-            doc = '"document-url"' if d == "conservation-area" else "NULL"
+            with csv.open(encoding="utf-8", errors="replace") as f:
+                head = set(f.readline().strip().split(","))
+
+            def col(*names: str, head: set[str] = head) -> str:
+                got = [f"nullif(\"{n}\", '')" for n in names if n in head]
+                return f"coalesce({', '.join(got)})" if got else "NULL"
+
+            geo = col("geometry", "point")
             parts.append(
-                f"SELECT 'GB' AS country, organisation AS authority, reference AS plan_id, "
-                f'name AS plan_name, CASE WHEN "end-date" IS NULL OR "end-date" = \'\' '
-                f"THEN 'in force' ELSE 'ended' END AS plan_status, \"start-date\" AS adopted, "
+                f"SELECT 'GB' AS country, "
+                f"{col('organisation', 'organisations', 'organisation-entity')} AS authority, "
+                f"reference AS plan_id, name AS plan_name, "
+                f"CASE WHEN {col('end-date')} IS NULL THEN 'in force' ELSE 'ended' END "
+                f"AS plan_status, {col('adopted-date', 'start-date')} AS adopted, "
                 f"'{d}' AS zone_code, name AS zone_label, '{d}' AS class_code, "
-                f"'designation' AS class, "
-                f"{doc} AS doc_url, "
-                f"to_json(t) AS attributes, ST_GeomFromText(coalesce(nullif(geometry, ''), "
-                f"nullif(point, ''))) AS geometry "
+                f"'{ENGLAND_CLASS.get(d, 'designation')}' AS class, "
+                f"{col('document-url', 'documentation-url')} AS doc_url, "
+                f"to_json(t) AS attributes, "
+                f"CASE WHEN {geo} IS NULL THEN NULL ELSE ST_GeomFromText({geo}) END AS geometry "
                 f"FROM read_csv('{csv}', all_varchar=true) t "
             )
         return " UNION ALL ".join(parts)

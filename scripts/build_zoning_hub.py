@@ -109,7 +109,7 @@ CODE = [
         # local words: symbol, przeznaczenie, kaavamerkintä, käyttötarkoitus, namjena,
         # destinazione, funkcia, κατηγορία, categorie, användning
         r"symbol|oznacz|przezn|merkin|kayttotark|namjen|destin|funkc|kategor|categ|anvand|"
-        r"utr|ozn",
+        r"utr|ozn|nutzung|zweckbest",
     )
 ]
 LABEL = [
@@ -118,20 +118,25 @@ LABEL = [
         r"^zon(e|ing)?_?(desc(ription)?|name|label|title)$",
         r"(zon|dist|flu|land_?use).*(desc|name|label)",
         r"^(desc|description|label|name)$",
-        r"opis|nazwa|selite|kuvaus|nimi|descr|naziv|popis|perigraf|denumire|beskr|namn",
+        r"opis|nazwa|selite|kuvaus|nimi|descr|naziv|popis|perigraf|denumire|beskr|namn|bezeich|beschreib",
     )
 ]
 # the label's words to the harmonised vocabulary; the first match wins, in this order
 WORDS: list[tuple[str, re.Pattern[str]]] = [
-    ("mixed", re.compile(r"mixed|mieszan|sekoit|misto|mješovit|zmiešan|μικτ|mixt", re.I)),
+    (
+        "mixed",
+        re.compile(
+            r"mixed|mieszan|sekoit|misto|mješovit|zmiešan|μικτ|mixt|misch|urbanes gebiet", re.I
+        ),
+    ),
     (
         "residential",
         re.compile(
             r"residen|dwelling|single.?family|multi.?family|duplex|"
             r"townhouse|apartment|housing|mobile.?home|"
-            # pl, fi, it, hr/sk/cz, el, ro, bg, lt, sv, sl
+            # pl, fi, it, hr/sk/cz, el, ro, bg, lt, sv, sl, de
             r"mieszka|asuin|asunto|abitat|stamben|bývan|bydlen|κατοικ|locuin|жилищ|gyvenam|"
-            r"bostad|bostäder|stanovanj",
+            r"bostad|bostäder|stanovanj|wohn",
             re.I,
         ),
     ),  # fmt: skip
@@ -139,15 +144,16 @@ WORDS: list[tuple[str, re.Pattern[str]]] = [
         "industrial",
         re.compile(
             r"industr|manufactur|warehous|przemysł|teollisuu|produkc|"
-            r"proizvod|βιομηχ|производ|pramon",
+            r"proizvod|βιομηχ|производ|pramon|industrie",
             re.I,
         ),
     ),  # fmt: skip
+    ("employment", re.compile(r"employment|gewerbe", re.I)),
     (
         "commercial",
         re.compile(
             r"commerc|business|retail|office|shopping|usług|handl|liike|"
-            r"commerci|poslovn|komerc|εμπορ|търгов|prekyb|handel",
+            r"commerci|poslovn|komerc|εμπορ|търгов|prekyb|handel|kerngebiet",
             re.I,
         ),
     ),  # fmt: skip
@@ -155,7 +161,7 @@ WORDS: list[tuple[str, re.Pattern[str]]] = [
         "agricultural",
         re.compile(
             r"agricult|farm|ranch|roln|maatalou|agricol|poljopriv|"
-            r"poľnohosp|zeměděl|γεωργ|селскостоп|žemės ūk|jordbruk|kmetij",
+            r"poľnohosp|zeměděl|γεωργ|селскостоп|žemės ūk|jordbruk|kmetij|landwirtschaft",
             re.I,
         ),
     ),  # fmt: skip
@@ -163,7 +169,7 @@ WORDS: list[tuple[str, re.Pattern[str]]] = [
         "open_space",
         re.compile(
             r"open.?space|park|recreation|green|zieleń|zielen|virkist|"
-            r"puisto|verde|zelen|πράσιν|prasin|спорт|rekreac",
+            r"puisto|verde|zelen|πράσιν|prasin|спорт|rekreac|grün|gruen|\bsport|spielplatz",
             re.I,
         ),
     ),  # fmt: skip
@@ -171,7 +177,7 @@ WORDS: list[tuple[str, re.Pattern[str]]] = [
         "natural",
         re.compile(
             r"conservation|forest|resource|wetland|preserv|leśn|lasy|metsä|"
-            r"bosc|šum|\bles(n|y|\b)|δάσ|δασ|pădur|горск|miško|skog|gozd",
+            r"bosc|šum|\bles(n|y|\b)|δάσ|δασ|pădur|горск|miško|skog|gozd|wald|naturschutz",
             re.I,
         ),
     ),  # fmt: skip
@@ -180,7 +186,7 @@ WORDS: list[tuple[str, re.Pattern[str]]] = [
         re.compile(
             r"institution|public|civic|school|government|community|publiczn|"
             r"julkis|pubblic|javn|verejn|veřejn|δημόσ|κοινωφ|public|обществ|"
-            r"visuomen|allmän",
+            r"visuomen|allmän|gemeinbedarf|öffentlich",
             re.I,
         ),
     ),  # fmt: skip
@@ -189,7 +195,7 @@ WORDS: list[tuple[str, re.Pattern[str]]] = [
         re.compile(
             r"airport|transport|utilit|railroad|right.?of.?way|komunik|"
             r"drog|liikenne|infrastrutt|promet|doprav|συγκοινων|"
-            r"транспорт|susisiek|trafik",
+            r"транспорт|susisiek|trafik|verkehr|versorgung|bahnanlage",
             re.I,
         ),
     ),  # fmt: skip
@@ -197,7 +203,7 @@ WORDS: list[tuple[str, re.Pattern[str]]] = [
         "water",
         re.compile(
             r"\bwater\b|lake|river|wod[ay]|wód|vesi|acqua|\bvod|νερ|"
-            r"\bape\b|вод|vanden|vatten",
+            r"\bape\b|вод|vanden|vatten|wasser|gewässer",
             re.I,
         ),
     ),  # fmt: skip

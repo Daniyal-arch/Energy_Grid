@@ -42,6 +42,28 @@ TERMS: dict[str, list[str]] = {
     "lt": ["bendrasis planas", "teritorijų planavimas"],
     "si": ["občinski prostorski načrt", "namenska raba"],
     "se": ["detaljplan", "detaljplaner", "översiktsplan", "översiktsplanen"],
+    "de": [
+        "Bebauungsplan",
+        "Bebauungspläne",
+        "Bebauungsplaene",
+        "Flächennutzungsplan",
+        "Flaechennutzungsplan",
+        "Bauleitplanung",
+        "Bauleitpläne",
+        "B-Plan",
+        "B-Pläne",
+        "FNP",
+        "XPlanung",
+    ],
+    "gb_eng": [
+        "local plan allocations",
+        "site allocations",
+        "policies map",
+        "local plan policies",
+        "proposals map",
+        "allocated sites",
+        "land allocations",
+    ],
     "gb_wales": ["Local Development Plan allocations", "LDP proposals"],
     "gb_ni": ["area plan zoning", "development plan zonings"],
     "cy": ["development plan zones Cyprus"],
@@ -54,7 +76,7 @@ NOT = re.compile(
     r"test|draft|\bmap ?\d|web ?map|osm|forest|leso|flood|risk|opname|opnieuw|program|"
     r"katsaus|ohjelma|survey|monitor|bathymetr|watershed|hillshade|topo|turyst|geolog|"
     r"hipsometr|catasto|monument|sighting|\bua ?20\d\d|pobud|krčitv|analiz|feedback|"
-    r"comment|consultation|active.?travel|rastr|raster|symbol|label",
+    r"comment|consultation|active.?travel|rastr|raster|symbol|label|entwurf|student|task ?\d",
     re.I,
 )
 
@@ -76,7 +98,7 @@ def main() -> None:
             n = 0
             for t in terms:
                 q = f'title:"{t}" AND (type:"Feature Service" OR type:"Map Service")'
-                for start in (1, 101):
+                for start in range(1, 1001, 100):  # the search's first 1,000
                     d = c.get(SEARCH, params={"q": q, "num": 100, "start": start,
                                               "f": "json"}).json()  # fmt: skip
                     for r in d.get("results") or []:

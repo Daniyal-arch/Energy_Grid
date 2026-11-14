@@ -18,6 +18,12 @@ def test_local_words() -> None:
         "Plochy lesní": "natural",
         "Teren wód powierzchniowych": "water",
         "Single family residential": "residential",
+        "Allgemeines Wohngebiet": "residential",
+        "Mischgebiet": "mixed",
+        "Gewerbegebiet": "employment",
+        "Fläche für Gemeinbedarf": "community",
+        "Verkehrsfläche": "infrastructure",
+        "Transport corridor": "infrastructure",
     }
     for label, cls in cases.items():
         assert bh.classify(label)[0] == cls, label
