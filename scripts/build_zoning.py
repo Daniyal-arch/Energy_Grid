@@ -1011,6 +1011,11 @@ def select_sql(source: str, path: Path) -> str:
             csv = path.with_name(f"{d}.csv")
             with csv.open(encoding="utf-8", errors="replace") as f:
                 head = set(f.readline().strip().split(","))
+            # Landscape outlines run to several MB a line (AONB 7.1 MB); DuckDB stops at 2 MB
+            # unless told the longest line, so measure it (bytes, as DuckDB counts).
+            with csv.open("rb") as f:
+                longest = max((len(line) for line in f), default=0)
+            size = f", max_line_size={longest + 1024}" if longest > 2_000_000 else ""
 
             def col(*names: str, head: set[str] = head) -> str:
                 got = [f"nullif(\"{n}\", '')" for n in names if n in head]
@@ -1028,7 +1033,7 @@ def select_sql(source: str, path: Path) -> str:
                 f"{col('document-url', 'documentation-url')} AS doc_url, "
                 f"to_json(t) AS attributes, "
                 f"CASE WHEN {geo} IS NULL THEN NULL ELSE ST_GeomFromText({geo}) END AS geometry "
-                f"FROM read_csv('{csv}', all_varchar=true) t "
+                f"FROM read_csv('{csv}', all_varchar=true{size}) t "
             )
         return " UNION ALL ".join(parts)
     m = MAPS[source]
