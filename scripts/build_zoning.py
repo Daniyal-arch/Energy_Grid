@@ -147,6 +147,7 @@ CLASSES: dict[str, dict[str, str]] = {
     # codes kept as published; no harmonised lookup yet (class `other`)
     "lu_pag": {},
     "de_berlin": {},
+    "de_mv": {},  # plan outlines
     "de_nrw": {},  # plan outlines; plan type kept in zone_code
     "at_ooe": {},
     "ee_plan": {},
@@ -444,6 +445,19 @@ def fetch_de_nrw(c: httpx.Client, out: Path, limit: int | None) -> None:
               "bauleitplanung/bplan_EPSG25832_GeoPackage.zip", z)  # fmt: skip
     _ogr(out, f"/vsizip/{z}/bplan.gpkg", "PlaeneNachBauGB", limit, {}, "de-nrw Bauleitpläne")
     z.unlink()
+
+
+MV_LAYERS = {"sm:B_Plan_wfs": "Bebauungsplan", "sm:BP_Bereiche_wfs": "Bebauungsplan, Bereich",
+             "sm:F_Plan_wfs": "Flächennutzungsplan", "sm:FP_Bereich_wfs": "Flächennutzungsplan, Bereich",
+             "sm:SO_Plan_wfs": "Sonderplan", "sm:SO_Bereich_wfs": "Sonderplan, Bereich"}  # fmt: skip
+
+
+def fetch_de_mv(c: httpx.Client, out: Path, limit: int | None) -> None:
+    """Bauleitpläne in MV: the state WFS with the outlines of every development, land-use and
+    special plan held in the Bauportal MV, and their parts (Bereiche); legal status as text."""
+    for layer, kind in MV_LAYERS.items():
+        _ogr(out, "WFS:https://www.geodaten-mv.de/dienste/bauleitplan_wfs", layer, limit,
+             {"_layer": kind}, f"de-mv {layer}")  # fmt: skip
 
 
 def _download(c: httpx.Client, url: str, path: Path, tries: int = 6) -> None:
@@ -796,6 +810,14 @@ MAPS: dict[str, dict[str, str]] = {
         "zone_label": a("nr"), "class_code": a("planart"), "class": "'other'",
         "doc_url": "coalesce(" + a("scanurl") + ", " + a("texturl") + ", " + a("sonsturl") + ")",
     },
+    "de_mv": {
+        "country": "'DE'",
+        "authority": "regexp_extract(" + a("gemeinde") + ", '\"gemeindename\":\"([^\"]+)\"', 1)",
+        "plan_id": a("gmlid"), "plan_name": a("anzeigename"),
+        "plan_status": a("rechtsstand_text"), "adopted": "left(" + a("inkrafttretensdatum") + ", 10)",
+        "zone_code": a("_layer"), "zone_label": a("planart_text"), "class_code": a("planart"),
+        "class": "'other'", "doc_url": a("link"),
+    },
     "at_ooe": {
         "country": "'AT'", "authority": a("GEM_NR"), "plan_id": a("GEM_NR"),
         "plan_name": "'Flächenwidmungsplan, Gemeinde ' || " + a("GEM_NR"),
@@ -902,6 +924,8 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
                "Land Use, Administration du cadastre et de la topographie (geoportail.lu, OGC API "
                "Features LU.SpatialPlan.PAG)",
                "CC0 (data.public.lu, PAG géométries de tous les PAG version 2011 en vigueur)"),
+    "de_mv": (fetch_de_mv, "Bauleitpläne in MV, Ministerium für Inneres, Bau und Digitalisierung "
+              "Mecklenburg-Vorpommern (geodaten-mv.de bauleitplan_wfs)", "dl-de/by-2-0"),
     "de_nrw": (fetch_de_nrw, "Bauleitpläne NRW (INSPIRE planned land use), Ministerium für "
                "Heimat, Kommunales, Bau und Digitalisierung NRW, opengeodata.nrw.de GeoPackage",
                "no public-access limitations (INSPIRE metadata); no licence named"),
