@@ -147,6 +147,10 @@ CLASSES: dict[str, dict[str, str]] = {
     # codes kept as published; no harmonised lookup yet (class `other`)
     "lu_pag": {},
     "de_berlin": {},
+    # Brandenburg: the plan's main use (Hauptnutzung, BauNVO Bauflächen)
+    "de_bb": {"Wohnbauflächen": "residential", "Gemischte Bauflächen": "mixed",
+              "Gewerbliche Bauflächen": "employment", "Gemeinbedarfsflächen": "community",
+              "Freiraum": "open_space"},
     "de_mv": {},  # plan outlines
     "de_nrw": {},  # plan outlines; plan type kept in zone_code
     "at_ooe": {},
@@ -458,6 +462,20 @@ def fetch_de_mv(c: httpx.Client, out: Path, limit: int | None) -> None:
     for layer, kind in MV_LAYERS.items():
         _ogr(out, "WFS:https://www.geodaten-mv.de/dienste/bauleitplan_wfs", layer, limit,
              {"_layer": kind}, f"de-mv {layer}")  # fmt: skip
+
+
+def fetch_de_bb(c: httpx.Client, out: Path, limit: int | None) -> None:
+    """Brandenburg: outlines of the legally effective development plans (PLIS, Landesamt für
+    Bauen und Verkehr), WFS as GeoJSON (GDAL's reader stops at the curved geometries)."""
+    base = "https://plis-bb.de/plisproject/inspire/index.php/geoserver/bebauungsplaene_rechtswirksam_wfs/wfs"
+    for layer in (
+        "bp_rechtswirksam_flaechen",
+        "bp_rechtswirksam_linien",
+        "bp_rechtswirksam_punkte",
+    ):
+        tn = f"bebauungsplaene_rechtswirksam_wfs:{layer}"
+        n = _ndjson(out, wfs(c, base, tn, sort="bp_id", limit=limit), {"_layer": layer})
+        print(f"  de-bb {layer}: {n:,}", flush=True)
 
 
 def _download(c: httpx.Client, url: str, path: Path, tries: int = 6) -> None:
@@ -818,6 +836,13 @@ MAPS: dict[str, dict[str, str]] = {
         "zone_code": a("_layer"), "zone_label": a("planart_text"), "class_code": a("planart"),
         "class": "'other'", "doc_url": a("link"),
     },
+    "de_bb": {
+        "country": "'DE'", "authority": a("gemname"), "plan_id": a("bp_id"),
+        "plan_name": a("bp_bez"), "plan_status": a("bp_t_ent_g"),
+        "adopted": "strftime(try_strptime(" + a("bp_dat_bek") + ", '%d.%m.%Y'), '%Y-%m-%d')",
+        "zone_code": a("bp_t_part"), "zone_label": a("bp_t_vart"), "class_code": a("bp_t_haupt"),
+        "class": _cls("de_bb", a("bp_t_haupt")), "doc_url": "NULL",
+    },
     "at_ooe": {
         "country": "'AT'", "authority": a("GEM_NR"), "plan_id": a("GEM_NR"),
         "plan_name": "'Flächenwidmungsplan, Gemeinde ' || " + a("GEM_NR"),
@@ -924,6 +949,8 @@ SOURCES: dict[str, tuple[Fetch, str, str]] = {
                "Land Use, Administration du cadastre et de la topographie (geoportail.lu, OGC API "
                "Features LU.SpatialPlan.PAG)",
                "CC0 (data.public.lu, PAG géométries de tous les PAG version 2011 en vigueur)"),
+    "de_bb": (fetch_de_bb, "Rechtswirksame Bebauungspläne Brandenburg, Landesamt für Bauen und "
+              "Verkehr (PLIS WFS)", "no fees and no access constraints (service capabilities)"),
     "de_mv": (fetch_de_mv, "Bauleitpläne in MV, Ministerium für Inneres, Bau und Digitalisierung "
               "Mecklenburg-Vorpommern (geodaten-mv.de bauleitplan_wfs)", "dl-de/by-2-0"),
     "de_nrw": (fetch_de_nrw, "Bauleitpläne NRW (INSPIRE planned land use), Ministerium für "
