@@ -1,7 +1,7 @@
 ---
 title: Zoning
 tags: [data, lake, zoning]
-updated: 2026-11-13
+updated: 2026-11-14
 paths: [scripts/build_zoning.py, scripts/build_zoning_hub.py, scripts/zoning_documents.py, scripts/zoning_discover.py, scripts/probe_zoning.py, scripts/probe_zoning_local.py, docs/research/zoning.md]
 ---
 
@@ -36,6 +36,11 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
   `--region local` (`hub:local`) reads it into partition `local_hub`. `WORDS` classes local labels.
 - `fetch_pt_crus`: Portugal's national CRUS WFS read by 20 km bounding-box tiles (WFS 1.1,
   `maxFeatures=20000`, a full tile split in four), each tile read by GDAL as a file, kept once by ID.
+- German states: `fetch_de_nrw` (NRW GeoPackage, 70,960 plans), `fetch_de_mv` (MV WFS, six
+  layers), `fetch_de_bb` (Brandenburg PLIS WFS read as GeoJSON: GDAL stops at its curves).
+  Plan outlines, not zones; status and plan type kept as published.
+- England (`gb_england`): 17 planning.data.gov.uk datasets (`ENGLAND`); each CSV's longest line is
+  measured for DuckDB's `max_line_size` (AONB 7.1 MB a line).
 - Workflow: `lake-catalog.yml` input `zoning` = all, a source list, discover, or `hub:us`
   (`hub:us@4,15` reruns only those shards). The zoning jobs pin `duckdb==1.5.6` and set
   `CURL_CA_BUNDLE` (GDAL's curl has no CA bundle on the runner otherwise).
@@ -71,4 +76,6 @@ the blocked sources are in `docs/research/zoning.md`; open decisions are owner q
 >   with "Value provided for a parameter is invalid" then succeeds on retry: read by bbox tiles.
 > - DuckDB's spatial reader crashed once (internal error) on a GML page it reads cleanly alone:
 >   `fetch_pt_crus` reads a tile again up to three times.
+> - Raw-file size checks must allow sources with no raw NDJSON (England reads its CSVs directly).
+> - Bavaria, Saxony, Lower Saxony, Thuringia, Rhineland-Palatinate: no statewide plan service found.
 > - The National Zoning Atlas bucket no longer exists and mercatus.org refuses scripted downloads.

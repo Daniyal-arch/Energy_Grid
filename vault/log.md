@@ -8,6 +8,8 @@ updated: 2026-11-09
 
 Newest first. One entry per session or merged pull request.
 
+- **2026-11-14** (claude/loving-dijkstra-5q8n1c, PR #20): Germany statewide plans (`de_nrw` 70,960, `de_mv` 17,975, `de_bb` 7,909); England widened to 17 national datasets (321,942); German and English plan words in the local search (`local_hub` 1,348,603); Scotland waits for a Spatial Hub key (`.env.example`); zoning.zones 39,212,773. Notes: zoning, log.
+
 - **2026-11-13** (claude/loving-dijkstra-5q8n1c, PR #20): `pt_crus` rebuilt by bounding-box tiles (the CRUS server ignores `startIndex`): 324,894 zones; `local_hub` rerun with plural Swedish and Finnish terms (1,203,461); `nl_plu` 5,705; catalogue job limit 60 minutes; zoning.zones 38,796,284. Notes: zoning, log.
 
 - **2026-11-10** (claude/loving-dijkstra-5q8n1c, PR #20): zoning third wave. `local_hub`
