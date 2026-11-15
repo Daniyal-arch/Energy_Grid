@@ -1,7 +1,7 @@
 ---
 title: Lake
 tags: [data, lake]
-updated: 2026-10-31
+updated: 2026-11-08
 paths: [docs/DATA_LAKE.md, agent/catalog/]
 ---
 
@@ -31,3 +31,7 @@ use of it is in [[agent-backend]].
   (GHSL tiles, class shares, Hotmaps heat density), and the asset tables (industrial, dams,
   co2stop, hotmaps, gem_ownership, tri, uk_pi). See [[areas]].
 - **Wave 9**: `wave9/<id>`, one table per source (passthrough), see [[wave9]].
+- **Brief 32** ([[query-tiers]]): views name their files (no LIST per query); row-group standard
+  enforced by `scripts/lake.py` and `scripts/lake_rewrite.py`; `lake/hot.duckdb` (Tier 1);
+  `prepared/answers` (Tier 0); MaStR snapshot 2026-10-13 deleted (1.305 GB), 152 orphan wave
+  tables registered; snapshot retention: newest, first of each month, history needs.

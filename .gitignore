@@ -19,6 +19,11 @@ frontend/dist/
 
 # raw downloads for scripts/ (data/eu/ etc.); the app's files live in frontend/public/data/
 data/*
+!data/lake_deletions.yaml
+!data/lake_audit.json
+!data/query_speed.json
+!data/lake_rowgroups.json
+!data/raster_recompress.json
 !data/coverage.yaml
 !data/dark_evidence.yaml
 !data/wave9_probes.json
@@ -27,6 +32,7 @@ data/*
 !data/wave10_gather.json
 !data/wave10_probes.json
 !data/wave10_built/
+!data/zoning_discovery/
 !frontend/public/data/
 
 # editor/os

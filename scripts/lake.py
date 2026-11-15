@@ -29,6 +29,7 @@ import json
 import os
 import shutil
 import subprocess
+import time
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -44,6 +45,10 @@ MAX_ROWS_PER_FILE = 25_000_000
 # wrangler uploads at most 300 MiB per file; bigger files are split again by size
 MAX_BYTES_PER_FILE = 250_000_000
 COPY_OPTIONS = "FORMAT parquet, COMPRESSION zstd, COMPRESSION_LEVEL 9, ROW_GROUP_SIZE 1000000, PARQUET_VERSION V2"
+# brief 32 row-group standard (docs/DATA_LAKE.md): geometry tables 10,000-100,000 rows and at most
+# 32 MB compressed a group; other tables about 1,000,000 rows and at most 128 MB
+GROUP_ROWS = {"geo": 100_000, "flat": 1_000_000}
+GROUP_MB = {"geo": 32, "flat": 128}
 
 
 @dataclass
@@ -103,6 +108,7 @@ class Lake:
         geometry: str | None = None,
         stem: str = "part",
         meta: dict[str, str] | None = None,
+        group_rows: int | None = None,
     ) -> list[Path]:
         """Write the query's rows, sorted, as one partition of `table` (or the whole table).
 
@@ -110,6 +116,10 @@ class Lake:
         `geometry` names a GEOMETRY column (EPSG:4326 lon/lat, DuckDB spatial loaded): the file
         becomes GeoParquet 1.1 (WKB) with a `bbox` covering column. `stem` names the files
         (`<stem>-0.parquet`): parallel jobs writing into one partition each use their own stem.
+        `group_rows` below 2,048 is for very large rows: DuckDB's writer holds a whole row group
+        in memory and never makes one under 2,048 rows (2,048 Netherlands plan zones of ~1 MB
+        each ran 8 GB out), so each file then holds `group_rows` rows (one group), cut from a
+        sort of the keys alone.
         Returns the files written.
         """
         partition = partition or {}
@@ -156,27 +166,54 @@ class Lake:
             geo_option = ", GEOPARQUET_VERSION 'NONE'"
         kv = ", ".join(f'"{k}": {_quote(str(v))}' for k, v in meta.items())
         order = ", ".join(sort)
+        kind = "geo" if geometry or any("hilbert" in x.lower() for x in sort) else "flat"
         files: list[Path] = []
+        if group_rows is not None and group_rows < 2_048:
+            files = self._write_small(con, folder, stem, order, n, group_rows, geo_option, kv)
+            parts = len(files)
+        fixed = group_rows is not None
+        group_rows = group_rows or GROUP_ROWS[kind]
         per_file = MAX_ROWS_PER_FILE
-        for _attempt in range(4):
+        for attempt in range(0 if fixed and group_rows < 2_048 else 8):
             files = []
             parts = max(1, -(-n // per_file))
             for i in range(parts):
                 path = folder / f"{stem}-{i}.parquet"
                 window = f"LIMIT {per_file} OFFSET {i * per_file}" if parts > 1 else ""
-                con.execute(
-                    f"COPY (SELECT * FROM _lake_rows ORDER BY {order} {window}) "
-                    f"TO {_quote(str(path))} ({COPY_OPTIONS}{geo_option}, KV_METADATA {{{kv}}})"
+                opts = COPY_OPTIONS.replace(
+                    "ROW_GROUP_SIZE 1000000", f"ROW_GROUP_SIZE {group_rows}"
                 )
+                for _shrink in range(
+                    3
+                ):  # groups over the MB cap: fewer rows a group, written again
+                    con.execute(
+                        f"COPY (SELECT * FROM _lake_rows ORDER BY {order} {window}) "
+                        f"TO {_quote(str(path))} ({opts}{geo_option}, KV_METADATA {{{kv}}})"
+                    )
+                    biggest = (
+                        con.execute(
+                            "SELECT max(b) FROM (SELECT sum(total_compressed_size) AS b FROM "
+                            f"parquet_metadata({_quote(str(path))}) GROUP BY row_group_id)"
+                        ).fetchone()[0]
+                        or 0
+                    )
+                    if fixed or biggest <= GROUP_MB[kind] * 1e6 or group_rows <= 2_048:
+                        break
+                    group_rows = max(2_048, int(group_rows * 0.8 * GROUP_MB[kind] * 1e6 / biggest))
+                    opts = COPY_OPTIONS.replace(
+                        "ROW_GROUP_SIZE 1000000", f"ROW_GROUP_SIZE {group_rows}"
+                    )
                 files.append(path)
             sizes = [p.stat().st_size for p in files]
-            if max(sizes) <= MAX_BYTES_PER_FILE or per_file <= 1:
+            if max(sizes) <= MAX_BYTES_PER_FILE or per_file <= 1 or attempt == 7:
                 break
-            # too big for one upload: split again by size (wide rows, e.g. geometries)
+            # too big for one upload: split again by the largest file (wide rows, e.g. dense
+            # polygons, sit together in Hilbert order); the last attempt's files are kept
             for p in files:
                 p.unlink()
-            want = -(-sum(sizes) // int(MAX_BYTES_PER_FILE * 0.8))
-            per_file = max(1, -(-n // want))
+            per_file = max(
+                1, min(per_file - 1, int(per_file * MAX_BYTES_PER_FILE * 0.8 / max(sizes)))
+            )
         for path in files:
             rel = path.relative_to(self.dir).as_posix()
             rows = con.execute(f"SELECT count(*) FROM {_quote(str(path))}").fetchone()[0]  # type: ignore[index]
@@ -189,6 +226,30 @@ class Lake:
             f"  lake/{self.dataset}/{table} {partition or ''}: {n:,} rows, {parts} file(s)",
             flush=True,
         )
+        return files
+
+    @staticmethod
+    def _write_small(
+        con: duckdb.DuckDBPyConnection, folder: Path, stem: str, order: str, n: int, rows: int,
+        geo_option: str, kv: str,
+    ) -> list[Path]:  # fmt: skip
+        """Files of `rows` rows each from `_lake_rows`, in `order`: only the keys are sorted,
+        then each file joins its slice of row ids (no full sort of the wide rows per file)."""
+        con.execute(
+            f"CREATE OR REPLACE TEMP TABLE _lake_keys AS SELECT rowid AS rid, "
+            f"row_number() OVER (ORDER BY {order}) - 1 AS rn FROM _lake_rows"
+        )
+        opts = COPY_OPTIONS.replace("ROW_GROUP_SIZE 1000000", f"ROW_GROUP_SIZE {rows}")
+        files: list[Path] = []
+        for i in range(max(1, -(-n // rows))):
+            path = folder / f"{stem}-{i}.parquet"
+            con.execute(
+                f"COPY (SELECT r.* FROM _lake_rows r JOIN (SELECT rid, rn FROM _lake_keys "
+                f"WHERE rn >= {i * rows} AND rn < {(i + 1) * rows}) k ON r.rowid = k.rid "
+                f"ORDER BY k.rn) TO {_quote(str(path))} ({opts}{geo_option}, KV_METADATA {{{kv}}})"
+            )
+            files.append(path)
+        con.execute("DROP TABLE _lake_keys")
         return files
 
     def catalog(self) -> dict:
@@ -290,6 +351,25 @@ def merge_catalogs(parts: list[dict]) -> dict:
 
 
 def wrangler(*args: str) -> bool:
+    """`wrangler r2 object get|put <bucket/key> --file <path>`; over R2's S3 API with `aws s3 cp`
+    when scripts/r2_creds.sh has set the S3 keys (wrangler answered "bucket does not exist"
+    for uploads on 2026-11-08, and S3 takes files of any size)."""
+    aws = shutil.which("aws")
+    if aws and os.environ.get("AWS_ACCESS_KEY_ID") and args[:2] == ("r2", "object"):
+        op, key, path = args[2], args[3], args[args.index("--file") + 1]
+        account = os.environ.get("CLOUDFLARE_ACCOUNT_ID") or ACCOUNT_ID
+        src, dst = (f"s3://{key}", path) if op == "get" else (path, f"s3://{key}")
+        cmd = [aws, "s3", "cp", "--only-show-errors", "--endpoint-url",
+               f"https://{account}.r2.cloudflarestorage.com", src, dst]  # fmt: skip
+        # R2 refuses the CRC checksums newer AWS CLIs add to multipart uploads ("InvalidPart"
+        # on 2026-11-08): checksums only where the API requires them; parts retried
+        env = {**os.environ, "AWS_REQUEST_CHECKSUM_CALCULATION": "when_required",
+               "AWS_RESPONSE_CHECKSUM_VALIDATION": "when_required"}  # fmt: skip
+        for attempt in range(4):
+            if subprocess.run(cmd, env=env, check=False, stdin=subprocess.DEVNULL).returncode == 0:
+                return True
+            time.sleep(5 * (attempt + 1))
+        return False
     npx = shutil.which("npx")
     if not npx:
         raise SystemExit("npx (Node.js) is needed for R2")

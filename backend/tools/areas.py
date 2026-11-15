@@ -12,6 +12,7 @@ area_stats and maps.
 from __future__ import annotations
 
 import json
+from collections import OrderedDict
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
@@ -56,6 +57,10 @@ class ResolveAreaArgs(BaseModel):
     name: str | None = Field(default=None, max_length=120, description="label for the result")
 
 
+_PEOPLE: OrderedDict[str, dict[str, Any]] = OrderedDict()  # area_id -> people figure
+_PEOPLE_KEPT = 2048
+
+
 def _people(ctx: ToolContext, area: Area) -> None:
     """The area's population from the GHSL raster, when area_stats can read it (A4)."""
     try:
@@ -67,6 +72,10 @@ def _people(ctx: ToolContext, area: Area) -> None:
     if fig:
         area.figures["people"] = fig
         ctx.area_store.put(area)
+        if fig.get("value") is not None:  # failures are tried again next time
+            _PEOPLE[area.area_id] = fig
+            while len(_PEOPLE) > _PEOPLE_KEPT:
+                _PEOPLE.popitem(last=False)
 
 
 def _from_view(ctx: ToolContext, which: str) -> Area:
@@ -349,7 +358,14 @@ def _resolve(
             {"area": None, "candidates": [c.as_dict() for c in candidates], "error": str(e)}, []
         )
     if "people" not in area.figures:
-        _people(ctx, area)
+        # the same area resolved again (a fresh copy from the gazetteer) keeps the population
+        # already summed for its id (ids are content hashes): the raster read over R2 takes
+        # seconds for a large region
+        fig = _PEOPLE.get(area.area_id)
+        if fig is not None:
+            area.figures["people"] = fig
+        else:
+            _people(ctx, area)
     if area.area_id not in ctx.turn_areas:
         ctx.turn_areas.append(area.area_id)
     ctx.emit("area", {"area_id": area.area_id, "name": area.name, "level": area.level})

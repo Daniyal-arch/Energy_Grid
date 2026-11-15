@@ -1,0 +1,9 @@
+# Objects scripts/lake_storage.py apply may delete from infraatlas-raw (brief 32 Step 5).
+# Only entries with `approved: true` are deleted; `match` is a full-key regex, `snapshot`
+# makes the script check first that nothing outside the MaStR tables reads that snapshot.
+# Any other deletion is an owner question (docs/owner-questions.md) before it is listed here.
+delete:
+  - reason: "MaStR snapshot of 2026-10-13: superseded, approved by the owner (brief 32, 2026-11-08)"
+    approved: true
+    snapshot: "2026-10-13"
+    match: 'lake/mastr/(units_[^/]+|locations|grid_connection_points|operators)/(.*/)?snapshot=2026-10-13/.*'

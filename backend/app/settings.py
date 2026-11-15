@@ -59,6 +59,9 @@ class Settings(BaseSettings):
 
     # the lake: a lake.duckdb (local path or r2://...) or a local directory of Parquet files
     lake_db: str | None = "r2://infraatlas-raw/lake/lake.duckdb"
+    # brief 32 Tier 1: a native DuckDB file with the small and hot tables (scripts/build_hot.py),
+    # downloaded at cold start in the background; "" switches it off
+    hot_db: str | None = "r2://infraatlas-raw/lake/hot.duckdb"
     lake_dir: Path | None = None
     # area_stats (brief 27 A4): local copies of rasters (tests, laptops) and the read budget
     rasters_dir: Path | None = None

@@ -113,10 +113,11 @@ def test_parts_and_combine(tmp_path: Path) -> None:
 
 
 def test_keep_snapshots() -> None:
-    snaps = ["2024-03-02", "2024-11-02", "2025-01-02", "2025-06-02", "2025-12-02", "2026-10-02"]
-    assert bm.keep_snapshots(snaps, date(2026, 10, 13)) == {
-        "2024-03-02",
-        "2025-01-02",
-        "2025-12-02",
-        "2026-10-02",
+    """Brief 32: newest, first of each month, history needs; older than the policy: kept."""
+    snaps = ["2026-10-13", "2026-12-02", "2026-12-15", "2027-01-02", "2027-01-20"]
+    assert bm.keep_snapshots(snaps, date(2027, 1, 21)) == {
+        "2026-10-13",
+        "2026-12-02",
+        "2027-01-02",
+        "2027-01-20",
     }

@@ -1,0 +1,628 @@
+country,publisher,geodata,datasets
+at,Marktgemeinde Abtenau,False,112
+at,Stadtgemeinde Saalfelden,False,8
+at,Land Vorarlberg,True,5
+at,Marktgemeinde Gratwein-Straßengel,False,4
+at,Marktgemeinde Tamsweg,False,3
+at,Stadtgemeinde Zeltweg,False,3
+at,Land Niederösterreich,True,2
+at,Stadt Linz,True,2
+at,Stadtgemeinde Amstetten,False,2
+at,Gemeinde Bürmos,False,1
+at,Land Steiermark,True,1
+at,Stadtgemeinde Baden,False,1
+at,Stadtgemeinde Braunau am Inn,False,1
+at,Stadtgemeinde Trofaiach,False,1
+at,"Vorarlberg, Landesamt für Vermessung und Geoinformation, Abteilung Geoinformation",True,1
+be,Departement Omgeving,True,46
+be,SPW-SG Secrétariat général,True,4
+be,City of Liège,True,1
+be,Helpdesk carto du SPW,True,1
+ch,Einwohnergemeinde Bettingen,True,1
+ch,Einwohnergemeinde Riehen,True,1
+ch,Planungs- und Naturschutzamt,True,1
+ch,Regierung und Verwaltung/Bau- und Verkehrsdepartement/Städtebau & Architektur/Raumplanung,True,1
+ch,Regierung und Verwaltung/Bau- und Verkehrsdepartement/Städtebau & Architektur/Städtebau,True,1
+ch,Regierung und Verwaltung/Präsidialdepartement/Abteilung Kultur/Archäologische Bodenforschung/Abteilung Fundbearbeitung,True,1
+ch,Städtebau & Architektur,True,1
+ch,Weitere öffentliche Stellen/Gemeindebehörden/Einwohnergemeinde Bettingen/Gemeindeverwaltung,True,1
+ch,Weitere öffentliche Stellen/Gemeindebehörden/Einwohnergemeinde Riehen/Gemeindeverwaltung/Raumentwicklung und Infrastruktur,True,1
+cz,Statutární město Most,True,9
+de,Thorsten Kuhlwein,False,2993
+de,Frauke Grannemann,False,122
+de,Sabine Jonas,False,116
+de,Jens-Peter Dahl,False,112
+de,Natascha Witten,False,109
+de,GDI-DE,True,61
+de,Kroll Stefan,False,58
+de,Jutta Zengeley,False,45
+de,Sachbearbeiter*in Geodaten GIS,True,41
+de,Verantwortlicher Geodaten,True,27
+de,Landkreis Fulda,True,23
+de,Struktur- und Genehmigungsdirektion Nord,False,23
+de,Sachgebiet Geoinformation,True,21
+de,Gemeinde Twist,True,17
+de,Sachbearbeiter Geodaten,True,16
+de,Mitarbeiter/in Fachbereich Bau und Planung,True,14
+de,Sachbearbeiter Bauleitplanung,True,14
+de,Samtgemeinde Heeseberg,True,12
+de,Gemeinde Wietze,False,9
+de,Sachbearbeitung Bauleitplanung,True,9
+de,Stadt Köln,True,9
+de,GDI-DE,False,8
+de,Stadt Goslar,False,8
+de,Team 3 - Bauleitplanung,True,8
+de,Regionalverband FrankfurtRheinMain,True,6
+de,Fachbereich Bauen und Planen,True,4
+de,Landkreis Ammerland,True,4
+de,Mitarbeiter/in im Bereich Bauleitplanung,False,4
+de,Abteilung 3.1 - Hochbau & Stadtplanung,True,3
+de,Fachdienst Stadtplanung,True,3
+de,Gemeinde Neuenhagen bei Berlin,False,3
+de,LVGL,True,3
+de,Mitarbeiter Bau und Umwelt,False,3
+de,Stadtplanung,True,3
+de,Amt für regionale Landesentwicklung Lüneburg,True,2
+de,Behörde für Stadtentwicklung und Wohnen (BSW),True,2
+de,Fachbereich 4 - Bauen und Planung,True,2
+de,Frau Papendick,True,2
+de,Gemeinde Freiensteinau,True,2
+de,Magistrat der Stadt Bremerhaven,False,2
+de,Stadt Bad Sachsa,True,2
+de,Stadt Barsinghausen,True,2
+de,Stadt Dissen aTW,False,2
+de,Stadt Lehrte,True,2
+de,Struktur- und Genehmigungsdirektion Nord Ref. 41,True,2
+de,Aachen,True,1
+de,"Abt. Statistik und Geoinformation, SB Zentrales GIS",True,1
+de,Abteilungsleiter Geoinformation,True,1
+de,Alexander Okon,False,1
+de,Antje Rossi,True,1
+de,Arthur Rohrbach,True,1
+de,Bad Rothenfelde,True,1
+de,Bauamt,True,1
+de,Bundesministerium für Wirtschaft und Energie,False,1
+de,Daniela Schuster,True,1
+de,Dezernat 2 - Stadtplanung,True,1
+de,Duisburg,True,1
+de,Flecken Coppenbrügge,False,1
+de,Flecken Coppenbrügge,True,1
+de,Flecken Delligsen,True,1
+de,Flecken Langwedel,True,1
+de,Flecken Nörten-Hardenberg,True,1
+de,Flecken Salzhemmendorf,True,1
+de,Flecken Steyerberg,True,1
+de,GIS Büro Landkreis Lüchow-Dannenberg,True,1
+de,Gem. Cremlingen,True,1
+de,Gemeinde  Essen (Oldenburg),True,1
+de,Gemeinde Adendorf,True,1
+de,Gemeinde Algermissen,True,1
+de,Gemeinde Amt Neuhaus,True,1
+de,Gemeinde Auetal,True,1
+de,Gemeinde Bad Essen,True,1
+de,Gemeinde Bad Laer,True,1
+de,Gemeinde Bakum,True,1
+de,Gemeinde Barßel,True,1
+de,Gemeinde Berne,True,1
+de,Gemeinde Beverstedt,True,1
+de,Gemeinde Bienenbüttel,True,1
+de,Gemeinde Bissendorf,True,1
+de,Gemeinde Bockhorn,True,1
+de,Gemeinde Bohmte,True,1
+de,Gemeinde Bunde,True,1
+de,Gemeinde Bösel,True,1
+de,Gemeinde Cappeln,True,1
+de,Gemeinde Diekholzen,True,1
+de,Gemeinde Dornum,True,1
+de,Gemeinde Dörverden,True,1
+de,Gemeinde Dötlingen,True,1
+de,Gemeinde Emmerthal,True,1
+de,Gemeinde Emsbüren,True,1
+de,Gemeinde Emstek,True,1
+de,Gemeinde Eschede,True,1
+de,Gemeinde Faßberg,True,1
+de,Gemeinde Friedeburg,True,1
+de,Gemeinde Friedland,True,1
+de,Gemeinde Ganderkesee,True,1
+de,Gemeinde Geeste,True,1
+de,Gemeinde Giesen,True,1
+de,Gemeinde Glandorf,True,1
+de,Gemeinde Gnarrenburg,True,1
+de,Gemeinde Grasberg,True,1
+de,Gemeinde Großefehn,True,1
+de,Gemeinde Großenkneten,True,1
+de,Gemeinde Hagen am Teutoburger Wald,True,1
+de,Gemeinde Hagen im Bremischen,True,1
+de,Gemeinde Hambühren,True,1
+de,Gemeinde Hasbergen,True,1
+de,Gemeinde Hatten,True,1
+de,Gemeinde Hinte,True,1
+de,Gemeinde Holdorf,True,1
+de,Gemeinde Hollenstedt,True,1
+de,Gemeinde Hude,True,1
+de,Gemeinde Hude (Oldb),False,1
+de,Gemeinde Ihlow,True,1
+de,Gemeinde Ilsede,True,1
+de,Gemeinde Isernhagen,True,1
+de,Gemeinde Jade,True,1
+de,Gemeinde Jemgum,True,1
+de,Gemeinde Kirchlinteln,True,1
+de,Gemeinde Krummhörn,True,1
+de,Gemeinde Lamspringe,True,1
+de,Gemeinde Lastrup,True,1
+de,Gemeinde Lehre,True,1
+de,Gemeinde Lemwerder,True,1
+de,Gemeinde Lilienthal,True,1
+de,Gemeinde Loxstedt,True,1
+de,Gemeinde Molbergen,True,1
+de,Gemeinde Moormerland,True,1
+de,Gemeinde Neu Wulmstorf,True,1
+de,Gemeinde Neuenkirchen,True,1
+de,Gemeinde Neuenkirchen-Vörden,True,1
+de,Gemeinde Ostercappeln,True,1
+de,Gemeinde Ostrhauderfehn,True,1
+de,Gemeinde Ovelgönne,True,1
+de,Gemeinde Rhauderfehn,True,1
+de,Gemeinde Rhede (Ems),True,1
+de,Gemeinde Ritterhude,True,1
+de,Gemeinde Rosengarten,True,1
+de,Gemeinde Salzbergen,True,1
+de,Gemeinde Sande,True,1
+de,Gemeinde Sassenburg,True,1
+de,Gemeinde Saterland,True,1
+de,Gemeinde Schiffdorf,True,1
+de,Gemeinde Schladen,True,1
+de,Gemeinde Seevetal,True,1
+de,Gemeinde Sibbesse,True,1
+de,Gemeinde Spiekeroog,True,1
+de,Gemeinde Stadtland,True,1
+de,Gemeinde Steinfeld (Oldenburg),True,1
+de,Gemeinde Stuhr,True,1
+de,Gemeinde Südbrookmerland,True,1
+de,Gemeinde Südheide,True,1
+de,Gemeinde Uetze,True,1
+de,Gemeinde Uplengen,True,1
+de,Gemeinde Vechelde,True,1
+de,Gemeinde Visbek,True,1
+de,Gemeinde Wagenfeld,True,1
+de,Gemeinde Wallenhorst,True,1
+de,Gemeinde Wangerooge,True,1
+de,Gemeinde Wardenburg,True,1
+de,Gemeinde Wedemark,True,1
+de,Gemeinde Wennigsen (Deister),True,1
+de,Gemeinde Westoverledingen,True,1
+de,Gemeinde Weyhe,True,1
+de,Gemeinde Wietmarschen,True,1
+de,Gemeinde Wietze,True,1
+de,Gemeinde Winsen (Aller),True,1
+de,Gemeinde Worpswede,True,1
+de,Gemeinde Wurster Nordseeküste,True,1
+de,Gemeindeverwaltung Aerzen,True,1
+de,Hamm,True,1
+de,Hansestadt Lüneburg,True,1
+de,Hansestadt Stade,True,1
+de,Hansestadt Uelzen,True,1
+de,Hochtaunuskreis - Der Kreisausschuss,True,1
+de,Hr. Dr. Heicke,True,1
+de,Hr. Tietz,True,1
+de,Inselgemeinde Langeoog,True,1
+de,Jana Ohmer,True,1
+de,Jeanne Chomsé,False,1
+de,Klein und Leber GbR,True,1
+de,LVermGeo im Auftrag von Wittlich,True,1
+de,Landesbetrieb Geoinformation und Vermessung (LGV) Hamburg,True,1
+de,Landkreis Cham,True,1
+de,Magistrat der Stadt Bremerhaven,True,1
+de,Matteo Jansen,True,1
+de,Melanie Henkel,True,1
+de,"Ministerium für Inneres, ländliche Räume, Integration und Gleichstellung",True,1
+de,"Ministerium für Klimaschutz, Umwelt, Energie und Mobilität",False,1
+de,Mitarbeiter: innen Gis-Koordination,True,1
+de,Oliver Schultz,True,1
+de,Olpe,True,1
+de,Rathaus,False,1
+de,SG Boldecker Land,True,1
+de,SG Brome,True,1
+de,SG Hankensbüttel,True,1
+de,SG Isenbüttel,True,1
+de,SG Nord-Elm,True,1
+de,Samtgemeinde Ahlden,True,1
+de,Samtgemeinde Apensen,True,1
+de,Samtgemeinde Artland,True,1
+de,Samtgemeinde Bad Bentheim,True,1
+de,Samtgemeinde Bardowick,True,1
+de,Samtgemeinde Bersenbrück,True,1
+de,Samtgemeinde Bevern,True,1
+de,Samtgemeinde Bodenwerder-Polle,True,1
+de,Samtgemeinde Bothel,True,1
+de,Samtgemeinde Bruchhausen-Vilsen,True,1
+de,Samtgemeinde Börde Lamstedt,True,1
+de,Samtgemeinde Dransfeld,True,1
+de,Samtgemeinde Dörpen,True,1
+de,Samtgemeinde Eilsen,True,1
+de,Samtgemeinde Elbmarsch,True,1
+de,Samtgemeinde Elbtalaue (Elbe),True,1
+de,Samtgemeinde Eschershausen-Stadtoldendorf,True,1
+de,Samtgemeinde Esens,True,1
+de,Samtgemeinde Fintel,True,1
+de,Samtgemeinde Flotwedel,True,1
+de,Samtgemeinde Fredenbeck,True,1
+de,Samtgemeinde Freren,True,1
+de,Samtgemeinde Fürstenau,True,1
+de,Samtgemeinde Geestequelle,True,1
+de,Samtgemeinde Gellersen,True,1
+de,Samtgemeinde Gieboldehausen,True,1
+de,Samtgemeinde Grafschaft Hoya,True,1
+de,Samtgemeinde Hage,True,1
+de,Samtgemeinde Hanstedt,True,1
+de,Samtgemeinde Harpstedt,True,1
+de,Samtgemeinde Harsefeld,True,1
+de,Samtgemeinde Hattorf,True,1
+de,Samtgemeinde Heemsen,True,1
+de,Samtgemeinde Hemmoor,True,1
+de,Samtgemeinde Herzlake,True,1
+de,Samtgemeinde Hesel,True,1
+de,Samtgemeinde Holtriem,True,1
+de,Samtgemeinde Horneburg,True,1
+de,Samtgemeinde Ilmenau,True,1
+de,Samtgemeinde Jesteburg,True,1
+de,Samtgemeinde Jümme,True,1
+de,Samtgemeinde Lachendorf,True,1
+de,Samtgemeinde Land Hadeln,True,1
+de,Samtgemeinde Lathen,True,1
+de,Samtgemeinde Leinebergland,True,1
+de,Samtgemeinde Lindhorst,True,1
+de,Samtgemeinde Lühe,True,1
+de,Samtgemeinde Nenndorf,True,1
+de,Samtgemeinde Neuenhaus,True,1
+de,Samtgemeinde Niedernwöhren,True,1
+de,Samtgemeinde Nienstädt,True,1
+de,Samtgemeinde Ostheide,True,1
+de,Samtgemeinde Papenteich,True,1
+de,Samtgemeinde Radolfshausen,True,1
+de,Samtgemeinde Rehden,True,1
+de,Samtgemeinde Rethem,True,1
+de,Samtgemeinde Rodenberg,True,1
+de,Samtgemeinde Salzhausen,True,1
+de,Samtgemeinde Scharnebeck,True,1
+de,Samtgemeinde Schwarmstedt,True,1
+de,Samtgemeinde Schüttorf,True,1
+de,Samtgemeinde Selsingen,True,1
+de,Samtgemeinde Sittensen,True,1
+de,Samtgemeinde Sottrum,True,1
+de,Samtgemeinde Spelle,True,1
+de,Samtgemeinde Steimbke,True,1
+de,Samtgemeinde Suderburg,True,1
+de,Samtgemeinde Sögel,True,1
+de,Samtgemeinde Thedinghausen,True,1
+de,Samtgemeinde Uelsen,True,1
+de,Samtgemeinde Velpke,True,1
+de,Samtgemeinde Wathlingen,True,1
+de,Samtgemeinde Werlte,True,1
+de,Samtgemeinde Wesendorf,True,1
+de,Samtgemeinde Weser-Aue,True,1
+de,Silke Köhler,True,1
+de,Silke Rademacher,True,1
+de,Stadt Achim,True,1
+de,Stadt Alfeld (Leine),True,1
+de,Stadt Aurich,True,1
+de,Stadt Bad Iburg,True,1
+de,Stadt Bad Lauterberg im Harz,True,1
+de,Stadt Bad Münder,True,1
+de,Stadt Bad Pyrmont,True,1
+de,Stadt Bad Salzdetfurth,True,1
+de,Stadt Bassum,True,1
+de,Stadt Bergen,True,1
+de,Stadt Bleckede,True,1
+de,Stadt Braunlage,True,1
+de,Stadt Braunschweig,True,1
+de,Stadt Bremervörde,True,1
+de,Stadt Buchholz in der Nordheide,True,1
+de,Stadt Burgwedel,True,1
+de,Stadt Bückeburg,True,1
+de,Stadt Clausthal-Zellerfeld,True,1
+de,Stadt Cloppenburg,True,1
+de,Stadt Cuxhaven,True,1
+de,Stadt Damme,True,1
+de,Stadt Delmenhorst,True,1
+de,Stadt Diepholz,True,1
+de,Stadt Dinklage,True,1
+de,Stadt Dissen aTW,True,1
+de,Stadt Duderstadt,True,1
+de,Stadt Elsfleth,True,1
+de,Stadt Elze,True,1
+de,Stadt Emden,True,1
+de,Stadt Erkrath,True,1
+de,Stadt Freiburg i. Br. - Stadtplanungsamt,False,1
+de,Stadt Geestland,True,1
+de,Stadt Georgsmarienhütte,True,1
+de,Stadt Gifhorn,True,1
+de,Stadt Goslar,True,1
+de,Stadt Haan,True,1
+de,Stadt Hameln,True,1
+de,Stadt Hann. Münden,True,1
+de,Stadt Haren (Ems),True,1
+de,Stadt Haselünne,True,1
+de,Stadt Helmstedt,True,1
+de,Stadt Hemmingen,True,1
+de,Stadt Herrenberg,False,1
+de,Stadt Hessisch Oldendorf,True,1
+de,Stadt Hildesheim,True,1
+de,Stadt Holzminden,True,1
+de,Stadt Jever,True,1
+de,Stadt Königslutter am Elm,True,1
+de,Stadt Laatzen,True,1
+de,Stadt Langelsheim,True,1
+de,Stadt Leer,True,1
+de,Stadt Lingen (Ems),True,1
+de,Stadt Lohne (Oldenburg),True,1
+de,Stadt Löningen,True,1
+de,Stadt Melle,True,1
+de,Stadt Meppen,True,1
+de,Stadt Moringen,True,1
+de,Stadt Mönchengladbach,True,1
+de,Stadt Neustadt am Rübenberge,True,1
+de,Stadt Nienburg/Weser,True,1
+de,Stadt Norderney,True,1
+de,Stadt Nordhorn,True,1
+de,Stadt Northeim,True,1
+de,Stadt Oldenburg,True,1
+de,Stadt Osnabrück FD Geodaten,True,1
+de,Stadt Osterholz-Scharmbeck,True,1
+de,Stadt Osterode am Harz,True,1
+de,Stadt Papenburg,True,1
+de,Stadt Pattensen,True,1
+de,Stadt Rehburg-Loccum,True,1
+de,Stadt Rinteln,True,1
+de,Stadt Ronnenberg,True,1
+de,Stadt Rotenburg (Wümme),True,1
+de,Stadt Sarstedt,True,1
+de,Stadt Schneverdingen,True,1
+de,Stadt Schortens,True,1
+de,Stadt Seelze,True,1
+de,Stadt Seesen,True,1
+de,Stadt Soest,False,1
+de,Stadt Soltau,True,1
+de,Stadt Springe,True,1
+de,Stadt Stadthagen,True,1
+de,Stadt Sulingen,True,1
+de,Stadt Syke,True,1
+de,Stadt Twistringen,True,1
+de,Stadt Uslar,True,1
+de,Stadt Varel,True,1
+de,Stadt Villingen-Schwenningen - Vermessungsamt,False,1
+de,Stadt Visselhövede,True,1
+de,Stadt Weener,True,1
+de,Stadt Wiesmoor,True,1
+de,Stadt Wildeshausen,True,1
+de,Stadt Wilhelmshaven,True,1
+de,Stadt Wittingen,True,1
+de,"Stadt Wuppertal, Ressort 102 Vermessung, Katasteramt und Geodaten",True,1
+de,"Stadtgemeinde Bremen, Die Senatorin für Bau, Mobiliät und Stadtentwicklung",True,1
+de,Stadtverwaltung Gera,True,1
+de,Stadtverwaltung Jena,True,1
+de,Tanja Verstege,True,1
+de,Team GIS,True,1
+de,Verkündungen,False,1
+es,"Subdirección General de Estudios Territoriales y Cartografía. D.G.Urbanismo. Consejería de Medio Ambiente, Agricultura e Interior. Comunidad de Madrid",True,19
+es,Ayuntamiento de Madrid,True,5
+es,Comunidad Foral de Navarra,True,2
+fi,Päijät-Hämeen liitto,True,2
+fi,Etelä-Pohjanmaan liitto,True,1
+fi,Hämeen liitto,True,1
+fi,Iisalmi,False,1
+fi,Kymenlaakson liitto,True,1
+fi,Laitila,True,1
+fi,Pohjanmaan liitto,True,1
+fi,Pohjois-Karjalan maakuntaliitto,True,1
+fr,Geokatalog Francie,True,840
+fr,Ville de Paris,True,34
+fr,Communauté de Communes de la Plaine d'Estrées,True,32
+fr,Direction de l'Urbanisme - Ville de Paris,True,25
+fr,Métropole de Lyon,True,21
+fr,Saint-Brieuc Armor Agglomération,True,14
+fr,DREAL Auvergne-Rhône-Alpes,True,12
+fr,Communauté d'Agglomération Saint-Lô Agglo,True,11
+fr,Le Havre Seine Métropole,True,7
+fr,Communauté de Communes Coeur Côte Fleurie,True,5
+fr,Communauté de Communes du Pays d'Orange en Provence,True,5
+fr,DDT de l'Isère,True,5
+fr,Nantes Métropole,True,5
+fr,Brest métropole,True,4
+fr,Rennes Métropole,True,4
+fr,Rennes Métropole en accès libre,True,4
+fr,Ville d'Anglet,True,4
+fr,CARENE,True,3
+fr,DREAL Nouvelle Aquitaine,True,3
+fr,DREAL Pays de la Loire,True,3
+fr,Département du Loiret,True,3
+fr,Collectivité Territoriale de Guyane,True,2
+fr,Colmar Agglomération,True,2
+fr,Commune d'Anglet,True,2
+fr,DREAL Bourgogne-Franche-Comté,True,2
+fr,GIP ATGeRi,True,2
+fr,Ministère de la Transition écologique,False,2
+fr,Saint-Nazaire agglo - La CARENE,True,2
+fr,Thomas Gratier,True,2
+fr,Åben platform af franske offentlige data,True,2
+fr,ACTION Nogent-sur-Marne,False,1
+fr,Agence nationale de la cohésion des territoires,True,1
+fr,Angers Loire Métropole,True,1
+fr,Avignon,True,1
+fr,Bordeaux Métropole,True,1
+fr,Communauté d'Agglomération Plaine Vallée,True,1
+fr,Communauté d'Agglomération de Bourges,True,1
+fr,Communauté de communes Causses et Vallée de la Dordogne,True,1
+fr,Commune d'Angoisse,True,1
+fr,Conseil départemental de la Haute-Garonne,True,1
+fr,DELETED DELETED,False,1
+fr,Dijon Métropole,True,1
+fr,Direction Départementale des Territoires et de la Mer de la Gironde,True,1
+fr,Direction de l'Urbanisme - Ville de Paris,False,1
+fr,Direction de la Propreté et de l'Eau - Ville de Paris,True,1
+fr,Direction des Territoires de l'Alimentation et de la Mer de Saint-Pierre et Miquelon,True,1
+fr,Département de l'Ain,True,1
+fr,Grand Paris Seine Ouest,True,1
+fr,Grand Poitiers Open Data,True,1
+fr,GrandSoissons Agglomération,True,1
+fr,Guérande,True,1
+fr,Lorient Agglomération,True,1
+fr,Mairie de Cannes,True,1
+fr,Mairie de Lille,True,1
+fr,Mairie de Mazingarbe,False,1
+fr,Mairie de Saint-Denis (La Réunion),True,1
+fr,Ministère de la transition écologique,True,1
+fr,Montluçon Communauté,True,1
+fr,Mulhouse Alsace Agglomération,True,1
+fr,Nantes Métropole,False,1
+fr,Parc amazonien de Guyane,False,1
+fr,Parc naturel régional des Vosges du Nord,False,1
+fr,Parc naturel régional des Vosges du Nord,True,1
+fr,Parcs naturels régionaux de Provence-Alpes-Côte d'Azur,True,1
+fr,Premier ministre,False,1
+fr,Région des Pays de la Loire,True,1
+fr,Région Île-de-France,True,1
+fr,Seine Ouest,True,1
+fr,Service des données et études statistiques (SDES),False,1
+fr,Tours Métropole Val de Loire,True,1
+fr,Val d'Ille-Aubigné,True,1
+fr,Ville d'Agen,True,1
+fr,Ville de Caen,True,1
+fr,Ville de Mulhouse,True,1
+fr,Ville de Nogent-sur-Marne,False,1
+fr,Ville de Paris,False,1
+fr,Ville de Rueil-Malmaison,True,1
+fr,Ville de Saint-Lô (Manche),True,1
+fr,wpd,True,1
+gb,Scottish Government SpatialData.gov.scot,True,80
+gb,Tunbridge Wells Borough Council,True,39
+gb,Burnley Borough Council,True,4
+gb,Gedling Borough Council,True,4
+gb,Greater London Authority,True,3
+gb,North Norfolk District Council,True,3
+gb,Data Mill North,True,2
+gb,Environmental Information Data Centre,True,2
+gb,Sheffield City Council,True,2
+gb,Basingstoke and Deane Borough Council,True,1
+gb,Broxtowe Borough Council,True,1
+gb,"Department for Business, Energy and Industrial Strategy",False,1
+gb,Greater London Authority,False,1
+gb,Lichfield District Council,True,1
+gb,London Borough of Barnet,True,1
+gb,London Borough of Barnet,False,1
+gb,North Yorkshire Council,True,1
+gb,Plymouth City Council,True,1
+gb,Runnymede Borough Council,True,1
+gb,Sevenoaks District Council,True,1
+gb,Sunderland City Council,True,1
+gb,Surrey Heath Borough Council,True,1
+gr,Δήμος Αγρινίου,True,7
+gr,Δήμος Χανίων,True,7
+gr,Δήμος Ωραιοκάστρου,True,7
+gr,Δήμος Δέλτα,True,6
+gr,Δήμος Νάξου και Μικρών Κυκλάδων,True,5
+gr,Δήμος Χαλανδρίου,True,5
+gr,Δήμος Θερμαϊκού,True,4
+gr,Δήμος Αιγάλεω,True,3
+gr,Δήμος Ηρακλείου Κρήτης,True,3
+gr,Δήμος Θεσσαλονίκης,True,3
+gr,Δήμος Ιεράς Πόλεως Μεσολογγίου,True,3
+gr,Δήμος Παπάγου-Χολαργού,True,3
+gr,Δήμος Ρεθύμνης,True,3
+gr,Δήμος Αμαρουσίου,True,2
+gr,Δήμος Δυτικής Λέσβου,True,2
+gr,Δήμος Καλαμάτας,True,2
+gr,Δήμος Σύρου Ερμούπολης,True,2
+gr,Διεύθυνση Πολεοδομίας Δήμου Πρέβεζας,False,2
+gr,Τμήμα Διαχείρισης Γεωχωρικών Δεδομένων Πόλεως,True,2
+gr,ΔΗΜΟΣ ΗΡΑΚΛΕΙΟΥ,True,1
+gr,Δήμος Ιλίου,True,1
+gr,Δήμος Χαλκηδόνος,True,1
+gr,Διεύθυνση Περιβάλλοντος και Χωρικού Σχεδιασμού,True,1
+gr,Διεύθυνση Πολεοδομίας Δήμου Πρέβεζας,True,1
+gr,Τμήμα Διαχείρισης Γεωχωρικών Δεδομένων Πόλεως,False,1
+hr,Općina Funtana,False,3
+hr,Grad Krapina,False,2
+hr,Općina Breznica,False,1
+hr,Općina Končanica,False,1
+hr,Općina Lovas,False,1
+hr,Općina Sirač,False,1
+hr,Općina Vinica,False,1
+hr,Općina Čeminac,False,1
+ie,Limerick City & County Council,True,81
+ie,Dún Laoghaire-Rathdown County Council,True,24
+ie,Fingal County Council,True,21
+ie,South Dublin County Council,True,5
+ie,Westmeath County Council,True,4
+ie,Galway County Council,True,3
+ie,Roscommon County Council,True,3
+ie,Kildare County Council ,False,2
+ie,Monaghan County Council,True,2
+ie,Wicklow County Council,True,2
+ie,Cork City Council,True,1
+ie,Dublin City Council,True,1
+ie,Galway City Council,True,1
+it,Regione Lombardia,True,38
+it,Comune di Arezzo,True,25
+it,Comune di Siena,True,8
+it,Comune di Genova,True,3
+it,Comune di Firenze - Direzione Sistemi Informativi,True,2
+it,Comune di Torino,True,2
+it,Provincia Autonoma di Bolzano,False,2
+it,CMBO Pianificazione Territoriale,True,1
+it,COMUNE DI Carassai,True,1
+it,COMUNE DI Cupra Marittima,True,1
+it,COMUNE DI Fano,True,1
+it,COMUNE DI Grottazzolina,True,1
+it,COMUNE DI Lapedona,True,1
+it,COMUNE DI Montefiore dell'Aso,True,1
+it,COMUNE DI Monteprandone,True,1
+it,COMUNE DI Porto Sant'Elpidio,True,1
+it,COMUNE DI San Benedetto del Tronto,True,1
+it,COMUNE DI San Lorenzo in Campo,True,1
+it,Comune di Fabriano,True,1
+it,Comune di Firenze,True,1
+it,Comune di Macerata Feltria,False,1
+it,Comune di Messina,True,1
+it,Comune di Milano - Direzione Urbanistica,True,1
+it,Comune di Palermo,True,1
+it,Comune di Smerillo,True,1
+it,Ente Parco Regionale della Maremma,True,1
+it,Parco regionale della Maremma,True,1
+it,Provincia Autonoma di Bolzano - Alto Adige,False,1
+it,Redazione OD,True,1
+it,Urbanistica,True,1
+lt,Viešoji įstaiga Statybos sektoriaus vystymo agentūra,True,2
+lv,Rīgas dome,True,2
+nl,Provincie Noord-Brabant,True,21
+nl,Team OpenData Groningen,False,3
+nl,Assen,True,1
+nl,Kadaster,True,1
+nl,Provincie Drenthe,True,1
+nl,UtrechtOpen,True,1
+pl,Katalog metapodatkov o geosistemu,True,366
+pt, Câmara Municipal de Águeda ,True,44
+pt,Câmara Municipal da Calheta,False,6
+pt,Câmara Municipal de Oeiras,False,4
+pt,Município de Velas,False,2
+pt,Município de Aguiar da Beira,True,1
+se,Lomma kommun,True,2
+se,Simrishamns kommun,False,2
+se,Gävle kommun,True,1
+si,MINISTRSTVO ZA OKOLJE IN PROSTOR,False,1
+si,OBČINA DOBRNA,True,1
+si,OBČINA GORNJI GRAD,True,1
+si,OBČINA LAŠKO,True,1
+si,OBČINA LJUBNO,True,1
+si,OBČINA MOZIRJE,True,1
+si,OBČINA NAZARJE,True,1
+si,OBČINA OPLOTNICA,True,1
+si,OBČINA REČICA OB SAVINJI,True,1
+si,OBČINA SLOVENSKE KONJICE,True,1
+si,OBČINA VITANJE,True,1
+si,OBČINA VOJNIK,True,1
+si,OBČINA VRANSKO,True,1
+si,OBČINA ZREČE,True,1
+si,OBČINA ŠMARJE PRI JELŠAH,True,1
+sk,Mesto Senica,True,18
+sk,Mesto Myjava,True,1

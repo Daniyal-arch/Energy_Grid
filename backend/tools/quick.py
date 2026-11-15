@@ -20,6 +20,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 from data.areas import ISO2_TO_ISO3
+from tools import prepared
 from tools.areas import resolve_area
 from tools.context import ToolContext, result
 from tools.sql import run_sql
@@ -147,7 +148,8 @@ def top(ctx: ToolContext, area: dict[str, Any], n: int, kind: str) -> list[dict[
     elif reg == "eu":
         sql = f"SELECT name, country, fuel, mw, year FROM app.eu_plants WHERE {w} ORDER BY mw DESC LIMIT {n}"
     else:
-        sql = (f"SELECT name, type, mw, year FROM app.world_plants WHERE in_area(lon, lat, "
+        # the world plants file carries no names (GEM trackers: type, status, MW, year, position)
+        sql = (f"SELECT type, status, mw, year, lon, lat FROM app.world_plants WHERE in_area(lon, lat, "
                f"'{area['area_id']}') ORDER BY mw DESC LIMIT {n}")  # fmt: skip
     return [_table(ctx, f"The {n} largest power plants", sql, "ordered by MW as published")]
 
@@ -198,6 +200,16 @@ def prices(ctx: ToolContext, area: dict[str, Any]) -> list[dict[str, Any]]:
         "as published per zone over the period shown (ENTSO-E day-ahead)")]  # fmt: skip
 
 
+def answer_for(
+    ctx: ToolContext, template: str, a: dict[str, Any], n: int = 10, kind: str = "plants"
+) -> list[dict[str, Any]]:
+    """One template's tables for a resolved area (also what build_prepared.py stores)."""
+    fn = {"profile": lambda: profile(ctx, a), "top": lambda: top(ctx, a, n, kind),
+          "totals": lambda: totals(ctx, a), "published": lambda: published(ctx, a),
+          "prices": lambda: prices(ctx, a)}[template]  # fmt: skip
+    return fn()
+
+
 def quick(
     ctx: ToolContext, template: str, area: str, n: int = 10, kind: str = "plants"
 ) -> dict[str, Any]:
@@ -211,10 +223,10 @@ def quick(
             summary: Any = [{k: a[k] for k in ("area_id", "name", "level", "iso3")} for a in areas]
         else:
             a = _area(ctx, area)
-            fn = {"profile": lambda: profile(ctx, a), "top": lambda: top(ctx, a, n, kind),
-                  "totals": lambda: totals(ctx, a), "published": lambda: published(ctx, a),
-                  "prices": lambda: prices(ctx, a)}[template]  # fmt: skip
-            tables = fn()
+            hit = prepared.lookup(ctx, template, a["area_id"], n, kind)  # brief 32 Tier 0
+            if hit is not None:
+                return result(hit["data"], hit["sources"])
+            tables = answer_for(ctx, template, a, n, kind)
             summary = {k: a[k] for k in ("area_id", "name", "level", "iso3")}
     except QuickError as e:
         return result({"error": str(e), "template": template}, [])

@@ -406,15 +406,23 @@ def combine(parts: list[dict], vg5000: Path | None) -> tuple[dict, dict]:
     return large, muni
 
 
-def keep_snapshots(snapshots: list[str], today: date) -> set[str]:
-    """The newest snapshot, the first of each year, and every one younger than a year."""
+# brief 32 retention (docs/DATA_LAKE.md "Snapshot retention"): from this date on, keep the
+# newest snapshot, the first of each month and every snapshot a history table reads; snapshots
+# taken before it are kept unless the owner approved their deletion (data/lake_deletions.yaml)
+POLICY_FROM = "2026-11-08"
+HISTORY_NEEDS: set[str] = set()  # snapshots a history table is built from (none today)
+
+
+def keep_snapshots(snapshots: list[str], today: date) -> set[str]:  # noqa: ARG001
+    """The newest snapshot, the first of each month, every one a history table needs, and
+    every one taken before the policy started."""
     keep = {max(snapshots)} if snapshots else set()
-    by_year: dict[str, str] = {}
+    by_month: dict[str, str] = {}
     for s in sorted(snapshots):
-        by_year.setdefault(s[:4], s)
-        if (today - date.fromisoformat(s)).days < 366:
+        by_month.setdefault(s[:7], s)
+        if s < POLICY_FROM or s in HISTORY_NEEDS:
             keep.add(s)
-    return keep | set(by_year.values())
+    return keep | set(by_month.values())
 
 
 def prune(root: Path, upload: bool) -> list[str]:

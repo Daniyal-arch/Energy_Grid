@@ -17,6 +17,29 @@ on:
         description: "Time the PUDL queries too"
         type: boolean
         default: false
+      storage:
+        description: "Brief 32 Step 5 instead of the catalogue: audit (read only), dry-run (what apply would do) or apply (the approved deletions in data/lake_deletions.yaml)"
+        type: choice
+        options: [none, audit, dry-run, apply]
+        default: none
+      rewrite:
+        description: "Brief 32 Tier 2 instead of the catalogue: inspect, breaches, or a space-separated list of dataset.table"
+        default: ""
+      rewrite_upload:
+        description: "Rewrite: replace the files on R2 (only after equal checksums)"
+        type: boolean
+        default: false
+      rasters:
+        description: "Brief 32 Step 5 instead of the catalogue: test (sizes, identity, lossy options) or apply (bit-identical only)"
+        type: choice
+        options: [none, test, apply]
+        default: none
+      raster_keys:
+        description: "Raster keys (space-separated; empty = the default list in scripts/raster_recompress.py)"
+        default: ""
+      zoning:
+        description: "Zoning instead of the catalogue (scripts/build_zoning.py): all, a list such as fr_gpu,ie_myplan, discover (the source sweeps), or hub:us / hub:eu / hub:gb / hub:us_ak_hi / hub:local (the ArcGIS services found; local: titled in local planning words, scripts/build_zoning_hub.py; hub:us@4,15 reruns only those of the 48 shards)"
+        default: ""
   push:
     branches: [main]
     paths: [.github/workflows/lake-catalog.yml, scripts/lake_catalog.py, scripts/probe_pudl.py]
@@ -26,8 +49,9 @@ permissions:
 
 jobs:
   catalog:
+    if: github.event_name != 'workflow_dispatch' || (inputs.storage == 'none' && inputs.rewrite == '' && inputs.rasters == 'none' && inputs.zoning == '')
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -82,6 +106,93 @@ jobs:
                   print(f"`{sql}` failed: {str(e)[:200]}\n")
           PY
 
+  # brief 32 Tier 2 (scripts/lake_rewrite.py): row groups, Hilbert order, bbox; by hand only
+  rewrite:
+    if: github.event_name == 'workflow_dispatch' && inputs.rewrite != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: ${{ inputs.rewrite }}
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WHAT: ${{ inputs.rewrite }}
+        run: |
+          pip install duckdb
+          export R2_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" R2_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+          up=""; [ "${{ inputs.rewrite_upload }}" = "true" ] && up="--upload"
+          set -o pipefail
+          case "$WHAT" in
+            inspect) python scripts/lake_rewrite.py inspect | tee rewrite.md ;;
+            breaches) python scripts/lake_rewrite.py rewrite --breaches $up | tee rewrite.md ;;
+            *) python scripts/lake_rewrite.py rewrite --tables $WHAT $up | tee rewrite.md ;;
+          esac
+          cat rewrite.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: lake-rewrite, path: "data/lake_rowgroups.json\nrewrite.md", if-no-files-found: ignore}
+
+  # brief 32 Step 5 (scripts/raster_recompress.py): lossless recompression, lossy options measured
+  rasters:
+    if: github.event_name == 'workflow_dispatch' && inputs.rasters != 'none'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - name: Free disk (the wind raster is 14 GB)
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL && df -h /
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q gdal-bin && pip install rasterio numpy
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: ${{ inputs.rasters }}
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          KEYS: ${{ inputs.raster_keys }}
+        run: |
+          set -o pipefail
+          args="${{ inputs.rasters }}"; [ -n "$KEYS" ] && args="$args --keys $KEYS"
+          python scripts/raster_recompress.py $args | tee rasters.md
+          grep -v '^{' rasters.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: rasters, path: "data/raster_recompress.json\nrasters.md", if-no-files-found: ignore}
+
+  # brief 32 Tier 1 (scripts/build_hot.py): hot.duckdb after each catalogue
+  hot:
+    needs: catalog
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Build and upload hot.duckdb
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb
+          export R2_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" R2_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+          set -o pipefail
+          python scripts/build_hot.py --upload | tee hot.txt
+          tail -n 1 hot.txt >> "$GITHUB_STEP_SUMMARY"
+
   pudl:
     if: ${{ inputs.pudl || github.event_name == 'push' }}
     runs-on: ubuntu-latest
@@ -96,3 +207,182 @@ jobs:
           pip install duckdb httpx
           set -o pipefail
           python scripts/probe_pudl.py | tee -a "$GITHUB_STEP_SUMMARY"
+
+  # brief 32 Step 5 (scripts/lake_storage.py): the audit of both buckets, or the deletions the
+  # owner approved (exact keys in data/lake_deletions.yaml), by hand only
+  storage:
+    if: github.event_name == 'workflow_dispatch' && inputs.storage != 'none'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install duckdb pyyaml
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: ${{ inputs.storage }}
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ "${{ inputs.storage }}" = "dry-run" ]; then args="apply --dry-run"; else args="${{ inputs.storage }}"; fi
+          python scripts/lake_storage.py $args | tee storage.md
+          cat storage.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: lake-storage, path: "data/lake_audit.json\nstorage.md", if-no-files-found: ignore}
+
+  zoning-plan:
+    if: github.event_name == 'workflow_dispatch' && inputs.zoning != '' && inputs.zoning != 'discover'
+    runs-on: ubuntu-latest
+    outputs:
+      sources: ${{ steps.p.outputs.sources }}
+      hub: ${{ steps.p.outputs.hub }}
+      replace: ${{ steps.p.outputs.replace }}
+      shards: ${{ steps.p.outputs.shards }}
+    steps:
+      - id: p
+        env:
+          SOURCES: ${{ inputs.zoning }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          allsrc = ["ie_myplan", "dk_plandata", "fi_helsinki", "gb_england", "us_ca", "fr_gpu", "be_wallonia", "es_barcelona", "lu_pag", "de_berlin", "at_ooe", "ee_plan", "at_tirol", "at_bgld", "at_wien", "nl_plu", "es_siu", "cz_praha", "lv_riga", "pt_crus", "de_nrw", "de_mv", "de_bb"]
+          raw = os.environ["SOURCES"].strip()
+          hub = raw[4:] if raw.startswith("hub:") else ""
+          hub, _, only = hub.partition("@")
+          shards = [int(x) for x in only.split(",") if x.strip()] or list(range(48))
+          pick = [] if hub else allsrc if raw in ("", "all") else [s.strip() for s in raw.split(",") if s.strip()]
+          print("sources=" + json.dumps(pick))
+          print("hub=" + hub)
+          print("shards=" + json.dumps(shards))
+          # a full run of a region with its own partition replaces that partition
+          own = {"local": "local_hub", "wfs": "eu_wfs", "eu": "eu_hub", "gb": "gb_hub"}
+          print("replace=" + (own.get(hub, "") if not only else ""))
+          PY
+
+  zoning:
+    needs: zoning-plan
+    if: needs.zoning-plan.outputs.hub == ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      CURL_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt  # GDAL's curl (WFS, OGC API) needs it
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        source: ${{ fromJson(needs.zoning-plan.outputs.sources) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Free disk space (the Netherlands file is 11.6 GB)
+        if: matrix.source == 'nl_plu'
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h / | tail -1
+          sudo apt-get update -q && sudo apt-get install -y -q gdal-bin  # ogr2ogr streams the GML
+      - name: ${{ matrix.source }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb==1.5.6 httpx
+          set -o pipefail
+          cd scripts && python build_zoning.py ${{ matrix.source }} --lake ../lake-out --tmp /tmp/zoning --upload 2>&1 | grep -v "^  r2://" | tail -n 60
+      - name: ${{ matrix.source }} documents (sizes measured, a sample kept with its text)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install pypdf
+          set -o pipefail
+          cd scripts && python zoning_documents.py --zones ../lake-out/zoning --measure 200 --fetch 25 --lake ../lake-out --upload 2>&1 | tee -a "$GITHUB_STEP_SUMMARY" | tail -n 40
+
+  # the zoning layers of the ArcGIS services the Hub sweep found, 48 shards; each uploads its
+  # files and hands its partial catalogue to zoning-hub-merge
+  zoning-hub:
+    needs: zoning-plan
+    if: needs.zoning-plan.outputs.hub != ''
+    runs-on: ubuntu-latest
+    env:
+      CURL_CA_BUNDLE: /etc/ssl/certs/ca-certificates.crt
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        shard: ${{ fromJSON(needs.zoning-plan.outputs.shards) }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: shard ${{ matrix.shard }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb==1.5.6 httpx pycountry
+          set -o pipefail
+          cd scripts && python build_zoning_hub.py --region ${{ needs.zoning-plan.outputs.hub }} --shard ${{ matrix.shard }} --shards 48 \
+            --max-minutes 290 --lake ../lake-out --tmp /tmp/zoning-hub --upload 2>&1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zoning-hub-${{ matrix.shard }}
+          path: lake-out/zoning/_catalog.json
+
+  zoning-hub-merge:
+    needs: [zoning-plan, zoning-hub]
+    if: always() && needs.zoning-plan.outputs.hub != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: bash scripts/r2_creds.sh
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: zoning-hub-*
+          path: partials
+      - env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          pip install duckdb==1.5.6 httpx pycountry
+          cd scripts && python build_zoning_hub.py --merge ../partials/*/_catalog.json --lake ../lake-out --upload ${{ needs.zoning-plan.outputs.replace && format('--replace {0}', needs.zoning-plan.outputs.replace) || '' }} 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+
+  zoning-discover:
+    if: github.event_name == 'workflow_dispatch' && inputs.zoning == 'discover'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: |
+          pip install httpx
+          python scripts/zoning_discover.py --pages 50 --out discovery
+          python scripts/zoning_discover.py --hub --step 2 --pages 10 --out discovery
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zoning-discovery
+          path: discovery/

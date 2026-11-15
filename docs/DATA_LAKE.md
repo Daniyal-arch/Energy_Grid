@@ -1250,3 +1250,59 @@ others). The file standard above stays the same; Iceberg adds the table metadata
 Per-table metadata (`TableInfo.meta` in `scripts/lake.py`, in each Parquet file's KV metadata and
 in `lake/_catalog.json`): `as_of` (the source's own date: stated in the registry, or the
 file's Last-Modified) with `as_of_basis`, and `refresh` (scripts/freshness.py).
+
+## Brief 32: speed and a lean lake (2026-11-08)
+
+**Row groups (the standard, updated).** Geometry tables: 10,000-100,000 rows a group and at most
+32 MB compressed; other tables about 1,000,000 rows (at most 128 MB). Rows in Hilbert order of
+their position, a `bbox` covering column on geometry tables. DuckDB 2.0 writes no Parquet page
+index and its reader uses none; row-group statistics on sorted rows do the skipping, and Bloom
+filters exist for dictionary-encoded (text) ids. `scripts/lake_rewrite.py` (`inspect`,
+`rewrite`) brings existing files to the standard: each file is replaced only after its row
+count and every original column's checksum (count of values and bit_xor of row hashes) match.
+
+**`hot.duckdb`** (`scripts/build_hot.py`, after each catalogue): native DuckDB copies of the
+rollups, shapes, the name index and the prepared answers, then the small lake tables (up to
+50 MB and 1 M rows) smallest first until the file reaches 90 % of 1,200 MB (the Lambda's `/tmp`
+is 2,048 MB). Row counts are checked against the lake; ART indexes on id columns other than
+the sort column. First fill (2026-11-08): 479 tables, 8.0 M rows, 1,080 MB; 502 tables stay in
+the lake. Native DuckDB storage of repetitive tables is far larger than their Parquet (481 M
+rows of small Parquet came to 7.6 GB), hence the budget.
+
+**Rewrite applied (2026-11-08).** The 41 tables that broke the standard (9.57 GB, 325 files)
+were rewritten: every file kept its rows and checksums; 9.57 GB to 9.59 GB (the added `bbox`).
+
+**Rasters.** `scripts/raster_recompress.py` tests lossless candidates (ZSTD with predictor,
+LERC with maximum error 0) bit for bit and applies one only when it saves 10 % or more:
+`lake/rasters/slope_1km_shares.tif` 650 MB to 571 MB (LERC). Nothing else qualified; the lossy
+options (wind atlas as int16: 14.08 GB to 2.98 GB) are owner question 7.
+
+**Bucket sizes (both buckets, at $0.015 per GB-month above 10 GB).**
+
+| | before (2026-11-08 06:14) | after (2026-11-08 12:41) |
+|---|---:|---:|
+| `infraatlas-raw` | 39.017 GB, 3,494 objects | 39.116 GB, 12,220 objects |
+| `infraatlas-data` | 2.195 GB | 2.208 GB (+2,477 prepared answers, 14 MB) |
+| total, cost a month | 41.212 GB, $0.47 | 41.324 GB, $0.47 |
+
+What changed: MaStR 2026-10-13 deleted (-1.305 GB), slope raster recompressed (-0.079 GB),
+`hot.duckdb` added (+1.083 GB), resolved areas written by the probes and the prepared build
+(`agent/areas/`, 8,471 objects, 0.394 GB), lake rewrite (+0.02 GB). The lake itself is smaller;
+the new Tier 1 copy outweighs the deletion. Owner question 7 (wind atlas int16) would remove
+11.1 GB.
+
+**Snapshot retention.** For snapshot tables: keep the newest snapshot, the first snapshot of
+each month and every snapshot a history table reads. Applied by the builders from 2026-11-08
+(`scripts/build_mastr.py`); older snapshots are deleted only when the owner approved them
+(`data/lake_deletions.yaml`, applied by `scripts/lake_storage.py apply` after it checks that
+nothing outside the dataset reads the snapshot). The MaStR snapshot of 2026-10-13 (27 objects,
+1.305 GB) was deleted on 2026-11-08 with the owner's approval.
+
+**Storage audit** (`scripts/lake_storage.py audit`): sizes per prefix in both buckets, MaStR
+snapshots and their readers, orphan files (Parquet no catalogue lists), the agent cache. The
+agent cache (`agent/cache/`) expires after 7 days (R2 lifecycle rule).
+
+| Dataset / table | Built by | What |
+|---|---|---|
+| `prepared/answers` | `backend/probes/build_prepared.py` (`backend-probe.yml` job `prepared`) | per area id and template key: the `quick` answer with its sources, build time and data fingerprint |
+| `lake/hot.duckdb` | `scripts/build_hot.py` | Tier 1 copy (above) |

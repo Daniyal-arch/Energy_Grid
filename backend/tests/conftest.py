@@ -100,13 +100,72 @@ def write_fixture_rasters(root: Path) -> None:
         dst.write(np.ones((1, 400, 400), dtype="float32"))
 
 
+def write_fixture_rollups(root: Path) -> bool:
+    """Brief 32: point and polygon tables with H3 rollups built as scripts/build_rollups.py
+    builds them (resolutions 5-7), for the exact interior-plus-boundary sums. Values follow a
+    fixed formula (no random seed), so every run has the same rows. False without H3."""
+    con = duckdb.connect()
+    try:
+        con.load_extension("spatial")
+        con.load_extension("h3")
+    except duckdb.Error:
+        return False
+    (root / "pts").mkdir(parents=True, exist_ok=True)
+    (root / "rollups").mkdir(parents=True, exist_ok=True)
+    con.execute(
+        """CREATE TABLE units AS SELECT i AS id,
+          CASE WHEN i % 211 = 0 THEN NULL ELSE 5.0 + 10.0 * ((i * 7919) % 10007) / 10007.0 END AS lon,
+          CASE WHEN i % 211 = 0 THEN NULL ELSE 47.0 + 8.0 * ((i * 104729) % 10009) / 10009.0 END AS lat,
+          CASE WHEN i % 97 = 0 THEN NULL ELSE ['solar', 'wind', 'gas', 'hydro'][i % 4 + 1] END AS fuel,
+          CASE WHEN i % 13 = 0 THEN 'planned' ELSE 'operating' END AS status,
+          CASE WHEN i % 53 = 0 THEN NULL ELSE (i % 1000) / 8.0 + 0.125 END AS mw
+        FROM range(60000) r(i)"""
+    )
+    con.execute(
+        """CREATE TABLE parcels AS SELECT i AS id,
+          ST_MakeEnvelope(x, y, x + 0.01, y + 0.008) AS geometry,
+          ['a', 'b', 'c'][i % 3 + 1] AS class, (i % 400) / 4.0 AS capacity_mw
+        FROM (SELECT i, 5.0 + 10.0 * ((i * 6007) % 9001) / 9001.0 AS x,
+                     47.0 + 8.0 * ((i * 3001) % 8999) / 8999.0 AS y FROM range(8000) r(i))"""
+    )
+    con.execute(f"COPY units TO '{root}/pts/units.parquet' (FORMAT parquet, ROW_GROUP_SIZE 5000)")
+    con.execute(f"COPY parcels TO '{root}/pts/parcels.parquet' (FORMAT parquet)")
+    for table, lon, lat, dims, nums in (
+        ("units", "lon", "lat", ["fuel", "status"], ["mw"]),
+        (
+            "parcels",
+            "ST_X(ST_Centroid(geometry))",
+            "ST_Y(ST_Centroid(geometry))",
+            ["class"],
+            ["capacity_mw"],
+        ),
+    ):
+        con.execute(
+            f"CREATE OR REPLACE TABLE base AS SELECT {lon} AS lon, {lat} AS lat"
+            + "".join(f', "{d}"' for d in dims)
+            + "".join(f', "{n}"' for n in nums)
+            + f" FROM {table} WHERE {lon} BETWEEN -180 AND 180 AND {lat} BETWEEN -90 AND 90"
+        )
+        for res in (5, 6, 7):
+            d = "".join(f', "{x}"' for x in dims)
+            sums = "".join(f', sum("{n}") AS "{n}_sum"' for n in nums)
+            con.execute(
+                f"COPY (SELECT h3, h3_cell_to_lng(h3) AS lon, h3_cell_to_lat(h3) AS lat{d}, count(*) AS n{sums} "
+                f"FROM (SELECT *, h3_latlng_to_cell(lat, lon, {res}) AS h3 FROM base) GROUP BY ALL) "
+                f"TO '{root}/rollups/pts__{table}_r{res}.parquet' (FORMAT parquet)"
+            )
+    return True
+
+
 write_fixture_lake(LAKE)
+HAVE_H3 = write_fixture_rollups(LAKE)
 write_fixture_rasters(TMP / "rasters")
 os.environ.update(
     {
         "AGENT_MODEL": "fake",
         "AGENT_MODEL_FAST": "fake",
         "LAKE_DB": "",
+        "HOT_DB": "",
         "LAKE_DIR": str(LAKE),
         "RASTERS_DIR": str(TMP / "rasters"),
         "LOCAL_STORE_DIR": str(TMP / "store"),

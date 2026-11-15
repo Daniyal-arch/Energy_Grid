@@ -1,7 +1,7 @@
 ---
 title: Backend service
 tags: [backend]
-updated: 2026-10-27
+updated: 2026-11-08
 paths: [backend/app/, backend/data/, backend/agent/limits.py, backend/mcp_server/]
 ---
 
@@ -31,3 +31,8 @@ The FastAPI app of [[agent-backend]]. Entry: `backend/app/main.py` (`uvicorn app
 > [!warning] MCP session manager runs once
 > The MCP lifespan builds a new session manager each start (`mcp_server/server.py`); tests start
 > the app twice.
+
+> [!warning] Brief 32
+> `data/duck.py` attaches `hot.duckdb` in a background thread and switches the default catalog
+> from `lake` to `fast`; cursors run `USE {Lake.default}`. `/api/health` returns `hot`.
+> See [[query-tiers]].

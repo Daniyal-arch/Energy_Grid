@@ -14,6 +14,7 @@ with a timeout (interrupt).
 
 from __future__ import annotations
 
+import contextlib
 import csv
 import json
 import logging
@@ -21,6 +22,8 @@ import os
 import re
 import threading
 import time
+from collections import OrderedDict
+from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
 from decimal import Decimal
 from pathlib import Path
@@ -65,6 +68,8 @@ class QueryResult:
     ms: float
     truncated: bool
     tables: list[str] = field(default_factory=list)
+    # brief 32: where the rows came from ("hot": the local hot.duckdb; "lake": R2 or the app)
+    tier: str = "lake"
 
 
 def _jsonable(v: Any) -> Any:
@@ -90,7 +95,20 @@ class Lake:
         self.lake_mode = "none"
         self.catalog_date: str | None = None
         self.allowed: list[str] = []
+        # brief 32 Tier 1: queries go to the catalog `fast` (hot.duckdb first, the lake for the
+        # rest) once hot.duckdb is attached; until then to the lake
+        self.default = "lake"
+        self.search_path = ""  # set with hot.duckdb: fast (hot views) first, then the lake
+        self.hot_tables: set[str] = set()
+        self._areas_seen: OrderedDict[str, bool] = OrderedDict()  # ids in areamem.areas
+        self._areas_lock = threading.Lock()
+        self._area_res: dict[str, int] = {}  # areas with H3 cells built: their resolution
+        self._cells_pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="area-cells")
+        self._cells_jobs: dict[str, Future[None]] = {}  # area id -> its cell build
+        self.hot_state: dict[str, Any] = {"ready": False}
+        self._hot_done = threading.Event()
         self.con = self._open()
+        self._start_hot()
 
     # ------------------------------------------------------------------ setup
     def _open(self) -> duckdb.DuckDBPyConnection:
@@ -125,6 +143,19 @@ class Lake:
                 [s.r2_access_key_id, s.r2_secret_access_key, s.r2_account_id],
             )
         con.execute("ATTACH ':memory:' AS app")
+        # the areas queries use, parsed once per container and shared by every cursor (brief 32:
+        # serialising and parsing a detailed outline cost 60-80 ms on every query)
+        con.execute("ATTACH ':memory:' AS areamem")
+        con.execute(
+            "CREATE TABLE areamem.areas (area_id VARCHAR PRIMARY KEY, name VARCHAR, "
+            "level VARCHAR, geometry GEOMETRY, xmin DOUBLE, ymin DOUBLE, xmax DOUBLE, ymax DOUBLE)"
+        )
+        # per area: the H3 cells wholly inside, and the outline clipped to each edge cell
+        con.execute("CREATE TABLE areamem.cells (area_id VARCHAR, cell UBIGINT)")
+        con.execute(
+            "CREATE TABLE areamem.clips "
+            "(area_id VARCHAR, cell UBIGINT, clip GEOMETRY, edge GEOMETRY)"
+        )
         self._attach_lake(con)
         self._load_app_tables(con)
         self._lock(con)
@@ -413,6 +444,9 @@ class Lake:
             allowed.append(str(Path(s.lake_dir)) + "/")
         if s.r2_configured:
             allowed.append(f"r2://{s.r2_lake_bucket}/lake/")
+        hot = self._hot_local()
+        if hot:
+            allowed.append(str(Path(hot).parent) + "/")
         self.allowed = allowed
         dirs = ", ".join(f"'{a}'" for a in allowed)
         con.execute(f"SET allowed_directories = [{dirs}]")
@@ -434,11 +468,225 @@ class Lake:
         con.execute("SET lock_configuration = true")
 
     # ------------------------------------------------------------------ queries
+    AREAS_KEPT = 300
+
+    def register_areas(self, cur: duckdb.DuckDBPyConnection, areas: list[dict[str, Any]]) -> None:
+        """The areas as the view `areas` and the area macros, on this cursor only; each
+        outline is parsed once into the shared `areamem.areas` (most recently used kept)."""
+        with self._areas_lock:
+            new = [a for a in areas if a["area_id"] not in self._areas_seen]
+            if new:
+                cur.executemany(
+                    "INSERT OR REPLACE INTO areamem.areas "
+                    "VALUES (?, ?, ?, ST_GeomFromGeoJSON(?), ?, ?, ?, ?)",
+                    [[a["area_id"], a["name"], a["level"], json.dumps(a["geometry"]), *a["bbox"]]
+                     for a in new],
+                )  # fmt: skip
+                for a in new:  # in the background: the plain test answers until they are ready
+                    self._cells_jobs[a["area_id"]] = self._cells_pool.submit(self._area_cells, a)
+            for a in areas:
+                self._areas_seen[a["area_id"]] = True
+                self._areas_seen.move_to_end(a["area_id"])
+            old = []
+            while len(self._areas_seen) > max(self.AREAS_KEPT, len(areas)):
+                old.append(self._areas_seen.popitem(last=False)[0])
+            if old:
+                for t in ("areas", "cells", "clips"):
+                    cur.execute(
+                        f"DELETE FROM areamem.{t} WHERE area_id IN (SELECT unnest(?))", [old]
+                    )
+                for i in old:
+                    self._area_res.pop(i, None)
+                    self._cells_jobs.pop(i, None)
+        ids = ", ".join("'" + a["area_id"].replace("'", "''") + "'" for a in areas)
+        cur.execute(
+            f"CREATE TEMP VIEW areas AS SELECT * FROM areamem.areas WHERE area_id IN ({ids})"
+        )
+        for m in AREA_MACROS:
+            cur.execute(m)
+
+    CELLS_MAX_KM2 = 2_000_000.0  # larger areas (continents) keep the plain test
+    # a query waits this long for its areas' cells (built in 0.1-2 s; the plain test on a
+    # detailed region costs ~0.45 ms a point, 5-14 s for a region's 10,000-30,000 rows)
+    CELLS_WAIT_S = 3.0
+
+    def wait_area_cells(self, area_ids: list[str], timeout: float) -> None:
+        """Block until these areas' cells are built (or `timeout` s): batch builds
+        (probes/build_prepared.py) wait here once instead of every query waiting
+        CELLS_WAIT_S behind a queue of other areas' builds."""
+        self._wait_area_cells([{"area_id": i} for i in area_ids], timeout)
+
+    def _wait_area_cells(self, areas: list[dict[str, Any]], wait_s: float | None = None) -> None:
+        deadline = time.monotonic() + (self.CELLS_WAIT_S if wait_s is None else wait_s)
+        for a in areas:
+            job = self._cells_jobs.get(a["area_id"])
+            if job is None or a["area_id"] in self._area_res:
+                continue
+            with contextlib.suppress(Exception):  # timeout: the plain test answers
+                job.result(timeout=max(0.0, deadline - time.monotonic()))
+
+    def _area_cells(self, a: dict[str, Any]) -> None:
+        """(In a background thread.) H3 cells wholly inside the outline (a point there is
+        inside) and, for every other cell touching it, the outline clipped to the cell buffered
+        by ~1 m (a point there is inside the outline exactly when it is inside the clip, away
+        from the clip's own outline where rounding could matter): `in_area` then tests a point
+        against a few vertices instead of the whole outline (~0.45 ms a point for a detailed
+        region; 20,000 points in a 60,000-vertex outline: 10 s plain, 60 ms with cells)."""
+        if a["level"] in ("world", "bbox"):
+            return
+        from tools.area_sum import MARGIN_DEG, cells, resolution_for
+
+        km2 = float(a.get("area_km2") or 0)
+        if not km2:
+            x0, y0, x1, y1 = a["bbox"]
+            km2 = abs(x1 - x0) * abs(y1 - y0) * 111.0 * 111.0
+        if km2 > self.CELLS_MAX_KM2:
+            return
+        res = resolution_for(km2) + 1  # one finer than the sums: fewer points near the edge
+        cur = self.con.cursor()
+        try:
+            inner, edge = cells(cur, a["geometry"], res)
+            aid = a["area_id"]
+            if inner:
+                cur.execute(
+                    "INSERT INTO areamem.cells SELECT ?, unnest(?::UBIGINT[])", [aid, inner]
+                )
+            if edge:
+                self._area_clips(cur, aid, edge, res, MARGIN_DEG)
+            with self._areas_lock:
+                if aid in self._areas_seen:
+                    self._area_res[aid] = res
+                else:  # dropped meanwhile
+                    for t in ("cells", "clips"):
+                        cur.execute(f"DELETE FROM areamem.{t} WHERE area_id = ?", [aid])
+        except duckdb.Error as e:  # no h3 here: the plain test answers
+            log.warning("area cells not built", extra={"error": str(e)[:200]})
+
+    CLIP_GROUP_RES = 3  # edge cells grouped by their ancestor this many levels up
+    CLIP_BATCH = 16  # groups clipped per statement (each row holds a copy of the outline)
+
+    def _area_clips(self, cur: Any, aid: str, edge: list[int], res: int, margin: float) -> None:
+        """The outline clipped to each edge cell, in two steps so that no statement copies a
+        detailed outline into thousands of rows (a 200,000-vertex outline ran out of memory):
+        first a piece per group of edge cells (the outline cut to the box around the group's
+        buffered cells, a superset of every cell clip in it), then each cell from its piece."""
+        up = max(0, res - self.CLIP_GROUP_RES)
+        cur.execute(
+            "CREATE OR REPLACE TEMP TABLE _edge AS SELECT c, h3_cell_to_parent(c, ?) AS p, "
+            "ST_Buffer(ST_GeomFromText(h3_cell_to_boundary_wkt(c)), ?) AS cb "
+            "FROM (SELECT unnest(?::UBIGINT[]) AS c)",
+            [up, margin, edge],
+        )
+        cur.execute(
+            "CREATE OR REPLACE TEMP TABLE _box AS SELECT p, ST_MakeEnvelope(min(ST_XMin(cb)), "
+            "min(ST_YMin(cb)), max(ST_XMax(cb)), max(ST_YMax(cb))) AS box FROM _edge GROUP BY p"
+        )
+        cur.execute("CREATE OR REPLACE TEMP TABLE _piece (p UBIGINT, piece GEOMETRY)")
+        groups = [r[0] for r in cur.execute("SELECT p FROM _box ORDER BY p").fetchall()]
+        for i in range(0, len(groups), self.CLIP_BATCH):
+            cur.execute(
+                "INSERT INTO _piece SELECT b.p, ST_Intersection(a.geometry, b.box) FROM _box b, "
+                "(SELECT geometry FROM areamem.areas WHERE area_id = ?) a "
+                "WHERE b.p IN (SELECT unnest(?::UBIGINT[]))",
+                [aid, groups[i : i + self.CLIP_BATCH]],
+            )
+        cur.execute(
+            "INSERT INTO areamem.clips SELECT ?, c, clip, ST_Boundary(clip) FROM ("
+            "SELECT e.c, ST_Intersection(pc.piece, e.cb) AS clip FROM _edge e JOIN _piece pc "
+            "USING (p) WHERE NOT ST_IsEmpty(pc.piece)) WHERE NOT ST_IsEmpty(clip)",
+            [aid],
+        )
+        for t in ("_edge", "_box", "_piece"):
+            cur.execute(f"DROP TABLE IF EXISTS {t}")
+
+    def wait_cells(self) -> None:
+        """Until the cells of every area registered so far are built (tests, probes)."""
+        self._cells_pool.submit(lambda: None).result()
+
     def cursor(self) -> duckdb.DuckDBPyConnection:
         """A cursor (own connection to the same database) with the lake as default catalog."""
         cur = self.con.cursor()
-        cur.execute("USE lake")
+        cur.execute(f"USE {self.default}")
+        if self.search_path:
+            cur.execute(f"SET search_path = '{self.search_path}'")
         return cur
+
+    # ------------------------------------------------------------------ hot.duckdb (brief 32)
+    def _hot_local(self) -> str | None:
+        """Where hot.duckdb lives on this machine: the setting itself, or /tmp/hot/ for R2."""
+        h = self.settings.hot_db
+        if not h:
+            return None
+        if h.startswith("r2://"):
+            return "/tmp/hot/hot.duckdb" if self.settings.r2_configured else None
+        return h
+
+    def _start_hot(self) -> None:
+        if not self._hot_local():
+            self._hot_done.set()
+            return
+        threading.Thread(target=self._load_hot, name="hot-duckdb", daemon=True).start()
+
+    def wait_hot(self, timeout_s: float | None = None) -> bool:
+        self._hot_done.wait(timeout_s)
+        return bool(self.hot_state.get("ready"))
+
+    def _load_hot(self) -> None:
+        """Download (from R2) and attach hot.duckdb read-only, then build the catalog `fast`:
+        one view per lake table, over the hot copy when there is one, else over the lake view,
+        so every query path reads hot tables with no change to its SQL. The lake keeps
+        answering while this runs."""
+        t0 = time.perf_counter()
+        local = self._hot_local()
+        try:
+            h = self.settings.hot_db or ""
+            if h.startswith("r2://"):
+                Path(local).parent.mkdir(parents=True, exist_ok=True)  # type: ignore[arg-type]
+                if not Path(local).exists():  # type: ignore[arg-type]
+                    _download_r2(self.settings, h, local)  # type: ignore[arg-type]
+            t_dl = time.perf_counter() - t0
+            cur = self.con.cursor()
+            cur.execute(f"ATTACH '{local}' AS hot (READ_ONLY)")
+            hot = {
+                (sch, t)
+                for sch, t in cur.execute(
+                    "SELECT schema_name, table_name FROM duckdb_tables() "
+                    "WHERE database_name = 'hot' AND schema_name <> '_hot'"
+                ).fetchall()
+            }
+            lake = cur.execute(
+                "SELECT schema_name, view_name FROM duckdb_views() "
+                "WHERE database_name = 'lake' UNION SELECT schema_name, table_name "
+                "FROM duckdb_tables() WHERE database_name = 'lake'"
+            ).fetchall()
+            # views only over the hot copies; every other name falls through to the lake by the
+            # search path. A view per lake table bound each table's Parquet files on R2 when it
+            # was created (about 1 s each): hot.duckdb was ready only after 500-570 s
+            cur.execute("ATTACH ':memory:' AS fast")
+            for sch in sorted({sch for sch, _ in hot}):
+                cur.execute(f'CREATE SCHEMA IF NOT EXISTS fast."{sch}"')
+            for sch, t in sorted(hot):
+                cur.execute(f'CREATE VIEW fast."{sch}"."{t}" AS SELECT * FROM hot."{sch}"."{t}"')
+            lake_schemas = sorted({sch for sch, _ in lake} | {"main"})
+            self.search_path = ",".join(
+                ["fast.main", *(f"fast.{sch}" for sch in sorted({sch for sch, _ in hot}))]
+                + [f"lake.{sch}" for sch in lake_schemas]
+            )
+            self.hot_tables = {f"{sch}.{t}" for sch, t in hot}
+            self.default = "fast"
+            self.hot_state = {
+                "ready": True,
+                "tables": len(hot),
+                "bytes": Path(local).stat().st_size,  # type: ignore[arg-type]
+                "download_s": round(t_dl, 2),
+                "ready_s": round(time.perf_counter() - t0, 2),
+            }
+            log.info("hot.duckdb attached", extra=self.hot_state)
+        except Exception as e:  # noqa: BLE001 - the lake answers without it
+            self.hot_state = {"ready": False, "error": f"{type(e).__name__}: {str(e)[:200]}"}
+            log.warning("hot.duckdb not attached", extra=self.hot_state)
+        finally:
+            self._hot_done.set()
 
     def tables(self) -> list[str]:
         """The lake's and the app's tables (cached: the catalogue does not change while the
@@ -478,16 +726,19 @@ class Lake:
         if guard:
             checked = check(sql, allowed_paths=self.allowed, max_rows=s.sql_rows_kept + 1)
             sql, tables = checked.sql, checked.tables
+        cur = self.cursor()
+        if areas:
+            self.register_areas(cur, areas)
+        if guard:
             if areas:
-                rewritten = expand_in_area(sql, areas)
+                if "_area(" in sql:  # in_area / intersects_area: use the cells when ready soon
+                    self._wait_area_cells(areas)
+                rewritten = expand_in_area(sql, areas, dict(self._area_res))
                 if rewritten != sql:
                     sql = check(
                         rewritten, allowed_paths=self.allowed, max_rows=s.sql_rows_kept + 1
                     ).sql
             tables = [t for t in tables if t != "areas"]
-        cur = self.cursor()
-        if areas:
-            register_areas(cur, areas)
         timer = threading.Timer(timeout_s or s.sql_timeout_s, cur.interrupt)
         t0 = time.perf_counter()
         with span("sql.query", {"db.system": "duckdb", "db.statement.hash": _hash(sql)}) as sp:
@@ -507,6 +758,11 @@ class Lake:
             sp.set_attribute("db.rows", len(rows))
             sp.set_attribute("db.ms", round(ms, 1))
         truncated = len(rows) > s.sql_rows_kept
+        tier = (
+            "hot"
+            if tables and self.default == "fast" and all(t in self.hot_tables for t in tables)
+            else "lake"
+        )
         return QueryResult(
             sql=sql,
             columns=cols,
@@ -515,6 +771,7 @@ class Lake:
             ms=ms,
             truncated=truncated,
             tables=tables,
+            tier=tier,
         )
 
     def source_for(self, table: str, catalog: dict[str, dict] | None = None) -> Source:
@@ -543,24 +800,9 @@ AREA_MACROS = [
 ]
 
 
-def register_areas(cur: duckdb.DuckDBPyConnection, areas: list[dict[str, Any]]) -> None:
-    """The areas as a temporary table `areas` and the area macros, on this cursor only."""
-    cur.execute(
-        "CREATE TEMP TABLE areas (area_id VARCHAR, name VARCHAR, level VARCHAR, "
-        "geometry GEOMETRY, xmin DOUBLE, ymin DOUBLE, xmax DOUBLE, ymax DOUBLE)"
-    )
-    cur.executemany(
-        "INSERT INTO areas VALUES (?, ?, ?, ST_GeomFromGeoJSON(?), ?, ?, ?, ?)",
-        [
-            [a["area_id"], a["name"], a["level"], json.dumps(a["geometry"]), *a["bbox"]]
-            for a in areas
-        ],
-    )
-    for m in AREA_MACROS:
-        cur.execute(m)
-
-
-def expand_in_area(sql: str, areas: list[dict[str, Any]]) -> str:
+def expand_in_area(
+    sql: str, areas: list[dict[str, Any]], cells: dict[str, int] | None = None
+) -> str:
     """`in_area(x, y, 'a_...')` -> `(x BETWEEN x0 AND x1 AND y BETWEEN y0 AND y1 AND
     ST_Contains(area_geom('a_...'), ST_Point(x, y)))`: literal bounds the Parquet reader can
     prune row groups with. Unknown ids and non-literal ids keep the macro."""
@@ -594,11 +836,27 @@ def expand_in_area(sql: str, areas: list[dict[str, Any]]) -> str:
         else:
             x0, y0, x1, y1 = a["bbox"]
             box = f"{x} BETWEEN {x0!r} AND {x1!r} AND {y} BETWEEN {y0!r} AND {y1!r}"
-            text = (
-                f"({box})"
-                if a["level"] == "bbox"
-                else f"({box} AND ST_Contains(area_geom('{a['area_id']}'), ST_Point({x}, {y})))"
-            )
+            aid = a["area_id"]
+            res = (cells or {}).get(aid)
+            if a["level"] == "bbox":
+                text = f"({box})"
+            elif res is not None:
+                # inside a cell wholly inside, or inside the outline clipped to its edge cell
+                h = (
+                    f"h3_latlng_to_cell(greatest(-90.0, least(90.0, ({y})::DOUBLE)), "
+                    f"({x})::DOUBLE, {res})"
+                )
+                # the clip decides unless the point lies within 1e-9 degrees of the clip's own
+                # outline (where clipping's rounding could matter): then the whole outline does
+                pt = f"ST_Point({x}, {y})"
+                text = (
+                    f"({box} AND ({h} IN (SELECT cell FROM areamem.cells WHERE area_id = '{aid}') "
+                    f"OR coalesce((SELECT CASE WHEN ST_DWithin(edge, {pt}, 1e-9) "
+                    f"THEN ST_Contains(area_geom('{aid}'), {pt}) ELSE ST_Contains(clip, {pt}) END "
+                    f"FROM areamem.clips WHERE area_id = '{aid}' AND cell = {h}), false)))"
+                )
+            else:
+                text = f"({box} AND ST_Contains(area_geom('{aid}'), ST_Point({x}, {y})))"
         changed = True
         return sqlglot.parse_one(text, read="duckdb")
 

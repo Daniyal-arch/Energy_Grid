@@ -136,3 +136,14 @@ def test_sources_carry_as_of_and_done_has_suggestions():
     chips = suggestions(build_deps(settings()).ctx, area_ids_of(out), "Tell me about Germany")
     assert "Top 10 power plants in Germany" in chips and "Prices in Germany" in chips
     assert all(match(c) for c in chips)
+
+
+def test_top_plants_outside_europe_and_the_us():
+    """Brief 32: the world plants table has no name column; top asked for one and failed for
+    every country outside Europe and the US (found while preparing answers)."""
+    from tests.conftest import settings
+    from tools.context import ToolContext
+    from tools.quick import quick
+
+    d = quick(ToolContext(settings()), "top", "Afghanistan")["data"]
+    assert "error" not in d and "error" not in (d["tables"][0].get("note") or "").lower()

@@ -431,7 +431,14 @@ def summary(cats: dict[str, dict]) -> dict:
 
 
 def view_path(table: dict) -> str:
-    return f"{R2}/{table['path']}"
+    """The files a view reads. Brief 32: the catalogue's own file list, so a query sends no
+    LIST request to R2 (a glob costs one round trip, ~250 ms, on every query); the glob only
+    for a table whose catalogue lists no files."""
+    files = table.get("files") or []
+    if files:
+        base = table["path"].split("/")[:2]  # lake/<dataset>
+        return "[" + ", ".join(f"'{R2}/{'/'.join(base)}/{f}'" for f in files) + "]"
+    return f"'{R2}/{table['path']}'"
 
 
 def pick(columns: dict[str, str], candidates: list[str]) -> str:
@@ -466,7 +473,7 @@ def build_duckdb(path: Path, cats: dict[str, dict]) -> dict[str, list[str]]:
             try:
                 con.execute(
                     f"""CREATE OR REPLACE VIEW "{ds}"."{t}" AS SELECT * FROM read_parquet(
-                        '{view_path(v)}', hive_partitioning = {hive}, union_by_name = true)"""
+                        {view_path(v)}, hive_partitioning = {hive}, union_by_name = true)"""
                 )
                 tables[(ds, t)] = {
                     r[0]: r[1] for r in con.execute(f'DESCRIBE "{ds}"."{t}"').fetchall()
