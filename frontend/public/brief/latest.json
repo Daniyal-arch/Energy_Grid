@@ -1,15 +1,15 @@
 {
  "title": "InfraAtlas weekly brief",
- "built": "2026-11-11T15:24:59+00:00",
+ "built": "2026-11-18T16:31:39+00:00",
  "week": [
+  "2026-11-10",
+  "2026-11-16"
+ ],
+ "previous_week": [
   "2026-11-03",
   "2026-11-09"
  ],
- "previous_week": [
-  "2026-10-27",
-  "2026-11-02"
- ],
- "week_label": "2026-11-03 to 2026-11-09",
+ "week_label": "2026-11-10 to 2026-11-16",
  "method": "Fixed templates over the app's data files, no language model. Weekly mean = mean of the 15-minute day-ahead prices of the seven days (zones with prices in at least 95 % of the slots of both weeks). Outages, queues and US capacity are compared with the previous brief's stored figures.",
  "templates": {
   "price_rise": "The {rank}largest weekly rise in the mean day-ahead price was in {zone}: {prev} to {now} EUR/MWh ({delta:+} EUR/MWh).",
@@ -42,98 +42,98 @@
    "sentences": [
     {
      "template": "price_zones",
-     "text": "42 bidding zones had prices in at least 95 % of the 15-minute slots of both weeks; the weekly mean is the mean of those prices.",
+     "text": "43 bidding zones had prices in at least 95 % of the 15-minute slots of both weeks; the weekly mean is the mean of those prices.",
      "values": {
-      "n": 42,
+      "n": 43,
       "cov": 95
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices, the app's day archive",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/index.json",
-     "as_of": "days 2026-10-27 to 2026-11-09"
+     "as_of": "days 2026-11-03 to 2026-11-16"
     },
     {
      "template": "price_rise",
-     "text": "The largest weekly rise in the mean day-ahead price was in LT: 225.74 to 287.83 EUR/MWh (+62.09 EUR/MWh).",
-     "values": {
-      "rank": "",
-      "zone": "LT",
-      "prev": "225.74",
-      "now": "287.83",
-      "delta": 62.09
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices, the app's day archive",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/index.json",
-     "as_of": "days 2026-10-27 to 2026-11-09"
-    },
-    {
-     "template": "price_rise",
-     "text": "The second largest weekly rise in the mean day-ahead price was in SE4: 232.05 to 290.24 EUR/MWh (+58.19 EUR/MWh).",
-     "values": {
-      "rank": "second ",
-      "zone": "SE4",
-      "prev": "232.05",
-      "now": "290.24",
-      "delta": 58.19
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices, the app's day archive",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/index.json",
-     "as_of": "days 2026-10-27 to 2026-11-09"
-    },
-    {
-     "template": "price_rise",
-     "text": "The third largest weekly rise in the mean day-ahead price was in IT-Sardinia: 214.26 to 269.82 EUR/MWh (+55.56 EUR/MWh).",
-     "values": {
-      "rank": "third ",
-      "zone": "IT-Sardinia",
-      "prev": "214.26",
-      "now": "269.82",
-      "delta": 55.56
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices, the app's day archive",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/index.json",
-     "as_of": "days 2026-10-27 to 2026-11-09"
-    },
-    {
-     "template": "price_fall",
-     "text": "The largest weekly fall in the mean day-ahead price was in FI: 71.42 to 31.48 EUR/MWh (-39.94 EUR/MWh).",
+     "text": "The largest weekly rise in the mean day-ahead price was in FI: 31.48 to 73.21 EUR/MWh (+41.73 EUR/MWh).",
      "values": {
       "rank": "",
       "zone": "FI",
-      "prev": "71.42",
-      "now": "31.48",
-      "delta": -39.94
+      "prev": "31.48",
+      "now": "73.21",
+      "delta": 41.73
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices, the app's day archive",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/index.json",
-     "as_of": "days 2026-10-27 to 2026-11-09"
+     "as_of": "days 2026-11-03 to 2026-11-16"
     },
     {
-     "template": "price_fall",
-     "text": "The second largest weekly fall in the mean day-ahead price was in SE2: 23.52 to 8.26 EUR/MWh (-15.26 EUR/MWh).",
+     "template": "price_rise",
+     "text": "The second largest weekly rise in the mean day-ahead price was in SE2: 8.26 to 47.68 EUR/MWh (+39.42 EUR/MWh).",
      "values": {
       "rank": "second ",
       "zone": "SE2",
-      "prev": "23.52",
-      "now": "8.26",
-      "delta": -15.26
+      "prev": "8.26",
+      "now": "47.68",
+      "delta": 39.42
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices, the app's day archive",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/index.json",
-     "as_of": "days 2026-10-27 to 2026-11-09"
+     "as_of": "days 2026-11-03 to 2026-11-16"
+    },
+    {
+     "template": "price_rise",
+     "text": "The third largest weekly rise in the mean day-ahead price was in NO3: 99.59 to 131.45 EUR/MWh (+31.86 EUR/MWh).",
+     "values": {
+      "rank": "third ",
+      "zone": "NO3",
+      "prev": "99.59",
+      "now": "131.45",
+      "delta": 31.86
+     },
+     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices, the app's day archive",
+     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/index.json",
+     "as_of": "days 2026-11-03 to 2026-11-16"
     },
     {
      "template": "price_fall",
-     "text": "The third largest weekly fall in the mean day-ahead price was in SE1: 22.70 to 13.41 EUR/MWh (-9.29 EUR/MWh).",
+     "text": "The largest weekly fall in the mean day-ahead price was in IE-SEM: 400.05 to 291.32 EUR/MWh (-108.73 EUR/MWh).",
      "values": {
-      "rank": "third ",
-      "zone": "SE1",
-      "prev": "22.70",
-      "now": "13.41",
-      "delta": -9.29
+      "rank": "",
+      "zone": "IE-SEM",
+      "prev": "400.05",
+      "now": "291.32",
+      "delta": -108.73
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices, the app's day archive",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/index.json",
-     "as_of": "days 2026-10-27 to 2026-11-09"
+     "as_of": "days 2026-11-03 to 2026-11-16"
+    },
+    {
+     "template": "price_fall",
+     "text": "The second largest weekly fall in the mean day-ahead price was in AL: 330.13 to 224.97 EUR/MWh (-105.16 EUR/MWh).",
+     "values": {
+      "rank": "second ",
+      "zone": "AL",
+      "prev": "330.13",
+      "now": "224.97",
+      "delta": -105.16
+     },
+     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices, the app's day archive",
+     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/index.json",
+     "as_of": "days 2026-11-03 to 2026-11-16"
+    },
+    {
+     "template": "price_fall",
+     "text": "The third largest weekly fall in the mean day-ahead price was in LT: 287.83 to 197.60 EUR/MWh (-90.23 EUR/MWh).",
+     "values": {
+      "rank": "third ",
+      "zone": "LT",
+      "prev": "287.83",
+      "now": "197.60",
+      "delta": -90.23
+     },
+     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices, the app's day archive",
+     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/index.json",
+     "as_of": "days 2026-11-03 to 2026-11-16"
     }
    ]
   },
@@ -146,374 +146,187 @@
    "sentences": [
     {
      "template": "price_high",
-     "text": "The highest 15-minute day-ahead price of the week was 755.06 EUR/MWh in PL at 2026-11-09 14:45 UTC.",
+     "text": "The highest 15-minute day-ahead price of the week was 894.85 EUR/MWh in PL at 2026-11-10 13:30 UTC.",
      "values": {
-      "eur": "755.06",
+      "eur": "894.85",
       "zone": "PL",
-      "at": "2026-11-09 14:45 UTC"
+      "at": "2026-11-10 13:30 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/2026-11-09.json",
-     "as_of": "2026-11-09"
+     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/2026-11-10.json",
+     "as_of": "2026-11-10"
     },
     {
      "template": "price_low",
-     "text": "The lowest 15-minute day-ahead price of the week was -5.69 EUR/MWh in NO4 at 2026-11-09 02:45 UTC.",
+     "text": "The lowest 15-minute day-ahead price of the week was -0.01 EUR/MWh in GR at 2026-11-14 07:45 UTC.",
      "values": {
-      "eur": "-5.69",
-      "zone": "NO4",
-      "at": "2026-11-09 02:45 UTC"
+      "eur": "-0.01",
+      "zone": "GR",
+      "at": "2026-11-14 07:45 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/2026-11-09.json",
-     "as_of": "2026-11-09"
+     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/2026-11-14.json",
+     "as_of": "2026-11-14"
     },
     {
      "template": "above_year",
-     "text": "BG went above its highest price of the period 2025-11-01 to 2026-10-31 (535.38 EUR/MWh): 560.24 EUR/MWh at 2026-11-09 14:00 UTC.",
+     "text": "BG went above its highest price of the period 2025-11-01 to 2026-10-31 (535.38 EUR/MWh): 561.01 EUR/MWh at 2026-11-10 13:45 UTC.",
      "values": {
       "zone": "BG",
       "p0": "2025-11-01",
       "p1": "2026-10-31",
       "old": "535.38",
-      "eur": "560.24",
-      "at": "2026-11-09 14:00 UTC"
+      "eur": "561.01",
+      "at": "2026-11-10 13:45 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
+     "as_of": "2026-11-01 (prices.json), 2026-11-16 (day files)"
     },
     {
      "template": "above_year",
-     "text": "CH went above its highest price of the period 2025-11-01 to 2026-10-31 (596.70 EUR/MWh): 606.57 EUR/MWh at 2026-11-09 15:45 UTC.",
-     "values": {
-      "zone": "CH",
-      "p0": "2025-11-01",
-      "p1": "2026-10-31",
-      "old": "596.70",
-      "eur": "606.57",
-      "at": "2026-11-09 15:45 UTC"
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
-    },
-    {
-     "template": "above_year",
-     "text": "ES went above its highest price of the period 2025-11-01 to 2026-10-31 (324.72 EUR/MWh): 326.49 EUR/MWh at 2026-11-05 19:15 UTC.",
-     "values": {
-      "zone": "ES",
-      "p0": "2025-11-01",
-      "p1": "2026-10-31",
-      "old": "324.72",
-      "eur": "326.49",
-      "at": "2026-11-05 19:15 UTC"
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
-    },
-    {
-     "template": "above_year",
-     "text": "FR went above its highest price of the period 2025-11-01 to 2026-10-31 (487.38 EUR/MWh): 624.18 EUR/MWh at 2026-11-09 16:45 UTC.",
-     "values": {
-      "zone": "FR",
-      "p0": "2025-11-01",
-      "p1": "2026-10-31",
-      "old": "487.38",
-      "eur": "624.18",
-      "at": "2026-11-09 16:45 UTC"
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
-    },
-    {
-     "template": "above_year",
-     "text": "GR went above its highest price of the period 2025-11-01 to 2026-10-31 (519.29 EUR/MWh): 547.74 EUR/MWh at 2026-11-09 15:15 UTC.",
+     "text": "GR went above its highest price of the period 2025-11-01 to 2026-10-31 (519.29 EUR/MWh): 535.35 EUR/MWh at 2026-11-10 15:45 UTC.",
      "values": {
       "zone": "GR",
       "p0": "2025-11-01",
       "p1": "2026-10-31",
       "old": "519.29",
-      "eur": "547.74",
-      "at": "2026-11-09 15:15 UTC"
+      "eur": "535.35",
+      "at": "2026-11-10 15:45 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
+     "as_of": "2026-11-01 (prices.json), 2026-11-16 (day files)"
     },
     {
      "template": "above_year",
-     "text": "IE-SEM went above its highest price of the period 2025-11-01 to 2026-10-31 (465.05 EUR/MWh): 629.50 EUR/MWh at 2026-11-03 08:00 UTC.",
+     "text": "IE-SEM went above its highest price of the period 2025-11-01 to 2026-10-31 (465.05 EUR/MWh): 542.60 EUR/MWh at 2026-11-13 07:00 UTC.",
      "values": {
       "zone": "IE-SEM",
       "p0": "2025-11-01",
       "p1": "2026-10-31",
       "old": "465.05",
-      "eur": "629.50",
-      "at": "2026-11-03 08:00 UTC"
+      "eur": "542.60",
+      "at": "2026-11-13 07:00 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
+     "as_of": "2026-11-01 (prices.json), 2026-11-16 (day files)"
     },
     {
      "template": "above_year",
-     "text": "IT-Calabria went above its highest price of the period 2025-11-01 to 2026-10-31 (410.00 EUR/MWh): 422.18 EUR/MWh at 2026-11-09 18:45 UTC.",
+     "text": "IT-Calabria went above its highest price of the period 2025-11-01 to 2026-10-31 (410.00 EUR/MWh): 430.00 EUR/MWh at 2026-11-14 06:00 UTC.",
      "values": {
       "zone": "IT-Calabria",
       "p0": "2025-11-01",
       "p1": "2026-10-31",
       "old": "410.00",
-      "eur": "422.18",
-      "at": "2026-11-09 18:45 UTC"
+      "eur": "430.00",
+      "at": "2026-11-14 06:00 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
+     "as_of": "2026-11-01 (prices.json), 2026-11-16 (day files)"
     },
     {
      "template": "above_year",
-     "text": "IT-Centre-North went above its highest price of the period 2025-11-01 to 2026-10-31 (410.00 EUR/MWh): 444.00 EUR/MWh at 2026-11-09 15:30 UTC.",
-     "values": {
-      "zone": "IT-Centre-North",
-      "p0": "2025-11-01",
-      "p1": "2026-10-31",
-      "old": "410.00",
-      "eur": "444.00",
-      "at": "2026-11-09 15:30 UTC"
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
-    },
-    {
-     "template": "above_year",
-     "text": "IT-Centre-South went above its highest price of the period 2025-11-01 to 2026-10-31 (410.00 EUR/MWh): 444.00 EUR/MWh at 2026-11-09 15:30 UTC.",
-     "values": {
-      "zone": "IT-Centre-South",
-      "p0": "2025-11-01",
-      "p1": "2026-10-31",
-      "old": "410.00",
-      "eur": "444.00",
-      "at": "2026-11-09 15:30 UTC"
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
-    },
-    {
-     "template": "above_year",
-     "text": "IT-North went above its highest price of the period 2025-11-01 to 2026-10-31 (410.00 EUR/MWh): 444.00 EUR/MWh at 2026-11-09 15:30 UTC.",
-     "values": {
-      "zone": "IT-North",
-      "p0": "2025-11-01",
-      "p1": "2026-10-31",
-      "old": "410.00",
-      "eur": "444.00",
-      "at": "2026-11-09 15:30 UTC"
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
-    },
-    {
-     "template": "above_year",
-     "text": "IT-Sardinia went above its highest price of the period 2025-11-01 to 2026-10-31 (400.00 EUR/MWh): 444.00 EUR/MWh at 2026-11-09 15:30 UTC.",
-     "values": {
-      "zone": "IT-Sardinia",
-      "p0": "2025-11-01",
-      "p1": "2026-10-31",
-      "old": "400.00",
-      "eur": "444.00",
-      "at": "2026-11-09 15:30 UTC"
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
-    },
-    {
-     "template": "above_year",
-     "text": "IT-Sicily went above its highest price of the period 2025-11-01 to 2026-10-31 (414.00 EUR/MWh): 422.18 EUR/MWh at 2026-11-09 18:45 UTC.",
+     "text": "IT-Sicily went above its highest price of the period 2025-11-01 to 2026-10-31 (414.00 EUR/MWh): 430.00 EUR/MWh at 2026-11-14 06:00 UTC.",
      "values": {
       "zone": "IT-Sicily",
       "p0": "2025-11-01",
       "p1": "2026-10-31",
       "old": "414.00",
-      "eur": "422.18",
-      "at": "2026-11-09 18:45 UTC"
+      "eur": "430.00",
+      "at": "2026-11-14 06:00 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
+     "as_of": "2026-11-01 (prices.json), 2026-11-16 (day files)"
     },
     {
      "template": "above_year",
-     "text": "IT-South went above its highest price of the period 2025-11-01 to 2026-10-31 (410.00 EUR/MWh): 444.00 EUR/MWh at 2026-11-09 15:30 UTC.",
-     "values": {
-      "zone": "IT-South",
-      "p0": "2025-11-01",
-      "p1": "2026-10-31",
-      "old": "410.00",
-      "eur": "444.00",
-      "at": "2026-11-09 15:30 UTC"
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
-    },
-    {
-     "template": "above_year",
-     "text": "MK went above its highest price of the period 2025-11-01 to 2026-10-31 (520.02 EUR/MWh): 552.09 EUR/MWh at 2026-11-09 16:00 UTC.",
-     "values": {
-      "zone": "MK",
-      "p0": "2025-11-01",
-      "p1": "2026-10-31",
-      "old": "520.02",
-      "eur": "552.09",
-      "at": "2026-11-09 16:00 UTC"
-     },
-     "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
-    },
-    {
-     "template": "above_year",
-     "text": "NO1 went above its highest price of the period 2025-11-01 to 2026-10-31 (356.08 EUR/MWh): 369.12 EUR/MWh at 2026-11-09 16:15 UTC.",
+     "text": "NO1 went above its highest price of the period 2025-11-01 to 2026-10-31 (356.08 EUR/MWh): 382.58 EUR/MWh at 2026-11-11 09:00 UTC.",
      "values": {
       "zone": "NO1",
       "p0": "2025-11-01",
       "p1": "2026-10-31",
       "old": "356.08",
-      "eur": "369.12",
-      "at": "2026-11-09 16:15 UTC"
+      "eur": "382.58",
+      "at": "2026-11-11 09:00 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
+     "as_of": "2026-11-01 (prices.json), 2026-11-16 (day files)"
     },
     {
      "template": "above_year",
-     "text": "NO2 went above its highest price of the period 2025-11-01 to 2026-10-31 (398.07 EUR/MWh): 398.08 EUR/MWh at 2026-11-09 16:15 UTC.",
+     "text": "NO3 went above its highest price of the period 2025-11-01 to 2026-10-31 (373.85 EUR/MWh): 386.50 EUR/MWh at 2026-11-11 09:00 UTC.",
      "values": {
-      "zone": "NO2",
+      "zone": "NO3",
       "p0": "2025-11-01",
       "p1": "2026-10-31",
-      "old": "398.07",
-      "eur": "398.08",
-      "at": "2026-11-09 16:15 UTC"
+      "old": "373.85",
+      "eur": "386.50",
+      "at": "2026-11-11 09:00 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
+     "as_of": "2026-11-01 (prices.json), 2026-11-16 (day files)"
     },
     {
      "template": "above_year",
-     "text": "NO5 went above its highest price of the period 2025-11-01 to 2026-10-31 (302.13 EUR/MWh): 381.87 EUR/MWh at 2026-11-09 16:15 UTC.",
+     "text": "NO5 went above its highest price of the period 2025-11-01 to 2026-10-31 (302.13 EUR/MWh): 387.52 EUR/MWh at 2026-11-11 16:15 UTC.",
      "values": {
       "zone": "NO5",
       "p0": "2025-11-01",
       "p1": "2026-10-31",
       "old": "302.13",
-      "eur": "381.87",
-      "at": "2026-11-09 16:15 UTC"
+      "eur": "387.52",
+      "at": "2026-11-11 16:15 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
+     "as_of": "2026-11-01 (prices.json), 2026-11-16 (day files)"
     },
     {
      "template": "above_year",
-     "text": "PL went above its highest price of the period 2025-11-01 to 2026-10-31 (705.18 EUR/MWh): 755.06 EUR/MWh at 2026-11-09 14:45 UTC.",
+     "text": "PL went above its highest price of the period 2025-11-01 to 2026-10-31 (705.18 EUR/MWh): 894.85 EUR/MWh at 2026-11-10 13:30 UTC.",
      "values": {
       "zone": "PL",
       "p0": "2025-11-01",
       "p1": "2026-10-31",
       "old": "705.18",
-      "eur": "755.06",
-      "at": "2026-11-09 14:45 UTC"
+      "eur": "894.85",
+      "at": "2026-11-10 13:30 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
+     "as_of": "2026-11-01 (prices.json), 2026-11-16 (day files)"
     },
     {
      "template": "above_year",
-     "text": "PT went above its highest price of the period 2025-11-01 to 2026-10-31 (359.07 EUR/MWh): 380.00 EUR/MWh at 2026-11-04 19:00 UTC.",
+     "text": "SE3 went above its highest price of the period 2025-11-01 to 2026-10-31 (486.96 EUR/MWh): 499.23 EUR/MWh at 2026-11-10 15:45 UTC.",
      "values": {
-      "zone": "PT",
+      "zone": "SE3",
       "p0": "2025-11-01",
       "p1": "2026-10-31",
-      "old": "359.07",
-      "eur": "380.00",
-      "at": "2026-11-04 19:00 UTC"
+      "old": "486.96",
+      "eur": "499.23",
+      "at": "2026-11-10 15:45 UTC"
      },
      "source": "ENTSO-E Transparency Platform, A44 day-ahead prices (the week's day files) and prices.json (twelve months)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/prices.json",
-     "as_of": "2026-11-01 (prices.json), 2026-11-09 (day files)"
+     "as_of": "2026-11-01 (prices.json), 2026-11-16 (day files)"
     }
    ]
   },
   {
    "id": "records",
    "title": "Records in the day archive",
-   "status": "ok",
-   "reason": null,
+   "status": "skipped",
+   "reason": "the week's day files carry no highlights",
    "notes": [],
-   "sentences": [
-    {
-     "template": "record",
-     "text": "The week's highest EU solar output was 75.2 GW on 2026-11-03 (sum of the member states reporting, 22 % of their generation); the archive's highest is 132.3 GW on 2026-10-15 (30 days in the archive, 2026-10-11 to 2026-11-09).",
-     "values": {
-      "what": "solar output",
-      "gw": "75.2",
-      "day": "2026-11-03",
-      "pct": ", 22 % of their generation",
-      "verdict": "the archive's highest is 132.3 GW on 2026-10-15",
-      "n": 30,
-      "first": "2026-10-11",
-      "last": "2026-11-09"
-     },
-     "source": "ENTSO-E Transparency Platform, the day files' highlights (scripts/build_eu_day.py)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/2026-11-03.json",
-     "as_of": "2026-11-03"
-    },
-    {
-     "template": "record",
-     "text": "The week's highest EU wind output was 74.5 GW on 2026-11-03 (sum of the member states reporting); the archive's highest is 121.6 GW on 2026-10-25 (30 days in the archive, 2026-10-11 to 2026-11-09).",
-     "values": {
-      "what": "wind output",
-      "gw": "74.5",
-      "day": "2026-11-03",
-      "pct": "",
-      "verdict": "the archive's highest is 121.6 GW on 2026-10-25",
-      "n": 30,
-      "first": "2026-10-11",
-      "last": "2026-11-09"
-     },
-     "source": "ENTSO-E Transparency Platform, the day files' highlights (scripts/build_eu_day.py)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/2026-11-03.json",
-     "as_of": "2026-11-03"
-    },
-    {
-     "template": "record",
-     "text": "The week's highest EU load was 352.4 GW on 2026-11-03 (sum of the member states reporting); the highest in the archive (30 days in the archive, 2026-10-11 to 2026-11-09).",
-     "values": {
-      "what": "load",
-      "gw": "352.4",
-      "day": "2026-11-03",
-      "pct": "",
-      "verdict": "the highest in the archive",
-      "n": 30,
-      "first": "2026-10-11",
-      "last": "2026-11-09"
-     },
-     "source": "ENTSO-E Transparency Platform, the day files' highlights (scripts/build_eu_day.py)",
-     "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-days/eu/day/2026-11-03.json",
-     "as_of": "2026-11-03"
-    }
-   ]
+   "sentences": []
   },
   {
    "id": "outages",
@@ -524,36 +337,36 @@
    "sentences": [
     {
      "template": "offline_now",
-     "text": "115,339.3 MW of generation was reported offline: 90,150 MW planned and 25,189.3 MW forced (sum of the units reporting).",
+     "text": "120,001.2 MW of generation was reported offline: 87,969.7 MW planned and 32,031.5 MW forced (sum of the units reporting).",
      "values": {
-      "mw": "115,339.3",
-      "planned": "90,150",
-      "forced": "25,189.3"
+      "mw": "120,001.2",
+      "planned": "87,969.7",
+      "forced": "32,031.5"
      },
      "source": "ENTSO-E Transparency Platform, A80 unavailability of generation units",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-data/eu/outages.json",
-     "as_of": "2026-11-11 13:34 UTC"
+     "as_of": "2026-11-18 15:54 UTC"
     },
     {
      "template": "offline_change",
-     "text": "The week before, the brief read 120,541.4 MW offline (-5202.1 MW).",
+     "text": "The week before, the brief read 115,339.3 MW offline (+4661.9 MW).",
      "values": {
-      "prev": "120,541.4",
-      "delta": -5202.1
+      "prev": "115,339.3",
+      "delta": 4661.9
      },
      "source": "ENTSO-E Transparency Platform, A80 unavailability of generation units (the previous brief)",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-data/eu/outages.json",
-     "as_of": "2026-11-05"
+     "as_of": "2026-11-11"
     },
     {
      "template": "offline_top",
-     "text": "Most offline: FR 24,737.3 MW, IT 24,077 MW, PL 10,823.4 MW.",
+     "text": "Most offline: IT 24,796 MW, FR 22,517 MW, DE 15,159.8 MW.",
      "values": {
-      "list": "FR 24,737.3 MW, IT 24,077 MW, PL 10,823.4 MW"
+      "list": "IT 24,796 MW, FR 22,517 MW, DE 15,159.8 MW"
      },
      "source": "ENTSO-E Transparency Platform, A80 unavailability of generation units",
      "url": "https://raw.githubusercontent.com/Daniyal-arch/Energy_Grid/eu-data/eu/outages.json",
-     "as_of": "2026-11-11 13:34 UTC"
+     "as_of": "2026-11-18 15:54 UTC"
     }
    ]
   },
@@ -566,133 +379,133 @@
    "sentences": [
     {
      "template": "queue",
-     "text": "CAISO: 260 active requests, 73,747.7 MW (queue read 2026-11-10).",
+     "text": "CAISO: 260 active requests, 73,747.7 MW (queue read 2026-11-17).",
      "values": {
       "market": "CAISO",
       "active": "260",
       "mw": "73,747.7",
-      "read": "2026-11-10"
+      "read": "2026-11-17"
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     },
     {
      "template": "queue_change",
-     "text": "CAISO: -1 active requests and -100.0 MW since the previous brief (read 2026-11-03).",
+     "text": "CAISO: +0 active requests and +0.0 MW since the previous brief (read 2026-11-10).",
      "values": {
       "market": "CAISO",
-      "active_delta": -1,
-      "mw_delta": -100.0,
-      "prev_read": "2026-11-03"
+      "active_delta": 0,
+      "mw_delta": 0.0,
+      "prev_read": "2026-11-10"
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     },
     {
      "template": "queue",
-     "text": "ERCOT: 1,160 active requests, 308,497.9 MW (queue read 2026-11-10).",
+     "text": "ERCOT: 1,160 active requests, 308,497.9 MW (queue read 2026-11-17).",
      "values": {
       "market": "ERCOT",
       "active": "1,160",
       "mw": "308,497.9",
-      "read": "2026-11-10"
+      "read": "2026-11-17"
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     },
     {
      "template": "queue_change",
-     "text": "ERCOT: +0 active requests and +0.0 MW since the previous brief (read 2026-11-03).",
+     "text": "ERCOT: +0 active requests and +0.0 MW since the previous brief (read 2026-11-10).",
      "values": {
       "market": "ERCOT",
       "active_delta": 0,
       "mw_delta": 0.0,
-      "prev_read": "2026-11-03"
+      "prev_read": "2026-11-10"
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     },
     {
      "template": "queue",
-     "text": "MISO: 1,115 active requests, 262,144.1 MW (queue read 2026-11-10).",
+     "text": "MISO: 1,127 active requests, 260,045.3 MW (queue read 2026-11-17).",
      "values": {
       "market": "MISO",
-      "active": "1,115",
-      "mw": "262,144.1",
-      "read": "2026-11-10"
+      "active": "1,127",
+      "mw": "260,045.3",
+      "read": "2026-11-17"
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     },
     {
      "template": "queue_change",
-     "text": "MISO: +28 active requests and +8391.2 MW since the previous brief (read 2026-11-03).",
+     "text": "MISO: +12 active requests and -2098.8 MW since the previous brief (read 2026-11-10).",
      "values": {
       "market": "MISO",
-      "active_delta": 28,
-      "mw_delta": 8391.2,
-      "prev_read": "2026-11-03"
+      "active_delta": 12,
+      "mw_delta": -2098.8,
+      "prev_read": "2026-11-10"
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     },
     {
      "template": "queue",
-     "text": "SPP: 220 active requests, 54,820.9 MW (queue read 2026-11-10).",
+     "text": "SPP: 216 active requests, 54,348.7 MW (queue read 2026-11-17).",
      "values": {
       "market": "SPP",
-      "active": "220",
-      "mw": "54,820.9",
-      "read": "2026-11-10"
+      "active": "216",
+      "mw": "54,348.7",
+      "read": "2026-11-17"
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     },
     {
      "template": "queue_change",
-     "text": "SPP: +2 active requests and +173.0 MW since the previous brief (read 2026-11-03).",
+     "text": "SPP: -4 active requests and -472.2 MW since the previous brief (read 2026-11-10).",
      "values": {
       "market": "SPP",
-      "active_delta": 2,
-      "mw_delta": 173.0,
-      "prev_read": "2026-11-03"
+      "active_delta": -4,
+      "mw_delta": -472.2,
+      "prev_read": "2026-11-10"
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     },
     {
      "template": "queue",
-     "text": "ISO-NE: 50 active requests, 9,225.9 MW (queue read 2026-11-10).",
+     "text": "ISO-NE: 50 active requests, 9,225.9 MW (queue read 2026-11-17).",
      "values": {
       "market": "ISO-NE",
       "active": "50",
       "mw": "9,225.9",
-      "read": "2026-11-10"
+      "read": "2026-11-17"
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     },
     {
      "template": "queue_change",
-     "text": "ISO-NE: +0 active requests and +0.0 MW since the previous brief (read 2026-11-03).",
+     "text": "ISO-NE: +0 active requests and +0.0 MW since the previous brief (read 2026-11-10).",
      "values": {
       "market": "ISO-NE",
       "active_delta": 0,
       "mw_delta": 0.0,
-      "prev_read": "2026-11-03"
+      "prev_read": "2026-11-10"
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     },
     {
      "template": "queue",
@@ -716,7 +529,7 @@
      },
      "source": "The markets' interconnection queues (CAISO, ERCOT, MISO, SPP, ISO-NE, NYISO), read with gridstatus (MIT)",
      "url": "/data/us/queues_live.json",
-     "as_of": "2026-11-10"
+     "as_of": "2026-11-17"
     }
    ]
   },
@@ -759,176 +572,221 @@
   }
  ],
  "means": {
-  "FI": {
-   "previous": 71.42,
-   "this": 31.48
-  },
-  "SE2": {
-   "previous": 23.52,
-   "this": 8.26
-  },
-  "SE1": {
-   "previous": 22.7,
-   "this": 13.41
-  },
-  "NO4": {
-   "previous": 22.61,
-   "this": 14.51
-  },
-  "NO3": {
-   "previous": 100.8,
-   "this": 99.59
-  },
-  "IT-Centre-South": {
-   "previous": 271.15,
-   "this": 273.09
-  },
-  "IT-Centre-North": {
-   "previous": 272.47,
-   "this": 278.4
-  },
-  "IT-North": {
-   "previous": 272.47,
-   "this": 278.4
-  },
-  "MK": {
-   "previous": 296.4,
-   "this": 303.69
-  },
-  "BG": {
-   "previous": 291.84,
-   "this": 299.55
-  },
-  "HU": {
-   "previous": 290.8,
-   "this": 299.93
-  },
-  "RS": {
-   "previous": 287.83,
-   "this": 299.53
-  },
-  "RO": {
-   "previous": 292.7,
-   "this": 304.5
-  },
-  "GR": {
-   "previous": 262.79,
-   "this": 276.0
-  },
-  "CH": {
-   "previous": 269.64,
-   "this": 283.02
-  },
-  "ES": {
-   "previous": 204.18,
-   "this": 218.45
-  },
-  "PT": {
-   "previous": 206.63,
-   "this": 222.73
-  },
-  "NL": {
-   "previous": 248.48,
-   "this": 265.78
-  },
-  "HR": {
-   "previous": 279.08,
-   "this": 296.59
-  },
-  "DE-LU": {
-   "previous": 250.63,
-   "this": 268.92
-  },
-  "IT-Calabria": {
-   "previous": 247.69,
-   "this": 266.26
-  },
-  "IT-Sicily": {
-   "previous": 247.69,
-   "this": 266.26
-  },
-  "SI": {
-   "previous": 275.79,
-   "this": 295.22
-  },
-  "IT-South": {
-   "previous": 247.69,
-   "this": 267.45
-  },
-  "BE": {
-   "previous": 245.82,
-   "this": 265.97
-  },
-  "CZ": {
-   "previous": 263.43,
-   "this": 283.78
-  },
-  "AT": {
-   "previous": 273.44,
-   "this": 295.74
-  },
-  "ME": {
-   "previous": 280.06,
-   "this": 303.69
-  },
-  "EE": {
-   "previous": 153.91,
-   "this": 179.49
-  },
-  "PL": {
-   "previous": 245.44,
-   "this": 273.75
-  },
-  "NO1": {
-   "previous": 159.69,
-   "this": 188.15
-  },
-  "FR": {
-   "previous": 236.64,
-   "this": 266.97
-  },
-  "SK": {
-   "previous": 269.53,
-   "this": 299.94
+  "IE-SEM": {
+   "previous": 400.05,
+   "this": 291.32
   },
   "AL": {
-   "previous": 296.58,
-   "this": 330.13
-  },
-  "NO2": {
-   "previous": 176.65,
-   "this": 213.56
-  },
-  "NO5": {
-   "previous": 152.56,
-   "this": 189.48
-  },
-  "DK1": {
-   "previous": 232.56,
-   "this": 270.18
-  },
-  "DK2": {
-   "previous": 240.07,
-   "this": 286.93
-  },
-  "SE3": {
-   "previous": 118.42,
-   "this": 171.93
-  },
-  "IT-Sardinia": {
-   "previous": 214.26,
-   "this": 269.82
-  },
-  "SE4": {
-   "previous": 232.05,
-   "this": 290.24
+   "previous": 330.13,
+   "this": 224.97
   },
   "LT": {
-   "previous": 225.74,
-   "this": 287.83
+   "previous": 287.83,
+   "this": 197.6
+  },
+  "SE4": {
+   "previous": 290.24,
+   "this": 219.04
+  },
+  "PT": {
+   "previous": 222.73,
+   "this": 153.99
+  },
+  "ES": {
+   "previous": 218.45,
+   "this": 153.99
+  },
+  "DK2": {
+   "previous": 286.93,
+   "this": 222.79
+  },
+  "FR": {
+   "previous": 266.97,
+   "this": 207.72
+  },
+  "ME": {
+   "previous": 303.69,
+   "this": 246.54
+  },
+  "IT-Sardinia": {
+   "previous": 269.82,
+   "this": 215.34
+  },
+  "DK1": {
+   "previous": 270.18,
+   "this": 216.63
+  },
+  "RS": {
+   "previous": 299.53,
+   "this": 246.55
+  },
+  "GR": {
+   "previous": 276.0,
+   "this": 224.35
+  },
+  "DE-LU": {
+   "previous": 268.92,
+   "this": 222.97
+  },
+  "MK": {
+   "previous": 303.69,
+   "this": 258.94
+  },
+  "IT-South": {
+   "previous": 267.45,
+   "this": 225.45
+  },
+  "BE": {
+   "previous": 265.97,
+   "this": 225.98
+  },
+  "NL": {
+   "previous": 265.78,
+   "this": 228.52
+  },
+  "CZ": {
+   "previous": 283.78,
+   "this": 248.32
+  },
+  "IT-Sicily": {
+   "previous": 266.26,
+   "this": 230.96
+  },
+  "IT-Calabria": {
+   "previous": 266.26,
+   "this": 231.09
+  },
+  "SI": {
+   "previous": 295.22,
+   "this": 261.13
+  },
+  "HR": {
+   "previous": 296.59,
+   "this": 262.55
+  },
+  "RO": {
+   "previous": 304.5,
+   "this": 270.72
+  },
+  "PL": {
+   "previous": 273.75,
+   "this": 240.08
+  },
+  "SK": {
+   "previous": 299.94,
+   "this": 267.1
+  },
+  "HU": {
+   "previous": 299.93,
+   "this": 267.12
+  },
+  "BG": {
+   "previous": 299.55,
+   "this": 267.58
+  },
+  "AT": {
+   "previous": 295.74,
+   "this": 264.05
+  },
+  "IT-Centre-South": {
+   "previous": 273.09,
+   "this": 242.58
+  },
+  "EE": {
+   "previous": 179.49,
+   "this": 153.98
+  },
+  "CH": {
+   "previous": 283.02,
+   "this": 258.2
+  },
+  "IT-Centre-North": {
+   "previous": 278.4,
+   "this": 256.71
+  },
+  "IT-North": {
+   "previous": 278.4,
+   "this": 256.71
+  },
+  "SE3": {
+   "previous": 171.93,
+   "this": 154.25
+  },
+  "NO2": {
+   "previous": 213.56,
+   "this": 199.33
+  },
+  "NO4": {
+   "previous": 14.51,
+   "this": 18.1
+  },
+  "NO1": {
+   "previous": 188.15,
+   "this": 193.43
+  },
+  "NO5": {
+   "previous": 189.48,
+   "this": 196.61
+  },
+  "SE1": {
+   "previous": 13.41,
+   "this": 41.83
+  },
+  "NO3": {
+   "previous": 99.59,
+   "this": 131.45
+  },
+  "SE2": {
+   "previous": 8.26,
+   "this": 47.68
+  },
+  "FI": {
+   "previous": 31.48,
+   "this": 73.21
   }
  },
  "carry": {
+  "offline_mw": 120001.2,
+  "offline_at": "2026-11-18T15:54:00+00:00",
+  "queues": {
+   "CAISO": {
+    "active": 260,
+    "active_mw": 73747.7,
+    "read": "2026-11-17"
+   },
+   "ERCOT": {
+    "active": 1160,
+    "active_mw": 308497.9,
+    "read": "2026-11-17"
+   },
+   "MISO": {
+    "active": 1127,
+    "active_mw": 260045.3,
+    "read": "2026-11-17"
+   },
+   "SPP": {
+    "active": 216,
+    "active_mw": 54348.7,
+    "read": "2026-11-17"
+   },
+   "ISO-NE": {
+    "active": 50,
+    "active_mw": 9225.9,
+    "read": "2026-11-17"
+   },
+   "NYISO": {
+    "active": 234,
+    "active_mw": 36475.9,
+    "read": "2026-10-19"
+   }
+  },
+  "us_added": {
+   "year": 2026,
+   "mw": 39020.8,
+   "release": "September 2026"
+  }
+ },
+ "carry_previous": {
   "offline_mw": 115339.3,
   "offline_at": "2026-11-11T13:34:00+00:00",
   "queues": {
@@ -956,47 +814,6 @@
     "active": 50,
     "active_mw": 9225.9,
     "read": "2026-11-10"
-   },
-   "NYISO": {
-    "active": 234,
-    "active_mw": 36475.9,
-    "read": "2026-10-19"
-   }
-  },
-  "us_added": {
-   "year": 2026,
-   "mw": 39020.8,
-   "release": "September 2026"
-  }
- },
- "carry_previous": {
-  "offline_mw": 120541.4,
-  "offline_at": "2026-11-05T15:44:00+00:00",
-  "queues": {
-   "CAISO": {
-    "active": 261,
-    "active_mw": 73847.7,
-    "read": "2026-11-03"
-   },
-   "ERCOT": {
-    "active": 1160,
-    "active_mw": 308497.9,
-    "read": "2026-11-03"
-   },
-   "MISO": {
-    "active": 1087,
-    "active_mw": 253752.9,
-    "read": "2026-11-03"
-   },
-   "SPP": {
-    "active": 218,
-    "active_mw": 54647.9,
-    "read": "2026-11-03"
-   },
-   "ISO-NE": {
-    "active": 50,
-    "active_mw": 9225.9,
-    "read": "2026-11-03"
    },
    "NYISO": {
     "active": 234,
