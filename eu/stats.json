@@ -1,0 +1,666 @@
+{
+ "source": "ENTSO-E Transparency Platform",
+ "fetched": "2026-11-21T16:05:58+00:00",
+ "eu": {
+  "ts": "2026-11-21T06:15:00+00:00",
+  "load_mw": 270234.6,
+  "renewable_share_of_generation": 44.7,
+  "generation_mw": {
+   "bio": 10335.0,
+   "coal": 29534.1,
+   "gas": 37267.0,
+   "hydro": 31814.3,
+   "nuclear": 72251.6,
+   "oil": 750.7,
+   "other": 7704.4,
+   "solar": 3849.4,
+   "wind": 79447.2
+  },
+  "sum_of": [
+   "AT",
+   "BE",
+   "BG",
+   "CZ",
+   "DE",
+   "EE",
+   "ES",
+   "FI",
+   "FR",
+   "GR",
+   "HR",
+   "HU",
+   "IE",
+   "IT",
+   "LT",
+   "LU",
+   "LV",
+   "NL",
+   "PL",
+   "PT",
+   "RO",
+   "SE",
+   "SI",
+   "SK"
+  ]
+ },
+ "countries": {
+  "AL": {
+   "ts": "2026-11-21T15:45:00+00:00",
+   "load_mw": 1159.1,
+   "renewable_share_of_generation": null,
+   "generation_mw": {}
+  },
+  "AT": {
+   "ts": "2026-11-21T15:00:00+00:00",
+   "load_mw": 7061.2,
+   "renewable_share_of_generation": 61.6,
+   "generation_mw": {
+    "bio": 368.0,
+    "coal": 0.0,
+    "gas": 1485.2,
+    "hydro": 3091.6,
+    "oil": 0.0,
+    "other": 22.1,
+    "solar": 52.0,
+    "wind": 1308.0
+   }
+  },
+  "BA": {
+   "ts": "2026-11-21T14:45:00+00:00",
+   "load_mw": 1093.0,
+   "renewable_share_of_generation": 52.4,
+   "generation_mw": {
+    "coal": 743.1,
+    "hydro": 806.9,
+    "other": 0.0,
+    "solar": 2.6,
+    "wind": 9.5
+   }
+  },
+  "BE": {
+   "ts": "2026-11-21T14:45:00+00:00",
+   "load_mw": 9893.3,
+   "renewable_share_of_generation": 29.0,
+   "generation_mw": {
+    "bio": 238.0,
+    "gas": 2078.2,
+    "hydro": 17.8,
+    "nuclear": 2076.9,
+    "oil": 0.0,
+    "other": 390.8,
+    "solar": 1811.5,
+    "wind": 21.6
+   }
+  },
+  "BG": {
+   "ts": "2026-11-21T08:45:00+00:00",
+   "load_mw": 3385.9,
+   "renewable_share_of_generation": 30.5,
+   "generation_mw": {
+    "bio": 6.2,
+    "coal": 1357.6,
+    "gas": 258.7,
+    "hydro": 349.1,
+    "nuclear": 1935.0,
+    "other": 0.6,
+    "solar": 1143.5,
+    "wind": 63.0
+   }
+  },
+  "CH": {
+   "ts": "2026-11-21T14:45:00+00:00",
+   "load_mw": 6655.3,
+   "renewable_share_of_generation": 43.8,
+   "generation_mw": {
+    "hydro": 2400.7,
+    "nuclear": 2954.8,
+    "solar": 381.4,
+    "wind": 10.4
+   }
+  },
+  "CZ": {
+   "ts": "2026-11-21T15:45:00+00:00",
+   "load_mw": 7518.3,
+   "renewable_share_of_generation": 9.3,
+   "generation_mw": {
+    "bio": 322.7,
+    "coal": 4525.9,
+    "gas": 1158.9,
+    "hydro": 180.4,
+    "nuclear": 2979.9,
+    "oil": 4.0,
+    "other": 347.7,
+    "solar": 45.6,
+    "wind": 100.9
+   }
+  },
+  "DE": {
+   "ts": "2026-11-21T15:15:00+00:00",
+   "load_mw": 55605.9,
+   "renewable_share_of_generation": 59.5,
+   "generation_mw": {
+    "bio": 5336.4,
+    "coal": 10219.1,
+    "gas": 11379.3,
+    "hydro": 1357.9,
+    "oil": 299.5,
+    "other": 301.6,
+    "solar": 149.0,
+    "wind": 27888.2
+   }
+  },
+  "EE": {
+   "ts": "2026-11-21T15:45:00+00:00",
+   "load_mw": 1161.7,
+   "renewable_share_of_generation": 32.3,
+   "generation_mw": {
+    "bio": 85.2,
+    "coal": 372.6,
+    "gas": 45.8,
+    "hydro": 0.7,
+    "other": 14.5,
+    "solar": 0.3,
+    "wind": 146.5
+   }
+  },
+  "ES": {
+   "ts": "2026-11-21T15:30:00+00:00",
+   "load_mw": 26464.0,
+   "renewable_share_of_generation": 64.4,
+   "generation_mw": {
+    "bio": 652.0,
+    "coal": 0.0,
+    "gas": 3316.0,
+    "hydro": 4140.0,
+    "nuclear": 6096.0,
+    "oil": 16.0,
+    "other": 80.0,
+    "solar": 5668.0,
+    "wind": 10228.0
+   }
+  },
+  "FI": {
+   "ts": "2026-11-21T15:45:00+00:00",
+   "load_mw": 12742.0,
+   "renewable_share_of_generation": 58.6,
+   "generation_mw": {
+    "bio": 720.4,
+    "coal": 116.7,
+    "gas": 0.8,
+    "hydro": 1704.4,
+    "nuclear": 4224.9,
+    "oil": 0.0,
+    "other": 263.1,
+    "solar": 3.1,
+    "wind": 4142.5
+   }
+  },
+  "FR": {
+   "ts": "2026-11-21T14:45:00+00:00",
+   "load_mw": 51020.2,
+   "renewable_share_of_generation": 23.0,
+   "generation_mw": {
+    "bio": 701.7,
+    "gas": 2753.9,
+    "hydro": 8922.2,
+    "nuclear": 44207.0,
+    "oil": 41.0,
+    "other": 14.8,
+    "solar": 3132.8,
+    "wind": 3204.3
+   }
+  },
+  "GR": {
+   "ts": "2026-11-21T15:15:00+00:00",
+   "load_mw": 5519.0,
+   "renewable_share_of_generation": 38.3,
+   "generation_mw": {
+    "coal": 0.0,
+    "gas": 2547.0,
+    "hydro": 367.0,
+    "oil": 0.0,
+    "other": 640.0,
+    "solar": 1.0,
+    "wind": 1666.0
+   }
+  },
+  "HR": {
+   "ts": "2026-11-21T15:30:00+00:00",
+   "load_mw": 2296.0,
+   "renewable_share_of_generation": 59.5,
+   "generation_mw": {
+    "bio": 66.8,
+    "coal": 193.6,
+    "gas": 181.2,
+    "hydro": 1088.8,
+    "oil": 0.0,
+    "other": 32.8,
+    "solar": 3.2,
+    "wind": 22.4
+   }
+  },
+  "HU": {
+   "ts": "2026-11-21T15:30:00+00:00",
+   "load_mw": 6036.1,
+   "renewable_share_of_generation": 8.4,
+   "generation_mw": {
+    "bio": 209.6,
+    "coal": 187.1,
+    "gas": 1556.9,
+    "hydro": 21.4,
+    "nuclear": 1457.0,
+    "oil": 0.0,
+    "other": 77.1,
+    "solar": 9.6,
+    "wind": 53.4
+   }
+  },
+  "IE": {
+   "ts": "2026-11-21T15:45:00+00:00",
+   "load_mw": 4635.7,
+   "renewable_share_of_generation": 64.9,
+   "generation_mw": {
+    "coal": 40.9,
+    "gas": 1046.6,
+    "hydro": 121.2,
+    "oil": 394.2,
+    "other": 0.0,
+    "solar": 0.0,
+    "wind": 2671.6
+   }
+  },
+  "IT": {
+   "ts": "2026-11-21T06:15:00+00:00",
+   "load_mw": 28938.0,
+   "renewable_share_of_generation": 51.2,
+   "generation_mw": {
+    "bio": 679.0,
+    "gas": 6925.0,
+    "hydro": 2497.0,
+    "other": 3390.0,
+    "solar": 558.0,
+    "wind": 5976.0
+   }
+  },
+  "LT": {
+   "ts": "2026-11-21T15:30:00+00:00",
+   "load_mw": 1865.6,
+   "renewable_share_of_generation": 90.2,
+   "generation_mw": {
+    "bio": 134.0,
+    "gas": 28.9,
+    "hydro": 24.1,
+    "other": 60.6,
+    "solar": 0.0,
+    "wind": 1839.0
+   }
+  },
+  "LU": {
+   "ts": "2026-11-21T14:15:00+00:00",
+   "load_mw": 610.2,
+   "renewable_share_of_generation": 85.5,
+   "generation_mw": {
+    "bio": 84.3,
+    "gas": 12.2,
+    "hydro": 10.4,
+    "solar": 53.1,
+    "wind": 0.6
+   }
+  },
+  "LV": {
+   "ts": "2026-11-21T15:45:00+00:00",
+   "load_mw": 974.0,
+   "renewable_share_of_generation": 65.4,
+   "generation_mw": {
+    "bio": 35.0,
+    "gas": 393.0,
+    "hydro": 419.0,
+    "other": 23.0,
+    "solar": 1.0,
+    "wind": 331.0
+   }
+  },
+  "ME": {
+   "ts": "2026-11-20T22:45:00+00:00",
+   "load_mw": 324.2,
+   "renewable_share_of_generation": 62.8,
+   "generation_mw": {
+    "coal": 200.5,
+    "hydro": 271.8,
+    "wind": 66.9
+   }
+  },
+  "NL": {
+   "ts": "2026-11-21T15:15:00+00:00",
+   "load_mw": 12637.8,
+   "renewable_share_of_generation": 9.2,
+   "generation_mw": {
+    "bio": 71.2,
+    "coal": 3138.4,
+    "gas": 4522.0,
+    "hydro": 0.0,
+    "nuclear": 483.1,
+    "other": 47.9,
+    "solar": 0.4,
+    "wind": 835.7
+   }
+  },
+  "NO": {
+   "ts": "2026-11-21T14:45:00+00:00",
+   "load_mw": 19269.8,
+   "renewable_share_of_generation": 99.0,
+   "generation_mw": {
+    "bio": 34.0,
+    "gas": 153.2,
+    "hydro": 16372.7,
+    "other": 72.0,
+    "solar": 0.6,
+    "wind": 2798.6
+   }
+  },
+  "PL": {
+   "ts": "2026-11-21T14:45:00+00:00",
+   "load_mw": 21149.3,
+   "renewable_share_of_generation": 37.6,
+   "generation_mw": {
+    "bio": 304.4,
+    "coal": 10371.2,
+    "gas": 1973.1,
+    "hydro": 771.3,
+    "oil": 184.5,
+    "other": 522.6,
+    "solar": 97.0,
+    "wind": 7491.7
+   }
+  },
+  "PT": {
+   "ts": "2026-11-21T14:45:00+00:00",
+   "load_mw": 6678.4,
+   "renewable_share_of_generation": 74.9,
+   "generation_mw": {
+    "bio": 301.0,
+    "coal": 0.0,
+    "gas": 604.2,
+    "hydro": 2083.6,
+    "other": 9.5,
+    "solar": 393.5,
+    "wind": 2402.1
+   }
+  },
+  "RO": {
+   "ts": "2026-11-21T15:30:00+00:00",
+   "load_mw": 6889.0,
+   "renewable_share_of_generation": 42.8,
+   "generation_mw": {
+    "bio": 60.0,
+    "coal": 509.0,
+    "gas": 1536.0,
+    "hydro": 1357.0,
+    "nuclear": 1213.0,
+    "other": 293.0,
+    "solar": 0.0,
+    "wind": 1244.0
+   }
+  },
+  "RS": {
+   "ts": "2026-11-21T14:45:00+00:00",
+   "load_mw": 3935.0,
+   "renewable_share_of_generation": 66.3,
+   "generation_mw": {
+    "bio": 48.0,
+    "coal": 592.0,
+    "gas": 196.0,
+    "hydro": 1044.0,
+    "other": 29.0,
+    "wind": 517.7
+   }
+  },
+  "SE": {
+   "ts": "2026-11-21T15:30:00+00:00",
+   "load_mw": 23985.0,
+   "renewable_share_of_generation": 76.2,
+   "generation_mw": {
+    "gas": 1.2,
+    "hydro": 6727.5,
+    "nuclear": 4222.0,
+    "other": 1380.9,
+    "solar": 2.7,
+    "wind": 11241.0
+   }
+  },
+  "SI": {
+   "ts": "2026-11-21T15:15:00+00:00",
+   "load_mw": 1705.6,
+   "renewable_share_of_generation": 36.8,
+   "generation_mw": {
+    "bio": 22.7,
+    "coal": 451.1,
+    "gas": 127.8,
+    "hydro": 624.3,
+    "nuclear": 702.1,
+    "oil": 0.0,
+    "other": 1.8,
+    "solar": 99.1,
+    "wind": 0.0
+   }
+  },
+  "SK": {
+   "ts": "2026-11-21T14:45:00+00:00",
+   "load_mw": 3369.0,
+   "renewable_share_of_generation": 20.3,
+   "generation_mw": {
+    "bio": 98.4,
+    "coal": 7.5,
+    "gas": 203.0,
+    "hydro": 444.1,
+    "nuclear": 2456.0,
+    "oil": 45.1,
+    "other": 183.7,
+    "solar": 132.1,
+    "wind": 0.4
+   }
+  },
+  "GB": {
+   "ts": "2026-11-21T15:45:00+00:00",
+   "load_mw": 35260.0,
+   "renewable_share_of_generation": 21.7,
+   "generation_mw": {
+    "bio": 3290.0,
+    "coal": 0.0,
+    "gas": 15410.0,
+    "hydro": 493.0,
+    "nuclear": 5138.0,
+    "oil": 0.0,
+    "other": 1283.0,
+    "wind": 2235.0
+   }
+  }
+ },
+ "day_ahead_prices": {
+  "AL": {
+   "country": "AL",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 240.0
+  },
+  "AT": {
+   "country": "AT",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 221.93
+  },
+  "BE": {
+   "country": "BE",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 223.27
+  },
+  "BG": {
+   "country": "BG",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 205.06
+  },
+  "CH": {
+   "country": "CH",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 227.45
+  },
+  "CZ": {
+   "country": "CZ",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 221.75
+  },
+  "DK1": {
+   "country": "DK",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 219.16
+  },
+  "DK2": {
+   "country": "DK",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 215.12
+  },
+  "EE": {
+   "country": "EE",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 63.11
+  },
+  "ES": {
+   "country": "ES",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 160.8
+  },
+  "FI": {
+   "country": "FI",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 27.99
+  },
+  "FR": {
+   "country": "FR",
+   "ts": "2026-11-20T22:45:00+00:00",
+   "eur_mwh": 182.65
+  },
+  "IE-SEM": {
+   "country": "IE",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 244.16
+  },
+  "IT-North": {
+   "country": "IT",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 240.22
+  },
+  "IT-Centre-North": {
+   "country": "IT",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 240.22
+  },
+  "IT-Centre-South": {
+   "country": "IT",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 240.22
+  },
+  "IT-South": {
+   "country": "IT",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 240.22
+  },
+  "IT-Calabria": {
+   "country": "IT",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 240.22
+  },
+  "IT-Sicily": {
+   "country": "IT",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 240.22
+  },
+  "IT-Sardinia": {
+   "country": "IT",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 240.22
+  },
+  "LT": {
+   "country": "LT",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 63.11
+  },
+  "LV": {
+   "country": "LV",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 63.11
+  },
+  "ME": {
+   "country": "ME",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 202.0
+  },
+  "MK": {
+   "country": "MK",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 219.99
+  },
+  "NO1": {
+   "country": "NO",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 198.76
+  },
+  "NO2": {
+   "country": "NO",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 211.94
+  },
+  "NO3": {
+   "country": "NO",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 103.3
+  },
+  "NO4": {
+   "country": "NO",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 35.81
+  },
+  "NO5": {
+   "country": "NO",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 204.32
+  },
+  "PL": {
+   "country": "PL",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 147.32
+  },
+  "PT": {
+   "country": "PT",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 160.8
+  },
+  "RS": {
+   "country": "RS",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 200.02
+  },
+  "SE1": {
+   "country": "SE",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 17.96
+  },
+  "SE2": {
+   "country": "SE",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 13.92
+  },
+  "SE3": {
+   "country": "SE",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 116.39
+  },
+  "SE4": {
+   "country": "SE",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 181.66
+  },
+  "SI": {
+   "country": "SI",
+   "ts": "2026-11-21T16:00:00+00:00",
+   "eur_mwh": 221.91
+  }
+ }
+}
